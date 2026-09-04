@@ -1,0 +1,206 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face{font-family:PixelifySans;src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");}
+:root{
+  --paper:#F6EFE0; --surface:#FFFDF7; --ink:#202848; --inkSoft:#4E5878; --muted:#8F95AC;
+  --line:#E7DDC8; --teal:#0E7A72; --tealSoft:#D8EDEA; --cash:#C0873A; --cashSoft:#F7E9CE;
+  --danger:#D4553F; --dangerSoft:#FBE1DA; --blue:#39558E; --violet:#6E4A8C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);font-family:PixelifySans,monospace;color:var(--ink);
+     padding:34px 40px 40px;-webkit-font-smoothing:none}
+.head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;padding-left:6px}
+.head h1{font-size:26px;font-weight:900}
+.head span{font-size:14px;color:var(--inkSoft)}
+.row{display:flex;gap:34px;align-items:flex-start}
+.phone{width:372px;height:812px;background:var(--surface);border:5px solid var(--ink);
+       border-radius:26px;padding:14px 18px 16px;display:flex;flex-direction:column;
+       box-shadow:7px 7px 0 rgba(32,40,72,.14)}
+.status{display:flex;justify-content:space-between;align-items:center;font-size:12px;
+        color:var(--ink);font-weight:900;padding:2px 4px 10px}
+.dots{display:flex;gap:3px;align-items:center}
+.dots i{width:7px;height:7px;background:var(--ink);border-radius:50%}
+.dots b{width:14px;height:8px;border:2px solid var(--ink);display:inline-block;margin-left:3px}
+.nav{display:flex;align-items:center;gap:10px;height:30px;margin-bottom:6px}
+.nav .back{font-size:20px;font-weight:900;width:26px}
+.nav .step{flex:1;text-align:center;font-size:13px;color:var(--inkSoft);font-weight:800}
+.nav .skip{font-size:12px;color:var(--muted);font-weight:800}
+h2.q{font-size:22px;font-weight:900;line-height:1.28;text-align:center;margin:6px 0 4px}
+p.sub{font-size:12.5px;color:var(--inkSoft);text-align:center;line-height:1.5}
+.amount{border:3px solid var(--ink);background:var(--surface);padding:16px 18px;margin-top:14px;
+        display:flex;align-items:baseline;justify-content:center;gap:8px;
+        box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.amount .n{font-size:42px;font-weight:900;color:var(--teal);letter-spacing:0}
+.amount .cur{font-size:14px;font-weight:900;color:var(--muted)}
+.amount .caret{width:3px;height:34px;background:var(--teal);margin-left:2px;opacity:.55}
+.chips{display:flex;gap:8px;margin-top:12px}
+.chip{flex:1;border:2.5px solid var(--ink);background:var(--surface);text-align:center;
+      padding:9px 0;font-size:13px;font-weight:900}
+.chip.on{background:var(--teal);color:#fff}
+.label{font-size:12.5px;font-weight:900;margin-top:18px;margin-bottom:7px}
+.info{border:2.5px solid var(--line);background:#FBF5E9;padding:11px 12px;display:flex;gap:10px;
+      align-items:center;font-size:11.5px;color:var(--inkSoft);line-height:1.45;margin-top:12px}
+.info.cashy{background:var(--cashSoft);border-color:var(--line)}
+.catrow{border:2.5px solid var(--ink);background:var(--surface);padding:10px 12px;margin-bottom:9px;
+        display:flex;align-items:center;gap:11px}
+.ibox{width:36px;height:36px;border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.catrow .nm{flex:1;font-size:13px;font-weight:900}
+.catrow .vl{font-size:14px;font-weight:900}
+.bar{height:18px;border:2.5px solid var(--ink);background:var(--surface);padding:2.5px;display:flex;gap:2px}
+.bar s{flex:1;background:var(--line)}
+.bar s.f{background:var(--teal)}
+.sum{display:flex;justify-content:space-between;font-size:11px;color:var(--inkSoft);margin-top:6px;font-weight:800}
+.spacer{flex:1}
+.btn{border:3px solid var(--ink);background:var(--teal);color:#fff;text-align:center;
+     padding:14px 0;font-size:16px;font-weight:900;box-shadow:0 5px 0 var(--ink);margin-top:6px}
+.btn.ghost{background:var(--surface);color:var(--ink);box-shadow:0 5px 0 var(--ink)}
+.link{text-align:center;font-size:13px;font-weight:900;color:var(--ink);margin-top:16px}
+.hint{text-align:center;font-size:11px;color:var(--muted);margin-top:12px}
+.sprite{image-rendering:pixelated;background-repeat:no-repeat;margin:0 auto}
+.stage{border:3px solid var(--ink);background:#EFE7D6;padding:10px;margin-top:14px;
+       display:flex;align-items:flex-end;justify-content:center;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.bigwrap{text-align:center;margin-top:10px}
+.big{font-size:56px;font-weight:900;color:var(--teal);line-height:1.05}
+.big small{font-size:17px;color:var(--muted);margin-left:4px}
+.metas{display:flex;gap:8px;margin-top:14px}
+.meta{flex:1;border:2.5px solid var(--ink);background:var(--surface);padding:9px 10px;
+      display:flex;align-items:center;gap:7px;font-size:11px;font-weight:800}
+.meta b{font-size:12px}
+.toggle{display:flex;align-items:center;gap:10px;border:2.5px solid var(--line);background:#FBF5E9;
+        padding:10px 12px;margin-top:12px;font-size:12px;font-weight:900;color:var(--inkSoft)}
+.sw{width:38px;height:20px;border:2.5px solid var(--ink);background:var(--surface);
+    display:flex;align-items:center;padding:2px;margin-left:auto}
+.sw i{width:12px;height:12px;background:var(--ink)}
+.brand{font-size:54px;font-weight:900;text-align:center;letter-spacing:1px;margin-top:18px}
+.tag{text-align:center;font-size:17px;font-weight:900;margin-top:6px}
+.pill{display:inline-block;border:2.5px solid var(--ink);background:var(--tealSoft);
+      font-size:11px;font-weight:900;padding:5px 9px}
+</style>
+<div class="head"><h1>Sobra · Onboarding</h1><span>primer arranque · 4 pasos · es-MX · sin cuenta</span></div>
+<div class="row">
+
+<!-- 0 WELCOME -->
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="brand">Sobra</div>
+  <div class="tag">Tu dinero, sin presión.</div>
+  <p class="sub" style="margin-top:8px">Te decimos cuánto puedes gastar hoy,<br>sin hojas de cálculo.</p>
+  <div class="stage" style="margin-top:16px;height:222px">
+    <div class="sprite" style="width:171px;height:180px;background-image:url('../../assets/cats/cat-idle-8.png');background-size:1368px 180px;background-position:0 0"></div>
+  </div>
+  <div style="text-align:center;margin-top:14px"><span class="pill">Quincena 1–15 · MXN</span></div>
+  <div style="margin-top:16px">
+    <div class="catrow" style="border-color:var(--line);background:#FBF5E9;padding:9px 11px">
+      <div class="ibox" style="width:30px;height:30px;border-color:var(--line);background:var(--tealSoft)"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M4 13h16M12 5v16" stroke="#0E7A72" stroke-width="3"/></svg></div>
+      <span class="nm" style="font-size:12px;color:var(--inkSoft)">Un número al día, no 20 gráficas</span></div>
+    <div class="catrow" style="border-color:var(--line);background:#FBF5E9;padding:9px 11px">
+      <div class="ibox" style="width:30px;height:30px;border-color:var(--line);background:var(--cashSoft)"><svg width="16" height="16" viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="19" height="13" stroke="#C0873A" stroke-width="2.5" fill="none"/><rect x="15" y="11" width="4" height="4" fill="#C0873A"/></svg></div>
+      <span class="nm" style="font-size:12px;color:var(--inkSoft)">Cuadra tu efectivo cada domingo</span></div>
+    <div class="catrow" style="border-color:var(--line);background:#FBF5E9;padding:9px 11px">
+      <div class="ibox" style="width:30px;height:30px;border-color:var(--line);background:#E7DCF0"><svg width="16" height="16" viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="17" stroke="#6E4A8C" stroke-width="2.5" fill="none"/><path d="M2.5 9.5h19" stroke="#6E4A8C" stroke-width="2.5"/></svg></div>
+      <span class="nm" style="font-size:12px;color:var(--inkSoft)">Se reinicia solo cada quincena</span></div>
+  </div>
+  <div class="spacer"></div>
+  <p class="hint" style="margin-bottom:12px">Sin cuenta ni internet.<br>Tus datos se quedan en tu teléfono.</p>
+  <div class="btn">Empezar</div>
+  <div class="link" style="margin-top:14px;color:var(--muted);font-size:12px">Ya usaba Sobra · Restaurar respaldo</div>
+</div>
+
+<!-- 1 BUDGET -->
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back">←</span><span class="step">1 de 4</span><span class="skip">Omitir</span></div>
+  <div class="bar" style="height:10px;margin-bottom:14px"><s class="f"></s><s></s><s></s><s></s></div>
+  <h2 class="q">¿Cuánto quieres gastar<br>esta quincena?</h2>
+  <p class="sub">Es tu tope, no una meta. Puedes cambiarlo cuando quieras.</p>
+  <div class="amount"><span class="n">$6,000</span><span class="caret"></span><span class="cur">MXN</span></div>
+  <div class="chips">
+    <div class="chip">$4,000</div><div class="chip on">$6,000</div><div class="chip">$8,000</div>
+  </div>
+  <div class="info">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="4.5" width="19" height="17" stroke="#6E4A8C" stroke-width="2.5"/><path d="M2.5 9.5h19M7.5 2v5M16.5 2v5" stroke="#6E4A8C" stroke-width="2.5"/><rect x="6" y="13" width="4" height="4" fill="#6E4A8C"/></svg>
+    <span>Sobra usa <b>quincenas</b>: del 1 al 15 y del 16 al fin de mes. Hoy estás en la del <b>1–15</b>, quedan <b>13 días</b>.</span>
+  </div>
+  <div class="label">Vista previa</div>
+  <div class="catrow" style="background:var(--tealSoft);border-color:var(--ink)">
+    <div class="ibox" style="background:#fff"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M4 13h16M12 5v16" stroke="#0E7A72" stroke-width="3"/></svg></div>
+    <span class="nm">Podrás gastar por día</span>
+    <span class="vl" style="color:var(--teal)">$461</span>
+  </div>
+  <div class="spacer"></div>
+  <div class="btn">Continuar</div>
+</div>
+
+<!-- 2 CATEGORIES -->
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back">←</span><span class="step">2 de 4</span><span class="skip">Omitir</span></div>
+  <div class="bar" style="height:10px;margin-bottom:14px"><s class="f"></s><s class="f"></s><s></s><s></s></div>
+  <h2 class="q">¿Cómo repartes<br>tus $6,000?</h2>
+  <p class="sub">Ya te sugerimos un reparto. Ajusta lo que quieras.</p>
+  <div style="margin-top:16px">
+    <div class="catrow"><div class="ibox" style="background:#FBE1DA"><svg width="19" height="19" viewBox="0 0 24 24"><path d="M4 11h16v2a8 8 0 0 1-16 0v-2Z" fill="#D4553F"/><path d="M6 7c0-1 2-1 2-2M11 7c0-1 2-1 2-2M16 7c0-1 2-1 2-2" stroke="#D4553F" stroke-width="2"/></svg></div><span class="nm">Comida</span><span class="vl">$2,000</span></div>
+    <div class="catrow"><div class="ibox" style="background:#DCE4F2"><svg width="19" height="19" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="12" fill="#39558E"/><rect x="6" y="6.5" width="12" height="5" fill="#fff"/><rect x="5" y="16" width="4" height="3" fill="#39558E"/><rect x="15" y="16" width="4" height="3" fill="#39558E"/></svg></div><span class="nm">Transporte</span><span class="vl">$1,000</span></div>
+    <div class="catrow"><div class="ibox" style="background:#E7DCF0"><svg width="19" height="19" viewBox="0 0 24 24"><path d="M4 8h16l-1.5 12h-13L4 8Z" fill="#6E4A8C"/><path d="M9 8V6a3 3 0 0 1 6 0v2" stroke="#6E4A8C" stroke-width="2.2" fill="none"/></svg></div><span class="nm">Compras</span><span class="vl">$500</span></div>
+    <div class="catrow"><div class="ibox" style="background:#F7E9CE"><svg width="19" height="19" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.2" fill="#C0873A"/><circle cx="12" cy="12" r="2.2" fill="#C0873A"/><circle cx="18" cy="12" r="2.2" fill="#C0873A"/></svg></div><span class="nm">Otros</span><span class="vl">$2,500</span></div>
+  </div>
+  <div class="bar" style="margin-top:4px"><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s></div>
+  <div class="sum"><span>Repartido: $6,000</span><span style="color:var(--teal)">Sin sobrante ✓</span></div>
+  <div class="info">
+    <svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" stroke="#0E7A72" stroke-width="2.5" fill="none"/><rect x="10.8" y="10" width="2.4" height="8" fill="#0E7A72"/><rect x="10.8" y="6" width="2.4" height="2.4" fill="#0E7A72"/></svg>
+    <span>Los límites por categoría son opcionales. Sin ellos Sobra sigue funcionando con el total.</span>
+  </div>
+  <div class="spacer"></div>
+  <div class="btn">Continuar</div>
+  <div class="link">Usar los sugeridos</div>
+</div>
+
+<!-- 3 CASH -->
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back">←</span><span class="step">3 de 4</span><span class="skip">Omitir</span></div>
+  <div class="bar" style="height:10px;margin-bottom:14px"><s class="f"></s><s class="f"></s><s class="f"></s><s></s></div>
+  <h2 class="q">¿Cuánto efectivo<br>traes hoy?</h2>
+  <p class="sub">Cuenta los billetes de tu cartera. Nada más.</p>
+  <div class="amount" style="border-color:var(--ink)"><span class="n" style="color:var(--cash)">$1,240</span><span class="caret" style="background:var(--cash)"></span><span class="cur">MXN</span></div>
+  <div class="stage" style="height:212px;background:var(--cashSoft);margin-top:16px">
+    <div class="sprite" style="width:199px;height:204px;background-image:url('../../assets/cats/cat-saving-8.png');background-size:1591px 204px;background-position:-597px 0"></div>
+  </div>
+  <div class="info cashy">
+    <svg width="26" height="26" viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="19" height="13" stroke="#C0873A" stroke-width="2.5" fill="#fff"/><rect x="15" y="11" width="5" height="4" fill="#C0873A"/><path d="M2.5 6.5 16 3.5v3" stroke="#C0873A" stroke-width="2.5" fill="none"/></svg>
+    <span>Cada domingo te pedimos recontar. Si falta dinero, Sobra registra el <b>gasto que olvidaste</b> — sin regaños.</span>
+  </div>
+  <div class="toggle">
+    <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="#8F95AC" stroke-width="2.5" fill="none"/><path d="M5 19 19 5" stroke="#8F95AC" stroke-width="2.5"/></svg>
+    <span>Reducir movimiento</span><span class="sw"><i></i></span>
+  </div>
+  <div class="spacer"></div>
+  <div class="btn">Continuar</div>
+  <div class="link">Ahora no</div>
+</div>
+
+<!-- 4 READY -->
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back" style="opacity:0">←</span><span class="step">4 de 4</span><span class="skip" style="opacity:0">Omitir</span></div>
+  <div class="bar" style="height:10px;margin-bottom:14px"><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s></div>
+  <h2 class="q">Todo listo</h2>
+  <p class="sub">Hoy puedes gastar</p>
+  <div class="bigwrap"><div class="big">$461<small>MXN</small></div></div>
+  <div class="metas">
+    <div class="meta"><svg width="17" height="17" viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="19" height="13" stroke="#0E7A72" stroke-width="2.5" fill="none"/><rect x="15" y="11" width="4" height="4" fill="#0E7A72"/></svg><span>Presupuesto<br><b>$6,000</b></span></div>
+    <div class="meta"><svg width="17" height="17" viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="17" stroke="#6E4A8C" stroke-width="2.5" fill="none"/><path d="M2.5 9.5h19" stroke="#6E4A8C" stroke-width="2.5"/></svg><span>Quedan<br><b>13 días</b></span></div>
+  </div>
+  <div class="stage" style="height:274px;margin-top:12px">
+    <div class="sprite" style="width:203px;height:250px;background-image:url('../../assets/cats/cat-celebrate-8.png');background-size:1624px 250px;background-position:-1015px 0"></div>
+  </div>
+  <div class="info" style="margin-top:14px">
+    <svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19.5 7.5" stroke="#0E7A72" stroke-width="3" fill="none"/></svg>
+    <span>Registra tu primer gasto desde <b>Registrar</b>. Todo lo demás se ajusta solo.</span>
+  </div>
+  <div class="spacer"></div>
+  <div class="btn">Ir a Inicio</div>
+</div>
+
+</div>

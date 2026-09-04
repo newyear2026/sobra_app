@@ -1,0 +1,346 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face{font-family:PixelifySans;src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");}
+:root{--paper:#F6EFE0;--surface:#FFFDF7;--ink:#202848;--inkSoft:#4E5878;--muted:#8F95AC;
+      --line:#E7DDC8;--teal:#0E7A72;--tealSoft:#D8EDEA;--cash:#C0873A;--cashSoft:#F7E9CE;
+      --danger:#D4553F;--dangerSoft:#FBE1DA;--blue:#39558E;--violet:#6E4A8C;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);font-family:PixelifySans,monospace;color:var(--ink);
+     padding:32px 40px 40px;-webkit-font-smoothing:none}
+.head{display:flex;align-items:baseline;gap:14px;margin-bottom:20px;padding-left:6px}
+.head h1{font-size:26px;font-weight:900}
+.head span{font-size:14px;color:var(--inkSoft)}
+.row{display:flex;gap:30px;align-items:flex-start}
+.col{width:372px}
+.phone{width:372px;height:806px;background:var(--surface);border:5px solid var(--ink);
+       border-radius:26px;padding:14px 18px 16px;display:flex;flex-direction:column;
+       box-shadow:7px 7px 0 rgba(32,40,72,.14);position:relative;overflow:hidden}
+.cap{font-size:12px;color:var(--inkSoft);line-height:1.5;margin-top:12px;padding:0 4px;font-weight:800}
+.cap b{color:var(--ink)}
+.status{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:900;padding:2px 4px 8px}
+.dots{display:flex;gap:3px;align-items:center}
+.dots i{width:7px;height:7px;background:var(--ink);border-radius:50%}
+.dots b{width:14px;height:8px;border:2px solid var(--ink);display:inline-block;margin-left:3px}
+.nav{display:flex;align-items:center;gap:10px;height:28px;margin-bottom:6px}
+.nav .back{font-size:19px;font-weight:900;width:24px}
+.nav .ttl{flex:1;font-size:18px;font-weight:900}
+.lbl{font-size:12.5px;font-weight:900;color:var(--inkSoft)}
+.big{font-size:40px;font-weight:900;color:var(--teal);line-height:1.1}
+.bar{height:16px;border:2.5px solid var(--ink);background:var(--surface);padding:2.5px;display:flex;gap:2px}
+.bar.sm{height:12px;padding:2px}
+.bar s{flex:1;background:var(--line)}
+.bar s.f{background:var(--teal)}
+.card{border:2.5px solid var(--ink);background:var(--surface);padding:12px;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.card.flat{box-shadow:none}
+.seg{display:flex;border:3px solid var(--ink);margin-bottom:14px}
+.seg div{flex:1;text-align:center;padding:10px 0;font-size:14px;font-weight:900;background:var(--surface)}
+.seg div.on{background:var(--teal);color:#fff}
+.amount{border:3px solid var(--ink);background:var(--surface);padding:14px 16px;
+        display:flex;align-items:baseline;justify-content:center;gap:7px;
+        box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.amount .n{font-size:38px;font-weight:900;color:var(--teal)}
+.amount .cur{font-size:13px;font-weight:900;color:var(--muted)}
+.opt{border:2.5px solid var(--ink);background:var(--surface);padding:11px;margin-bottom:9px;
+     display:flex;gap:10px;align-items:flex-start}
+.opt.on{background:var(--tealSoft);box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.opt .ic{width:34px;height:34px;border:2.5px solid var(--ink);background:var(--surface);
+         display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.opt .t{font-size:13px;font-weight:900}
+.opt .d{font-size:10.5px;color:var(--inkSoft);font-weight:800;line-height:1.45;margin-top:3px}
+.opt .rd{width:18px;height:18px;border:2.5px solid var(--ink);flex:0 0 auto;margin-top:2px;
+         display:flex;align-items:center;justify-content:center}
+.opt .rd i{width:8px;height:8px;background:var(--teal)}
+.calc{border:2.5px solid var(--ink);background:var(--surface);padding:12px;
+      box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.crow{display:flex;align-items:center;font-size:13px;font-weight:900;padding:7px 0;
+      border-bottom:2px solid var(--line)}
+.crow .op{width:18px;color:var(--muted);font-size:15px}
+.crow .v{margin-left:auto}
+.crow.res{border-bottom:none;padding-top:11px;font-size:15px}
+.crow.res .v{font-size:22px;color:var(--teal)}
+.crow .sm{font-size:10px;color:var(--muted);font-weight:800;display:block}
+.trow{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:2px solid var(--line)}
+.trow .ic{width:32px;height:32px;border:2.5px solid var(--ink);display:flex;align-items:center;
+          justify-content:center;flex:0 0 auto}
+.trow .t{flex:1;font-size:12.5px;font-weight:900;line-height:1.35}
+.trow .t s{display:block;font-size:10px;color:var(--muted);font-weight:800;text-decoration:none}
+.trow .v{font-size:14px;font-weight:900}
+.trow.inc{background:var(--tealSoft);border:2.5px solid var(--ink);padding:9px 10px;margin-bottom:8px}
+.trow.inc .v{color:var(--teal);font-size:15px}
+.tag{display:inline-flex;align-items:center;gap:5px;border:2.5px solid var(--ink);background:var(--surface);
+     padding:4px 8px;font-size:10.5px;font-weight:900}
+.tag.teal{background:var(--tealSoft)}
+.tag.cash{background:var(--cashSoft)}
+.spacer{flex:1}
+.btn{border:3px solid var(--ink);background:var(--teal);color:#fff;text-align:center;padding:13px 0;
+     font-size:15px;font-weight:900;box-shadow:0 5px 0 var(--ink);margin-top:6px}
+.btn.ghost{background:var(--surface);color:var(--ink)}
+.link{text-align:center;font-size:12.5px;font-weight:900;color:var(--muted);margin-top:13px}
+.hint{font-size:11px;color:var(--muted);line-height:1.5}
+.xprow{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:var(--inkSoft);margin-top:5px}
+.stage{border:3px solid var(--ink);background:#EFE7D6;padding:10px;display:flex;align-items:flex-end;
+       justify-content:center;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.sprite{image-rendering:pixelated;background-repeat:no-repeat;margin:0 auto}
+/* spec */
+.spec{width:466px;border:5px solid var(--ink);background:var(--surface);padding:16px 16px 18px;
+      box-shadow:7px 7px 0 rgba(32,40,72,.14)}
+.spec h2{font-size:19px;font-weight:900;margin-bottom:3px}
+.spec .sh{font-size:11.5px;color:var(--muted);font-weight:800;margin-bottom:13px}
+.spec h5{font-size:12.5px;font-weight:900;margin:13px 0 6px;padding-bottom:5px;border-bottom:2.5px solid var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+td{padding:5px 3px;border-bottom:2px solid var(--line);font-weight:800;vertical-align:top;line-height:1.4}
+td.x{text-align:right;color:var(--teal);font-weight:900;white-space:nowrap;font-size:12px}
+td.src{color:var(--muted);font-size:10px;font-weight:800;text-align:right}
+.bug{border:3px solid var(--danger);background:var(--dangerSoft);padding:10px 11px;margin-bottom:9px;
+     font-size:11.5px;font-weight:800;color:var(--ink);line-height:1.55}
+.bug b{color:var(--danger)}
+.guard{border:2.5px solid var(--line);background:#FBF5E9;padding:8px 9px;margin-bottom:6px;
+       font-size:11.5px;font-weight:800;color:var(--inkSoft);line-height:1.5}
+.guard b{color:var(--ink)}
+.no{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;font-weight:800;color:var(--inkSoft);
+    padding:5px 0;line-height:1.45}
+.no em{color:var(--danger);font-style:normal;font-weight:900;flex:0 0 auto}
+.yes em{color:var(--teal)}
+code{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;background:var(--tealSoft);padding:1px 4px}
+</style>
+<div class="head"><h1>Sobra · Ingresos</h1><span>입금은 «사건», 지출은 «흐름» — 대칭 장부를 만들지 않는다</span></div>
+<div class="row">
+
+<!-- A: REGISTRAR INGRESO -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back">←</span><span class="ttl">Registrar</span></div>
+  <div class="seg"><div>Gasto</div><div class="on">Ingreso</div></div>
+  <div class="amount"><span class="n">$1,500</span><span class="cur">MXN</span></div>
+
+  <div class="lbl" style="margin-top:15px">¿Qué tipo de ingreso?</div>
+  <div style="margin-top:8px">
+    <div class="opt"><span class="ic">
+      <svg width="18" height="18" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="14" stroke="#0E7A72" stroke-width="2.5" fill="none"/><rect x="15" y="10" width="4" height="4" fill="#0E7A72"/></svg></span>
+      <div style="flex:1"><div class="t">Mi pago de siempre</div>
+        <div class="d">Reinicia el ciclo y el presupuesto.</div></div>
+      <span class="rd"></span></div>
+
+    <div class="opt on"><span class="ic">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 3v18M5 10l7-7 7 7" stroke="#0E7A72" stroke-width="2.8" fill="none"/></svg></span>
+      <div style="flex:1"><div class="t">Ingreso extra</div>
+        <div class="d">Trabajo aparte, propina, aguinaldo, venta.</div></div>
+      <span class="rd"><i></i></span></div>
+
+    <div class="opt"><span class="ic">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.5-5.8M20 3v5h-5" stroke="#6E4A8C" stroke-width="2.5" fill="none"/></svg></span>
+      <div style="flex:1"><div class="t">Me devolvieron dinero</div>
+        <div class="d">Cancela el gasto original, no suma al presupuesto.</div></div>
+      <span class="rd"></span></div>
+  </div>
+
+  <div class="lbl" style="margin-top:14px">¿Qué hago con estos $1,500?</div>
+  <div style="margin-top:8px">
+    <div class="opt on" style="padding:10px 11px"><span class="ic" style="background:var(--surface)">
+      <svg width="17" height="17" viewBox="0 0 24 24"><path d="M4 13h16M12 5v16" stroke="#0E7A72" stroke-width="3"/></svg></span>
+      <div style="flex:1"><div class="t">Repártelo en este ciclo</div>
+        <div class="d">Tu gasto diario sube de <b>$233</b> a <b>$283</b>.</div></div>
+      <span class="rd"><i></i></span></div>
+    <div class="opt" style="padding:10px 11px"><span class="ic">
+      <svg width="17" height="17" viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="17" height="12" stroke="#C0873A" stroke-width="2.5" fill="none"/><path d="M8 7.5V5h8v2.5" stroke="#C0873A" stroke-width="2.5" fill="none"/></svg></span>
+      <div style="flex:1"><div class="t">Guárdalo</div>
+        <div class="d">No cambia tu gasto diario. Se va a tu ahorro.</div></div>
+      <span class="rd"></span></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="btn">Guardar ingreso</div>
+</div>
+<div class="cap"><b>1. 입금 등록 — 지출 폼과 «대칭»이 아니다.</b><br>카테고리가 없고, 대신 <b>«이 돈을 어떻게 할지»</b>를 묻는다. 이걸 안 물으면 추가 수입이 일일 한도를 조용히 부풀린다.</div>
+</div>
+
+<!-- B: PRESUPUESTO CON ORIGEN -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back">←</span><span class="ttl">Tu presupuesto</span></div>
+  <p class="hint" style="margin:2px 0 13px">De dónde sale el número que ves todos los días.</p>
+
+  <div class="calc">
+    <div class="crow"><span class="op"></span>
+      <span>Tu depósito<span class="sm">mensual · día 30</span></span>
+      <span class="v">$12,000</span></div>
+    <div class="crow"><span class="op">−</span>
+      <span>Gastos fijos<span class="sm">renta, luz, celular, internet</span></span>
+      <span class="v" style="color:var(--danger)">$4,200</span></div>
+    <div class="crow"><span class="op">−</span>
+      <span>Lo que quieres guardar<span class="sm">se aparta antes de gastar</span></span>
+      <span class="v" style="color:var(--cash)">$800</span></div>
+    <div class="crow res"><span class="op">=</span>
+      <span>Para gastar<span class="sm">30 días · $233 al día</span></span>
+      <span class="v">$7,000</span></div>
+  </div>
+
+  <div class="lbl" style="margin-top:16px">Gastos fijos</div>
+  <div style="margin-top:6px">
+    <div class="trow"><span class="ic" style="background:#E7DCF0">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9H4v-9Z" stroke="#6E4A8C" stroke-width="2.5" fill="none"/></svg></span>
+      <span class="t">Renta<s>día 1 · cada mes</s></span><span class="v">$3,000</span></div>
+    <div class="trow"><span class="ic" style="background:#DCE4F2">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path d="M13 2 5 13h6l-1 9 8-11h-6l1-9Z" fill="#39558E"/></svg></span>
+      <span class="t">Luz + internet<s>día 5 · cada mes</s></span><span class="v">$900</span></div>
+    <div class="trow"><span class="ic" style="background:var(--cashSoft)">
+      <svg width="16" height="16" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" stroke="#C0873A" stroke-width="2.5" fill="none"/></svg></span>
+      <span class="t">Celular<s>día 10 · cada mes</s></span><span class="v">$300</span></div>
+  </div>
+
+  <div class="card flat" style="margin-top:13px;border-color:var(--line);background:#FBF5E9;display:flex;gap:9px">
+    <svg width="22" height="22" viewBox="0 0 24 24" style="flex:0 0 auto"><circle cx="12" cy="12" r="9.5" stroke="#0E7A72" stroke-width="2.5" fill="none"/><rect x="10.8" y="10" width="2.4" height="8" fill="#0E7A72"/><rect x="10.8" y="6" width="2.4" height="2.4" fill="#0E7A72"/></svg>
+    <span class="hint">Los fijos <b style="color:var(--ink)">no aparecen</b> en tu gasto diario: ya están apartados. Así el número de arriba nunca miente.</span></div>
+  <div class="spacer"></div>
+  <div class="btn ghost">Editar mis fijos</div>
+</div>
+<div class="cap"><b>2. 예산에 «출처»가 생긴다.</b><br>지금은 <code>totalBudgetCentavos</code>가 근거 없는 숫자. 입금−고정비−저축으로 유도하면 일일 한도를 <b>신뢰할 수 있게</b> 된다. 이게 입금 관리의 진짜 이유.</div>
+</div>
+
+<!-- C: CONTEO CON EFECTIVO DE MÁS -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back">←</span><span class="ttl">Conteo de efectivo</span></div>
+  <div class="lbl" style="margin-top:4px">Contaste</div>
+  <div class="big" style="color:var(--cash)">$2,520<span style="font-size:14px;color:var(--muted)"> MXN</span></div>
+
+  <div class="card" style="margin-top:13px;background:var(--tealSoft);display:flex;align-items:center;gap:11px">
+    <svg width="30" height="30" viewBox="0 0 24 24" style="flex:0 0 auto"><path d="M12 3v18M5 10l7-7 7 7" stroke="#0E7A72" stroke-width="2.8" fill="none"/></svg>
+    <div style="flex:1"><div style="font-size:12.5px;font-weight:900">Tienes $340 de más</div>
+      <div style="font-size:10.5px;color:var(--inkSoft);font-weight:800">Esperábamos $2,180</div></div>
+  </div>
+
+  <div class="lbl" style="margin-top:15px">¿De dónde salieron?</div>
+  <div style="margin-top:8px">
+    <div class="opt on"><span class="ic" style="background:var(--surface)">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 3v18M5 10l7-7 7 7" stroke="#0E7A72" stroke-width="2.8" fill="none"/></svg></span>
+      <div style="flex:1"><div class="t">Me pagaron en efectivo</div>
+        <div class="d">Propina, venta, trabajo aparte. Se registra como ingreso.</div></div>
+      <span class="rd"><i></i></span></div>
+    <div class="opt"><span class="ic">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.5-5.8M20 3v5h-5" stroke="#6E4A8C" stroke-width="2.5" fill="none"/></svg></span>
+      <div style="flex:1"><div class="t">Me devolvieron un préstamo</div>
+        <div class="d">No suma a tu presupuesto.</div></div>
+      <span class="rd"></span></div>
+    <div class="opt"><span class="ic">
+      <svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="#8F95AC" stroke-width="2.5" fill="none"/><path d="M9.5 9.5a2.6 2.6 0 1 1 2.5 3v1.5" stroke="#8F95AC" stroke-width="2.4" fill="none"/><rect x="11" y="16.5" width="2" height="2" fill="#8F95AC"/></svg></span>
+      <div style="flex:1"><div class="t">No sé</div>
+        <div class="d">Solo ajusta el conteo, sin registrar nada.</div></div>
+      <span class="rd"></span></div>
+  </div>
+  <div class="stage" style="height:150px;margin-top:12px">
+    <div class="sprite" style="width:139px;height:143px;background-image:url('../../assets/cats/cat-saving-8.png');background-size:1114px 143px;background-position:-418px 0"></div></div>
+  <div class="spacer"></div>
+  <div class="btn">Guardar conteo</div>
+</div>
+<div class="cap"><b>3. 현금이 «늘었을 때» — 지금은 조용히 삼켜진다.</b><br><code>confirmCashCount()</code>는 <code>difference &gt; 0</code>일 때만 기록하고, 남는 현금은 <code>expectedCash</code>만 덮어씀. 화면엔 빨간색 «Efectivo de más» — <b>수입을 오류로 취급</b> 중.</div>
+</div>
+
+<!-- D: MOVIMIENTOS -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back">←</span><span class="ttl">Movimientos</span></div>
+  <div style="display:flex;gap:8px;margin:4px 0 13px">
+    <div class="card flat" style="flex:1;border-color:var(--line);padding:9px 10px">
+      <div style="font-size:10px;color:var(--muted);font-weight:800">Recibido</div>
+      <div style="font-size:17px;font-weight:900;color:var(--teal)">$13,500</div></div>
+    <div class="card flat" style="flex:1;border-color:var(--line);padding:9px 10px">
+      <div style="font-size:10px;color:var(--muted);font-weight:800">Gastado</div>
+      <div style="font-size:17px;font-weight:900">$3,980</div></div>
+  </div>
+
+  <div class="trow inc"><span class="ic" style="background:var(--surface)">
+    <svg width="16" height="16" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="14" stroke="#0E7A72" stroke-width="2.5" fill="none"/><rect x="15" y="10" width="4" height="4" fill="#0E7A72"/></svg></span>
+    <span class="t">Depósito de nómina<s>30 ago · inicio del ciclo</s></span><span class="v">+$12,000</span></div>
+
+  <div class="trow inc"><span class="ic" style="background:var(--surface)">
+    <svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 3v18M5 10l7-7 7 7" stroke="#0E7A72" stroke-width="2.8" fill="none"/></svg></span>
+    <span class="t">Trabajo extra<s>8 sept · repartido en el ciclo</s></span><span class="v">+$1,500</span></div>
+
+  <div class="lbl" style="margin-top:6px">Gastos</div>
+  <div style="margin-top:4px">
+    <div class="trow"><span class="ic" style="background:var(--dangerSoft)">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path d="M4 11h16v2a8 8 0 0 1-16 0v-2Z" fill="#D4553F"/></svg></span>
+      <span class="t">OXXO<s>hoy · comida · efectivo</s></span><span class="v">$46</span></div>
+    <div class="trow"><span class="ic" style="background:#DCE4F2">
+      <svg width="16" height="16" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="12" fill="#39558E"/><rect x="6" y="6.5" width="12" height="5" fill="#fff"/></svg></span>
+      <span class="t">Metro<s>hoy · transporte · tarjeta</s></span><span class="v">$12</span></div>
+    <div class="trow"><span class="ic" style="background:#E7DCF0">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path d="M4 8h16l-1.5 12h-13L4 8Z" fill="#6E4A8C"/></svg></span>
+      <span class="t">Liverpool<s>ayer · compras · tarjeta</s></span><span class="v">$389</span></div>
+    <div class="trow" style="opacity:.6"><span class="ic" style="background:var(--surface)">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.5-5.8M20 3v5h-5" stroke="#6E4A8C" stroke-width="2.5" fill="none"/></svg></span>
+      <span class="t" style="text-decoration:line-through">Farmacia<s style="text-decoration:none">6 sept · te devolvieron $210</s></span>
+      <span class="v" style="color:var(--muted)">$0</span></div>
+  </div>
+
+  <div class="card flat" style="margin-top:12px;border-color:var(--line);background:#FBF5E9;display:flex;gap:9px">
+    <span style="color:var(--teal);font-weight:900;font-size:13px">✓</span>
+    <span class="hint">Los ingresos van arriba y <b style="color:var(--ink)">no entran</b> en el avance del presupuesto. Una devolución <b style="color:var(--ink)">cancela</b> su gasto, no suma dinero nuevo.</span></div>
+  <div class="spacer"></div>
+</div>
+<div class="cap"><b>4. 목록 — 입금은 위, 지출은 아래.</b><br>같은 리스트에 섞어 시간순 정렬하면 «장부»가 된다. 입금은 사이클에 1~2건뿐이니 <b>상단 고정</b>이 맞다. 환불은 원래 지출을 취소.</div>
+</div>
+
+<!-- SPEC -->
+<div class="spec">
+  <h2>설계 규칙</h2>
+  <div class="sh">결론: 넣되, 대칭으로 넣지 말 것</div>
+
+  <div class="bug"><b>지금 코드의 조용한 실패.</b> <code>confirmCashCount()</code>는
+    <code>difference &gt; 0</code>(현금이 <b>줄었을 때</b>)만 «Ajuste de efectivo» 지출로 기록하고
+    (<code>sobra_store.dart:182</code>), 현금이 <b>늘었을 때</b>는 아무것도 남기지 않고
+    <code>expectedCash</code>만 덮어씀. 화면은 그걸 <code>danger</code> 색 «Efectivo de más»로 표시 —
+    <b>현금 수입이 오류로 취급되고 사라진다.</b> 현금 소득이 흔한 시장에서 이건 실사용 구멍.</div>
+
+  <h5>왜 «지금» 필요한가</h5>
+  <div class="guard"><b>1. 급여 주기를 묻기로 했으니까.</b> «언제 받나»를 묻고 «얼마 받나»를 안 묻는 건 어색하다.
+    입금액이 있으면 <code>totalBudgetCentavos</code>가 근거 없는 숫자에서 <b>계산 결과</b>가 된다.</div>
+  <div class="guard"><b>2. Semanal/variable 사이클엔 필수.</b> 소득이 변하는 사용자에게 고정 예산을 물으면
+    답이 존재하지 않는다. 이 그룹은 «지난주 번 만큼 이번 주에 쓴다»가 유일하게 맞는 모델.</div>
+  <div class="guard"><b>3. 현금 수입 구멍.</b> 위 버그. 대안이 없다.</div>
+
+  <h5>입금 3종 — 각각 «다르게» 동작</h5>
+  <table>
+    <tr><td>Mi pago de siempre<br><span style="color:var(--muted);font-size:10px">정기 급여</span></td>
+        <td class="src">사이클 리셋<br>예산 재계산</td></tr>
+    <tr><td>Ingreso extra<br><span style="color:var(--muted);font-size:10px">보너스·부업·팁</span></td>
+        <td class="src">사용자가 선택:<br>이번 사이클 배분 / 저축</td></tr>
+    <tr><td>Devolución<br><span style="color:var(--muted);font-size:10px">환불·빌려준 돈</span></td>
+        <td class="src">원래 지출을 취소<br><b>예산에 더하지 않음</b></td></tr>
+  </table>
+  <div class="hint" style="margin-top:7px">환불을 «수입»으로 처리하면 <b>이중 계산</b>이 된다. 지출 $210 + 수입 $210 = 예산이 $210 늘어난 것처럼 보임. 반드시 원 지출에 연결(<code>refundOf</code>).</div>
+
+  <h5>데이터 모델 — 부호 있는 금액은 함정</h5>
+  <div class="bug" style="border-color:var(--cash);background:var(--cashSoft)">
+    <b style="color:#8E6222">입금을 «음수 ExpenseEntry»로 넣지 말 것.</b>
+    <code>totalSpentCentavos</code>·<code>spentFor()</code>·<code>budgetProgress</code>·
+    <code>projectedRemainderCentavos</code>·<code>dailyAllowanceCentavos</code>가
+    전부 <code>cycleTransactions</code>를 <code>fold</code>한다.
+    음수가 섞이는 순간 <b>일일 한도가 조용히 부풀고 앱이 거짓말을 시작한다.</b>
+    별도 리스트(<code>List&lt;IncomeEntry&gt;</code>)로 분리할 것.</div>
+  <table>
+    <tr><td><code>IncomeEntry</code> 신규</td><td class="src">kind · amount · date<br>카테고리 없음</td></tr>
+    <tr><td><code>_incomes</code> 별도 리스트</td><td class="src">지출 계산에 미포함</td></tr>
+    <tr><td><code>refundOf</code> (entry id)</td><td class="src">지출 취소용</td></tr>
+    <tr><td><code>fixedExpenses</code> 신규</td><td class="src">예산에서 선차감</td></tr>
+    <tr><td><code>_affectsCurrentCash</code></td><td class="src">현금 입금 시<br>expectedCash <b>증가</b></td></tr>
+  </table>
+
+  <h5>만들지 말 것</h5>
+  <div class="no"><em>✕</em><span>입금 <b>카테고리</b> — 수입원 분류는 가계부의 시작, 이 앱의 끝</span></div>
+  <div class="no"><em>✕</em><span>수입 <b>차트·순자산·월별 비교</b> — «오늘 얼마 쓸 수 있나» 한 문장을 흐린다</span></div>
+  <div class="no"><em>✕</em><span>지출 폼과 <b>대칭인</b> 입금 폼 — 입금은 사이클당 1~2건, 지출은 수십 건. 빈도가 다르면 UI도 달라야 한다</span></div>
+  <div class="no yes"><em>✓</em><span>입금의 유일한 역할: <b>예산의 출처가 되는 것</b>. 그 이상은 스코프 크립.</span></div>
+
+  <h5>XP·퀘스트와의 관계</h5>
+  <div class="guard">입금 등록에 XP를 주면 안 된다(기록 유인 = 앞서 정한 금지 규칙).
+    대신 <b>«고정비를 다 내고도 en verde로 마감»</b> 같은 결과형 퀘스트가 가능해진다.
+    저축으로 뺀 금액은 <code>successfulCycles</code>와 함께 레벨의 근거가 될 수 있다.</div>
+</div>
+
+</div>

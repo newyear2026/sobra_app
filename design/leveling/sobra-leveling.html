@@ -1,0 +1,330 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face{font-family:PixelifySans;src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");}
+:root{
+  --paper:#F6EFE0; --surface:#FFFDF7; --ink:#202848; --inkSoft:#4E5878; --muted:#8F95AC;
+  --line:#E7DDC8; --teal:#0E7A72; --tealSoft:#D8EDEA; --cash:#C0873A; --cashSoft:#F7E9CE;
+  --danger:#D4553F; --dangerSoft:#FBE1DA; --blue:#39558E; --violet:#6E4A8C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);font-family:PixelifySans,monospace;color:var(--ink);
+     padding:32px 40px 40px;-webkit-font-smoothing:none}
+.head{display:flex;align-items:baseline;gap:14px;margin-bottom:20px;padding-left:6px}
+.head h1{font-size:26px;font-weight:900}
+.head span{font-size:14px;color:var(--inkSoft)}
+.row{display:flex;gap:30px;align-items:flex-start}
+.col{width:372px}
+.phone{width:372px;height:806px;background:var(--surface);border:5px solid var(--ink);
+       border-radius:26px;padding:14px 18px 16px;display:flex;flex-direction:column;
+       box-shadow:7px 7px 0 rgba(32,40,72,.14);position:relative;overflow:hidden}
+.cap{font-size:12px;color:var(--inkSoft);line-height:1.5;margin-top:12px;padding:0 4px;font-weight:800}
+.cap b{color:var(--ink)}
+.status{display:flex;justify-content:space-between;align-items:center;font-size:12px;
+        font-weight:900;padding:2px 4px 8px}
+.dots{display:flex;gap:3px;align-items:center}
+.dots i{width:7px;height:7px;background:var(--ink);border-radius:50%}
+.dots b{width:14px;height:8px;border:2px solid var(--ink);display:inline-block;margin-left:3px}
+.top{display:flex;align-items:center;margin-bottom:8px}
+.top h3{font-size:25px;font-weight:900;flex:1}
+.nav{display:flex;align-items:center;gap:10px;height:28px;margin-bottom:4px}
+.nav .back{font-size:19px;font-weight:900;width:24px}
+.nav .ttl{flex:1;font-size:18px;font-weight:900}
+.lbl{font-size:12.5px;font-weight:900;color:var(--inkSoft)}
+.big{font-size:44px;font-weight:900;color:var(--teal);line-height:1.1}
+.bar{height:17px;border:2.5px solid var(--ink);background:var(--surface);padding:2.5px;display:flex;gap:2px}
+.bar.sm{height:13px;padding:2px}
+.bar s{flex:1;background:var(--line)}
+.bar s.f{background:var(--teal)}
+.bar s.c{background:var(--cash)}
+.card{border:2.5px solid var(--ink);background:var(--surface);padding:12px;
+      box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.card.flat{box-shadow:none}
+.lvlstrip{border:2.5px solid var(--ink);background:var(--tealSoft);padding:10px 11px;
+          box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.lvlstrip .r1{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.badge{width:34px;height:34px;border:2.5px solid var(--ink);background:var(--teal);color:#fff;
+       display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;flex:0 0 auto}
+.xprow{display:flex;justify-content:space-between;align-items:center;font-size:11px;
+       font-weight:800;color:var(--inkSoft);margin-top:5px}
+.xpitem{display:flex;align-items:center;gap:10px;border-bottom:2px solid var(--line);
+        padding:9px 2px;font-size:12.5px;font-weight:800}
+.xpitem .amt{margin-left:auto;font-weight:900;color:var(--teal);font-size:14px}
+.xpitem .ic{width:26px;height:26px;border:2.5px solid var(--ink);display:flex;align-items:center;
+            justify-content:center;flex:0 0 auto}
+.total{display:flex;align-items:center;border:3px solid var(--ink);background:var(--tealSoft);
+       padding:11px 12px;margin-top:12px;font-size:13px;font-weight:900}
+.total .amt{margin-left:auto;font-size:20px;color:var(--teal)}
+.stage{border:3px solid var(--ink);background:#EFE7D6;padding:10px;display:flex;
+       align-items:flex-end;justify-content:center;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.sprite{image-rendering:pixelated;background-repeat:no-repeat;margin:0 auto}
+.spacer{flex:1}
+.btn{border:3px solid var(--ink);background:var(--teal);color:#fff;text-align:center;
+     padding:13px 0;font-size:15px;font-weight:900;box-shadow:0 5px 0 var(--ink);margin-top:6px}
+.link{text-align:center;font-size:12.5px;font-weight:900;color:var(--muted);margin-top:14px}
+.hint{font-size:11px;color:var(--muted);line-height:1.5}
+.weeks{display:flex;gap:5px;margin-top:8px}
+.weeks i{flex:1;height:26px;border:2.5px solid var(--ink);background:var(--line)}
+.weeks i.on{background:var(--teal)}
+.weeks i.skip{background:var(--surface)}
+.unlock{display:flex;align-items:center;gap:10px;border:2.5px solid var(--line);background:#FBF5E9;
+        padding:9px 11px;margin-bottom:7px;font-size:12px;font-weight:800}
+.unlock.now{border-color:var(--ink);background:var(--tealSoft)}
+.unlock .lv{width:30px;height:30px;border:2.5px solid var(--ink);background:var(--surface);
+            display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex:0 0 auto}
+.unlock .st{margin-left:auto;font-size:11px;color:var(--muted);font-weight:900}
+.toast{position:absolute;left:18px;right:18px;bottom:22px;border:3px solid var(--ink);
+       background:var(--ink);color:#fff;padding:11px 13px;display:flex;align-items:center;gap:10px;
+       font-size:13px;font-weight:900;box-shadow:5px 5px 0 rgba(32,40,72,.25)}
+.toast .amt{margin-left:auto;color:#7FD8CE;font-size:15px}
+.lvlup{position:absolute;inset:0;background:var(--ink);color:#fff;padding:22px 20px;
+       display:flex;flex-direction:column;align-items:center}
+.lvlup .k{font-size:13px;font-weight:900;color:#7FD8CE;letter-spacing:2px}
+.lvlup h4{font-size:30px;font-weight:900;margin-top:6px;text-align:center;line-height:1.25}
+.lvlup .nv{font-size:74px;font-weight:900;color:#7FD8CE;line-height:1}
+.lvlup .cardd{border:3px solid #7FD8CE;background:#2C3560;padding:11px 12px;width:100%;
+              display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:800;margin-bottom:8px}
+.lvlup .cardd .lv{width:30px;height:30px;border:2.5px solid #7FD8CE;display:flex;align-items:center;
+                  justify-content:center;flex:0 0 auto;font-size:14px}
+.lvlup .bar{border-color:#7FD8CE;background:#2C3560}
+.lvlup .bar s{background:#46507F}
+.lvlup .bar s.f{background:#7FD8CE}
+.lvlup .btn{background:#7FD8CE;color:var(--ink);border-color:#7FD8CE;box-shadow:0 5px 0 #46507F;width:100%}
+/* spec panel */
+.spec{width:448px;border:5px solid var(--ink);background:var(--surface);padding:16px 16px 18px;
+      box-shadow:7px 7px 0 rgba(32,40,72,.14)}
+.spec h2{font-size:19px;font-weight:900;margin-bottom:3px}
+.spec .sh{font-size:11.5px;color:var(--muted);font-weight:800;margin-bottom:14px}
+.spec h5{font-size:12.5px;font-weight:900;margin:13px 0 6px;padding-bottom:5px;border-bottom:2.5px solid var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+td{padding:5px 3px;border-bottom:2px solid var(--line);font-weight:800;vertical-align:top;line-height:1.4}
+td.x{text-align:right;color:var(--teal);font-weight:900;white-space:nowrap;font-size:12.5px}
+td.src{color:var(--muted);font-size:10px;font-weight:800}
+.no{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;font-weight:800;color:var(--inkSoft);
+    padding:6px 0;line-height:1.45}
+.no em{color:var(--danger);font-style:normal;font-weight:900;flex:0 0 auto}
+.guard{border:2.5px solid var(--line);background:#FBF5E9;padding:8px 9px;margin-bottom:6px;
+       font-size:11.5px;font-weight:800;color:var(--inkSoft);line-height:1.5}
+.guard b{color:var(--ink)}
+code{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;background:var(--tealSoft);
+     padding:1px 4px;color:var(--ink)}
+</style>
+<div class="head"><h1>Sobra · Nivel & XP</h1><span>결과 기반 보상 · 앱을 안 열어도 XP를 잃지 않음 · 로컬 전용</span></div>
+<div class="row">
+
+<!-- A: HOME -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="top"><h3>Sobra</h3>
+    <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.4" stroke="#202848" stroke-width="2.5" fill="none"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M18.8 5.2l-2.1 2.1M7.3 16.7l-2.1 2.1" stroke="#202848" stroke-width="2.5"/></svg>
+  </div>
+  <div class="lbl">Hoy te queda</div>
+  <div class="big">$461<span style="font-size:16px;color:var(--muted)"> MXN</span></div>
+
+  <div class="lvlstrip" style="margin-top:14px">
+    <div class="r1">
+      <div class="badge">4</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:900">Michi guardián</div>
+        <div style="font-size:10.5px;color:var(--inkSoft);font-weight:800">Nivel 4 · 6 quincenas en verde</div>
+      </div>
+      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke="#202848" stroke-width="3" fill="none"/></svg>
+    </div>
+    <div class="bar sm"><s class="f"></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s></div>
+    <div class="xprow"><span>45 / 700 XP</span><span>Nivel 5 · Michi maestro</span></div>
+  </div>
+
+  <div class="lbl" style="margin-top:16px;display:flex;justify-content:space-between">
+    <span>Avance de la quincena</span><span>13 días</span></div>
+  <div class="bar" style="margin-top:7px"><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s></div>
+  <div class="xprow"><span>Presupuesto: $6,000</span><span>Gastado: $1,980</span></div>
+
+  <div class="card" style="margin-top:16px;background:var(--cashSoft);display:flex;align-items:center;gap:11px">
+    <svg width="30" height="30" viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="19" height="13" stroke="#C0873A" stroke-width="2.5" fill="#fff"/><rect x="15" y="11" width="5" height="4" fill="#C0873A"/></svg>
+    <div style="flex:1"><div style="font-size:12.5px;font-weight:900">Efectivo disponible</div>
+      <div style="font-size:20px;font-weight:900;color:#8E6222">$1,240</div></div>
+    <div style="border:2.5px solid var(--ink);background:var(--surface);padding:4px 7px;font-size:10.5px;font-weight:900">+25 XP<br>domingo</div>
+  </div>
+
+  <div class="card flat" style="margin-top:14px;border-color:var(--line);background:#FBF5E9;display:flex;gap:9px;align-items:center">
+    <div style="width:26px;height:26px;border:2.5px solid var(--teal);display:flex;align-items:center;justify-content:center;flex:0 0 auto">
+      <svg width="15" height="15" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19.5 7.5" stroke="#0E7A72" stroke-width="3.4" fill="none"/></svg></div>
+    <span style="font-size:11.5px;font-weight:800;color:var(--inkSoft);line-height:1.45">
+      Hoy vas bajo tu límite. Si cierras así, <b style="color:var(--ink)">+5 XP</b>.</span>
+  </div>
+  <div class="lbl" style="margin-top:15px">Movimientos recientes</div>
+  <div style="margin-top:6px">
+    <div class="xpitem" style="padding:8px 2px"><span class="ic" style="background:var(--dangerSoft)">
+      <svg width="14" height="14" viewBox="0 0 24 24"><path d="M4 11h16v2a8 8 0 0 1-16 0v-2Z" fill="#D4553F"/></svg></span>
+      <span>OXXO<br><span style="font-size:10px;color:var(--muted)">Comida · efectivo</span></span>
+      <span class="amt" style="color:var(--ink)">$46</span></div>
+    <div class="xpitem" style="padding:8px 2px"><span class="ic" style="background:#DCE4F2">
+      <svg width="14" height="14" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="12" fill="#39558E"/><rect x="6" y="6.5" width="12" height="5" fill="#fff"/></svg></span>
+      <span>Metro<br><span style="font-size:10px;color:var(--muted)">Transporte · tarjeta</span></span>
+      <span class="amt" style="color:var(--ink)">$12</span></div>
+  </div>
+  <div class="hint" style="margin-top:9px;display:flex;gap:7px;align-items:flex-start">
+    <span style="color:var(--danger);font-weight:900">✕</span>
+    <span>Registrar un gasto <b style="color:var(--ink)">no da XP</b>. Se premia el resultado, no la cantidad de toques.</span></div>
+  <div class="spacer"></div>
+  <div class="toast">
+    <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6.1.8-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.4l6.1-.8L12 3Z" fill="#7FD8CE"/></svg>
+    <span>Conteo de domingo guardado</span><span class="amt">+25 XP</span>
+  </div>
+</div>
+<div class="cap"><b>1. 홈 — 레벨은 한 줄로만.</b><br>별도 탭 없이 <b>«Hoy te queda»</b> 바로 아래 얇은 스트립. 탭하면 진행 화면으로. XP 토스트는 하단 스낵바로 2초.</div>
+</div>
+
+<!-- B: CIERRE DE QUINCENA -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back"></span><span class="ttl">Quincena cerrada</span>
+    <span style="font-size:11px;color:var(--muted);font-weight:900">1–15 sept</span></div>
+  <div style="text-align:center;margin-top:6px">
+    <div class="lbl">Te sobraron</div>
+    <div class="big" style="font-size:46px">$840<span style="font-size:15px;color:var(--muted)"> MXN</span></div>
+  </div>
+  <div class="stage" style="height:212px;margin-top:12px">
+    <div class="sprite" style="width:163px;height:200px;background-image:url('../../assets/cats/cat-celebrate-8.png');background-size:1300px 200px;background-position:-812px 0"></div>
+  </div>
+  <div class="lbl" style="margin-top:15px">Lo que ganaste</div>
+  <div style="margin-top:4px">
+    <div class="xpitem"><span class="ic" style="background:var(--tealSoft)">
+      <svg width="14" height="14" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19.5 7.5" stroke="#0E7A72" stroke-width="3.4" fill="none"/></svg></span>
+      <span>Cerraste en verde</span><span class="amt">+100</span></div>
+    <div class="xpitem"><span class="ic" style="background:var(--cashSoft)">
+      <svg width="14" height="14" viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="19" height="13" stroke="#C0873A" stroke-width="3" fill="none"/></svg></span>
+      <span>2 conteos de efectivo</span><span class="amt">+50</span></div>
+    <div class="xpitem"><span class="ic" style="background:#E7DCF0">
+      <svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" stroke="#6E4A8C" stroke-width="3" fill="none"/><path d="M3 9h18" stroke="#6E4A8C" stroke-width="3"/></svg></span>
+      <span>7 días bajo tu límite</span><span class="amt">+35</span></div>
+  </div>
+  <div class="total"><span>Total de la quincena</span><span class="amt">+185 XP</span></div>
+  <div class="hint" style="margin-top:11px;text-align:center">
+    Se calcula solo al cerrar la quincena.<br>No pierdes XP por no abrir la app.</div>
+  <div class="spacer"></div>
+  <div class="btn">Reclamar 185 XP</div>
+  <div class="link">Ver el detalle</div>
+</div>
+<div class="cap"><b>2. 퀸세나 결산 — 유일한 큰 보상 순간.</b><br>15일에 한 번. XP 항목이 전부 <b>결과</b>(남았나/셌나/한도 지켰나)이고 탭 횟수가 아님. 결산 시 거래 이력으로 한 번에 계산.</div>
+</div>
+
+<!-- C: LEVEL UP -->
+<div class="col">
+<div class="phone">
+  <div class="status" style="color:#fff;position:relative;z-index:2"><span>9:41</span><span class="dots"><i style="background:#fff"></i><i style="background:#fff"></i><i style="background:#fff"></i><b style="border-color:#fff"></b></span></div>
+  <div class="lvlup">
+    <div style="height:26px"></div>
+    <div class="k">SUBISTE DE NIVEL</div>
+    <div class="nv">4</div>
+    <h4>Michi guardián</h4>
+    <div class="sprite" style="width:171px;height:210px;margin:10px auto 14px;background-image:url('../../assets/cats/cat-celebrate-8.png');background-size:1368px 210px;background-position:-855px 0"></div>
+    <div class="cardd"><span class="lv">
+      <svg width="15" height="15" viewBox="0 0 24 24"><path d="M4 10h16l-2 9H6l-2-9Z" fill="#7FD8CE"/><path d="M7 10a5 5 0 0 1 10 0" stroke="#7FD8CE" stroke-width="2.4" fill="none"/></svg></span>
+      <span>Nuevo accesorio<br><b style="font-size:13px">Gorro de invierno</b></span></div>
+    <div class="cardd"><span class="lv">
+      <svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6.1.8-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.4l6.1-.8L12 3Z" fill="#7FD8CE"/></svg></span>
+      <span>Nueva animación<br><b style="font-size:13px">Michi festeja</b></span></div>
+    <div style="width:100%;margin-top:10px">
+      <div class="bar sm"><s class="f"></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s></div>
+      <div style="display:flex;justify-content:space-between;font-size:10.5px;font-weight:800;color:#9FA8D0;margin-top:5px">
+        <span>45 / 700 XP</span><span>Nivel 5</span></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn">Continuar</div>
+    <div style="text-align:center;font-size:11px;color:#9FA8D0;font-weight:800;margin-top:12px">
+      Puedes ponerte el gorro después, en Progreso.</div>
+  </div>
+</div>
+<div class="cap"><b>3. 레벨업 — 1년에 4~6회만 나오는 화면.</b><br>희소하니까 전체 화면을 써도 됨. 보상은 숫자가 아니라 <b>고양이</b>(액세서리·모션 해금). <code>CatMotion.celebrate</code> 재사용.</div>
+</div>
+
+<!-- D: PROGRESO -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back">←</span><span class="ttl">Progreso</span></div>
+  <div class="lvlstrip" style="margin-top:8px">
+    <div class="r1"><div class="badge">4</div>
+      <div style="flex:1"><div style="font-size:14px;font-weight:900">Michi guardián</div>
+        <div style="font-size:10.5px;color:var(--inkSoft);font-weight:800">895 XP totales</div></div></div>
+    <div class="bar sm"><s class="f"></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s></div>
+    <div class="xprow"><span>45 / 700 XP</span><span>Faltan 655 XP</span></div>
+  </div>
+
+  <div class="lbl" style="margin-top:16px">Quincenas en verde</div>
+  <div class="card" style="margin-top:7px;display:flex;align-items:center;gap:11px;padding:11px 12px">
+    <div class="sprite" style="width:44px;height:46px;background-image:url('../../assets/cats/cat-idle-8.png');background-size:352px 46px;background-position:0 0"></div>
+    <div style="flex:1"><div style="font-size:26px;font-weight:900;color:var(--teal);line-height:1">6</div>
+      <div style="font-size:10.5px;font-weight:800;color:var(--inkSoft)">de 7 quincenas registradas</div></div>
+    <div style="border:2.5px solid var(--ink);background:var(--tealSoft);padding:5px 8px;font-size:10.5px;font-weight:900">+100 XP<br>c/u</div>
+  </div>
+
+  <div class="lbl" style="margin-top:15px">Conteos de efectivo</div>
+  <div class="weeks">
+    <i class="on"></i><i class="on"></i><i class="skip"></i><i class="on"></i><i class="on"></i><i class="skip"></i><i class="on"></i><i class="on"></i>
+  </div>
+  <div class="xprow"><span>6 de las últimas 8 semanas</span><span style="color:var(--teal)">+150 XP</span></div>
+  <div class="hint" style="margin-top:6px">Saltarte una semana no borra nada. Se cuenta lo que sí hiciste.</div>
+
+  <div class="lbl" style="margin-top:15px">Lo que has desbloqueado</div>
+  <div style="margin-top:7px">
+    <div class="unlock"><span class="lv">2</span><span>Collar dorado</span><span class="st">✓</span></div>
+    <div class="unlock"><span class="lv">3</span><span>Alcancía del michi</span><span class="st">✓</span></div>
+    <div class="unlock now"><span class="lv">4</span><span>Gorro de invierno</span><span class="st" style="color:var(--teal)">NUEVO</span></div>
+    <div class="unlock" style="opacity:.55"><span class="lv">5</span><span>Tema «noche»</span><span class="st">655 XP</span></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="hint" style="text-align:center">Ajustes › <b style="color:var(--ink)">Modo sin niveles</b> lo apaga todo.</div>
+</div>
+<div class="cap"><b>4. 진행 화면 — 홈 스트립을 탭하면 진입.</b><br>주간 그리드는 <b>끊김을 벌하지 않음</b>: 리셋 없이 «최근 8주 중 6주». 하단에 게이미피케이션 끄기 경로.</div>
+</div>
+
+<!-- SPEC -->
+<div class="spec">
+  <h2>설계 규칙</h2>
+  <div class="sh">XP는 «행동»이 아니라 «결과»에 붙인다</div>
+
+  <h5>XP를 주는 것</h5>
+  <table>
+    <tr><td>퀸세나를 예산 안에서 종료<br><span class="src">remainingBudgetCentavos &gt;= 0</span></td><td class="x">+100</td></tr>
+    <tr><td>주간 현금 카운트 1회<br><span class="src">confirmCashCount() · 주 1회 상한</span></td><td class="x">+25</td></tr>
+    <tr><td>하루를 일일 한도 안에서 마감<br><span class="src">결산 시 거래 이력으로 소급 계산</span></td><td class="x">+5</td></tr>
+    <tr><td>카테고리 한도를 지킨 채 종료<br><span class="src">spentFor() &lt;= categoryLimits</span></td><td class="x">+20</td></tr>
+    <tr><td>첫 퀸세나 완주 (1회)<br><span class="src">successfulCycles == 1</span></td><td class="x">+50</td></tr>
+  </table>
+
+  <h5>XP를 주지 않는 것</h5>
+  <div class="no"><em>✕</em><span>지출 기록 건수 — 기록을 위한 기록·금액 부풀리기를 유발. 게다가 <code>confirmCashCount()</code>가 누락분을 자동 보정하므로 기록은 이미 선택 사항</span></div>
+  <div class="no"><em>✕</em><span>앱 실행 / 데일리 로그인 — 앱의 자연 주기는 하루가 아니라 <b>주 1회 + 15일</b></span></div>
+  <div class="no"><em>✕</em><span>연속 일수 리셋형 스트릭 — <code>sin presión</code> 포지셔닝과 정면 충돌</span></div>
+
+  <h5>레벨 임계값</h5>
+  <table>
+    <tr><td>Nv.1 Michi curioso</td><td class="x">0</td><td class="src">시작</td></tr>
+    <tr><td>Nv.2 Michi ahorrador</td><td class="x">150</td><td class="src">≈1 퀸세나</td></tr>
+    <tr><td>Nv.3 Michi contador</td><td class="x">+300</td><td class="src">≈3 퀸세나</td></tr>
+    <tr><td>Nv.4 Michi guardián</td><td class="x">+400</td><td class="src">≈6 퀸세나</td></tr>
+    <tr><td>Nv.5 Michi maestro</td><td class="x">+700</td><td class="src">≈1년</td></tr>
+  </table>
+  <div class="hint" style="margin-top:8px">연 24회 퀸세나 → 레벨은 <b>천천히</b> 오른다. 인플레 없는 희소한 보상이 이 앱엔 맞다.</div>
+
+  <h5>어뷰징 가드</h5>
+  <div class="guard"><b>퀸세나 도중 예산 상향</b> → <code>setTotalBudget()</code>이 사이클 중간에 호출되면 그 사이클은 «en verde» 판정에서 제외(또는 상향 전 금액으로 판정).</div>
+  <div class="guard"><b>현금 카운트 연타</b> → <code>lastCashCountAt</code> 기준 주 1회만 XP. 재카운트는 XP 0.</div>
+  <div class="guard"><b>일일 XP 소급 계산</b> → 매일 평가하지 않는다. 결산 시 <code>cycleTransactions</code>로 한 번에 계산 → <b>앱을 안 열어도 XP를 잃지 않음.</b></div>
+
+  <h5>필요한 코드 변경</h5>
+  <table>
+    <tr><td><code>successfulCycles</code></td><td class="src" style="text-align:right">이미 존재<br>증가시키는 곳이 없음</td></tr>
+    <tr><td><code>xpTotal</code> 신규</td><td class="src" style="text-align:right">레벨은 파생값</td></tr>
+    <tr><td><code>lastSettledCycleEnd</code> 신규</td><td class="src" style="text-align:right">중복 결산 방지</td></tr>
+    <tr><td><code>settleCycles()</code> 신규</td><td class="src" style="text-align:right">앱 시작 시 지난<br>퀸세나 소급 결산</td></tr>
+    <tr><td><code>levelsEnabled</code> 신규</td><td class="src" style="text-align:right">Ajustes 토글</td></tr>
+  </table>
+  <div class="hint" style="margin-top:10px">실제 작업량은 UI가 아니라 <b>결산 로직</b>에 있다. 현재 store는 «현재» 사이클만 계산하고 지난 사이클을 마감하는 코드가 없다.</div>
+</div>
+
+</div>

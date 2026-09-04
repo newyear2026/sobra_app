@@ -1,0 +1,359 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face{font-family:PixelifySans;src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");}
+:root{--paper:#F6EFE0;--surface:#FFFDF7;--ink:#202848;--inkSoft:#4E5878;--muted:#8F95AC;
+      --line:#E7DDC8;--teal:#0E7A72;--tealSoft:#D8EDEA;--cash:#C0873A;--cashSoft:#F7E9CE;
+      --danger:#D4553F;--dangerSoft:#FBE1DA;--blue:#39558E;--violet:#6E4A8C;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);font-family:PixelifySans,monospace;color:var(--ink);
+     padding:32px 40px 40px;-webkit-font-smoothing:none}
+.head{display:flex;align-items:baseline;gap:14px;margin-bottom:20px;padding-left:6px}
+.head h1{font-size:26px;font-weight:900}
+.head span{font-size:14px;color:var(--inkSoft)}
+.row{display:flex;gap:30px;align-items:flex-start}
+.col{width:372px}
+.phone{width:372px;height:806px;background:var(--surface);border:5px solid var(--ink);
+       border-radius:26px;padding:14px 18px 16px;display:flex;flex-direction:column;
+       box-shadow:7px 7px 0 rgba(32,40,72,.14);position:relative;overflow:hidden}
+.cap{font-size:12px;color:var(--inkSoft);line-height:1.5;margin-top:12px;padding:0 4px;font-weight:800}
+.cap b{color:var(--ink)}
+.status{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:900;padding:2px 4px 8px}
+.dots{display:flex;gap:3px;align-items:center}
+.dots i{width:7px;height:7px;background:var(--ink);border-radius:50%}
+.dots b{width:14px;height:8px;border:2px solid var(--ink);display:inline-block;margin-left:3px}
+.top{display:flex;align-items:center;margin-bottom:8px}
+.top h3{font-size:25px;font-weight:900;flex:1}
+.nav{display:flex;align-items:center;gap:10px;height:28px;margin-bottom:6px}
+.nav .back{font-size:19px;font-weight:900;width:24px}
+.nav .step{flex:1;text-align:center;font-size:12.5px;color:var(--inkSoft);font-weight:800}
+.nav .ttl{flex:1;font-size:18px;font-weight:900}
+.nav .skip{font-size:11.5px;color:var(--muted);font-weight:800}
+.lbl{font-size:12.5px;font-weight:900;color:var(--inkSoft)}
+.big{font-size:42px;font-weight:900;color:var(--teal);line-height:1.1}
+.bar{height:17px;border:2.5px solid var(--ink);background:var(--surface);padding:2.5px;display:flex;gap:2px}
+.bar.sm{height:12px;padding:2px}
+.bar s{flex:1;background:var(--line)}
+.bar s.f{background:var(--teal)}
+.card{border:2.5px solid var(--ink);background:var(--surface);padding:12px;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.card.flat{box-shadow:none}
+h2.q{font-size:22px;font-weight:900;line-height:1.28;text-align:center;margin:6px 0 4px}
+p.sub{font-size:12.5px;color:var(--inkSoft);text-align:center;line-height:1.5}
+.opt{border:2.5px solid var(--ink);background:var(--surface);padding:12px;margin-bottom:10px;
+     display:flex;gap:11px;align-items:flex-start;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.opt.on{background:var(--tealSoft)}
+.opt .ic{width:38px;height:38px;border:2.5px solid var(--ink);background:var(--surface);
+         display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.opt .t{font-size:14px;font-weight:900}
+.opt .d{font-size:11px;color:var(--inkSoft);font-weight:800;line-height:1.45;margin-top:3px}
+.opt .rd{width:19px;height:19px;border:2.5px solid var(--ink);flex:0 0 auto;margin-top:2px;
+         display:flex;align-items:center;justify-content:center}
+.opt .rd i{width:9px;height:9px;background:var(--teal)}
+.stepper{display:flex;align-items:center;gap:9px;border:2.5px solid var(--ink);background:var(--surface);
+         padding:8px 10px;margin:-2px 0 10px 49px}
+.stepper .v{flex:1;text-align:center;font-size:16px;font-weight:900}
+.stepper .b{width:28px;height:28px;border:2.5px solid var(--ink);display:flex;align-items:center;
+            justify-content:center;font-size:16px;font-weight:900;background:var(--tealSoft)}
+.mis{border:2.5px solid var(--ink);background:var(--surface);padding:11px;margin-bottom:9px}
+.mis.done{background:var(--tealSoft)}
+.mis .r{display:flex;align-items:center;gap:9px}
+.mis .ic{width:28px;height:28px;border:2.5px solid var(--ink);display:flex;align-items:center;
+         justify-content:center;flex:0 0 auto}
+.mis .t{flex:1;font-size:12.5px;font-weight:900;line-height:1.35}
+.mis .xp{font-size:13px;font-weight:900;color:var(--teal);flex:0 0 auto}
+.mis .p{display:flex;justify-content:space-between;font-size:10.5px;font-weight:800;
+        color:var(--inkSoft);margin-top:6px}
+.tag{display:inline-flex;align-items:center;gap:5px;border:2.5px solid var(--ink);background:var(--surface);
+     padding:4px 8px;font-size:10.5px;font-weight:900}
+.tag.teal{background:var(--tealSoft)}
+.tag.cash{background:var(--cashSoft)}
+.xpitem{display:flex;align-items:center;gap:10px;border-bottom:2px solid var(--line);
+        padding:8px 2px;font-size:12.5px;font-weight:800}
+.xpitem .amt{margin-left:auto;font-weight:900;color:var(--teal);font-size:14px}
+.xpitem .ic{width:26px;height:26px;border:2.5px solid var(--ink);display:flex;align-items:center;
+            justify-content:center;flex:0 0 auto}
+.total{display:flex;align-items:center;border:3px solid var(--ink);background:var(--tealSoft);
+       padding:11px 12px;margin-top:11px;font-size:13px;font-weight:900}
+.total .amt{margin-left:auto;font-size:20px;color:var(--teal)}
+.stage{border:3px solid var(--ink);background:#EFE7D6;padding:10px;display:flex;align-items:flex-end;
+       justify-content:center;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.sprite{image-rendering:pixelated;background-repeat:no-repeat;margin:0 auto}
+.spacer{flex:1}
+.btn{border:3px solid var(--ink);background:var(--teal);color:#fff;text-align:center;padding:13px 0;
+     font-size:15px;font-weight:900;box-shadow:0 5px 0 var(--ink);margin-top:6px}
+.link{text-align:center;font-size:12.5px;font-weight:900;color:var(--muted);margin-top:13px}
+.hint{font-size:11px;color:var(--muted);line-height:1.5}
+.xprow{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;
+       color:var(--inkSoft);margin-top:5px}
+.lvlstrip{border:2.5px solid var(--ink);background:var(--tealSoft);padding:9px 11px;
+          box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.badge{width:32px;height:32px;border:2.5px solid var(--ink);background:var(--teal);color:#fff;
+       display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex:0 0 auto}
+/* spec */
+.spec{width:460px;border:5px solid var(--ink);background:var(--surface);padding:16px 16px 18px;
+      box-shadow:7px 7px 0 rgba(32,40,72,.14)}
+.spec h2{font-size:19px;font-weight:900;margin-bottom:3px}
+.spec .sh{font-size:11.5px;color:var(--muted);font-weight:800;margin-bottom:13px}
+.spec h5{font-size:12.5px;font-weight:900;margin:13px 0 6px;padding-bottom:5px;border-bottom:2.5px solid var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+td{padding:5px 3px;border-bottom:2px solid var(--line);font-weight:800;vertical-align:top;line-height:1.4}
+td.x{text-align:right;color:var(--teal);font-weight:900;white-space:nowrap;font-size:12px}
+td.src{color:var(--muted);font-size:10px;font-weight:800;text-align:right}
+.bug{border:3px solid var(--danger);background:var(--dangerSoft);padding:10px 11px;margin-bottom:10px;
+     font-size:11.5px;font-weight:800;color:var(--ink);line-height:1.55}
+.bug b{color:var(--danger)}
+.guard{border:2.5px solid var(--line);background:#FBF5E9;padding:8px 9px;margin-bottom:6px;
+       font-size:11.5px;font-weight:800;color:var(--inkSoft);line-height:1.5}
+.guard b{color:var(--ink)}
+.no{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;font-weight:800;color:var(--inkSoft);
+    padding:5px 0;line-height:1.45}
+.no em{color:var(--danger);font-style:normal;font-weight:900;flex:0 0 auto}
+code{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;background:var(--tealSoft);padding:1px 4px}
+</style>
+<div class="head"><h1>Sobra · Ciclo de pago & Misiones</h1><span>급여 주기를 먼저 묻고 → XP 목표·퀘스트 갱신 주기를 거기에 맞춘다</span></div>
+<div class="row">
+
+<!-- A: ¿CÓMO TE PAGAN? -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back">←</span><span class="step">1 de 4</span><span class="skip">Omitir</span></div>
+  <div class="bar sm" style="margin-bottom:14px"><s class="f"></s><s></s><s></s><s></s></div>
+  <h2 class="q">¿Cada cuándo<br>te pagan?</h2>
+  <p class="sub">Sobra ajusta tu meta y tus misiones<br>a tu ciclo, no al calendario.</p>
+  <div style="margin-top:18px">
+    <div class="opt"><span class="ic">
+      <svg width="20" height="20" viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="16" stroke="#6E4A8C" stroke-width="2.5" fill="none"/><path d="M12 4.5v16M2.5 9.5h19" stroke="#6E4A8C" stroke-width="2.5"/></svg></span>
+      <div style="flex:1"><div class="t">Quincenal</div>
+        <div class="d">Día 1 y día 16. Lo más común en México.</div></div>
+      <span class="rd"></span></div>
+
+    <div class="opt on"><span class="ic" style="background:var(--surface)">
+      <svg width="20" height="20" viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="16" stroke="#0E7A72" stroke-width="2.5" fill="none"/><path d="M2.5 9.5h19" stroke="#0E7A72" stroke-width="2.5"/><rect x="14" y="13" width="4" height="4" fill="#0E7A72"/></svg></span>
+      <div style="flex:1"><div class="t">Mensual</div>
+        <div class="d">Un solo depósito al mes.</div></div>
+      <span class="rd"><i></i></span></div>
+    <div class="stepper"><span class="b">−</span>
+      <span class="v">Día de pago · 30</span><span class="b">+</span></div>
+
+    <div class="opt"><span class="ic">
+      <svg width="20" height="20" viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="19" height="13" stroke="#C0873A" stroke-width="2.5" fill="none"/><rect x="15" y="11" width="4" height="4" fill="#C0873A"/><path d="M2.5 6.5 16 3.5v3" stroke="#C0873A" stroke-width="2.5" fill="none"/></svg></span>
+      <div style="flex:1"><div class="t">Semanal o variable</div>
+        <div class="d">Trabajo por semana, propinas, ingresos que cambian.</div></div>
+      <span class="rd"></span></div>
+  </div>
+  <div class="card flat" style="margin-top:6px;border-color:var(--line);background:#FBF5E9;display:flex;gap:9px">
+    <svg width="22" height="22" viewBox="0 0 24 24" style="flex:0 0 auto"><circle cx="12" cy="12" r="9.5" stroke="#0E7A72" stroke-width="2.5" fill="none"/><rect x="10.8" y="10" width="2.4" height="8" fill="#0E7A72"/><rect x="10.8" y="6" width="2.4" height="2.4" fill="#0E7A72"/></svg>
+    <span class="hint">Tu ciclo define cuándo se reinicia tu presupuesto <b style="color:var(--ink)">y cuándo cierra tu meta de XP</b>. Las misiones semanales no cambian.</span>
+  </div>
+  <div class="lbl" style="margin-top:15px">Tu ciclo quedaría así</div>
+  <div class="card" style="margin-top:7px;padding:11px 12px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <svg width="26" height="26" viewBox="0 0 24 24" style="flex:0 0 auto"><rect x="2.5" y="4.5" width="19" height="16" stroke="#0E7A72" stroke-width="2.5" fill="none"/><path d="M2.5 9.5h19M7.5 2v5M16.5 2v5" stroke="#0E7A72" stroke-width="2.5"/></svg>
+      <div style="flex:1"><div style="font-size:13.5px;font-weight:900">30 ago – 29 sept</div>
+        <div style="font-size:10.5px;color:var(--inkSoft);font-weight:800">30 días · se reinicia cada día 30</div></div>
+      <span class="tag teal">30 días</span></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="btn">Continuar</div>
+  <div class="link">Puedes cambiarlo en Ajustes</div>
+</div>
+<div class="cap"><b>1. 온보딩 1번째 질문으로 승격.</b><br>예산 금액보다 <b>먼저</b> 물어야 함 — 사이클을 알아야 «$6,000이 15일치인지 30일치인지»가 정해짐. 선택 시 하위 옵션(지급일)이 인라인으로 열림.</div>
+</div>
+
+<!-- B: HOME (MENSUAL) -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="top"><h3>Sobra</h3>
+    <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.4" stroke="#202848" stroke-width="2.5" fill="none"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M18.8 5.2l-2.1 2.1M7.3 16.7l-2.1 2.1" stroke="#202848" stroke-width="2.5"/></svg></div>
+  <div class="lbl">Hoy te queda</div>
+  <div class="big">$422<span style="font-size:16px;color:var(--muted)"> MXN</span></div>
+
+  <div class="lvlstrip" style="margin-top:13px">
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:7px">
+      <div class="badge">4</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:900">Michi guardián</div>
+        <div style="font-size:10.5px;color:var(--inkSoft);font-weight:800">Meta del mes · 390 XP</div></div>
+      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke="#202848" stroke-width="3" fill="none"/></svg></div>
+    <div class="bar sm"><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s></s><s></s><s></s><s></s><s></s><s></s></div>
+    <div class="xprow"><span>155 / 390 XP este ciclo</span><span>19 días</span></div>
+  </div>
+
+  <div class="lbl" style="margin-top:15px;display:flex;justify-content:space-between">
+    <span>Avance del mes</span><span style="font-weight:800">30 ago – 29 sept</span></div>
+  <div class="bar" style="margin-top:7px"><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s></div>
+  <div class="xprow"><span>Presupuesto: $12,000</span><span>Gastado: $3,980</span></div>
+
+  <div class="card" style="margin-top:15px;padding:11px 12px">
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:9px">
+      <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6.1.8-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.4l6.1-.8L12 3Z" stroke="#0E7A72" stroke-width="2.2" fill="none"/></svg>
+      <span style="flex:1;font-size:13px;font-weight:900">Misiones de la semana</span>
+      <span class="tag teal">1 / 3</span></div>
+    <div class="bar sm"><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s></div>
+    <div class="xprow"><span>Se renuevan el lunes</span><span style="color:var(--teal)">+70 XP posibles</span></div>
+  </div>
+
+  <div class="card" style="margin-top:13px;background:var(--cashSoft);display:flex;align-items:center;gap:11px;padding:11px 12px">
+    <svg width="28" height="28" viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="19" height="13" stroke="#C0873A" stroke-width="2.5" fill="#fff"/><rect x="15" y="11" width="5" height="4" fill="#C0873A"/></svg>
+    <div style="flex:1"><div style="font-size:12.5px;font-weight:900">Efectivo disponible</div>
+      <div style="font-size:19px;font-weight:900;color:#8E6222">$2,180</div></div>
+    <span class="tag">domingo</span></div>
+
+  <div class="card flat" style="margin-top:12px;border-color:var(--line);padding:10px 12px;display:flex;align-items:center;gap:10px">
+    <svg width="24" height="24" viewBox="0 0 24 24" style="flex:0 0 auto"><rect x="2.5" y="4.5" width="19" height="16" stroke="#6E4A8C" stroke-width="2.5" fill="none"/><path d="M2.5 9.5h19" stroke="#6E4A8C" stroke-width="2.5"/><rect x="14" y="13" width="4" height="4" fill="#6E4A8C"/></svg>
+    <div style="flex:1"><div style="font-size:12px;font-weight:900">Próximo depósito</div>
+      <div style="font-size:10.5px;color:var(--inkSoft);font-weight:800">29 de septiembre · en 19 días</div></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="hint" style="text-align:center">Mismo layout que el ciclo quincenal.<br>Solo cambian las fechas y el tamaño de la meta.</div>
+</div>
+<div class="cap"><b>2. 홈 — mensual 유저.</b><br>레이아웃은 동일, <b>사이클 라벨·일수·XP 목표만</b> 달라짐. XP 스트립이 «누적»이 아니라 «이번 사이클 목표»로 바뀌는 게 핵심(155/390).</div>
+</div>
+
+<!-- C: MISIONES -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back">←</span><span class="ttl">Misiones</span></div>
+
+  <div style="display:flex;align-items:center;gap:8px;margin-top:6px;margin-bottom:9px">
+    <span class="lbl">De la semana</span>
+    <span class="tag" style="margin-left:auto">Se renuevan el lunes</span></div>
+
+  <div class="mis done"><div class="r">
+    <span class="ic" style="background:var(--surface)">
+      <svg width="15" height="15" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19.5 7.5" stroke="#0E7A72" stroke-width="3.4" fill="none"/></svg></span>
+    <span class="t">Cuenta tu efectivo del domingo</span><span class="xp">+25</span></div>
+    <div class="p"><span>Listo · domingo 14</span><span style="color:var(--teal)">Completada</span></div></div>
+
+  <div class="mis"><div class="r">
+    <span class="ic" style="background:#E7DCF0">
+      <svg width="15" height="15" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" stroke="#6E4A8C" stroke-width="3" fill="none"/><path d="M3 9h18" stroke="#6E4A8C" stroke-width="3"/></svg></span>
+    <span class="t">5 días bajo tu límite diario</span><span class="xp">+25</span></div>
+    <div class="bar sm" style="margin-top:8px"><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s></s><s></s><s></s><s></s></div>
+    <div class="p"><span>3 de 5 días</span><span>Faltan 2</span></div></div>
+
+  <div class="mis"><div class="r">
+    <span class="ic" style="background:var(--dangerSoft)">
+      <svg width="15" height="15" viewBox="0 0 24 24"><path d="M4 11h16v2a8 8 0 0 1-16 0v-2Z" fill="#D4553F"/></svg></span>
+    <span class="t">Mantén Comida bajo su límite</span><span class="xp">+20</span></div>
+    <div class="bar sm" style="margin-top:8px"><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s></s><s></s><s></s></div>
+    <div class="p"><span>$1,420 de $2,000</span><span>Vas bien</span></div></div>
+
+  <div style="display:flex;align-items:center;gap:8px;margin-top:16px;margin-bottom:9px">
+    <span class="lbl">De tu ciclo</span>
+    <span class="tag cash" style="margin-left:auto">Cierra el 29 sept</span></div>
+
+  <div class="mis" style="border-width:3px"><div class="r">
+    <span class="ic" style="background:var(--tealSoft)">
+      <svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6.1.8-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.4l6.1-.8L12 3Z" fill="#0E7A72"/></svg></span>
+    <span class="t">Cierra el mes en verde</span><span class="xp">+200</span></div>
+    <div class="bar sm" style="margin-top:8px"><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s></div>
+    <div class="p"><span>$3,980 de $12,000</span><span>19 días</span></div></div>
+
+  <div class="card flat" style="margin-top:13px;border-color:var(--line);background:#FBF5E9;display:flex;gap:9px">
+    <span style="color:var(--danger);font-weight:900;font-size:13px">✕</span>
+    <span class="hint">Ninguna misión te pide gastar, ni registrar más. Todas se cumplen <b style="color:var(--ink)">gastando menos o igual</b>.</span></div>
+  <div class="spacer"></div>
+  <div class="hint" style="text-align:center">Semanales para todos.<br>La de ciclo se adapta a cómo te pagan.</div>
+</div>
+<div class="cap"><b>3. 미션 — 2층 구조가 핵심.</b><br>주간 3개(월요일 갱신, 사이클 타입 무관) + 사이클 1개(사이클 시작일 갱신). 주간이 <b>공통 분모</b>라 mensual 유저도 리듬이 끊기지 않음.</div>
+</div>
+
+<!-- D: MES CERRADO -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back"></span><span class="ttl">Mes cerrado</span>
+    <span style="font-size:11px;color:var(--muted);font-weight:900">30 ago – 29 sept</span></div>
+  <div style="text-align:center;margin-top:4px">
+    <div class="lbl">Te sobraron</div>
+    <div class="big" style="font-size:44px">$1,340<span style="font-size:14px;color:var(--muted)"> MXN</span></div></div>
+  <div class="stage" style="height:196px;margin-top:11px">
+    <div class="sprite" style="width:154px;height:189px;background-image:url('../../assets/cats/cat-celebrate-8.png');background-size:1229px 189px;background-position:-768px 0"></div></div>
+
+  <div class="lbl" style="margin-top:13px">Lo que ganaste</div>
+  <div style="margin-top:3px">
+    <div class="xpitem"><span class="ic" style="background:var(--tealSoft)">
+      <svg width="14" height="14" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19.5 7.5" stroke="#0E7A72" stroke-width="3.4" fill="none"/></svg></span>
+      <span>Cerraste el mes en verde</span><span class="amt">+200</span></div>
+    <div class="xpitem"><span class="ic" style="background:var(--cashSoft)">
+      <svg width="14" height="14" viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="19" height="13" stroke="#C0873A" stroke-width="3" fill="none"/></svg></span>
+      <span>4 conteos de efectivo</span><span class="amt">+100</span></div>
+    <div class="xpitem"><span class="ic" style="background:#E7DCF0">
+      <svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" stroke="#6E4A8C" stroke-width="3" fill="none"/><path d="M3 9h18" stroke="#6E4A8C" stroke-width="3"/></svg></span>
+      <span>18 días bajo tu límite</span><span class="amt">+90</span></div>
+  </div>
+  <div class="total"><span>Total del ciclo</span><span class="amt">+390 XP</span></div>
+  <div class="card flat" style="margin-top:11px;border-color:var(--line);background:#FBF5E9">
+    <span class="hint">Un mes vale el doble que una quincena porque dura el doble.<br>
+      <b style="color:var(--ink)">6.5 XP por día de ciclo</b> — subes de nivel al mismo ritmo, te paguen como te paguen.</span></div>
+  <div class="spacer"></div>
+  <div class="btn">Reclamar 390 XP</div>
+  <div class="link">Ajustar mi presupuesto del próximo mes</div>
+</div>
+<div class="cap"><b>4. 사이클 마감 — XP 정규화.</b><br>월급 유저가 퀸세나 유저보다 레벨이 <b>느리면 안 됨</b>. 사이클 일수 × 6.5로 정규화해 벽시계 기준 속도를 맞춤.</div>
+</div>
+
+<!-- SPEC -->
+<div class="spec">
+  <h2>설계 규칙</h2>
+  <div class="sh">사이클 타입이 XP 목표·퀘스트 갱신 주기를 결정한다</div>
+
+  <div class="bug"><b>지금 코드의 버그.</b> 온보딩이 <code>budgetCycleStartDay</code>를 받아 저장하지만
+    (<code>sobra_store.dart:217</code>), <code>cycleStart</code>/<code>cycleEnd</code>는 그 값을 무시하고
+    <code>today.day &lt;= 15</code>로 하드코딩돼 있음(<code>:55–62</code>).
+    <b>물어보고 안 쓰는 상태</b> — 사이클 타입을 넣기 전에 이것부터 연결해야 함.</div>
+
+  <h5>사이클 타입 3종</h5>
+  <table>
+    <tr><td>Quincenal<br><span style="color:var(--muted);font-size:10px">1–15 / 16–말일 · 기본값</span></td><td class="x">15일</td><td class="src">멕시코 표준</td></tr>
+    <tr><td>Mensual<br><span style="color:var(--muted);font-size:10px">지급일 D → D ~ 다음달 D−1</span></td><td class="x">28–31일</td><td class="src">지급일 설정 필요</td></tr>
+    <tr><td>Semanal / variable<br><span style="color:var(--muted);font-size:10px">현금·일용직·프리랜서</span></td><td class="x">7일</td><td class="src">사이클=주간</td></tr>
+  </table>
+
+  <h5>XP 정규화 — 왜 필요한가</h5>
+  <div class="guard">사이클당 고정 XP(+100)를 쓰면 <b>mensual 유저는 XP 속도가 절반</b> → 같은 레벨에 2배 시간이 걸림.
+    사이클 타입 선택이 «불리한 선택»이 되면 안 됨.</div>
+  <table>
+    <tr><td>정규화 공식</td><td class="x">6.5 XP × 사이클 일수</td></tr>
+    <tr><td>Semanal (7일)</td><td class="x">≈ 45 XP</td></tr>
+    <tr><td>Quincenal (15일)</td><td class="x">≈ 100 XP</td></tr>
+    <tr><td>Mensual (30일)</td><td class="x">≈ 200 XP</td></tr>
+  </table>
+  <div class="hint" style="margin-top:7px">주간 미션과 일일 XP(+5)는 <b>이미 일수 비례</b>라 그대로 두면 됨. 정규화가 필요한 건 «사이클 마감» 보상 하나뿐.</div>
+
+  <h5>퀘스트 갱신 주기 — 2층 구조</h5>
+  <div class="guard"><b>주간 미션 (3개 · 월요일 00:00 갱신)</b><br>
+    모든 사이클 타입 공통. 주 1회 현금 카운트가 이미 주간 리듬을 만들고 있으므로 여기에 얹는다.</div>
+  <div class="guard"><b>사이클 미션 (1개 · 사이클 시작일 갱신)</b><br>
+    문구와 목표 금액만 타입에 따라 달라짐: «Cierra la quincena / el mes / la semana en verde».</div>
+  <div class="hint">사이클 단위로만 갱신하면 mensual 유저는 <b>한 달에 한 번</b> 새 퀘스트를 받음 — 너무 느리다.
+    주간을 공통 분모로 두면 타입과 무관하게 리듬이 유지된다.</div>
+
+  <h5>퀘스트 설계 금지 규칙</h5>
+  <div class="no"><em>✕</em><span>지출을 <b>유도</b>하는 퀘스트 — «3개 카테고리에 기록해보기» 같은 건 소비를 늘림</span></div>
+  <div class="no"><em>✕</em><span>기록 <b>횟수</b> 목표 — 금액 쪼개기·허위 기록 유인</span></div>
+  <div class="no"><em>✕</em><span>사이클 도중 목표 <b>상향</b> — 달성 직전에 난이도가 올라가면 배신감</span></div>
+  <div class="hint">모든 퀘스트는 «가만히 있거나 덜 쓰면» 달성되는 방향이어야 한다.</div>
+
+  <h5>사이클 타입을 바꾸면</h5>
+  <div class="guard">진행 중 사이클은 <b>기존 규칙으로 마감</b>하고 다음 사이클부터 적용.
+    <code>lastSettledCycleEnd</code>가 있으면 중복·누락 없이 처리 가능. 주간 미션은 영향 없음.</div>
+
+  <h5>필요한 코드 변경</h5>
+  <table>
+    <tr><td><code>enum PayCycle</code> 신규</td><td class="src">quincenal / mensual / semanal</td></tr>
+    <tr><td><code>cycleStart</code> · <code>cycleEnd</code></td><td class="src">하드코딩 제거<br>PayCycle 기반 재작성</td></tr>
+    <tr><td><code>cycleLengthDays</code> 신규</td><td class="src">XP 정규화 기준</td></tr>
+    <tr><td><code>weeklyQuests</code> 신규</td><td class="src">월요일 롤오버</td></tr>
+    <tr><td><code>cycleQuest</code> 신규</td><td class="src">사이클 롤오버</td></tr>
+    <tr><td>온보딩 스텝 추가</td><td class="src">예산 질문 <b>앞</b>으로</td></tr>
+  </table>
+  <div class="hint" style="margin-top:9px"><code>daysRemaining</code>·<code>dailyAllowanceCentavos</code>·
+    <code>projectedRemainderCentavos</code>는 <b>전부 cycleStart/End에서 파생</b>되므로,
+    이 둘만 제대로 고치면 나머지 계산은 자동으로 따라온다.</div>
+</div>
+
+</div>

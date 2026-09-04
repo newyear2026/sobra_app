@@ -1,0 +1,502 @@
+import 'package:flutter/material.dart';
+
+import '../models/expense_entry.dart';
+import '../models/income_entry.dart';
+import '../models/pay_schedule.dart';
+import '../state/sobra_store.dart';
+import '../theme/app_theme.dart';
+import '../widgets/cat_sprite.dart';
+import '../widgets/pixel_ui.dart';
+
+enum _RegisterMode { expense, income }
+
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key, required this.onSaved});
+  final VoidCallback onSaved;
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _amountController = TextEditingController();
+  final _noteController = TextEditingController();
+  _RegisterMode _mode = _RegisterMode.expense;
+  ExpenseCategory _category = ExpenseCategory.food;
+  PaymentMethod _paymentMethod = PaymentMethod.cash;
+  IncomeKind _incomeKind = IncomeKind.salary;
+  IncomeAllocation _incomeAllocation = IncomeAllocation.cycle;
+  DateTime? _date;
+  bool _saving = false;
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickDate(SobraStore store) async {
+    final selected = await showDatePicker(
+      context: context,
+      initialDate: _date ?? store.today,
+      firstDate: DateTime(store.today.year - 1),
+      lastDate: store.today,
+      locale: const Locale('es', 'MX'),
+    );
+    if (selected != null && mounted) setState(() => _date = selected);
+  }
+
+  DateTime _occurredAt(SobraStore store) {
+    final date = _date ?? store.today;
+    if (dateOnly(date) == store.today) return store.currentMoment;
+    return DateTime(date.year, date.month, date.day, 12);
+  }
+
+  Future<bool> _shouldUsePendingDifference(
+    SobraStore store,
+    int amountCentavos,
+  ) async {
+    final pending = store.latestPendingCashExpense;
+    if (_mode != _RegisterMode.expense ||
+        _paymentMethod != PaymentMethod.cash ||
+        pending == null ||
+        pending.amountCentavos != amountCentavos) {
+      return false;
+    }
+    final answer = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('¿Este gasto explica la diferencia?'),
+        content: Text(
+          'Tienes ${formatMoney(pending.amountCentavos)} pendiente del último conteo. Si es el mismo gasto, lo identificaremos sin sumarlo otra vez.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('No, es nuevo'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Sí, conciliar'),
+          ),
+        ],
+      ),
+    );
+    return answer == true;
+  }
+
+  Future<void> _save() async {
+    if (_saving || !_formKey.currentState!.validate()) return;
+    final amount = parsePesos(_amountController.text);
+    if (amount == null) return;
+    final store = SobraScope.of(context);
+    final reducedMotion = reducedMotionOf(context);
+    final usePending = await _shouldUsePendingDifference(store, amount);
+    if (!mounted) return;
+    setState(() => _saving = true);
+    if (usePending) {
+      await store.classifyPendingCashExpense(
+        expenseId: store.latestPendingCashExpense!.id,
+        category: _category,
+        note: _noteController.text,
+      );
+    } else if (_mode == _RegisterMode.expense) {
+      await store.addExpense(
+        amountCentavos: amount,
+        category: _category,
+        note: _noteController.text,
+        occurredAt: _occurredAt(store),
+        paymentMethod: _paymentMethod,
+      );
+    } else {
+      await store.addIncome(
+        amountCentavos: amount,
+        kind: _incomeKind,
+        note: _noteController.text,
+        occurredAt: _occurredAt(store),
+        destination: _paymentMethod,
+        allocation: _incomeAllocation,
+      );
+    }
+    if (!mounted) return;
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          padding: const EdgeInsets.all(22),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            border: Border.all(color: AppColors.ink, width: 3),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CatSprite(
+                motion: _mode == _RegisterMode.expense
+                    ? CatMotion.walk
+                    : CatMotion.celebrate,
+                width: 142,
+                loop: false,
+                animate: !reducedMotion,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                usePending
+                    ? 'Diferencia conciliada'
+                    : _mode == _RegisterMode.expense
+                    ? 'Gasto guardado'
+                    : 'Ingreso guardado',
+                style: pixelText(size: 18, bold: true),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await Future<void>.delayed(
+      reducedMotion
+          ? const Duration(milliseconds: 120)
+          : const Duration(milliseconds: 500),
+    );
+    if (!mounted) return;
+    Navigator.of(context, rootNavigator: true).pop();
+    _amountController.clear();
+    _noteController.clear();
+    setState(() {
+      _saving = false;
+      _category = ExpenseCategory.food;
+      _date = null;
+    });
+    widget.onSaved();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final store = SobraScope.of(context);
+    return SafeArea(
+      bottom: false,
+      child: SingleChildScrollView(
+        key: const PageStorageKey('register-scroll'),
+        padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const PixelTopBar(title: 'Registrar'),
+              const SizedBox(height: 14),
+              PixelSegmented<_RegisterMode>(
+                segments: const [
+                  PixelSegment(
+                    value: _RegisterMode.expense,
+                    label: 'Gasto',
+                    icon: Icons.remove_circle_outline,
+                  ),
+                  PixelSegment(
+                    value: _RegisterMode.income,
+                    label: 'Ingreso',
+                    icon: Icons.add_circle_outline,
+                  ),
+                ],
+                selected: _mode,
+                onChanged: (value) => setState(() => _mode = value),
+              ),
+              const SizedBox(height: 22),
+              Text('Monto', style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _amountController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                style: pixelText(size: 34, bold: true),
+                decoration: InputDecoration(
+                  hintText: '\$0',
+                  // The hint has to sit on the same baseline as the 34px
+                  // value it stands in for, not on the 14px default.
+                  hintStyle: pixelText(
+                    size: 34,
+                    bold: true,
+                    color: AppColors.muted,
+                  ),
+                  suffixText: 'MXN',
+                ),
+                validator: (value) => parsePesos(value ?? '') == null
+                    ? 'Ingresa un monto mayor a cero.'
+                    : null,
+              ),
+              const SizedBox(height: 22),
+              if (_mode == _RegisterMode.expense)
+                _ExpenseFields(
+                  category: _category,
+                  paymentMethod: _paymentMethod,
+                  onCategoryChanged: (value) =>
+                      setState(() => _category = value),
+                  onPaymentChanged: (value) =>
+                      setState(() => _paymentMethod = value),
+                )
+              else
+                _IncomeFields(
+                  kind: _incomeKind,
+                  allocation: _incomeAllocation,
+                  destination: _paymentMethod,
+                  onKindChanged: (value) => setState(() => _incomeKind = value),
+                  onAllocationChanged: (value) =>
+                      setState(() => _incomeAllocation = value),
+                  onDestinationChanged: (value) =>
+                      setState(() => _paymentMethod = value),
+                ),
+              const SizedBox(height: 22),
+              Text('Nota', style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _noteController,
+                decoration: InputDecoration(
+                  hintText: _mode == _RegisterMode.expense
+                      ? 'Ej. Taquería El Faro'
+                      : 'Ej. Propina del viernes',
+                ),
+              ),
+              const SizedBox(height: 18),
+              Text('Fecha', style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 8),
+              PixelCard(
+                elevation: PixelElevation.none,
+                onTap: () => _pickDate(store),
+                child: Row(
+                  children: [
+                    const Icon(Icons.calendar_month, color: AppColors.blue),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        shortDate(_date ?? store.today),
+                        style: pixelText(size: 15, bold: true),
+                      ),
+                    ),
+                    const Icon(Icons.expand_more),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'No puedes registrar movimientos futuros.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 24),
+              PixelButton(
+                label: _saving ? 'Guardando…' : 'Guardar',
+                icon: Icons.save,
+                onPressed: _saving ? null : _save,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ExpenseFields extends StatelessWidget {
+  const _ExpenseFields({
+    required this.category,
+    required this.paymentMethod,
+    required this.onCategoryChanged,
+    required this.onPaymentChanged,
+  });
+  final ExpenseCategory category;
+  final PaymentMethod paymentMethod;
+  final ValueChanged<ExpenseCategory> onCategoryChanged;
+  final ValueChanged<PaymentMethod> onPaymentChanged;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text('Categoría', style: Theme.of(context).textTheme.titleMedium),
+      const SizedBox(height: 10),
+      GridView.count(
+        crossAxisCount: 4,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: .9,
+        children: ExpenseCategory.values.map((item) {
+          final selected = item == category;
+          return Semantics(
+            button: true,
+            selected: selected,
+            label: item.label,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => onCategoryChanged(item),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                decoration: BoxDecoration(
+                  // Selection is always teal. Tinting the cell with its own
+                  // category colour made "selected" mean ten different things.
+                  color: selected ? AppColors.tealSoft : AppColors.surface,
+                  border: Border.all(
+                    color: selected ? AppColors.tealInk : AppColors.ink,
+                    width: 2.5,
+                  ),
+                ),
+                // Painted over the child instead of thickening the border, so
+                // selecting a cell does not shift its contents by a pixel.
+                foregroundDecoration: selected
+                    ? BoxDecoration(
+                        border: Border.all(
+                          color: AppColors.tealInk,
+                          width: 2.5,
+                        ),
+                      )
+                    : null,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      categoryIcon(item),
+                      color: categoryColor(item),
+                      size: 27,
+                    ),
+                    const SizedBox(height: 7),
+                    FittedBox(
+                      child: Text(
+                        item.label,
+                        style: pixelText(
+                          size: 12,
+                          bold: true,
+                          color: selected ? AppColors.tealInk : AppColors.ink,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+      const SizedBox(height: 22),
+      Text('Pago', style: Theme.of(context).textTheme.titleMedium),
+      const SizedBox(height: 8),
+      _PaymentSelector(value: paymentMethod, onChanged: onPaymentChanged),
+      const SizedBox(height: 12),
+      const PixelHint(
+        text: 'El efectivo se descuenta de tu conteo. La tarjeta no.',
+      ),
+    ],
+  );
+}
+
+class _IncomeFields extends StatelessWidget {
+  const _IncomeFields({
+    required this.kind,
+    required this.allocation,
+    required this.destination,
+    required this.onKindChanged,
+    required this.onAllocationChanged,
+    required this.onDestinationChanged,
+  });
+  final IncomeKind kind;
+  final IncomeAllocation allocation;
+  final PaymentMethod destination;
+  final ValueChanged<IncomeKind> onKindChanged;
+  final ValueChanged<IncomeAllocation> onAllocationChanged;
+  final ValueChanged<PaymentMethod> onDestinationChanged;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text('Tipo de ingreso', style: Theme.of(context).textTheme.titleMedium),
+      const SizedBox(height: 8),
+      for (final option in const [IncomeKind.salary, IncomeKind.extra]) ...[
+        PixelCard(
+          elevation: PixelElevation.none,
+          color: kind == option ? AppColors.tealSoft : AppColors.surface,
+          borderColor: kind == option ? AppColors.teal : AppColors.ink,
+          onTap: () => onKindChanged(option),
+          child: Row(
+            children: [
+              Icon(
+                option == IncomeKind.salary
+                    ? Icons.account_balance_wallet
+                    : Icons.arrow_upward,
+                color: AppColors.teal,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  option.label,
+                  style: pixelText(size: 15, bold: true),
+                ),
+              ),
+              Icon(
+                kind == option
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_off,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+      ],
+      const SizedBox(height: 12),
+      Text(
+        '¿Qué quieres hacer?',
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
+      const SizedBox(height: 8),
+      PixelSegmented<IncomeAllocation>(
+        segments: const [
+          PixelSegment(value: IncomeAllocation.cycle, label: 'Este ciclo'),
+          PixelSegment(value: IncomeAllocation.savings, label: 'Guardarlo'),
+        ],
+        selected: allocation,
+        onChanged: onAllocationChanged,
+      ),
+      const SizedBox(height: 18),
+      Text('Lo recibiste en', style: Theme.of(context).textTheme.titleMedium),
+      const SizedBox(height: 8),
+      _PaymentSelector(
+        value: destination,
+        onChanged: onDestinationChanged,
+        accountLabel: 'Cuenta',
+      ),
+    ],
+  );
+}
+
+class _PaymentSelector extends StatelessWidget {
+  const _PaymentSelector({
+    required this.value,
+    required this.onChanged,
+    this.accountLabel = 'Tarjeta',
+  });
+  final PaymentMethod value;
+  final ValueChanged<PaymentMethod> onChanged;
+  final String accountLabel;
+  @override
+  Widget build(BuildContext context) => PixelSegmented<PaymentMethod>(
+    segments: [
+      const PixelSegment(
+        value: PaymentMethod.cash,
+        label: 'Efectivo',
+        icon: Icons.payments,
+      ),
+      PixelSegment(
+        value: PaymentMethod.card,
+        label: accountLabel,
+        icon: Icons.account_balance,
+      ),
+    ],
+    selected: value,
+    onChanged: onChanged,
+  );
+}

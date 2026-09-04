@@ -1,0 +1,523 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face{font-family:MonoDigits;src:local("Menlo"),local("SFMono-Regular"),local("Courier New");unicode-range:U+0030-0039,U+002E,U+003A,U+002F,U+0023,U+002B,U+002D,U+00D7,U+2192}
+@font-face{font-family:PixelifySans;src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");font-weight:400 700;font-display:block}
+:root{
+  --paper:#F6EFE0; --paperLight:#FBF5E9; --surface:#FFFDF7; --ink:#202848; --inkSoft:#4E5878;
+  --mutedOld:#8F95AC; --muted:#5F6885;
+  --line:#E7DDC8; --teal:#0E7A72; --tealSoft:#D8EDEA; --tealInk:#0B6660;
+  --cash:#C0873A; --cashSoft:#F7E9CE; --cashInk:#845A1E;
+  --danger:#D4553F; --dangerSoft:#FBE1DA; --dangerInk:#A63A25;
+  --blue:#39558E; --blueSoft:#DCE4F2; --violet:#6E4A8C; --violetSoft:#E7DCF0; --beige:#EFE7D6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);font-family:PixelifySans,monospace;color:var(--ink);
+     padding:34px 40px 40px;-webkit-font-smoothing:none;width:2260px}
+.head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px;padding-left:6px}
+.head h1{font-size:28px;font-weight:700}
+.head span{font-size:15px;color:var(--inkSoft)}
+.lede{padding-left:6px;font-size:13px;color:var(--inkSoft);margin-bottom:22px}
+.row{display:flex;gap:26px;align-items:flex-start}
+
+/* ---------- phone ---------- */
+.col{width:372px}
+.phone{width:372px;height:812px;background:var(--surface);border:5px solid var(--ink);
+       border-radius:26px;padding:12px 16px 0;display:flex;flex-direction:column;overflow:hidden;
+       box-shadow:7px 7px 0 rgba(32,40,72,.14)}
+.phone.bad{border-color:#B9B3A4;box-shadow:7px 7px 0 rgba(32,40,72,.08)}
+.status{display:flex;justify-content:space-between;align-items:center;font-size:12px;
+        font-weight:700;padding:2px 2px 8px}
+.dots{display:flex;gap:3px;align-items:center}
+.dots i{width:6px;height:6px;background:var(--ink);border-radius:50%}
+.dots b{width:14px;height:8px;border:2px solid var(--ink);display:inline-block;margin-left:3px}
+.body{flex:1;overflow:hidden;padding-bottom:6px}
+.cap{margin-top:12px;border-left:4px solid var(--ink);padding:2px 0 2px 11px}
+.cap h3,.cap li,.panel h3,.panel .note,.panel .rules li,.panel th,.panel td,.lede{font-family:MonoDigits,PixelifySans,monospace}
+.cap h3{font-size:14px;font-weight:700;margin-bottom:6px}
+.cap li{font-size:12px;color:var(--inkSoft);line-height:1.62;list-style:none;margin-bottom:2px}
+.cap li b{font-weight:700;color:var(--ink)}
+.cap.warn{border-color:var(--danger)} .cap.warn h3{color:var(--dangerInk)}
+.cap.ok{border-color:var(--teal)} .cap.ok h3{color:var(--tealInk)}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border:2px solid var(--ink);
+     margin-bottom:9px}
+.tag.a{background:var(--dangerSoft);border-color:var(--dangerInk);color:var(--dangerInk)}
+.tag.b{background:var(--tealSoft);border-color:var(--tealInk);color:var(--tealInk)}
+
+/* ---------- flat = current build (no weight hierarchy) ---------- */
+.flat, .flat *{font-weight:400 !important}
+
+/* ---------- shared app bits ---------- */
+.topbar{display:flex;align-items:center;gap:8px;margin:4px 0 14px}
+.topbar h2{flex:1;font-size:28px;font-weight:700}
+.ibtn{width:28px;height:28px;display:flex;align-items:center;justify-content:center}
+.lbl{font-size:15px;font-weight:700}
+.lbl.sm{font-size:13px}
+.big{font-size:46px;font-weight:700;color:var(--teal);line-height:1.12;letter-spacing:0}
+.big .cur{font-size:15px;color:var(--muted);margin-left:6px;font-weight:700}
+.meta{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px}
+.bar{height:20px;border:2.5px solid var(--ink);background:var(--surface);padding:3px;display:flex;gap:2px;margin-top:8px}
+.bar i{flex:1;background:var(--line)}
+.bar i.on{background:var(--teal)}
+.subrow{display:flex;justify-content:space-between;margin-top:7px}
+.card{border:2.5px solid var(--ink);background:var(--surface);padding:13px;
+      box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.card.flatsh{box-shadow:none}
+.card.hero{box-shadow:7px 7px 0 rgba(32,40,72,.14)}
+.card.cashy{background:var(--cashSoft)}
+.ibox{width:40px;height:40px;border:2.5px solid var(--ink);display:flex;align-items:center;
+      justify-content:center;flex:0 0 auto}
+.tx{display:flex;align-items:center;gap:11px;padding:8px 0}
+.tx .n{flex:1;min-width:0}
+.tx .n .t{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx .n .s{font-size:10px;color:var(--mutedOld);margin-top:2px}
+.tx .a{font-size:15px;font-weight:700}
+.hr{height:1px;background:var(--line);margin:2px 0}
+
+/* nav */
+.nav3{display:flex;border-top:3px solid var(--ink);height:66px;margin:0 -16px}
+.nav3 div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+          font-size:11px;font-weight:700}
+.nav3 div.on{background:var(--teal);color:#fff}
+.nav5{display:flex;border-top:3px solid var(--ink);height:70px;margin:0 -16px;align-items:stretch}
+.nav5 div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+          font-size:12px;font-weight:700}
+.nav5 div.on{background:var(--teal);color:#fff}
+.nav5 div.add{flex:0 0 74px;background:var(--surface);padding:8px 8px 10px}
+.nav5 div.add .p{width:100%;height:100%;background:var(--teal);border:2.5px solid var(--ink);
+                 display:flex;align-items:center;justify-content:center;box-shadow:0 4px 0 var(--ink)}
+
+/* pixel buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;border:2.5px solid var(--ink);
+     background:var(--teal);color:#fff;font-size:16px;font-weight:700;padding:13px 0;
+     box-shadow:0 5px 0 var(--ink)}
+.btn.sec{background:var(--surface);color:var(--ink);box-shadow:0 5px 0 var(--ink)}
+.btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:var(--tealInk);
+           font-size:14px;padding:9px 0;text-decoration:underline}
+.m3btn{display:inline-flex;align-items:center;gap:6px;border:1px solid #79747E;border-radius:100px;
+       padding:9px 18px;font-size:14px;color:#0E7A72;background:transparent}
+.m3text{display:inline-block;border-radius:100px;padding:7px 13px;font-size:14px;color:#6750A4}
+.m3seg{display:flex;border:1px solid #79747E;border-radius:100px;overflow:hidden;font-size:13px}
+.m3seg div{flex:1;text-align:center;padding:9px 0;display:flex;align-items:center;justify-content:center;gap:6px}
+.m3seg div.on{background:#CBE7E3}
+
+/* pixel segmented */
+.pseg{display:flex;border:2.5px solid var(--ink);background:var(--surface)}
+.pseg div{flex:1;text-align:center;padding:11px 0;font-size:14px;font-weight:700;
+          display:flex;align-items:center;justify-content:center;gap:7px}
+.pseg div.on{background:var(--tealSoft);color:var(--tealInk)}
+.pseg div+div{border-left:2.5px solid var(--ink)}
+
+/* category grid */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cell{border:2.5px solid var(--ink);background:var(--surface);padding:9px 2px 8px;text-align:center}
+.cell .cl{font-size:12px;font-weight:700;margin-top:6px}
+.cell.on{background:var(--tealSoft);border-color:var(--tealInk);box-shadow:inset 0 0 0 2.5px var(--tealInk)}
+.cell.badon{border-width:3px;border-color:var(--danger);background:#F6E0DB;padding:8.5px 1.5px 7.5px}
+
+/* hint box */
+.hint{display:flex;gap:10px;align-items:flex-start;border:2.5px solid var(--ink);padding:10px 12px;
+      background:var(--paperLight)}
+.hint.teal{background:var(--tealSoft);border-color:var(--tealInk)}
+.hint.cashy{background:var(--cashSoft);border-color:var(--cashInk)}
+.hint p{font-size:12px;line-height:1.5;color:var(--ink);font-weight:400}
+.snack{background:var(--ink);color:#fff;font-size:12px;padding:11px 13px;border:2px solid var(--ink)}
+
+/* empty state */
+.empty{border:2.5px dashed var(--ink);background:var(--paperLight);padding:16px 14px;text-align:center}
+.empty .t{font-size:14px;font-weight:700}
+.empty .s{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5}
+
+/* steps */
+.steps{display:flex;gap:5px;margin:2px 0 14px}
+.steps i{flex:1;height:5px;background:var(--line)}
+.steps i.on{background:var(--teal)}
+
+/* speech + cat */
+.catcard{border:2.5px solid var(--ink);background:var(--beige);padding:12px 10px 0 13px;
+         display:flex;align-items:flex-end;gap:8px;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.bub{flex:1;border:2.5px solid var(--ink);background:#fff;padding:11px;font-size:13px;font-weight:700;
+     margin-bottom:20px}
+.cat{width:99px;height:104px;flex:0 0 auto;background-image:url("../../assets/cats/cat-idle-8.png");background-size:800% 100%;background-position:0 0;background-repeat:no-repeat;image-rendering:pixelated}
+
+/* ---------- right panel ---------- */
+.panel{width:640px;border:3px solid var(--ink);background:var(--surface);padding:20px 22px;
+       box-shadow:7px 7px 0 rgba(32,40,72,.14)}
+.panel h3{font-size:17px;font-weight:700;margin-bottom:4px}
+.panel .note{font-size:12px;color:var(--inkSoft);margin-bottom:14px}
+.sec{margin-bottom:22px}
+table{border-collapse:collapse;width:100%;font-size:12px}
+th{text-align:left;font-size:11px;color:var(--muted);font-weight:700;padding:0 8px 6px 0;
+   border-bottom:2px solid var(--line)}
+td{padding:7px 8px 7px 0;border-bottom:1px solid var(--line);vertical-align:middle}
+.sw{display:inline-flex;align-items:center;gap:7px;font-weight:700}
+.sw i{width:16px;height:16px;border:2px solid var(--ink);display:inline-block;flex:0 0 auto}
+.ratio{font-weight:700}
+.fail{color:var(--dangerInk)} .pass{color:var(--tealInk)}
+.arrow{color:var(--muted);font-weight:700}
+.scale{display:flex;flex-direction:column;gap:9px}
+.scale .r{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.scale .r .k{width:96px;font-size:11px;color:var(--muted);font-weight:700;flex:0 0 auto}
+.scale .r .v{width:92px;font-size:11px;color:var(--inkSoft);flex:0 0 auto}
+.rules li{font-size:12.5px;line-height:1.75;list-style:none;padding-left:16px;position:relative;color:var(--ink)}
+.rules li:before{content:"▪";position:absolute;left:2px;color:var(--teal)}
+.rules li b{font-weight:700}
+.chipsrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.nchip{font-size:11px;font-weight:700;border:2px solid var(--ink);padding:5px 9px}
+.mono{font-family:ui-monospace,Menlo,monospace;letter-spacing:-.3px}
+.panel .sw{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:-.3px}
+.panel .ratio{font-family:ui-monospace,Menlo,monospace;letter-spacing:-.3px}
+.panel .nchip{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:-.3px}
+.panel .scale .v{font-family:ui-monospace,Menlo,monospace;letter-spacing:-.3px}
+.panel .note b{font-family:PixelifySans,monospace}
+</style>
+
+<div class="head">
+  <h1>Sobra · Tono y manera v2</h1>
+  <span>디자인 리뷰 반영 시안 — 타이포 위계 · 명도대비 · 컴포넌트 통일 · 정보구조</span>
+</div>
+<div class="lede">왼쪽이 현재 빌드, 오른쪽 3개가 개선안입니다. 대비 수치는 WCAG 상대명도로 실제 계산한 값.</div>
+
+<div class="row">
+
+<!-- ============ 1. ANTES ============ -->
+<div class="col">
+  <div class="tag a">ANTES · 현재 빌드</div>
+  <div class="phone bad flat">
+    <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+    <div class="body">
+      <div class="topbar"><h2>Sobra</h2>
+        <div class="ibtn"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5" stroke="#202848" stroke-width="2.5" fill="none"/><circle cx="12" cy="12" r="8.5" stroke="#202848" stroke-width="2.5" fill="none"/></svg></div>
+      </div>
+      <div class="lbl" style="font-size:15px">Hoy te queda</div>
+      <div class="big" style="margin-top:2px">$461<span class="cur">MXN</span></div>
+      <div class="meta"><span class="lbl sm">Avance de la quincena</span><span style="font-size:13px;color:var(--inkSoft)">13 días</span></div>
+      <div class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="subrow">
+        <span style="font-size:10px;color:var(--mutedOld)">Presupuesto: $6,900 MXN</span>
+        <span style="font-size:10px;color:var(--mutedOld)">Gastado: $2,340 MXN</span>
+      </div>
+      <div class="card cashy" style="margin-top:16px;display:flex;align-items:center;gap:12px">
+        <svg width="30" height="30" viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="19" height="13" stroke="#C0873A" stroke-width="2.5" fill="none"/><rect x="15" y="11" width="4" height="4" fill="#C0873A"/></svg>
+        <div style="flex:1">
+          <div style="font-size:13px">Efectivo disponible</div>
+          <div style="font-size:22px;color:#8E6222;margin-top:1px">$1,970 MXN</div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke="#202848" stroke-width="2.5" fill="none"/></svg>
+      </div>
+      <div style="display:flex;align-items:center;margin-top:16px">
+        <span class="lbl" style="flex:1">Movimientos recientes</span>
+        <span class="m3text">Ver todos</span>
+      </div>
+      <div class="tx">
+        <div class="ibox" style="background:#FBE1DA"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 11h16a8 8 0 01-16 0z" stroke="#D4553F" stroke-width="2.5" fill="none"/><path d="M3 20h18" stroke="#D4553F" stroke-width="2.5"/></svg></div>
+        <div class="n"><div class="t">Taquería El Faro</div><div class="s">Comida · 14:20</div></div>
+        <div class="a">-$180</div>
+      </div>
+      <div class="hr"></div>
+      <div class="tx">
+        <div class="ibox" style="background:#DCE4F2"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="14" stroke="#39558E" stroke-width="2.5" fill="none"/><path d="M4.5 13.5h15M7 21v-3M17 21v-3" stroke="#39558E" stroke-width="2.5"/></svg></div>
+        <div class="n"><div class="t">Metro</div><div class="s">Transporte · 08:05</div></div>
+        <div class="a">-$18</div>
+      </div>
+      <div class="hr"></div>
+      <div class="tx">
+        <div class="ibox" style="background:#E7DCF0"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4.5 7.5h15l-1.4 13h-12z" stroke="#6E4A8C" stroke-width="2.5" fill="none"/><path d="M9 7.5a3 3 0 016 0" stroke="#6E4A8C" stroke-width="2.5" fill="none"/></svg></div>
+        <div class="n"><div class="t">Farmacia</div><div class="s">Salud · Ayer</div></div>
+        <div class="a">-$240</div>
+      </div>
+      <div class="catcard" style="margin-top:14px">
+        <div class="bub">Vas muy bien</div>
+        <div class="cat"></div>
+      </div>
+    </div>
+    <div class="nav3">
+      <div class="on"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z" stroke="#fff" stroke-width="2.5" fill="none"/></svg>Inicio</div>
+      <div><svg width="24" height="24" viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" stroke="#202848" stroke-width="2.5" fill="none"/><path d="M9 9h6M9 13h6" stroke="#202848" stroke-width="2.5"/></svg>Registrar</div>
+      <div><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6" stroke="#202848" stroke-width="2.8"/></svg>Presupuesto</div>
+    </div>
+  </div>
+  <div class="cap warn">
+    <h3>지금 문제</h3>
+    <li><b>굵기 계층 0</b> — <span class="mono">w500~w900</span>이 전부 같게 렌더</li>
+    <li><b>캡션 10px · 2.92:1</b> — 픽셀폰트 붕괴 + AA 미달</li>
+    <li><b>M3 기본 버튼</b> — 라운드 'Ver todos'</li>
+    <li><b>3탭</b> — Movimientos·Ajustes 숨음, 빈 상태 없음</li>
+  </div>
+</div>
+
+<!-- ============ 2. DESPUÉS home ============ -->
+<div class="col">
+  <div class="tag b">DESPUÉS · 홈</div>
+  <div class="phone">
+    <div class="status"><span style="font-weight:700">9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+    <div class="body">
+      <div class="topbar"><h2>Sobra</h2>
+        <div class="ibtn"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5" stroke="#202848" stroke-width="2.5" fill="none"/><circle cx="12" cy="12" r="8.5" stroke="#202848" stroke-width="2.5" fill="none"/></svg></div>
+      </div>
+      <div style="font-size:13px;font-weight:400;color:var(--muted)">Hoy te queda</div>
+      <div class="big" style="margin-top:1px">$461<span class="cur">MXN</span></div>
+      <div class="meta"><span class="lbl sm">Avance del ciclo</span><span style="font-size:12px;color:var(--muted);font-weight:400">13 días</span></div>
+      <div class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="subrow">
+        <span style="font-size:12px;color:var(--muted);font-weight:400">Presupuesto <b style="font-weight:700;color:var(--ink)">$6,900</b></span>
+        <span style="font-size:12px;color:var(--muted);font-weight:400">Gastado <b style="font-weight:700;color:var(--ink)">$2,340</b></span>
+      </div>
+      <div class="card cashy hero" style="margin-top:16px;display:flex;align-items:center;gap:12px;border-color:var(--cashInk)">
+        <svg width="30" height="30" viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="19" height="13" stroke="#845A1E" stroke-width="2.5" fill="none"/><rect x="15" y="11" width="4" height="4" fill="#845A1E"/></svg>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:700;color:var(--cashInk)">Efectivo disponible</div>
+          <div style="font-size:23px;font-weight:700;color:var(--cashInk);margin-top:1px">$1,970<span style="font-size:12px;margin-left:5px">MXN</span></div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke="#845A1E" stroke-width="2.5" fill="none"/></svg>
+      </div>
+      <div style="display:flex;align-items:center;margin-top:18px">
+        <span class="lbl" style="flex:1">Movimientos recientes</span>
+        <span style="font-size:12px;font-weight:700;color:var(--tealInk);border-bottom:2px solid var(--tealInk);padding-bottom:1px">Ver todos</span>
+      </div>
+      <div class="tx">
+        <div class="ibox" style="background:#FBE1DA"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 11h16a8 8 0 01-16 0z" stroke="#A63A25" stroke-width="2.5" fill="none"/><path d="M3 20h18" stroke="#A63A25" stroke-width="2.5"/></svg></div>
+        <div class="n"><div class="t">Taquería El Faro</div><div class="s" style="font-size:12px;color:var(--muted)">Comida · 14:20</div></div>
+        <div class="a">−$180</div>
+      </div>
+      <div class="hr"></div>
+      <div class="tx">
+        <div class="ibox" style="background:#DCE4F2"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="14" stroke="#39558E" stroke-width="2.5" fill="none"/><path d="M4.5 13.5h15M7 21v-3M17 21v-3" stroke="#39558E" stroke-width="2.5"/></svg></div>
+        <div class="n"><div class="t">Metro</div><div class="s" style="font-size:12px;color:var(--muted)">Transporte · 08:05</div></div>
+        <div class="a">−$18</div>
+      </div>
+      <div class="hr"></div>
+      <div class="tx">
+        <div class="ibox" style="background:#E7DCF0"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M4.5 7.5h15l-1.4 13h-12z" stroke="#6E4A8C" stroke-width="2.5" fill="none"/><path d="M9 7.5a3 3 0 016 0" stroke="#6E4A8C" stroke-width="2.5" fill="none"/></svg></div>
+        <div class="n"><div class="t">Farmacia</div><div class="s" style="font-size:12px;color:var(--muted)">Salud · Ayer</div></div>
+        <div class="a">−$240</div>
+      </div>
+      <div class="catcard" style="margin-top:12px">
+        <div class="bub">Vas muy bien</div>
+        <div class="cat"></div>
+      </div>
+    </div>
+    <div class="nav5">
+      <div class="on"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z" stroke="#fff" stroke-width="2.5" fill="none"/></svg>Inicio</div>
+      <div><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 6.5h16M4 12h16M4 17.5h16" stroke="#202848" stroke-width="2.5"/></svg>Movim.</div>
+      <div class="add"><div class="p"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M4 12h16M12 4v16" stroke="#fff" stroke-width="3.2"/></svg></div></div>
+      <div><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6" stroke="#202848" stroke-width="2.8"/></svg>Presup.</div>
+      <div><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5" stroke="#202848" stroke-width="2.5" fill="none"/><circle cx="12" cy="12" r="8.5" stroke="#202848" stroke-width="2.5" fill="none"/></svg>Ajustes</div>
+    </div>
+  </div>
+  <div class="cap ok">
+    <h3>바뀐 것</h3>
+    <li><b><span class="mono">400 / 700</span> 두 단</b>만 사용 — 위계가 실제로 보임</li>
+    <li>캡션 <b><span class="mono">12px</span> + <span class="mono">#5F6885</span></b> (<span class="mono">5.43:1</span> 통과)</li>
+    <li>현금 카드 <b><span class="mono">7px</span> 그림자</b>로 1단계 승격, 텍스트 cashInk</li>
+    <li><b>5탭 + 가운데 등록 타일</b> (v3 시안 구조)</li>
+  </div>
+</div>
+
+<!-- ============ 3. DESPUÉS registrar ============ -->
+<div class="col">
+  <div class="tag b">DESPUÉS · 등록 (컴포넌트)</div>
+  <div class="phone">
+    <div class="status"><span style="font-weight:700">9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+    <div class="body">
+      <div class="topbar"><h2>Registrar gasto</h2></div>
+      <div class="lbl sm" style="margin-bottom:7px">Monto</div>
+      <div style="border:2.5px solid var(--teal);background:var(--surface);padding:12px 14px;display:flex;align-items:baseline;box-shadow:4px 4px 0 rgba(32,40,72,.16)">
+        <span style="font-size:34px;font-weight:700;color:var(--ink)">$180</span>
+        <span style="width:3px;height:28px;background:var(--teal);margin-left:3px;opacity:.6;align-self:center"></span>
+        <span style="flex:1"></span><span style="font-size:13px;font-weight:700;color:var(--muted)">MXN</span>
+      </div>
+      <div class="lbl sm" style="margin:18px 0 8px">Categoría</div>
+      <div class="grid">
+        <div class="cell on"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 11h16a8 8 0 01-16 0z" stroke="#0B6660" stroke-width="2.5" fill="none"/><path d="M3 20h18" stroke="#0B6660" stroke-width="2.5"/></svg><div class="cl" style="color:var(--tealInk)">Comida</div></div>
+        <div class="cell"><svg width="24" height="24" viewBox="0 0 24 24"><rect x="4.5" y="3.5" width="15" height="14" stroke="#39558E" stroke-width="2.5" fill="none"/><path d="M4.5 13.5h15M7 21v-3M17 21v-3" stroke="#39558E" stroke-width="2.5"/></svg><div class="cl">Transporte</div></div>
+        <div class="cell"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4.5 7.5h15l-1.4 13h-12z" stroke="#6E4A8C" stroke-width="2.5" fill="none"/><path d="M9 7.5a3 3 0 016 0" stroke="#6E4A8C" stroke-width="2.5" fill="none"/></svg><div class="cl">Compras</div></div>
+        <div class="cell"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z" stroke="#0E7A72" stroke-width="2.5" fill="none"/></svg><div class="cl">Hogar</div></div>
+        <div class="cell"><svg width="24" height="24" viewBox="0 0 24 24"><rect x="5.5" y="3" width="13" height="18" stroke="#845A1E" stroke-width="2.5" fill="none"/><path d="M9 8h6M9 12h6" stroke="#845A1E" stroke-width="2.5"/></svg><div class="cl">Servicios</div></div>
+        <div class="cell"><svg width="24" height="24" viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="17" height="12" stroke="#B74769" stroke-width="2.5" fill="none"/><path d="M12 11v5M9.5 13.5h5M9 7.5V5h6v2.5" stroke="#B74769" stroke-width="2.5"/></svg><div class="cl">Salud</div></div>
+        <div class="cell"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M3 8.5L12 5l9 3.5-9 3.5z" stroke="#4F5FA3" stroke-width="2.5" fill="none"/><path d="M7 11v5c0 1.5 10 1.5 10 0v-5" stroke="#4F5FA3" stroke-width="2.5" fill="none"/></svg><div class="cl">Educación</div></div>
+        <div class="cell"><svg width="24" height="24" viewBox="0 0 24 24"><rect x="3" y="8.5" width="18" height="8" stroke="#854D7E" stroke-width="2.5" fill="none"/><path d="M7 11v3M5.5 12.5h3" stroke="#854D7E" stroke-width="2.5"/><circle cx="16.5" cy="12.5" r="1.4" fill="#854D7E"/></svg><div class="cl">Ocio</div></div>
+      </div>
+      <div class="lbl sm" style="margin:18px 0 8px">Pago</div>
+      <div class="pseg">
+        <div class="on"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10" stroke="#0B6660" stroke-width="3" fill="none"/></svg>Efectivo</div>
+        <div><svg width="20" height="20" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" stroke="#202848" stroke-width="2.5" fill="none"/><path d="M2.5 10h19" stroke="#202848" stroke-width="2.5"/></svg>Tarjeta</div>
+      </div>
+      <div class="hint" style="margin-top:14px">
+        <svg width="18" height="18" viewBox="0 0 24 24" style="flex:0 0 auto;margin-top:1px"><circle cx="12" cy="12" r="9" stroke="#5F6885" stroke-width="2.5" fill="none"/><path d="M12 11v6" stroke="#5F6885" stroke-width="2.5"/><circle cx="12" cy="7.5" r="1.4" fill="#5F6885"/></svg>
+        <p>El efectivo se descuenta de tu conteo. La tarjeta no.</p>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <div class="btn sec" style="flex:1">Cancelar</div>
+        <div class="btn" style="flex:1.4">Guardar</div>
+      </div>
+    </div>
+    <div class="nav5">
+      <div><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z" stroke="#202848" stroke-width="2.5" fill="none"/></svg>Inicio</div>
+      <div><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 6.5h16M4 12h16M4 17.5h16" stroke="#202848" stroke-width="2.5"/></svg>Movim.</div>
+      <div class="add"><div class="p" style="box-shadow:0 2px 0 var(--ink);transform:translateY(2px)"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M4 12h16M12 4v16" stroke="#fff" stroke-width="3.2"/></svg></div></div>
+      <div><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6" stroke="#202848" stroke-width="2.8"/></svg>Presup.</div>
+      <div><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5" stroke="#202848" stroke-width="2.5" fill="none"/><circle cx="12" cy="12" r="8.5" stroke="#202848" stroke-width="2.5" fill="none"/></svg>Ajustes</div>
+    </div>
+  </div>
+  <div class="cap ok">
+    <h3>컴포넌트 통일</h3>
+    <li>M3 <b>SegmentedButton → PixelSegmented</b> (<span class="mono">radius 0, ink 2.5</span>)</li>
+    <li>선택색은 <b>teal 하나로 고정</b> (카테고리 색으로 안 물들임)</li>
+    <li>테두리 두께 <b><span class="mono">2.5</span> 고정</b> + inset 강조 → <span class="mono">1px</span> 밀림 제거</li>
+    <li>SnackBar 대신 <b>인라인 힌트</b>, 보조 버튼 = PixelButton.sec</li>
+    <li>프레스 = <b><span class="mono">4px</span> 내려앉기</b> (가운데 + 타일), 리플 없음</li>
+  </div>
+</div>
+
+<!-- ============ 4. DESPUÉS efectivo ============ -->
+<div class="col">
+  <div class="tag b">DESPUÉS · 현금 정산 + 빈 상태</div>
+  <div class="phone">
+    <div class="status"><span style="font-weight:700">9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+    <div class="body">
+      <div class="topbar" style="margin-bottom:8px">
+        <div class="ibtn"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" stroke="#202848" stroke-width="2.8" fill="none"/></svg></div>
+        <h2 style="font-size:20px;text-align:center">Revisar diferencia</h2>
+        <div class="ibtn"></div>
+      </div>
+      <div class="steps"><i class="on"></i><i class="on"></i><i></i><i></i></div>
+      <div class="card flatsh" style="display:flex;padding:0">
+        <div style="flex:1;padding:11px 13px;border-right:2.5px solid var(--ink)">
+          <div style="font-size:12px;color:var(--muted);font-weight:400">Esperábamos</div>
+          <div style="font-size:19px;font-weight:700;margin-top:2px">$2,000</div>
+        </div>
+        <div style="flex:1;padding:11px 13px">
+          <div style="font-size:12px;color:var(--muted);font-weight:400">Contaste</div>
+          <div style="font-size:19px;font-weight:700;margin-top:2px">$1,970</div>
+        </div>
+      </div>
+      <div class="card hero" style="margin-top:13px;background:var(--dangerSoft);border-color:var(--dangerInk);text-align:center;padding:14px 13px">
+        <div style="font-size:14px;font-weight:700;color:var(--dangerInk)">Faltan</div>
+        <div style="font-size:40px;font-weight:700;color:var(--dangerInk);line-height:1.2">$30<span style="font-size:14px;margin-left:6px">MXN</span></div>
+      </div>
+      <div class="lbl sm" style="margin:16px 0 9px">¿Qué pasó?</div>
+      <div class="card flatsh" style="display:flex;align-items:center;gap:11px;margin-bottom:10px;border-color:var(--tealInk);background:var(--tealSoft)">
+        <div class="ibox" style="border-color:var(--tealInk);background:var(--surface)"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" stroke="#0B6660" stroke-width="2.5" fill="none"/><path d="M16 16l4.5 4.5" stroke="#0B6660" stroke-width="2.5"/></svg></div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:700;color:var(--tealInk)">Sé qué fue</div>
+          <div style="font-size:12px;color:var(--muted);font-weight:400;margin-top:2px">Identifica el gasto ahora</div>
+        </div>
+        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke="#0B6660" stroke-width="2.5" fill="none"/></svg>
+      </div>
+      <div class="card flatsh" style="display:flex;align-items:center;gap:11px">
+        <div class="ibox" style="background:var(--violetSoft)"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M9 9a3 3 0 116 0c0 2-3 2.2-3 4.5" stroke="#6E4A8C" stroke-width="2.5" fill="none"/><circle cx="12" cy="18" r="1.5" fill="#6E4A8C"/></svg></div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:700">No sé todavía</div>
+          <div style="font-size:12px;color:var(--muted);font-weight:400;margin-top:2px">Guárdalo como pendiente</div>
+        </div>
+        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke="#202848" stroke-width="2.5" fill="none"/></svg>
+      </div>
+      <div class="lbl sm" style="margin:18px 0 9px">Estado vacío — Movimientos</div>
+      <div class="empty">
+        <div class="t">Aún no hay movimientos</div>
+        <div class="s">Registra tu primer gasto y aquí verás el resumen del ciclo.</div>
+      </div>
+      <div class="btn" style="margin-top:16px">Continuar</div>
+    </div>
+    <div class="nav5">
+      <div><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z" stroke="#202848" stroke-width="2.5" fill="none"/></svg>Inicio</div>
+      <div><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 6.5h16M4 12h16M4 17.5h16" stroke="#202848" stroke-width="2.5"/></svg>Movim.</div>
+      <div class="add"><div class="p"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M4 12h16M12 4v16" stroke="#fff" stroke-width="3.2"/></svg></div></div>
+      <div><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6" stroke="#202848" stroke-width="2.8"/></svg>Presup.</div>
+      <div><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5" stroke="#202848" stroke-width="2.5" fill="none"/><circle cx="12" cy="12" r="8.5" stroke="#202848" stroke-width="2.5" fill="none"/></svg>Ajustes</div>
+    </div>
+  </div>
+  <div class="cap ok">
+    <h3>구조 · 안내</h3>
+    <li>단일 확정 → <b>스텝 인디케이터 + 차이 처리 분기</b></li>
+    <li>차이 카드 <b>dangerInk</b> <span class="mono">5.19:1</span> (기존 <span class="mono">3.27:1</span>)</li>
+    <li><b>pendiente(보류)</b> 경로를 화면에 노출</li>
+    <li>빈 상태 카드 = 점선 테두리 + paperLight</li>
+  </div>
+</div>
+
+<!-- ============ PANEL ============ -->
+<div class="panel">
+  <div class="sec">
+    <h3>1 · 색 토큰 — 명도대비 교정</h3>
+    <div class="note">WCAG 상대명도로 실제 계산. AA 본문 기준 <span class="mono">4.5:1</span>.</div>
+    <table>
+      <tr><th style="width:34%">토큰 / 배경</th><th style="width:23%">현재</th><th style="width:9%"></th><th style="width:23%">개선</th><th>결과</th></tr>
+      <tr>
+        <td><span class="sw"><i style="background:#8F95AC"></i>muted</span><div style="font-size:11px;color:var(--muted);margin-top:2px">on surface / paper</div></td>
+        <td><span class="sw"><i style="background:#8F95AC"></i>#8F95AC</span><div class="ratio fail" style="font-size:11px;margin-top:2px">2.92 · 2.60 ✕</div></td>
+        <td class="arrow">→</td>
+        <td><span class="sw"><i style="background:#5F6885"></i>#5F6885</span><div class="ratio pass" style="font-size:11px;margin-top:2px">5.43 · 4.82 ✓</div></td>
+        <td style="font-size:11px">보조 텍스트 전역</td>
+      </tr>
+      <tr>
+        <td><span class="sw"><i style="background:#C0873A"></i>cash</span><div style="font-size:11px;color:var(--muted);margin-top:2px">on cashSoft</div></td>
+        <td><span class="sw"><i style="background:#C0873A"></i>#C0873A</span><div class="ratio fail" style="font-size:11px;margin-top:2px">2.59 ✕</div></td>
+        <td class="arrow">→</td>
+        <td><span class="sw"><i style="background:#845A1E"></i>#845A1E</span><div class="ratio pass" style="font-size:11px;margin-top:2px">5.05 ✓</div></td>
+        <td style="font-size:11px">신규 <b style="font-weight:700">cashInk</b></td>
+      </tr>
+      <tr>
+        <td><span class="sw"><i style="background:#D4553F"></i>danger</span><div style="font-size:11px;color:var(--muted);margin-top:2px">on dangerSoft</div></td>
+        <td><span class="sw"><i style="background:#D4553F"></i>#D4553F</span><div class="ratio fail" style="font-size:11px;margin-top:2px">3.27 ✕</div></td>
+        <td class="arrow">→</td>
+        <td><span class="sw"><i style="background:#A63A25"></i>#A63A25</span><div class="ratio pass" style="font-size:11px;margin-top:2px">5.19 ✓</div></td>
+        <td style="font-size:11px">신규 <b style="font-weight:700">dangerInk</b></td>
+      </tr>
+      <tr>
+        <td><span class="sw"><i style="background:#0E7A72"></i>teal</span><div style="font-size:11px;color:var(--muted);margin-top:2px">on tealSoft</div></td>
+        <td><span class="sw"><i style="background:#0E7A72"></i>#0E7A72</span><div class="ratio fail" style="font-size:11px;margin-top:2px">4.26 △</div></td>
+        <td class="arrow">→</td>
+        <td><span class="sw"><i style="background:#0B6660"></i>#0B6660</span><div class="ratio pass" style="font-size:11px;margin-top:2px">5.58 ✓</div></td>
+        <td style="font-size:11px">신규 <b style="font-weight:700">tealInk</b></td>
+      </tr>
+    </table>
+    <div style="font-size:12px;color:var(--inkSoft);margin-top:12px">코드에 하드코딩돼 있던 값 + 시안에만 있던 값을 토큰으로 승격:</div>
+    <div class="chipsrow">
+      <span class="nchip" style="background:#EFE7D6">beige #EFE7D6</span>
+      <span class="nchip" style="background:#FBF5E9">paperLight #FBF5E9</span>
+      <span class="nchip" style="background:#E7DCF0">violetSoft #E7DCF0</span>
+      <span class="nchip" style="background:#DCE4F2">blueSoft #DCE4F2</span>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h3>2 · 타이포 — 굵기는 두 단, 최소 12px</h3>
+    <div class="note">PixelifySans는 가변폰트(<span class="mono">wght 400–700</span>). Flutter는 <b style="font-weight:700">fontVariations</b>로만 축이 먹습니다. <span class="mono">w800/w900</span>은 폰트에 없는 굵기라 제거.</div>
+    <div class="scale">
+      <div class="r"><span class="k">display</span><span class="v">46 / 700</span><span style="font-size:34px;font-weight:700;color:var(--teal)">$461</span></div>
+      <div class="r"><span class="k">headline</span><span class="v">28 / 700</span><span style="font-size:24px;font-weight:700">Presupuesto</span></div>
+      <div class="r"><span class="k">title</span><span class="v">17 / 700</span><span style="font-size:17px;font-weight:700">Movimientos recientes</span></div>
+      <div class="r"><span class="k">body</span><span class="v">14 / 400</span><span style="font-size:14px;font-weight:400">Taquería El Faro</span></div>
+      <div class="r"><span class="k">label</span><span class="v">12 / 700</span><span style="font-size:12px;font-weight:700">EFECTIVO</span></div>
+      <div class="r" style="border:none"><span class="k">caption</span><span class="v">12 / 400</span><span style="font-size:12px;font-weight:400;color:var(--muted)">Comida · 14:20 &nbsp;<b style="color:var(--dangerInk);font-weight:700">(현재 <span class="mono">10px → 12px</span>)</b></span></div>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-bottom:0">
+    <h3>3 · 컴포넌트 규칙</h3>
+    <div class="note">머티리얼 기본값이 새어나오는 지점을 테마로 전부 덮기.</div>
+    <ul class="rules">
+      <li><b><span class="mono">radius 0</span> · 테두리 <span class="mono">ink 2.5px</span></b> — 예외 없음</li>
+      <li>그림자 <b>3단</b>: <span class="mono">기본 4px / 강조 7px / 버튼 0 5px 0 ink</span></li>
+      <li>프레스 = <b><span class="mono">4px</span> 내려앉고 그림자 제거</b>, <b>리플 제거</b>(NoSplash)</li>
+      <li>테마로 덮을 것: <b>textButton · outlinedButton · segmentedButton · dialog · datePicker · popupMenu · dropdownMenu</b></li>
+      <li>선택 강조색은 <b>teal 단일</b> — 카테고리 색은 아이콘에만</li>
+      <li>SnackBar 남용 → <b>인라인 힌트 박스</b>로 이동</li>
+      <li>마이너스 기호 <b><span class="mono">U+2212</span> (−)</b>로 통일</li>
+      <li><b>SystemUiOverlayStyle.dark</b> 지정 (상태바 아이콘)</li>
+      <li>스크린리더 라벨 <b>한국어 → 스페인어</b> (cat_sprite.dart)</li>
+    </ul>
+    <div style="border:2.5px solid var(--danger);background:var(--dangerSoft);padding:11px 13px;margin-top:14px">
+      <div style="font-size:12px;font-weight:700;color:var(--dangerInk);margin-bottom:6px">지금 M3 기본값이 새는 곳</div>
+      <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+        <span class="m3btn">Exportar archivo</span>
+        <span class="m3text">Ver todos</span>
+      </div>
+      <div class="m3seg" style="margin-top:9px;background:#fff"><div class="on">Efectivo</div><div>Tarjeta</div></div>
+    </div>
+  </div>
+</div>
+
+</div>
