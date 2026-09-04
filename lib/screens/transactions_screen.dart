@@ -85,16 +85,27 @@ class TransactionsScreen extends StatelessWidget {
                           if (value != 'delete') return;
                           if (movement.expense != null) {
                             final entry = movement.expense!;
-                            await store.deleteExpense(entry.id);
+                            final removed = await store.deleteExpense(entry.id);
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text('Movimiento eliminado.'),
-                                action: SnackBarAction(
-                                  label: 'Deshacer',
-                                  onPressed: () => store.restoreExpense(entry),
-                                ),
-                              ),
+                              removed
+                                  ? SnackBar(
+                                      content: const Text(
+                                        'Movimiento eliminado.',
+                                      ),
+                                      action: SnackBarAction(
+                                        label: 'Deshacer',
+                                        onPressed: () =>
+                                            store.restoreExpense(entry),
+                                      ),
+                                    )
+                                  : const SnackBar(
+                                      content: Text(
+                                        'Este gasto viene de un conteo de '
+                                        'efectivo. Vuelve a contar para '
+                                        'corregirlo.',
+                                      ),
+                                    ),
                             );
                           } else if (movement.income != null) {
                             final entry = movement.income!;
@@ -117,10 +128,13 @@ class TransactionsScreen extends StatelessWidget {
                               value: 'edit',
                               child: Text('Editar'),
                             ),
-                          const PopupMenuItem(
-                            value: 'delete',
-                            child: Text('Eliminar'),
-                          ),
+                          // A cash-count expense measures money that already
+                          // left the wallet, so there is nothing to undo here.
+                          if (movement.expense?.isLinkedToCashCount != true)
+                            const PopupMenuItem(
+                              value: 'delete',
+                              child: Text('Eliminar'),
+                            ),
                         ],
                       ),
               ),
@@ -164,7 +178,7 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
 
   Future<void> _save() async {
     final amount = parsePesos(_amountController.text);
-    if (amount == null) return;
+    if (amount == null && !widget.entry.isLinkedToCashCount) return;
     if (widget.entry.isPendingCashAdjustment) {
       await SobraScope.of(context).classifyPendingCashExpense(
         expenseId: widget.entry.id,
@@ -174,7 +188,7 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
     } else {
       await SobraScope.of(context).updateExpense(
         widget.entry.copyWith(
-          amountCentavos: amount,
+          amountCentavos: amount ?? widget.entry.amountCentavos,
           category: _category,
           note: _noteController.text.trim().isEmpty
               ? _category.label
@@ -207,13 +221,22 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
           const SizedBox(height: 18),
           TextField(
             controller: _amountController,
-            enabled: !widget.entry.isPendingCashAdjustment,
+            enabled: !widget.entry.isLinkedToCashCount,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: const InputDecoration(
               labelText: 'Monto',
               suffixText: 'MXN',
             ),
           ),
+          if (widget.entry.isLinkedToCashCount) ...[
+            const SizedBox(height: 10),
+            const PixelHint(
+              tone: PixelHintTone.cash,
+              text:
+                  'El monto viene de tu conteo de efectivo. Puedes cambiar '
+                  'la categoría y la nota.',
+            ),
+          ],
           const SizedBox(height: 12),
           DropdownButtonFormField<ExpenseCategory>(
             initialValue: _category,

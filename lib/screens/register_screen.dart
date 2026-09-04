@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../models/expense_entry.dart';
@@ -96,79 +98,62 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final usePending = await _shouldUsePendingDifference(store, amount);
     if (!mounted) return;
     setState(() => _saving = true);
-    if (usePending) {
-      await store.classifyPendingCashExpense(
-        expenseId: store.latestPendingCashExpense!.id,
-        category: _category,
-        note: _noteController.text,
-      );
-    } else if (_mode == _RegisterMode.expense) {
-      await store.addExpense(
-        amountCentavos: amount,
-        category: _category,
-        note: _noteController.text,
-        occurredAt: _occurredAt(store),
-        paymentMethod: _paymentMethod,
-      );
-    } else {
-      await store.addIncome(
-        amountCentavos: amount,
-        kind: _incomeKind,
-        note: _noteController.text,
-        occurredAt: _occurredAt(store),
-        destination: _paymentMethod,
-        allocation: _incomeAllocation,
-      );
+    // Whatever happens, the button comes back. Leaving _saving true on a throw
+    // disables Guardar for the rest of the session with no way to recover.
+    try {
+      if (usePending) {
+        await store.classifyPendingCashExpense(
+          expenseId: store.latestPendingCashExpense!.id,
+          category: _category,
+          note: _noteController.text,
+        );
+      } else if (_mode == _RegisterMode.expense) {
+        await store.addExpense(
+          amountCentavos: amount,
+          category: _category,
+          note: _noteController.text,
+          occurredAt: _occurredAt(store),
+          paymentMethod: _paymentMethod,
+        );
+      } else {
+        await store.addIncome(
+          amountCentavos: amount,
+          kind: _incomeKind,
+          note: _noteController.text,
+          occurredAt: _occurredAt(store),
+          destination: _paymentMethod,
+          allocation: _incomeAllocation,
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
     if (!mounted) return;
+    // The dialog closes itself on a timer. Awaiting a dialog that something
+    // else has to pop deadlocks: the await only finishes once the route is
+    // gone, so the line that pops it never runs.
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (dialogContext) => Dialog(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        child: Container(
-          padding: const EdgeInsets.all(22),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            border: Border.all(color: AppColors.ink, width: 3),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CatSprite(
-                motion: _mode == _RegisterMode.expense
-                    ? CatMotion.walk
-                    : CatMotion.celebrate,
-                width: 142,
-                loop: false,
-                animate: !reducedMotion,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                usePending
-                    ? 'Diferencia conciliada'
-                    : _mode == _RegisterMode.expense
-                    ? 'Gasto guardado'
-                    : 'Ingreso guardado',
-                style: pixelText(size: 18, bold: true),
-              ),
-            ],
-          ),
-        ),
+      builder: (dialogContext) => _SavedDialog(
+        motion: _mode == _RegisterMode.expense
+            ? CatMotion.walk
+            : CatMotion.celebrate,
+        message: usePending
+            ? 'Diferencia conciliada'
+            : _mode == _RegisterMode.expense
+            ? 'Gasto guardado'
+            : 'Ingreso guardado',
+        animate: !reducedMotion,
+        duration: reducedMotion
+            ? const Duration(milliseconds: 400)
+            : const Duration(milliseconds: 1100),
       ),
     );
-    await Future<void>.delayed(
-      reducedMotion
-          ? const Duration(milliseconds: 120)
-          : const Duration(milliseconds: 500),
-    );
     if (!mounted) return;
-    Navigator.of(context, rootNavigator: true).pop();
     _amountController.clear();
     _noteController.clear();
     setState(() {
-      _saving = false;
       _category = ExpenseCategory.food;
       _date = null;
     });
@@ -498,5 +483,74 @@ class _PaymentSelector extends StatelessWidget {
     ],
     selected: value,
     onChanged: onChanged,
+  );
+}
+
+/// The "saved" confirmation, which dismisses itself.
+///
+/// It owns its own lifetime so the caller can simply await it: nothing outside
+/// has to reach in and pop the right route at the right moment.
+class _SavedDialog extends StatefulWidget {
+  const _SavedDialog({
+    required this.motion,
+    required this.message,
+    required this.animate,
+    required this.duration,
+  });
+
+  final CatMotion motion;
+  final String message;
+  final bool animate;
+  final Duration duration;
+
+  @override
+  State<_SavedDialog> createState() => _SavedDialogState();
+}
+
+class _SavedDialogState extends State<_SavedDialog> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(widget.duration, () {
+      if (mounted) Navigator.of(context).pop();
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => PopScope(
+    // Let it finish; it is about to close on its own either way.
+    canPop: false,
+    child: Dialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      child: Container(
+        padding: const EdgeInsets.all(22),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          border: Border.all(color: AppColors.ink, width: 3),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CatSprite(
+              motion: widget.motion,
+              width: 142,
+              loop: false,
+              animate: widget.animate,
+            ),
+            const SizedBox(height: 12),
+            Text(widget.message, style: pixelText(size: 18, bold: true)),
+          ],
+        ),
+      ),
+    ),
   );
 }

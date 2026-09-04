@@ -24,6 +24,7 @@ class SobraStore extends ChangeNotifier {
   final List<IncomeEntry> _incomes = [];
   final List<CashReconciliationEntry> _cashReconciliations = [];
   final Map<String, int> _cycleBudgetExtras = {};
+  int _idSequence = 0;
 
   int _baseBudgetCentavos = 600000;
   int countedCashCentavos = 0;
@@ -64,16 +65,24 @@ class SobraStore extends ChangeNotifier {
   DateTime get currentMoment => _now();
   DateTime get today => dateOnly(_now());
 
-  CycleBounds get cycleBounds {
-    final bounds = paySchedule.boundsFor(today);
+  /// The cycle [date] falls into, with the pay-schedule change floor applied.
+  ///
+  /// Everything that keys anything by cycle must go through here rather than
+  /// calling [PaySchedule.boundsFor] directly. A schedule change clamps the
+  /// first cycle's start to the day it took effect, so the raw bounds and the
+  /// real bounds disagree for exactly that window — and anything written under
+  /// one key and read under the other silently disappears.
+  CycleBounds boundsFor(DateTime date) {
+    final day = dateOnly(date);
+    final bounds = paySchedule.boundsFor(day);
     final floor = payScheduleEffectiveFloor;
-    if (floor != null &&
-        !today.isBefore(floor) &&
-        bounds.start.isBefore(floor)) {
+    if (floor != null && !day.isBefore(floor) && bounds.start.isBefore(floor)) {
       return CycleBounds(start: floor, end: bounds.end);
     }
     return bounds;
   }
+
+  CycleBounds get cycleBounds => boundsFor(today);
 
   DateTime get cycleStart => cycleBounds.start;
   DateTime get cycleEnd => cycleBounds.end;
@@ -255,11 +264,19 @@ class SobraStore extends ChangeNotifier {
     final index = _transactions.indexWhere((entry) => entry.id == updated.id);
     if (index == -1) return;
     final previous = _transactions[index];
+
+    // An expense that came out of a cash count carries a measured amount and
+    // date. Only what the user actually knows — the category and the note —
+    // can be rewritten; keeping the rest pinned to the count is what stops the
+    // budget and the wallet from drifting apart.
+    final next = previous.isLinkedToCashCount
+        ? previous.copyWith(category: updated.category, note: updated.note)
+        : updated;
+
     if (_affectsCurrentCash(previous))
       expectedCashCentavos += previous.amountCentavos;
-    if (_affectsCurrentCash(updated))
-      expectedCashCentavos -= updated.amountCentavos;
-    _transactions[index] = updated;
+    if (_affectsCurrentCash(next)) expectedCashCentavos -= next.amountCentavos;
+    _transactions[index] = next;
     await _save();
     notifyListeners();
   }
@@ -281,17 +298,26 @@ class SobraStore extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteExpense(String id) async {
+  /// Removes an expense, reporting whether it was allowed to go.
+  ///
+  /// Refuses an expense created by a cash count: the money is already gone
+  /// from the wallet, so deleting the row would hand the budget back cash the
+  /// user does not have, and the count that recorded it would be left pointing
+  /// at nothing. Recounting the cash is the way to correct one of these.
+  Future<bool> deleteExpense(String id) async {
     final index = _transactions.indexWhere((entry) => entry.id == id);
-    if (index == -1) return;
+    if (index == -1) return false;
+    if (_transactions[index].isLinkedToCashCount) return false;
     final removed = _transactions.removeAt(index);
     if (_affectsCurrentCash(removed))
       expectedCashCentavos += removed.amountCentavos;
     await _save();
     notifyListeners();
+    return true;
   }
 
   Future<void> restoreExpense(ExpenseEntry entry) async {
+    if (_transactions.any((existing) => existing.id == entry.id)) return;
     _transactions.add(entry);
     if (_affectsCurrentCash(entry))
       expectedCashCentavos -= entry.amountCentavos;
@@ -309,6 +335,7 @@ class SobraStore extends ChangeNotifier {
   }
 
   Future<void> restoreIncome(IncomeEntry entry) async {
+    if (_incomes.any((existing) => existing.id == entry.id)) return;
     _incomes.add(entry);
     _applyIncome(entry, 1);
     await _save();
@@ -322,11 +349,45 @@ class SobraStore extends ChangeNotifier {
     if (centavos <= 0) throw ArgumentError.value(centavos, 'centavos');
     _baseBudgetCentavos = centavos;
     if (adjustCategoryLimits) {
-      categoryLimits = _categoryLimitsForBudget(totalBudgetCentavos);
-      categoryLimitsCustomized = false;
+      // Scale what is there rather than reinstating the stock split: somebody
+      // who moved Comida to half their budget asked for that, and "adjust
+      // proportionally" is a promise to keep their shape, not to overwrite it.
+      // Scaling the defaults reproduces the defaults, so one path covers both.
+      categoryLimits = _scaledCategoryLimits(centavos);
     }
     await _save();
     notifyListeners();
+  }
+
+  /// The current limits restretched to add up to [budget], keeping each
+  /// category's share of the plan.
+  ///
+  /// Scaling is measured against what the limits themselves total, not against
+  /// the old budget figure: the two drift apart as soon as the budget is
+  /// changed once without touching the limits, and the ratio the user cares
+  /// about is the one between their categories.
+  Map<ExpenseCategory, int> _scaledCategoryLimits(int budget) {
+    final assigned = categoryLimits.values.fold(0, (sum, value) => sum + value);
+    // Nothing to keep the shape of yet.
+    if (assigned <= 0) return _categoryLimitsForBudget(budget);
+    final factor = budget / assigned;
+    final scaled = {
+      for (final category in ExpenseCategory.values)
+        category: ((categoryLimits[category] ?? 0) * factor).round(),
+    };
+
+    // Ten independent roundings leave the plan a few centavos off the budget.
+    // Park the difference on the largest category, where it disappears, so
+    // "proportionally" still adds up to exactly what the user set.
+    final drift =
+        budget - scaled.values.fold<int>(0, (sum, value) => sum + value);
+    if (drift != 0) {
+      final largest = scaled.entries.reduce(
+        (a, b) => b.value > a.value ? b : a,
+      );
+      scaled[largest.key] = largest.value + drift;
+    }
+    return scaled;
   }
 
   Future<void> setCategoryLimit(ExpenseCategory category, int centavos) async {
@@ -423,17 +484,6 @@ class SobraStore extends ChangeNotifier {
     await _save();
     notifyListeners();
     return reconciliation;
-  }
-
-  Future<int> confirmCashCount(int actualCentavos) async {
-    final previousExpected = expectedCashCentavos;
-    await reconcileCashCount(
-      actualCentavos: actualCentavos,
-      resolution: actualCentavos < previousExpected
-          ? CashResolution.pending
-          : CashResolution.correction,
-    );
-    return previousExpected - actualCentavos;
   }
 
   Future<void> queuePayScheduleChange(PaySchedule schedule) async {
@@ -546,7 +596,7 @@ class SobraStore extends ChangeNotifier {
       expectedCashCentavos += direction * entry.amountCentavos;
     }
     if (entry.allocation == IncomeAllocation.cycle) {
-      final key = _cycleKey(paySchedule.boundsFor(entry.occurredAt).start);
+      final key = _cycleKey(boundsFor(entry.occurredAt).start);
       _cycleBudgetExtras[key] =
           (_cycleBudgetExtras[key] ?? 0) + direction * entry.amountCentavos;
       if (_cycleBudgetExtras[key] == 0) _cycleBudgetExtras.remove(key);
@@ -738,8 +788,23 @@ class SobraStore extends ChangeNotifier {
     }
   }
 
-  String _newId(String prefix) =>
-      '$prefix-${currentMoment.microsecondsSinceEpoch}-${_transactions.length + _incomes.length + _cashReconciliations.length}';
+  String _newId(String prefix) {
+    // Never derived from how many entries exist: deleting one used to walk the
+    // counter backwards and hand the next entry an id that had already been
+    // used. Web builds make that worse - DateTime there has millisecond, not
+    // microsecond, resolution, so the timestamp alone separates far less.
+    final stamp = currentMoment.microsecondsSinceEpoch;
+    var id = '$prefix-$stamp-${_idSequence++}';
+    while (_isIdTaken(id)) {
+      id = '$prefix-$stamp-${_idSequence++}';
+    }
+    return id;
+  }
+
+  bool _isIdTaken(String id) =>
+      _transactions.any((entry) => entry.id == id) ||
+      _incomes.any((entry) => entry.id == id) ||
+      _cashReconciliations.any((entry) => entry.id == id);
   String _cycleKey(DateTime date) => dateOnly(date).toIso8601String();
   bool _isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;

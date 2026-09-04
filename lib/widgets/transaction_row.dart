@@ -74,6 +74,7 @@ class MovementRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final positive = movement.amountCentavos >= 0;
+    final isAdjustment = movement.type == MovementType.adjustment;
     // The icon can take the plain accent; the amount and subtitle beside it
     // need the darker `Ink` variant to stay legible on paper.
     final color = movement.isPending
@@ -81,12 +82,12 @@ class MovementRow extends StatelessWidget {
         : positive
         ? AppColors.teal
         : AppColors.ink;
-    final textColor = movement.isPending
+    final textColor = movement.isPending || isAdjustment
         ? AppColors.cashInk
         : positive
         ? AppColors.tealInk
         : AppColors.ink;
-    final tint = movement.isPending
+    final tint = movement.isPending || isAdjustment
         ? AppColors.cashSoft
         : positive
         ? AppColors.tealSoft
@@ -101,7 +102,11 @@ class MovementRow extends StatelessWidget {
             MovementType.income => Icons.arrow_upward,
             MovementType.adjustment => Icons.sync_alt,
           };
-    final iconColor = expense != null ? categoryColor(expense.category) : color;
+    final iconColor = expense != null
+        ? categoryColor(expense.category)
+        : isAdjustment
+        ? AppColors.cashInk
+        : color;
     final iconTint = expense != null
         ? categorySoftColor(expense.category)
         : tint;
@@ -147,7 +152,14 @@ class MovementRow extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              '${positive ? '+' : minusSign}'
+              // An adjustment carries no sign. It records what a cash count
+              // settled, and showing "+\$300" next to a budget that did not
+              // move reads as money arriving when none did.
+              '${isAdjustment
+                  ? ''
+                  : positive
+                  ? '+'
+                  : minusSign}'
               '${formatMoney(movement.amountCentavos.abs(), currency: false)}',
               style: pixelText(size: 15, bold: true, color: textColor),
             ),

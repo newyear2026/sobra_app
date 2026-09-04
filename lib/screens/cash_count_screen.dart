@@ -47,13 +47,17 @@ class _CashCountScreenState extends State<CashCountScreen> {
       return;
     }
     setState(() => _saving = true);
-    await store.reconcileCashCount(
-      actualCentavos: actual,
-      resolution: resolution,
-      category: _category,
-      note: _noteController.text,
-      incomeAllocation: _incomeAllocation,
-    );
+    try {
+      await store.reconcileCashCount(
+        actualCentavos: actual,
+        resolution: resolution,
+        category: _category,
+        note: _noteController.text,
+        incomeAllocation: _incomeAllocation,
+      );
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
     if (!mounted) return;
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(

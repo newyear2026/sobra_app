@@ -1,0 +1,245 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sobra_app/main.dart';
+import 'package:sobra_app/models/cash_reconciliation.dart';
+import 'package:sobra_app/models/expense_entry.dart';
+import 'package:sobra_app/models/income_entry.dart';
+import 'package:sobra_app/models/money_movement.dart';
+import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/state/sobra_store.dart';
+
+Future<SobraStore> _seeded(DateTime Function() now, {int? cash}) async {
+  SharedPreferences.setMockInitialValues({});
+  final store = await SobraStore.load(now: now);
+  await store.configureOnboarding(
+    budgetCentavos: 600000,
+    schedule: const PaySchedule.semiMonthly(),
+    cashCentavos: cash,
+  );
+  return store;
+}
+
+void main() {
+  testWidgets('saving an expense closes its own dialog and returns to Inicio', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(520, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load();
+    await store.configureOnboarding(
+      budgetCentavos: 600000,
+      schedule: const PaySchedule.semiMonthly(),
+      cashCentavos: 200000,
+    );
+    await store.completeOnboarding();
+
+    await tester.pumpWidget(SobraApp(store: store));
+    await tester.pump();
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    await tester.enterText(find.byType(TextFormField).first, '180');
+    await tester.pump();
+    await tester.dragUntilVisible(
+      find.text('Guardar'),
+      find.byType(SingleChildScrollView),
+      const Offset(0, -120),
+    );
+    await tester.pump();
+    await tester.tap(find.text('Guardar'));
+    // Not pumpAndSettle: the cat on Inicio loops forever, so nothing settles.
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+
+    expect(store.transactions, hasLength(1));
+    expect(find.byType(Dialog), findsNothing, reason: 'dialog must close');
+    // The shell hopped back to Inicio, which is where onSaved points it.
+    expect(find.text('Movimientos recientes'), findsOneWidget);
+
+    // And the form it left behind is blank, ready for the next expense.
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    expect(
+      tester
+          .widget<TextFormField>(find.byType(TextFormField).first)
+          .controller
+          ?.text,
+      isEmpty,
+    );
+  });
+
+  test('cycle income still counts after a pay-schedule change', () async {
+    var now = DateTime(2026, 3, 10, 9);
+    final store = await _seeded(() => now);
+    await store.queuePayScheduleChange(const PaySchedule.weekly());
+    final effectiveAt = store.cycleEnd.add(const Duration(days: 1));
+    now = DateTime(effectiveAt.year, effectiveAt.month, effectiveAt.day, 9);
+    await store.refreshForCurrentDate();
+
+    // The floor clamps the first cycle, so raw and real bounds disagree here.
+    expect(store.cycleStart, isNot(store.paySchedule.boundsFor(now).start));
+
+    final before = store.totalBudgetCentavos;
+    final income = await store.addIncome(
+      amountCentavos: 50000,
+      kind: IncomeKind.extra,
+      note: 'Propina',
+      occurredAt: now,
+      destination: PaymentMethod.card,
+      allocation: IncomeAllocation.cycle,
+    );
+    expect(store.totalBudgetCentavos - before, 50000);
+
+    await store.deleteIncome(income.id);
+    expect(store.totalBudgetCentavos, before, reason: 'and it reverses');
+  });
+
+  group('an expense that came from a cash count', () {
+    late SobraStore store;
+    late ExpenseEntry linked;
+
+    Future<void> setUpGap() async {
+      var now = DateTime(2026, 3, 10, 9);
+      store = await _seeded(() => now, cash: 200000);
+      now = DateTime(2026, 3, 11, 9);
+      await store.reconcileCashCount(
+        actualCentavos: 170000,
+        resolution: CashResolution.pending,
+      );
+      linked = store.transactions.firstWhere((e) => e.isLinkedToCashCount);
+    }
+
+    test('cannot be deleted', () async {
+      await setUpGap();
+      expect(await store.deleteExpense(linked.id), isFalse);
+      expect(store.totalSpentCentavos, 30000);
+      expect(store.transactions, hasLength(1));
+    });
+
+    test('keeps its measured amount when edited', () async {
+      await setUpGap();
+      await store.updateExpense(
+        linked.copyWith(
+          amountCentavos: 500,
+          category: ExpenseCategory.food,
+          note: 'Tacos',
+        ),
+      );
+      final after = store.transactions.single;
+      expect(after.amountCentavos, 30000, reason: 'the measurement holds');
+      expect(
+        after.category,
+        ExpenseCategory.food,
+        reason: 'but this is theirs',
+      );
+      expect(after.note, 'Tacos');
+      expect(store.totalSpentCentavos, 30000);
+      expect(store.expectedCashCentavos, 170000);
+    });
+
+    test('an ordinary expense is still fully editable', () async {
+      final fixed = DateTime(2026, 3, 10, 9);
+      final store = await _seeded(() => fixed);
+      final entry = await store.addExpense(
+        amountCentavos: 1000,
+        category: ExpenseCategory.food,
+        note: 'A',
+        occurredAt: fixed,
+        paymentMethod: PaymentMethod.card,
+      );
+      await store.updateExpense(entry.copyWith(amountCentavos: 2500));
+      expect(store.totalSpentCentavos, 2500);
+      expect(await store.deleteExpense(entry.id), isTrue);
+      expect(store.totalSpentCentavos, 0);
+    });
+  });
+
+  test('undo cannot file the same entry twice', () async {
+    final fixed = DateTime(2026, 3, 10, 9);
+    final store = await _seeded(() => fixed);
+    final entry = await store.addExpense(
+      amountCentavos: 1000,
+      category: ExpenseCategory.food,
+      note: 'A',
+      occurredAt: fixed,
+      paymentMethod: PaymentMethod.card,
+    );
+    await store.deleteExpense(entry.id);
+    await store.restoreExpense(entry);
+    await store.restoreExpense(entry);
+    expect(store.transactions, hasLength(1));
+    expect(store.totalSpentCentavos, 1000);
+  });
+
+  test('"adjust proportionally" keeps the user\'s own split', () async {
+    final fixed = DateTime(2026, 3, 10, 9);
+    final store = await _seeded(() => fixed);
+    // The user rebalances: half of everything on food, nothing on pets.
+    await store.setCategoryLimit(ExpenseCategory.food, 300000);
+    await store.setCategoryLimit(ExpenseCategory.pets, 0);
+    final assigned = store.categoryLimits.values.reduce((a, b) => a + b);
+    final foodShare = store.categoryLimits[ExpenseCategory.food]! / assigned;
+
+    await store.setTotalBudget(1200000, adjustCategoryLimits: true);
+
+    final newAssigned = store.categoryLimits.values.reduce((a, b) => a + b);
+    expect(newAssigned, 1200000, reason: 'the plan fills the new budget');
+    expect(
+      store.categoryLimits[ExpenseCategory.food]! / newAssigned,
+      closeTo(foodShare, 0.001),
+      reason: 'their ratio survives',
+    );
+    expect(
+      store.categoryLimits[ExpenseCategory.pets],
+      0,
+      reason: 'a category they zeroed out stays zero',
+    );
+  });
+
+  test('untouched limits still land on the stock split', () async {
+    final fixed = DateTime(2026, 3, 10, 9);
+    final store = await _seeded(() => fixed);
+    await store.setTotalBudget(300000, adjustCategoryLimits: true);
+    expect(store.categoryLimits.values.reduce((a, b) => a + b), 300000);
+    expect(store.categoryLimits[ExpenseCategory.food], 90000);
+  });
+
+  test('ids are not reused after a delete', () async {
+    // A clock that never moves is the worst case: only the sequence separates
+    // one id from the next.
+    final frozen = DateTime(2026, 3, 10, 9);
+    final store = await _seeded(() => frozen);
+    final ids = <String>{};
+    for (var i = 0; i < 5; i++) {
+      final entry = await store.addExpense(
+        amountCentavos: 1000,
+        category: ExpenseCategory.food,
+        note: 'E$i',
+        occurredAt: frozen,
+        paymentMethod: PaymentMethod.card,
+      );
+      ids.add(entry.id);
+      await store.deleteExpense(entry.id);
+    }
+    expect(ids, hasLength(5), reason: 'every id is its own');
+  });
+
+  test('a cash adjustment row carries no plus sign', () async {
+    var now = DateTime(2026, 3, 10, 9);
+    final store = await _seeded(() => now, cash: 200000);
+    now = DateTime(2026, 3, 11, 9);
+    await store.reconcileCashCount(
+      actualCentavos: 250000,
+      resolution: CashResolution.transfer,
+    );
+    final row = store.movements.first;
+    expect(row.type, MovementType.adjustment);
+    // The budget did not move, so the row must not claim income did.
+    expect(store.totalBudgetCentavos, 600000);
+  });
+}

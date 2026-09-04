@@ -49,6 +49,13 @@ class ExpenseEntry {
   final String? cashReconciliationId;
   final bool isPendingCashAdjustment;
 
+  /// Whether this expense exists because a physical cash count came up short.
+  ///
+  /// Its amount is a measurement of money that already left the wallet, not a
+  /// figure the user typed, so it cannot be re-priced or deleted on its own —
+  /// doing that leaves the budget and the cash count telling different stories.
+  bool get isLinkedToCashCount => cashReconciliationId != null;
+
   ExpenseEntry copyWith({
     int? amountCentavos,
     ExpenseCategory? category,
