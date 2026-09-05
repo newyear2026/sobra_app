@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Sobra — 진행 시안</title>
+<style>
+@font-face{
+  font-family:'PixelifySans';
+  src:url('../../assets/fonts/PixelifySans.ttf') format('truetype');
+  font-weight:400 700;
+}
+:root{
+  --paper:#F6EFE0; --paperLight:#FBF5E9; --surface:#FFFDF7; --beige:#EFE7D6; --line:#E7DDC8;
+  --ink:#202848; --inkSoft:#4E5878; --muted:#5F6885;
+  --teal:#0E7A72; --tealSoft:#D8EDEA; --tealInk:#0B6660;
+  --cash:#C0873A; --cashSoft:#F7E9CE; --cashInk:#845A1E;
+  --danger:#D4553F; --dangerSoft:#FBE1DA; --dangerInk:#A63A25;
+  --blue:#39558E; --blueSoft:#DCE4F2; --violet:#6E4A8C; --violetSoft:#E7DCF0;
+  --green:#4F7B52; --rose:#B74769; --roseSoft:#F7DFE6; --slate:#596174; --slateSoft:#E3E5EA;
+  --shadow:rgba(32,40,72,.16);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);font-family:'PixelifySans',monospace;color:var(--ink);-webkit-font-smoothing:none}
+.ko{font-family:'WenQuanYi Zen Hei','Unifont',sans-serif;letter-spacing:.01em}
+
+/* ---------- board chrome ---------- */
+.board{width:1424px;padding:56px 56px 64px;background:var(--paper)}
+.board-head{display:flex;align-items:flex-end;gap:24px;border-bottom:5px solid var(--ink);padding-bottom:22px;margin-bottom:34px}
+.wordmark{font-size:60px;font-weight:700;letter-spacing:.02em}
+.board-head .sub{font-size:19px;color:var(--inkSoft);padding-bottom:12px;flex:1}
+.stamp{border:3px solid var(--ink);background:var(--tealSoft);color:var(--tealInk);
+  font-size:15px;font-weight:700;padding:9px 14px;box-shadow:5px 5px 0 var(--shadow)}
+
+h2.sec{font-size:26px;font-weight:700;margin:38px 0 6px;display:flex;align-items:center;gap:12px}
+h2.sec:before{content:'';width:16px;height:16px;background:var(--teal);display:inline-block}
+p.seclead{font-size:15px;color:var(--muted);margin-bottom:18px}
+
+/* ---------- overview panels ---------- */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.panel{background:var(--surface);border:3px solid var(--ink);padding:18px;box-shadow:6px 6px 0 var(--shadow)}
+.panel h3{font-size:17px;margin-bottom:10px}
+.metric{font-family:'WenQuanYi Zen Hei','Unifont',sans-serif;
+  font-size:42px;font-weight:700;color:var(--teal);line-height:1;letter-spacing:.01em}
+.metric.cash{color:var(--cashInk)} .metric.ink{color:var(--ink)}
+.metric-label{font-size:14px;color:var(--muted);margin-top:6px}
+
+table.mods{width:100%;border-collapse:collapse;background:var(--surface);border:3px solid var(--ink);box-shadow:6px 6px 0 var(--shadow)}
+table.mods th,table.mods td{border-bottom:2px solid var(--line);padding:11px 14px;text-align:left;font-size:15px;vertical-align:middle}
+table.mods th{background:var(--beige);font-weight:700;font-size:14px;border-bottom:3px solid var(--ink)}
+table.mods tr:last-child td{border-bottom:none}
+table.mods td.f{font-size:13px;color:var(--muted)}
+.badge{display:inline-block;border:2.5px solid var(--ink);padding:4px 9px;font-size:13px;font-weight:700;white-space:nowrap}
+.b-done{background:var(--tealSoft);color:var(--tealInk)}
+.b-prev{background:var(--cashSoft);color:var(--cashInk)}
+.b-todo{background:var(--slateSoft);color:var(--slate)}
+.bar{height:16px;border:2.5px solid var(--ink);background:var(--surface);padding:2.5px;display:flex;gap:2px}
+.bar i{flex:1;background:var(--line)} .bar i.on{background:var(--teal)}
+
+ul.notes{list-style:none;font-size:15px;line-height:1.75;color:var(--inkSoft)}
+ul.notes li{padding-left:22px;position:relative}
+ul.notes li:before{content:'';position:absolute;left:0;top:9px;width:9px;height:9px;background:var(--teal)}
+ul.notes li.next:before{background:var(--cash)}
+
+.commits{display:flex;flex-direction:column;gap:0}
+.commit{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:2px solid var(--line)}
+.commit:last-child{border-bottom:none}
+.sha{font-size:14px;font-weight:700;color:var(--teal);border:2.5px solid var(--ink);background:var(--tealSoft);padding:3px 7px}
+.commit .msg{font-size:15px;font-weight:700}
+.commit .det{font-size:13px;color:var(--muted);margin-top:3px}
+
+/* ---------- phone mock ---------- */
+.screens{display:grid;grid-template-columns:repeat(3,390px);gap:52px 63px;justify-content:center;margin-top:8px}
+.mock{width:390px}
+.cap{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.cap .n{width:28px;height:28px;background:var(--ink);color:var(--surface);font-size:15px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.cap .t{font-size:19px;font-weight:700}
+.cap .badge{margin-left:auto}
+.capnote{font-size:13px;color:var(--muted);margin:0 0 10px 37px;line-height:1.5;min-height:38px}
+.phone{width:390px;height:760px;border:4px solid var(--ink);background:var(--surface);
+  box-shadow:9px 9px 0 var(--shadow);overflow:hidden;display:flex;flex-direction:column;position:relative}
+.vp{flex:1;overflow:hidden;padding:16px 20px 0;display:flex;flex-direction:column}
+.vp.flush{padding:0}
+
+/* ---------- in-app pixel primitives ---------- */
+.topbar{display:flex;align-items:center;gap:8px;height:44px}
+.topbar .ttl{font-size:28px;font-weight:700;flex:1}
+.topbar.pushed .ttl{font-size:20px;text-align:center}
+.card{background:var(--surface);border:2.5px solid var(--ink);padding:14px}
+.card.e1{box-shadow:4px 4px 0 var(--shadow)}
+.card.e2{box-shadow:7px 7px 0 var(--shadow)}
+.card.teal{background:var(--tealSoft);border-color:var(--ink)}
+.card.tealb{background:var(--tealSoft);border-color:var(--tealInk)}
+.card.cash{background:var(--cashSoft);border-color:var(--cashInk)}
+.card.beige{background:var(--beige)}
+.lbl{font-size:15px;font-weight:700}
+.sml{font-size:12px;color:var(--muted)}
+.hero-amt{font-size:46px;font-weight:700;color:var(--teal);line-height:1.05}
+.sec-t{font-size:15px;font-weight:700}
+.sec-m{font-size:17px;font-weight:700}
+.prog{height:20px;border:2.5px solid var(--ink);background:var(--surface);padding:3px;display:flex;gap:2px}
+.prog i{flex:1;background:var(--line)}
+.prog i.on{background:var(--teal)} .prog i.bad{background:var(--danger)}
+.row{display:flex;align-items:center;gap:12px}
+.spread{display:flex;align-items:center;justify-content:space-between}
+.ib{width:42px;height:42px;border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.ib.sm{width:38px;height:38px}
+.mv{display:flex;align-items:center;gap:12px;padding:9px 0}
+.mv .nm{font-size:15px;font-weight:700}
+.mv .sb{font-size:12px;color:var(--muted);margin-top:2px}
+.mv .amt{font-size:15px;font-weight:700;margin-left:auto}
+.amt.pos{color:var(--tealInk)}
+.hint{border:2.5px solid var(--ink);padding:11px 12px;display:flex;gap:10px;align-items:flex-start;font-size:12px;line-height:1.5}
+.hint.teal{background:var(--tealSoft);color:var(--tealInk);border-color:var(--tealInk)}
+.hint.cashh{background:var(--cashSoft);color:var(--cashInk);border-color:var(--cashInk)}
+.hint.dang{background:var(--dangerSoft);color:var(--dangerInk);border-color:var(--dangerInk)}
+.hint.neut{background:var(--paperLight);color:var(--inkSoft)}
+.btn{border:2.5px solid var(--ink);background:var(--teal);color:#fff;font-size:15px;font-weight:700;
+  padding:14px;text-align:center;box-shadow:0 5px 0 var(--ink)}
+.btn.sec{background:var(--surface);color:var(--ink);box-shadow:none}
+.seg{display:flex;border:2.5px solid var(--ink);background:var(--surface)}
+.seg > div{flex:1;padding:11px 6px;font-size:14px;font-weight:700;text-align:center;display:flex;
+  align-items:center;justify-content:center;gap:7px}
+.seg > div + div{border-left:2.5px solid var(--ink)}
+.seg > div.on{background:var(--tealSoft);color:var(--tealInk)}
+.field{border:2.5px solid var(--ink);background:var(--surface);padding:13px 14px;font-size:15px;display:flex;align-items:center}
+.field .ph{color:var(--muted)}
+.field.focus{border-color:var(--teal);border-width:3px}
+.field .suf{margin-left:auto;font-size:13px;font-weight:700;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2.5px solid var(--ink);background:var(--surface);padding:8px 10px;font-size:13px;font-weight:700;
+  display:flex;align-items:center;gap:6px}
+.chip.on{background:var(--tealSoft);color:var(--tealInk)}
+.steps{display:flex;gap:5px;height:5px}
+.steps i{flex:1;background:var(--line)} .steps i.on{background:var(--teal)}
+.opt{border:2.5px solid var(--ink);background:var(--surface);padding:12px;display:flex;gap:11px;align-items:center}
+.opt.on{background:var(--tealSoft);border-color:var(--tealInk)}
+.radio{width:20px;height:20px;border:2.5px solid var(--ink);flex:0 0 auto}
+.radio.on{background:var(--teal);box-shadow:inset 0 0 0 3px var(--surface)}
+.sw{width:52px;height:30px;border:2.5px solid var(--ink);background:var(--teal);padding:2px;display:flex;justify-content:flex-end}
+.sw i{width:22px;height:22px;background:var(--surface);border:2.5px solid var(--ink)}
+.sw.off{background:var(--surface);justify-content:flex-start}
+.sw.off i{background:var(--line)}
+.empty{border:2.5px dashed var(--ink);background:var(--paperLight);padding:18px;text-align:center}
+.nav{height:70px;border-top:3px solid var(--ink);display:flex;background:var(--surface);flex:0 0 auto}
+.nav .it{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:12px;font-weight:700}
+.nav .it.on{background:var(--teal);color:#fff}
+.nav .mid{width:76px;padding:9px 9px 13px;flex:0 0 auto}
+.nav .mid > div{height:100%;background:var(--teal);border:2.5px solid var(--ink);box-shadow:0 4px 0 var(--ink);
+  display:flex;align-items:center;justify-content:center}
+.speech{background:var(--surface);border:2.5px solid var(--ink);padding:12px;font-size:14px;font-weight:700}
+.catbox{height:170px;width:var(--fw);margin:0 auto;background-image:var(--sheet);background-repeat:no-repeat;
+  background-position:left top;background-size:auto 170px;image-rendering:pixelated;
+  border:2.5px solid var(--ink);background-color:var(--paperLight)}
+.cat{width:106px;height:112px;background-image:url('../../assets/cats/cat-idle-8.png');
+  background-size:848px auto;background-position:0 0;background-repeat:no-repeat;image-rendering:pixelated;flex:0 0 auto}
+.stack > * + *{margin-top:var(--g,10px)}
+svg.ic{display:block;image-rendering:pixelated}
+</style>
+</head>
+<body>
+
+<!-- ============ 1. OVERVIEW ============ -->
+<section class="board" id="overview">
+  <div class="board-head">
+    <div class="wordmark">Sobra</div>
+    <div class="sub ko">픽셀 아트 가계부 · 멕시코(MXN) · 오프라인 우선<br>진행 현황 시안 — <b>2026.09.05</b> · 브랜치 <b>claude/progress-mockup-images</b></div>
+    <div class="stamp ko">커밋 3개 · v1 기능 골격 완료</div>
+  </div>
+
+  <div class="grid3">
+    <div class="panel">
+      <h3 class="ko">코드 규모</h3>
+      <div class="metric">8,394</div>
+      <div class="metric-label ko">lib/ Dart 코드 라인 (25개 파일)</div>
+      <div style="height:14px"></div>
+      <div class="grid2" style="gap:10px">
+        <div><div class="metric ink" style="font-size:26px">12</div><div class="metric-label ko">화면</div></div>
+        <div><div class="metric ink" style="font-size:26px">6</div><div class="metric-label ko">모델</div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3 class="ko">테스트 / 검증</h3>
+      <div class="metric cash">7</div>
+      <div class="metric-label ko">테스트 파일 (스토어 · XP · 회귀 · 골든)</div>
+      <div style="height:14px"></div>
+      <div class="sml ko" style="line-height:1.7">
+        스토어 로직 · XP 적립 멱등성 · 저장 복구 흐름<br>
+        카테고리 아이콘 / 게이미피케이션 골든 스냅샷
+      </div>
+    </div>
+    <div class="panel">
+      <h3 class="ko">v1 완성도</h3>
+      <div class="bar" style="margin-bottom:10px">
+        <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+        <i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="metric" style="font-size:32px">약 65%</div>
+      <div class="metric-label ko">기능 골격 · 디자인 시스템 완료<br>남은 것: 미션(주간 퀘스트) 실제 연동, 레벨업 연출, 스페인어 카피 최종 교정</div>
+    </div>
+  </div>
+
+  <h2 class="sec ko">지금까지의 커밋</h2>
+  <div class="panel">
+    <div class="commits">
+      <div class="commit">
+        <div class="sha">1ef7566</div>
+        <div>
+          <div class="msg">feat: pixel design system and five-tab shell</div>
+          <div class="det ko">컬러/타이포 토큰, PixelCard·SegmentedProgress 등 픽셀 UI 프리미티브, 5탭 셸,
+            홈·움직임·등록·예산·설정 화면, 현금 카운트, 온보딩, 고양이 8프레임 스프라이트 5종, 디자인 시안 PNG</div>
+        </div>
+      </div>
+      <div class="commit">
+        <div class="sha">8febef2</div>
+        <div>
+          <div class="msg">fix: six correctness bugs in the store and the save flow</div>
+          <div class="det ko">금액 파서(쉼표 처리), 미래 날짜 차단, 현금 차액 분류 검증, 저장 실패 복구,
+            예산 변경 시 카테고리 한도 재배분 등 6건 수정</div>
+        </div>
+      </div>
+      <div class="commit">
+        <div class="sha">aa9065e</div>
+        <div>
+          <div class="msg">feat: add adaptive cycles and XP rewards</div>
+          <div class="det ko">급여 주기 4종(격주/월/주/부정기) + 주기 자동 마감·정산,
+            XP 적립(주기 흑자 100XP · 첫 흑자 보너스 50XP · 한도 이하 하루당 5XP · 주간 현금 카운트 25XP),
+            레벨 5단계, XP 히스토리 화면, 주기 설정 화면</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sec ko">모듈별 상태</h2>
+  <table class="mods">
+    <tr><th class="ko" style="width:210px">모듈</th><th class="ko" style="width:130px">상태</th><th class="ko">내용</th><th class="ko" style="width:250px">파일</th></tr>
+    <tr><td class="ko">디자인 시스템</td><td><span class="badge b-done ko">구현 완료</span></td>
+      <td class="ko">픽셀 토큰(색·타입·깊이 3단계), 카드/버튼/세그먼트/스위치/힌트/빈 상태, 라운드·리플 전면 제거</td><td class="f">theme/app_theme.dart · widgets/pixel_ui.dart</td></tr>
+    <tr><td class="ko">앱 셸 · 5탭</td><td><span class="badge b-done ko">구현 완료</span></td>
+      <td class="ko">Inicio / Movim. / <b>Registrar(중앙 돌출)</b> / Presup. / Ajustes, 탭 간 이동 스코프</td><td class="f">screens/app_shell.dart</td></tr>
+    <tr><td class="ko">가계부 코어</td><td><span class="badge b-done ko">구현 완료</span></td>
+      <td class="ko">지출·수입 기록, 10개 카테고리, 현금/카드 구분, 편집·삭제·되돌리기, 오늘 남은 금액 계산</td><td class="f">state/sobra_store.dart (1,180줄)</td></tr>
+    <tr><td class="ko">현금 대사(conteo)</td><td><span class="badge b-done ko">구현 완료</span></td>
+      <td class="ko">기대 현금 vs 실제 카운트, 차액 6가지 분류(미기록 지출·새 수입·이체·이전 오류·나중에)</td><td class="f">screens/cash_count_screen.dart</td></tr>
+    <tr><td class="ko">적응형 급여 주기</td><td><span class="badge b-done ko">신규</span></td>
+      <td class="ko">격주/월/주/부정기 4종, 짧은 달 자동 보정, 앱 실행 시 지난 주기 일괄 마감·정산</td><td class="f">models/pay_schedule.dart · screens/cycle_settings_screen.dart</td></tr>
+    <tr><td class="ko">XP · 레벨</td><td><span class="badge b-done ko">신규</span></td>
+      <td class="ko">4종 XP 이벤트 자동 적립(멱등 키), 5레벨 「Michi」 타이틀, XP 히스토리 + 계산 근거 보존</td><td class="f">models/xp_event.dart · screens/xp_history_screen.dart</td></tr>
+    <tr><td class="ko">주간 미션(퀘스트)</td><td><span class="badge b-prev ko">시각 프리뷰만</span></td>
+      <td class="ko">화면·카드 디자인은 완성. 아직 XP를 주지 않고 진행도도 저장되지 않음 — 다음 작업 대상</td><td class="f">screens/gamification_preview_screen.dart</td></tr>
+    <tr><td class="ko">온보딩</td><td><span class="badge b-done ko">구현 완료</span></td>
+      <td class="ko">5단계: 소개 → 급여 주기 → 지급일 → 예산 → 첫 현금 카운트(건너뛰기 가능)</td><td class="f">screens/onboarding_screen.dart (881줄)</td></tr>
+    <tr><td class="ko">저장 · 복구</td><td><span class="badge b-done ko">구현 완료</span></td>
+      <td class="ko">shared_preferences 로컬 저장 + 자동 백업, 손상 시 복구 화면(원본 보존·백업 사용·내보내기)</td><td class="f">screens/recovery_screen.dart</td></tr>
+    <tr><td class="ko">고양이 애니메이션</td><td><span class="badge b-done ko">구현 완료</span></td>
+      <td class="ko">8프레임 스프라이트 5종(대기·걷기·계산·저축·축하), 「동작 줄이기」 설정 연동</td><td class="f">widgets/cat_sprite.dart · assets/cats/</td></tr>
+    <tr><td class="ko">동기화 · 계정</td><td><span class="badge b-todo ko">v1 제외</span></td>
+      <td class="ko">계정 없음이 컨셉. 데이터는 기기에만 남고, 설정에서 JSON 백업 복사만 제공</td><td class="f">—</td></tr>
+  </table>
+
+  <div class="grid2" style="margin-top:18px">
+    <div class="panel">
+      <h3 class="ko">이번 단계에서 정해진 규칙</h3>
+      <ul class="notes ko">
+        <li>지출을 <b>기록하는 행위</b>에는 XP를 주지 않는다. 결과(한도 이하로 마감)만 보상한다.</li>
+        <li>모든 XP는 멱등 키로 적립 — 앱을 다시 켜도 중복 지급되지 않는다.</li>
+        <li>주기가 바뀌어도 <b>진행 중인 주기는 건드리지 않는다</b>. 다음 주기부터 적용.</li>
+        <li>깊이 단계는 3개뿐이고, 화면당 hero 카드는 최대 1개.</li>
+        <li>모서리는 전부 직각, 리플 없음 — 누르면 카드가 자기 그림자 위로 내려앉는다.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3 class="ko">다음 작업 후보</h3>
+      <ul class="notes ko">
+        <li class="next">주간 미션 3종 + 주기 미션 1종을 실제 상태에 연결하고 XP 지급</li>
+        <li class="next">레벨업 연출(축하 고양이 8프레임) 및 주기 마감 요약 화면</li>
+        <li class="next">스페인어(멕시코) 카피 원어민 교정</li>
+        <li class="next">위젯 골든 테스트를 화면 9종 전체로 확대</li>
+        <li class="next">접근성: 대비 검증 자동화, 스크린리더 라벨 점검</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. SCREENS ============ -->
+<section class="board" id="screens">
+  <div class="board-head">
+    <div class="wordmark">화면 시안</div>
+    <div class="sub ko">현재 코드(<b>aa9065e</b>) 기준으로 다시 그린 9개 화면 — 앱 안의 문구는 실제와 동일한 스페인어</div>
+    <div class="stamp ko">390 × 760 · 실제 토큰 적용</div>
+  </div>
+  <div class="screens">
+
+  <!-- 1 ONBOARDING -->
+  <div class="mock">
+    <div class="cap"><div class="n">1</div><div class="t ko">온보딩 · 급여 주기</div><span class="badge b-done ko">신규</span></div>
+    <div class="capnote ko">5단계 중 2단계. 여기서 고른 주기가 이후 모든 예산 날짜를 결정한다.</div>
+    <div class="phone"><div class="vp">
+      <div class="steps" style="margin:8px 0 20px"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+      <div style="font-size:24px;font-weight:700;line-height:1.25">¿Cómo recibes<br>tus ingresos?</div>
+      <div class="sml" style="margin-top:8px;line-height:1.5">Esto define las fechas de tu presupuesto.</div>
+      <div class="stack" style="--g:10px;margin-top:20px">
+        <div class="opt on"><div class="radio on"></div><div><div class="lbl" style="color:var(--tealInk)">Quincenal</div><div class="sml" style="color:var(--tealInk)">Dos pagos al mes.</div></div></div>
+        <div class="opt"><div class="radio"></div><div><div class="lbl">Mensual</div><div class="sml">Un pago al mes.</div></div></div>
+        <div class="opt"><div class="radio"></div><div><div class="lbl">Semanal</div><div class="sml">Cada semana.</div></div></div>
+        <div class="opt"><div class="radio"></div><div><div class="lbl">Sin fecha fija</div><div class="sml">Mis ingresos no tienen fecha fija.</div></div></div>
+      </div>
+      <div class="hint neut" style="margin-top:18px">
+        <i class="ic" data-i="calendar" data-s="18" style="color:var(--inkSoft);flex:0 0 auto"></i>
+        <div>Las fechas se ajustan solas en meses cortos.</div>
+      </div>
+      <div style="flex:1"></div>
+      <div class="btn" style="margin-bottom:22px">Continuar</div>
+    </div></div>
+  </div>
+
+  <!-- 2 INICIO -->
+  <div class="mock">
+    <div class="cap"><div class="n">2</div><div class="t ko">Inicio · 홈</div><span class="badge b-done ko">구현 완료</span></div>
+    <div class="capnote ko">「오늘 남은 금액」이 주인공. 이번 커밋에서 레벨 띠(XP)가 그 바로 아래에 새로 들어갔다.</div>
+    <div class="phone">
+      <div class="vp">
+        <div class="topbar"><div class="ttl">Sobra</div><i class="ic" data-i="gear" data-s="26"></i></div>
+        <div class="sec-t" style="margin-top:14px">Hoy te queda</div>
+        <div class="hero-amt" style="margin-top:2px">$189.27 MXN</div>
+
+        <div class="card teal" style="margin-top:16px;padding:12px">
+          <div class="row">
+            <div style="width:42px;height:42px;background:var(--teal);border:2.5px solid var(--ink);color:#fff;
+              font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center">2</div>
+            <div style="flex:1">
+              <div class="lbl">Michi ahorrador</div>
+              <div class="sml" style="color:var(--inkSoft)">235 XP totales</div>
+            </div>
+            <i class="ic" data-i="chev" data-s="22"></i>
+          </div>
+          <div class="prog" style="margin-top:10px">
+            <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <div class="spread" style="margin-top:6px">
+            <div class="sml" style="font-weight:700;color:var(--inkSoft)">85 / 300 XP</div>
+            <div class="sml" style="font-weight:700;color:var(--inkSoft)">Faltan 215 XP</div>
+          </div>
+        </div>
+
+        <div class="spread" style="margin-top:18px"><div class="sec-t">Avance del ciclo</div><div class="sml">11 días</div></div>
+        <div class="prog" style="margin-top:8px">
+          <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="spread" style="margin-top:8px">
+          <div class="sml">Presupuesto <b style="color:var(--ink)">$6,900</b></div>
+          <div class="sml">Gastado <b style="color:var(--ink)">$2,438</b></div>
+        </div>
+
+        <div class="card cash e2" style="margin-top:16px;padding:12px">
+          <div class="row">
+            <i class="ic" data-i="wallet" data-s="32" style="color:var(--cashInk)"></i>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:700;color:var(--cashInk)">Efectivo estimado</div>
+              <div style="font-size:23px;font-weight:700;color:var(--cashInk)">$1,880 MXN</div>
+              <div style="font-size:12px;color:var(--cashInk)">Último conteo: $1,970</div>
+            </div>
+            <i class="ic" data-i="chev" data-s="22" style="color:var(--cashInk)"></i>
+          </div>
+        </div>
+
+        <div class="spread" style="margin-top:16px">
+          <div class="sec-m">Movimientos recientes</div>
+          <div style="font-size:14px;font-weight:700;color:var(--tealInk)">Ver todos</div>
+        </div>
+        <div class="mv"><div class="ib" style="background:var(--roseSoft)"><i class="ic" data-i="cross" data-s="22" style="color:var(--rose)"></i></div>
+          <div><div class="nm">Farmacia</div><div class="sb">Salud · Efectivo</div></div><div class="amt">−$840</div></div>
+        <div class="mv"><div class="ib" style="background:var(--blueSoft)"><i class="ic" data-i="bus" data-s="22" style="color:var(--blue)"></i></div>
+          <div><div class="nm">Metro</div><div class="sb">Transporte · Tarjeta</div></div><div class="amt">−$18</div></div>
+      </div>
+      <div class="nav">
+        <div class="it on"><i class="ic" data-i="home" data-s="24"></i><div>Inicio</div></div>
+        <div class="it"><i class="ic" data-i="list" data-s="24"></i><div>Movim.</div></div>
+        <div class="mid"><div><i class="ic" data-i="plus" data-s="26" style="color:#fff"></i></div></div>
+        <div class="it"><i class="ic" data-i="chart" data-s="24"></i><div>Presup.</div></div>
+        <div class="it"><i class="ic" data-i="gear" data-s="24"></i><div>Ajustes</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 MOVIMIENTOS -->
+  <div class="mock">
+    <div class="cap"><div class="n">3</div><div class="t ko">Movimientos · 내역</div><span class="badge b-done ko">구현 완료</span></div>
+    <div class="capnote ko">날짜별 묶음. 현금 대사에서 생긴 「미확인 차액」 행은 따로 표시되고, 삭제하면 되돌리기가 뜬다.</div>
+    <div class="phone">
+      <div class="vp">
+        <div class="topbar"><div class="ttl">Movimientos</div></div>
+        <div class="sec-t" style="margin:16px 0 6px">Hoy</div>
+        <div class="mv"><div class="ib" style="background:var(--dangerSoft)"><i class="ic" data-i="bowl" data-s="22" style="color:var(--danger)"></i></div>
+          <div><div class="nm">Taquería El Faro</div><div class="sb">Comida · Efectivo</div></div><div class="amt">−$180</div></div>
+        <div class="mv"><div class="ib" style="background:var(--blueSoft)"><i class="ic" data-i="bus" data-s="22" style="color:var(--blue)"></i></div>
+          <div><div class="nm">Metro</div><div class="sb">Transporte · Tarjeta</div></div><div class="amt">−$18</div></div>
+        <div class="mv"><div class="ib" style="background:var(--slateSoft)"><i class="ic" data-i="coin" data-s="22" style="color:var(--slate)"></i></div>
+          <div><div class="nm">Diferencia por identificar</div><div class="sb" style="color:var(--cashInk)">Pendiente · Efectivo</div></div><div class="amt">−$190</div></div>
+        <div class="sec-t" style="margin:14px 0 6px">Ayer</div>
+        <div class="mv"><div class="ib" style="background:var(--roseSoft)"><i class="ic" data-i="cross" data-s="22" style="color:var(--rose)"></i></div>
+          <div><div class="nm">Farmacia</div><div class="sb">Salud · Efectivo</div></div><div class="amt">−$840</div></div>
+        <div class="mv"><div class="ib" style="background:var(--tealSoft)"><i class="ic" data-i="coin" data-s="22" style="color:var(--teal)"></i></div>
+          <div><div class="nm">Propina del viernes</div><div class="sb">Extra · Este ciclo</div></div><div class="amt pos">+$1,200</div></div>
+        <div class="sec-t" style="margin:14px 0 6px">28 ago</div>
+        <div class="mv"><div class="ib" style="background:var(--violetSoft)"><i class="ic" data-i="bag" data-s="22" style="color:var(--violet)"></i></div>
+          <div><div class="nm">Mercado</div><div class="sb">Compras · Tarjeta</div></div><div class="amt">−$610</div></div>
+
+        <div class="hint cashh" style="margin-top:16px">
+          <i class="ic" data-i="wallet" data-s="18" style="flex:0 0 auto"></i>
+          <div>Este gasto viene de un conteo de efectivo. Vuelve a contar para corregirlo.</div>
+        </div>
+        <div class="card e1" style="margin-top:14px;padding:11px;background:var(--ink);border-color:var(--ink)">
+          <div class="row"><div style="flex:1;font-size:14px;color:#fff">Movimiento eliminado.</div>
+            <div style="font-size:14px;font-weight:700;color:var(--tealSoft)">Deshacer</div></div>
+        </div>
+      </div>
+      <div class="nav">
+        <div class="it"><i class="ic" data-i="home" data-s="24"></i><div>Inicio</div></div>
+        <div class="it on"><i class="ic" data-i="list" data-s="24"></i><div>Movim.</div></div>
+        <div class="mid"><div><i class="ic" data-i="plus" data-s="26" style="color:#fff"></i></div></div>
+        <div class="it"><i class="ic" data-i="chart" data-s="24"></i><div>Presup.</div></div>
+        <div class="it"><i class="ic" data-i="gear" data-s="24"></i><div>Ajustes</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 REGISTRAR -->
+  <div class="mock">
+    <div class="cap"><div class="n">4</div><div class="t ko">Registrar · 등록</div><span class="badge b-done ko">구현 완료</span></div>
+    <div class="capnote ko">앱이 존재하는 이유라서 하단 탭 중앙에 돌출 버튼으로 뺐다. 현금/카드 구분이 현금 대사와 직결된다.</div>
+    <div class="phone">
+      <div class="vp">
+        <div class="topbar"><div class="ttl">Registrar</div></div>
+        <div class="seg" style="margin-top:14px">
+          <div class="on"><i class="ic" data-i="bowl" data-s="18"></i>Gasto</div>
+          <div><i class="ic" data-i="coin" data-s="18"></i>Ingreso</div>
+        </div>
+        <div class="sec-t" style="margin:18px 0 8px">Monto</div>
+        <div class="field focus"><span>180</span><span class="suf">MXN</span></div>
+        <div class="sec-t" style="margin:16px 0 8px">Categoría</div>
+        <div class="chips">
+          <div class="chip on"><i class="ic" data-i="bowl" data-s="16"></i>Comida</div>
+          <div class="chip"><i class="ic" data-i="bus" data-s="16"></i>Transporte</div>
+          <div class="chip"><i class="ic" data-i="bag" data-s="16"></i>Compras</div>
+          <div class="chip"><i class="ic" data-i="home" data-s="16"></i>Hogar</div>
+          <div class="chip"><i class="ic" data-i="cross" data-s="16"></i>Salud</div>
+          <div class="chip"><i class="ic" data-i="coin" data-s="16"></i>Otros</div>
+        </div>
+        <div class="sec-t" style="margin:16px 0 8px">Pago</div>
+        <div class="seg"><div class="on"><i class="ic" data-i="wallet" data-s="18"></i>Efectivo</div><div>Tarjeta</div></div>
+        <div class="sec-t" style="margin:16px 0 8px">Nota</div>
+        <div class="field"><span class="ph">Ej. Taquería El Faro</span></div>
+        <div class="sec-t" style="margin:16px 0 8px">Fecha</div>
+        <div class="field"><span>Hoy · 5 sept</span><i class="ic" data-i="calendar" data-s="20" style="margin-left:auto;color:var(--teal)"></i></div>
+        <div style="flex:1"></div>
+        <div class="btn" style="margin-bottom:20px">Guardar</div>
+      </div>
+      <div class="nav">
+        <div class="it"><i class="ic" data-i="home" data-s="24"></i><div>Inicio</div></div>
+        <div class="it"><i class="ic" data-i="list" data-s="24"></i><div>Movim.</div></div>
+        <div class="mid"><div style="box-shadow:none;transform:translateY(4px);background:var(--tealInk)"><i class="ic" data-i="plus" data-s="26" style="color:#fff"></i></div></div>
+        <div class="it"><i class="ic" data-i="chart" data-s="24"></i><div>Presup.</div></div>
+        <div class="it"><i class="ic" data-i="gear" data-s="24"></i><div>Ajustes</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 PRESUPUESTO -->
+  <div class="mock">
+    <div class="cap"><div class="n">5</div><div class="t ko">Presupuesto · 예산</div><span class="badge b-done ko">구현 완료</span></div>
+    <div class="capnote ko">총액을 바꾸면 카테고리 한도를 비례 조정할지 묻는다. 한도를 넘긴 줄은 빨강으로 뒤집힌다.</div>
+    <div class="phone">
+      <div class="vp">
+        <div class="topbar"><div class="ttl">Presupuesto</div></div>
+        <div class="sec-m" style="margin-top:14px">Total del ciclo</div>
+        <div class="card e2" style="margin-top:8px">
+          <div class="row"><div style="flex:1;font-size:38px;font-weight:700">$6,900 MXN</div>
+            <i class="ic" data-i="pencil" data-s="22" style="color:var(--teal)"></i></div>
+        </div>
+        <div class="sec-m" style="margin-top:20px">Presupuesto por categoría</div>
+        <div class="stack" style="--g:12px;margin-top:10px">
+          <div class="card">
+            <div class="row"><div class="ib" style="background:var(--dangerSoft)"><i class="ic" data-i="bowl" data-s="22" style="color:var(--danger)"></i></div>
+              <div style="flex:1">
+                <div class="spread"><div class="lbl">Comida</div><div class="sml" style="font-weight:700">$1,420 / $2,000</div></div>
+                <div class="prog" style="margin-top:7px;height:18px"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+              </div></div>
+          </div>
+          <div class="card">
+            <div class="row"><div class="ib" style="background:var(--blueSoft)"><i class="ic" data-i="bus" data-s="22" style="color:var(--blue)"></i></div>
+              <div style="flex:1">
+                <div class="spread"><div class="lbl">Transporte</div><div class="sml" style="font-weight:700">$318 / $700</div></div>
+                <div class="prog" style="margin-top:7px;height:18px"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              </div></div>
+          </div>
+          <div class="card">
+            <div class="row"><div class="ib" style="background:var(--roseSoft)"><i class="ic" data-i="cross" data-s="22" style="color:var(--rose)"></i></div>
+              <div style="flex:1">
+                <div class="spread"><div class="lbl">Salud</div><div class="sml" style="font-weight:700;color:var(--dangerInk)">$840 / $600</div></div>
+                <div class="prog" style="margin-top:7px;height:18px"><i class="bad"></i><i class="bad"></i><i class="bad"></i><i class="bad"></i><i class="bad"></i><i class="bad"></i><i class="bad"></i><i class="bad"></i><i class="bad"></i><i class="bad"></i><i class="bad"></i><i class="bad"></i></div>
+              </div></div>
+          </div>
+          <div class="card">
+            <div class="row"><div class="ib" style="background:var(--violetSoft)"><i class="ic" data-i="bag" data-s="22" style="color:var(--violet)"></i></div>
+              <div style="flex:1">
+                <div class="spread"><div class="lbl">Compras</div><div class="sml" style="font-weight:700">$610 / $900</div></div>
+                <div class="prog" style="margin-top:7px;height:18px"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+              </div></div>
+          </div>
+        </div>
+        <div class="hint dang" style="margin-top:14px">
+          <i class="ic" data-i="cross" data-s="18" style="flex:0 0 auto"></i>
+          <div>Salud pasó su límite. Ajusta el límite o mueve el gasto a otra categoría.</div>
+        </div>
+      </div>
+      <div class="nav">
+        <div class="it"><i class="ic" data-i="home" data-s="24"></i><div>Inicio</div></div>
+        <div class="it"><i class="ic" data-i="list" data-s="24"></i><div>Movim.</div></div>
+        <div class="mid"><div><i class="ic" data-i="plus" data-s="26" style="color:#fff"></i></div></div>
+        <div class="it on"><i class="ic" data-i="chart" data-s="24"></i><div>Presup.</div></div>
+        <div class="it"><i class="ic" data-i="gear" data-s="24"></i><div>Ajustes</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 CONTEO -->
+  <div class="mock">
+    <div class="cap"><div class="n">6</div><div class="t ko">Conteo · 현금 대사</div><span class="badge b-done ko">구현 완료</span></div>
+    <div class="capnote ko">지갑 속 현금을 세면 앱이 차액을 계산하고, 그 차액을 무엇으로 처리할지 6가지 중에서 고르게 한다.</div>
+    <div class="phone"><div class="vp">
+      <div class="topbar pushed"><i class="ic" data-i="back" data-s="26"></i><div class="ttl">Conteo de efectivo</div><div style="width:26px"></div></div>
+      <div class="hint teal" style="margin-top:16px">
+        <i class="ic" data-i="wallet" data-s="18" style="flex:0 0 auto"></i>
+        <div>Cuenta solo el efectivo que tienes ahora.</div>
+      </div>
+      <div class="field focus" style="margin-top:14px;font-size:26px;font-weight:700">1,690<span class="suf">MXN</span></div>
+      <div class="row" style="margin-top:14px;gap:10px;align-items:stretch">
+        <div class="card" style="flex:1;padding:12px">
+          <div class="sml">Esperábamos</div><div style="font-size:20px;font-weight:700;margin-top:2px">$1,880</div></div>
+        <div class="card" style="flex:1;padding:12px">
+          <div class="sml">Contaste</div><div style="font-size:20px;font-weight:700;margin-top:2px">$1,690</div></div>
+      </div>
+      <div class="card e1" style="margin-top:12px;background:var(--dangerSoft);border-color:var(--dangerInk);padding:12px">
+        <div class="row"><i class="ic" data-i="coin" data-s="26" style="color:var(--dangerInk)"></i>
+          <div><div style="font-size:19px;font-weight:700;color:var(--dangerInk)">Faltan $190</div>
+            <div style="font-size:12px;color:var(--dangerInk)">Elige qué pasó con la diferencia.</div></div></div>
+      </div>
+      <div class="sec-t" style="margin:16px 0 8px">¿Qué pasó?</div>
+      <div class="stack" style="--g:9px">
+        <div class="opt on"><div class="radio on"></div><div style="font-size:13px;color:var(--tealInk);line-height:1.4">Fue un gasto que no habías registrado.</div></div>
+        <div class="opt"><div class="radio"></div><div style="font-size:13px;line-height:1.4">Lo depositaste o lo moviste a otra cuenta.</div></div>
+        <div class="opt"><div class="radio"></div><div style="font-size:13px;line-height:1.4">Decídelo después.</div></div>
+      </div>
+      <div class="sec-t" style="margin:14px 0 8px">Categoría</div>
+      <div class="chips">
+        <div class="chip on"><i class="ic" data-i="bowl" data-s="16"></i>Comida</div>
+        <div class="chip"><i class="ic" data-i="bus" data-s="16"></i>Transporte</div>
+        <div class="chip"><i class="ic" data-i="coin" data-s="16"></i>Otros</div>
+      </div>
+      <div style="flex:1"></div>
+      <div class="btn" style="margin-bottom:20px">Guardar conteo</div>
+    </div></div>
+  </div>
+
+  <!-- 7 HISTORIAL XP -->
+  <div class="mock">
+    <div class="cap"><div class="n">7</div><div class="t ko">Historial de XP</div><span class="badge b-done ko">신규</span></div>
+    <div class="capnote ko">각 줄이 XP를 준 이유와 계산 근거(예산 · 지출 · 기간)를 그대로 보관한다. 앱을 껐다 켜도 남는다.</div>
+    <div class="phone"><div class="vp">
+      <div class="topbar pushed"><i class="ic" data-i="back" data-s="26"></i><div class="ttl">Historial de XP</div><div style="width:26px"></div></div>
+      <div class="card teal" style="margin-top:16px;padding:12px">
+        <div class="row">
+          <div style="width:42px;height:42px;background:var(--teal);border:2.5px solid var(--ink);color:#fff;
+            font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center">2</div>
+          <div style="flex:1"><div class="lbl">Michi ahorrador</div><div class="sml" style="color:var(--inkSoft)">235 XP totales</div></div>
+        </div>
+        <div class="prog" style="margin-top:10px"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="spread" style="margin-top:6px">
+          <div class="sml" style="font-weight:700;color:var(--inkSoft)">85 / 300 XP</div>
+          <div class="sml" style="font-weight:700;color:var(--inkSoft)">Faltan 215 XP</div></div>
+      </div>
+      <div class="hint teal" style="margin-top:14px">
+        <i class="ic" data-i="check" data-s="18" style="flex:0 0 auto"></i>
+        <div>El XP se acredita automáticamente. Cada fila conserva la razón y el cálculo, aunque cierres la app.</div>
+      </div>
+      <div class="sec-t" style="margin:20px 0 8px">31 ago 2026</div>
+      <div class="stack" style="--g:9px">
+        <div class="card" style="padding:12px">
+          <div class="row"><div class="ib sm" style="background:var(--tealSoft);border-width:2px"><i class="ic" data-i="check" data-s="18" style="color:var(--tealInk)"></i></div>
+            <div style="flex:1"><div class="lbl">Cerraste la quincena en verde</div><div class="sml">Resultado del presupuesto al cerrar</div></div>
+            <div style="font-size:17px;font-weight:700;color:var(--tealInk)">+100</div></div>
+          <div class="sml" style="margin-top:9px;border-top:2px solid var(--line);padding-top:8px">16–31 ago · $5,410 de $6,900</div>
+        </div>
+        <div class="card" style="padding:12px">
+          <div class="row"><div class="ib sm" style="background:var(--cashSoft);border-width:2px"><i class="ic" data-i="star" data-s="18" style="color:var(--cashInk)"></i></div>
+            <div style="flex:1"><div class="lbl">Primer ciclo en verde</div><div class="sml">Bono de una sola vez</div></div>
+            <div style="font-size:17px;font-weight:700;color:var(--tealInk)">+50</div></div>
+        </div>
+        <div class="card" style="padding:12px">
+          <div class="row"><div class="ib sm" style="background:var(--blueSoft);border-width:2px"><i class="ic" data-i="calendar" data-s="18" style="color:var(--blue)"></i></div>
+            <div style="flex:1"><div class="lbl">12 días bajo tu límite</div><div class="sml">Calculado una sola vez al cerrar</div></div>
+            <div style="font-size:17px;font-weight:700;color:var(--tealInk)">+60</div></div>
+        </div>
+      </div>
+      <div class="sec-t" style="margin:16px 0 8px">30 ago 2026</div>
+      <div class="card" style="padding:12px">
+        <div class="row"><div class="ib sm" style="background:var(--cashSoft);border-width:2px"><i class="ic" data-i="wallet" data-s="18" style="color:var(--cashInk)"></i></div>
+          <div style="flex:1"><div class="lbl">Conteo de efectivo</div><div class="sml">Primer conteo con XP de la semana</div></div>
+          <div style="font-size:17px;font-weight:700;color:var(--tealInk)">+25</div></div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- 8 TU CICLO -->
+  <div class="mock">
+    <div class="cap"><div class="n">8</div><div class="t ko">Tu ciclo · 주기 설정</div><span class="badge b-done ko">신규</span></div>
+    <div class="capnote ko">주기를 바꿔도 진행 중인 주기는 그대로 두고 다음 주기부터 적용한다 — 화면이 그 약속을 먼저 보여준다.</div>
+    <div class="phone"><div class="vp">
+      <div class="topbar pushed"><i class="ic" data-i="back" data-s="26"></i><div class="ttl">Tu ciclo</div><div style="width:26px"></div></div>
+      <div class="sec-m" style="margin-top:16px">Ciclo actual</div>
+      <div class="card tealb" style="margin-top:8px;padding:12px">
+        <div class="row"><i class="ic" data-i="calendar" data-s="22" style="color:var(--tealInk)"></i>
+          <div style="flex:1"><div class="lbl" style="color:var(--tealInk)">En curso</div>
+            <div style="font-size:14px;color:var(--inkSoft)">1–15 sept 2026</div></div>
+          <div style="font-size:13px;font-weight:700;color:var(--teal)">No cambiará</div></div>
+      </div>
+      <div class="sec-m" style="margin-top:20px">Nueva frecuencia</div>
+      <div class="field" style="margin-top:8px"><span>Quincenal</span>
+        <i class="ic" data-i="chevdown" data-s="20" style="margin-left:auto;color:var(--teal)"></i></div>
+      <div class="sec-t" style="margin:18px 0 8px">¿Qué día recibes dinero?</div>
+      <div class="stack" style="--g:9px">
+        <div class="opt on"><div class="radio on"></div><div><div class="lbl" style="color:var(--tealInk)">Primer pago · día 15</div></div></div>
+        <div class="opt"><div class="radio"></div><div><div class="lbl">Segundo pago · fin de mes</div></div></div>
+      </div>
+      <div class="sec-m" style="margin-top:20px">Tu ciclo quedaría así</div>
+      <div class="card e1" style="margin-top:8px">
+        <div class="spread"><div class="lbl">16–30 sept 2026</div><div class="sml" style="font-weight:700">15 días</div></div>
+        <div class="prog" style="margin-top:10px"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+        <div class="sml" style="margin-top:8px;line-height:1.5">Las fechas se ajustan solas en meses cortos.</div>
+      </div>
+      <div class="hint neut" style="margin-top:14px">
+        <i class="ic" data-i="star" data-s="18" style="flex:0 0 auto;color:var(--teal)"></i>
+        <div>Al cerrar cada ciclo, Sobra reparte el XP que ganaste sin que tengas que abrir la app.</div>
+      </div>
+      <div style="flex:1"></div>
+      <div class="btn" style="margin-bottom:20px">Guardar cambios</div>
+    </div></div>
+  </div>
+
+  <!-- 9 AJUSTES -->
+  <div class="mock">
+    <div class="cap"><div class="n">9</div><div class="t ko">Ajustes · 설정</div><span class="badge b-prev ko">일부 프리뷰</span></div>
+    <div class="capnote ko">「Vista previa XP」는 아직 시각 프리뷰 전용 화면으로 연결된다 — 미션은 XP를 주지 않는다는 사실을 화면 안에서 밝힌다.</div>
+    <div class="phone">
+      <div class="vp">
+        <div class="topbar"><div class="ttl">Ajustes</div></div>
+        <div class="stack" style="--g:10px;margin-top:16px">
+          <div class="card"><div class="row"><i class="ic" data-i="coin" data-s="22" style="color:var(--cashInk)"></i>
+            <div style="flex:1"><div class="lbl">Moneda</div><div class="sml">Esta opción queda fija en la versión 1.</div></div>
+            <div class="lbl" style="color:var(--muted)">MXN</div></div></div>
+          <div class="card"><div class="row"><i class="ic" data-i="calendar" data-s="22" style="color:var(--teal)"></i>
+            <div style="flex:1"><div class="lbl">Ciclo de presupuesto</div><div class="sml">Quincenal · 1–15 sept</div></div>
+            <i class="ic" data-i="chev" data-s="20"></i></div></div>
+          <div class="card"><div class="row"><i class="ic" data-i="wallet" data-s="22" style="color:var(--cashInk)"></i>
+            <div style="flex:1"><div class="lbl">Día de conteo</div><div class="sml">Domingo</div></div>
+            <i class="ic" data-i="chev" data-s="20"></i></div></div>
+          <div class="card"><div class="row"><i class="ic" data-i="star" data-s="22" style="color:var(--teal)"></i>
+            <div style="flex:1"><div class="lbl">Niveles y XP</div><div class="sml">Nivel 2 · Michi ahorrador</div></div>
+            <i class="ic" data-i="chev" data-s="20"></i></div></div>
+          <div class="card" style="background:var(--cashSoft);border-color:var(--cashInk)"><div class="row">
+            <i class="ic" data-i="star" data-s="22" style="color:var(--cashInk)"></i>
+            <div style="flex:1"><div class="lbl" style="color:var(--cashInk)">Vista previa XP</div>
+              <div class="sml" style="color:var(--cashInk)">Solo es la capa visual. Todavía no entrega XP.</div></div>
+            <i class="ic" data-i="chev" data-s="20" style="color:var(--cashInk)"></i></div></div>
+          <div class="card"><div class="row">
+            <div style="flex:1"><div class="lbl">Reducir movimiento</div><div class="sml">Se activa solo si tu teléfono ya lo pide.</div></div>
+            <div class="sw"><i></i></div></div></div>
+          <div class="card"><div class="row"><i class="ic" data-i="receipt" data-s="22"></i>
+            <div style="flex:1"><div class="lbl">Respaldo de datos</div><div class="sml">Copia un JSON al portapapeles.</div></div>
+            <div class="chip">Copiar</div></div></div>
+          <div class="card"><div class="row"><i class="ic" data-i="star" data-s="22" style="color:var(--violet)"></i>
+            <div style="flex:1"><div class="lbl">Diseño</div><div class="sml">Pixel · Esta opción queda fija en la versión 1.</div></div>
+            <div class="lbl" style="color:var(--muted)">Pixel</div></div></div>
+        </div>
+      </div>
+      <div class="nav">
+        <div class="it"><i class="ic" data-i="home" data-s="24"></i><div>Inicio</div></div>
+        <div class="it"><i class="ic" data-i="list" data-s="24"></i><div>Movim.</div></div>
+        <div class="mid"><div><i class="ic" data-i="plus" data-s="26" style="color:#fff"></i></div></div>
+        <div class="it"><i class="ic" data-i="chart" data-s="24"></i><div>Presup.</div></div>
+        <div class="it on"><i class="ic" data-i="gear" data-s="24"></i><div>Ajustes</div></div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+  <h2 class="sec ko">고양이 스프라이트 · 8프레임 × 5종</h2>
+  <p class="seclead ko">전부 이 앱을 위해 그린 원본. 코드가 한 장의 시트에서 프레임을 잘라 재생하고, 「동작 줄이기」가 켜져 있으면 첫 프레임에서 멈춘다.</p>
+  <div class="panel" style="display:grid;grid-template-columns:repeat(5,1fr);gap:20px">
+    <div style="text-align:center">
+      <div class="catbox" style="--sheet:url('../../assets/cats/cat-idle-8.png');--fw:162px"></div>
+      <div class="lbl" style="margin-top:8px">idle</div><div class="sml ko">홈 · 대기</div></div>
+    <div style="text-align:center">
+      <div class="catbox" style="--sheet:url('../../assets/cats/cat-walk-8.png');--fw:182px"></div>
+      <div class="lbl" style="margin-top:8px">walk</div><div class="sml ko">온보딩 · 이동</div></div>
+    <div style="text-align:center">
+      <div class="catbox" style="--sheet:url('../../assets/cats/cat-expense-8.png');--fw:148px"></div>
+      <div class="lbl" style="margin-top:8px">calculate</div><div class="sml ko">등록 · 계산</div></div>
+    <div style="text-align:center">
+      <div class="catbox" style="--sheet:url('../../assets/cats/cat-saving-8.png');--fw:166px"></div>
+      <div class="lbl" style="margin-top:8px">saving</div><div class="sml ko">수입 · 저축</div></div>
+    <div style="text-align:center">
+      <div class="catbox" style="--sheet:url('../../assets/cats/cat-celebrate-8.png');--fw:138px"></div>
+      <div class="lbl" style="margin-top:8px">celebrate</div><div class="sml ko">레벨업 · 축하</div></div>
+  </div>
+</section>
+
+<script>
+/* 8x8 pixel icon set — drawn on a grid so the icons belong to the same
+   language as the rest of the design instead of borrowing a vector set. */
+const G = {
+  gear:     ["...##...",".######.",".##..##.","###..###","###..###",".##..##.",".######.","...##..."],
+  home:     ["...##...","..####..",".######.","########","##....##","##.##.##","##.##.##","##.##.##"],
+  list:     ["##.#####","........","##.#####","........","##.#####","........","##.#####","........"],
+  chart:    ["........","......##","......##","...##.##","...##.##","##.##.##","##.##.##","##.##.##"],
+  plus:     ["........","...##...","...##...",".######.",".######.","...##...","...##...","........"],
+  cross:    ["........","...##...","...##...",".######.",".######.","...##...","...##...","........"],
+  wallet:   ["........","#######.","#.....#.","#.....##","#...##.#","#...##.#","#.....#.","#######."],
+  chev:     ["..#.....","..##....","...##...","....##..","....##..","...##...","..##....","..#....."],
+  chevdown: ["........","........","#......#","##....##",".##..##.","..####..","...##...","........"],
+  back:     ["........","...#....","..##....",".#######",".#######","..##....","...#....","........"],
+  star:     ["...##...","...##...",".######.","########",".######.","..####..",".##..##.","........"],
+  calendar: [".#....#.","########","#......#","#.##.#.#","#......#","#.#.##.#","#......#","########"],
+  check:    ["........","......##",".....##.","....##..","##.##...","####....",".##.....","........"],
+  pencil:   [".....###","....####","...###.#","..###...",".###....","###.....","##.#....","###....."],
+  bowl:     ["..#..#..","..#..#..","........","########","########",".######.","..####..","........"],
+  bus:      [".######.","########","#.####.#","#.####.#","########","########",".#....#.","##....##"],
+  bag:      ["..#..#..",".######.","########","##....##","##....##","##....##","##....##","########"],
+  coin:     ["..####..",".##..##.","##.##.##","##.##.##","##.##.##","##.##.##",".##..##.","..####.."],
+  receipt:  ["#######.","#.....#.","#.###.#.","#.....#.","#.###.#.","#.....#.","#..#..#.","#.#.#.#."],
+};
+document.querySelectorAll('i.ic').forEach(node => {
+  const grid = G[node.dataset.i];
+  if (!grid) { console.warn('missing icon', node.dataset.i); return; }
+  const size = node.dataset.s || 24;
+  let rects = '';
+  grid.forEach((row, y) => {
+    for (let x = 0; x < row.length; x++) {
+      if (row[x] === '#') rects += `<rect x="${x}" y="${y}" width="1" height="1"/>`;
+    }
+  });
+  node.outerHTML =
+    `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 8 8" ` +
+    `style="${node.getAttribute('style') || ''}" fill="currentColor" ` +
+    `shape-rendering="crispEdges">${rects}</svg>`;
+});
+</script>
+</body>
+</html>
