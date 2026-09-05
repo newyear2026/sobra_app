@@ -7,7 +7,9 @@ import 'package:sobra_app/models/expense_entry.dart';
 import 'package:sobra_app/models/income_entry.dart';
 import 'package:sobra_app/models/money_movement.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/screens/cash_count_screen.dart';
 import 'package:sobra_app/state/sobra_store.dart';
+import 'package:sobra_app/widgets/pixel_ui.dart';
 
 Future<SobraStore> _seeded(DateTime Function() now, {int? cash}) async {
   SharedPreferences.setMockInitialValues({});
@@ -21,6 +23,16 @@ Future<SobraStore> _seeded(DateTime Function() now, {int? cash}) async {
 }
 
 void main() {
+  test('money parser treats display commas as grouping separators', () {
+    expect(parsePesos('1,200'), 120000);
+    expect(parsePesos(r'$1,200.50 MXN'), 120050);
+    expect(parsePesos('1200,50'), 120050);
+    expect(parsePesos('1,000,000'), 100000000);
+    expect(parseNonNegativePesos('0'), 0);
+    expect(parsePesos('1,20,0'), isNull);
+    expect(parseNonNegativePesos('.'), isNull);
+  });
+
   testWidgets('saving an expense closes its own dialog and returns to Inicio', (
     tester,
   ) async {
@@ -73,6 +85,32 @@ void main() {
     );
   });
 
+  testWidgets('a cash shortage offers transfer and correction choices', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(520, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final fixed = DateTime(2026, 3, 10, 9);
+    final store = await _seeded(() => fixed, cash: 200000);
+    await tester.pumpWidget(
+      SobraScope(
+        store: store,
+        child: const MaterialApp(home: CashCountScreen()),
+      ),
+    );
+
+    await tester.enterText(find.byType(TextField).first, '1700');
+    await tester.pump();
+
+    expect(find.text('Gasto identificado'), findsOneWidget);
+    expect(find.text('Movimiento entre cuentas'), findsOneWidget);
+    expect(find.text('Corrección del conteo'), findsOneWidget);
+    expect(find.text('Ingreso en efectivo'), findsNothing);
+  });
+
   test('cycle income still counts after a pay-schedule change', () async {
     var now = DateTime(2026, 3, 10, 9);
     final store = await _seeded(() => now);
@@ -97,6 +135,31 @@ void main() {
 
     await store.deleteIncome(income.id);
     expect(store.totalBudgetCentavos, before, reason: 'and it reverses');
+  });
+
+  test('saving the displayed budget does not add cycle income twice', () async {
+    final fixed = DateTime(2026, 3, 10, 9);
+    final store = await _seeded(() => fixed);
+    await store.addIncome(
+      amountCentavos: 50000,
+      kind: IncomeKind.extra,
+      note: 'Propina',
+      occurredAt: fixed,
+      destination: PaymentMethod.card,
+      allocation: IncomeAllocation.cycle,
+    );
+
+    expect(store.baseBudgetCentavos, 600000);
+    expect(store.totalBudgetCentavos, 650000);
+
+    await store.setTotalBudget(store.totalBudgetCentavos);
+
+    expect(store.baseBudgetCentavos, 600000);
+    expect(store.totalBudgetCentavos, 650000);
+
+    final restored = await SobraStore.load(now: () => fixed);
+    expect(restored.baseBudgetCentavos, 600000);
+    expect(restored.totalBudgetCentavos, 650000);
   });
 
   group('an expense that came from a cash count', () {

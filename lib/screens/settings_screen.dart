@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -6,6 +7,8 @@ import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/pixel_ui.dart';
 import 'cycle_settings_screen.dart';
+import 'gamification_preview_screen.dart';
+import 'xp_history_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -101,6 +104,27 @@ class SettingsScreen extends StatelessWidget {
               );
             },
           ),
+          _SettingsRow(
+            icon: Icons.star_outline,
+            iconColor: AppColors.teal,
+            label: 'Niveles y XP',
+            value: 'Nivel ${store.xpProgress.level}',
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const XpHistoryScreen()),
+            ),
+          ),
+          if (kDebugMode)
+            _SettingsRow(
+              icon: Icons.auto_awesome,
+              iconColor: AppColors.violet,
+              label: 'Vista previa XP',
+              value: 'Diseño',
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const GamificationPreviewScreen(),
+                ),
+              ),
+            ),
           const SizedBox(height: 18),
           Text(
             'Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobra.',

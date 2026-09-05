@@ -71,6 +71,38 @@ void main() {
     expect(store.dailyAllowanceCentavos, 49090);
   });
 
+  test('irregular planning windows renew continuously', () async {
+    final store = await loadStore();
+    await store.configureOnboarding(
+      budgetCentavos: 700000,
+      schedule: PaySchedule.irregular(
+        planningHorizonDays: 7,
+        irregularCycleStart: DateTime(2026, 9, 1),
+      ),
+    );
+    await store.addExpense(
+      amountCentavos: 7000,
+      category: ExpenseCategory.food,
+      note: 'Ciclo anterior',
+      occurredAt: now,
+      paymentMethod: PaymentMethod.card,
+    );
+
+    now = DateTime(2026, 9, 8, 8);
+    await store.refreshForCurrentDate();
+
+    expect(store.cycleStart, DateTime(2026, 9, 8));
+    expect(store.cycleEnd, DateTime(2026, 9, 14));
+    expect(store.daysRemaining, 7);
+    expect(store.totalSpentCentavos, 0);
+    expect(store.dailyAllowanceCentavos, 100000);
+
+    now = DateTime(2026, 9, 22, 8);
+    await store.refreshForCurrentDate();
+    expect(store.cycleStart, DateTime(2026, 9, 22));
+    expect(store.cycleEnd, DateTime(2026, 9, 28));
+  });
+
   test('cash shortage is classified in place instead of duplicated', () async {
     final store = await loadStore();
     await store.configureOnboarding(
@@ -121,6 +153,78 @@ void main() {
     expect(store.totalBudgetCentavos, 684000);
     expect(store.expectedCashCentavos, 234000);
   });
+
+  test(
+    'cash transfer can reconcile a shortage without spending budget',
+    () async {
+      final store = await loadStore();
+      await store.configureOnboarding(
+        budgetCentavos: 600000,
+        schedule: const PaySchedule.semiMonthly(),
+        cashCentavos: 200000,
+      );
+      now = DateTime(2026, 9, 4, 11);
+
+      final reconciliation = await store.reconcileCashCount(
+        actualCentavos: 170000,
+        resolution: CashResolution.transfer,
+      );
+
+      expect(store.transactions, isEmpty);
+      expect(store.totalSpentCentavos, 0);
+      expect(store.totalBudgetCentavos, 600000);
+      expect(store.expectedCashCentavos, 170000);
+      expect(reconciliation!.differenceCentavos, -30000);
+      expect(reconciliation.resolution, CashResolution.transfer);
+    },
+  );
+
+  test('a downward count correction does not create an expense', () async {
+    final store = await loadStore();
+    await store.configureOnboarding(
+      budgetCentavos: 600000,
+      schedule: const PaySchedule.semiMonthly(),
+      cashCentavos: 200000,
+    );
+    now = DateTime(2026, 9, 4, 11);
+
+    await store.reconcileCashCount(
+      actualCentavos: 170000,
+      resolution: CashResolution.correction,
+    );
+
+    expect(store.transactions, isEmpty);
+    expect(store.totalSpentCentavos, 0);
+    expect(store.expectedCashCentavos, 170000);
+  });
+
+  test(
+    'cash reconciliation rejects a resolution in the wrong direction',
+    () async {
+      final store = await loadStore();
+      await store.configureOnboarding(
+        budgetCentavos: 600000,
+        schedule: const PaySchedule.semiMonthly(),
+        cashCentavos: 200000,
+      );
+      now = DateTime(2026, 9, 4, 11);
+
+      await expectLater(
+        store.reconcileCashCount(
+          actualCentavos: 170000,
+          resolution: CashResolution.income,
+        ),
+        throwsArgumentError,
+      );
+      await expectLater(
+        store.reconcileCashCount(
+          actualCentavos: 230000,
+          resolution: CashResolution.expense,
+        ),
+        throwsArgumentError,
+      );
+    },
+  );
 
   test('cash stays unknown until the first physical count', () async {
     final store = await loadStore();

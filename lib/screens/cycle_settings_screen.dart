@@ -203,9 +203,12 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const PixelHint(
+                PixelHint(
                   tone: PixelHintTone.cash,
-                  text: 'El cambio se aplicará al siguiente ciclo.',
+                  text: _type == PayCycleType.irregular
+                      ? 'El cambio se aplicará al siguiente ciclo y después '
+                            'se renovará cada $_horizon días.'
+                      : 'El cambio se aplicará al siguiente ciclo.',
                 ),
                 const SizedBox(height: 24),
                 PixelButton(

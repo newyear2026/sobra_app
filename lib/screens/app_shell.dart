@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
+import '../widgets/gamification_ui.dart';
 import 'budget_screen.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
@@ -56,6 +58,42 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   AppTab _selected = AppTab.home;
+  SobraStore? _store;
+  bool _xpNoticeScheduled = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final nextStore = SobraScope.of(context);
+    if (!identical(_store, nextStore)) {
+      _store?.removeListener(_onStoreChanged);
+      _store = nextStore..addListener(_onStoreChanged);
+    }
+    _scheduleXpNotice();
+  }
+
+  @override
+  void dispose() {
+    _store?.removeListener(_onStoreChanged);
+    super.dispose();
+  }
+
+  void _onStoreChanged() => _scheduleXpNotice();
+
+  void _scheduleXpNotice() {
+    if (_xpNoticeScheduled || _store?.pendingXpNotice == null) return;
+    _xpNoticeScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _xpNoticeScheduled = false;
+      if (!mounted) return;
+      final notice = _store?.takePendingXpNotice();
+      if (notice == null) return;
+      final messenger = ScaffoldMessenger.of(context);
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(xpSnackBar(notice));
+    });
+  }
 
   void _select(AppTab tab) => setState(() => _selected = tab);
 

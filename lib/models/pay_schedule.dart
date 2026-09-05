@@ -137,9 +137,32 @@ class PaySchedule {
 
   CycleBounds _irregularBounds(DateTime today) {
     final anchor = dateOnly(irregularCycleStart ?? today);
+    if (planningHorizonDays <= 0) {
+      throw StateError('An irregular cycle needs at least one planning day.');
+    }
+    // "No fixed pay date" still needs continuous budget windows. Treat the
+    // chosen horizon as a repeating planning block anchored on the day the
+    // user started it, rather than leaving the first block frozen forever.
+    final daysFromAnchor = DateTime.utc(
+      today.year,
+      today.month,
+      today.day,
+    ).difference(DateTime.utc(anchor.year, anchor.month, anchor.day)).inDays;
+    final cycleIndex = daysFromAnchor >= 0
+        ? daysFromAnchor ~/ planningHorizonDays
+        : -((-daysFromAnchor + planningHorizonDays - 1) ~/ planningHorizonDays);
+    final start = DateTime(
+      anchor.year,
+      anchor.month,
+      anchor.day + cycleIndex * planningHorizonDays,
+    );
     return CycleBounds(
-      start: anchor,
-      end: anchor.add(Duration(days: planningHorizonDays - 1)),
+      start: start,
+      end: DateTime(
+        start.year,
+        start.month,
+        start.day + planningHorizonDays - 1,
+      ),
     );
   }
 

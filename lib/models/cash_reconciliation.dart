@@ -4,7 +4,7 @@ extension CashResolutionLabel on CashResolution {
   String get label => switch (this) {
     CashResolution.expense => 'Gasto identificado',
     CashResolution.income => 'Ingreso en efectivo',
-    CashResolution.transfer => 'Retiro de otra cuenta',
+    CashResolution.transfer => 'Movimiento entre cuentas',
     CashResolution.correction => 'Corrección del conteo',
     CashResolution.pending => 'Diferencia por identificar',
   };

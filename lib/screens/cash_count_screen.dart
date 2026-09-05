@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../models/cash_reconciliation.dart';
 import '../models/expense_entry.dart';
 import '../models/income_entry.dart';
+import '../models/xp_event.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
+import '../widgets/gamification_ui.dart';
 import '../widgets/pixel_ui.dart';
 
 class CashCountScreen extends StatefulWidget {
@@ -47,6 +49,7 @@ class _CashCountScreenState extends State<CashCountScreen> {
       return;
     }
     setState(() => _saving = true);
+    XpNotice? xpNotice;
     try {
       await store.reconcileCashCount(
         actualCentavos: actual,
@@ -55,16 +58,22 @@ class _CashCountScreenState extends State<CashCountScreen> {
         note: _noteController.text,
         incomeAllocation: _incomeAllocation,
       );
+      xpNotice = store.takePendingXpNotice();
     } finally {
       if (mounted) setState(() => _saving = false);
     }
     if (!mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
     Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Conteo guardado sin duplicar movimientos.'),
-      ),
-    );
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        xpNotice == null
+            ? const SnackBar(
+                content: Text('Conteo guardado sin duplicar movimientos.'),
+              )
+            : xpSnackBar(xpNotice),
+      );
   }
 
   @override
@@ -194,55 +203,46 @@ class _CashCountScreenState extends State<CashCountScreen> {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 10),
-                    if (isMissing) ...[
+                    for (final option
+                        in isMissing
+                            ? const [
+                                CashResolution.expense,
+                                CashResolution.transfer,
+                                CashResolution.correction,
+                                CashResolution.pending,
+                              ]
+                            : const [
+                                CashResolution.income,
+                                CashResolution.transfer,
+                                CashResolution.correction,
+                                CashResolution.pending,
+                              ]) ...[
                       _ResolutionCard(
-                        label: 'Sé qué fue',
-                        helper: 'Identifica el gasto ahora.',
-                        icon: Icons.search,
-                        selected: _resolution == CashResolution.expense,
-                        onTap: () => setState(
-                          () => _resolution = CashResolution.expense,
-                        ),
+                        label: option.label,
+                        helper: switch (option) {
+                          CashResolution.expense =>
+                            'Fue un gasto que no habías registrado.',
+                          CashResolution.income =>
+                            'Fue dinero nuevo que recibiste.',
+                          CashResolution.transfer =>
+                            isMissing
+                                ? 'Lo depositaste o lo moviste a otra cuenta.'
+                                : 'Lo retiraste o lo moviste desde otra cuenta.',
+                          CashResolution.correction =>
+                            'El conteo anterior estaba equivocado.',
+                          CashResolution.pending => 'Decídelo después.',
+                        },
+                        icon: switch (option) {
+                          CashResolution.expense => Icons.search,
+                          CashResolution.income => Icons.arrow_upward,
+                          CashResolution.transfer => Icons.account_balance,
+                          CashResolution.correction => Icons.refresh,
+                          CashResolution.pending => Icons.help_outline,
+                        },
+                        selected: _resolution == option,
+                        onTap: () => setState(() => _resolution = option),
                       ),
                       const SizedBox(height: 10),
-                      _ResolutionCard(
-                        label: 'No sé todavía',
-                        helper: 'Guárdalo como pendiente.',
-                        icon: Icons.help_outline,
-                        selected: _resolution == CashResolution.pending,
-                        onTap: () => setState(
-                          () => _resolution = CashResolution.pending,
-                        ),
-                      ),
-                    ] else ...[
-                      for (final option in const [
-                        CashResolution.income,
-                        CashResolution.transfer,
-                        CashResolution.correction,
-                        CashResolution.pending,
-                      ]) ...[
-                        _ResolutionCard(
-                          label: option.label,
-                          helper: switch (option) {
-                            CashResolution.income =>
-                              'Dinero nuevo que recibiste.',
-                            CashResolution.transfer =>
-                              'Moviste dinero, no es ingreso.',
-                            CashResolution.correction =>
-                              'El conteo anterior estaba mal.',
-                            _ => 'Decídelo después.',
-                          },
-                          icon: switch (option) {
-                            CashResolution.income => Icons.arrow_upward,
-                            CashResolution.transfer => Icons.account_balance,
-                            CashResolution.correction => Icons.refresh,
-                            _ => Icons.help_outline,
-                          },
-                          selected: _resolution == option,
-                          onTap: () => setState(() => _resolution = option),
-                        ),
-                        const SizedBox(height: 10),
-                      ],
                     ],
                     if (_resolution == CashResolution.expense) ...[
                       const SizedBox(height: 16),

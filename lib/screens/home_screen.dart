@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
+import '../widgets/gamification_ui.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/transaction_row.dart';
 import 'app_shell.dart';
 import 'cash_count_screen.dart';
+import 'xp_history_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,6 +19,7 @@ class HomeScreen extends StatelessWidget {
     final shell = AppShellScope.of(context);
     final recent = store.movements.take(3).toList();
     final positive = store.todayRemainingCentavos >= 0;
+    final xp = store.xpProgress;
     final textTheme = Theme.of(context).textTheme;
 
     return SafeArea(
@@ -51,6 +54,22 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 18),
+                LevelStrip(
+                  level: xp.level,
+                  title: xp.title,
+                  subtitle: '${xp.totalXp} XP totales',
+                  currentXp: xp.currentLevelXp,
+                  targetXp: xp.targetLevelXp,
+                  trailingLabel: xp.isMaxLevel
+                      ? 'Nivel máximo'
+                      : 'Faltan ${xp.remainingXp} XP',
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const XpHistoryScreen(),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

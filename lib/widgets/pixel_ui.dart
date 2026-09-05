@@ -23,20 +23,77 @@ String formatMoney(int centavos, {bool currency = true}) {
       '${currency ? ' MXN' : ''}';
 }
 
-String _normalizeAmount(String input) => input
-    .replaceAll(minusSign, '-')
-    .replaceAll(RegExp(r'[^0-9,.-]'), '')
-    .replaceAll(',', '.');
+String? _normalizeAmount(String input) {
+  var value = input
+      .replaceAll(minusSign, '-')
+      .replaceAll(RegExp(r'[^0-9,.-]'), '');
+  if (value.isEmpty || value == '-' || value.indexOf('-') > 0) return null;
+  if ('-'.allMatches(value).length > 1) return null;
+
+  final sign = value.startsWith('-') ? '-' : '';
+  if (sign.isNotEmpty) value = value.substring(1);
+  if (value.isEmpty || !RegExp(r'\d').hasMatch(value)) return null;
+
+  final commaCount = ','.allMatches(value).length;
+  final dotCount = '.'.allMatches(value).length;
+  String integerPart;
+  String fractionPart = '';
+
+  if (commaCount > 0 && dotCount > 0) {
+    // Accept both 1,234.56 (MX) and 1.234,56. The last separator is the
+    // decimal separator; the other occurrences are grouping separators.
+    final decimalIndex = value.lastIndexOf(',') > value.lastIndexOf('.')
+        ? value.lastIndexOf(',')
+        : value.lastIndexOf('.');
+    integerPart = value
+        .substring(0, decimalIndex)
+        .replaceAll(RegExp(r'[,.]'), '');
+    fractionPart = value.substring(decimalIndex + 1);
+  } else if (commaCount > 0) {
+    final parts = value.split(',');
+    final looksGrouped =
+        parts.length > 1 &&
+        parts.first.isNotEmpty &&
+        parts.first.length <= 3 &&
+        parts.skip(1).every((part) => part.length == 3);
+    if (looksGrouped) {
+      integerPart = parts.join();
+    } else if (parts.length == 2 && parts.last.length <= 2) {
+      // Decimal comma is accepted for pasted values, while 1,200 remains one
+      // thousand two hundred rather than silently becoming 1.20.
+      integerPart = parts.first;
+      fractionPart = parts.last;
+    } else {
+      return null;
+    }
+  } else if (dotCount > 0) {
+    if (dotCount != 1) return null;
+    final decimalIndex = value.indexOf('.');
+    integerPart = value.substring(0, decimalIndex);
+    fractionPart = value.substring(decimalIndex + 1);
+  } else {
+    integerPart = value;
+  }
+
+  if (integerPart.isEmpty) integerPart = '0';
+  if (!RegExp(r'^\d+$').hasMatch(integerPart) ||
+      (fractionPart.isNotEmpty && !RegExp(r'^\d+$').hasMatch(fractionPart))) {
+    return null;
+  }
+  return '$sign$integerPart${fractionPart.isEmpty ? '' : '.$fractionPart'}';
+}
 
 int? parsePesos(String input) {
-  final value = double.tryParse(_normalizeAmount(input));
-  if (value == null || value <= 0) return null;
+  final normalized = _normalizeAmount(input);
+  final value = normalized == null ? null : double.tryParse(normalized);
+  if (value == null || !value.isFinite || value <= 0) return null;
   return (value * 100).round();
 }
 
 int? parseNonNegativePesos(String input) {
-  final value = double.tryParse(_normalizeAmount(input));
-  if (value == null || value < 0) return null;
+  final normalized = _normalizeAmount(input);
+  final value = normalized == null ? null : double.tryParse(normalized);
+  if (value == null || !value.isFinite || value < 0) return null;
   return (value * 100).round();
 }
 

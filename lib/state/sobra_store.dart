@@ -8,6 +8,7 @@ import '../models/expense_entry.dart';
 import '../models/income_entry.dart';
 import '../models/money_movement.dart';
 import '../models/pay_schedule.dart';
+import '../models/xp_event.dart';
 
 typedef NowProvider = DateTime Function();
 
@@ -23,6 +24,7 @@ class SobraStore extends ChangeNotifier {
   final List<ExpenseEntry> _transactions = [];
   final List<IncomeEntry> _incomes = [];
   final List<CashReconciliationEntry> _cashReconciliations = [];
+  final List<XpEvent> _xpEvents = [];
   final Map<String, int> _cycleBudgetExtras = {};
   int _idSequence = 0;
 
@@ -38,9 +40,12 @@ class SobraStore extends ChangeNotifier {
   PaySchedule? pendingPaySchedule;
   DateTime? pendingPayScheduleEffectiveAt;
   DateTime? payScheduleEffectiveFloor;
+  DateTime? xpTrackingStartedAt;
+  DateTime? lastSettledCycleEnd;
   bool hasStorageError = false;
   String? corruptedStorage;
   DateTime? _lastObservedDate;
+  XpNotice? _pendingXpNotice;
 
   Map<ExpenseCategory, int> categoryLimits = _categoryLimitsForBudget(600000);
 
@@ -57,7 +62,7 @@ class SobraStore extends ChangeNotifier {
         ..hasStorageError = true
         ..corruptedStorage = saved;
     }
-    await store._applyPendingScheduleIfNeeded();
+    await store.settleCycles();
     store._lastObservedDate = store.today;
     return store;
   }
@@ -88,8 +93,10 @@ class SobraStore extends ChangeNotifier {
   DateTime get cycleEnd => cycleBounds.end;
   bool get hasCashBaseline => lastCashCountAt != null;
   int get baseBudgetCentavos => _baseBudgetCentavos;
+  int get cycleBudgetExtrasCentavos =>
+      _cycleBudgetExtras[_cycleKey(cycleStart)] ?? 0;
   int get totalBudgetCentavos =>
-      _baseBudgetCentavos + (_cycleBudgetExtras[_cycleKey(cycleStart)] ?? 0);
+      _baseBudgetCentavos + cycleBudgetExtrasCentavos;
 
   int get daysRemaining {
     if (today.isAfter(cycleEnd)) return 0;
@@ -117,6 +124,25 @@ class SobraStore extends ChangeNotifier {
 
   List<CashReconciliationEntry> get cashReconciliations =>
       List.unmodifiable(_cashReconciliations);
+
+  List<XpEvent> get xpEvents {
+    final sorted = List<XpEvent>.of(_xpEvents)
+      ..sort((a, b) {
+        final byDate = b.occurredAt.compareTo(a.occurredAt);
+        return byDate != 0 ? byDate : b.id.compareTo(a.id);
+      });
+    return List.unmodifiable(sorted);
+  }
+
+  int get totalXp => _xpEvents.fold(0, (sum, event) => sum + event.xp);
+  XpProgress get xpProgress => XpProgress.fromTotal(totalXp);
+  XpNotice? get pendingXpNotice => _pendingXpNotice;
+
+  XpNotice? takePendingXpNotice() {
+    final notice = _pendingXpNotice;
+    _pendingXpNotice = null;
+    return notice;
+  }
 
   List<MoneyMovement> get movements {
     final result = <MoneyMovement>[
@@ -204,11 +230,234 @@ class SobraStore extends ChangeNotifier {
       .fold(0, (total, entry) => total + entry.amountCentavos);
 
   Future<void> refreshForCurrentDate() async {
-    await _applyPendingScheduleIfNeeded();
+    await settleCycles();
     final currentDate = today;
     if (_lastObservedDate == currentDate) return;
     _lastObservedDate = currentDate;
     notifyListeners();
+  }
+
+  /// Closes every elapsed budget cycle exactly once.
+  ///
+  /// A pending pay-schedule change splits the run in two: old cycles are
+  /// settled up to its effective date, then the new schedule is applied and
+  /// any later cycles are evaluated with the new boundaries.
+  Future<void> settleCycles() async {
+    final trackingStarted = _startXpTrackingIfNeeded();
+    var run = const _SettlementRun();
+    final effectiveAt = pendingPayScheduleEffectiveAt;
+    final scheduleIsDue = effectiveAt != null && !today.isBefore(effectiveAt);
+
+    if (scheduleIsDue) {
+      run = run + _settleClosedCycles(untilExclusive: effectiveAt);
+    }
+    final scheduleChanged = await _applyPendingScheduleIfNeeded();
+    run = run + _settleClosedCycles(untilExclusive: today);
+
+    if (run.closedCycles > 0 || trackingStarted) {
+      await _save();
+    }
+    if (run.closedCycles > 0) {
+      if (run.awardedXp > 0) {
+        _pendingXpNotice = XpNotice(
+          title: run.closedCycles == 1
+              ? 'Ciclo cerrado'
+              : '${run.closedCycles} ciclos cerrados',
+          detail: 'XP acreditados automáticamente.',
+          xp: run.awardedXp,
+        );
+      }
+    }
+    if (run.closedCycles > 0 || scheduleChanged || trackingStarted) {
+      notifyListeners();
+    }
+  }
+
+  bool _startXpTrackingIfNeeded() {
+    if (!hasCompletedOnboarding || xpTrackingStartedAt != null) return false;
+    // Existing installs begin with the day this schema first sees them. A
+    // partial cycle can earn daily XP, but not the full-cycle reward.
+    xpTrackingStartedAt = today;
+    return true;
+  }
+
+  _SettlementRun _settleClosedCycles({required DateTime untilExclusive}) {
+    final trackingStart = xpTrackingStartedAt;
+    if (!hasCompletedOnboarding || trackingStart == null) {
+      return const _SettlementRun();
+    }
+
+    var cursor =
+        lastSettledCycleEnd?.add(const Duration(days: 1)) ??
+        dateOnly(trackingStart);
+    var closedCycles = 0;
+    var awardedXp = 0;
+
+    // More than enough for decades of weekly cycles, while still protecting a
+    // damaged date from creating an infinite loop during app startup.
+    for (var guard = 0; guard < 5000; guard++) {
+      final bounds = boundsFor(cursor);
+      if (!bounds.end.isBefore(untilExclusive)) break;
+      awardedXp += _settleCycle(bounds, trackingStart);
+      lastSettledCycleEnd = bounds.end;
+      closedCycles++;
+      cursor = bounds.end.add(const Duration(days: 1));
+    }
+    return _SettlementRun(closedCycles: closedCycles, awardedXp: awardedXp);
+  }
+
+  int _settleCycle(CycleBounds bounds, DateTime trackingStart) {
+    final cycleKey = _cycleKey(bounds.start);
+    final budget = _baseBudgetCentavos + (_cycleBudgetExtras[cycleKey] ?? 0);
+    final spent = _transactions
+        .where((entry) => bounds.contains(entry.occurredAt))
+        .fold(0, (sum, entry) => sum + entry.amountCentavos);
+    final fullCycleTracked = !dateOnly(trackingStart).isAfter(bounds.start);
+    final successful = budget > 0 && spent <= budget;
+    final occurredAt = DateTime(
+      bounds.end.year,
+      bounds.end.month,
+      bounds.end.day,
+      23,
+      59,
+      59,
+    );
+    var awarded = 0;
+
+    if (fullCycleTracked && successful) {
+      final cycleXp = _normalizedCycleXp(bounds.lengthInDays);
+      final cycleAward = _awardXp(
+        kind: XpEventKind.cycleInGreen,
+        xp: cycleXp,
+        occurredAt: occurredAt,
+        sourceKey: 'cycle-green:$cycleKey',
+        bounds: bounds,
+        budgetCentavos: budget,
+        spentCentavos: spent,
+      );
+      awarded += cycleAward;
+      if (cycleAward > 0 && successfulCycles == 0) {
+        awarded += _awardXp(
+          kind: XpEventKind.firstSuccessfulCycle,
+          xp: 50,
+          occurredAt: occurredAt,
+          sourceKey: 'first-cycle-green',
+          bounds: bounds,
+          budgetCentavos: budget,
+          spentCentavos: spent,
+        );
+      }
+      if (cycleAward > 0) successfulCycles++;
+    }
+
+    final underLimitDays = _daysUnderDailyLimit(
+      bounds: bounds,
+      budgetCentavos: budget,
+      trackingStart: trackingStart,
+    );
+    if (underLimitDays > 0) {
+      awarded += _awardXp(
+        kind: XpEventKind.daysUnderDailyLimit,
+        xp: underLimitDays * 5,
+        occurredAt: occurredAt,
+        sourceKey: 'daily-limit:$cycleKey',
+        bounds: bounds,
+        quantity: underLimitDays,
+        budgetCentavos: budget,
+        spentCentavos: spent,
+      );
+    }
+    return awarded;
+  }
+
+  int _daysUnderDailyLimit({
+    required CycleBounds bounds,
+    required int budgetCentavos,
+    required DateTime trackingStart,
+  }) {
+    if (budgetCentavos <= 0) return 0;
+    final spentByDay = <String, int>{};
+    for (final entry in _transactions) {
+      if (!bounds.contains(entry.occurredAt)) continue;
+      final key = _cycleKey(entry.occurredAt);
+      spentByDay[key] = (spentByDay[key] ?? 0) + entry.amountCentavos;
+    }
+
+    var spentBeforeDay = 0;
+    var successfulDays = 0;
+    final firstTrackedDay = dateOnly(trackingStart);
+    for (var offset = 0; offset < bounds.lengthInDays; offset++) {
+      final day = bounds.start.add(Duration(days: offset));
+      final remainingDays = bounds.lengthInDays - offset;
+      final allowance = (budgetCentavos - spentBeforeDay) ~/ remainingDays;
+      final spentToday = spentByDay[_cycleKey(day)] ?? 0;
+      if (!day.isBefore(firstTrackedDay) && spentToday <= allowance) {
+        successfulDays++;
+      }
+      spentBeforeDay += spentToday;
+    }
+    return successfulDays;
+  }
+
+  int _awardXp({
+    required XpEventKind kind,
+    required int xp,
+    required DateTime occurredAt,
+    required String sourceKey,
+    CycleBounds? bounds,
+    int? quantity,
+    int? budgetCentavos,
+    int? spentCentavos,
+  }) {
+    if (xp <= 0 || _xpEvents.any((event) => event.sourceKey == sourceKey)) {
+      return 0;
+    }
+    _xpEvents.add(
+      XpEvent(
+        id: _newId('xp'),
+        kind: kind,
+        xp: xp,
+        occurredAt: occurredAt,
+        sourceKey: sourceKey,
+        cycleType: bounds == null ? null : paySchedule.type,
+        cycleStart: bounds?.start,
+        cycleEnd: bounds?.end,
+        quantity: quantity,
+        budgetCentavos: budgetCentavos,
+        spentCentavos: spentCentavos,
+      ),
+    );
+    return xp;
+  }
+
+  int _normalizedCycleXp(int days) {
+    final raw = days * 100 / 15;
+    final roundedToFive = (raw / 5).round() * 5;
+    return roundedToFive < 5 ? 5 : roundedToFive;
+  }
+
+  void _recordCashCountXp(DateTime moment) {
+    final trackingStart = xpTrackingStartedAt;
+    if (!hasCompletedOnboarding ||
+        trackingStart == null ||
+        moment.isBefore(trackingStart)) {
+      return;
+    }
+    final day = dateOnly(moment);
+    final weekStart = day.subtract(Duration(days: day.weekday - 1));
+    final awarded = _awardXp(
+      kind: XpEventKind.cashCount,
+      xp: 25,
+      occurredAt: moment,
+      sourceKey: 'cash-count-week:${_cycleKey(weekStart)}',
+    );
+    if (awarded > 0) {
+      _pendingXpNotice = const XpNotice(
+        title: 'Conteo de efectivo guardado',
+        detail: 'Primer conteo con XP de la semana.',
+        xp: 25,
+      );
+    }
   }
 
   Future<ExpenseEntry> addExpense({
@@ -273,8 +522,9 @@ class SobraStore extends ChangeNotifier {
         ? previous.copyWith(category: updated.category, note: updated.note)
         : updated;
 
-    if (_affectsCurrentCash(previous))
+    if (_affectsCurrentCash(previous)) {
       expectedCashCentavos += previous.amountCentavos;
+    }
     if (_affectsCurrentCash(next)) expectedCashCentavos -= next.amountCentavos;
     _transactions[index] = next;
     await _save();
@@ -309,8 +559,9 @@ class SobraStore extends ChangeNotifier {
     if (index == -1) return false;
     if (_transactions[index].isLinkedToCashCount) return false;
     final removed = _transactions.removeAt(index);
-    if (_affectsCurrentCash(removed))
+    if (_affectsCurrentCash(removed)) {
       expectedCashCentavos += removed.amountCentavos;
+    }
     await _save();
     notifyListeners();
     return true;
@@ -319,8 +570,9 @@ class SobraStore extends ChangeNotifier {
   Future<void> restoreExpense(ExpenseEntry entry) async {
     if (_transactions.any((existing) => existing.id == entry.id)) return;
     _transactions.add(entry);
-    if (_affectsCurrentCash(entry))
+    if (_affectsCurrentCash(entry)) {
       expectedCashCentavos -= entry.amountCentavos;
+    }
     await _save();
     notifyListeners();
   }
@@ -347,7 +599,18 @@ class SobraStore extends ChangeNotifier {
     bool adjustCategoryLimits = false,
   }) async {
     if (centavos <= 0) throw ArgumentError.value(centavos, 'centavos');
-    _baseBudgetCentavos = centavos;
+    // The budget screen edits the total the user can see. Income allocated to
+    // this cycle is already included in that figure, so keeping it in the base
+    // as well would add the same money twice on the next read.
+    final nextBaseBudget = centavos - cycleBudgetExtrasCentavos;
+    if (nextBaseBudget <= 0) {
+      throw ArgumentError.value(
+        centavos,
+        'centavos',
+        'El total debe ser mayor que los ingresos asignados al ciclo.',
+      );
+    }
+    _baseBudgetCentavos = nextBaseBudget;
     if (adjustCategoryLimits) {
       // Scale what is there rather than reinstating the stock split: somebody
       // who moved Comida to half their budget asked for that, and "adjust
@@ -405,13 +668,15 @@ class SobraStore extends ChangeNotifier {
     String note = '',
     IncomeAllocation incomeAllocation = IncomeAllocation.savings,
   }) async {
-    if (actualCentavos < 0)
+    if (actualCentavos < 0) {
       throw ArgumentError.value(actualCentavos, 'actualCentavos');
+    }
     final moment = currentMoment;
     if (!hasCashBaseline) {
       countedCashCentavos = actualCentavos;
       expectedCashCentavos = actualCentavos;
       lastCashCountAt = moment;
+      _recordCashCountXp(moment);
       await _save();
       notifyListeners();
       return null;
@@ -423,6 +688,7 @@ class SobraStore extends ChangeNotifier {
       countedCashCentavos = actualCentavos;
       expectedCashCentavos = actualCentavos;
       lastCashCountAt = moment;
+      _recordCashCountXp(moment);
       await _save();
       notifyListeners();
       return null;
@@ -432,40 +698,59 @@ class SobraStore extends ChangeNotifier {
     String? linkedExpenseId;
     String? linkedIncomeId;
     if (difference < 0) {
-      if (resolution != CashResolution.expense &&
-          resolution != CashResolution.pending) {
-        throw ArgumentError('A cash shortage must be an expense or pending.');
+      const allowed = {
+        CashResolution.expense,
+        CashResolution.transfer,
+        CashResolution.correction,
+        CashResolution.pending,
+      };
+      if (!allowed.contains(resolution)) {
+        throw ArgumentError('A cash shortage cannot be classified as income.');
       }
-      final expense = ExpenseEntry(
-        id: _newId('expense'),
-        amountCentavos: -difference,
-        category: category ?? ExpenseCategory.other,
-        note: resolution == CashResolution.pending
-            ? 'Diferencia por identificar'
-            : (note.trim().isEmpty
-                  ? (category ?? ExpenseCategory.other).label
-                  : note.trim()),
-        occurredAt: moment,
-        paymentMethod: PaymentMethod.cash,
-        cashReconciliationId: reconciliationId,
-        isPendingCashAdjustment: resolution == CashResolution.pending,
-      );
-      _transactions.add(expense);
-      linkedExpenseId = expense.id;
-    } else if (resolution == CashResolution.income) {
-      final income = IncomeEntry(
-        id: _newId('income'),
-        amountCentavos: difference,
-        kind: IncomeKind.cash,
-        note: note.trim().isEmpty ? 'Ingreso en efectivo' : note.trim(),
-        occurredAt: moment,
-        destination: PaymentMethod.cash,
-        allocation: incomeAllocation,
-        cashReconciliationId: reconciliationId,
-      );
-      _incomes.add(income);
-      _applyIncome(income, 1);
-      linkedIncomeId = income.id;
+      if (resolution == CashResolution.expense ||
+          resolution == CashResolution.pending) {
+        final expense = ExpenseEntry(
+          id: _newId('expense'),
+          amountCentavos: -difference,
+          category: category ?? ExpenseCategory.other,
+          note: resolution == CashResolution.pending
+              ? 'Diferencia por identificar'
+              : (note.trim().isEmpty
+                    ? (category ?? ExpenseCategory.other).label
+                    : note.trim()),
+          occurredAt: moment,
+          paymentMethod: PaymentMethod.cash,
+          cashReconciliationId: reconciliationId,
+          isPendingCashAdjustment: resolution == CashResolution.pending,
+        );
+        _transactions.add(expense);
+        linkedExpenseId = expense.id;
+      }
+    } else {
+      const allowed = {
+        CashResolution.income,
+        CashResolution.transfer,
+        CashResolution.correction,
+        CashResolution.pending,
+      };
+      if (!allowed.contains(resolution)) {
+        throw ArgumentError('Extra cash cannot be classified as an expense.');
+      }
+      if (resolution == CashResolution.income) {
+        final income = IncomeEntry(
+          id: _newId('income'),
+          amountCentavos: difference,
+          kind: IncomeKind.cash,
+          note: note.trim().isEmpty ? 'Ingreso en efectivo' : note.trim(),
+          occurredAt: moment,
+          destination: PaymentMethod.cash,
+          allocation: incomeAllocation,
+          cashReconciliationId: reconciliationId,
+        );
+        _incomes.add(income);
+        _applyIncome(income, 1);
+        linkedIncomeId = income.id;
+      }
     }
 
     final reconciliation = CashReconciliationEntry(
@@ -481,6 +766,7 @@ class SobraStore extends ChangeNotifier {
     countedCashCentavos = actualCentavos;
     expectedCashCentavos = actualCentavos;
     lastCashCountAt = moment;
+    _recordCashCountXp(moment);
     await _save();
     notifyListeners();
     return reconciliation;
@@ -530,6 +816,7 @@ class SobraStore extends ChangeNotifier {
 
   Future<void> completeOnboarding() async {
     hasCompletedOnboarding = true;
+    xpTrackingStartedAt ??= today;
     await _save();
     notifyListeners();
   }
@@ -544,6 +831,7 @@ class SobraStore extends ChangeNotifier {
     if (raw == null || !_tryRestore(raw)) return false;
     hasStorageError = false;
     corruptedStorage = null;
+    await settleCycles();
     notifyListeners();
     return true;
   }
@@ -555,6 +843,7 @@ class SobraStore extends ChangeNotifier {
     corruptedStorage = null;
     final saved = await _preferences.setString(_storageKey, raw);
     if (!saved) throw StateError('No se pudo restaurar el respaldo.');
+    await settleCycles();
     notifyListeners();
     return true;
   }
@@ -563,8 +852,9 @@ class SobraStore extends ChangeNotifier {
     final raw = corruptedStorage;
     if (raw != null) {
       final archived = await _preferences.setString(_corruptArchiveKey, raw);
-      if (!archived)
+      if (!archived) {
         throw StateError('No se pudo conservar el archivo original.');
+      }
     }
     _initializeNewUser();
     hasStorageError = false;
@@ -574,16 +864,18 @@ class SobraStore extends ChangeNotifier {
   }
 
   void _validateMovement(int amountCentavos, DateTime occurredAt) {
-    if (amountCentavos <= 0)
+    if (amountCentavos <= 0) {
       throw ArgumentError.value(amountCentavos, 'amountCentavos');
+    }
     if (dateOnly(occurredAt).isAfter(today)) {
       throw ArgumentError('No se permiten movimientos futuros.');
     }
   }
 
   bool _affectsCurrentCash(ExpenseEntry entry) {
-    if (!hasCashBaseline || entry.paymentMethod != PaymentMethod.cash)
+    if (!hasCashBaseline || entry.paymentMethod != PaymentMethod.cash) {
       return false;
+    }
     if (entry.cashReconciliationId != null) return false;
     return entry.occurredAt.isAfter(lastCashCountAt!);
   }
@@ -603,22 +895,25 @@ class SobraStore extends ChangeNotifier {
     }
   }
 
-  Future<void> _applyPendingScheduleIfNeeded() async {
+  Future<bool> _applyPendingScheduleIfNeeded() async {
     final effectiveAt = pendingPayScheduleEffectiveAt;
     final pending = pendingPaySchedule;
-    if (effectiveAt == null || pending == null || today.isBefore(effectiveAt))
-      return;
+    if (effectiveAt == null || pending == null || today.isBefore(effectiveAt)) {
+      return false;
+    }
     paySchedule = pending;
     pendingPaySchedule = null;
     pendingPayScheduleEffectiveAt = null;
     payScheduleEffectiveFloor = effectiveAt;
     await _save();
+    return true;
   }
 
   void _initializeNewUser() {
     _transactions.clear();
     _incomes.clear();
     _cashReconciliations.clear();
+    _xpEvents.clear();
     _cycleBudgetExtras.clear();
     _baseBudgetCentavos = 600000;
     countedCashCentavos = 0;
@@ -632,6 +927,9 @@ class SobraStore extends ChangeNotifier {
     pendingPaySchedule = null;
     pendingPayScheduleEffectiveAt = null;
     payScheduleEffectiveFloor = null;
+    xpTrackingStartedAt = null;
+    lastSettledCycleEnd = null;
+    _pendingXpNotice = null;
     categoryLimits = _categoryLimitsForBudget(_baseBudgetCentavos);
   }
 
@@ -656,6 +954,9 @@ class SobraStore extends ChangeNotifier {
     _cashReconciliations
       ..clear()
       ..addAll(other._cashReconciliations);
+    _xpEvents
+      ..clear()
+      ..addAll(other._xpEvents);
     _cycleBudgetExtras
       ..clear()
       ..addAll(other._cycleBudgetExtras);
@@ -671,6 +972,9 @@ class SobraStore extends ChangeNotifier {
     pendingPaySchedule = other.pendingPaySchedule;
     pendingPayScheduleEffectiveAt = other.pendingPayScheduleEffectiveAt;
     payScheduleEffectiveFloor = other.payScheduleEffectiveFloor;
+    xpTrackingStartedAt = other.xpTrackingStartedAt;
+    lastSettledCycleEnd = other.lastSettledCycleEnd;
+    _pendingXpNotice = other._pendingXpNotice;
     categoryLimits = Map.of(other.categoryLimits);
   }
 
@@ -695,6 +999,13 @@ class SobraStore extends ChangeNotifier {
         (json['cashReconciliations'] as List<dynamic>? ?? const []).map(
           (entry) =>
               CashReconciliationEntry.fromJson(entry as Map<String, dynamic>),
+        ),
+      );
+    _xpEvents
+      ..clear()
+      ..addAll(
+        (json['xpEvents'] as List<dynamic>? ?? const []).map(
+          (entry) => XpEvent.fromJson(entry as Map<String, dynamic>),
         ),
       );
     _baseBudgetCentavos =
@@ -724,6 +1035,14 @@ class SobraStore extends ChangeNotifier {
         : DateTime.parse(effective);
     final floor = json['payScheduleEffectiveFloor'] as String?;
     payScheduleEffectiveFloor = floor == null ? null : DateTime.parse(floor);
+    final trackingStarted = json['xpTrackingStartedAt'] as String?;
+    xpTrackingStartedAt = trackingStarted == null
+        ? null
+        : DateTime.parse(trackingStarted);
+    final settledEnd = json['lastSettledCycleEnd'] as String?;
+    lastSettledCycleEnd = settledEnd == null
+        ? null
+        : DateTime.parse(settledEnd);
     final extras = json['cycleBudgetExtras'] as Map<String, dynamic>? ?? {};
     _cycleBudgetExtras
       ..clear()
@@ -739,12 +1058,13 @@ class SobraStore extends ChangeNotifier {
   }
 
   Map<String, Object?> _toJson() => {
-    'schemaVersion': 3,
+    'schemaVersion': 4,
     'transactions': _transactions.map((entry) => entry.toJson()).toList(),
     'incomes': _incomes.map((entry) => entry.toJson()).toList(),
     'cashReconciliations': _cashReconciliations
         .map((entry) => entry.toJson())
         .toList(),
+    'xpEvents': _xpEvents.map((entry) => entry.toJson()).toList(),
     'baseBudgetCentavos': _baseBudgetCentavos,
     'totalBudgetCentavos': _baseBudgetCentavos,
     'cycleBudgetExtras': _cycleBudgetExtras,
@@ -760,6 +1080,8 @@ class SobraStore extends ChangeNotifier {
     'pendingPayScheduleEffectiveAt': pendingPayScheduleEffectiveAt
         ?.toIso8601String(),
     'payScheduleEffectiveFloor': payScheduleEffectiveFloor?.toIso8601String(),
+    'xpTrackingStartedAt': xpTrackingStartedAt?.toIso8601String(),
+    'lastSettledCycleEnd': lastSettledCycleEnd?.toIso8601String(),
     'categoryLimits': {
       for (final entry in categoryLimits.entries) entry.key.name: entry.value,
     },
@@ -804,7 +1126,8 @@ class SobraStore extends ChangeNotifier {
   bool _isIdTaken(String id) =>
       _transactions.any((entry) => entry.id == id) ||
       _incomes.any((entry) => entry.id == id) ||
-      _cashReconciliations.any((entry) => entry.id == id);
+      _cashReconciliations.any((entry) => entry.id == id) ||
+      _xpEvents.any((entry) => entry.id == id);
   String _cycleKey(DateTime date) => dateOnly(date).toIso8601String();
   bool _isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
@@ -821,6 +1144,18 @@ class SobraStore extends ChangeNotifier {
     ExpenseCategory.pets: (budget * .04).round(),
     ExpenseCategory.other: (budget * .03).round(),
   };
+}
+
+class _SettlementRun {
+  const _SettlementRun({this.closedCycles = 0, this.awardedXp = 0});
+
+  final int closedCycles;
+  final int awardedXp;
+
+  _SettlementRun operator +(_SettlementRun other) => _SettlementRun(
+    closedCycles: closedCycles + other.closedCycles,
+    awardedXp: awardedXp + other.awardedXp,
+  );
 }
 
 class SobraScope extends InheritedNotifier<SobraStore> {

@@ -102,6 +102,17 @@ class BudgetScreen extends StatelessWidget {
                   currentCentavos: store.totalBudgetCentavos,
                 );
                 if (value != null && context.mounted) {
+                  if (value <= store.cycleBudgetExtrasCentavos) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'El total debe ser mayor que los ingresos asignados '
+                          'al ciclo (${formatMoney(store.cycleBudgetExtrasCentavos)}).',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
                   final adjust = await _requestCategoryPolicy(context);
                   if (adjust != null) {
                     await store.setTotalBudget(

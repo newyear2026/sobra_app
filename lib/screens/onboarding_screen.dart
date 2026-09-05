@@ -440,10 +440,13 @@ class _ScheduleDetailsPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        const Text(
-          'Las fechas se ajustan solas en meses cortos.',
+        Text(
+          type == PayCycleType.irregular
+              ? 'Al terminar, comenzará automáticamente otro periodo de '
+                    '$planningHorizon días.'
+              : 'Las fechas se ajustan solas en meses cortos.',
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppColors.inkSoft),
+          style: const TextStyle(color: AppColors.inkSoft),
         ),
       ],
     ),
