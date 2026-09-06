@@ -114,10 +114,13 @@ class BudgetScreen extends StatelessWidget {
                     return;
                   }
                   final adjust = await _requestCategoryPolicy(context);
-                  if (adjust != null) {
-                    await store.setTotalBudget(
-                      value,
-                      adjustCategoryLimits: adjust,
+                  if (adjust != null && context.mounted) {
+                    await guardStoreWrite(
+                      ScaffoldMessenger.of(context),
+                      () => store.setTotalBudget(
+                        value,
+                        adjustCategoryLimits: adjust,
+                      ),
                     );
                   }
                 }
@@ -159,8 +162,11 @@ class BudgetScreen extends StatelessWidget {
                       title: 'Límite de ${category.label}',
                       currentCentavos: limit,
                     );
-                    if (value != null) {
-                      await store.setCategoryLimit(category, value);
+                    if (value != null && context.mounted) {
+                      await guardStoreWrite(
+                        ScaffoldMessenger.of(context),
+                        () => store.setCategoryLimit(category, value),
+                      );
                     }
                   },
                   child: Row(

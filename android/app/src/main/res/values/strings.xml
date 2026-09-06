@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_today_remaining">Hoy te queda</string>
+    <string name="widget_recent_movements">Movimientos recientes</string>
+    <string name="widget_register_expense">Registrar gasto</string>
+    <string name="widget_compact_description">Sobra: dinero disponible hoy</string>
+    <string name="widget_summary_description">Sobra: resumen del ciclo y movimientos recientes</string>
+    <string name="widget_cat_description">Gato de Sobra</string>
+</resources>

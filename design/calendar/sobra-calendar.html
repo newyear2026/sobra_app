@@ -1,0 +1,425 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face{font-family:PixelifySans;src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");}
+:root{--paper:#F6EFE0;--paperLight:#FBF5E9;--surface:#FFFDF7;--beige:#EFE7D6;
+      --ink:#202848;--inkSoft:#4E5878;--muted:#5F6885;--line:#E7DDC8;
+      --teal:#0E7A72;--tealSoft:#D8EDEA;--tealInk:#0B6660;
+      --cash:#C0873A;--cashSoft:#F7E9CE;--cashInk:#845A1E;
+      --danger:#D4553F;--dangerSoft:#FBE1DA;--dangerInk:#A63A25;
+      --blue:#39558E;--violet:#6E4A8C;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);font-family:PixelifySans,"Malgun Gothic",monospace;color:var(--ink);
+     padding:30px 40px 40px;-webkit-font-smoothing:none;width:1256px}
+.head{display:flex;align-items:baseline;gap:14px;margin-bottom:18px;padding-left:6px}
+.head h1{font-size:26px;font-weight:900}
+.head span{font-size:13px;color:var(--inkSoft);font-weight:800}
+.row{display:flex;gap:30px;align-items:flex-start}
+.col{width:372px}
+.phone{width:372px;height:806px;background:var(--surface);border:5px solid var(--ink);
+       border-radius:26px;padding:14px 18px 16px;display:flex;flex-direction:column;
+       box-shadow:7px 7px 0 rgba(32,40,72,.14);position:relative;overflow:hidden}
+.cap{font-size:12px;color:var(--inkSoft);line-height:1.6;margin-top:12px;padding:0 4px;font-weight:800}
+.cap b{color:var(--ink)}
+.status{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:900;padding:2px 4px 8px}
+.dots{display:flex;gap:3px;align-items:center}
+.dots i{width:7px;height:7px;background:var(--ink);border-radius:50%}
+.dots b{width:14px;height:8px;border:2px solid var(--ink);display:inline-block;margin-left:3px}
+.nav{display:flex;align-items:center;gap:10px;height:28px;margin-bottom:8px}
+.nav .back{font-size:19px;font-weight:900;width:24px}
+.nav .ttl{flex:1;font-size:18px;font-weight:900}
+.seg{display:flex;border:3px solid var(--ink);margin-bottom:12px}
+.seg div{flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:900;background:var(--surface)}
+.seg div.on{background:var(--teal);color:#fff}
+
+.step{display:flex;align-items:center;gap:8px;border:2.5px solid var(--ink);background:var(--tealSoft);
+      padding:8px 10px;margin-bottom:10px;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.step .ar{font-size:16px;font-weight:900;color:var(--tealInk);width:16px;text-align:center}
+.step .mid{flex:1;text-align:center;line-height:1.25}
+.step .mid b{display:block;font-size:14.5px;font-weight:900;color:var(--tealInk)}
+.step .mid s{display:block;font-size:10px;font-weight:800;color:var(--cashInk);text-decoration:none;margin-top:2px}
+
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.wd{text-align:center;font-size:10px;font-weight:900;color:var(--muted);padding-bottom:2px}
+.d{height:47px;border:2.5px solid var(--ink);background:var(--surface);position:relative;
+   padding:3px 3px 0;display:flex;flex-direction:column}
+.d b{font-size:11px;font-weight:900;line-height:1}
+.d s{margin-top:auto;text-decoration:none;font-size:9px;font-weight:900;text-align:right;
+     padding-bottom:3px;letter-spacing:-.2px}
+.d.under{background:var(--tealSoft)} .d.under s{color:var(--tealInk)}
+.d.over{background:var(--dangerSoft)} .d.over s{color:var(--dangerInk)}
+.d.zero s{color:var(--muted)}
+.d.out{border-color:var(--line);background:var(--paper)}
+.d.out b{color:var(--muted);font-weight:800}
+.d.fut b{color:var(--muted)}
+.d.today{box-shadow:0 0 0 2.5px var(--ink);z-index:2}
+.d .pin{position:absolute;top:2px;right:2px;font-size:9px;font-style:normal;font-weight:900;line-height:1}
+.d .pin.inc{color:var(--teal)}
+.d .pin.count{color:var(--cashInk)}
+.d.b2{background:#EDE3CF}
+.d.b3{background:#DDD1B6}
+.d.cut{border-left:5px solid var(--ink)}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 10px;margin-top:11px}
+.lg{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:800;color:var(--inkSoft)}
+.lg i{width:13px;height:13px;border:2px solid var(--ink);display:inline-block;flex:0 0 auto}
+.lg i.u{background:var(--tealSoft)} .lg i.o{background:var(--dangerSoft)}
+.lg i.n{background:var(--surface)} .lg i.x{background:var(--paper);border-color:var(--line)}
+.lg em{font-style:normal;font-weight:900;font-size:11px}
+.lg em.t{color:var(--teal)} .lg em.c{color:var(--cashInk)}
+
+.sum{border:2.5px solid var(--ink);background:var(--surface);padding:10px 12px;margin-top:11px;
+     box-shadow:4px 4px 0 rgba(32,40,72,.16);display:flex;gap:10px}
+.sum .s1{flex:1;line-height:1.3}
+.sum .s1 s{display:block;text-decoration:none;font-size:10px;font-weight:800;color:var(--muted)}
+.sum .s1 b{display:block;font-size:17px;font-weight:900;margin-top:2px}
+.sum .s1 b.t{color:var(--teal)}
+.sum .div{width:2px;background:var(--line)}
+.spacer{flex:1}
+
+.sheet{border-top:3px solid var(--ink);background:var(--surface);margin:0 -18px -16px;
+       padding:14px 18px 16px}
+.sheet .grab{width:52px;height:5px;background:var(--line);margin:0 auto 12px}
+.sheet h3{font-size:17px;font-weight:900;margin-bottom:2px}
+.sheet .sub{font-size:11px;font-weight:800;color:var(--muted);margin-bottom:12px}
+.mini{display:flex;gap:9px;margin-bottom:12px}
+.mini div{flex:1;border:2.5px solid var(--ink);background:var(--surface);padding:7px 9px;line-height:1.25}
+.mini s{display:block;text-decoration:none;font-size:9.5px;font-weight:800;color:var(--muted)}
+.mini b{display:block;font-size:15px;font-weight:900;margin-top:2px}
+.mini div.bad{background:var(--dangerSoft)} .mini div.bad b{color:var(--dangerInk)}
+.trow{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:2px solid var(--line)}
+.trow .ic{width:31px;height:31px;border:2.5px solid var(--ink);display:flex;align-items:center;
+          justify-content:center;flex:0 0 auto;font-size:13px}
+.trow .t{flex:1;font-size:12.5px;font-weight:900;line-height:1.3}
+.trow .t s{display:block;font-size:9.5px;color:var(--muted);font-weight:800;text-decoration:none;margin-top:1px}
+.trow .v{font-size:14px;font-weight:900}
+.trow.inc{background:var(--tealSoft);border:2.5px solid var(--ink);padding:8px 10px;margin-bottom:7px}
+.trow.inc .v{color:var(--teal)}
+.btn{border:3px solid var(--ink);background:var(--teal);color:#fff;text-align:center;padding:11px 0;
+     font-size:14px;font-weight:900;box-shadow:0 5px 0 var(--ink);margin-top:14px}
+.inclist{margin-top:12px;border:2.5px solid var(--ink);background:var(--surface);padding:10px 11px}
+.lbl2{font-size:11px;font-weight:900;color:var(--inkSoft);margin-bottom:7px}
+.irow{display:flex;align-items:center;gap:9px;padding:5px 0;border-bottom:2px solid var(--line)}
+.irow:last-of-type{border-bottom:none}
+.irow .ic{width:22px;height:22px;border:2.5px solid var(--ink);background:var(--tealSoft);
+          color:var(--teal);display:flex;align-items:center;justify-content:center;
+          font-size:10px;font-weight:900;flex:0 0 auto}
+.irow .t{flex:1;font-size:11.5px;font-weight:900;line-height:1.25}
+.irow .t s{display:block;font-size:9px;color:var(--muted);font-weight:800;text-decoration:none;margin-top:1px}
+.irow .v{font-size:12.5px;font-weight:900;color:var(--teal)}
+.note{font-size:9.5px;font-weight:800;color:var(--muted);line-height:1.5;margin-top:8px;
+      padding-top:8px;border-top:2px solid var(--line)}
+.hint{font-size:10.5px;color:var(--muted);line-height:1.55;font-weight:800;margin-top:9px}
+
+.specrow{display:flex;gap:26px;margin-top:34px}
+.spec{flex:1;border:5px solid var(--ink);background:var(--surface);padding:16px 18px 18px;
+      box-shadow:7px 7px 0 rgba(32,40,72,.14)}
+.spec h2{font-size:19px;font-weight:900;margin-bottom:3px}
+.spec .sh{font-size:11.5px;color:var(--muted);font-weight:800;margin-bottom:13px;line-height:1.6}
+.spec h5{font-size:12.5px;font-weight:900;margin:14px 0 6px;padding-bottom:5px;border-bottom:2.5px solid var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+td{padding:5px 3px;border-bottom:2px solid var(--line);font-weight:800;vertical-align:top;line-height:1.45}
+td.x{text-align:right;color:var(--teal);font-weight:900;white-space:nowrap;font-size:11.5px}
+.no{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;font-weight:800;color:var(--inkSoft);
+    padding:5px 0;line-height:1.55}
+.no em{color:var(--danger);font-style:normal;font-weight:900;flex:0 0 auto}
+.yes em{color:var(--teal)}
+.guard{border:2.5px solid var(--line);background:var(--paperLight);padding:9px 10px;margin-bottom:7px;
+       font-size:11.5px;font-weight:800;color:var(--inkSoft);line-height:1.6}
+.guard b{color:var(--ink)}
+code{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;background:var(--tealSoft);padding:1px 4px}
+</style>
+
+<div class="head"><h1>Sobra · Calendario</h1>
+<span>달력은 «달»이 아니라 «주기»를 그린다 — 15일과 말일에 예산이 리셋되므로</span></div>
+
+<div class="row">
+
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back">←</span><span class="ttl">Calendario</span></div>
+  <div class="seg"><div class="on">Ciclo</div><div>Mes</div></div>
+
+  <div class="step">
+    <span class="ar">‹</span>
+    <span class="mid"><b>28 feb – 14 mar</b><s>Quincena · quedan 5 días</s></span>
+    <span class="ar">›</span>
+  </div>
+
+  <div class="cal">
+    <div class="wd">L</div><div class="wd">M</div><div class="wd">M</div><div class="wd">J</div>
+    <div class="wd">V</div><div class="wd">S</div><div class="wd">D</div>
+
+    <div class="d out"><b>23</b></div>
+    <div class="d out"><b>24</b></div>
+    <div class="d out"><b>25</b></div>
+    <div class="d out"><b>26</b></div>
+    <div class="d out"><b>27</b></div>
+    <div class="d over"><b>28</b><i class="pin inc">▲</i><s>$520</s></div>
+    <div class="d under"><b>1</b><s>$180</s></div>
+
+    <div class="d under"><b>2</b><s>$340</s></div>
+    <div class="d zero"><b>3</b><s>—</s></div>
+    <div class="d under"><b>4</b><s>$255</s></div>
+    <div class="d under"><b>5</b><s>$260</s></div>
+    <div class="d over"><b>6</b><i class="pin inc">▲</i><s>$890</s></div>
+    <div class="d under"><b>7</b><s>$150</s></div>
+    <div class="d zero"><b>8</b><i class="pin count">●</i><s>—</s></div>
+
+    <div class="d under"><b>9</b><s>$300</s></div>
+    <div class="d under today"><b>10</b><s>$220</s></div>
+    <div class="d fut"><b>11</b></div>
+    <div class="d fut"><b>12</b></div>
+    <div class="d fut"><b>13</b></div>
+    <div class="d fut"><b>14</b></div>
+    <div class="d out"><b>15</b></div>
+  </div>
+
+  <div class="legend">
+    <span class="lg"><i class="u"></i>Bajo tu límite</span>
+    <span class="lg"><i class="o"></i>Sobre el límite</span>
+    <span class="lg"><i class="n"></i>Sin gastos</span>
+    <span class="lg"><i class="x"></i>Otro ciclo</span>
+    <span class="lg"><em class="t">▲</em>Ingreso</span>
+    <span class="lg"><em class="c">●</em>Conteo</span>
+  </div>
+
+  <div class="sum">
+    <div class="s1"><s>Gastado en el ciclo</s><b>$3,115</b></div>
+    <div class="div"></div>
+    <div class="s1"><s>Días en verde</s><b class="t">9 de 11</b></div>
+  </div>
+
+  <div class="inclist">
+    <div class="lbl2">Ingresos de este ciclo</div>
+    <div class="irow"><span class="ic">&#9650;</span>
+      <span class="t">Mi pago de siempre<s>28 feb &middot; Ahorro</s></span>
+      <span class="v">+$6,000</span></div>
+    <div class="irow"><span class="ic">&#9650;</span>
+      <span class="t">Propina del viernes<s>6 mar &middot; Este ciclo</s></span>
+      <span class="v">+$450</span></div>
+    <div class="note">Solo $450 entr&oacute; a este presupuesto. El pago lo
+      guardaste, as&iacute; que no cambia tu l&iacute;mite diario.</div>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="hint">Toca un d&iacute;a para ver sus movimientos. Los d&iacute;as
+    fuera del ciclo pertenecen a otro presupuesto.</div>
+</div>
+<div class="cap"><b>A · Ciclo.</b> 기본 뷰. 격자는 항상 월요일 시작이고, 주기에
+속한 날만 진한 테두리를 갖는다. 칸의 색은 «그 날의 한도를 넘었는가»만 말한다 —
+금액의 크기가 아니라.</div>
+</div>
+
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back">←</span><span class="ttl">Calendario</span></div>
+  <div class="seg"><div class="on">Ciclo</div><div>Mes</div></div>
+
+  <div class="cal" style="opacity:.42">
+    <div class="wd">L</div><div class="wd">M</div><div class="wd">M</div><div class="wd">J</div>
+    <div class="wd">V</div><div class="wd">S</div><div class="wd">D</div>
+    <div class="d out"><b>23</b></div><div class="d out"><b>24</b></div>
+    <div class="d out"><b>25</b></div><div class="d out"><b>26</b></div>
+    <div class="d out"><b>27</b></div>
+    <div class="d over"><b>28</b><i class="pin inc">▲</i><s>$520</s></div>
+    <div class="d under"><b>1</b><s>$180</s></div>
+    <div class="d under"><b>2</b><s>$340</s></div>
+    <div class="d zero"><b>3</b><s>—</s></div>
+    <div class="d under"><b>4</b><s>$255</s></div>
+    <div class="d under"><b>5</b><s>$260</s></div>
+    <div class="d over" style="box-shadow:0 0 0 2.5px var(--ink)"><b>6</b><i class="pin inc">▲</i><s>$890</s></div>
+    <div class="d under"><b>7</b><s>$150</s></div>
+    <div class="d zero"><b>8</b><i class="pin count">●</i><s>—</s></div>
+    <div class="d under"><b>9</b><s>$300</s></div>
+    <div class="d under today"><b>10</b><s>$220</s></div>
+    <div class="d fut"><b>11</b></div><div class="d fut"><b>12</b></div>
+    <div class="d fut"><b>13</b></div><div class="d fut"><b>14</b></div>
+    <div class="d out"><b>15</b></div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="sheet">
+    <div class="grab"></div>
+    <h3>Viernes 6 de marzo</h3>
+    <div class="sub">2 gastos · 1 ingreso</div>
+
+    <div class="mini">
+      <div><s>Ten&iacute;as para hoy</s><b>$543.88</b></div>
+      <div class="bad"><s>Gastaste</s><b>$890</b></div>
+    </div>
+
+    <div class="trow inc">
+      <span class="ic" style="background:var(--tealSoft);color:var(--teal)">▲</span>
+      <span class="t">Propina del viernes<s>Ingreso extra · Este ciclo</s></span>
+      <span class="v">+$450</span>
+    </div>
+    <div class="trow">
+      <span class="ic" style="background:var(--dangerSoft);color:var(--danger)">◼</span>
+      <span class="t">Cena con Rosa<s>Comida · Efectivo</s></span>
+      <span class="v">−$640</span>
+    </div>
+    <div class="trow" style="border-bottom:none">
+      <span class="ic" style="background:#DCE4F2;color:var(--blue)">◼</span>
+      <span class="t">Uber a casa<s>Transporte · Tarjeta</s></span>
+      <span class="v">−$250</span>
+    </div>
+
+    <div class="hint">El ingreso de este día ya está sumado a tu presupuesto
+      del ciclo, así que no aparece como saldo aparte.</div>
+    <div class="btn">Registrar en este día</div>
+  </div>
+</div>
+<div class="cap"><b>B · Día.</b> 칸을 누르면 시트가 올라온다. 위의 두 칸이 «그 날
+쓸 수 있었던 돈 / 실제로 쓴 돈»이라, 칸이 왜 붉은지가 그 자리에서 보인다.
+지출은 흐름이라 줄, 입금은 사건이라 테두리를 가진 카드.</div>
+</div>
+
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back">←</span><span class="ttl">Calendario</span></div>
+  <div class="seg"><div>Ciclo</div><div class="on">Mes</div></div>
+
+  <div class="step">
+    <span class="ar">‹</span>
+    <span class="mid"><b>Marzo 2026</b><s>3 presupuestos tocan este mes</s></span>
+    <span class="ar">›</span>
+  </div>
+
+  <div class="cal">
+    <div class="wd">L</div><div class="wd">M</div><div class="wd">M</div><div class="wd">J</div>
+    <div class="wd">V</div><div class="wd">S</div><div class="wd">D</div>
+
+    <div class="d out"><b>23</b></div><div class="d out"><b>24</b></div>
+    <div class="d out"><b>25</b></div><div class="d out"><b>26</b></div>
+    <div class="d out"><b>27</b></div>
+    <div class="d over cut"><b>28</b><i class="pin inc">▲</i><s>$520</s></div>
+    <div class="d under"><b>1</b><s>$180</s></div>
+
+    <div class="d under"><b>2</b><s>$340</s></div>
+    <div class="d zero"><b>3</b><s>—</s></div>
+    <div class="d under"><b>4</b><s>$255</s></div>
+    <div class="d under"><b>5</b><s>$260</s></div>
+    <div class="d over"><b>6</b><i class="pin inc">▲</i><s>$890</s></div>
+    <div class="d under"><b>7</b><s>$150</s></div>
+    <div class="d zero"><b>8</b><i class="pin count">●</i><s>—</s></div>
+
+    <div class="d under"><b>9</b><s>$300</s></div>
+    <div class="d under today"><b>10</b><s>$220</s></div>
+    <div class="d fut"><b>11</b></div>
+    <div class="d fut"><b>12</b></div>
+    <div class="d fut"><b>13</b></div>
+    <div class="d fut"><b>14</b></div>
+    <div class="d fut b2 cut"><b>15</b><i class="pin inc">▲</i></div>
+
+    <div class="d fut b2"><b>16</b></div><div class="d fut b2"><b>17</b></div>
+    <div class="d fut b2"><b>18</b></div><div class="d fut b2"><b>19</b></div>
+    <div class="d fut b2"><b>20</b></div><div class="d fut b2"><b>21</b></div>
+    <div class="d fut b2"><b>22</b></div>
+
+    <div class="d fut b2"><b>23</b></div><div class="d fut b2"><b>24</b></div>
+    <div class="d fut b2"><b>25</b></div><div class="d fut b2"><b>26</b></div>
+    <div class="d fut b2"><b>27</b></div><div class="d fut b2"><b>28</b></div>
+    <div class="d fut b2"><b>29</b></div>
+
+    <div class="d fut b2"><b>30</b></div>
+    <div class="d b3 cut"><b>31</b><i class="pin inc">▲</i></div>
+    <div class="d out"><b>1</b></div><div class="d out"><b>2</b></div>
+    <div class="d out"><b>3</b></div><div class="d out"><b>4</b></div>
+    <div class="d out"><b>5</b></div>
+  </div>
+
+  <div class="legend">
+    <span class="lg"><i style="background:var(--surface)"></i>Ciclo en curso</span>
+    <span class="lg"><i style="background:#EDE3CF"></i>Próximo ciclo</span>
+    <span class="lg"><i style="background:#DDD1B6"></i>El de abril</span>
+    <span class="lg"><em style="color:var(--ink)">▌</em>Cambio de presupuesto</span>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="hint">Marzo toca tres presupuestos: te pagan el 15 y el último
+    día. Las líneas gruesas marcan dónde empieza cada uno, para que no se sumen
+    ciclos distintos en una sola cifra.</div>
+</div>
+<div class="cap"><b>C · Mes.</b> 사용자가 기대하는 «달» 뷰는 준다. 대신 주기가
+바뀌는 자리마다 굵은 세로선을 긋고 바탕색을 바꾼다. 3월은 세 예산에 걸쳐 있어서
+«3월의 합계»라는 숫자는 일부러 만들지 않는다.</div>
+</div>
+
+</div>
+
+<div class="specrow">
+
+<div class="spec">
+<h2>규칙</h2>
+<div class="sh">칸 하나가 말하는 것은 단 하나 — «그 날의 한도를 넘었는가».
+금액의 절대 크기는 색으로 말하지 않는다.</div>
+
+<h5>칸의 상태</h5>
+<table>
+<tr><td>Bajo el límite<br><span style="color:var(--muted);font-size:10px">그 날 아침 한도 이하</span></td><td class="x">tealSoft</td></tr>
+<tr><td>Sobre el límite</td><td class="x">dangerSoft</td></tr>
+<tr><td>Sin gastos</td><td class="x">surface + «—»</td></tr>
+<tr><td>Futuro (같은 주기)</td><td class="x">surface, 숫자만</td></tr>
+<tr><td>Otro ciclo</td><td class="x">paper + line 테두리</td></tr>
+<tr><td>Hoy</td><td class="x">ink 2.5px 링</td></tr>
+</table>
+
+<h5>사건 핀</h5>
+<table>
+<tr><td>▲ 입금</td><td class="x">teal</td></tr>
+<tr><td>● 현금 conteo</td><td class="x">cashInk</td></tr>
+</table>
+<div class="guard" style="margin-top:10px">지출은 <b>흐름</b>이라 칸의 바탕이
+되고, 입금은 <b>사건</b>이라 핀이 된다. <code>sobra-income</code>에서 정한
+비대칭을 달력에서도 유지한다.</div>
+</div>
+
+<div class="spec">
+<h2>일일 한도의 재구성</h2>
+<div class="sh">칸의 색은 지금의 한도가 아니라 <b>그 날 아침의 한도</b>로
+판정한다. 스토어에 이미 있는 계산이다.</div>
+<div class="guard"><code>(presupuesto − gastado antes) ÷ días restantes</code></div>
+<table>
+<tr><td>주기 예산 (6,000 + 450)</td><td class="x">$6,450</td></tr><tr><td>6 mar 전까지 지출</td><td class="x">$1,555</td></tr>
+<tr><td>남은 날 (6~14)</td><td class="x">9일</td></tr>
+<tr><td>그 날의 한도</td><td class="x">$543.88 (내림)</td></tr>
+<tr><td>실제 지출</td><td class="x" style="color:var(--dangerInk)">$890 → over</td></tr>
+</table>
+<div class="guard" style="margin-top:10px">이 식은
+<code>_daysUnderDailyLimit</code>가 XP를 줄 때 쓰는 것과 같다. 달력과 XP 화면이
+서로 다른 날을 «초록»이라 부르면 안 된다.</div>
+
+<h5>주기 경계</h5>
+<div class="guard">모든 날짜 키는 <code>boundsFor()</code>를 통과해야 한다.
+급여주기를 바꾼 직후에는 첫 주기의 시작이 적용일로 잘리므로, 달력이
+<code>paySchedule.boundsFor()</code>를 직접 부르면 그 창에서만 칸이 어긋난다.</div>
+</div>
+
+<div class="spec">
+<h2>하지 않는 것</h2>
+<div class="no"><em>✕</em><span>월 합계를 하나의 숫자로 보여주지 않는다. 두
+예산의 합은 아무것도 의미하지 않는다.</span></div>
+<div class="no"><em>✕</em><span>칸에 히트맵 농담을 쓰지 않는다. «많이 썼다»가
+아니라 «넘었다 / 안 넘었다»만 말한다.</span></div>
+<div class="no"><em>✕</em><span>미래 날짜에 예측을 그리지 않는다. Presupuesto의
+«Proyección»이 이미 그 일을 한다.</span></div>
+<div class="no"><em>✕</em><span>주기 밖의 날은 눌러도 시트를 열지 않는다. 다른
+예산의 날이라 여기서 답할 수 없다.</span></div>
+<div class="no yes"><em>✓</em><span>빈 주기에도 격자는 그대로 두고 아래에
+«Aún no hay movimientos»만 놓는다. 격자가 사라지면 날짜 감각도 사라진다.</span></div>
+
+<h5>진입점</h5>
+<table>
+<tr><td>Movimientos 탭 우상단 아이콘</td><td class="x">전환</td></tr>
+<tr><td>Inicio · «Avance del ciclo»</td><td class="x">→ Ciclo 뷰</td></tr>
+</table>
+<div class="guard" style="margin-top:10px">여섯 번째 탭을 만들지 않는다. 달력은
+<b>Movimientos의 다른 표현</b>이지 새 목적지가 아니다.</div>
+</div>
+
+</div>

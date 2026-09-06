@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../services/sobra_widget_sync.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/gamification_ui.dart';
@@ -62,6 +63,13 @@ class _AppShellState extends State<AppShell> {
   bool _xpNoticeScheduled = false;
 
   @override
+  void initState() {
+    super.initState();
+    SobraWidgetSync.destination.addListener(_onWidgetDestination);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onWidgetDestination());
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final nextStore = SobraScope.of(context);
@@ -74,8 +82,20 @@ class _AppShellState extends State<AppShell> {
 
   @override
   void dispose() {
+    SobraWidgetSync.destination.removeListener(_onWidgetDestination);
     _store?.removeListener(_onStoreChanged);
     super.dispose();
+  }
+
+  void _onWidgetDestination() {
+    final destination = SobraWidgetSync.destination.value;
+    if (!mounted || destination == null) return;
+    final tab = switch (destination) {
+      SobraWidgetDestination.home => AppTab.home,
+      SobraWidgetDestination.register => AppTab.register,
+    };
+    if (_selected != tab) setState(() => _selected = tab);
+    SobraWidgetSync.consumeDestination(destination);
   }
 
   void _onStoreChanged() => _scheduleXpNotice();

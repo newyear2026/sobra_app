@@ -97,6 +97,47 @@ int? parseNonNegativePesos(String input) {
   return (value * 100).round();
 }
 
+/// The sentence to show when a store write did not go through.
+///
+/// The store raises its own refusals in Spanish — a budget below the income
+/// already booked to the cycle, a movement dated in the future — so those are
+/// worth repeating verbatim. Anything else is a storage failure the user can
+/// do nothing about except try again, and it gets one plain line.
+String describeStoreFailure(Object error) {
+  if (error is StateError) return error.message;
+  if (error is ArgumentError) {
+    final message = error.message;
+    if (message is String && message.isNotEmpty) return message;
+  }
+  return 'No pudimos guardar el cambio. Vuelve a intentarlo.';
+}
+
+/// Runs a store write and shows [describeStoreFailure] if it throws.
+///
+/// Every mutation on the store ends in a save that raises rather than
+/// returning false, so without this the one thing the user cares about —
+/// whether their money got written down — fails as an unhandled async error
+/// behind a screen that looks like it worked. Returns whether the write
+/// landed, so a caller can hold back its own success message.
+///
+/// Takes the messenger rather than a [BuildContext] on purpose: a write that
+/// closes its own screen, or a Deshacer tapped after the row is gone, has no
+/// context left to read one from by the time the answer arrives.
+Future<bool> guardStoreWrite(
+  ScaffoldMessengerState messenger,
+  Future<void> Function() write,
+) async {
+  try {
+    await write();
+    return true;
+  } on Object catch (error) {
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(describeStoreFailure(error))));
+    return false;
+  }
+}
+
 String shortDate(DateTime date) =>
     '${date.day.toString().padLeft(2, '0')}/'
     '${date.month.toString().padLeft(2, '0')}/${date.year}';

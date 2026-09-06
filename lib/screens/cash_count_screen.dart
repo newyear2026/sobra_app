@@ -48,31 +48,37 @@ class _CashCountScreenState extends State<CashCountScreen> {
       );
       return;
     }
+    final messenger = ScaffoldMessenger.of(context);
     setState(() => _saving = true);
     XpNotice? xpNotice;
+    final bool saved;
     try {
-      await store.reconcileCashCount(
-        actualCentavos: actual,
-        resolution: resolution,
-        category: _category,
-        note: _noteController.text,
-        incomeAllocation: _incomeAllocation,
-      );
-      xpNotice = store.takePendingXpNotice();
+      saved = await guardStoreWrite(messenger, () async {
+        await store.reconcileCashCount(
+          actualCentavos: actual,
+          resolution: resolution,
+          category: _category,
+          note: _noteController.text,
+          incomeAllocation: _incomeAllocation,
+        );
+        xpNotice = store.takePendingXpNotice();
+      });
     } finally {
       if (mounted) setState(() => _saving = false);
     }
-    if (!mounted) return;
-    final messenger = ScaffoldMessenger.of(context);
+    // The count screen stays put on a failure. Popping back to Inicio would
+    // show the old estimate as though the recount had been accepted.
+    if (!saved || !mounted) return;
     Navigator.pop(context);
+    final notice = xpNotice;
     messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        xpNotice == null
+        notice == null
             ? const SnackBar(
                 content: Text('Conteo guardado sin duplicar movimientos.'),
               )
-            : xpSnackBar(xpNotice),
+            : xpSnackBar(notice),
       );
   }
 

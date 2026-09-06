@@ -15,6 +15,15 @@ typedef NowProvider = DateTime Function();
 class SobraStore extends ChangeNotifier {
   SobraStore._(this._preferences, this._now);
 
+  /// The schedule every path falls back to: paid on the 15th and on the last
+  /// day of the month, the ordinary Mexican quincena.
+  ///
+  /// Read this rather than writing `PaySchedule.semiMonthly()` inline. The
+  /// new-user path and the legacy-restore path used to name different days,
+  /// so restoring a file saved before schedules were stored put the user on a
+  /// cycle the settings screen cannot even display, let alone edit.
+  static const _defaultPaySchedule = PaySchedule.semiMonthly();
+
   static const _storageKey = 'sobra_state_v2';
   static const _backupKey = 'sobra_state_backup_v2';
   static const _corruptArchiveKey = 'sobra_state_corrupt_v2';
@@ -36,7 +45,7 @@ class SobraStore extends ChangeNotifier {
   bool categoryLimitsCustomized = false;
   int successfulCycles = 0;
   DateTime? lastCashCountAt;
-  PaySchedule paySchedule = const PaySchedule.semiMonthly();
+  PaySchedule paySchedule = _defaultPaySchedule;
   PaySchedule? pendingPaySchedule;
   DateTime? pendingPayScheduleEffectiveAt;
   DateTime? payScheduleEffectiveFloor;
@@ -577,13 +586,22 @@ class SobraStore extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteIncome(String id) async {
+  /// Removes an income, reporting whether it was allowed to go.
+  ///
+  /// Refuses an income created by a cash count, for the same reason
+  /// [deleteExpense] refuses its counterpart: the money is already in the
+  /// wallet and the count that recorded it hides its own row in favour of
+  /// this one, so deleting it would erase the count from the ledger while
+  /// the counted cash figure kept the money. Recounting is the way out.
+  Future<bool> deleteIncome(String id) async {
     final index = _incomes.indexWhere((entry) => entry.id == id);
-    if (index == -1) return;
+    if (index == -1) return false;
+    if (_incomes[index].isLinkedToCashCount) return false;
     final removed = _incomes.removeAt(index);
     _applyIncome(removed, -1);
     await _save();
     notifyListeners();
+    return true;
   }
 
   Future<void> restoreIncome(IncomeEntry entry) async {
@@ -923,7 +941,7 @@ class SobraStore extends ChangeNotifier {
     categoryLimitsCustomized = false;
     successfulCycles = 0;
     lastCashCountAt = null;
-    paySchedule = const PaySchedule.semiMonthly();
+    paySchedule = _defaultPaySchedule;
     pendingPaySchedule = null;
     pendingPayScheduleEffectiveAt = null;
     payScheduleEffectiveFloor = null;
@@ -1023,7 +1041,7 @@ class SobraStore extends ChangeNotifier {
     lastCashCountAt = savedCount == null ? null : DateTime.parse(savedCount);
     final scheduleJson = json['paySchedule'] as Map<String, dynamic>?;
     paySchedule = scheduleJson == null
-        ? const PaySchedule.semiMonthly(firstPayDay: 1, secondPayDay: 16)
+        ? _defaultPaySchedule
         : PaySchedule.fromJson(scheduleJson);
     final pendingJson = json['pendingPaySchedule'] as Map<String, dynamic>?;
     pendingPaySchedule = pendingJson == null

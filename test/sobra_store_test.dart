@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/models/cash_reconciliation.dart';
@@ -283,6 +285,30 @@ void main() {
     expect(store.hasStorageError, isTrue);
     expect(store.exportCorruptedJson, corrupted);
     expect(preferences.getString('sobra_state_v2'), corrupted);
+  });
+
+  test('a file saved before schedules lands on the new-user cycle', () async {
+    // The legacy-restore path used to name its own semi-monthly days, so an
+    // old file opened onto a cycle the settings screen cannot display or edit.
+    SharedPreferences.setMockInitialValues({
+      'sobra_state_v2': jsonEncode({
+        'transactions': <Object?>[],
+        'totalBudgetCentavos': 600000,
+        'countedCashCentavos': 0,
+        'expectedCashCentavos': 0,
+        'hasCompletedOnboarding': true,
+      }),
+    });
+    final restored = await loadStore();
+
+    SharedPreferences.setMockInitialValues({});
+    final fresh = await loadStore();
+
+    expect(restored.paySchedule.type, fresh.paySchedule.type);
+    expect(restored.paySchedule.firstPayDay, fresh.paySchedule.firstPayDay);
+    expect(restored.paySchedule.secondPayDay, fresh.paySchedule.secondPayDay);
+    expect(restored.cycleStart, fresh.cycleStart);
+    expect(restored.cycleEnd, fresh.cycleEnd);
   });
 
   test('income, onboarding choices and completion persist', () async {

@@ -94,29 +94,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final amount = parsePesos(_amountController.text);
     if (amount == null) return;
     final store = SobraScope.of(context);
+    final messenger = ScaffoldMessenger.of(context);
     final reducedMotion = reducedMotionOf(context);
     final usePending = await _shouldUsePendingDifference(store, amount);
     if (!mounted) return;
     setState(() => _saving = true);
     // Whatever happens, the button comes back. Leaving _saving true on a throw
     // disables Guardar for the rest of the session with no way to recover.
+    final bool saved;
     try {
-      if (usePending) {
-        await store.classifyPendingCashExpense(
-          expenseId: store.latestPendingCashExpense!.id,
-          category: _category,
-          note: _noteController.text,
-        );
-      } else if (_mode == _RegisterMode.expense) {
-        await store.addExpense(
-          amountCentavos: amount,
-          category: _category,
-          note: _noteController.text,
-          occurredAt: _occurredAt(store),
-          paymentMethod: _paymentMethod,
-        );
-      } else {
-        await store.addIncome(
+      saved = await guardStoreWrite(messenger, () {
+        if (usePending) {
+          return store.classifyPendingCashExpense(
+            expenseId: store.latestPendingCashExpense!.id,
+            category: _category,
+            note: _noteController.text,
+          );
+        }
+        if (_mode == _RegisterMode.expense) {
+          return store.addExpense(
+            amountCentavos: amount,
+            category: _category,
+            note: _noteController.text,
+            occurredAt: _occurredAt(store),
+            paymentMethod: _paymentMethod,
+          );
+        }
+        return store.addIncome(
           amountCentavos: amount,
           kind: _incomeKind,
           note: _noteController.text,
@@ -124,11 +128,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
           destination: _paymentMethod,
           allocation: _incomeAllocation,
         );
-      }
+      });
     } finally {
       if (mounted) setState(() => _saving = false);
     }
-    if (!mounted) return;
+    // Nothing was written, and guardStoreWrite has already said so. Celebrating
+    // and clearing the form here would throw the entry away twice over.
+    if (!saved || !mounted) return;
     // The dialog closes itself on a timer. Awaiting a dialog that something
     // else has to pop deadlocks: the await only finishes once the route is
     // gone, so the line that pops it never runs.

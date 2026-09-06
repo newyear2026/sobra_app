@@ -82,15 +82,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
     setState(() => _saving = true);
     final store = SobraScope.of(context);
-    await store.configureOnboarding(
-      budgetCentavos: budget,
-      schedule: _schedule(store.today),
-      cashCentavos: cash,
+    final messenger = ScaffoldMessenger.of(context);
+    final saved = await guardStoreWrite(
+      messenger,
+      () => store.configureOnboarding(
+        budgetCentavos: budget,
+        schedule: _schedule(store.today),
+        cashCentavos: cash,
+      ),
     );
     if (!mounted) return;
     setState(() => _saving = false);
+    // The summary page reads its figures back out of the store, so it would
+    // present numbers that were never written down.
+    if (!saved) return;
     await _goTo(5);
   }
+
+  /// Marks onboarding finished, which is what swaps the whole app over to the
+  /// shell. A failure here has to be visible: the user taps "Listo" and would
+  /// otherwise be left staring at the summary with nothing happening.
+  Future<void> _finish(SobraStore store) =>
+      guardStoreWrite(ScaffoldMessenger.of(context), store.completeOnboarding);
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +168,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     todayCentavos: store.todayRemainingCentavos,
                     bounds: store.cycleBounds,
                     reducedMotion: reducedMotionOf(context),
-                    onFinish: store.completeOnboarding,
+                    onFinish: () => _finish(store),
                   ),
                 ],
               ),

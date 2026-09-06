@@ -216,10 +216,17 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
                   onPressed: _saving
                       ? null
                       : () async {
+                          final messenger = ScaffoldMessenger.of(context);
                           setState(() => _saving = true);
-                          await store.queuePayScheduleChange(draft);
+                          final saved = await guardStoreWrite(
+                            messenger,
+                            () => store.queuePayScheduleChange(draft),
+                          );
                           if (!context.mounted) return;
-                          Navigator.pop(context);
+                          setState(() => _saving = false);
+                          // Staying here on a failure keeps the choice on
+                          // screen, so Guardar can simply be tapped again.
+                          if (saved) Navigator.pop(context);
                         },
                 ),
               ],

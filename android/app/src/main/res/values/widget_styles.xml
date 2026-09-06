@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SobraWidgetProgressSegment">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginRight">2dp</item>
+        <item name="android:background">@drawable/widget_progress_empty</item>
+    </style>
+
+    <style name="SobraWidgetProgressSegmentLast" parent="SobraWidgetProgressSegment">
+        <item name="android:layout_marginRight">0dp</item>
+    </style>
+
+    <style name="SobraWidgetCatFrame">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:contentDescription">@string/widget_cat_description</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+
+    <style name="SobraWidgetMovementRow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">35dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:background">@drawable/widget_transaction_row</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="SobraWidgetMovementIcon">
+        <item name="android:layout_width">32dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/widget_icon_expense</item>
+        <item name="android:fontFamily">@font/pixelify_sans</item>
+        <item name="android:gravity">center</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textColor">#FF202848</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="SobraWidgetMovementTitle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginLeft">9dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:fontFamily">@font/pixelify_sans</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">#FF202848</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="SobraWidgetMovementAmount">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">6dp</item>
+        <item name="android:layout_marginRight">9dp</item>
+        <item name="android:fontFamily">@font/pixelify_sans</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">#FF202848</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

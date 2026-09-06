@@ -82,7 +82,10 @@ class SettingsScreen extends StatelessWidget {
                   const SizedBox(width: 8),
                   PixelSwitch(
                     value: store.reducedMotion,
-                    onChanged: store.setReducedMotion,
+                    onChanged: (value) => guardStoreWrite(
+                      ScaffoldMessenger.of(context),
+                      () => store.setReducedMotion(value),
+                    ),
                     semanticLabel: 'Reducir movimiento',
                   ),
                 ],

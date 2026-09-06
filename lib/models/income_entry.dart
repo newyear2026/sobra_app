@@ -34,6 +34,15 @@ class IncomeEntry {
   final IncomeAllocation allocation;
   final String? cashReconciliationId;
 
+  /// Whether this income exists because a physical cash count came up long.
+  ///
+  /// Like its expense counterpart, the amount is a measurement of money that
+  /// is already in the wallet rather than a figure the user typed, and the
+  /// reconciliation row that produced it hides itself in favour of this one.
+  /// Deleting it would leave that count with nothing to point at and nothing
+  /// on screen, while the counted cash figure kept the money.
+  bool get isLinkedToCashCount => cashReconciliationId != null;
+
   Map<String, Object?> toJson() => {
     'id': id,
     'amountCentavos': amountCentavos,

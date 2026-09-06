@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:contentDescription="@string/widget_summary_description"
+    android:orientation="vertical"
+    android:paddingLeft="17dp"
+    android:paddingTop="16dp"
+    android:paddingRight="21dp"
+    android:paddingBottom="21dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/pixelify_sans"
+        android:includeFontPadding="false"
+        android:text="@string/widget_today_remaining"
+        android:textColor="#FF202848"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/today_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pixelify_sans"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="$461"
+            android:textColor="#FF0E7A72"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:layout_marginBottom="5dp"
+            android:fontFamily="@font/pixelify_sans"
+            android:includeFontPadding="false"
+            android:text="MXN"
+            android:textColor="#FF4E5878"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/days_remaining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/pixelify_sans"
+        android:includeFontPadding="false"
+        android:text="13 días"
+        android:textColor="#FF202848"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="17dp"
+        android:layout_marginTop="7dp"
+        android:background="@drawable/widget_progress_frame"
+        android:orientation="horizontal"
+        android:padding="2dp">
+        <TextView android:id="@+id/progress_1" style="@style/SobraWidgetProgressSegment" />
+        <TextView android:id="@+id/progress_2" style="@style/SobraWidgetProgressSegment" />
+        <TextView android:id="@+id/progress_3" style="@style/SobraWidgetProgressSegment" />
+        <TextView android:id="@+id/progress_4" style="@style/SobraWidgetProgressSegment" />
+        <TextView android:id="@+id/progress_5" style="@style/SobraWidgetProgressSegment" />
+        <TextView android:id="@+id/progress_6" style="@style/SobraWidgetProgressSegment" />
+        <TextView android:id="@+id/progress_7" style="@style/SobraWidgetProgressSegment" />
+        <TextView android:id="@+id/progress_8" style="@style/SobraWidgetProgressSegment" />
+        <TextView android:id="@+id/progress_9" style="@style/SobraWidgetProgressSegment" />
+        <TextView android:id="@+id/progress_10" style="@style/SobraWidgetProgressSegmentLast" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pixelify_sans"
+            android:includeFontPadding="false"
+            android:text="Presupuesto "
+            android:textColor="#FF5F6885"
+            android:textSize="11sp" />
+        <TextView
+            android:id="@+id/total_budget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pixelify_sans"
+            android:includeFontPadding="false"
+            android:text="$6,000"
+            android:textColor="#FF202848"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:text="" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pixelify_sans"
+            android:includeFontPadding="false"
+            android:text="Gastado "
+            android:textColor="#FF5F6885"
+            android:textSize="11sp" />
+        <TextView
+            android:id="@+id/total_spent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pixelify_sans"
+            android:includeFontPadding="false"
+            android:text="$1,980"
+            android:textColor="#FF202848"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:fontFamily="@font/pixelify_sans"
+        android:includeFontPadding="false"
+        android:text="@string/widget_recent_movements"
+        android:textColor="#FF202848"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/movement_1"
+        style="@style/SobraWidgetMovementRow">
+        <TextView android:id="@+id/movement_1_icon" style="@style/SobraWidgetMovementIcon" android:text="−" />
+        <TextView android:id="@+id/movement_1_title" style="@style/SobraWidgetMovementTitle" android:text="Metro" />
+        <TextView android:id="@+id/movement_1_amount" style="@style/SobraWidgetMovementAmount" android:text="−$18" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/movement_2"
+        style="@style/SobraWidgetMovementRow">
+        <TextView android:id="@+id/movement_2_icon" style="@style/SobraWidgetMovementIcon" android:text="+" />
+        <TextView android:id="@+id/movement_2_title" style="@style/SobraWidgetMovementTitle" android:text="Farmacia" />
+        <TextView android:id="@+id/movement_2_amount" style="@style/SobraWidgetMovementAmount" android:text="−$840" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="88dp">
+        <TextView
+            android:id="@+id/register_button"
+            android:layout_width="154dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom|left"
+            android:background="@drawable/widget_button"
+            android:contentDescription="@string/widget_register_expense"
+            android:fontFamily="@font/pixelify_sans"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="＋  Registrar gasto"
+            android:textColor="#FFFFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <ViewFlipper
+            android:id="@+id/cat_motion"
+            android:layout_width="112dp"
+            android:layout_height="88dp"
+            android:layout_gravity="bottom|right"
+            android:autoStart="true"
+            android:flipInterval="700">
+            <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_save_coin_high" />
+            <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_save_coin_mid" />
+            <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_save_coin_done" />
+            <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_save_coin_done" />
+        </ViewFlipper>
+
+        <ImageView
+            android:id="@+id/cat_static"
+            style="@style/SobraWidgetCatFrame"
+            android:layout_width="112dp"
+            android:layout_height="88dp"
+            android:layout_gravity="bottom|right"
+            android:src="@drawable/cat_save_coin_done"
+            android:visibility="gone" />
+    </FrameLayout>
+</LinearLayout>

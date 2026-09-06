@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../models/expense_entry.dart';
@@ -15,6 +17,105 @@ class TransactionsScreen extends StatelessWidget {
     if (day == today) return 'Hoy';
     if (day == today.subtract(const Duration(days: 1))) return 'Ayer';
     return shortCycleDate(day);
+  }
+
+  /// Deletes what a row stands for, or says why it has to stay.
+  ///
+  /// Both halves of a cash count are pinned. The count hides its own row in
+  /// favour of the expense or income it produced, so removing that one row
+  /// would take the whole count off the ledger while the counted cash figure
+  /// kept the money — the two would stop telling the same story.
+  Future<void> _deleteMovement(
+    ScaffoldMessengerState messenger,
+    SobraStore store,
+    MoneyMovement movement,
+  ) async {
+    final expense = movement.expense;
+    final income = movement.income;
+    if (expense == null && income == null) return;
+
+    var removed = false;
+    final wrote = await guardStoreWrite(messenger, () async {
+      removed = expense != null
+          ? await store.deleteExpense(expense.id)
+          : await store.deleteIncome(income!.id);
+    });
+    if (!wrote) return;
+
+    if (!removed) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            expense != null
+                ? 'Este gasto viene de un conteo de efectivo. Vuelve a '
+                      'contar para corregirlo.'
+                : 'Este ingreso viene de un conteo de efectivo. Vuelve a '
+                      'contar para corregirlo.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          expense != null ? 'Movimiento eliminado.' : 'Ingreso eliminado.',
+        ),
+        action: SnackBarAction(
+          label: 'Deshacer',
+          onPressed: () => unawaited(
+            guardStoreWrite(
+              messenger,
+              () => expense != null
+                  ? store.restoreExpense(expense)
+                  : store.restoreIncome(income!),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// The ⋮ menu for a row, or nothing at all when it would be empty.
+  ///
+  /// A cash-count income can be neither edited nor deleted, so without this
+  /// it keeps a button that opens onto nothing. Its expense counterpart still
+  /// has a menu, because the category and the note are always the user's.
+  Widget? _rowMenu(
+    BuildContext context,
+    SobraStore store,
+    MoneyMovement movement,
+  ) {
+    final expense = movement.expense;
+    final income = movement.income;
+    final canEdit = expense != null;
+    // Either half of a cash count measures money that already moved, so there
+    // is nothing to undo here.
+    final canDelete =
+        (expense != null || income != null) &&
+        expense?.isLinkedToCashCount != true &&
+        income?.isLinkedToCashCount != true;
+    if (!canEdit && !canDelete) return null;
+
+    return PopupMenuButton<String>(
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints.tightFor(width: 28, height: 22),
+      iconSize: 17,
+      onSelected: (value) async {
+        if (value == 'edit' && expense != null) {
+          await _editExpense(context, expense);
+          return;
+        }
+        if (value != 'delete') return;
+        await _deleteMovement(ScaffoldMessenger.of(context), store, movement);
+      },
+      itemBuilder: (_) => [
+        if (canEdit) const PopupMenuItem(value: 'edit', child: Text('Editar')),
+        if (canDelete)
+          const PopupMenuItem(value: 'delete', child: Text('Eliminar')),
+      ],
+    );
   }
 
   Future<void> _editExpense(BuildContext context, ExpenseEntry entry) =>
@@ -68,75 +169,7 @@ class TransactionsScreen extends StatelessWidget {
                 onTap: movement.expense == null
                     ? null
                     : () => _editExpense(context, movement.expense!),
-                trailing: movement.expense == null && movement.income == null
-                    ? null
-                    : PopupMenuButton<String>(
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints.tightFor(
-                          width: 28,
-                          height: 22,
-                        ),
-                        iconSize: 17,
-                        onSelected: (value) async {
-                          if (value == 'edit' && movement.expense != null) {
-                            await _editExpense(context, movement.expense!);
-                            return;
-                          }
-                          if (value != 'delete') return;
-                          if (movement.expense != null) {
-                            final entry = movement.expense!;
-                            final removed = await store.deleteExpense(entry.id);
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              removed
-                                  ? SnackBar(
-                                      content: const Text(
-                                        'Movimiento eliminado.',
-                                      ),
-                                      action: SnackBarAction(
-                                        label: 'Deshacer',
-                                        onPressed: () =>
-                                            store.restoreExpense(entry),
-                                      ),
-                                    )
-                                  : const SnackBar(
-                                      content: Text(
-                                        'Este gasto viene de un conteo de '
-                                        'efectivo. Vuelve a contar para '
-                                        'corregirlo.',
-                                      ),
-                                    ),
-                            );
-                          } else if (movement.income != null) {
-                            final entry = movement.income!;
-                            await store.deleteIncome(entry.id);
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text('Ingreso eliminado.'),
-                                action: SnackBarAction(
-                                  label: 'Deshacer',
-                                  onPressed: () => store.restoreIncome(entry),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                        itemBuilder: (_) => [
-                          if (movement.expense != null)
-                            const PopupMenuItem(
-                              value: 'edit',
-                              child: Text('Editar'),
-                            ),
-                          // A cash-count expense measures money that already
-                          // left the wallet, so there is nothing to undo here.
-                          if (movement.expense?.isLinkedToCashCount != true)
-                            const PopupMenuItem(
-                              value: 'delete',
-                              child: Text('Eliminar'),
-                            ),
-                        ],
-                      ),
+                trailing: _rowMenu(context, store, movement),
               ),
           ],
         ],
@@ -179,14 +212,19 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
   Future<void> _save() async {
     final amount = parsePesos(_amountController.text);
     if (amount == null && !widget.entry.isLinkedToCashCount) return;
-    if (widget.entry.isPendingCashAdjustment) {
-      await SobraScope.of(context).classifyPendingCashExpense(
-        expenseId: widget.entry.id,
-        category: _category,
-        note: _noteController.text,
-      );
-    } else {
-      await SobraScope.of(context).updateExpense(
+    final store = SobraScope.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    // The sheet stays open on a failure, with the user's edit still in it, so
+    // there is something to retry rather than a change that looked saved.
+    final saved = await guardStoreWrite(messenger, () {
+      if (widget.entry.isPendingCashAdjustment) {
+        return store.classifyPendingCashExpense(
+          expenseId: widget.entry.id,
+          category: _category,
+          note: _noteController.text,
+        );
+      }
+      return store.updateExpense(
         widget.entry.copyWith(
           amountCentavos: amount ?? widget.entry.amountCentavos,
           category: _category,
@@ -195,8 +233,8 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
               : _noteController.text.trim(),
         ),
       );
-    }
-    if (mounted) Navigator.pop(context);
+    });
+    if (saved && mounted) Navigator.pop(context);
   }
 
   @override

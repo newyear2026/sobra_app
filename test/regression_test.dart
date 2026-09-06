@@ -222,6 +222,107 @@ void main() {
     });
   });
 
+  group('an income that came from a cash count', () {
+    late SobraStore store;
+    late IncomeEntry linked;
+
+    Future<void> setUpSurplus() async {
+      var now = DateTime(2026, 3, 10, 9);
+      store = await _seeded(() => now, cash: 200000);
+      now = DateTime(2026, 3, 11, 9);
+      await store.reconcileCashCount(
+        actualCentavos: 230000,
+        resolution: CashResolution.income,
+        incomeAllocation: IncomeAllocation.cycle,
+      );
+      linked = store.incomes.firstWhere((entry) => entry.isLinkedToCashCount);
+    }
+
+    test('cannot be deleted, so the count keeps its row', () async {
+      await setUpSurplus();
+      // The reconciliation suppresses its own movement in favour of this
+      // income. Letting the income go would take the count off the ledger
+      // while the counted cash figure kept the money.
+      expect(await store.deleteIncome(linked.id), isFalse);
+      expect(store.incomes, hasLength(1));
+      expect(store.totalBudgetCentavos, 630000);
+      expect(
+        store.movements.where((movement) => movement.income?.id == linked.id),
+        hasLength(1),
+      );
+    });
+
+    test('an ordinary income is still deletable', () async {
+      final fixed = DateTime(2026, 3, 10, 9);
+      final store = await _seeded(() => fixed, cash: 200000);
+      final entry = await store.addIncome(
+        amountCentavos: 50000,
+        kind: IncomeKind.extra,
+        note: 'Propina',
+        occurredAt: fixed,
+        destination: PaymentMethod.cash,
+        allocation: IncomeAllocation.cycle,
+      );
+      expect(await store.deleteIncome(entry.id), isTrue);
+      expect(store.incomes, isEmpty);
+      expect(store.totalBudgetCentavos, 600000);
+    });
+  });
+
+  testWidgets('Movimientos offers no way to delete a cash-count income', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(520, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    var now = DateTime(2026, 3, 10, 9);
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load(now: () => now);
+    await store.configureOnboarding(
+      budgetCentavos: 600000,
+      schedule: const PaySchedule.semiMonthly(),
+      cashCentavos: 200000,
+    );
+    await store.completeOnboarding();
+    now = DateTime(2026, 3, 11, 9);
+    await store.reconcileCashCount(
+      actualCentavos: 230000,
+      resolution: CashResolution.income,
+    );
+
+    await tester.pumpWidget(SobraApp(store: store));
+    await tester.pump();
+    await tester.tap(find.text('Movim.'));
+    await tester.pump();
+
+    // The count hides its own row behind this income, and the income cannot
+    // be edited either, so the row carries no menu at all rather than a
+    // button that opens onto nothing.
+    expect(find.text('Ingreso en efectivo'), findsWidgets);
+    expect(find.byType(PopupMenuButton<String>), findsNothing);
+
+    // An ordinary income beside it still gets its Eliminar.
+    await store.addIncome(
+      amountCentavos: 50000,
+      kind: IncomeKind.extra,
+      note: 'Propina',
+      occurredAt: now,
+      destination: PaymentMethod.cash,
+      allocation: IncomeAllocation.cycle,
+    );
+    await tester.pump();
+    expect(find.byType(PopupMenuButton<String>), findsOneWidget);
+
+    await tester.tap(find.byType(PopupMenuButton<String>));
+    for (var i = 0; i < 6; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    expect(find.text('Eliminar'), findsOneWidget);
+    expect(find.text('Editar'), findsNothing, reason: 'income has no editor');
+  });
+
   test('undo cannot file the same entry twice', () async {
     final fixed = DateTime(2026, 3, 10, 9);
     final store = await _seeded(() => fixed);

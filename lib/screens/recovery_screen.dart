@@ -17,16 +17,25 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
 
   Future<void> _run(Future<bool> Function() action) async {
     if (_working) return;
+    final messenger = ScaffoldMessenger.of(context);
     setState(() => _working = true);
-    final success = await action();
+    // A recovery that cannot write is a different failure from one that read
+    // nothing usable, and this is the screen of last resort: saying which one
+    // happened is the only thing standing between the user and a dead button.
+    bool success;
+    String message = 'No pudimos recuperar los datos todavía.';
+    try {
+      success = await action();
+    } on Object catch (error) {
+      success = false;
+      message = describeStoreFailure(error);
+    }
     if (!mounted) return;
     setState(() => _working = false);
     if (!success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No pudimos recuperar los datos todavía.'),
-        ),
-      );
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
@@ -51,9 +60,13 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
         ],
       ),
     );
-    if (confirmed != true || _working) return;
+    if (confirmed != true || _working || !mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
     setState(() => _working = true);
-    await store.startFreshAfterCorruption();
+    // Archiving the original is the whole promise of this button. If that
+    // write fails the reset does not happen, and the user has to be told
+    // rather than left looking at an unchanged screen.
+    await guardStoreWrite(messenger, store.startFreshAfterCorruption);
     if (mounted) setState(() => _working = false);
   }
 
