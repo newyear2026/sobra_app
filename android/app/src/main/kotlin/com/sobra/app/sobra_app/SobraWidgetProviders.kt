@@ -87,7 +87,10 @@ object SobraWidgetUpdater {
     fun compact(context: Context): RemoteViews {
         val preferences = preferences(context)
         val hasData = preferences.getBoolean("hasData", false)
+        val overCycleBudget = hasData &&
+            preferences.getBoolean("overCycleBudget", false)
         return RemoteViews(context.packageName, R.layout.sobra_widget_compact).apply {
+            setTextViewText(R.id.today_label, todayLabel(context, preferences))
             setTextViewText(
                 R.id.today_amount,
                 if (hasData) money(preferences.getLong("todayRemainingCentavos", 0L)) else "\$—",
@@ -96,7 +99,11 @@ object SobraWidgetUpdater {
                 R.id.days_remaining,
                 if (hasData) days(preferences.getInt("daysRemaining", 0)) else "Abre Sobra",
             )
-            applyProgress(this, if (hasData) preferences.getInt("progressSegments", 0) else 0)
+            applyProgress(
+                this,
+                if (hasData) preferences.getInt("progressSegments", 0) else 0,
+                danger = overCycleBudget,
+            )
             applyMotionPreference(this, preferences.getBoolean("reducedMotion", false))
             setOnClickPendingIntent(R.id.widget_root, launch(context, "home", 100))
         }
@@ -105,7 +112,10 @@ object SobraWidgetUpdater {
     fun summary(context: Context): RemoteViews {
         val preferences = preferences(context)
         val hasData = preferences.getBoolean("hasData", false)
+        val overCycleBudget = hasData &&
+            preferences.getBoolean("overCycleBudget", false)
         return RemoteViews(context.packageName, R.layout.sobra_widget_summary).apply {
+            setTextViewText(R.id.today_label, todayLabel(context, preferences))
             setTextViewText(
                 R.id.today_amount,
                 if (hasData) money(preferences.getLong("todayRemainingCentavos", 0L)) else "\$—",
@@ -122,9 +132,11 @@ object SobraWidgetUpdater {
                 R.id.total_spent,
                 if (hasData) money(preferences.getLong("totalSpentCentavos", 0L)) else "\$—",
             )
-            applyProgress(this, if (hasData) preferences.getInt("progressSegments", 0) else 0)
-            applyMovement(this, preferences, 1, hasData)
-            applyMovement(this, preferences, 2, hasData)
+            applyProgress(
+                this,
+                if (hasData) preferences.getInt("progressSegments", 0) else 0,
+                danger = overCycleBudget,
+            )
             applyMotionPreference(this, preferences.getBoolean("reducedMotion", false))
             setOnClickPendingIntent(R.id.widget_root, launch(context, "home", 200))
             setOnClickPendingIntent(R.id.register_button, launch(context, "register", 201))
@@ -134,14 +146,21 @@ object SobraWidgetUpdater {
     private fun preferences(context: Context): SharedPreferences =
         context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
 
-    private fun applyProgress(views: RemoteViews, value: Int) {
+    private fun applyProgress(
+        views: RemoteViews,
+        value: Int,
+        danger: Boolean,
+    ) {
         val filled = value.coerceIn(0, progressIds.size)
         progressIds.forEachIndexed { index, id ->
             views.setInt(
                 id,
                 "setBackgroundResource",
-                if (index < filled) R.drawable.widget_progress_filled
-                else R.drawable.widget_progress_empty,
+                when {
+                    index >= filled -> R.drawable.widget_progress_empty
+                    danger -> R.drawable.widget_progress_danger
+                    else -> R.drawable.widget_progress_filled
+                },
             )
         }
     }
@@ -155,37 +174,6 @@ object SobraWidgetUpdater {
             R.id.cat_static,
             if (reducedMotion) View.VISIBLE else View.GONE,
         )
-    }
-
-    private fun applyMovement(
-        views: RemoteViews,
-        preferences: SharedPreferences,
-        index: Int,
-        hasData: Boolean,
-    ) {
-        val rowId = if (index == 1) R.id.movement_1 else R.id.movement_2
-        val titleId = if (index == 1) R.id.movement_1_title else R.id.movement_2_title
-        val amountId = if (index == 1) R.id.movement_1_amount else R.id.movement_2_amount
-        val iconId = if (index == 1) R.id.movement_1_icon else R.id.movement_2_icon
-        val count = if (hasData) preferences.getInt("movementCount", 0) else 0
-        if (index > count) {
-            views.setViewVisibility(rowId, View.GONE)
-            return
-        }
-
-        val kind = preferences.getString("movement${index}Kind", "expense") ?: "expense"
-        val amount = preferences.getLong("movement${index}AmountCentavos", 0L)
-        val (icon, background) = when (kind) {
-            "income" -> "+" to R.drawable.widget_icon_income
-            "adjustment" -> "=" to R.drawable.widget_icon_adjustment
-            "health" -> "+" to R.drawable.widget_icon_health
-            else -> "−" to R.drawable.widget_icon_expense
-        }
-        views.setViewVisibility(rowId, View.VISIBLE)
-        views.setTextViewText(titleId, preferences.getString("movement${index}Title", "") ?: "")
-        views.setTextViewText(amountId, signedMoney(amount))
-        views.setTextViewText(iconId, icon)
-        views.setInt(iconId, "setBackgroundResource", background)
     }
 
     private fun launch(context: Context, destination: String, requestCode: Int): PendingIntent {
@@ -203,13 +191,16 @@ object SobraWidgetUpdater {
         )
     }
 
-    private fun days(value: Int): String = if (value == 1) "1 día" else "$value días"
-
-    private fun signedMoney(centavos: Long): String = when {
-        centavos > 0 -> "+${money(centavos)}"
-        centavos < 0 -> "−${money(abs(centavos))}"
-        else -> money(0)
+    // Over budget the figure is the cycle's deficit, not the day's room.
+    private fun todayLabel(context: Context, preferences: SharedPreferences): String {
+        val overCycleBudget = preferences.getBoolean("hasData", false) &&
+            preferences.getBoolean("overCycleBudget", false)
+        return context.getString(
+            if (overCycleBudget) R.string.widget_cycle_balance else R.string.widget_today_remaining,
+        )
     }
+
+    private fun days(value: Int): String = if (value == 1) "1 día" else "$value días"
 
     private fun money(centavos: Long): String {
         val negative = centavos < 0

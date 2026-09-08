@@ -223,7 +223,21 @@ class SobraStore extends ChangeNotifier {
     return daysRemaining <= 0 ? 0 : availableAtStartOfDay ~/ daysRemaining;
   }
 
-  int get todayRemainingCentavos => dailyAllowanceCentavos - spentTodayCentavos;
+  /// What is still spendable today, expressed so it never overstates the hole.
+  ///
+  /// The allowance is a per-day slice while an expense is a cycle-level
+  /// amount, so their raw difference mixes units: one 8,000 day against a
+  /// 750 allowance reads as −7,250 even though the cycle is only 2,000 over,
+  /// and it would heal to −285 by itself tomorrow once the overspend is
+  /// spread across the days that are left. Neither number describes anything
+  /// the user can act on, so the day stops at zero and an over-budget cycle
+  /// reports its own deficit instead — a quantity that only moves when money
+  /// actually moves.
+  int get todayRemainingCentavos {
+    if (remainingBudgetCentavos < 0) return remainingBudgetCentavos;
+    final remaining = dailyAllowanceCentavos - spentTodayCentavos;
+    return remaining < 0 ? 0 : remaining;
+  }
   double get budgetProgress =>
       totalBudgetCentavos == 0 ? 0 : totalSpentCentavos / totalBudgetCentavos;
 

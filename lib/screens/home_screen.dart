@@ -18,7 +18,14 @@ class HomeScreen extends StatelessWidget {
     final store = SobraScope.of(context);
     final shell = AppShellScope.of(context);
     final recent = store.movements.take(3).toList();
-    final positive = store.todayRemainingCentavos >= 0;
+    // Over budget the headline stops being about today and reports the
+    // cycle's own deficit, so the label and the colour follow it.
+    final overCycleBudget = store.remainingBudgetCentavos < 0;
+    // The cat still reacts to the day itself: the headline now floors at
+    // zero, so it can no longer tell a spent day from an untouched one.
+    final onTrack =
+        !overCycleBudget &&
+        store.spentTodayCentavos <= store.dailyAllowanceCentavos;
     final xp = store.xpProgress;
     final textTheme = Theme.of(context).textTheme;
 
@@ -41,7 +48,10 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 18),
-                Text('Hoy te queda', style: textTheme.titleSmall),
+                Text(
+                  overCycleBudget ? 'Saldo del ciclo' : 'Hoy te queda',
+                  style: textTheme.titleSmall,
+                ),
                 const SizedBox(height: 4),
                 FittedBox(
                   alignment: Alignment.centerLeft,
@@ -49,8 +59,31 @@ class HomeScreen extends StatelessWidget {
                   child: Text(
                     formatMoney(store.todayRemainingCentavos),
                     style: textTheme.displayLarge?.copyWith(
-                      color: positive ? AppColors.teal : AppColors.dangerInk,
+                      color: overCycleBudget
+                          ? AppColors.dangerInk
+                          : AppColors.teal,
                     ),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                // Whichever figure the headline carries, the other one goes
+                // right under it: a zero day is only readable next to the
+                // limit it ran out of, and a deficit next to the budget it
+                // came from.
+                Text(
+                  overCycleBudget
+                      ? 'Te pasaste del presupuesto de '
+                            '${formatMoney(store.totalBudgetCentavos, currency: false)}'
+                            ' de este ciclo'
+                      : 'Límite de hoy '
+                            '${formatMoney(store.dailyAllowanceCentavos, currency: false)}'
+                            ' · Quedan '
+                            '${formatMoney(store.remainingBudgetCentavos, currency: false)}'
+                            ' en el ciclo',
+                  style: textTheme.bodySmall?.copyWith(
+                    color: overCycleBudget
+                        ? AppColors.dangerInk
+                        : AppColors.muted,
                   ),
                 ),
                 const SizedBox(height: 18),
@@ -223,16 +256,19 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                           child: Text(
-                            positive ? 'Vas muy bien' : 'Ajustemos con calma',
+                            onTrack ? 'Vas muy bien' : 'Ajustemos con calma',
                             style: pixelText(size: 14, bold: true),
                           ),
                         ),
                       ),
                       const SizedBox(width: 8),
                       CatSprite(
-                        motion: CatMotion.idle,
+                        motion: overCycleBudget
+                            ? CatMotion.concern
+                            : CatMotion.idle,
                         width: 106,
                         animate: !reducedMotionOf(context),
+                        loop: !overCycleBudget,
                       ),
                     ],
                   ),

@@ -65,12 +65,44 @@ void main() {
       paymentMethod: PaymentMethod.card,
     );
     expect(store.dailyAllowanceCentavos, 50000);
-    expect(store.todayRemainingCentavos, -10000);
+    // 600 spent against a 500 allowance, but the cycle is still 5,400 up, so
+    // the day floors at zero instead of reporting a hole that is not there.
+    expect(store.todayRemainingCentavos, 0);
 
     now = DateTime(2026, 9, 5, 8);
     await store.refreshForCurrentDate();
     expect(store.daysRemaining, 11);
     expect(store.dailyAllowanceCentavos, 49090);
+  });
+
+  test('an overspent cycle reports its own deficit, today and tomorrow', () async {
+    final store = await loadStore();
+    await store.configureOnboarding(
+      budgetCentavos: 600000,
+      schedule: PaySchedule.irregular(
+        planningHorizonDays: 15,
+        irregularCycleStart: DateTime(2026, 9),
+      ),
+    );
+    await store.addExpense(
+      amountCentavos: 800000,
+      category: ExpenseCategory.transport,
+      note: 'Transporte',
+      occurredAt: now,
+      paymentMethod: PaymentMethod.cash,
+    );
+
+    // Not the 500 allowance minus an 8,000 expense: that subtracts a
+    // cycle-level amount from a per-day slice and reads several times worse
+    // than the cycle actually is.
+    expect(store.remainingBudgetCentavos, -200000);
+    expect(store.todayRemainingCentavos, -200000);
+
+    // Nor does it heal overnight, the way spreading the overspend across the
+    // days that are left would.
+    now = DateTime(2026, 9, 5, 8);
+    await store.refreshForCurrentDate();
+    expect(store.todayRemainingCentavos, -200000);
   });
 
   test('irregular planning windows renew continuously', () async {

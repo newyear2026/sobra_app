@@ -1,0 +1,65 @@
+schemaVersion: 2
+character:
+  id: michi
+  displayName: Michi
+
+sprite:
+  frameCount: 8
+  frameWidth: 320
+  frameHeight: 360
+  sheetWidth: 2560
+  sheetHeight: 360
+  layout: horizontal
+  format: png-rgba
+  interpolation: nearest-neighbor
+  fit: contain-safe-area
+  anchor:
+    x: 160
+    baselineY: 344
+  safeMargin: 16
+
+roles:
+  idle:
+    asset: idle-8.png
+    durationMs: 2800
+    playback: loop
+    playRange: [0, 7]
+    posterFrame: 0
+    legacyName: idle
+  activity:
+    asset: activity-8.png
+    durationMs: 800
+    playback: loop
+    playRange: [0, 7]
+    posterFrame: 0
+    legacyName: walk
+  processing:
+    asset: processing-8.png
+    durationMs: 2200
+    playback: loop
+    playRange: [0, 7]
+    posterFrame: 4
+    legacyName: calculate
+  positive:
+    asset: positive-8.png
+    durationMs: 2400
+    playback: loop
+    playRange: [0, 6]
+    posterFrame: 6
+    legacyName: saving
+  success:
+    asset: success-8.png
+    durationMs: 1250
+    playback: once-hold
+    playRange: [0, 7]
+    posterFrame: 5
+    holdFrame: 0
+    compatibility: legacy-loop-authored
+    legacyName: celebrate
+  warning:
+    asset: warning-8.png
+    durationMs: 1600
+    playback: once-hold
+    playRange: [0, 7]
+    posterFrame: 7
+    legacyName: concern

@@ -66,6 +66,7 @@ flutter:
 
   assets:
     - assets/cats/
+    - assets/characters/michi/
 
   fonts:
     - family: PixelifySans

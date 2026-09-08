@@ -73,6 +73,7 @@ void main() {
     expect(SobraWidgetSnapshot.fromStore(store).toPlatformMap().keys.toSet(), {
       'hasData',
       'todayRemainingCentavos',
+      'overCycleBudget',
       'daysRemaining',
       'totalBudgetCentavos',
       'totalSpentCentavos',
@@ -112,7 +113,11 @@ void main() {
     );
 
     final payload = SobraWidgetSnapshot.fromStore(store).toPlatformMap();
-    expect(payload['todayRemainingCentavos'], lessThan(0));
+    // 7,000 against a 6,000 budget: the widget reports the cycle's own
+    // −1,000, not the day's slice minus a cycle-sized expense, and flips the
+    // label with it.
+    expect(payload['todayRemainingCentavos'], -100000);
+    expect(payload['overCycleBudget'], isTrue);
     // The bar saturates: 116% and 100% both send 10. The negative amount is
     // the only thing left that says the cycle went over.
     expect(payload['progressSegments'], 10);

@@ -9,6 +9,7 @@ import 'package:sobra_app/models/money_movement.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/screens/cash_count_screen.dart';
 import 'package:sobra_app/state/sobra_store.dart';
+import 'package:sobra_app/widgets/cat_sprite.dart';
 import 'package:sobra_app/widgets/pixel_ui.dart';
 
 Future<SobraStore> _seeded(DateTime Function() now, {int? cash}) async {
@@ -31,6 +32,43 @@ void main() {
     expect(parseNonNegativePesos('0'), 0);
     expect(parsePesos('1,20,0'), isNull);
     expect(parseNonNegativePesos('.'), isNull);
+  });
+
+  testWidgets('Inicio relabels its headline when the cycle goes over', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(520, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final now = DateTime(2026, 9, 4, 10);
+    final store = await _seeded(() => now);
+    await store.completeOnboarding();
+    await tester.pumpWidget(SobraApp(store: store));
+    await tester.pump();
+
+    expect(find.text('Hoy te queda'), findsOneWidget);
+    expect(find.text('Saldo del ciclo'), findsNothing);
+
+    await store.addExpense(
+      amountCentavos: 800000,
+      category: ExpenseCategory.transport,
+      note: 'Transporte',
+      occurredAt: now,
+      paymentMethod: PaymentMethod.cash,
+    );
+    await tester.pump();
+
+    // 8,000 out of a 6,000 budget: the headline is the cycle's −2,000, under
+    // a label that says so, rather than the day's slice minus the whole
+    // expense.
+    expect(find.text('Saldo del ciclo'), findsOneWidget);
+    expect(find.text('Hoy te queda'), findsNothing);
+    expect(find.text('$minusSign\$2,000 MXN'), findsOneWidget);
+    final cat = tester.widget<CatSprite>(find.byType(CatSprite));
+    expect(cat.motion, CatMotion.concern);
+    expect(cat.loop, isFalse);
   });
 
   testWidgets('saving an expense closes its own dialog and returns to Inicio', (

@@ -48,6 +48,7 @@ class MainActivity : FlutterActivity() {
             .edit()
             .putBoolean("hasData", arguments["hasData"] as? Boolean ?: false)
             .putLong("todayRemainingCentavos", number("todayRemainingCentavos"))
+            .putBoolean("overCycleBudget", arguments["overCycleBudget"] as? Boolean ?: false)
             .putInt("daysRemaining", number("daysRemaining").toInt())
             .putLong("totalBudgetCentavos", number("totalBudgetCentavos"))
             .putLong("totalSpentCentavos", number("totalSpentCentavos"))

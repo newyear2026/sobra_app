@@ -43,6 +43,7 @@ class SobraWidgetSnapshot {
   const SobraWidgetSnapshot({
     required this.hasCompletedOnboarding,
     required this.todayRemainingCentavos,
+    required this.overCycleBudget,
     required this.daysRemaining,
     required this.totalBudgetCentavos,
     required this.totalSpentCentavos,
@@ -53,6 +54,10 @@ class SobraWidgetSnapshot {
 
   final bool hasCompletedOnboarding;
   final int todayRemainingCentavos;
+
+  /// Over budget, [todayRemainingCentavos] carries the cycle's deficit rather
+  /// than the day's room, so the widget has to relabel the figure too.
+  final bool overCycleBudget;
   final int daysRemaining;
   final int totalBudgetCentavos;
   final int totalSpentCentavos;
@@ -65,6 +70,7 @@ class SobraWidgetSnapshot {
     return SobraWidgetSnapshot(
       hasCompletedOnboarding: store.hasCompletedOnboarding,
       todayRemainingCentavos: store.todayRemainingCentavos,
+      overCycleBudget: store.remainingBudgetCentavos < 0,
       daysRemaining: store.daysRemaining,
       totalBudgetCentavos: store.totalBudgetCentavos,
       totalSpentCentavos: store.totalSpentCentavos,
@@ -81,6 +87,7 @@ class SobraWidgetSnapshot {
     final result = <String, Object>{
       'hasData': hasCompletedOnboarding,
       'todayRemainingCentavos': todayRemainingCentavos,
+      'overCycleBudget': overCycleBudget,
       'daysRemaining': daysRemaining,
       'totalBudgetCentavos': totalBudgetCentavos,
       'totalSpentCentavos': totalSpentCentavos,
