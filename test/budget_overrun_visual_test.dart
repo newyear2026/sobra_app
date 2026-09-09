@@ -7,6 +7,9 @@ import 'package:sobra_app/models/expense_entry.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
+import 'package:sobra_app/widgets/character_room.dart';
+
+import 'support/localizations.dart';
 
 Future<void> _loadGoldenFonts() async {
   final pixelify = FontLoader('PixelifySans')
@@ -20,6 +23,7 @@ void main() {
   testWidgets('budget overrun shows the concern animation final pose', (
     tester,
   ) async {
+    useSpanishDevice(tester);
     tester.view.physicalSize = const Size(520, 1600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -45,10 +49,18 @@ void main() {
     await tester.pumpWidget(SobraApp(store: store));
     await tester.pump();
     await tester.runAsync(
-      () => precacheImage(
-        AssetImage(CatMotion.concern.asset),
-        tester.element(find.byType(CatSprite)),
-      ),
+      () => Future.wait([
+        precacheImage(
+          CharacterRoom.backgroundProvider(
+            tester.element(find.byType(CharacterRoom)),
+          ),
+          tester.element(find.byType(CharacterRoom)),
+        ),
+        precacheImage(
+          AssetImage(CatMotion.concern.asset),
+          tester.element(find.byType(CatSprite)),
+        ),
+      ]),
     );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 1600));

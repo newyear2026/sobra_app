@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../l10n/generated/app_localizations.dart';
+import '../l10n/labels.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/pixel_ui.dart';
@@ -22,13 +24,14 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
     // A recovery that cannot write is a different failure from one that read
     // nothing usable, and this is the screen of last resort: saying which one
     // happened is the only thing standing between the user and a dead button.
+    final l10n = AppLocalizations.of(context);
     bool success;
-    String message = 'No pudimos recuperar los datos todavía.';
+    String message = l10n.recoveryNotYet;
     try {
       success = await action();
     } on Object catch (error) {
       success = false;
-      message = describeStoreFailure(error);
+      message = describeStoreFailure(l10n, error);
     }
     if (!mounted) return;
     setState(() => _working = false);
@@ -42,23 +45,24 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
   Future<void> _startFresh(SobraStore store) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('¿Empezar de nuevo?'),
-        content: const Text(
-          'Conservaremos una copia del archivo original antes de crear datos nuevos.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: FilledButton.styleFrom(backgroundColor: AppColors.danger),
-            child: const Text('Empezar de nuevo'),
-          ),
-        ],
-      ),
+      builder: (context) {
+        final l10n = AppLocalizations.of(context);
+        return AlertDialog(
+          title: Text(l10n.recoveryStartFreshQuestion),
+          content: Text(l10n.recoveryStartFreshBody),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(l10n.cancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: FilledButton.styleFrom(backgroundColor: AppColors.danger),
+              child: Text(l10n.recoveryStartFresh),
+            ),
+          ],
+        );
+      },
     );
     if (confirmed != true || _working || !mounted) return;
     final messenger = ScaffoldMessenger.of(context);
@@ -66,13 +70,18 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
     // Archiving the original is the whole promise of this button. If that
     // write fails the reset does not happen, and the user has to be told
     // rather than left looking at an unchanged screen.
-    await guardStoreWrite(messenger, store.startFreshAfterCorruption);
+    await guardStoreWrite(
+      messenger,
+      AppLocalizations.of(context),
+      store.startFreshAfterCorruption,
+    );
     if (mounted) setState(() => _working = false);
   }
 
   @override
   Widget build(BuildContext context) {
     final store = SobraScope.of(context);
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.paper,
       body: SafeArea(
@@ -86,14 +95,13 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
                 const Icon(Icons.storage, size: 58, color: AppColors.cashInk),
                 const SizedBox(height: 20),
                 Text(
-                  'No pudimos leer tus datos',
+                  l10n.recoveryTitle,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'El archivo original sigue guardado. '
-                  'No lo reemplazamos ni borramos.',
+                  l10n.recoveryOriginalKept,
                   textAlign: TextAlign.center,
                   style: pixelText(
                     size: 15,
@@ -115,8 +123,7 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'Puedes reintentar, usar el respaldo o exportar el '
-                          'archivo para conservarlo.',
+                          l10n.recoveryOptions,
                           style: pixelText(
                             size: 13,
                             bold: true,
@@ -130,12 +137,12 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
                 ),
                 const SizedBox(height: 22),
                 PixelButton(
-                  label: _working ? 'Reintentando…' : 'Reintentar',
+                  label: _working ? l10n.recoveryRetrying : l10n.recoveryRetry,
                   onPressed: _working ? null : () => _run(store.retryRestore),
                 ),
                 const SizedBox(height: 14),
                 PixelButton(
-                  label: 'Usar respaldo',
+                  label: l10n.recoveryUseBackup,
                   onPressed: _working || !store.hasRecoverableBackup
                       ? null
                       : () => _run(store.restoreBackup),
@@ -143,7 +150,7 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
                 ),
                 const SizedBox(height: 10),
                 PixelButton(
-                  label: 'Exportar archivo',
+                  label: l10n.recoveryExport,
                   icon: Icons.copy,
                   variant: PixelButtonVariant.secondary,
                   onPressed: _working || store.exportCorruptedJson == null
@@ -154,9 +161,7 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
                           );
                           if (!context.mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Archivo original copiado.'),
-                            ),
+                            SnackBar(content: Text(l10n.recoveryExported)),
                           );
                         },
                 ),
@@ -166,7 +171,7 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.dangerInk,
                   ),
-                  child: const Text('Empezar de nuevo'),
+                  child: Text(l10n.recoveryStartFresh),
                 ),
               ],
             ),

@@ -11,21 +11,6 @@ enum ExpenseCategory {
   other,
 }
 
-extension ExpenseCategoryLabel on ExpenseCategory {
-  String get label => switch (this) {
-    ExpenseCategory.food => 'Comida',
-    ExpenseCategory.transport => 'Transporte',
-    ExpenseCategory.shopping => 'Compras',
-    ExpenseCategory.home => 'Hogar',
-    ExpenseCategory.services => 'Servicios',
-    ExpenseCategory.health => 'Salud',
-    ExpenseCategory.education => 'Educación',
-    ExpenseCategory.entertainment => 'Ocio',
-    ExpenseCategory.pets => 'Mascotas',
-    ExpenseCategory.other => 'Otros',
-  };
-}
-
 enum PaymentMethod { cash, card }
 
 class ExpenseEntry {

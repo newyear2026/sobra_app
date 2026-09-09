@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/generated/app_localizations.dart';
+import '../l10n/labels.dart';
 import '../models/pay_schedule.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
@@ -22,6 +24,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _monthlyPayDay = 30;
   int _weeklyPayDay = DateTime.friday;
   int _planningHorizon = 7;
+
+  /// The day the user says they were last paid, which anchors a fortnight.
+  DateTime? _lastPayday;
   bool _saving = false;
 
   @override
@@ -36,6 +41,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     PayCycleType.semiMonthly => PaySchedule.semiMonthly(
       firstPayDay: _firstPayDay,
     ),
+    PayCycleType.biweekly => PaySchedule.biweekly(anchor: _lastPayday ?? today),
     PayCycleType.monthly => PaySchedule.monthly(monthlyPayDay: _monthlyPayDay),
     PayCycleType.weekly => PaySchedule.weekly(weeklyPayDay: _weeklyPayDay),
     PayCycleType.irregular => PaySchedule.irregular(
@@ -59,9 +65,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     ).showSnackBar(SnackBar(content: Text(message)));
   }
 
+  /// A fortnight is the one cycle that cannot be guessed from a day number,
+  /// so it is the one page that can refuse to move on.
+  Future<void> _continueFromSchedule() async {
+    if (_type == PayCycleType.biweekly && _lastPayday == null) {
+      _showError(AppLocalizations.of(context).onboardingBiweeklyNeedsDate);
+      return;
+    }
+    await _goTo(3);
+  }
+
   Future<void> _continueFromBudget() async {
-    if (parsePesos(_budgetController.text) == null) {
-      _showError('Ingresa un presupuesto mayor a cero.');
+    if (parseAmount(_budgetController.text) == null) {
+      _showError(AppLocalizations.of(context).onboardingBudgetAboveZero);
       return;
     }
     await _goTo(4);
@@ -69,15 +85,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Future<void> _prepareSummary({required bool skipCash}) async {
     if (_saving) return;
-    final budget = parsePesos(_budgetController.text);
+    final budget = parseAmount(_budgetController.text);
     if (budget == null) {
-      _showError('Ingresa un presupuesto mayor a cero.');
+      _showError(AppLocalizations.of(context).onboardingBudgetAboveZero);
       await _goTo(3);
       return;
     }
-    final cash = skipCash ? null : parseNonNegativePesos(_cashController.text);
+    final cash = skipCash ? null : parseNonNegativeAmount(_cashController.text);
     if (!skipCash && cash == null) {
-      _showError('Ingresa el efectivo o elige “Ahora no”.');
+      _showError(AppLocalizations.of(context).onboardingCashOrSkip);
       return;
     }
     setState(() => _saving = true);
@@ -85,6 +101,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final messenger = ScaffoldMessenger.of(context);
     final saved = await guardStoreWrite(
       messenger,
+      AppLocalizations.of(context),
       () => store.configureOnboarding(
         budgetCentavos: budget,
         schedule: _schedule(store.today),
@@ -102,8 +119,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   /// Marks onboarding finished, which is what swaps the whole app over to the
   /// shell. A failure here has to be visible: the user taps "Listo" and would
   /// otherwise be left staring at the summary with nothing happening.
-  Future<void> _finish(SobraStore store) =>
-      guardStoreWrite(ScaffoldMessenger.of(context), store.completeOnboarding);
+  Future<void> _finish(SobraStore store) => guardStoreWrite(
+    ScaffoldMessenger.of(context),
+    AppLocalizations.of(context),
+    store.completeOnboarding,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -138,9 +158,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     monthlyPayDay: _monthlyPayDay,
                     weeklyPayDay: _weeklyPayDay,
                     planningHorizon: _planningHorizon,
+                    lastPayday: _lastPayday ?? store.today,
                     preview: preview,
                     onFirstPayDayChanged: (value) =>
                         setState(() => _firstPayDay = value),
+                    onLastPaydayChanged: (value) =>
+                        setState(() => _lastPayday = value),
                     onMonthlyPayDayChanged: (value) =>
                         setState(() => _monthlyPayDay = value),
                     onWeeklyPayDayChanged: (value) =>
@@ -148,7 +171,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     onPlanningHorizonChanged: (value) =>
                         setState(() => _planningHorizon = value),
                     onBack: () => _goTo(1),
-                    onContinue: () => _goTo(3),
+                    onContinue: _continueFromSchedule,
                   ),
                   _BudgetSetupPage(
                     controller: _budgetController,
@@ -187,19 +210,22 @@ class _WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _OnboardingFrame(
-    bottom: PixelButton(label: 'Empezar', onPressed: onContinue),
+    bottom: PixelButton(
+      label: AppLocalizations.of(context).onboardingStart,
+      onPressed: onContinue,
+    ),
     child: Column(
       children: [
         const Spacer(),
         Text(
-          'Sobra',
+          AppLocalizations.of(context).appName,
           style: Theme.of(
             context,
           ).textTheme.headlineLarge?.copyWith(fontSize: 50),
         ),
         const SizedBox(height: 16),
         Text(
-          'Tu dinero, sin presión.',
+          AppLocalizations.of(context).onboardingTagline,
           textAlign: TextAlign.center,
           style: Theme.of(
             context,
@@ -207,7 +233,7 @@ class _WelcomePage extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          'Te decimos cuánto puedes gastar hoy.',
+          AppLocalizations.of(context).onboardingPromise,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyLarge,
         ),
@@ -225,16 +251,16 @@ class _WelcomePage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.lock_outline, size: 17, color: AppColors.teal),
-            SizedBox(width: 7),
+            const Icon(Icons.lock_outline, size: 17, color: AppColors.teal),
+            const SizedBox(width: 7),
             Flexible(
               child: Text(
-                'Sin cuenta. Tus datos se quedan contigo.',
+                AppLocalizations.of(context).onboardingNoAccount,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: AppColors.inkSoft),
+                style: const TextStyle(color: AppColors.inkSoft),
               ),
             ),
           ],
@@ -259,39 +285,54 @@ class _PayCyclePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _OnboardingFrame(
-    bottom: PixelButton(label: 'Continuar', onPressed: onContinue),
+    bottom: PixelButton(
+      label: AppLocalizations.of(context).continueLabel,
+      onPressed: onContinue,
+    ),
     child: Column(
       children: [
         _ProgressHeader(step: 1, onBack: onBack),
         const SizedBox(height: 24),
         Text(
-          '¿Cómo recibes tus ingresos?',
+          AppLocalizations.of(context).onboardingHowPaid,
           textAlign: TextAlign.center,
           style: Theme.of(
             context,
           ).textTheme.headlineMedium?.copyWith(fontSize: 29),
         ),
         const SizedBox(height: 8),
-        const Text(
-          'Esto define las fechas de tu presupuesto.',
+        Text(
+          AppLocalizations.of(context).onboardingHowPaidHint,
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppColors.inkSoft),
+          style: const TextStyle(color: AppColors.inkSoft),
         ),
         const SizedBox(height: 24),
         for (final option in PayCycleType.values)
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: _ChoiceCard(
-              label: option.label,
+              label: option.label(AppLocalizations.of(context)),
               helper: switch (option) {
-                PayCycleType.semiMonthly => 'Dos pagos al mes.',
-                PayCycleType.monthly => 'Un pago al mes.',
-                PayCycleType.weekly => 'Cada semana.',
-                PayCycleType.irregular => 'Mis ingresos no tienen fecha fija.',
+                PayCycleType.semiMonthly => AppLocalizations.of(
+                  context,
+                ).onboardingCycleHelperSemiMonthly,
+                PayCycleType.biweekly => AppLocalizations.of(
+                  context,
+                ).onboardingCycleHelperBiweekly,
+                PayCycleType.monthly => AppLocalizations.of(
+                  context,
+                ).onboardingCycleHelperMonthly,
+                PayCycleType.weekly => AppLocalizations.of(
+                  context,
+                ).onboardingCycleHelperWeekly,
+                PayCycleType.irregular => AppLocalizations.of(
+                  context,
+                ).onboardingCycleHelperIrregular,
               },
               selected: type == option,
               icon: switch (option) {
                 PayCycleType.semiMonthly => Icons.today,
+                PayCycleType.biweekly => Icons.repeat,
                 PayCycleType.monthly => Icons.calendar_month,
                 PayCycleType.weekly => Icons.date_range,
                 PayCycleType.irregular => Icons.help_outline,
@@ -311,8 +352,10 @@ class _ScheduleDetailsPage extends StatelessWidget {
     required this.monthlyPayDay,
     required this.weeklyPayDay,
     required this.planningHorizon,
+    required this.lastPayday,
     required this.preview,
     required this.onFirstPayDayChanged,
+    required this.onLastPaydayChanged,
     required this.onMonthlyPayDayChanged,
     required this.onWeeklyPayDayChanged,
     required this.onPlanningHorizonChanged,
@@ -324,8 +367,10 @@ class _ScheduleDetailsPage extends StatelessWidget {
   final int monthlyPayDay;
   final int weeklyPayDay;
   final int planningHorizon;
+  final DateTime lastPayday;
   final CycleBounds preview;
   final ValueChanged<int> onFirstPayDayChanged;
+  final ValueChanged<DateTime> onLastPaydayChanged;
   final ValueChanged<int> onMonthlyPayDayChanged;
   final ValueChanged<int> onWeeklyPayDayChanged;
   final ValueChanged<int> onPlanningHorizonChanged;
@@ -334,18 +379,25 @@ class _ScheduleDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _OnboardingFrame(
-    bottom: PixelButton(label: 'Continuar', onPressed: onContinue),
+    bottom: PixelButton(
+      label: AppLocalizations.of(context).continueLabel,
+      onPressed: onContinue,
+    ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _ProgressHeader(step: 2, onBack: onBack),
         const SizedBox(height: 24),
         Text(
-          type == PayCycleType.irregular
-              ? 'Planea sin una fecha fija'
-              : type == PayCycleType.weekly
-              ? '¿Qué día recibes dinero?'
-              : '¿Qué día recibes dinero?',
+          switch (type) {
+            PayCycleType.irregular => AppLocalizations.of(
+              context,
+            ).onboardingPlanWithoutFixedDate,
+            PayCycleType.biweekly => AppLocalizations.of(
+              context,
+            ).onboardingWhenLastPaid,
+            _ => AppLocalizations.of(context).onboardingWhichDayPaid,
+          },
           textAlign: TextAlign.center,
           style: Theme.of(
             context,
@@ -354,30 +406,36 @@ class _ScheduleDetailsPage extends StatelessWidget {
         const SizedBox(height: 24),
         if (type == PayCycleType.semiMonthly) ...[
           _DayDropdown(
-            label: 'Primer pago',
+            label: AppLocalizations.of(context).cycleFirstPay,
             value: firstPayDay,
             max: 28,
             onChanged: onFirstPayDayChanged,
           ),
           const SizedBox(height: 12),
-          const PixelCard(
+          PixelCard(
             elevation: PixelElevation.none,
             child: Row(
               children: [
-                Icon(Icons.calendar_month, color: AppColors.teal),
-                SizedBox(width: 12),
+                const Icon(Icons.calendar_month, color: AppColors.teal),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Segundo pago · fin de mes',
-                    style: TextStyle(fontVariations: AppType.bold),
+                    AppLocalizations.of(context).onboardingSecondPayEndOfMonth,
+                    style: const TextStyle(fontVariations: AppType.bold),
                   ),
                 ),
               ],
             ),
           ),
-        ] else if (type == PayCycleType.monthly)
+        ] else if (type == PayCycleType.biweekly)
+          PaydayField(
+            label: AppLocalizations.of(context).cycleLastPayday,
+            value: lastPayday,
+            onChanged: onLastPaydayChanged,
+          )
+        else if (type == PayCycleType.monthly)
           _DayDropdown(
-            label: 'Día de pago',
+            label: AppLocalizations.of(context).cyclePayDay,
             value: monthlyPayDay,
             max: 31,
             onChanged: onMonthlyPayDayChanged,
@@ -390,25 +448,17 @@ class _ScheduleDetailsPage extends StatelessWidget {
             children: [
               for (final day in const [1, 2, 3, 4, 5, 6, 7])
                 _SmallChoice(
-                  label: const [
-                    'Lun',
-                    'Mar',
-                    'Mié',
-                    'Jue',
-                    'Vie',
-                    'Sáb',
-                    'Dom',
-                  ][day - 1],
+                  label: weekdayShortName(AppLocalizations.of(context), day),
                   selected: weeklyPayDay == day,
                   onTap: () => onWeeklyPayDayChanged(day),
                 ),
             ],
           )
         else ...[
-          const Text(
-            '¿Para cuántos días quieres planear?',
+          Text(
+            AppLocalizations.of(context).onboardingHowManyDays,
             textAlign: TextAlign.center,
-            style: TextStyle(fontVariations: AppType.bold),
+            style: const TextStyle(fontVariations: AppType.bold),
           ),
           const SizedBox(height: 12),
           Row(
@@ -416,7 +466,7 @@ class _ScheduleDetailsPage extends StatelessWidget {
               for (final days in const [7, 14, 30]) ...[
                 Expanded(
                   child: _SmallChoice(
-                    label: '$days días',
+                    label: AppLocalizations.of(context).daysCount(days),
                     selected: planningHorizon == days,
                     onTap: () => onPlanningHorizonChanged(days),
                   ),
@@ -428,7 +478,7 @@ class _ScheduleDetailsPage extends StatelessWidget {
         ],
         const SizedBox(height: 26),
         Text(
-          'Tu ciclo quedaría así',
+          AppLocalizations.of(context).onboardingCyclePreview,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 10),
@@ -441,23 +491,30 @@ class _ScheduleDetailsPage extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  cycleDateRange(preview.start, preview.end),
+                  cycleDateRange(
+                    AppLocalizations.of(context),
+                    preview.start,
+                    preview.end,
+                  ),
                   style: const TextStyle(
                     fontSize: 18,
                     fontVariations: AppType.bold,
                   ),
                 ),
               ),
-              Text('${preview.lengthInDays} días'),
+              Text(
+                AppLocalizations.of(context).daysCount(preview.lengthInDays),
+              ),
             ],
           ),
         ),
         const SizedBox(height: 12),
         Text(
           type == PayCycleType.irregular
-              ? 'Al terminar, comenzará automáticamente otro periodo de '
-                    '$planningHorizon días.'
-              : 'Las fechas se ajustan solas en meses cortos.',
+              ? AppLocalizations.of(
+                  context,
+                ).onboardingRepeatsEvery(planningHorizon)
+              : AppLocalizations.of(context).onboardingShortMonthsNote,
           textAlign: TextAlign.center,
           style: const TextStyle(color: AppColors.inkSoft),
         ),
@@ -480,13 +537,16 @@ class _BudgetSetupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _OnboardingFrame(
-    bottom: PixelButton(label: 'Continuar', onPressed: onContinue),
+    bottom: PixelButton(
+      label: AppLocalizations.of(context).continueLabel,
+      onPressed: onContinue,
+    ),
     child: Column(
       children: [
         _ProgressHeader(step: 3, onBack: onBack),
         const Spacer(),
         Text(
-          '¿Cuánto quieres gastar\nen este ciclo?',
+          AppLocalizations.of(context).onboardingBudgetQuestion,
           textAlign: TextAlign.center,
           style: Theme.of(
             context,
@@ -502,9 +562,9 @@ class _BudgetSetupPage extends StatelessWidget {
             fontSize: 39,
             fontVariations: AppType.bold,
           ),
-          decoration: const InputDecoration(
-            prefixText: '\$',
-            suffixText: 'MXN',
+          decoration: InputDecoration(
+            prefixText: SobraScope.of(context).currency.symbol,
+            suffixText: SobraScope.of(context).currency.code,
           ),
         ),
         const SizedBox(height: 20),
@@ -516,11 +576,17 @@ class _BudgetSetupPage extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  cycleDateRange(preview.start, preview.end),
+                  cycleDateRange(
+                    AppLocalizations.of(context),
+                    preview.start,
+                    preview.end,
+                  ),
                   style: const TextStyle(fontVariations: AppType.bold),
                 ),
               ),
-              Text('${preview.lengthInDays} días'),
+              Text(
+                AppLocalizations.of(context).daysCount(preview.lengthInDays),
+              ),
             ],
           ),
         ),
@@ -550,13 +616,15 @@ class _CashSetupPage extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         PixelButton(
-          label: saving ? 'Guardando…' : 'Continuar',
+          label: saving
+              ? AppLocalizations.of(context).saving
+              : AppLocalizations.of(context).continueLabel,
           onPressed: saving ? null : onContinue,
         ),
         const SizedBox(height: 10),
         TextButton(
           onPressed: saving ? null : onSkip,
-          child: const Text('Ahora no'),
+          child: Text(AppLocalizations.of(context).onboardingNotNow),
         ),
       ],
     ),
@@ -565,15 +633,15 @@ class _CashSetupPage extends StatelessWidget {
         _ProgressHeader(step: 4, onBack: onBack),
         const Spacer(),
         Text(
-          '¿Cuánto efectivo\ntienes hoy?',
+          AppLocalizations.of(context).onboardingCashQuestion,
           textAlign: TextAlign.center,
           style: Theme.of(
             context,
           ).textTheme.headlineMedium?.copyWith(fontSize: 29),
         ),
         const SizedBox(height: 10),
-        const Text(
-          'Déjalo vacío si prefieres contarlo después.',
+        Text(
+          AppLocalizations.of(context).onboardingCashOptional,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 30),
@@ -582,29 +650,29 @@ class _CashSetupPage extends StatelessWidget {
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           textAlign: TextAlign.center,
           style: pixelText(size: 39, bold: true, color: AppColors.teal),
-          decoration: const InputDecoration(
-            prefixText: '\$',
+          decoration: InputDecoration(
+            prefixText: SobraScope.of(context).currency.symbol,
             hintText: '—',
-            suffixText: 'MXN',
+            suffixText: SobraScope.of(context).currency.code,
           ),
         ),
         const SizedBox(height: 30),
-        const PixelCard(
+        PixelCard(
           elevation: PixelElevation.none,
           color: AppColors.cashSoft,
           borderColor: AppColors.cashInk,
           child: Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.account_balance_wallet,
                 size: 38,
                 color: AppColors.cashInk,
               ),
-              SizedBox(width: 14),
+              const SizedBox(width: 14),
               Expanded(
                 child: Text(
-                  'Este será tu primer conteo, no un ingreso.',
-                  style: TextStyle(
+                  AppLocalizations.of(context).onboardingCashIsBaseline,
+                  style: const TextStyle(
                     fontSize: 13,
                     color: AppColors.cashInk,
                     height: 1.45,
@@ -636,25 +704,28 @@ class _ReadyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _OnboardingFrame(
-    bottom: PixelButton(label: 'Ir a Inicio', onPressed: onFinish),
+    bottom: PixelButton(
+      label: AppLocalizations.of(context).onboardingGoHome,
+      onPressed: onFinish,
+    ),
     child: Column(
       children: [
         const Spacer(),
         Text(
-          'Tu plan está listo',
+          AppLocalizations.of(context).onboardingPlanReady,
           style: Theme.of(
             context,
           ).textTheme.headlineMedium?.copyWith(fontSize: 31),
         ),
         const SizedBox(height: 10),
-        const Text(
-          'Hoy puedes gastar',
-          style: TextStyle(fontSize: 18, fontVariations: AppType.bold),
+        Text(
+          AppLocalizations.of(context).onboardingCanSpendToday,
+          style: const TextStyle(fontSize: 18, fontVariations: AppType.bold),
         ),
         const SizedBox(height: 8),
         FittedBox(
           child: Text(
-            formatMoney(todayCentavos),
+            formatMoney(SobraScope.of(context).currency, todayCentavos),
             style: const TextStyle(
               color: AppColors.teal,
               fontSize: 47,
@@ -668,13 +739,20 @@ class _ReadyPage extends StatelessWidget {
           child: Column(
             children: [
               _SummaryRow(
-                label: 'Ciclo',
-                value: cycleDateRange(bounds.start, bounds.end),
+                label: AppLocalizations.of(context).xpDetailCycle,
+                value: cycleDateRange(
+                  AppLocalizations.of(context),
+                  bounds.start,
+                  bounds.end,
+                ),
               ),
               const Divider(),
               _SummaryRow(
-                label: 'Presupuesto',
-                value: formatMoney(budgetCentavos),
+                label: AppLocalizations.of(context).budget,
+                value: formatMoney(
+                  SobraScope.of(context).currency,
+                  budgetCentavos,
+                ),
               ),
             ],
           ),
@@ -736,7 +814,10 @@ class _DayDropdown extends StatelessWidget {
     decoration: InputDecoration(labelText: label),
     items: [
       for (var day = 1; day <= max; day++)
-        DropdownMenuItem(value: day, child: Text('Día $day')),
+        DropdownMenuItem(
+          value: day,
+          child: Text(AppLocalizations.of(context).dayOfMonth(day)),
+        ),
     ],
     onChanged: (value) {
       if (value != null) onChanged(value);
@@ -854,7 +935,10 @@ class _ProgressHeader extends StatelessWidget {
               icon: const Icon(Icons.arrow_back),
             ),
           ),
-        Text('$step de 4', style: pixelText(size: 16, bold: true)),
+        Text(
+          AppLocalizations.of(context).onboardingStepOf(step, 4),
+          style: pixelText(size: 16, bold: true),
+        ),
       ],
     ),
   );

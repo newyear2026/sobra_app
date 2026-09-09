@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'l10n/generated/app_localizations.dart';
+import 'l10n/labels.dart';
+import 'models/language.dart';
+import 'models/money_movement.dart';
 import 'screens/app_shell.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/recovery_screen.dart';
@@ -42,18 +46,31 @@ class SobraApp extends StatefulWidget {
 class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
   Timer? _midnightTimer;
 
+  /// Mirrors the stored choice so the app rebuilds when — and only when — the
+  /// language changes. [MaterialApp] sits above the scope that would otherwise
+  /// notify it, and rebuilding it on every saved expense would be wasteful.
+  String? _languageCode;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _languageCode = widget.store.languageCode;
+    widget.store.addListener(_onStoreChanged);
     _scheduleMidnightRefresh();
   }
 
   @override
   void dispose() {
     _midnightTimer?.cancel();
+    widget.store.removeListener(_onStoreChanged);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _onStoreChanged() {
+    if (widget.store.languageCode == _languageCode) return;
+    setState(() => _languageCode = widget.store.languageCode);
   }
 
   @override
@@ -82,17 +99,54 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
         title: 'Sobra',
         debugShowCheckedModeBanner: false,
         theme: buildSobraTheme(),
-        locale: const Locale('es', 'MX'),
-        supportedLocales: const [Locale('es', 'MX')],
+        // A null locale hands the choice back to the phone. The list comes
+        // from `SobraLanguage` so the picker and the app can never disagree
+        // about which languages this build has.
+        locale: _languageCode == null ? null : Locale(_languageCode!),
+        supportedLocales: SobraLanguage.supportedLocales,
         localizationsDelegates: const [
+          AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
+        builder: (context, child) =>
+            _WidgetSyncLabels(child: child ?? const SizedBox.shrink()),
         home: const _StartupRouter(),
       ),
     );
   }
+}
+
+/// Keeps the home screen widget speaking the same language as the app.
+///
+/// The widget payload is built outside the element tree, so it cannot look up
+/// localizations itself. This sits just under [MaterialApp], where they first
+/// resolve, and hands the sync a labeller — again whenever the locale changes.
+class _WidgetSyncLabels extends StatefulWidget {
+  const _WidgetSyncLabels({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_WidgetSyncLabels> createState() => _WidgetSyncLabelsState();
+}
+
+class _WidgetSyncLabelsState extends State<_WidgetSyncLabels> {
+  AppLocalizations? _installed;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final l10n = AppLocalizations.of(context);
+    if (identical(_installed, l10n)) return;
+    _installed = l10n;
+    SobraWidgetSync.movementLabeler = (MoneyMovement movement) =>
+        movementTitle(l10n, movement);
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 class _StartupRouter extends StatelessWidget {

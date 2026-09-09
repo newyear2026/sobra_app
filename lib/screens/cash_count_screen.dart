@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/generated/app_localizations.dart';
+import '../l10n/labels.dart';
 import '../models/cash_reconciliation.dart';
 import '../models/expense_entry.dart';
 import '../models/income_entry.dart';
@@ -31,7 +33,7 @@ class _CashCountScreenState extends State<CashCountScreen> {
     super.dispose();
   }
 
-  int? get _actual => parseNonNegativePesos(_controller.text);
+  int? get _actual => parseNonNegativeAmount(_controller.text);
 
   Future<void> _confirm(SobraStore store) async {
     final actual = _actual;
@@ -44,16 +46,19 @@ class _CashCountScreenState extends State<CashCountScreen> {
         : _resolution;
     if (resolution == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Elige qué pasó con la diferencia.')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context).cashCountPickWhatHappened),
+        ),
       );
       return;
     }
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context);
     setState(() => _saving = true);
     XpNotice? xpNotice;
     final bool saved;
     try {
-      saved = await guardStoreWrite(messenger, () async {
+      saved = await guardStoreWrite(messenger, l10n, () async {
         await store.reconcileCashCount(
           actualCentavos: actual,
           resolution: resolution,
@@ -75,16 +80,16 @@ class _CashCountScreenState extends State<CashCountScreen> {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         notice == null
-            ? const SnackBar(
-                content: Text('Conteo guardado sin duplicar movimientos.'),
-              )
+            ? SnackBar(content: Text(l10n.cashCountSavedWithoutDuplicates))
             : xpSnackBar(notice),
       );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final store = SobraScope.of(context);
+    final currency = store.currency;
     final actual = _actual;
     final difference = actual == null || !store.hasCashBaseline
         ? null
@@ -102,14 +107,14 @@ class _CashCountScreenState extends State<CashCountScreen> {
               padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
               children: [
                 PixelTopBar(
-                  title: 'Conteo de efectivo',
+                  title: l10n.cashCountTitle,
                   onBack: () => Navigator.pop(context),
                 ),
                 const SizedBox(height: 12),
                 Text(
                   store.hasCashBaseline
-                      ? 'Cuenta solo el efectivo que tienes ahora.'
-                      : 'Sin conteo todavía',
+                      ? l10n.cashCountPrompt
+                      : l10n.cashCountNoneYet,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
@@ -122,27 +127,29 @@ class _CashCountScreenState extends State<CashCountScreen> {
                   ),
                   textAlign: TextAlign.center,
                   style: pixelText(size: 38, bold: true, color: AppColors.teal),
-                  decoration: const InputDecoration(
-                    prefixText: '\$',
+                  decoration: InputDecoration(
+                    prefixText: currency.symbol,
                     hintText: '—',
-                    suffixText: 'MXN',
+                    suffixText: currency.code,
                   ),
                 ),
                 const SizedBox(height: 18),
                 if (actual == null)
-                  const PixelCard(
+                  PixelCard(
                     elevation: PixelElevation.none,
                     color: AppColors.cashSoft,
                     borderColor: AppColors.cashInk,
                     child: Row(
                       children: [
-                        Icon(Icons.info_outline, color: AppColors.cashInk),
-                        SizedBox(width: 12),
+                        const Icon(
+                          Icons.info_outline,
+                          color: AppColors.cashInk,
+                        ),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'El resultado aparecerá después de escribir '
-                            'el conteo.',
-                            style: TextStyle(
+                            l10n.cashCountResultPending,
+                            style: const TextStyle(
                               fontSize: 13,
                               color: AppColors.cashInk,
                               height: 1.45,
@@ -153,15 +160,14 @@ class _CashCountScreenState extends State<CashCountScreen> {
                     ),
                   )
                 else if (!store.hasCashBaseline)
-                  const PixelCard(
+                  PixelCard(
                     elevation: PixelElevation.none,
                     color: AppColors.tealSoft,
                     borderColor: AppColors.tealInk,
                     child: Text(
-                      'Este será tu punto de partida. '
-                      'No se registrará como ingreso.',
+                      l10n.cashCountBaselineHint,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 13,
                         color: AppColors.tealInk,
                         height: 1.45,
@@ -173,13 +179,16 @@ class _CashCountScreenState extends State<CashCountScreen> {
                     children: [
                       Expanded(
                         child: _AmountCard(
-                          label: 'Esperábamos',
+                          label: l10n.cashCountExpected,
                           value: store.expectedCashCentavos,
                         ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: _AmountCard(label: 'Contaste', value: actual),
+                        child: _AmountCard(
+                          label: l10n.cashCountCounted,
+                          value: actual,
+                        ),
                       ),
                     ],
                   ),
@@ -190,10 +199,14 @@ class _CashCountScreenState extends State<CashCountScreen> {
                     borderColor: resultColor,
                     child: Text(
                       difference == 0
-                          ? 'Todo cuadra'
+                          ? l10n.cashCountBalanced
                           : isMissing
-                          ? 'Faltan ${formatMoney(difference.abs())}'
-                          : 'Hay ${formatMoney(difference!.abs())} de más',
+                          ? l10n.cashCountShort(
+                              formatMoney(currency, difference.abs()),
+                            )
+                          : l10n.cashCountExtra(
+                              formatMoney(currency, difference!.abs()),
+                            ),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: resultColor,
@@ -205,7 +218,7 @@ class _CashCountScreenState extends State<CashCountScreen> {
                   if (difference != 0) ...[
                     const SizedBox(height: 22),
                     Text(
-                      '¿Qué pasó?',
+                      l10n.cashCountWhatHappened,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 10),
@@ -224,19 +237,17 @@ class _CashCountScreenState extends State<CashCountScreen> {
                                 CashResolution.pending,
                               ]) ...[
                       _ResolutionCard(
-                        label: option.label,
+                        label: option.label(l10n),
                         helper: switch (option) {
-                          CashResolution.expense =>
-                            'Fue un gasto que no habías registrado.',
-                          CashResolution.income =>
-                            'Fue dinero nuevo que recibiste.',
+                          CashResolution.expense => l10n.cashCountHelperExpense,
+                          CashResolution.income => l10n.cashCountHelperIncome,
                           CashResolution.transfer =>
                             isMissing
-                                ? 'Lo depositaste o lo moviste a otra cuenta.'
-                                : 'Lo retiraste o lo moviste desde otra cuenta.',
+                                ? l10n.cashCountHelperTransferOut
+                                : l10n.cashCountHelperTransferIn,
                           CashResolution.correction =>
-                            'El conteo anterior estaba equivocado.',
-                          CashResolution.pending => 'Decídelo después.',
+                            l10n.cashCountHelperCorrection,
+                          CashResolution.pending => l10n.cashCountHelperPending,
                         },
                         icon: switch (option) {
                           CashResolution.expense => Icons.search,
@@ -256,14 +267,12 @@ class _CashCountScreenState extends State<CashCountScreen> {
                         initialValue: _category,
                         borderRadius: BorderRadius.zero,
                         dropdownColor: AppColors.surface,
-                        decoration: const InputDecoration(
-                          labelText: 'Categoría',
-                        ),
+                        decoration: InputDecoration(labelText: l10n.category),
                         items: ExpenseCategory.values
                             .map(
                               (category) => DropdownMenuItem(
                                 value: category,
-                                child: Text(category.label),
+                                child: Text(category.label(l10n)),
                               ),
                             )
                             .toList(),
@@ -274,43 +283,41 @@ class _CashCountScreenState extends State<CashCountScreen> {
                       const SizedBox(height: 12),
                       TextField(
                         controller: _noteController,
-                        decoration: const InputDecoration(
-                          labelText: 'Nota',
-                          hintText: 'Ej. Tacos',
+                        decoration: InputDecoration(
+                          labelText: l10n.note,
+                          hintText: l10n.noteExample,
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const PixelHint(
+                      PixelHint(
                         tone: PixelHintTone.teal,
-                        text:
-                            'Esto crea un solo gasto. No tendrás que '
-                            'registrarlo otra vez.',
+                        text: l10n.cashCountSingleExpenseHint,
                       ),
                     ],
                     if (_resolution == CashResolution.income) ...[
                       const SizedBox(height: 16),
                       TextField(
                         controller: _noteController,
-                        decoration: const InputDecoration(
-                          labelText: 'Nota',
-                          hintText: 'Ej. Propina',
+                        decoration: InputDecoration(
+                          labelText: l10n.note,
+                          hintText: l10n.cashCountNoteTipExample,
                         ),
                       ),
                       const SizedBox(height: 14),
                       Text(
-                        '¿Qué hacemos con este dinero?',
+                        l10n.cashCountWhatToDoWithMoney,
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                       const SizedBox(height: 8),
                       PixelSegmented<IncomeAllocation>(
-                        segments: const [
+                        segments: [
                           PixelSegment(
                             value: IncomeAllocation.cycle,
-                            label: 'Este ciclo',
+                            label: l10n.registerThisCycle,
                           ),
                           PixelSegment(
                             value: IncomeAllocation.savings,
-                            label: 'Guardarlo',
+                            label: l10n.registerSaveIt,
                           ),
                         ],
                         selected: _incomeAllocation,
@@ -323,10 +330,10 @@ class _CashCountScreenState extends State<CashCountScreen> {
                 const SizedBox(height: 24),
                 PixelButton(
                   label: _saving
-                      ? 'Guardando…'
+                      ? l10n.saving
                       : !store.hasCashBaseline
-                      ? 'Guardar primer conteo'
-                      : 'Guardar conteo',
+                      ? l10n.cashCountSaveFirst
+                      : l10n.cashCountSave,
                   onPressed: actual == null || _saving
                       ? null
                       : () => _confirm(store),
@@ -345,25 +352,28 @@ class _AmountCard extends StatelessWidget {
   final String label;
   final int value;
   @override
-  Widget build(BuildContext context) => PixelCard(
-    elevation: PixelElevation.none,
-    padding: const EdgeInsets.all(10),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: Theme.of(context).textTheme.bodySmall),
-        const SizedBox(height: 4),
-        FittedBox(
-          alignment: Alignment.centerLeft,
-          fit: BoxFit.scaleDown,
-          child: Text(
-            formatMoney(value),
-            style: pixelText(size: 19, bold: true),
+  Widget build(BuildContext context) {
+    final currency = SobraScope.of(context).currency;
+    return PixelCard(
+      elevation: PixelElevation.none,
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: Theme.of(context).textTheme.bodySmall),
+          const SizedBox(height: 4),
+          FittedBox(
+            alignment: Alignment.centerLeft,
+            fit: BoxFit.scaleDown,
+            child: Text(
+              formatMoney(currency, value),
+              style: pixelText(size: 19, bold: true),
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
 
 class _ResolutionCard extends StatelessWidget {

@@ -36,6 +36,9 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+
+  # Pulled in by the gen-l10n output, which formats numbers and plurals.
+  intl: any
   shared_preferences: ^2.5.5
 
 dev_dependencies:
@@ -58,6 +61,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  # Turns on gen-l10n, which reads l10n.yaml and the ARB files in lib/l10n.
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -67,6 +72,7 @@ flutter:
   assets:
     - assets/cats/
     - assets/characters/michi/
+    - assets/rooms/casa_clara/
 
   fonts:
     - family: PixelifySans

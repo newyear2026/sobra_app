@@ -5,8 +5,11 @@ import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 
+import 'support/localizations.dart';
+
 void main() {
   testWidgets('shows onboarding for a new user', (tester) async {
+    useSpanishDevice(tester);
     SharedPreferences.setMockInitialValues({});
     final store = await SobraStore.load();
 
@@ -25,6 +28,7 @@ void main() {
   });
 
   testWidgets('shows the five v1 destinations', (tester) async {
+    useSpanishDevice(tester);
     SharedPreferences.setMockInitialValues({});
     final store = await SobraStore.load();
     await store.configureOnboarding(
@@ -47,6 +51,7 @@ void main() {
   });
 
   testWidgets('opens the expense form from bottom navigation', (tester) async {
+    useSpanishDevice(tester);
     SharedPreferences.setMockInitialValues({});
     final store = await SobraStore.load();
     await store.configureOnboarding(

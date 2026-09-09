@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/generated/app_localizations.dart';
+import '../l10n/labels.dart';
+import '../models/currency.dart';
+import '../models/pay_schedule.dart';
+import '../state/sobra_store.dart';
 import '../models/expense_entry.dart';
 import '../theme/app_theme.dart';
 
@@ -7,20 +12,29 @@ import '../theme/app_theme.dart';
 /// digits around it. ASCII `-` is a hyphen and renders narrower.
 const minusSign = '−';
 
-String formatMoney(int centavos, {bool currency = true}) {
-  final negative = centavos < 0;
-  final absolute = centavos.abs();
-  final pesos = absolute ~/ 100;
-  final decimals = absolute % 100;
-  final whole = pesos.toString().replaceAllMapped(
+/// Writes an amount of minor units the way Sobra shows money.
+///
+/// Both languages Sobra ships — Mexican Spanish and American English — group
+/// with commas and separate decimals with a dot, so the separators are fixed
+/// here rather than read from the locale. A locale that groups the other way
+/// around would have to make them a setting of their own.
+///
+/// [showCode] drops the currency code for figures that sit beside another one
+/// already carrying it, such as the two halves of a category limit.
+String formatMoney(Currency currency, int minorUnits, {bool showCode = true}) {
+  final negative = minorUnits < 0;
+  final absolute = minorUnits.abs();
+  final units = absolute ~/ Currency.minorUnitsPerUnit;
+  final decimals = absolute % Currency.minorUnitsPerUnit;
+  final whole = units.toString().replaceAllMapped(
     RegExp(r'\B(?=(\d{3})+(?!\d))'),
     (match) => ',',
   );
   final decimalPart = decimals == 0
       ? ''
       : '.${decimals.toString().padLeft(2, '0')}';
-  return '${negative ? minusSign : ''}\$$whole$decimalPart'
-      '${currency ? ' MXN' : ''}';
+  return '${negative ? minusSign : ''}${currency.symbol}$whole$decimalPart'
+      '${showCode ? ' ${currency.code}' : ''}';
 }
 
 String? _normalizeAmount(String input) {
@@ -83,36 +97,21 @@ String? _normalizeAmount(String input) {
   return '$sign$integerPart${fractionPart.isEmpty ? '' : '.$fractionPart'}';
 }
 
-int? parsePesos(String input) {
+int? parseAmount(String input) {
   final normalized = _normalizeAmount(input);
   final value = normalized == null ? null : double.tryParse(normalized);
   if (value == null || !value.isFinite || value <= 0) return null;
   return (value * 100).round();
 }
 
-int? parseNonNegativePesos(String input) {
+int? parseNonNegativeAmount(String input) {
   final normalized = _normalizeAmount(input);
   final value = normalized == null ? null : double.tryParse(normalized);
   if (value == null || !value.isFinite || value < 0) return null;
   return (value * 100).round();
 }
 
-/// The sentence to show when a store write did not go through.
-///
-/// The store raises its own refusals in Spanish — a budget below the income
-/// already booked to the cycle, a movement dated in the future — so those are
-/// worth repeating verbatim. Anything else is a storage failure the user can
-/// do nothing about except try again, and it gets one plain line.
-String describeStoreFailure(Object error) {
-  if (error is StateError) return error.message;
-  if (error is ArgumentError) {
-    final message = error.message;
-    if (message is String && message.isNotEmpty) return message;
-  }
-  return 'No pudimos guardar el cambio. Vuelve a intentarlo.';
-}
-
-/// Runs a store write and shows [describeStoreFailure] if it throws.
+/// Runs a store write and shows why it failed if it throws.
 ///
 /// Every mutation on the store ends in a save that raises rather than
 /// returning false, so without this the one thing the user cares about —
@@ -125,6 +124,7 @@ String describeStoreFailure(Object error) {
 /// context left to read one from by the time the answer arrives.
 Future<bool> guardStoreWrite(
   ScaffoldMessengerState messenger,
+  AppLocalizations l10n,
   Future<void> Function() write,
 ) async {
   try {
@@ -133,41 +133,16 @@ Future<bool> guardStoreWrite(
   } on Object catch (error) {
     messenger
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(describeStoreFailure(error))));
+      ..showSnackBar(
+        SnackBar(content: Text(describeStoreFailure(l10n, error))),
+      );
     return false;
   }
 }
 
-String shortDate(DateTime date) =>
-    '${date.day.toString().padLeft(2, '0')}/'
-    '${date.month.toString().padLeft(2, '0')}/${date.year}';
-
 String shortTime(DateTime date) =>
     '${date.hour.toString().padLeft(2, '0')}:'
     '${date.minute.toString().padLeft(2, '0')}';
-
-/// The one set of month abbreviations. Anything that shortens a date reads
-/// from here, so the same month never appears two ways in one list.
-const monthAbbreviations = [
-  'ene',
-  'feb',
-  'mar',
-  'abr',
-  'may',
-  'jun',
-  'jul',
-  'ago',
-  'sep',
-  'oct',
-  'nov',
-  'dic',
-];
-
-String shortCycleDate(DateTime date) =>
-    '${date.day} ${monthAbbreviations[date.month - 1]}';
-
-String cycleDateRange(DateTime start, DateTime end) =>
-    '${shortCycleDate(start)}–${shortCycleDate(end)}';
 
 /// Depth steps.
 ///
@@ -733,7 +708,7 @@ class PixelTopBar extends StatelessWidget {
             onPressed: onBack,
             icon: const Icon(Icons.arrow_back, size: 28),
             color: AppColors.ink,
-            tooltip: 'Volver',
+            tooltip: AppLocalizations.of(context).back,
           ),
         Expanded(
           child: Text(
@@ -768,7 +743,9 @@ class SegmentedProgress extends StatelessWidget {
     const segments = 12;
     final filled = (value.clamp(0, 1) * segments).ceil();
     return Semantics(
-      label: 'Progreso ${(value * 100).round()} por ciento',
+      label: AppLocalizations.of(
+        context,
+      ).progressPercent((value * 100).round()),
       child: Container(
         height: 20,
         padding: const EdgeInsets.all(3),
@@ -803,7 +780,7 @@ class PixelSteps extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: 'Paso ${current + 1} de $total',
+      label: AppLocalizations.of(context).stepOf(current + 1, total),
       child: Row(
         children: [
           for (var index = 0; index < total; index++) ...[
@@ -884,6 +861,61 @@ class CategoryIconBox extends StatelessWidget {
         categoryIcon(category),
         color: categoryColor(category),
         size: size * .55,
+      ),
+    );
+  }
+}
+
+/// The one date field in the app: a fortnight is anchored on a real day.
+///
+/// Only the past is offerable — "when were you last paid" has no answer in
+/// the future, and an anchor ahead of today would put the current cycle in a
+/// window that has not started.
+class PaydayField extends StatelessWidget {
+  const PaydayField({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String label;
+  final DateTime value;
+  final ValueChanged<DateTime> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final today = SobraScope.of(context).today;
+    return PixelCard(
+      elevation: PixelElevation.none,
+      onTap: () async {
+        final picked = await showDatePicker(
+          context: context,
+          initialDate: value,
+          firstDate: DateTime(today.year - 1),
+          lastDate: today,
+        );
+        if (picked != null) onChanged(dateOnly(picked));
+      },
+      child: Row(
+        children: [
+          const Icon(Icons.event, color: AppColors.violet),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: Theme.of(context).textTheme.bodySmall),
+                Text(
+                  fullDate(l10n, value),
+                  style: pixelText(size: 15, bold: true),
+                ),
+              ],
+            ),
+          ),
+          Text(l10n.pickDate, style: pixelText(size: 12, bold: true)),
+        ],
       ),
     );
   }

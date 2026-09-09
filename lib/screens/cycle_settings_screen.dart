@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/generated/app_localizations.dart';
+import '../l10n/labels.dart';
 import '../models/pay_schedule.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
@@ -19,6 +21,10 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
   int _monthlyDay = 30;
   int _weeklyDay = DateTime.friday;
   int _horizon = 7;
+
+  /// A fortnight needs a real calendar date, not a day number: it is the day
+  /// the user was last paid, and every fourteenth day from it opens a cycle.
+  DateTime? _lastPayday;
   bool _saving = false;
 
   @override
@@ -33,11 +39,15 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
     _monthlyDay = schedule.monthlyPayDay;
     _weeklyDay = schedule.weeklyPayDay;
     _horizon = schedule.planningHorizonDays;
+    _lastPayday = schedule.biweeklyAnchor;
     _initialized = true;
   }
 
   PaySchedule _draft(DateTime effectiveAt) => switch (_type) {
     PayCycleType.semiMonthly => PaySchedule.semiMonthly(firstPayDay: _firstDay),
+    PayCycleType.biweekly => PaySchedule.biweekly(
+      anchor: _lastPayday ?? effectiveAt,
+    ),
     PayCycleType.monthly => PaySchedule.monthly(monthlyPayDay: _monthlyDay),
     PayCycleType.weekly => PaySchedule.weekly(weeklyPayDay: _weeklyDay),
     PayCycleType.irregular => PaySchedule.irregular(
@@ -48,6 +58,7 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final store = SobraScope.of(context);
     final effectiveAt = store.cycleEnd.add(const Duration(days: 1));
     final draft = _draft(effectiveAt);
@@ -62,12 +73,12 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
               padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
               children: [
                 PixelTopBar(
-                  title: 'Tu ciclo',
+                  title: l10n.cycleTitle,
                   onBack: () => Navigator.pop(context),
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  'Ciclo actual',
+                  l10n.cycleCurrent,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 8),
@@ -87,7 +98,7 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'En curso',
+                              l10n.cycleInProgress,
                               style: pixelText(
                                 size: 15,
                                 bold: true,
@@ -95,21 +106,25 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
                               ),
                             ),
                             Text(
-                              cycleDateRange(store.cycleStart, store.cycleEnd),
+                              cycleDateRange(
+                                l10n,
+                                store.cycleStart,
+                                store.cycleEnd,
+                              ),
                             ),
                           ],
                         ),
                       ),
-                      const Text(
-                        'No cambiará',
-                        style: TextStyle(color: AppColors.teal),
+                      Text(
+                        l10n.cycleUnchanged,
+                        style: const TextStyle(color: AppColors.teal),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Nueva frecuencia',
+                  l10n.cycleNewFrequency,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 8),
@@ -121,7 +136,7 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
                       .map(
                         (type) => DropdownMenuItem(
                           value: type,
-                          child: Text(type.label),
+                          child: Text(type.label(l10n)),
                         ),
                       )
                       .toList(),
@@ -132,14 +147,20 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
                 const SizedBox(height: 14),
                 if (_type == PayCycleType.semiMonthly)
                   _NumberDropdown(
-                    label: 'Primer pago',
+                    label: l10n.cycleFirstPay,
                     value: _firstDay,
                     max: 28,
                     onChanged: (value) => setState(() => _firstDay = value),
                   )
+                else if (_type == PayCycleType.biweekly)
+                  PaydayField(
+                    label: l10n.cycleLastPayday,
+                    value: _lastPayday ?? store.today,
+                    onChanged: (value) => setState(() => _lastPayday = value),
+                  )
                 else if (_type == PayCycleType.monthly)
                   _NumberDropdown(
-                    label: 'Día de pago',
+                    label: l10n.cyclePayDay,
                     value: _monthlyDay,
                     max: 31,
                     onChanged: (value) => setState(() => _monthlyDay = value),
@@ -149,22 +170,12 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
                     initialValue: _weeklyDay,
                     borderRadius: BorderRadius.zero,
                     dropdownColor: AppColors.surface,
-                    decoration: const InputDecoration(labelText: 'Día de pago'),
+                    decoration: InputDecoration(labelText: l10n.cyclePayDay),
                     items: [
                       for (var index = 0; index < 7; index++)
                         DropdownMenuItem(
                           value: index + 1,
-                          child: Text(
-                            const [
-                              'Lunes',
-                              'Martes',
-                              'Miércoles',
-                              'Jueves',
-                              'Viernes',
-                              'Sábado',
-                              'Domingo',
-                            ][index],
-                          ),
+                          child: Text(weekdayName(l10n, index + 1)),
                         ),
                     ],
                     onChanged: (value) {
@@ -173,17 +184,16 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
                   )
                 else
                   PixelSegmented<int>(
-                    segments: const [
-                      PixelSegment(value: 7, label: '7 días'),
-                      PixelSegment(value: 14, label: '14 días'),
-                      PixelSegment(value: 30, label: '30 días'),
+                    segments: [
+                      for (final days in const [7, 14, 30])
+                        PixelSegment(value: days, label: l10n.daysCount(days)),
                     ],
                     selected: _horizon,
                     onChanged: (value) => setState(() => _horizon = value),
                   ),
                 const SizedBox(height: 24),
                 Text(
-                  'Próximo ciclo',
+                  l10n.cycleNext,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 8),
@@ -195,7 +205,7 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          cycleDateRange(effectiveAt, preview.end),
+                          cycleDateRange(l10n, effectiveAt, preview.end),
                           style: pixelText(size: 17, bold: true),
                         ),
                       ),
@@ -206,13 +216,12 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
                 PixelHint(
                   tone: PixelHintTone.cash,
                   text: _type == PayCycleType.irregular
-                      ? 'El cambio se aplicará al siguiente ciclo y después '
-                            'se renovará cada $_horizon días.'
-                      : 'El cambio se aplicará al siguiente ciclo.',
+                      ? l10n.cycleChangeAppliesRepeating(_horizon)
+                      : l10n.cycleChangeApplies,
                 ),
                 const SizedBox(height: 24),
                 PixelButton(
-                  label: _saving ? 'Guardando…' : 'Guardar cambio',
+                  label: _saving ? l10n.saving : l10n.cycleSaveChange,
                   onPressed: _saving
                       ? null
                       : () async {
@@ -220,6 +229,7 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
                           setState(() => _saving = true);
                           final saved = await guardStoreWrite(
                             messenger,
+                            l10n,
                             () => store.queuePayScheduleChange(draft),
                           );
                           if (!context.mounted) return;
@@ -257,7 +267,10 @@ class _NumberDropdown extends StatelessWidget {
     decoration: InputDecoration(labelText: label),
     items: [
       for (var day = 1; day <= max; day++)
-        DropdownMenuItem(value: day, child: Text('Día $day')),
+        DropdownMenuItem(
+          value: day,
+          child: Text(AppLocalizations.of(context).dayOfMonth(day)),
+        ),
     ],
     onChanged: (value) {
       if (value != null) onChanged(value);

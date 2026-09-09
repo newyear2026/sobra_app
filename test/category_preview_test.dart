@@ -6,8 +6,11 @@ import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 
+import 'support/localizations.dart';
+
 void main() {
   testWidgets('renders the category picker preview', (tester) async {
+    useSpanishDevice(tester);
     final pixelFont = FontLoader('PixelifySans')
       ..addFont(rootBundle.load('assets/fonts/PixelifySans.ttf'));
     final materialIcons = FontLoader('MaterialIcons')

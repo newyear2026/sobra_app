@@ -6,6 +6,7 @@ import 'package:sobra_app/models/cash_reconciliation.dart';
 import 'package:sobra_app/models/expense_entry.dart';
 import 'package:sobra_app/models/income_entry.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/models/store_failure.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 
 void main() {
@@ -75,35 +76,38 @@ void main() {
     expect(store.dailyAllowanceCentavos, 49090);
   });
 
-  test('an overspent cycle reports its own deficit, today and tomorrow', () async {
-    final store = await loadStore();
-    await store.configureOnboarding(
-      budgetCentavos: 600000,
-      schedule: PaySchedule.irregular(
-        planningHorizonDays: 15,
-        irregularCycleStart: DateTime(2026, 9),
-      ),
-    );
-    await store.addExpense(
-      amountCentavos: 800000,
-      category: ExpenseCategory.transport,
-      note: 'Transporte',
-      occurredAt: now,
-      paymentMethod: PaymentMethod.cash,
-    );
+  test(
+    'an overspent cycle reports its own deficit, today and tomorrow',
+    () async {
+      final store = await loadStore();
+      await store.configureOnboarding(
+        budgetCentavos: 600000,
+        schedule: PaySchedule.irregular(
+          planningHorizonDays: 15,
+          irregularCycleStart: DateTime(2026, 9),
+        ),
+      );
+      await store.addExpense(
+        amountCentavos: 800000,
+        category: ExpenseCategory.transport,
+        note: 'Transporte',
+        occurredAt: now,
+        paymentMethod: PaymentMethod.cash,
+      );
 
-    // Not the 500 allowance minus an 8,000 expense: that subtracts a
-    // cycle-level amount from a per-day slice and reads several times worse
-    // than the cycle actually is.
-    expect(store.remainingBudgetCentavos, -200000);
-    expect(store.todayRemainingCentavos, -200000);
+      // Not the 500 allowance minus an 8,000 expense: that subtracts a
+      // cycle-level amount from a per-day slice and reads several times worse
+      // than the cycle actually is.
+      expect(store.remainingBudgetCentavos, -200000);
+      expect(store.todayRemainingCentavos, -200000);
 
-    // Nor does it heal overnight, the way spreading the overspend across the
-    // days that are left would.
-    now = DateTime(2026, 9, 5, 8);
-    await store.refreshForCurrentDate();
-    expect(store.todayRemainingCentavos, -200000);
-  });
+      // Nor does it heal overnight, the way spreading the overspend across the
+      // days that are left would.
+      now = DateTime(2026, 9, 5, 8);
+      await store.refreshForCurrentDate();
+      expect(store.todayRemainingCentavos, -200000);
+    },
+  );
 
   test('irregular planning windows renew continuously', () async {
     final store = await loadStore();
@@ -289,7 +293,13 @@ void main() {
         occurredAt: DateTime(2026, 9, 5),
         paymentMethod: PaymentMethod.card,
       ),
-      throwsArgumentError,
+      throwsA(
+        isA<SobraStoreException>().having(
+          (error) => error.failure,
+          'failure',
+          StoreFailure.futureMovement,
+        ),
+      ),
     );
   });
 

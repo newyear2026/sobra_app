@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../l10n/generated/app_localizations.dart';
+import '../l10n/labels.dart';
 import '../models/expense_entry.dart';
 import '../models/money_movement.dart';
 import '../state/sobra_store.dart';
@@ -12,11 +14,11 @@ import '../widgets/transaction_row.dart';
 class TransactionsScreen extends StatelessWidget {
   const TransactionsScreen({super.key});
 
-  String _groupLabel(DateTime date, DateTime today) {
+  String _groupLabel(AppLocalizations l10n, DateTime date, DateTime today) {
     final day = DateTime(date.year, date.month, date.day);
-    if (day == today) return 'Hoy';
-    if (day == today.subtract(const Duration(days: 1))) return 'Ayer';
-    return shortCycleDate(day);
+    if (day == today) return l10n.today;
+    if (day == today.subtract(const Duration(days: 1))) return l10n.yesterday;
+    return shortCycleDate(l10n, day);
   }
 
   /// Deletes what a row stands for, or says why it has to stay.
@@ -27,6 +29,7 @@ class TransactionsScreen extends StatelessWidget {
   /// kept the money — the two would stop telling the same story.
   Future<void> _deleteMovement(
     ScaffoldMessengerState messenger,
+    AppLocalizations l10n,
     SobraStore store,
     MoneyMovement movement,
   ) async {
@@ -35,7 +38,7 @@ class TransactionsScreen extends StatelessWidget {
     if (expense == null && income == null) return;
 
     var removed = false;
-    final wrote = await guardStoreWrite(messenger, () async {
+    final wrote = await guardStoreWrite(messenger, l10n, () async {
       removed = expense != null
           ? await store.deleteExpense(expense.id)
           : await store.deleteIncome(income!.id);
@@ -47,10 +50,8 @@ class TransactionsScreen extends StatelessWidget {
         SnackBar(
           content: Text(
             expense != null
-                ? 'Este gasto viene de un conteo de efectivo. Vuelve a '
-                      'contar para corregirlo.'
-                : 'Este ingreso viene de un conteo de efectivo. Vuelve a '
-                      'contar para corregirlo.',
+                ? l10n.transactionsExpensePinned
+                : l10n.transactionsIncomePinned,
           ),
         ),
       );
@@ -60,13 +61,16 @@ class TransactionsScreen extends StatelessWidget {
     messenger.showSnackBar(
       SnackBar(
         content: Text(
-          expense != null ? 'Movimiento eliminado.' : 'Ingreso eliminado.',
+          expense != null
+              ? l10n.transactionsExpenseDeleted
+              : l10n.transactionsIncomeDeleted,
         ),
         action: SnackBarAction(
-          label: 'Deshacer',
+          label: l10n.undo,
           onPressed: () => unawaited(
             guardStoreWrite(
               messenger,
+              l10n,
               () => expense != null
                   ? store.restoreExpense(expense)
                   : store.restoreIncome(income!),
@@ -87,6 +91,7 @@ class TransactionsScreen extends StatelessWidget {
     SobraStore store,
     MoneyMovement movement,
   ) {
+    final l10n = AppLocalizations.of(context);
     final expense = movement.expense;
     final income = movement.income;
     final canEdit = expense != null;
@@ -108,12 +113,16 @@ class TransactionsScreen extends StatelessWidget {
           return;
         }
         if (value != 'delete') return;
-        await _deleteMovement(ScaffoldMessenger.of(context), store, movement);
+        await _deleteMovement(
+          ScaffoldMessenger.of(context),
+          AppLocalizations.of(context),
+          store,
+          movement,
+        );
       },
       itemBuilder: (_) => [
-        if (canEdit) const PopupMenuItem(value: 'edit', child: Text('Editar')),
-        if (canDelete)
-          const PopupMenuItem(value: 'delete', child: Text('Eliminar')),
+        if (canEdit) PopupMenuItem(value: 'edit', child: Text(l10n.edit)),
+        if (canDelete) PopupMenuItem(value: 'delete', child: Text(l10n.delete)),
       ],
     );
   }
@@ -133,10 +142,11 @@ class TransactionsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final store = SobraScope.of(context);
+    final l10n = AppLocalizations.of(context);
     final entries = store.movements;
     final grouped = <String, List<MoneyMovement>>{};
     for (final entry in entries) {
-      final label = _groupLabel(entry.occurredAt, store.today);
+      final label = _groupLabel(l10n, entry.occurredAt, store.today);
       grouped.putIfAbsent(label, () => []).add(entry);
     }
     return SafeArea(
@@ -145,14 +155,13 @@ class TransactionsScreen extends StatelessWidget {
         key: const PageStorageKey('movements-scroll'),
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
         children: [
-          const PixelTopBar(title: 'Movimientos'),
+          PixelTopBar(title: l10n.transactionsTitle),
           const SizedBox(height: 18),
           if (entries.isEmpty)
-            const PixelEmptyState(
+            PixelEmptyState(
               icon: Icons.receipt_long_outlined,
-              title: 'Aún no hay movimientos',
-              message:
-                  'Registra tu primer gasto y aquí verás el resumen del ciclo.',
+              title: l10n.transactionsEmptyTitle,
+              message: l10n.transactionsEmptyMessage,
             ),
           for (final group in grouped.entries) ...[
             Padding(
@@ -210,13 +219,14 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
   }
 
   Future<void> _save() async {
-    final amount = parsePesos(_amountController.text);
+    final amount = parseAmount(_amountController.text);
     if (amount == null && !widget.entry.isLinkedToCashCount) return;
     final store = SobraScope.of(context);
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context);
     // The sheet stays open on a failure, with the user's edit still in it, so
     // there is something to retry rather than a change that looked saved.
-    final saved = await guardStoreWrite(messenger, () {
+    final saved = await guardStoreWrite(messenger, l10n, () {
       if (widget.entry.isPendingCashAdjustment) {
         return store.classifyPendingCashExpense(
           expenseId: widget.entry.id,
@@ -228,9 +238,7 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
         widget.entry.copyWith(
           amountCentavos: amount ?? widget.entry.amountCentavos,
           category: _category,
-          note: _noteController.text.trim().isEmpty
-              ? _category.label
-              : _noteController.text.trim(),
+          note: _noteController.text.trim(),
         ),
       );
     });
@@ -238,90 +246,90 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
   }
 
   @override
-  Widget build(BuildContext context) => SafeArea(
-    child: Padding(
-      padding: EdgeInsets.fromLTRB(
-        20,
-        22,
-        20,
-        MediaQuery.viewInsetsOf(context).bottom + 22,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            widget.entry.isPendingCashAdjustment
-                ? 'Identificar diferencia'
-                : 'Editar movimiento',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 18),
-          TextField(
-            controller: _amountController,
-            enabled: !widget.entry.isLinkedToCashCount,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(
-              labelText: 'Monto',
-              suffixText: 'MXN',
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          20,
+          22,
+          20,
+          MediaQuery.viewInsetsOf(context).bottom + 22,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.entry.isPendingCashAdjustment
+                  ? l10n.identifyDifference
+                  : l10n.editMovement,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-          ),
-          if (widget.entry.isLinkedToCashCount) ...[
-            const SizedBox(height: 10),
-            const PixelHint(
-              tone: PixelHintTone.cash,
-              text:
-                  'El monto viene de tu conteo de efectivo. Puedes cambiar '
-                  'la categoría y la nota.',
-            ),
-          ],
-          const SizedBox(height: 12),
-          DropdownButtonFormField<ExpenseCategory>(
-            initialValue: _category,
-            decoration: const InputDecoration(labelText: 'Categoría'),
-            items: ExpenseCategory.values
-                .map(
-                  (category) => DropdownMenuItem(
-                    value: category,
-                    child: Text(category.label),
-                  ),
-                )
-                .toList(),
-            onChanged: (value) {
-              if (value != null) setState(() => _category = value);
-            },
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _noteController,
-            decoration: const InputDecoration(
-              labelText: 'Nota',
-              hintText: 'Ej. Tacos',
-            ),
-          ),
-          if (widget.entry.isPendingCashAdjustment) ...[
-            const SizedBox(height: 12),
-            const PixelCard(
-              elevation: PixelElevation.none,
-              color: AppColors.tealSoft,
-              child: Text(
-                'Esto reemplaza el ajuste pendiente. No suma otro gasto.',
-                style: TextStyle(
-                  color: AppColors.teal,
-                  fontVariations: AppType.bold,
-                ),
+            const SizedBox(height: 18),
+            TextField(
+              controller: _amountController,
+              enabled: !widget.entry.isLinkedToCashCount,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              decoration: InputDecoration(
+                labelText: l10n.amount,
+                suffixText: SobraScope.of(context).currency.code,
               ),
             ),
+            if (widget.entry.isLinkedToCashCount) ...[
+              const SizedBox(height: 10),
+              PixelHint(tone: PixelHintTone.cash, text: l10n.editPendingHint),
+            ],
+            const SizedBox(height: 12),
+            DropdownButtonFormField<ExpenseCategory>(
+              initialValue: _category,
+              decoration: InputDecoration(labelText: l10n.category),
+              items: ExpenseCategory.values
+                  .map(
+                    (category) => DropdownMenuItem(
+                      value: category,
+                      child: Text(category.label(l10n)),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                if (value != null) setState(() => _category = value);
+              },
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _noteController,
+              decoration: InputDecoration(
+                labelText: l10n.note,
+                hintText: l10n.noteExample,
+              ),
+            ),
+            if (widget.entry.isPendingCashAdjustment) ...[
+              const SizedBox(height: 12),
+              PixelCard(
+                elevation: PixelElevation.none,
+                color: AppColors.tealSoft,
+                child: Text(
+                  l10n.replacesPendingHint,
+                  style: const TextStyle(
+                    color: AppColors.teal,
+                    fontVariations: AppType.bold,
+                  ),
+                ),
+              ),
+            ],
+            const SizedBox(height: 20),
+            PixelButton(
+              label: widget.entry.isPendingCashAdjustment
+                  ? l10n.saveWithoutDuplicating
+                  : l10n.saveChanges,
+              onPressed: _save,
+            ),
           ],
-          const SizedBox(height: 20),
-          PixelButton(
-            label: widget.entry.isPendingCashAdjustment
-                ? 'Guardar sin duplicar'
-                : 'Guardar cambios',
-            onPressed: _save,
-          ),
-        ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

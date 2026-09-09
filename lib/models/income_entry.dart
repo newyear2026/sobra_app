@@ -2,15 +2,6 @@ import 'expense_entry.dart';
 
 enum IncomeKind { salary, extra, cash, refund }
 
-extension IncomeKindLabel on IncomeKind {
-  String get label => switch (this) {
-    IncomeKind.salary => 'Mi pago de siempre',
-    IncomeKind.extra => 'Ingreso extra',
-    IncomeKind.cash => 'Ingreso en efectivo',
-    IncomeKind.refund => 'Devolución',
-  };
-}
-
 enum IncomeAllocation { cycle, savings }
 
 class IncomeEntry {

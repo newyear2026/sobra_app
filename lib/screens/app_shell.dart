@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import '../l10n/generated/app_localizations.dart';
 import '../services/sobra_widget_sync.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
+import '../widgets/character_room.dart';
 import '../widgets/gamification_ui.dart';
 import 'budget_screen.dart';
 import 'home_screen.dart';
@@ -11,17 +15,24 @@ import 'settings_screen.dart';
 import 'transactions_screen.dart';
 
 enum AppTab {
-  home('Inicio', Icons.home_outlined, Icons.home),
-  movements('Movim.', Icons.list_alt_outlined, Icons.list_alt),
-  register('Registrar', Icons.add, Icons.add),
-  budget('Presup.', Icons.bar_chart_outlined, Icons.bar_chart),
-  settings('Ajustes', Icons.settings_outlined, Icons.settings);
+  home(Icons.home_outlined, Icons.home),
+  movements(Icons.list_alt_outlined, Icons.list_alt),
+  register(Icons.add, Icons.add),
+  budget(Icons.bar_chart_outlined, Icons.bar_chart),
+  settings(Icons.settings_outlined, Icons.settings);
 
-  const AppTab(this.label, this.icon, this.selectedIcon);
+  const AppTab(this.icon, this.selectedIcon);
 
-  final String label;
   final IconData icon;
   final IconData selectedIcon;
+
+  String label(AppLocalizations l10n) => switch (this) {
+    AppTab.home => l10n.tabHome,
+    AppTab.movements => l10n.tabMovements,
+    AppTab.register => l10n.tabRegister,
+    AppTab.budget => l10n.tabBudget,
+    AppTab.settings => l10n.tabSettings,
+  };
 }
 
 /// Lets a tab move the shell to another tab.
@@ -77,6 +88,12 @@ class _AppShellState extends State<AppShell> {
       _store?.removeListener(_onStoreChanged);
       _store = nextStore..addListener(_onStoreChanged);
     }
+    // Inicio builds its list lazily, so the room is only created once the
+    // user scrolls down to it — decoding there would show an empty card for
+    // a frame. Warm it here instead, where nothing is waiting on it.
+    unawaited(
+      precacheImage(CharacterRoom.backgroundProvider(context), context),
+    );
     _scheduleXpNotice();
   }
 
@@ -218,7 +235,7 @@ class _NavItem extends StatelessWidget {
     return Semantics(
       selected: selected,
       button: true,
-      label: tab.label,
+      label: tab.label(AppLocalizations.of(context)),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
@@ -234,7 +251,7 @@ class _NavItem extends StatelessWidget {
               ),
               const SizedBox(height: 3),
               Text(
-                tab.label,
+                tab.label(AppLocalizations.of(context)),
                 style: pixelText(size: 12, bold: true, color: foreground),
               ),
             ],
@@ -260,7 +277,7 @@ class _RegisterTile extends StatelessWidget {
     return Semantics(
       selected: selected,
       button: true,
-      label: AppTab.register.label,
+      label: AppTab.register.label(AppLocalizations.of(context)),
       child: SizedBox(
         width: 76,
         child: Padding(

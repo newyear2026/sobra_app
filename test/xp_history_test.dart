@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'support/localizations.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/cash_reconciliation.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
@@ -17,6 +18,7 @@ void main() {
   }
 
   testWidgets('XP history shows persisted reasons and totals', (tester) async {
+    useSpanishDevice(tester);
     usePhoneSize(tester);
     var now = DateTime(2026, 9, 2, 10);
     SharedPreferences.setMockInitialValues({});
@@ -37,13 +39,15 @@ void main() {
       SobraScope(
         store: store,
         child: MaterialApp(
+          localizationsDelegates: sobraLocalizationsDelegates,
+          supportedLocales: sobraSupportedLocales,
           theme: buildSobraTheme(),
           home: const XpHistoryScreen(),
         ),
       ),
     );
 
-    expect(find.text('Historial de XP'), findsOneWidget);
+    expect(find.text('Tu progreso'), findsOneWidget);
     expect(find.text('Michi curioso'), findsOneWidget);
     expect(find.text('25 XP totales'), findsOneWidget);
     expect(find.text('Conteo de efectivo'), findsOneWidget);
@@ -52,7 +56,38 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('XP progress opens from home and is absent from settings', (
+    tester,
+  ) async {
+    useSpanishDevice(tester);
+    usePhoneSize(tester);
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load();
+    await store.configureOnboarding(
+      budgetCentavos: 700000,
+      schedule: const PaySchedule.weekly(),
+      cashCentavos: 200000,
+    );
+    await store.completeOnboarding();
+
+    await tester.pumpWidget(SobraApp(store: store));
+
+    await tester.tap(find.text('Michi curioso'));
+    await tester.pumpAndSettle();
+    expect(find.text('Tu progreso'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Volver'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.tap(find.text('Ajustes'));
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text('Niveles y XP'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('cycle XP rows expose their calculation', (tester) async {
+    useSpanishDevice(tester);
     usePhoneSize(tester);
     var now = DateTime(2026, 9, 1, 9);
     SharedPreferences.setMockInitialValues({});
@@ -73,6 +108,8 @@ void main() {
       SobraScope(
         store: store,
         child: MaterialApp(
+          localizationsDelegates: sobraLocalizationsDelegates,
+          supportedLocales: sobraSupportedLocales,
           theme: buildSobraTheme(),
           home: const XpHistoryScreen(),
         ),
@@ -90,6 +127,7 @@ void main() {
   testWidgets('saving an eligible cash count shows immediate XP feedback', (
     tester,
   ) async {
+    useSpanishDevice(tester);
     usePhoneSize(tester);
     final now = DateTime(2026, 9, 2, 10);
     SharedPreferences.setMockInitialValues({});
@@ -120,6 +158,7 @@ void main() {
   testWidgets('a settlement completed before startup announces its total XP', (
     tester,
   ) async {
+    useSpanishDevice(tester);
     usePhoneSize(tester);
     var now = DateTime(2026, 9, 1, 9);
     SharedPreferences.setMockInitialValues({});

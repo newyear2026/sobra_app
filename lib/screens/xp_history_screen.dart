@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/generated/app_localizations.dart';
+import '../l10n/labels.dart';
 import '../models/xp_event.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
@@ -12,6 +14,7 @@ class XpHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final store = SobraScope.of(context);
+    final l10n = AppLocalizations.of(context);
     final progress = store.xpProgress;
     final events = store.xpEvents;
 
@@ -25,36 +28,32 @@ class XpHistoryScreen extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
               children: [
                 PixelTopBar(
-                  title: 'Historial de XP',
+                  title: l10n.xpHistoryTitle,
                   onBack: () => Navigator.pop(context),
                 ),
                 const SizedBox(height: 18),
                 LevelStrip(
                   level: progress.level,
-                  title: progress.title,
-                  subtitle: '${progress.totalXp} XP totales',
+                  title: xpLevelTitle(l10n, progress.level),
+                  subtitle: l10n.xpTotal(progress.totalXp),
                   currentXp: progress.currentLevelXp,
                   targetXp: progress.targetLevelXp,
                   trailingLabel: progress.isMaxLevel
-                      ? 'Nivel máximo'
-                      : 'Faltan ${progress.remainingXp} XP',
+                      ? l10n.xpMaxLevel
+                      : l10n.xpRemaining(progress.remainingXp),
                 ),
                 const SizedBox(height: 14),
-                const PixelHint(
+                PixelHint(
                   tone: PixelHintTone.teal,
                   icon: Icons.verified_outlined,
-                  text:
-                      'El XP se acredita automáticamente. Cada fila conserva '
-                      'la razón y el cálculo, aunque cierres la app.',
+                  text: l10n.xpHistoryHint,
                 ),
                 const SizedBox(height: 22),
                 if (events.isEmpty)
-                  const PixelEmptyState(
+                  PixelEmptyState(
                     icon: Icons.star_outline,
-                    title: 'Aún no hay XP',
-                    message:
-                        'El primer conteo de efectivo de la semana y el cierre '
-                        'de tu ciclo aparecerán aquí.',
+                    title: l10n.xpHistoryEmptyTitle,
+                    message: l10n.xpHistoryEmptyMessage,
                   )
                 else
                   ..._historyRows(context, events),
@@ -67,10 +66,11 @@ class XpHistoryScreen extends StatelessWidget {
   }
 
   List<Widget> _historyRows(BuildContext context, List<XpEvent> events) {
+    final l10n = AppLocalizations.of(context);
     final rows = <Widget>[];
     String? previousDay;
     for (final event in events) {
-      final day = _dateLabel(event.occurredAt);
+      final day = fullDate(l10n, event.occurredAt);
       if (day != previousDay) {
         if (rows.isNotEmpty) rows.add(const SizedBox(height: 12));
         rows
@@ -84,9 +84,6 @@ class XpHistoryScreen extends StatelessWidget {
     }
     return rows;
   }
-
-  String _dateLabel(DateTime value) =>
-      '${value.day} ${monthAbbreviations[value.month - 1]} ${value.year}';
 }
 
 class _XpEventCard extends StatelessWidget {
@@ -96,6 +93,7 @@ class _XpEventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final colors = _colorsFor(event.kind);
     return PixelCard(
       elevation: PixelElevation.none,
@@ -120,15 +118,12 @@ class _XpEventCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      event.kind.title(
-                        quantity: event.quantity,
-                        cycleType: event.cycleType,
-                      ),
+                      event.title(l10n),
                       style: pixelText(size: 14, bold: true),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      event.kind.shortDetail,
+                      event.kind.shortDetail(l10n),
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
@@ -136,7 +131,7 @@ class _XpEventCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                '+${event.xp} XP',
+                l10n.xpAmount(event.xp),
                 style: pixelText(
                   size: 15,
                   bold: true,
@@ -151,7 +146,7 @@ class _XpEventCard extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () => _showCalculation(context, event),
-                child: const Text('Ver cálculo'),
+                child: Text(l10n.xpSeeCalculation),
               ),
             ),
           ],
@@ -161,6 +156,8 @@ class _XpEventCard extends StatelessWidget {
   }
 
   void _showCalculation(BuildContext context, XpEvent event) {
+    final l10n = AppLocalizations.of(context);
+    final currency = SobraScope.of(context).currency;
     final budget = event.budgetCentavos;
     final spent = event.spentCentavos;
     showModalBottomSheet<void>(
@@ -175,27 +172,43 @@ class _XpEventCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Cómo se calculó',
+                l10n.xpCalculationTitle,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 14),
               if (event.cycleStart != null && event.cycleEnd != null)
                 _DetailRow(
-                  label: 'Ciclo',
-                  value: cycleDateRange(event.cycleStart!, event.cycleEnd!),
+                  label: l10n.xpDetailCycle,
+                  value: cycleDateRange(
+                    l10n,
+                    event.cycleStart!,
+                    event.cycleEnd!,
+                  ),
                 ),
               if (budget != null)
-                _DetailRow(label: 'Presupuesto', value: formatMoney(budget)),
+                _DetailRow(
+                  label: l10n.xpDetailBudget,
+                  value: formatMoney(currency, budget),
+                ),
               if (spent != null)
-                _DetailRow(label: 'Gastado', value: formatMoney(spent)),
+                _DetailRow(
+                  label: l10n.xpDetailSpent,
+                  value: formatMoney(currency, spent),
+                ),
               if (budget != null && spent != null)
                 _DetailRow(
-                  label: 'Resultado',
-                  value: formatMoney(budget - spent),
+                  label: l10n.xpDetailResult,
+                  value: formatMoney(currency, budget - spent),
                 ),
-              _DetailRow(label: 'Regla', value: _ruleFor(event)),
+              _DetailRow(
+                label: l10n.xpDetailRule,
+                value: _ruleFor(l10n, event),
+              ),
               const Divider(height: 24),
-              _DetailRow(label: 'XP acreditado', value: '+${event.xp} XP'),
+              _DetailRow(
+                label: l10n.xpDetailCredited,
+                value: l10n.xpAmount(event.xp),
+              ),
             ],
           ),
         ),
@@ -203,12 +216,15 @@ class _XpEventCard extends StatelessWidget {
     );
   }
 
-  String _ruleFor(XpEvent event) => switch (event.kind) {
-    XpEventKind.cashCount => 'Máximo una vez por semana',
-    XpEventKind.cycleInGreen =>
-      'Recompensa normalizada por ${event.cycleEnd!.difference(event.cycleStart!).inDays + 1} días',
-    XpEventKind.daysUnderDailyLimit => '${event.quantity ?? 0} días × 5 XP',
-    XpEventKind.firstSuccessfulCycle => 'Bono único de 50 XP',
+  String _ruleFor(AppLocalizations l10n, XpEvent event) => switch (event.kind) {
+    XpEventKind.cashCount => l10n.xpRuleCashCount,
+    XpEventKind.cycleInGreen => l10n.xpRuleCycleInGreen(
+      event.cycleEnd!.difference(event.cycleStart!).inDays + 1,
+    ),
+    XpEventKind.daysUnderDailyLimit => l10n.xpRuleDaysUnderDailyLimit(
+      event.quantity ?? 0,
+    ),
+    XpEventKind.firstSuccessfulCycle => l10n.xpRuleFirstSuccessfulCycle,
   };
 
   IconData _iconFor(XpEventKind kind) => switch (kind) {

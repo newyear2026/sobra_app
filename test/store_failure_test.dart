@@ -4,10 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
+import 'package:sobra_app/l10n/generated/app_localizations.dart';
+import 'package:sobra_app/l10n/labels.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/models/store_failure.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/widgets/pixel_ui.dart';
+
+import 'support/localizations.dart';
 
 /// A preferences store whose writes can be switched off mid-test.
 ///
@@ -30,43 +35,57 @@ class _BreakableStore extends InMemorySharedPreferencesStore {
 Future<ScaffoldMessengerState> _pumpMessenger(WidgetTester tester) async {
   final key = GlobalKey<ScaffoldMessengerState>();
   await tester.pumpWidget(
-    MaterialApp(scaffoldMessengerKey: key, home: const Scaffold()),
+    MaterialApp(
+      localizationsDelegates: sobraLocalizationsDelegates,
+      supportedLocales: sobraSupportedLocales,
+      scaffoldMessengerKey: key,
+      home: const Scaffold(),
+    ),
   );
   return key.currentState!;
 }
+
+final l10n = lookupAppLocalizations(const Locale('es'));
 
 void main() {
   const fallback = 'No pudimos guardar el cambio. Vuelve a intentarlo.';
 
   group('describeStoreFailure', () {
-    test('repeats a refusal the store worded itself', () {
-      expect(
-        describeStoreFailure(StateError('No se pudieron guardar los datos.')),
-        'No se pudieron guardar los datos.',
-      );
+    test('words every refusal the store can raise', () {
+      for (final failure in StoreFailure.values) {
+        expect(
+          describeStoreFailure(l10n, SobraStoreException(failure)),
+          isNot(fallback),
+          reason: '\$failure',
+        );
+      }
       expect(
         describeStoreFailure(
-          ArgumentError.value(100, 'centavos', 'El total debe ser mayor.'),
+          l10n,
+          const SobraStoreException(StoreFailure.saveFailed),
         ),
-        'El total debe ser mayor.',
+        'No se pudieron guardar los datos.',
       );
     });
 
+    // A raw Dart exception says nothing a user can act on, and repeating its
+    // message at them leaks whatever wording the framework happened to use.
     test('falls back to one plain line for anything else', () {
-      // ArgumentError.value carries no sentence a user could read.
       expect(
-        describeStoreFailure(ArgumentError.value(-1, 'centavos')),
+        describeStoreFailure(l10n, ArgumentError.value(-1, 'centavos')),
         fallback,
       );
-      expect(describeStoreFailure(Exception('boom')), fallback);
+      expect(describeStoreFailure(l10n, Exception('boom')), fallback);
+      expect(describeStoreFailure(l10n, StateError('internals')), fallback);
     });
   });
 
   testWidgets('guardStoreWrite stays quiet when the write lands', (
     tester,
   ) async {
+    useSpanishDevice(tester);
     final messenger = await _pumpMessenger(tester);
-    final landed = await guardStoreWrite(messenger, () async {});
+    final landed = await guardStoreWrite(messenger, l10n, () async {});
     await tester.pump();
 
     expect(landed, isTrue);
@@ -74,10 +93,12 @@ void main() {
   });
 
   testWidgets('guardStoreWrite reports a write that threw', (tester) async {
+    useSpanishDevice(tester);
     final messenger = await _pumpMessenger(tester);
     final landed = await guardStoreWrite(
       messenger,
-      () async => throw StateError('No se pudieron guardar los datos.'),
+      l10n,
+      () async => throw const SobraStoreException(StoreFailure.saveFailed),
     );
     await tester.pump();
 
@@ -91,6 +112,7 @@ void main() {
   testWidgets('a save that never reached the disk says so and keeps the form', (
     tester,
   ) async {
+    useSpanishDevice(tester);
     tester.view.physicalSize = const Size(520, 1600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);

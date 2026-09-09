@@ -1,0 +1,1974 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+import 'app_localizations_ko.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
+///
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'generated/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
+abstract class AppLocalizations {
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+  }
+
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('es'),
+    Locale('ko'),
+  ];
+
+  /// No description provided for @categoryFood.
+  ///
+  /// In es, this message translates to:
+  /// **'Comida'**
+  String get categoryFood;
+
+  /// No description provided for @categoryTransport.
+  ///
+  /// In es, this message translates to:
+  /// **'Transporte'**
+  String get categoryTransport;
+
+  /// No description provided for @categoryShopping.
+  ///
+  /// In es, this message translates to:
+  /// **'Compras'**
+  String get categoryShopping;
+
+  /// No description provided for @categoryHome.
+  ///
+  /// In es, this message translates to:
+  /// **'Hogar'**
+  String get categoryHome;
+
+  /// No description provided for @categoryServices.
+  ///
+  /// In es, this message translates to:
+  /// **'Servicios'**
+  String get categoryServices;
+
+  /// No description provided for @categoryHealth.
+  ///
+  /// In es, this message translates to:
+  /// **'Salud'**
+  String get categoryHealth;
+
+  /// No description provided for @categoryEducation.
+  ///
+  /// In es, this message translates to:
+  /// **'Educación'**
+  String get categoryEducation;
+
+  /// No description provided for @categoryEntertainment.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocio'**
+  String get categoryEntertainment;
+
+  /// No description provided for @categoryPets.
+  ///
+  /// In es, this message translates to:
+  /// **'Mascotas'**
+  String get categoryPets;
+
+  /// No description provided for @categoryOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Otros'**
+  String get categoryOther;
+
+  /// No description provided for @incomeKindSalary.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi pago de siempre'**
+  String get incomeKindSalary;
+
+  /// No description provided for @incomeKindExtra.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingreso extra'**
+  String get incomeKindExtra;
+
+  /// No description provided for @incomeKindCash.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingreso en efectivo'**
+  String get incomeKindCash;
+
+  /// No description provided for @incomeKindRefund.
+  ///
+  /// In es, this message translates to:
+  /// **'Devolución'**
+  String get incomeKindRefund;
+
+  /// No description provided for @incomeAllocationCycle.
+  ///
+  /// In es, this message translates to:
+  /// **'Este ciclo'**
+  String get incomeAllocationCycle;
+
+  /// No description provided for @incomeAllocationSavings.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahorro'**
+  String get incomeAllocationSavings;
+
+  /// No description provided for @payCycleSemiMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Quincenal'**
+  String get payCycleSemiMonthly;
+
+  /// No description provided for @payCycleBiweekly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada 14 días'**
+  String get payCycleBiweekly;
+
+  /// No description provided for @payCycleMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensual'**
+  String get payCycleMonthly;
+
+  /// No description provided for @payCycleWeekly.
+  ///
+  /// In es, this message translates to:
+  /// **'Semanal'**
+  String get payCycleWeekly;
+
+  /// No description provided for @payCycleIrregular.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin fecha fija'**
+  String get payCycleIrregular;
+
+  /// No description provided for @cashResolutionExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto identificado'**
+  String get cashResolutionExpense;
+
+  /// No description provided for @cashResolutionIncome.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingreso en efectivo'**
+  String get cashResolutionIncome;
+
+  /// No description provided for @cashResolutionTransfer.
+  ///
+  /// In es, this message translates to:
+  /// **'Movimiento entre cuentas'**
+  String get cashResolutionTransfer;
+
+  /// No description provided for @cashResolutionCorrection.
+  ///
+  /// In es, this message translates to:
+  /// **'Corrección del conteo'**
+  String get cashResolutionCorrection;
+
+  /// No description provided for @cashResolutionPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Diferencia por identificar'**
+  String get cashResolutionPending;
+
+  /// No description provided for @paymentMethodCash.
+  ///
+  /// In es, this message translates to:
+  /// **'Efectivo'**
+  String get paymentMethodCash;
+
+  /// No description provided for @paymentMethodCard.
+  ///
+  /// In es, this message translates to:
+  /// **'Tarjeta'**
+  String get paymentMethodCard;
+
+  /// No description provided for @movementPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get movementPending;
+
+  /// No description provided for @movementCashCount.
+  ///
+  /// In es, this message translates to:
+  /// **'Conteo de efectivo'**
+  String get movementCashCount;
+
+  /// No description provided for @xpCashCountTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Conteo de efectivo'**
+  String get xpCashCountTitle;
+
+  /// No description provided for @xpCashCountDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Primer conteo con XP de la semana'**
+  String get xpCashCountDetail;
+
+  /// No description provided for @xpCycleInGreenSemiMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerraste la quincena en verde'**
+  String get xpCycleInGreenSemiMonthly;
+
+  /// No description provided for @xpCycleInGreenMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerraste el mes en verde'**
+  String get xpCycleInGreenMonthly;
+
+  /// No description provided for @xpCycleInGreenWeekly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerraste la semana en verde'**
+  String get xpCycleInGreenWeekly;
+
+  /// No description provided for @xpCycleInGreenGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerraste el ciclo en verde'**
+  String get xpCycleInGreenGeneric;
+
+  /// No description provided for @xpCycleInGreenDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Resultado del presupuesto al cerrar'**
+  String get xpCycleInGreenDetail;
+
+  /// How many days of a closed cycle stayed under the daily limit. Spanish and English both need a singular form here; a locale without plural agreement collapses the two cases.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{{count} día bajo tu límite} other{{count} días bajo tu límite}}'**
+  String xpDaysUnderDailyLimitTitle(int count);
+
+  /// No description provided for @xpDaysUnderDailyLimitDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Calculado una sola vez al cerrar'**
+  String get xpDaysUnderDailyLimitDetail;
+
+  /// No description provided for @xpFirstSuccessfulCycleTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Primer ciclo en verde'**
+  String get xpFirstSuccessfulCycleTitle;
+
+  /// No description provided for @xpFirstSuccessfulCycleDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Bono de una sola vez'**
+  String get xpFirstSuccessfulCycleDetail;
+
+  /// No description provided for @xpLevelTitle1.
+  ///
+  /// In es, this message translates to:
+  /// **'Michi curioso'**
+  String get xpLevelTitle1;
+
+  /// No description provided for @xpLevelTitle2.
+  ///
+  /// In es, this message translates to:
+  /// **'Michi ahorrador'**
+  String get xpLevelTitle2;
+
+  /// No description provided for @xpLevelTitle3.
+  ///
+  /// In es, this message translates to:
+  /// **'Michi contador'**
+  String get xpLevelTitle3;
+
+  /// No description provided for @xpLevelTitle4.
+  ///
+  /// In es, this message translates to:
+  /// **'Michi guardián'**
+  String get xpLevelTitle4;
+
+  /// No description provided for @xpLevelTitle5.
+  ///
+  /// In es, this message translates to:
+  /// **'Michi maestro'**
+  String get xpLevelTitle5;
+
+  /// Shown after settling closed cycles, when at least one of them earned XP.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Ciclo cerrado} other{{count} ciclos cerrados}}'**
+  String xpNoticeCyclesClosedTitle(int count);
+
+  /// No description provided for @xpNoticeCyclesClosedDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'XP acreditados automáticamente.'**
+  String get xpNoticeCyclesClosedDetail;
+
+  /// No description provided for @xpNoticeCashCountTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Conteo de efectivo guardado'**
+  String get xpNoticeCashCountTitle;
+
+  /// No description provided for @xpNoticeCashCountDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Primer conteo con XP de la semana.'**
+  String get xpNoticeCashCountDetail;
+
+  /// No description provided for @storeFailureGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos guardar el cambio. Vuelve a intentarlo.'**
+  String get storeFailureGeneric;
+
+  /// No description provided for @storeFailureBudgetBelowCycleIncome.
+  ///
+  /// In es, this message translates to:
+  /// **'El total debe ser mayor que los ingresos asignados al ciclo.'**
+  String get storeFailureBudgetBelowCycleIncome;
+
+  /// No description provided for @storeFailureFutureMovement.
+  ///
+  /// In es, this message translates to:
+  /// **'No se permiten movimientos futuros.'**
+  String get storeFailureFutureMovement;
+
+  /// No description provided for @storeFailureRestoreFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo restaurar el respaldo.'**
+  String get storeFailureRestoreFailed;
+
+  /// No description provided for @storeFailureOriginalNotKept.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo conservar el archivo original.'**
+  String get storeFailureOriginalNotKept;
+
+  /// No description provided for @storeFailureBackupNotSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo guardar el respaldo.'**
+  String get storeFailureBackupNotSaved;
+
+  /// No description provided for @storeFailureSaveFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron guardar los datos.'**
+  String get storeFailureSaveFailed;
+
+  /// No description provided for @monthAbbr1.
+  ///
+  /// In es, this message translates to:
+  /// **'ene'**
+  String get monthAbbr1;
+
+  /// No description provided for @monthAbbr2.
+  ///
+  /// In es, this message translates to:
+  /// **'feb'**
+  String get monthAbbr2;
+
+  /// No description provided for @monthAbbr3.
+  ///
+  /// In es, this message translates to:
+  /// **'mar'**
+  String get monthAbbr3;
+
+  /// No description provided for @monthAbbr4.
+  ///
+  /// In es, this message translates to:
+  /// **'abr'**
+  String get monthAbbr4;
+
+  /// No description provided for @monthAbbr5.
+  ///
+  /// In es, this message translates to:
+  /// **'may'**
+  String get monthAbbr5;
+
+  /// No description provided for @monthAbbr6.
+  ///
+  /// In es, this message translates to:
+  /// **'jun'**
+  String get monthAbbr6;
+
+  /// No description provided for @monthAbbr7.
+  ///
+  /// In es, this message translates to:
+  /// **'jul'**
+  String get monthAbbr7;
+
+  /// No description provided for @monthAbbr8.
+  ///
+  /// In es, this message translates to:
+  /// **'ago'**
+  String get monthAbbr8;
+
+  /// No description provided for @monthAbbr9.
+  ///
+  /// In es, this message translates to:
+  /// **'sep'**
+  String get monthAbbr9;
+
+  /// No description provided for @monthAbbr10.
+  ///
+  /// In es, this message translates to:
+  /// **'oct'**
+  String get monthAbbr10;
+
+  /// No description provided for @monthAbbr11.
+  ///
+  /// In es, this message translates to:
+  /// **'nov'**
+  String get monthAbbr11;
+
+  /// No description provided for @monthAbbr12.
+  ///
+  /// In es, this message translates to:
+  /// **'dic'**
+  String get monthAbbr12;
+
+  /// No description provided for @back.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver'**
+  String get back;
+
+  /// No description provided for @reduceMotion.
+  ///
+  /// In es, this message translates to:
+  /// **'Reducir movimiento'**
+  String get reduceMotion;
+
+  /// No description provided for @catMotionIdle.
+  ///
+  /// In es, this message translates to:
+  /// **'El gato descansa tranquilo'**
+  String get catMotionIdle;
+
+  /// No description provided for @catMotionWalk.
+  ///
+  /// In es, this message translates to:
+  /// **'El gato camina'**
+  String get catMotionWalk;
+
+  /// No description provided for @catMotionCalculate.
+  ///
+  /// In es, this message translates to:
+  /// **'El gato hace cuentas'**
+  String get catMotionCalculate;
+
+  /// No description provided for @catMotionSaving.
+  ///
+  /// In es, this message translates to:
+  /// **'El gato guarda monedas en la alcancía'**
+  String get catMotionSaving;
+
+  /// No description provided for @catMotionCelebrate.
+  ///
+  /// In es, this message translates to:
+  /// **'El gato celebra contento'**
+  String get catMotionCelebrate;
+
+  /// No description provided for @catMotionConcern.
+  ///
+  /// In es, this message translates to:
+  /// **'El gato muestra preocupación por el presupuesto'**
+  String get catMotionConcern;
+
+  /// No description provided for @characterRoleIdle.
+  ///
+  /// In es, this message translates to:
+  /// **'El personaje descansa tranquilo'**
+  String get characterRoleIdle;
+
+  /// No description provided for @characterRoleActivity.
+  ///
+  /// In es, this message translates to:
+  /// **'El personaje está en movimiento'**
+  String get characterRoleActivity;
+
+  /// No description provided for @characterRoleProcessing.
+  ///
+  /// In es, this message translates to:
+  /// **'El personaje está haciendo cuentas'**
+  String get characterRoleProcessing;
+
+  /// No description provided for @characterRolePositive.
+  ///
+  /// In es, this message translates to:
+  /// **'El personaje muestra un cambio positivo'**
+  String get characterRolePositive;
+
+  /// No description provided for @characterRoleSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'El personaje celebra un logro'**
+  String get characterRoleSuccess;
+
+  /// No description provided for @characterRoleWarning.
+  ///
+  /// In es, this message translates to:
+  /// **'El personaje muestra preocupación'**
+  String get characterRoleWarning;
+
+  /// No description provided for @today.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy'**
+  String get today;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In es, this message translates to:
+  /// **'Ayer'**
+  String get yesterday;
+
+  /// No description provided for @cancel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get cancel;
+
+  /// No description provided for @tabHome.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio'**
+  String get tabHome;
+
+  /// No description provided for @tabMovements.
+  ///
+  /// In es, this message translates to:
+  /// **'Movim.'**
+  String get tabMovements;
+
+  /// No description provided for @tabRegister.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrar'**
+  String get tabRegister;
+
+  /// No description provided for @tabBudget.
+  ///
+  /// In es, this message translates to:
+  /// **'Presup.'**
+  String get tabBudget;
+
+  /// No description provided for @tabSettings.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes'**
+  String get tabSettings;
+
+  /// No description provided for @xpHistoryTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu progreso'**
+  String get xpHistoryTitle;
+
+  /// No description provided for @xpTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} XP totales'**
+  String xpTotal(int count);
+
+  /// No description provided for @xpMaxLevel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nivel máximo'**
+  String get xpMaxLevel;
+
+  /// No description provided for @xpRemaining.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltan {count} XP'**
+  String xpRemaining(int count);
+
+  /// No description provided for @xpHistoryHint.
+  ///
+  /// In es, this message translates to:
+  /// **'El XP se acredita automáticamente. Cada fila conserva la razón y el cálculo, aunque cierres la app.'**
+  String get xpHistoryHint;
+
+  /// No description provided for @xpHistoryEmptyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay XP'**
+  String get xpHistoryEmptyTitle;
+
+  /// No description provided for @xpHistoryEmptyMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'El primer conteo de efectivo de la semana y el cierre de tu ciclo aparecerán aquí.'**
+  String get xpHistoryEmptyMessage;
+
+  /// No description provided for @xpAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'+{count} XP'**
+  String xpAmount(int count);
+
+  /// No description provided for @xpSeeCalculation.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver cálculo'**
+  String get xpSeeCalculation;
+
+  /// No description provided for @xpCalculationTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cómo se calculó'**
+  String get xpCalculationTitle;
+
+  /// No description provided for @xpDetailCycle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ciclo'**
+  String get xpDetailCycle;
+
+  /// No description provided for @xpDetailBudget.
+  ///
+  /// In es, this message translates to:
+  /// **'Presupuesto'**
+  String get xpDetailBudget;
+
+  /// No description provided for @xpDetailSpent.
+  ///
+  /// In es, this message translates to:
+  /// **'Gastado'**
+  String get xpDetailSpent;
+
+  /// No description provided for @xpDetailResult.
+  ///
+  /// In es, this message translates to:
+  /// **'Resultado'**
+  String get xpDetailResult;
+
+  /// No description provided for @xpDetailRule.
+  ///
+  /// In es, this message translates to:
+  /// **'Regla'**
+  String get xpDetailRule;
+
+  /// No description provided for @xpDetailCredited.
+  ///
+  /// In es, this message translates to:
+  /// **'XP acreditado'**
+  String get xpDetailCredited;
+
+  /// No description provided for @xpRuleCashCount.
+  ///
+  /// In es, this message translates to:
+  /// **'Máximo una vez por semana'**
+  String get xpRuleCashCount;
+
+  /// No description provided for @xpRuleCycleInGreen.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Recompensa normalizada por {count} día} other{Recompensa normalizada por {count} días}}'**
+  String xpRuleCycleInGreen(int count);
+
+  /// No description provided for @xpRuleDaysUnderDailyLimit.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{{count} día × 5 XP} other{{count} días × 5 XP}}'**
+  String xpRuleDaysUnderDailyLimit(int count);
+
+  /// No description provided for @xpRuleFirstSuccessfulCycle.
+  ///
+  /// In es, this message translates to:
+  /// **'Bono único de 50 XP'**
+  String get xpRuleFirstSuccessfulCycle;
+
+  /// No description provided for @recoveryNotYet.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos recuperar los datos todavía.'**
+  String get recoveryNotYet;
+
+  /// No description provided for @recoveryStartFreshQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Empezar de nuevo?'**
+  String get recoveryStartFreshQuestion;
+
+  /// No description provided for @recoveryStartFreshBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Conservaremos una copia del archivo original antes de crear datos nuevos.'**
+  String get recoveryStartFreshBody;
+
+  /// No description provided for @recoveryStartFresh.
+  ///
+  /// In es, this message translates to:
+  /// **'Empezar de nuevo'**
+  String get recoveryStartFresh;
+
+  /// No description provided for @recoveryTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos leer tus datos'**
+  String get recoveryTitle;
+
+  /// No description provided for @recoveryOriginalKept.
+  ///
+  /// In es, this message translates to:
+  /// **'El archivo original sigue guardado. No lo reemplazamos ni borramos.'**
+  String get recoveryOriginalKept;
+
+  /// No description provided for @recoveryOptions.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes reintentar, usar el respaldo o exportar el archivo para conservarlo.'**
+  String get recoveryOptions;
+
+  /// No description provided for @recoveryRetrying.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentando…'**
+  String get recoveryRetrying;
+
+  /// No description provided for @recoveryRetry.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get recoveryRetry;
+
+  /// No description provided for @recoveryUseBackup.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar respaldo'**
+  String get recoveryUseBackup;
+
+  /// No description provided for @recoveryExport.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar archivo'**
+  String get recoveryExport;
+
+  /// No description provided for @recoveryExported.
+  ///
+  /// In es, this message translates to:
+  /// **'Archivo original copiado.'**
+  String get recoveryExported;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In es, this message translates to:
+  /// **'Idioma'**
+  String get settingsLanguage;
+
+  /// Asked before switching currency. Nothing is converted, so the user has to know the figures keep their numbers and only change their label.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cambiar a {code}?'**
+  String currencyChangeTitle(String code);
+
+  /// No description provided for @currencyChangeBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus montos no se convierten: {example} seguirá siendo {converted}. Solo cambia la etiqueta.'**
+  String currencyChangeBody(String example, String converted);
+
+  /// No description provided for @currencyChangeConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar etiqueta'**
+  String get currencyChangeConfirm;
+
+  /// No description provided for @settingsCurrency.
+  ///
+  /// In es, this message translates to:
+  /// **'Moneda'**
+  String get settingsCurrency;
+
+  /// No description provided for @settingsBudgetCycle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ciclo de presupuesto'**
+  String get settingsBudgetCycle;
+
+  /// No description provided for @settingsCountDay.
+  ///
+  /// In es, this message translates to:
+  /// **'Día de conteo'**
+  String get settingsCountDay;
+
+  /// No description provided for @settingsCountDaySunday.
+  ///
+  /// In es, this message translates to:
+  /// **'Domingo'**
+  String get settingsCountDaySunday;
+
+  /// No description provided for @settingsReduceMotionHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Se activa solo si tu teléfono ya lo pide.'**
+  String get settingsReduceMotionHint;
+
+  /// No description provided for @settingsBackup.
+  ///
+  /// In es, this message translates to:
+  /// **'Respaldo de datos'**
+  String get settingsBackup;
+
+  /// No description provided for @settingsCopy.
+  ///
+  /// In es, this message translates to:
+  /// **'Copiar'**
+  String get settingsCopy;
+
+  /// No description provided for @settingsBackupCopied.
+  ///
+  /// In es, this message translates to:
+  /// **'Respaldo copiado al portapapeles.'**
+  String get settingsBackupCopied;
+
+  /// No description provided for @settingsXpPreview.
+  ///
+  /// In es, this message translates to:
+  /// **'Vista previa XP'**
+  String get settingsXpPreview;
+
+  /// No description provided for @settingsDesign.
+  ///
+  /// In es, this message translates to:
+  /// **'Diseño'**
+  String get settingsDesign;
+
+  /// No description provided for @settingsStorageNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobra.'**
+  String get settingsStorageNote;
+
+  /// No description provided for @settingsFixedInV1.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta opción queda fija en la versión 1.'**
+  String get settingsFixedInV1;
+
+  /// The language setting that follows the phone. The names of the languages themselves are not translated — a reader looks for their own language written in it.
+  ///
+  /// In es, this message translates to:
+  /// **'Automático'**
+  String get languageAutomatic;
+
+  /// No description provided for @languageAutomaticHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Sigue tu teléfono'**
+  String get languageAutomaticHint;
+
+  /// No description provided for @transactionsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Movimientos'**
+  String get transactionsTitle;
+
+  /// No description provided for @transactionsEmptyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay movimientos'**
+  String get transactionsEmptyTitle;
+
+  /// No description provided for @transactionsEmptyMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Registra tu primer gasto y aquí verás el resumen del ciclo.'**
+  String get transactionsEmptyMessage;
+
+  /// No description provided for @transactionsExpensePinned.
+  ///
+  /// In es, this message translates to:
+  /// **'Este gasto viene de un conteo de efectivo. Vuelve a contar para corregirlo.'**
+  String get transactionsExpensePinned;
+
+  /// No description provided for @transactionsIncomePinned.
+  ///
+  /// In es, this message translates to:
+  /// **'Este ingreso viene de un conteo de efectivo. Vuelve a contar para corregirlo.'**
+  String get transactionsIncomePinned;
+
+  /// No description provided for @transactionsExpenseDeleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Movimiento eliminado.'**
+  String get transactionsExpenseDeleted;
+
+  /// No description provided for @transactionsIncomeDeleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingreso eliminado.'**
+  String get transactionsIncomeDeleted;
+
+  /// No description provided for @undo.
+  ///
+  /// In es, this message translates to:
+  /// **'Deshacer'**
+  String get undo;
+
+  /// No description provided for @edit.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar'**
+  String get edit;
+
+  /// No description provided for @delete.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar'**
+  String get delete;
+
+  /// No description provided for @identifyDifference.
+  ///
+  /// In es, this message translates to:
+  /// **'Identificar diferencia'**
+  String get identifyDifference;
+
+  /// No description provided for @editMovement.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar movimiento'**
+  String get editMovement;
+
+  /// No description provided for @amount.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto'**
+  String get amount;
+
+  /// No description provided for @editPendingHint.
+  ///
+  /// In es, this message translates to:
+  /// **'El monto viene de tu conteo de efectivo. Puedes cambiar la categoría y la nota.'**
+  String get editPendingHint;
+
+  /// No description provided for @category.
+  ///
+  /// In es, this message translates to:
+  /// **'Categoría'**
+  String get category;
+
+  /// No description provided for @note.
+  ///
+  /// In es, this message translates to:
+  /// **'Nota'**
+  String get note;
+
+  /// No description provided for @noteExample.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Tacos'**
+  String get noteExample;
+
+  /// No description provided for @replacesPendingHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Esto reemplaza el ajuste pendiente. No suma otro gasto.'**
+  String get replacesPendingHint;
+
+  /// No description provided for @saveWithoutDuplicating.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar sin duplicar'**
+  String get saveWithoutDuplicating;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar cambios'**
+  String get saveChanges;
+
+  /// No description provided for @save.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar'**
+  String get save;
+
+  /// No description provided for @budget.
+  ///
+  /// In es, this message translates to:
+  /// **'Presupuesto'**
+  String get budget;
+
+  /// No description provided for @spent.
+  ///
+  /// In es, this message translates to:
+  /// **'Gastado'**
+  String get spent;
+
+  /// No description provided for @appName.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobra'**
+  String get appName;
+
+  /// No description provided for @homeCycleBalance.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldo del ciclo'**
+  String get homeCycleBalance;
+
+  /// No description provided for @homeTodayLeft.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy te queda'**
+  String get homeTodayLeft;
+
+  /// No description provided for @homeOverBudget.
+  ///
+  /// In es, this message translates to:
+  /// **'Te pasaste del presupuesto de {budget} de este ciclo'**
+  String homeOverBudget(String budget);
+
+  /// No description provided for @homeDailyLimit.
+  ///
+  /// In es, this message translates to:
+  /// **'Límite de hoy {limit} · Quedan {remaining} en el ciclo'**
+  String homeDailyLimit(String limit, String remaining);
+
+  /// No description provided for @homeCycleProgress.
+  ///
+  /// In es, this message translates to:
+  /// **'Avance del ciclo'**
+  String get homeCycleProgress;
+
+  /// No description provided for @daysCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{{count} día} other{{count} días}}'**
+  String daysCount(int count);
+
+  /// No description provided for @homeCashEstimated.
+  ///
+  /// In es, this message translates to:
+  /// **'Efectivo estimado'**
+  String get homeCashEstimated;
+
+  /// No description provided for @homeCashUnset.
+  ///
+  /// In es, this message translates to:
+  /// **'Efectivo sin configurar'**
+  String get homeCashUnset;
+
+  /// No description provided for @homeLastCount.
+  ///
+  /// In es, this message translates to:
+  /// **'Último conteo: {amount}'**
+  String homeLastCount(String amount);
+
+  /// No description provided for @homeFirstCountHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Haz un primer conteo para empezar.'**
+  String get homeFirstCountHint;
+
+  /// No description provided for @homeRecentMovements.
+  ///
+  /// In es, this message translates to:
+  /// **'Movimientos recientes'**
+  String get homeRecentMovements;
+
+  /// No description provided for @homeSeeAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver todos'**
+  String get homeSeeAll;
+
+  /// No description provided for @homeGoingWell.
+  ///
+  /// In es, this message translates to:
+  /// **'Vas muy bien'**
+  String get homeGoingWell;
+
+  /// No description provided for @homeAdjustCalmly.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustemos con calma'**
+  String get homeAdjustCalmly;
+
+  /// No description provided for @budgetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Presupuesto'**
+  String get budgetTitle;
+
+  /// No description provided for @budgetCycleTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'Total del ciclo'**
+  String get budgetCycleTotal;
+
+  /// No description provided for @budgetTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'Presupuesto total'**
+  String get budgetTotal;
+
+  /// No description provided for @budgetTooLow.
+  ///
+  /// In es, this message translates to:
+  /// **'El total debe ser mayor que los ingresos asignados al ciclo ({allocated}).'**
+  String budgetTooLow(String allocated);
+
+  /// No description provided for @budgetChangedTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiaste tu presupuesto'**
+  String get budgetChangedTitle;
+
+  /// No description provided for @budgetChangedBody.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué hacemos con los límites por categoría? Al ajustarlos, cada uno cambia en la misma proporción y conservas tu reparto.'**
+  String get budgetChangedBody;
+
+  /// No description provided for @budgetKeepLimits.
+  ///
+  /// In es, this message translates to:
+  /// **'Conservarlos'**
+  String get budgetKeepLimits;
+
+  /// No description provided for @budgetScaleLimits.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustarlos proporcionalmente'**
+  String get budgetScaleLimits;
+
+  /// No description provided for @budgetByCategory.
+  ///
+  /// In es, this message translates to:
+  /// **'Presupuesto por categoría'**
+  String get budgetByCategory;
+
+  /// No description provided for @budgetCategoryLimit.
+  ///
+  /// In es, this message translates to:
+  /// **'Límite de {category}'**
+  String budgetCategoryLimit(String category);
+
+  /// No description provided for @budgetSpentOfLimit.
+  ///
+  /// In es, this message translates to:
+  /// **'{spent} / {limit}'**
+  String budgetSpentOfLimit(String spent, String limit);
+
+  /// No description provided for @budgetProjection.
+  ///
+  /// In es, this message translates to:
+  /// **'Proyección al cierre'**
+  String get budgetProjection;
+
+  /// No description provided for @budgetEstimatedLeft.
+  ///
+  /// In es, this message translates to:
+  /// **'Estimado que te quedará'**
+  String get budgetEstimatedLeft;
+
+  /// No description provided for @continueLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get continueLabel;
+
+  /// No description provided for @saving.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardando…'**
+  String get saving;
+
+  /// No description provided for @dayOfMonth.
+  ///
+  /// In es, this message translates to:
+  /// **'Día {day}'**
+  String dayOfMonth(int day);
+
+  /// No description provided for @weekdayMonday.
+  ///
+  /// In es, this message translates to:
+  /// **'Lunes'**
+  String get weekdayMonday;
+
+  /// No description provided for @weekdayTuesday.
+  ///
+  /// In es, this message translates to:
+  /// **'Martes'**
+  String get weekdayTuesday;
+
+  /// No description provided for @weekdayWednesday.
+  ///
+  /// In es, this message translates to:
+  /// **'Miércoles'**
+  String get weekdayWednesday;
+
+  /// No description provided for @weekdayThursday.
+  ///
+  /// In es, this message translates to:
+  /// **'Jueves'**
+  String get weekdayThursday;
+
+  /// No description provided for @weekdayFriday.
+  ///
+  /// In es, this message translates to:
+  /// **'Viernes'**
+  String get weekdayFriday;
+
+  /// No description provided for @weekdaySaturday.
+  ///
+  /// In es, this message translates to:
+  /// **'Sábado'**
+  String get weekdaySaturday;
+
+  /// No description provided for @weekdaySunday.
+  ///
+  /// In es, this message translates to:
+  /// **'Domingo'**
+  String get weekdaySunday;
+
+  /// No description provided for @weekdayShortMonday.
+  ///
+  /// In es, this message translates to:
+  /// **'Lun'**
+  String get weekdayShortMonday;
+
+  /// No description provided for @weekdayShortTuesday.
+  ///
+  /// In es, this message translates to:
+  /// **'Mar'**
+  String get weekdayShortTuesday;
+
+  /// No description provided for @weekdayShortWednesday.
+  ///
+  /// In es, this message translates to:
+  /// **'Mié'**
+  String get weekdayShortWednesday;
+
+  /// No description provided for @weekdayShortThursday.
+  ///
+  /// In es, this message translates to:
+  /// **'Jue'**
+  String get weekdayShortThursday;
+
+  /// No description provided for @weekdayShortFriday.
+  ///
+  /// In es, this message translates to:
+  /// **'Vie'**
+  String get weekdayShortFriday;
+
+  /// No description provided for @weekdayShortSaturday.
+  ///
+  /// In es, this message translates to:
+  /// **'Sáb'**
+  String get weekdayShortSaturday;
+
+  /// No description provided for @weekdayShortSunday.
+  ///
+  /// In es, this message translates to:
+  /// **'Dom'**
+  String get weekdayShortSunday;
+
+  /// No description provided for @registerTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrar'**
+  String get registerTitle;
+
+  /// No description provided for @registerExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto'**
+  String get registerExpense;
+
+  /// No description provided for @registerIncome.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingreso'**
+  String get registerIncome;
+
+  /// No description provided for @registerAmountAboveZero.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa un monto mayor a cero.'**
+  String get registerAmountAboveZero;
+
+  /// No description provided for @registerNoFutureMovements.
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes registrar movimientos futuros.'**
+  String get registerNoFutureMovements;
+
+  /// No description provided for @registerDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha'**
+  String get registerDate;
+
+  /// No description provided for @registerNoteExpenseExample.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Taquería El Faro'**
+  String get registerNoteExpenseExample;
+
+  /// No description provided for @registerNoteIncomeExample.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Propina del viernes'**
+  String get registerNoteIncomeExample;
+
+  /// No description provided for @registerPayment.
+  ///
+  /// In es, this message translates to:
+  /// **'Pago'**
+  String get registerPayment;
+
+  /// No description provided for @registerPaymentHint.
+  ///
+  /// In es, this message translates to:
+  /// **'El efectivo se descuenta de tu conteo. La tarjeta no.'**
+  String get registerPaymentHint;
+
+  /// No description provided for @registerIncomeKind.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de ingreso'**
+  String get registerIncomeKind;
+
+  /// No description provided for @registerWhatToDo.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué quieres hacer?'**
+  String get registerWhatToDo;
+
+  /// No description provided for @registerThisCycle.
+  ///
+  /// In es, this message translates to:
+  /// **'Este ciclo'**
+  String get registerThisCycle;
+
+  /// No description provided for @registerSaveIt.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardarlo'**
+  String get registerSaveIt;
+
+  /// No description provided for @registerReceivedIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo recibiste en'**
+  String get registerReceivedIn;
+
+  /// No description provided for @registerAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuenta'**
+  String get registerAccount;
+
+  /// No description provided for @registerReconcileQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Este gasto explica la diferencia?'**
+  String get registerReconcileQuestion;
+
+  /// No description provided for @registerReconcileBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienes {amount} pendiente del último conteo. Si es el mismo gasto, lo identificaremos sin sumarlo otra vez.'**
+  String registerReconcileBody(String amount);
+
+  /// No description provided for @registerReconcileNo.
+  ///
+  /// In es, this message translates to:
+  /// **'No, es nuevo'**
+  String get registerReconcileNo;
+
+  /// No description provided for @registerReconcileYes.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí, conciliar'**
+  String get registerReconcileYes;
+
+  /// No description provided for @registerDifferenceReconciled.
+  ///
+  /// In es, this message translates to:
+  /// **'Diferencia conciliada'**
+  String get registerDifferenceReconciled;
+
+  /// No description provided for @registerExpenseSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto guardado'**
+  String get registerExpenseSaved;
+
+  /// No description provided for @registerIncomeSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingreso guardado'**
+  String get registerIncomeSaved;
+
+  /// No description provided for @cashCountTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Conteo de efectivo'**
+  String get cashCountTitle;
+
+  /// No description provided for @cashCountPickWhatHappened.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige qué pasó con la diferencia.'**
+  String get cashCountPickWhatHappened;
+
+  /// No description provided for @cashCountSavedWithoutDuplicates.
+  ///
+  /// In es, this message translates to:
+  /// **'Conteo guardado sin duplicar movimientos.'**
+  String get cashCountSavedWithoutDuplicates;
+
+  /// No description provided for @cashCountPrompt.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuenta solo el efectivo que tienes ahora.'**
+  String get cashCountPrompt;
+
+  /// No description provided for @cashCountNoneYet.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conteo todavía'**
+  String get cashCountNoneYet;
+
+  /// No description provided for @cashCountResultPending.
+  ///
+  /// In es, this message translates to:
+  /// **'El resultado aparecerá después de escribir el conteo.'**
+  String get cashCountResultPending;
+
+  /// No description provided for @cashCountBaselineHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Este será tu punto de partida. No se registrará como ingreso.'**
+  String get cashCountBaselineHint;
+
+  /// No description provided for @cashCountExpected.
+  ///
+  /// In es, this message translates to:
+  /// **'Esperábamos'**
+  String get cashCountExpected;
+
+  /// No description provided for @cashCountCounted.
+  ///
+  /// In es, this message translates to:
+  /// **'Contaste'**
+  String get cashCountCounted;
+
+  /// No description provided for @cashCountBalanced.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo cuadra'**
+  String get cashCountBalanced;
+
+  /// No description provided for @cashCountShort.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltan {amount}'**
+  String cashCountShort(String amount);
+
+  /// No description provided for @cashCountExtra.
+  ///
+  /// In es, this message translates to:
+  /// **'Hay {amount} de más'**
+  String cashCountExtra(String amount);
+
+  /// No description provided for @cashCountWhatHappened.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué pasó?'**
+  String get cashCountWhatHappened;
+
+  /// No description provided for @cashCountHelperExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Fue un gasto que no habías registrado.'**
+  String get cashCountHelperExpense;
+
+  /// No description provided for @cashCountHelperIncome.
+  ///
+  /// In es, this message translates to:
+  /// **'Fue dinero nuevo que recibiste.'**
+  String get cashCountHelperIncome;
+
+  /// No description provided for @cashCountHelperTransferOut.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo depositaste o lo moviste a otra cuenta.'**
+  String get cashCountHelperTransferOut;
+
+  /// No description provided for @cashCountHelperTransferIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo retiraste o lo moviste desde otra cuenta.'**
+  String get cashCountHelperTransferIn;
+
+  /// No description provided for @cashCountHelperCorrection.
+  ///
+  /// In es, this message translates to:
+  /// **'El conteo anterior estaba equivocado.'**
+  String get cashCountHelperCorrection;
+
+  /// No description provided for @cashCountHelperPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Decídelo después.'**
+  String get cashCountHelperPending;
+
+  /// No description provided for @cashCountSingleExpenseHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Esto crea un solo gasto. No tendrás que registrarlo otra vez.'**
+  String get cashCountSingleExpenseHint;
+
+  /// No description provided for @cashCountNoteTipExample.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Propina'**
+  String get cashCountNoteTipExample;
+
+  /// No description provided for @cashCountWhatToDoWithMoney.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué hacemos con este dinero?'**
+  String get cashCountWhatToDoWithMoney;
+
+  /// No description provided for @cashCountSaveFirst.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar primer conteo'**
+  String get cashCountSaveFirst;
+
+  /// No description provided for @cashCountSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar conteo'**
+  String get cashCountSave;
+
+  /// No description provided for @cycleTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu ciclo'**
+  String get cycleTitle;
+
+  /// No description provided for @cycleCurrent.
+  ///
+  /// In es, this message translates to:
+  /// **'Ciclo actual'**
+  String get cycleCurrent;
+
+  /// No description provided for @cycleInProgress.
+  ///
+  /// In es, this message translates to:
+  /// **'En curso'**
+  String get cycleInProgress;
+
+  /// No description provided for @cycleUnchanged.
+  ///
+  /// In es, this message translates to:
+  /// **'No cambiará'**
+  String get cycleUnchanged;
+
+  /// No description provided for @cycleNewFrequency.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva frecuencia'**
+  String get cycleNewFrequency;
+
+  /// No description provided for @cycleFirstPay.
+  ///
+  /// In es, this message translates to:
+  /// **'Primer pago'**
+  String get cycleFirstPay;
+
+  /// No description provided for @cyclePayDay.
+  ///
+  /// In es, this message translates to:
+  /// **'Día de pago'**
+  String get cyclePayDay;
+
+  /// No description provided for @cycleNext.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximo ciclo'**
+  String get cycleNext;
+
+  /// No description provided for @cycleChangeAppliesRepeating.
+  ///
+  /// In es, this message translates to:
+  /// **'El cambio se aplicará al siguiente ciclo y después se renovará cada {days} días.'**
+  String cycleChangeAppliesRepeating(int days);
+
+  /// No description provided for @cycleChangeApplies.
+  ///
+  /// In es, this message translates to:
+  /// **'El cambio se aplicará al siguiente ciclo.'**
+  String get cycleChangeApplies;
+
+  /// No description provided for @cycleSaveChange.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar cambio'**
+  String get cycleSaveChange;
+
+  /// No description provided for @onboardingBudgetAboveZero.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa un presupuesto mayor a cero.'**
+  String get onboardingBudgetAboveZero;
+
+  /// No description provided for @onboardingCashOrSkip.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa el efectivo o elige “Ahora no”.'**
+  String get onboardingCashOrSkip;
+
+  /// No description provided for @onboardingStart.
+  ///
+  /// In es, this message translates to:
+  /// **'Empezar'**
+  String get onboardingStart;
+
+  /// No description provided for @onboardingTagline.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu dinero, sin presión.'**
+  String get onboardingTagline;
+
+  /// No description provided for @onboardingPromise.
+  ///
+  /// In es, this message translates to:
+  /// **'Te decimos cuánto puedes gastar hoy.'**
+  String get onboardingPromise;
+
+  /// No description provided for @onboardingNoAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin cuenta. Tus datos se quedan contigo.'**
+  String get onboardingNoAccount;
+
+  /// No description provided for @onboardingHowPaid.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo recibes tus ingresos?'**
+  String get onboardingHowPaid;
+
+  /// No description provided for @onboardingHowPaidHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Esto define las fechas de tu presupuesto.'**
+  String get onboardingHowPaidHint;
+
+  /// No description provided for @onboardingCycleHelperSemiMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Dos pagos al mes: el 15 y el fin de mes.'**
+  String get onboardingCycleHelperSemiMonthly;
+
+  /// No description provided for @onboardingCycleHelperMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Un pago al mes.'**
+  String get onboardingCycleHelperMonthly;
+
+  /// No description provided for @onboardingCycleHelperWeekly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada semana.'**
+  String get onboardingCycleHelperWeekly;
+
+  /// No description provided for @onboardingCycleHelperIrregular.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis ingresos no tienen fecha fija.'**
+  String get onboardingCycleHelperIrregular;
+
+  /// No description provided for @onboardingPlanWithoutFixedDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Planea sin una fecha fija'**
+  String get onboardingPlanWithoutFixedDate;
+
+  /// No description provided for @onboardingWhichDayPaid.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué día recibes dinero?'**
+  String get onboardingWhichDayPaid;
+
+  /// No description provided for @onboardingSecondPayEndOfMonth.
+  ///
+  /// In es, this message translates to:
+  /// **'Segundo pago · fin de mes'**
+  String get onboardingSecondPayEndOfMonth;
+
+  /// No description provided for @onboardingHowManyDays.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Para cuántos días quieres planear?'**
+  String get onboardingHowManyDays;
+
+  /// No description provided for @onboardingCyclePreview.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu ciclo quedaría así'**
+  String get onboardingCyclePreview;
+
+  /// No description provided for @onboardingRepeatsEvery.
+  ///
+  /// In es, this message translates to:
+  /// **'Al terminar, comenzará automáticamente otro periodo de {days} días.'**
+  String onboardingRepeatsEvery(int days);
+
+  /// No description provided for @onboardingShortMonthsNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Las fechas se ajustan solas en meses cortos.'**
+  String get onboardingShortMonthsNote;
+
+  /// No description provided for @onboardingBudgetQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuánto quieres gastar\nen este ciclo?'**
+  String get onboardingBudgetQuestion;
+
+  /// No description provided for @onboardingNotNow.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora no'**
+  String get onboardingNotNow;
+
+  /// No description provided for @onboardingCashQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuánto efectivo\ntienes hoy?'**
+  String get onboardingCashQuestion;
+
+  /// No description provided for @onboardingCashOptional.
+  ///
+  /// In es, this message translates to:
+  /// **'Déjalo vacío si prefieres contarlo después.'**
+  String get onboardingCashOptional;
+
+  /// No description provided for @onboardingCashIsBaseline.
+  ///
+  /// In es, this message translates to:
+  /// **'Este será tu primer conteo, no un ingreso.'**
+  String get onboardingCashIsBaseline;
+
+  /// No description provided for @onboardingGoHome.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir a Inicio'**
+  String get onboardingGoHome;
+
+  /// No description provided for @onboardingPlanReady.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu plan está listo'**
+  String get onboardingPlanReady;
+
+  /// No description provided for @onboardingCanSpendToday.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy puedes gastar'**
+  String get onboardingCanSpendToday;
+
+  /// No description provided for @onboardingStepOf.
+  ///
+  /// In es, this message translates to:
+  /// **'{step} de {total}'**
+  String onboardingStepOf(int step, int total);
+
+  /// No description provided for @progressPercent.
+  ///
+  /// In es, this message translates to:
+  /// **'Progreso {percent} por ciento'**
+  String progressPercent(int percent);
+
+  /// No description provided for @stepOf.
+  ///
+  /// In es, this message translates to:
+  /// **'Paso {step} de {total}'**
+  String stepOf(int step, int total);
+
+  /// No description provided for @xpOfTarget.
+  ///
+  /// In es, this message translates to:
+  /// **'{current} / {target} XP'**
+  String xpOfTarget(int current, int target);
+
+  /// No description provided for @xpCycleInGreenBiweekly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerraste las dos semanas en verde'**
+  String get xpCycleInGreenBiweekly;
+
+  /// No description provided for @onboardingCycleHelperBiweekly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada dos semanas, desde mi último pago.'**
+  String get onboardingCycleHelperBiweekly;
+
+  /// No description provided for @cycleLastPayday.
+  ///
+  /// In es, this message translates to:
+  /// **'Último día de pago'**
+  String get cycleLastPayday;
+
+  /// No description provided for @onboardingWhenLastPaid.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuándo fue tu último pago?'**
+  String get onboardingWhenLastPaid;
+
+  /// No description provided for @onboardingBiweeklyNeedsDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige el día de tu último pago.'**
+  String get onboardingBiweeklyNeedsDate;
+
+  /// No description provided for @pickDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir fecha'**
+  String get pickDate;
+
+  /// Joins the two halves of a movement's second line, such as its category and how it was paid. A locale that reads right to left, or that separates the halves differently, changes this pattern rather than the code.
+  ///
+  /// In es, this message translates to:
+  /// **'{first} · {second}'**
+  String movementSubtitle(String first, String second);
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['en', 'es', 'ko'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'ko':
+      return AppLocalizationsKo();
+  }
+
+  throw FlutterError(
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
+}

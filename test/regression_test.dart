@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'support/localizations.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/cash_reconciliation.dart';
 import 'package:sobra_app/models/expense_entry.dart';
@@ -25,18 +26,19 @@ Future<SobraStore> _seeded(DateTime Function() now, {int? cash}) async {
 
 void main() {
   test('money parser treats display commas as grouping separators', () {
-    expect(parsePesos('1,200'), 120000);
-    expect(parsePesos(r'$1,200.50 MXN'), 120050);
-    expect(parsePesos('1200,50'), 120050);
-    expect(parsePesos('1,000,000'), 100000000);
-    expect(parseNonNegativePesos('0'), 0);
-    expect(parsePesos('1,20,0'), isNull);
-    expect(parseNonNegativePesos('.'), isNull);
+    expect(parseAmount('1,200'), 120000);
+    expect(parseAmount(r'$1,200.50 MXN'), 120050);
+    expect(parseAmount('1200,50'), 120050);
+    expect(parseAmount('1,000,000'), 100000000);
+    expect(parseNonNegativeAmount('0'), 0);
+    expect(parseAmount('1,20,0'), isNull);
+    expect(parseNonNegativeAmount('.'), isNull);
   });
 
   testWidgets('Inicio relabels its headline when the cycle goes over', (
     tester,
   ) async {
+    useSpanishDevice(tester);
     tester.view.physicalSize = const Size(520, 1600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -74,6 +76,7 @@ void main() {
   testWidgets('saving an expense closes its own dialog and returns to Inicio', (
     tester,
   ) async {
+    useSpanishDevice(tester);
     tester.view.physicalSize = const Size(520, 1600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -126,6 +129,7 @@ void main() {
   testWidgets('a cash shortage offers transfer and correction choices', (
     tester,
   ) async {
+    useSpanishDevice(tester);
     tester.view.physicalSize = const Size(520, 1600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -136,7 +140,11 @@ void main() {
     await tester.pumpWidget(
       SobraScope(
         store: store,
-        child: const MaterialApp(home: CashCountScreen()),
+        child: const MaterialApp(
+          localizationsDelegates: sobraLocalizationsDelegates,
+          supportedLocales: sobraSupportedLocales,
+          home: CashCountScreen(),
+        ),
       ),
     );
 
@@ -310,6 +318,7 @@ void main() {
   testWidgets('Movimientos offers no way to delete a cash-count income', (
     tester,
   ) async {
+    useSpanishDevice(tester);
     tester.view.physicalSize = const Size(520, 1600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);

@@ -1,13 +1,4 @@
-enum PayCycleType { semiMonthly, monthly, weekly, irregular }
-
-extension PayCycleTypeLabel on PayCycleType {
-  String get label => switch (this) {
-    PayCycleType.semiMonthly => 'Quincenal',
-    PayCycleType.monthly => 'Mensual',
-    PayCycleType.weekly => 'Semanal',
-    PayCycleType.irregular => 'Sin fecha fija',
-  };
-}
+enum PayCycleType { semiMonthly, biweekly, monthly, weekly, irregular }
 
 class CycleBounds {
   const CycleBounds({required this.start, required this.end});
@@ -31,10 +22,28 @@ class PaySchedule {
     this.weeklyPayDay = DateTime.friday,
     this.planningHorizonDays = 7,
     this.irregularCycleStart,
+    this.biweeklyAnchor,
   });
 
   const PaySchedule.semiMonthly({this.firstPayDay = 15, this.secondPayDay = 0})
     : type = PayCycleType.semiMonthly,
+      monthlyPayDay = 30,
+      weeklyPayDay = DateTime.friday,
+      planningHorizonDays = 7,
+      irregularCycleStart = null,
+      biweeklyAnchor = null;
+
+  /// Every fourteen days, counted from a payday the user names.
+  ///
+  /// This is not the quincena: a quincena lands on the 15th and the last day
+  /// of the month, twenty-four times a year, while this repeats twenty-six
+  /// times and drifts across month boundaries. Somebody budgeting in
+  /// quincenas while a US employer pays them fortnightly needs both to exist.
+  const PaySchedule.biweekly({required DateTime anchor})
+    : type = PayCycleType.biweekly,
+      biweeklyAnchor = anchor,
+      firstPayDay = 15,
+      secondPayDay = 0,
       monthlyPayDay = 30,
       weeklyPayDay = DateTime.friday,
       planningHorizonDays = 7,
@@ -46,7 +55,8 @@ class PaySchedule {
       secondPayDay = 0,
       weeklyPayDay = DateTime.friday,
       planningHorizonDays = 7,
-      irregularCycleStart = null;
+      irregularCycleStart = null,
+      biweeklyAnchor = null;
 
   const PaySchedule.weekly({this.weeklyPayDay = DateTime.friday})
     : type = PayCycleType.weekly,
@@ -54,7 +64,8 @@ class PaySchedule {
       secondPayDay = 0,
       monthlyPayDay = 30,
       planningHorizonDays = 7,
-      irregularCycleStart = null;
+      irregularCycleStart = null,
+      biweeklyAnchor = null;
 
   const PaySchedule.irregular({
     this.planningHorizonDays = 7,
@@ -63,7 +74,8 @@ class PaySchedule {
        firstPayDay = 15,
        secondPayDay = 0,
        monthlyPayDay = 30,
-       weeklyPayDay = DateTime.friday;
+       weeklyPayDay = DateTime.friday,
+       biweeklyAnchor = null;
 
   final PayCycleType type;
   final int firstPayDay;
@@ -72,6 +84,10 @@ class PaySchedule {
   final int weeklyPayDay;
   final int planningHorizonDays;
   final DateTime? irregularCycleStart;
+
+  /// A day the user was paid. Every fourteenth day from it starts a cycle,
+  /// forwards and backwards, so older entries still land in a window.
+  final DateTime? biweeklyAnchor;
 
   CycleBounds boundsFor(DateTime value) {
     final today = dateOnly(value);
@@ -84,8 +100,17 @@ class PaySchedule {
         today,
         _monthlyDatesAround(today),
       ),
+      PayCycleType.biweekly => _anchoredBlockBounds(
+        today,
+        anchor: biweeklyAnchor ?? today,
+        blockDays: 14,
+      ),
       PayCycleType.weekly => _weeklyBounds(today),
-      PayCycleType.irregular => _irregularBounds(today),
+      PayCycleType.irregular => _anchoredBlockBounds(
+        today,
+        anchor: irregularCycleStart ?? today,
+        blockDays: planningHorizonDays,
+      ),
     };
   }
 
@@ -97,6 +122,7 @@ class PaySchedule {
     int? weeklyPayDay,
     int? planningHorizonDays,
     DateTime? irregularCycleStart,
+    DateTime? biweeklyAnchor,
   }) => PaySchedule(
     type: type ?? this.type,
     firstPayDay: firstPayDay ?? this.firstPayDay,
@@ -105,6 +131,7 @@ class PaySchedule {
     weeklyPayDay: weeklyPayDay ?? this.weeklyPayDay,
     planningHorizonDays: planningHorizonDays ?? this.planningHorizonDays,
     irregularCycleStart: irregularCycleStart ?? this.irregularCycleStart,
+    biweeklyAnchor: biweeklyAnchor ?? this.biweeklyAnchor,
   );
 
   Map<String, Object?> toJson() => {
@@ -115,6 +142,7 @@ class PaySchedule {
     'weeklyPayDay': weeklyPayDay,
     'planningHorizonDays': planningHorizonDays,
     'irregularCycleStart': irregularCycleStart?.toIso8601String(),
+    'biweeklyAnchor': biweeklyAnchor?.toIso8601String(),
   };
 
   factory PaySchedule.fromJson(Map<String, dynamic> json) => PaySchedule(
@@ -127,6 +155,9 @@ class PaySchedule {
     irregularCycleStart: json['irregularCycleStart'] == null
         ? null
         : DateTime.parse(json['irregularCycleStart'] as String),
+    biweeklyAnchor: json['biweeklyAnchor'] == null
+        ? null
+        : DateTime.parse(json['biweeklyAnchor'] as String),
   );
 
   CycleBounds _weeklyBounds(DateTime today) {
@@ -135,34 +166,39 @@ class PaySchedule {
     return CycleBounds(start: start, end: start.add(const Duration(days: 6)));
   }
 
-  CycleBounds _irregularBounds(DateTime today) {
-    final anchor = dateOnly(irregularCycleStart ?? today);
-    if (planningHorizonDays <= 0) {
-      throw StateError('An irregular cycle needs at least one planning day.');
+  /// The block of [blockDays] containing [today], counted from [anchor].
+  ///
+  /// Both the fortnight and the "no fixed date" horizon are this: a window
+  /// that repeats forwards and backwards from one day the user named, so a
+  /// budget never has a gap and an entry dated before the anchor still lands
+  /// in a cycle rather than falling outside every one of them.
+  CycleBounds _anchoredBlockBounds(
+    DateTime today, {
+    required DateTime anchor,
+    required int blockDays,
+  }) {
+    if (blockDays <= 0) {
+      throw StateError('A repeating cycle needs at least one day.');
     }
-    // "No fixed pay date" still needs continuous budget windows. Treat the
-    // chosen horizon as a repeating planning block anchored on the day the
-    // user started it, rather than leaving the first block frozen forever.
+    final from = dateOnly(anchor);
+    // Counted in UTC so a daylight-saving change cannot make a block come out
+    // a day short.
     final daysFromAnchor = DateTime.utc(
       today.year,
       today.month,
       today.day,
-    ).difference(DateTime.utc(anchor.year, anchor.month, anchor.day)).inDays;
-    final cycleIndex = daysFromAnchor >= 0
-        ? daysFromAnchor ~/ planningHorizonDays
-        : -((-daysFromAnchor + planningHorizonDays - 1) ~/ planningHorizonDays);
+    ).difference(DateTime.utc(from.year, from.month, from.day)).inDays;
+    final blockIndex = daysFromAnchor >= 0
+        ? daysFromAnchor ~/ blockDays
+        : -((-daysFromAnchor + blockDays - 1) ~/ blockDays);
     final start = DateTime(
-      anchor.year,
-      anchor.month,
-      anchor.day + cycleIndex * planningHorizonDays,
+      from.year,
+      from.month,
+      from.day + blockIndex * blockDays,
     );
     return CycleBounds(
       start: start,
-      end: DateTime(
-        start.year,
-        start.month,
-        start.day + planningHorizonDays - 1,
-      ),
+      end: DateTime(start.year, start.month, start.day + blockDays - 1),
     );
   }
 

@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
 
+import 'support/localizations.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -156,6 +158,8 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: sobraLocalizationsDelegates,
+        supportedLocales: sobraSupportedLocales,
         home: CatSprite(
           motion: CatMotion.celebrate,
           onComplete: () => completions += 1,
@@ -179,7 +183,11 @@ void main() {
     expect(completions, 1);
 
     await tester.pumpWidget(
-      const MaterialApp(home: CatSprite(motion: CatMotion.idle)),
+      const MaterialApp(
+        localizationsDelegates: sobraLocalizationsDelegates,
+        supportedLocales: sobraSupportedLocales,
+        home: CatSprite(motion: CatMotion.idle),
+      ),
     );
     final idle = tester.widget<CharacterSprite>(find.byType(CharacterSprite));
     expect(idle.loop, isNull);

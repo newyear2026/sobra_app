@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/cash_reconciliation.dart';
+import '../models/currency.dart';
+import '../models/language.dart';
 import '../models/expense_entry.dart';
 import '../models/income_entry.dart';
 import '../models/money_movement.dart';
 import '../models/pay_schedule.dart';
+import '../models/store_failure.dart';
 import '../models/xp_event.dart';
 
 typedef NowProvider = DateTime Function();
@@ -41,6 +44,16 @@ class SobraStore extends ChangeNotifier {
   int countedCashCentavos = 0;
   int expectedCashCentavos = 0;
   bool reducedMotion = false;
+
+  /// What Sobra labels money in. Changing it relabels; it never converts.
+  Currency currency = Currency.mxn;
+
+  /// The language the user picked, or null to follow the phone.
+  ///
+  /// Stored as a bare language code rather than a full locale: Sobra's Spanish
+  /// is written for Mexico but a reader in the United States should still get
+  /// it, and the region only decides formatting the app does not delegate.
+  String? languageCode;
   bool hasCompletedOnboarding = false;
   bool categoryLimitsCustomized = false;
   int successfulCycles = 0;
@@ -158,10 +171,6 @@ class SobraStore extends ChangeNotifier {
       for (final entry in _transactions)
         MoneyMovement(
           id: entry.id,
-          title: entry.note,
-          subtitle: entry.isPendingCashAdjustment
-              ? 'Pendiente · Efectivo'
-              : '${entry.category.label} · ${entry.paymentMethod == PaymentMethod.cash ? 'Efectivo' : 'Tarjeta'}',
           amountCentavos: -entry.amountCentavos,
           occurredAt: entry.occurredAt,
           type: MovementType.expense,
@@ -171,9 +180,6 @@ class SobraStore extends ChangeNotifier {
       for (final entry in _incomes)
         MoneyMovement(
           id: entry.id,
-          title: entry.note,
-          subtitle:
-              '${entry.kind.label} · ${entry.allocation == IncomeAllocation.cycle ? 'Este ciclo' : 'Ahorro'}',
           amountCentavos: entry.amountCentavos,
           occurredAt: entry.occurredAt,
           type: MovementType.income,
@@ -183,8 +189,6 @@ class SobraStore extends ChangeNotifier {
         if (entry.linkedExpenseId == null && entry.linkedIncomeId == null)
           MoneyMovement(
             id: entry.id,
-            title: entry.resolution.label,
-            subtitle: 'Conteo de efectivo',
             amountCentavos: entry.differenceCentavos,
             occurredAt: entry.occurredAt,
             type: MovementType.adjustment,
@@ -238,6 +242,7 @@ class SobraStore extends ChangeNotifier {
     final remaining = dailyAllowanceCentavos - spentTodayCentavos;
     return remaining < 0 ? 0 : remaining;
   }
+
   double get budgetProgress =>
       totalBudgetCentavos == 0 ? 0 : totalSpentCentavos / totalBudgetCentavos;
 
@@ -283,11 +288,9 @@ class SobraStore extends ChangeNotifier {
     if (run.closedCycles > 0) {
       if (run.awardedXp > 0) {
         _pendingXpNotice = XpNotice(
-          title: run.closedCycles == 1
-              ? 'Ciclo cerrado'
-              : '${run.closedCycles} ciclos cerrados',
-          detail: 'XP acreditados automáticamente.',
+          kind: XpNoticeKind.cyclesClosed,
           xp: run.awardedXp,
+          closedCycles: run.closedCycles,
         );
       }
     }
@@ -476,8 +479,7 @@ class SobraStore extends ChangeNotifier {
     );
     if (awarded > 0) {
       _pendingXpNotice = const XpNotice(
-        title: 'Conteo de efectivo guardado',
-        detail: 'Primer conteo con XP de la semana.',
+        kind: XpNoticeKind.cashCountSaved,
         xp: 25,
       );
     }
@@ -495,7 +497,7 @@ class SobraStore extends ChangeNotifier {
       id: _newId('expense'),
       amountCentavos: amountCentavos,
       category: category,
-      note: note.trim().isEmpty ? category.label : note.trim(),
+      note: note.trim(),
       occurredAt: occurredAt,
       paymentMethod: paymentMethod,
     );
@@ -519,7 +521,7 @@ class SobraStore extends ChangeNotifier {
       id: _newId('income'),
       amountCentavos: amountCentavos,
       kind: kind,
-      note: note.trim().isEmpty ? kind.label : note.trim(),
+      note: note.trim(),
       occurredAt: occurredAt,
       destination: destination,
       allocation: allocation,
@@ -564,7 +566,7 @@ class SobraStore extends ChangeNotifier {
     final previous = _transactions[index];
     _transactions[index] = previous.copyWith(
       category: category,
-      note: note.trim().isEmpty ? category.label : note.trim(),
+      note: note.trim(),
       isPendingCashAdjustment: false,
     );
     await _save();
@@ -636,11 +638,7 @@ class SobraStore extends ChangeNotifier {
     // as well would add the same money twice on the next read.
     final nextBaseBudget = centavos - cycleBudgetExtrasCentavos;
     if (nextBaseBudget <= 0) {
-      throw ArgumentError.value(
-        centavos,
-        'centavos',
-        'El total debe ser mayor que los ingresos asignados al ciclo.',
-      );
+      throw const SobraStoreException(StoreFailure.budgetBelowCycleIncome);
     }
     _baseBudgetCentavos = nextBaseBudget;
     if (adjustCategoryLimits) {
@@ -745,11 +743,7 @@ class SobraStore extends ChangeNotifier {
           id: _newId('expense'),
           amountCentavos: -difference,
           category: category ?? ExpenseCategory.other,
-          note: resolution == CashResolution.pending
-              ? 'Diferencia por identificar'
-              : (note.trim().isEmpty
-                    ? (category ?? ExpenseCategory.other).label
-                    : note.trim()),
+          note: note.trim(),
           occurredAt: moment,
           paymentMethod: PaymentMethod.cash,
           cashReconciliationId: reconciliationId,
@@ -773,7 +767,7 @@ class SobraStore extends ChangeNotifier {
           id: _newId('income'),
           amountCentavos: difference,
           kind: IncomeKind.cash,
-          note: note.trim().isEmpty ? 'Ingreso en efectivo' : note.trim(),
+          note: note.trim(),
           occurredAt: moment,
           destination: PaymentMethod.cash,
           allocation: incomeAllocation,
@@ -816,6 +810,26 @@ class SobraStore extends ChangeNotifier {
 
   Future<void> setReducedMotion(bool value) async {
     reducedMotion = value;
+    await _save();
+    notifyListeners();
+  }
+
+  /// Relabels every amount in a new currency.
+  ///
+  /// Nothing is converted: 20000 stays 20000 minor units and only the code
+  /// beside it changes. That is the honest behaviour for a ledger of what the
+  /// user actually counted, and the screen says so before calling this.
+  Future<void> setCurrency(Currency value) async {
+    if (currency == value) return;
+    currency = value;
+    await _save();
+    notifyListeners();
+  }
+
+  /// Picks the language, or passes null to go back to following the phone.
+  Future<void> setLanguageCode(String? value) async {
+    if (languageCode == value) return;
+    languageCode = value;
     await _save();
     notifyListeners();
   }
@@ -874,7 +888,7 @@ class SobraStore extends ChangeNotifier {
     hasStorageError = false;
     corruptedStorage = null;
     final saved = await _preferences.setString(_storageKey, raw);
-    if (!saved) throw StateError('No se pudo restaurar el respaldo.');
+    if (!saved) throw const SobraStoreException(StoreFailure.restoreFailed);
     await settleCycles();
     notifyListeners();
     return true;
@@ -885,7 +899,7 @@ class SobraStore extends ChangeNotifier {
     if (raw != null) {
       final archived = await _preferences.setString(_corruptArchiveKey, raw);
       if (!archived) {
-        throw StateError('No se pudo conservar el archivo original.');
+        throw const SobraStoreException(StoreFailure.originalNotKept);
       }
     }
     _initializeNewUser();
@@ -900,7 +914,7 @@ class SobraStore extends ChangeNotifier {
       throw ArgumentError.value(amountCentavos, 'amountCentavos');
     }
     if (dateOnly(occurredAt).isAfter(today)) {
-      throw ArgumentError('No se permiten movimientos futuros.');
+      throw const SobraStoreException(StoreFailure.futureMovement);
     }
   }
 
@@ -996,6 +1010,8 @@ class SobraStore extends ChangeNotifier {
     countedCashCentavos = other.countedCashCentavos;
     expectedCashCentavos = other.expectedCashCentavos;
     reducedMotion = other.reducedMotion;
+    languageCode = other.languageCode;
+    currency = other.currency;
     hasCompletedOnboarding = other.hasCompletedOnboarding;
     categoryLimitsCustomized = other.categoryLimitsCustomized;
     successfulCycles = other.successfulCycles;
@@ -1047,6 +1063,11 @@ class SobraStore extends ChangeNotifier {
     countedCashCentavos = (json['countedCashCentavos'] as num).toInt();
     expectedCashCentavos = (json['expectedCashCentavos'] as num).toInt();
     reducedMotion = json['reducedMotion'] as bool? ?? false;
+    // A release build that no longer offers a language reads its code as
+    // "follow the phone" rather than holding a choice it cannot honour.
+    final savedLanguage = json['languageCode'] as String?;
+    languageCode = SobraLanguage.fromCode(savedLanguage).code;
+    currency = Currency.fromCode(json['currencyCode'] as String?);
     hasCompletedOnboarding = json['hasCompletedOnboarding'] as bool? ?? false;
     categoryLimitsCustomized =
         json['categoryLimitsCustomized'] as bool? ?? false;
@@ -1103,6 +1124,8 @@ class SobraStore extends ChangeNotifier {
     'countedCashCentavos': countedCashCentavos,
     'expectedCashCentavos': expectedCashCentavos,
     'reducedMotion': reducedMotion,
+    'languageCode': languageCode,
+    'currencyCode': currency.code,
     'hasCompletedOnboarding': hasCompletedOnboarding,
     'categoryLimitsCustomized': categoryLimitsCustomized,
     'successfulCycles': successfulCycles,
@@ -1124,10 +1147,12 @@ class SobraStore extends ChangeNotifier {
     final current = _preferences.getString(_storageKey);
     if (current != null && current != next && _isPlausibleState(current)) {
       final backupSaved = await _preferences.setString(_backupKey, current);
-      if (!backupSaved) throw StateError('No se pudo guardar el respaldo.');
+      if (!backupSaved) {
+        throw const SobraStoreException(StoreFailure.backupNotSaved);
+      }
     }
     final saved = await _preferences.setString(_storageKey, next);
-    if (!saved) throw StateError('No se pudieron guardar los datos.');
+    if (!saved) throw const SobraStoreException(StoreFailure.saveFailed);
   }
 
   bool _isPlausibleState(String raw) {

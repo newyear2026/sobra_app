@@ -1,54 +1,66 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sobra_app/l10n/generated/app_localizations.dart';
+import 'package:sobra_app/l10n/labels.dart';
+import 'package:sobra_app/models/money_movement.dart';
 import 'package:sobra_app/models/expense_entry.dart';
 import 'package:sobra_app/models/income_entry.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/services/sobra_widget_sync.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 
+/// The widget payload is labelled with the same words the app shows, so these
+/// tests resolve Spanish the way the app root does rather than inventing text.
+String _label(MoneyMovement movement) =>
+    movementTitle(lookupAppLocalizations(const Locale('es')), movement);
+
 void main() {
-  test('widget snapshot contains current budget and two newest movements', () async {
-    SharedPreferences.setMockInitialValues({});
-    final now = DateTime(2026, 9, 5, 12);
-    final store = await SobraStore.load(now: () => now);
-    await store.configureOnboarding(
-      budgetCentavos: 600000,
-      schedule: PaySchedule.irregular(
-        planningHorizonDays: 15,
-        irregularCycleStart: DateTime(2026, 9, 1),
-      ),
-    );
-    await store.completeOnboarding();
-    await store.addExpense(
-      amountCentavos: 1800,
-      category: ExpenseCategory.transport,
-      note: 'Metro',
-      occurredAt: now.subtract(const Duration(minutes: 2)),
-      paymentMethod: PaymentMethod.card,
-    );
-    await store.addIncome(
-      amountCentavos: 25000,
-      kind: IncomeKind.extra,
-      note: 'Reembolso',
-      occurredAt: now.subtract(const Duration(minutes: 1)),
-      destination: PaymentMethod.card,
-      allocation: IncomeAllocation.savings,
-    );
+  test(
+    'widget snapshot contains current budget and two newest movements',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final now = DateTime(2026, 9, 5, 12);
+      final store = await SobraStore.load(now: () => now);
+      await store.configureOnboarding(
+        budgetCentavos: 600000,
+        schedule: PaySchedule.irregular(
+          planningHorizonDays: 15,
+          irregularCycleStart: DateTime(2026, 9, 1),
+        ),
+      );
+      await store.completeOnboarding();
+      await store.addExpense(
+        amountCentavos: 1800,
+        category: ExpenseCategory.transport,
+        note: 'Metro',
+        occurredAt: now.subtract(const Duration(minutes: 2)),
+        paymentMethod: PaymentMethod.card,
+      );
+      await store.addIncome(
+        amountCentavos: 25000,
+        kind: IncomeKind.extra,
+        note: 'Reembolso',
+        occurredAt: now.subtract(const Duration(minutes: 1)),
+        destination: PaymentMethod.card,
+        allocation: IncomeAllocation.savings,
+      );
 
-    final snapshot = SobraWidgetSnapshot.fromStore(store);
-    final payload = snapshot.toPlatformMap();
+      final snapshot = SobraWidgetSnapshot.fromStore(store, _label);
+      final payload = snapshot.toPlatformMap();
 
-    expect(payload['hasData'], isTrue);
-    expect(payload['daysRemaining'], 11);
-    expect(payload['totalBudgetCentavos'], 600000);
-    expect(payload['totalSpentCentavos'], 1800);
-    expect(payload['progressSegments'], 1);
-    expect(payload['movementCount'], 2);
-    expect(payload['movement1Title'], 'Reembolso');
-    expect(payload['movement1Kind'], 'income');
-    expect(payload['movement2Title'], 'Metro');
-    expect(payload['movement2Kind'], 'transport');
-  });
+      expect(payload['hasData'], isTrue);
+      expect(payload['daysRemaining'], 11);
+      expect(payload['totalBudgetCentavos'], 600000);
+      expect(payload['totalSpentCentavos'], 1800);
+      expect(payload['progressSegments'], 1);
+      expect(payload['movementCount'], 2);
+      expect(payload['movement1Title'], 'Reembolso');
+      expect(payload['movement1Kind'], 'income');
+      expect(payload['movement2Title'], 'Metro');
+      expect(payload['movement2Kind'], 'transport');
+    },
+  );
 
   test('the payload carries exactly the keys Android reads', () async {
     // MainActivity.saveWidgetData reads these by name and falls back to 0 or ""
@@ -70,26 +82,32 @@ void main() {
       paymentMethod: PaymentMethod.card,
     );
 
-    expect(SobraWidgetSnapshot.fromStore(store).toPlatformMap().keys.toSet(), {
-      'hasData',
-      'todayRemainingCentavos',
-      'overCycleBudget',
-      'daysRemaining',
-      'totalBudgetCentavos',
-      'totalSpentCentavos',
-      'progressSegments',
-      'reducedMotion',
-      'movementCount',
-      'movement1Title',
-      'movement1AmountCentavos',
-      'movement1Kind',
-    });
+    expect(
+      SobraWidgetSnapshot.fromStore(store, _label).toPlatformMap().keys.toSet(),
+      {
+        'hasData',
+        'todayRemainingCentavos',
+        'overCycleBudget',
+        'daysRemaining',
+        'totalBudgetCentavos',
+        'totalSpentCentavos',
+        'progressSegments',
+        'reducedMotion',
+        'movementCount',
+        'movement1Title',
+        'movement1AmountCentavos',
+        'movement1Kind',
+      },
+    );
   });
 
   test('a fresh install reports no data rather than zeroes', () async {
     SharedPreferences.setMockInitialValues({});
     final store = await SobraStore.load(now: () => DateTime(2026, 9, 5, 12));
-    final payload = SobraWidgetSnapshot.fromStore(store).toPlatformMap();
+    final payload = SobraWidgetSnapshot.fromStore(
+      store,
+      _label,
+    ).toPlatformMap();
 
     expect(payload['hasData'], isFalse);
     expect(payload['movementCount'], 0);
@@ -112,7 +130,10 @@ void main() {
       paymentMethod: PaymentMethod.card,
     );
 
-    final payload = SobraWidgetSnapshot.fromStore(store).toPlatformMap();
+    final payload = SobraWidgetSnapshot.fromStore(
+      store,
+      _label,
+    ).toPlatformMap();
     // 7,000 against a 6,000 budget: the widget reports the cycle's own
     // −1,000, not the day's slice minus a cycle-sized expense, and flips the
     // label with it.
@@ -141,7 +162,10 @@ void main() {
       );
     }
 
-    final payload = SobraWidgetSnapshot.fromStore(store).toPlatformMap();
+    final payload = SobraWidgetSnapshot.fromStore(
+      store,
+      _label,
+    ).toPlatformMap();
     expect(payload['movementCount'], 2);
     expect(payload, isNot(contains('movement3Title')));
   });

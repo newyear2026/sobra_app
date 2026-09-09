@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../l10n/generated/app_localizations.dart';
+import '../l10n/labels.dart';
 import '../models/expense_entry.dart';
 import '../models/income_entry.dart';
 import '../models/pay_schedule.dart';
@@ -69,32 +71,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
     final answer = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('¿Este gasto explica la diferencia?'),
-        content: Text(
-          'Tienes ${formatMoney(pending.amountCentavos)} pendiente del último conteo. Si es el mismo gasto, lo identificaremos sin sumarlo otra vez.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('No, es nuevo'),
+      builder: (context) {
+        final l10n = AppLocalizations.of(context);
+        final currency = SobraScope.of(context).currency;
+        return AlertDialog(
+          title: Text(l10n.registerReconcileQuestion),
+          content: Text(
+            l10n.registerReconcileBody(
+              formatMoney(currency, pending.amountCentavos),
+            ),
           ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Sí, conciliar'),
-          ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(l10n.registerReconcileNo),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(l10n.registerReconcileYes),
+            ),
+          ],
+        );
+      },
     );
     return answer == true;
   }
 
   Future<void> _save() async {
     if (_saving || !_formKey.currentState!.validate()) return;
-    final amount = parsePesos(_amountController.text);
+    final amount = parseAmount(_amountController.text);
     if (amount == null) return;
     final store = SobraScope.of(context);
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context);
     final reducedMotion = reducedMotionOf(context);
     final usePending = await _shouldUsePendingDifference(store, amount);
     if (!mounted) return;
@@ -103,7 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // disables Guardar for the rest of the session with no way to recover.
     final bool saved;
     try {
-      saved = await guardStoreWrite(messenger, () {
+      saved = await guardStoreWrite(messenger, l10n, () {
         if (usePending) {
           return store.classifyPendingCashExpense(
             expenseId: store.latestPendingCashExpense!.id,
@@ -146,10 +155,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ? CatMotion.walk
             : CatMotion.celebrate,
         message: usePending
-            ? 'Diferencia conciliada'
+            ? l10n.registerDifferenceReconciled
             : _mode == _RegisterMode.expense
-            ? 'Gasto guardado'
-            : 'Ingreso guardado',
+            ? l10n.registerExpenseSaved
+            : l10n.registerIncomeSaved,
         animate: !reducedMotion,
         duration: reducedMotion
             ? const Duration(milliseconds: 400)
@@ -169,6 +178,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final store = SobraScope.of(context);
+    final l10n = AppLocalizations.of(context);
     return SafeArea(
       bottom: false,
       child: SingleChildScrollView(
@@ -179,18 +189,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const PixelTopBar(title: 'Registrar'),
+              PixelTopBar(title: l10n.registerTitle),
               const SizedBox(height: 14),
               PixelSegmented<_RegisterMode>(
-                segments: const [
+                segments: [
                   PixelSegment(
                     value: _RegisterMode.expense,
-                    label: 'Gasto',
+                    label: l10n.registerExpense,
                     icon: Icons.remove_circle_outline,
                   ),
                   PixelSegment(
                     value: _RegisterMode.income,
-                    label: 'Ingreso',
+                    label: l10n.registerIncome,
                     icon: Icons.add_circle_outline,
                   ),
                 ],
@@ -198,7 +208,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 onChanged: (value) => setState(() => _mode = value),
               ),
               const SizedBox(height: 22),
-              Text('Monto', style: Theme.of(context).textTheme.titleMedium),
+              Text(l10n.amount, style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _amountController,
@@ -207,7 +217,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 style: pixelText(size: 34, bold: true),
                 decoration: InputDecoration(
-                  hintText: '\$0',
+                  hintText: '${store.currency.symbol}0',
                   // The hint has to sit on the same baseline as the 34px
                   // value it stands in for, not on the 14px default.
                   hintStyle: pixelText(
@@ -215,10 +225,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     bold: true,
                     color: AppColors.muted,
                   ),
-                  suffixText: 'MXN',
+                  suffixText: store.currency.code,
                 ),
-                validator: (value) => parsePesos(value ?? '') == null
-                    ? 'Ingresa un monto mayor a cero.'
+                validator: (value) => parseAmount(value ?? '') == null
+                    ? l10n.registerAmountAboveZero
                     : null,
               ),
               const SizedBox(height: 22),
@@ -243,18 +253,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       setState(() => _paymentMethod = value),
                 ),
               const SizedBox(height: 22),
-              Text('Nota', style: Theme.of(context).textTheme.titleMedium),
+              Text(l10n.note, style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _noteController,
                 decoration: InputDecoration(
                   hintText: _mode == _RegisterMode.expense
-                      ? 'Ej. Taquería El Faro'
-                      : 'Ej. Propina del viernes',
+                      ? l10n.registerNoteExpenseExample
+                      : l10n.registerNoteIncomeExample,
                 ),
               ),
               const SizedBox(height: 18),
-              Text('Fecha', style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                l10n.registerDate,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               const SizedBox(height: 8),
               PixelCard(
                 elevation: PixelElevation.none,
@@ -265,7 +278,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        shortDate(_date ?? store.today),
+                        fullDate(
+                          AppLocalizations.of(context),
+                          _date ?? store.today,
+                        ),
                         style: pixelText(size: 15, bold: true),
                       ),
                     ),
@@ -275,12 +291,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'No puedes registrar movimientos futuros.',
+                l10n.registerNoFutureMovements,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 24),
               PixelButton(
-                label: _saving ? 'Guardando…' : 'Guardar',
+                label: _saving ? l10n.saving : l10n.save,
                 icon: Icons.save,
                 onPressed: _saving ? null : _save,
               ),
@@ -308,7 +324,10 @@ class _ExpenseFields extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text('Categoría', style: Theme.of(context).textTheme.titleMedium),
+      Text(
+        AppLocalizations.of(context).category,
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
       const SizedBox(height: 10),
       GridView.count(
         crossAxisCount: 4,
@@ -322,7 +341,7 @@ class _ExpenseFields extends StatelessWidget {
           return Semantics(
             button: true,
             selected: selected,
-            label: item.label,
+            label: item.label(AppLocalizations.of(context)),
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () => onCategoryChanged(item),
@@ -358,7 +377,7 @@ class _ExpenseFields extends StatelessWidget {
                     const SizedBox(height: 7),
                     FittedBox(
                       child: Text(
-                        item.label,
+                        item.label(AppLocalizations.of(context)),
                         style: pixelText(
                           size: 12,
                           bold: true,
@@ -374,13 +393,14 @@ class _ExpenseFields extends StatelessWidget {
         }).toList(),
       ),
       const SizedBox(height: 22),
-      Text('Pago', style: Theme.of(context).textTheme.titleMedium),
+      Text(
+        AppLocalizations.of(context).registerPayment,
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
       const SizedBox(height: 8),
       _PaymentSelector(value: paymentMethod, onChanged: onPaymentChanged),
       const SizedBox(height: 12),
-      const PixelHint(
-        text: 'El efectivo se descuenta de tu conteo. La tarjeta no.',
-      ),
+      PixelHint(text: AppLocalizations.of(context).registerPaymentHint),
     ],
   );
 }
@@ -405,7 +425,10 @@ class _IncomeFields extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text('Tipo de ingreso', style: Theme.of(context).textTheme.titleMedium),
+      Text(
+        AppLocalizations.of(context).registerIncomeKind,
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
       const SizedBox(height: 8),
       for (final option in const [IncomeKind.salary, IncomeKind.extra]) ...[
         PixelCard(
@@ -424,7 +447,7 @@ class _IncomeFields extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  option.label,
+                  option.label(AppLocalizations.of(context)),
                   style: pixelText(size: 15, bold: true),
                 ),
               ),
@@ -440,25 +463,34 @@ class _IncomeFields extends StatelessWidget {
       ],
       const SizedBox(height: 12),
       Text(
-        '¿Qué quieres hacer?',
+        AppLocalizations.of(context).registerWhatToDo,
         style: Theme.of(context).textTheme.titleMedium,
       ),
       const SizedBox(height: 8),
       PixelSegmented<IncomeAllocation>(
-        segments: const [
-          PixelSegment(value: IncomeAllocation.cycle, label: 'Este ciclo'),
-          PixelSegment(value: IncomeAllocation.savings, label: 'Guardarlo'),
+        segments: [
+          PixelSegment(
+            value: IncomeAllocation.cycle,
+            label: AppLocalizations.of(context).registerThisCycle,
+          ),
+          PixelSegment(
+            value: IncomeAllocation.savings,
+            label: AppLocalizations.of(context).registerSaveIt,
+          ),
         ],
         selected: allocation,
         onChanged: onAllocationChanged,
       ),
       const SizedBox(height: 18),
-      Text('Lo recibiste en', style: Theme.of(context).textTheme.titleMedium),
+      Text(
+        AppLocalizations.of(context).registerReceivedIn,
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
       const SizedBox(height: 8),
       _PaymentSelector(
         value: destination,
         onChanged: onDestinationChanged,
-        accountLabel: 'Cuenta',
+        accountLabel: AppLocalizations.of(context).registerAccount,
       ),
     ],
   );
@@ -468,22 +500,24 @@ class _PaymentSelector extends StatelessWidget {
   const _PaymentSelector({
     required this.value,
     required this.onChanged,
-    this.accountLabel = 'Tarjeta',
+    this.accountLabel,
   });
   final PaymentMethod value;
   final ValueChanged<PaymentMethod> onChanged;
-  final String accountLabel;
+  final String? accountLabel;
   @override
   Widget build(BuildContext context) => PixelSegmented<PaymentMethod>(
     segments: [
-      const PixelSegment(
+      PixelSegment(
         value: PaymentMethod.cash,
-        label: 'Efectivo',
+        label: PaymentMethod.cash.label(AppLocalizations.of(context)),
         icon: Icons.payments,
       ),
       PixelSegment(
         value: PaymentMethod.card,
-        label: accountLabel,
+        label:
+            accountLabel ??
+            PaymentMethod.card.label(AppLocalizations.of(context)),
         icon: Icons.account_balance,
       ),
     ],

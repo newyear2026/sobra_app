@@ -2,6 +2,9 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import '../l10n/generated/app_localizations.dart';
+import '../l10n/labels.dart';
+
 /// Stable, character-independent roles used by every Sobra character pack.
 enum CharacterMotionRole {
   idle,
@@ -188,17 +191,6 @@ abstract final class CharacterCatalog {
   }
 }
 
-extension CharacterMotionRoleSpec on CharacterMotionRole {
-  String get genericSemanticLabel => switch (this) {
-    CharacterMotionRole.idle => 'El personaje descansa tranquilo',
-    CharacterMotionRole.activity => 'El personaje está en movimiento',
-    CharacterMotionRole.processing => 'El personaje está haciendo cuentas',
-    CharacterMotionRole.positive => 'El personaje muestra un cambio positivo',
-    CharacterMotionRole.success => 'El personaje celebra un logro',
-    CharacterMotionRole.warning => 'El personaje muestra preocupación',
-  };
-}
-
 /// Generic renderer for any character pack that follows the shared contract.
 class CharacterSprite extends StatefulWidget {
   const CharacterSprite({
@@ -304,6 +296,9 @@ class _CharacterSpriteState extends State<CharacterSprite>
     stream.addListener(listener);
   }
 
+  @visibleForTesting
+  double get debugControllerValue => _controller.value;
+
   void _configureAnimation({required bool restart}) {
     _controller.duration = widget.motionSpec.duration;
     if (!widget.animate) {
@@ -340,7 +335,9 @@ class _CharacterSpriteState extends State<CharacterSprite>
         CharacterAnimationStandard.frameWidth;
     return Semantics(
       image: true,
-      label: widget.semanticLabel ?? widget.role.genericSemanticLabel,
+      label:
+          widget.semanticLabel ??
+          widget.role.genericSemanticLabel(AppLocalizations.of(context)),
       child: SizedBox(
         width: widget.width,
         height: height,
@@ -384,15 +381,6 @@ extension CatMotionAsset on CatMotion {
   Size get frameSize => CharacterAnimationStandard.frameSize;
 
   Duration get duration => motionSpec.duration;
-
-  String get semanticLabel => switch (this) {
-    CatMotion.idle => 'El gato descansa tranquilo',
-    CatMotion.walk => 'El gato camina',
-    CatMotion.calculate => 'El gato hace cuentas',
-    CatMotion.saving => 'El gato guarda monedas en la alcancía',
-    CatMotion.celebrate => 'El gato celebra contento',
-    CatMotion.concern => 'El gato muestra preocupación por el presupuesto',
-  };
 }
 
 /// Compatibility wrapper for the app's current Michi call sites.
@@ -423,7 +411,7 @@ class CatSprite extends StatelessWidget {
       animate: animate,
       loop: loop,
       playToken: playToken,
-      semanticLabel: motion.semanticLabel,
+      semanticLabel: motion.semanticLabel(AppLocalizations.of(context)),
       onComplete: onComplete,
     );
   }

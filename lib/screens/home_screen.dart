@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/generated/app_localizations.dart';
+import '../l10n/labels.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
+import '../widgets/character_room.dart';
 import '../widgets/gamification_ui.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/transaction_row.dart';
@@ -27,6 +30,8 @@ class HomeScreen extends StatelessWidget {
         !overCycleBudget &&
         store.spentTodayCentavos <= store.dailyAllowanceCentavos;
     final xp = store.xpProgress;
+    final l10n = AppLocalizations.of(context);
+    final currency = store.currency;
     final textTheme = Theme.of(context).textTheme;
 
     return SafeArea(
@@ -39,9 +44,9 @@ class HomeScreen extends StatelessWidget {
             sliver: SliverList.list(
               children: [
                 PixelTopBar(
-                  title: 'Sobra',
+                  title: l10n.appName,
                   trailing: IconButton(
-                    tooltip: 'Ajustes',
+                    tooltip: l10n.settingsTitle,
                     onPressed: () => shell.select(AppTab.settings),
                     icon: const Icon(Icons.settings, size: 28),
                     color: AppColors.ink,
@@ -49,7 +54,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  overCycleBudget ? 'Saldo del ciclo' : 'Hoy te queda',
+                  overCycleBudget ? l10n.homeCycleBalance : l10n.homeTodayLeft,
                   style: textTheme.titleSmall,
                 ),
                 const SizedBox(height: 4),
@@ -57,7 +62,7 @@ class HomeScreen extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   fit: BoxFit.scaleDown,
                   child: Text(
-                    formatMoney(store.todayRemainingCentavos),
+                    formatMoney(currency, store.todayRemainingCentavos),
                     style: textTheme.displayLarge?.copyWith(
                       color: overCycleBudget
                           ? AppColors.dangerInk
@@ -72,14 +77,25 @@ class HomeScreen extends StatelessWidget {
                 // came from.
                 Text(
                   overCycleBudget
-                      ? 'Te pasaste del presupuesto de '
-                            '${formatMoney(store.totalBudgetCentavos, currency: false)}'
-                            ' de este ciclo'
-                      : 'Límite de hoy '
-                            '${formatMoney(store.dailyAllowanceCentavos, currency: false)}'
-                            ' · Quedan '
-                            '${formatMoney(store.remainingBudgetCentavos, currency: false)}'
-                            ' en el ciclo',
+                      ? l10n.homeOverBudget(
+                          formatMoney(
+                            currency,
+                            store.totalBudgetCentavos,
+                            showCode: false,
+                          ),
+                        )
+                      : l10n.homeDailyLimit(
+                          formatMoney(
+                            currency,
+                            store.dailyAllowanceCentavos,
+                            showCode: false,
+                          ),
+                          formatMoney(
+                            currency,
+                            store.remainingBudgetCentavos,
+                            showCode: false,
+                          ),
+                        ),
                   style: textTheme.bodySmall?.copyWith(
                     color: overCycleBudget
                         ? AppColors.dangerInk
@@ -89,13 +105,13 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 18),
                 LevelStrip(
                   level: xp.level,
-                  title: xp.title,
-                  subtitle: '${xp.totalXp} XP totales',
+                  title: xpLevelTitle(l10n, xp.level),
+                  subtitle: l10n.xpTotal(xp.totalXp),
                   currentXp: xp.currentLevelXp,
                   targetXp: xp.targetLevelXp,
                   trailingLabel: xp.isMaxLevel
-                      ? 'Nivel máximo'
-                      : 'Faltan ${xp.remainingXp} XP',
+                      ? l10n.xpMaxLevel
+                      : l10n.xpRemaining(xp.remainingXp),
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
                       builder: (_) => const XpHistoryScreen(),
@@ -106,9 +122,9 @@ class HomeScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Avance del ciclo', style: textTheme.titleSmall),
+                    Text(l10n.homeCycleProgress, style: textTheme.titleSmall),
                     Text(
-                      '${store.daysRemaining} días',
+                      l10n.daysCount(store.daysRemaining),
                       style: textTheme.bodySmall,
                     ),
                   ],
@@ -123,20 +139,22 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _BudgetFigure(
-                        label: 'Presupuesto',
+                        label: l10n.budget,
                         value: formatMoney(
+                          currency,
                           store.totalBudgetCentavos,
-                          currency: false,
+                          showCode: false,
                         ),
                       ),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: _BudgetFigure(
-                        label: 'Gastado',
+                        label: l10n.spent,
                         value: formatMoney(
+                          currency,
                           store.totalSpentCentavos,
-                          currency: false,
+                          showCode: false,
                         ),
                         alignEnd: true,
                       ),
@@ -169,8 +187,8 @@ class HomeScreen extends StatelessWidget {
                           children: [
                             Text(
                               store.hasCashBaseline
-                                  ? 'Efectivo estimado'
-                                  : 'Efectivo sin configurar',
+                                  ? l10n.homeCashEstimated
+                                  : l10n.homeCashUnset,
                               style: pixelText(
                                 size: 13,
                                 bold: true,
@@ -179,7 +197,10 @@ class HomeScreen extends StatelessWidget {
                             ),
                             if (store.hasCashBaseline) ...[
                               Text(
-                                formatMoney(store.expectedCashCentavos),
+                                formatMoney(
+                                  currency,
+                                  store.expectedCashCentavos,
+                                ),
                                 style: pixelText(
                                   size: 23,
                                   bold: true,
@@ -187,8 +208,13 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                'Último conteo: '
-                                '${formatMoney(store.countedCashCentavos, currency: false)}',
+                                l10n.homeLastCount(
+                                  formatMoney(
+                                    currency,
+                                    store.countedCashCentavos,
+                                    showCode: false,
+                                  ),
+                                ),
                                 style: pixelText(
                                   size: 12,
                                   color: AppColors.cashInk,
@@ -196,7 +222,7 @@ class HomeScreen extends StatelessWidget {
                               ),
                             ] else
                               Text(
-                                'Haz un primer conteo para empezar.',
+                                l10n.homeFirstCountHint,
                                 style: pixelText(
                                   size: 12,
                                   color: AppColors.cashInk,
@@ -215,62 +241,36 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        'Movimientos recientes',
+                        l10n.homeRecentMovements,
                         style: textTheme.titleMedium,
                       ),
                     ),
                     if (recent.isNotEmpty)
                       TextButton(
                         onPressed: () => shell.select(AppTab.movements),
-                        child: const Text('Ver todos'),
+                        child: Text(l10n.homeSeeAll),
                       ),
                   ],
                 ),
                 if (recent.isEmpty) ...[
                   const SizedBox(height: 6),
-                  const PixelEmptyState(
+                  PixelEmptyState(
                     icon: Icons.receipt_long_outlined,
-                    title: 'Aún no hay movimientos',
-                    message:
-                        'Registra tu primer gasto y aquí verás el resumen '
-                        'del ciclo.',
+                    title: l10n.transactionsEmptyTitle,
+                    message: l10n.transactionsEmptyMessage,
                   ),
                 ] else
                   ...recent.map((entry) => MovementRow(movement: entry)),
                 const SizedBox(height: 16),
-                PixelCard(
-                  color: AppColors.beige,
-                  padding: const EdgeInsets.fromLTRB(14, 12, 10, 0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 22),
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: AppColors.surface,
-                            border: Border.all(
-                              color: AppColors.ink,
-                              width: 2.5,
-                            ),
-                          ),
-                          child: Text(
-                            onTrack ? 'Vas muy bien' : 'Ajustemos con calma',
-                            style: pixelText(size: 14, bold: true),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      CatSprite(
-                        motion: overCycleBudget
-                            ? CatMotion.concern
-                            : CatMotion.idle,
-                        width: 106,
-                        animate: !reducedMotionOf(context),
-                        loop: !overCycleBudget,
-                      ),
-                    ],
+                CharacterRoom(
+                  message: onTrack ? l10n.homeGoingWell : l10n.homeAdjustCalmly,
+                  characterBuilder: (width) => CatSprite(
+                    motion: overCycleBudget
+                        ? CatMotion.concern
+                        : CatMotion.idle,
+                    width: width,
+                    animate: !reducedMotionOf(context),
+                    loop: !overCycleBudget,
                   ),
                 ),
               ],

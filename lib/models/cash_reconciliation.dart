@@ -1,15 +1,5 @@
 enum CashResolution { expense, income, transfer, correction, pending }
 
-extension CashResolutionLabel on CashResolution {
-  String get label => switch (this) {
-    CashResolution.expense => 'Gasto identificado',
-    CashResolution.income => 'Ingreso en efectivo',
-    CashResolution.transfer => 'Movimiento entre cuentas',
-    CashResolution.correction => 'Corrección del conteo',
-    CashResolution.pending => 'Diferencia por identificar',
-  };
-}
-
 class CashReconciliationEntry {
   const CashReconciliationEntry({
     required this.id,

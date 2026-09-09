@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'support/localizations.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/screens/gamification_preview_screen.dart';
@@ -18,6 +19,8 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: sobraLocalizationsDelegates,
+        supportedLocales: sobraSupportedLocales,
         theme: buildSobraTheme(),
         home: const GamificationPreviewScreen(),
       ),
@@ -27,6 +30,7 @@ void main() {
   testWidgets('lists every XP design surface without mutating app state', (
     tester,
   ) async {
+    useSpanishDevice(tester);
     await pumpPreview(tester);
 
     expect(find.text('Vista previa XP'), findsOneWidget);
@@ -41,6 +45,7 @@ void main() {
   testWidgets('shows weekly and cycle missions from the preview hub', (
     tester,
   ) async {
+    useSpanishDevice(tester);
     await pumpPreview(tester);
 
     await tester.tap(find.text('Misiones'));
@@ -58,6 +63,7 @@ void main() {
   });
 
   testWidgets('opens the preview from debug settings', (tester) async {
+    useSpanishDevice(tester);
     tester.view.physicalSize = const Size(520, 1600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);

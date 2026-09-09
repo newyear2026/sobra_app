@@ -7,28 +7,6 @@ enum XpEventKind {
   firstSuccessfulCycle,
 }
 
-extension XpEventKindLabel on XpEventKind {
-  String title({int? quantity, PayCycleType? cycleType}) => switch (this) {
-    XpEventKind.cashCount => 'Conteo de efectivo',
-    XpEventKind.cycleInGreen => switch (cycleType) {
-      PayCycleType.semiMonthly => 'Cerraste la quincena en verde',
-      PayCycleType.monthly => 'Cerraste el mes en verde',
-      PayCycleType.weekly => 'Cerraste la semana en verde',
-      PayCycleType.irregular || null => 'Cerraste el ciclo en verde',
-    },
-    XpEventKind.daysUnderDailyLimit =>
-      '${quantity ?? 0} ${(quantity ?? 0) == 1 ? 'día' : 'días'} bajo tu límite',
-    XpEventKind.firstSuccessfulCycle => 'Primer ciclo en verde',
-  };
-
-  String get shortDetail => switch (this) {
-    XpEventKind.cashCount => 'Primer conteo con XP de la semana',
-    XpEventKind.cycleInGreen => 'Resultado del presupuesto al cerrar',
-    XpEventKind.daysUnderDailyLimit => 'Calculado una sola vez al cerrar',
-    XpEventKind.firstSuccessfulCycle => 'Bono de una sola vez',
-  };
-}
-
 class XpEvent {
   const XpEvent({
     required this.id,
@@ -98,31 +76,37 @@ class XpEvent {
   );
 }
 
-class XpNotice {
-  const XpNotice({required this.title, required this.detail, required this.xp});
+/// Something worth telling the user about, once, the next time a screen can.
+///
+/// This holds why XP arrived and how much, not the sentence announcing it. The
+/// notice is produced when a cycle settles and read on a later frame, possibly
+/// after the locale has changed, so the wording is built at the moment it is
+/// shown rather than at the moment it is earned. See `l10n/labels.dart`.
+enum XpNoticeKind { cyclesClosed, cashCountSaved }
 
-  final String title;
-  final String detail;
+class XpNotice {
+  const XpNotice({required this.kind, required this.xp, this.closedCycles = 0});
+
+  final XpNoticeKind kind;
   final int xp;
+
+  /// How many cycles the settlement closed. Only meaningful for
+  /// [XpNoticeKind.cyclesClosed], where it decides singular from plural.
+  final int closedCycles;
 }
 
 class XpProgress {
   const XpProgress({
     required this.level,
-    required this.title,
     required this.totalXp,
     required this.levelStartXp,
     required this.nextLevelXp,
   });
 
   static const _levelStarts = [0, 150, 450, 850, 1550];
-  static const _titles = [
-    'Michi curioso',
-    'Michi ahorrador',
-    'Michi contador',
-    'Michi guardián',
-    'Michi maestro',
-  ];
+
+  /// How many levels exist, so the view knows the range it has to name.
+  static const levelCount = 5;
 
   factory XpProgress.fromTotal(int totalXp) {
     final safeTotal = totalXp < 0 ? 0 : totalXp;
@@ -133,7 +117,6 @@ class XpProgress {
     }
     return XpProgress(
       level: index + 1,
-      title: _titles[index],
       totalXp: safeTotal,
       levelStartXp: _levelStarts[index],
       nextLevelXp: index == _levelStarts.length - 1
@@ -143,7 +126,6 @@ class XpProgress {
   }
 
   final int level;
-  final String title;
   final int totalXp;
   final int levelStartXp;
   final int? nextLevelXp;

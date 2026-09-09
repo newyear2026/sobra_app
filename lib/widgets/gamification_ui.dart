@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/generated/app_localizations.dart';
+import '../l10n/labels.dart';
 import '../models/xp_event.dart';
 import '../theme/app_theme.dart';
 import 'pixel_ui.dart';
@@ -84,7 +86,7 @@ class LevelStrip extends StatelessWidget {
           Row(
             children: [
               Text(
-                '$currentXp / $targetXp XP',
+                AppLocalizations.of(context).xpOfTarget(currentXp, targetXp),
                 style: pixelText(size: 12, bold: true, color: secondary),
               ),
               const Spacer(),
@@ -257,33 +259,40 @@ class XpToast extends StatelessWidget {
   final XpNotice notice;
 
   @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      const Icon(Icons.star, color: Color(0xFF7FD8CE), size: 22),
-      const SizedBox(width: 10),
-      Expanded(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              notice.title,
-              style: pixelText(size: 13, bold: true, color: Colors.white),
-            ),
-            Text(
-              notice.detail,
-              style: pixelText(size: 12, color: const Color(0xFFB5BEDD)),
-            ),
-          ],
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Row(
+      children: [
+        const Icon(Icons.star, color: Color(0xFF7FD8CE), size: 22),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                xpNoticeTitle(l10n, notice),
+                style: pixelText(size: 13, bold: true, color: Colors.white),
+              ),
+              Text(
+                xpNoticeDetail(l10n, notice),
+                style: pixelText(size: 12, color: const Color(0xFFB5BEDD)),
+              ),
+            ],
+          ),
         ),
-      ),
-      const SizedBox(width: 8),
-      Text(
-        '+${notice.xp} XP',
-        style: pixelText(size: 14, bold: true, color: const Color(0xFF7FD8CE)),
-      ),
-    ],
-  );
+        const SizedBox(width: 8),
+        Text(
+          l10n.xpAmount(notice.xp),
+          style: pixelText(
+            size: 14,
+            bold: true,
+            color: const Color(0xFF7FD8CE),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 SnackBar xpSnackBar(XpNotice notice) => SnackBar(

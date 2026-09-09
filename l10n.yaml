@@ -1,0 +1,9 @@
+# Sobra ships its UI text through gen-l10n. Spanish is the template: every new
+# string is written in `app_es.arb` first, and other locales fill in from there.
+arb-dir: lib/l10n
+template-arb-file: app_es.arb
+output-dir: lib/l10n/generated
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+# The app always has a locale, so callers should not have to null-check.
+nullable-getter: false

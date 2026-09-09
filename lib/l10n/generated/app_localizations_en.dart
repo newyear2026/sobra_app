@@ -1,0 +1,1046 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for English (`en`).
+class AppLocalizationsEn extends AppLocalizations {
+  AppLocalizationsEn([String locale = 'en']) : super(locale);
+
+  @override
+  String get categoryFood => 'Food';
+
+  @override
+  String get categoryTransport => 'Transport';
+
+  @override
+  String get categoryShopping => 'Shopping';
+
+  @override
+  String get categoryHome => 'Home';
+
+  @override
+  String get categoryServices => 'Bills';
+
+  @override
+  String get categoryHealth => 'Health';
+
+  @override
+  String get categoryEducation => 'Education';
+
+  @override
+  String get categoryEntertainment => 'Fun';
+
+  @override
+  String get categoryPets => 'Pets';
+
+  @override
+  String get categoryOther => 'Other';
+
+  @override
+  String get incomeKindSalary => 'My usual pay';
+
+  @override
+  String get incomeKindExtra => 'Extra income';
+
+  @override
+  String get incomeKindCash => 'Cash income';
+
+  @override
+  String get incomeKindRefund => 'Refund';
+
+  @override
+  String get incomeAllocationCycle => 'This cycle';
+
+  @override
+  String get incomeAllocationSavings => 'Savings';
+
+  @override
+  String get payCycleSemiMonthly => 'Twice a month';
+
+  @override
+  String get payCycleBiweekly => 'Every two weeks';
+
+  @override
+  String get payCycleMonthly => 'Monthly';
+
+  @override
+  String get payCycleWeekly => 'Weekly';
+
+  @override
+  String get payCycleIrregular => 'No fixed date';
+
+  @override
+  String get cashResolutionExpense => 'Expense found';
+
+  @override
+  String get cashResolutionIncome => 'Cash income';
+
+  @override
+  String get cashResolutionTransfer => 'Moved between accounts';
+
+  @override
+  String get cashResolutionCorrection => 'Count correction';
+
+  @override
+  String get cashResolutionPending => 'Difference to sort out';
+
+  @override
+  String get paymentMethodCash => 'Cash';
+
+  @override
+  String get paymentMethodCard => 'Card';
+
+  @override
+  String get movementPending => 'Pending';
+
+  @override
+  String get movementCashCount => 'Cash count';
+
+  @override
+  String get xpCashCountTitle => 'Cash count';
+
+  @override
+  String get xpCashCountDetail => 'First count with XP this week';
+
+  @override
+  String get xpCycleInGreenSemiMonthly =>
+      'You closed the half-month in the green';
+
+  @override
+  String get xpCycleInGreenMonthly => 'You closed the month in the green';
+
+  @override
+  String get xpCycleInGreenWeekly => 'You closed the week in the green';
+
+  @override
+  String get xpCycleInGreenGeneric => 'You closed the cycle in the green';
+
+  @override
+  String get xpCycleInGreenDetail => 'How the budget ended up';
+
+  @override
+  String xpDaysUnderDailyLimitTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days under your limit',
+      one: '$count day under your limit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get xpDaysUnderDailyLimitDetail => 'Worked out once, at closing';
+
+  @override
+  String get xpFirstSuccessfulCycleTitle => 'First cycle in the green';
+
+  @override
+  String get xpFirstSuccessfulCycleDetail => 'One-time bonus';
+
+  @override
+  String get xpLevelTitle1 => 'Curious Michi';
+
+  @override
+  String get xpLevelTitle2 => 'Saver Michi';
+
+  @override
+  String get xpLevelTitle3 => 'Counter Michi';
+
+  @override
+  String get xpLevelTitle4 => 'Guardian Michi';
+
+  @override
+  String get xpLevelTitle5 => 'Master Michi';
+
+  @override
+  String xpNoticeCyclesClosedTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count cycles closed',
+      one: 'Cycle closed',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get xpNoticeCyclesClosedDetail => 'XP added automatically.';
+
+  @override
+  String get xpNoticeCashCountTitle => 'Cash count saved';
+
+  @override
+  String get xpNoticeCashCountDetail => 'First count with XP this week.';
+
+  @override
+  String get storeFailureGeneric =>
+      'We couldn\'t save that change. Please try again.';
+
+  @override
+  String get storeFailureBudgetBelowCycleIncome =>
+      'The total has to be more than the income already set aside for this cycle.';
+
+  @override
+  String get storeFailureFutureMovement =>
+      'You can\'t record something dated in the future.';
+
+  @override
+  String get storeFailureRestoreFailed => 'We couldn\'t restore the backup.';
+
+  @override
+  String get storeFailureOriginalNotKept =>
+      'We couldn\'t keep the original file.';
+
+  @override
+  String get storeFailureBackupNotSaved => 'We couldn\'t save the backup.';
+
+  @override
+  String get storeFailureSaveFailed => 'We couldn\'t save your data.';
+
+  @override
+  String get monthAbbr1 => 'Jan';
+
+  @override
+  String get monthAbbr2 => 'Feb';
+
+  @override
+  String get monthAbbr3 => 'Mar';
+
+  @override
+  String get monthAbbr4 => 'Apr';
+
+  @override
+  String get monthAbbr5 => 'May';
+
+  @override
+  String get monthAbbr6 => 'Jun';
+
+  @override
+  String get monthAbbr7 => 'Jul';
+
+  @override
+  String get monthAbbr8 => 'Aug';
+
+  @override
+  String get monthAbbr9 => 'Sep';
+
+  @override
+  String get monthAbbr10 => 'Oct';
+
+  @override
+  String get monthAbbr11 => 'Nov';
+
+  @override
+  String get monthAbbr12 => 'Dec';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get reduceMotion => 'Reduce motion';
+
+  @override
+  String get catMotionIdle => 'The cat is resting quietly';
+
+  @override
+  String get catMotionWalk => 'The cat is walking';
+
+  @override
+  String get catMotionCalculate => 'The cat is doing the math';
+
+  @override
+  String get catMotionSaving => 'The cat is putting coins in the piggy bank';
+
+  @override
+  String get catMotionCelebrate => 'The cat is celebrating';
+
+  @override
+  String get catMotionConcern => 'The cat looks worried about the budget';
+
+  @override
+  String get characterRoleIdle => 'The character is resting quietly';
+
+  @override
+  String get characterRoleActivity => 'The character is moving';
+
+  @override
+  String get characterRoleProcessing => 'The character is doing the math';
+
+  @override
+  String get characterRolePositive => 'The character shows a positive change';
+
+  @override
+  String get characterRoleSuccess => 'The character is celebrating';
+
+  @override
+  String get characterRoleWarning => 'The character looks worried';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get tabHome => 'Home';
+
+  @override
+  String get tabMovements => 'Activity';
+
+  @override
+  String get tabRegister => 'Add';
+
+  @override
+  String get tabBudget => 'Budget';
+
+  @override
+  String get tabSettings => 'Settings';
+
+  @override
+  String get xpHistoryTitle => 'Your progress';
+
+  @override
+  String xpTotal(int count) {
+    return '$count XP total';
+  }
+
+  @override
+  String get xpMaxLevel => 'Top level';
+
+  @override
+  String xpRemaining(int count) {
+    return '$count XP to go';
+  }
+
+  @override
+  String get xpHistoryHint =>
+      'XP is added automatically. Every row keeps the reason and the math, even if you close the app.';
+
+  @override
+  String get xpHistoryEmptyTitle => 'No XP yet';
+
+  @override
+  String get xpHistoryEmptyMessage =>
+      'Your first cash count of the week and the close of your cycle will show up here.';
+
+  @override
+  String xpAmount(int count) {
+    return '+$count XP';
+  }
+
+  @override
+  String get xpSeeCalculation => 'See the math';
+
+  @override
+  String get xpCalculationTitle => 'How this was worked out';
+
+  @override
+  String get xpDetailCycle => 'Cycle';
+
+  @override
+  String get xpDetailBudget => 'Budget';
+
+  @override
+  String get xpDetailSpent => 'Spent';
+
+  @override
+  String get xpDetailResult => 'Result';
+
+  @override
+  String get xpDetailRule => 'Rule';
+
+  @override
+  String get xpDetailCredited => 'XP added';
+
+  @override
+  String get xpRuleCashCount => 'Once a week at most';
+
+  @override
+  String xpRuleCycleInGreen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Reward scaled to $count days',
+      one: 'Reward scaled to $count day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String xpRuleDaysUnderDailyLimit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days × 5 XP',
+      one: '$count day × 5 XP',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get xpRuleFirstSuccessfulCycle => 'One-time 50 XP bonus';
+
+  @override
+  String get recoveryNotYet => 'We couldn\'t recover your data yet.';
+
+  @override
+  String get recoveryStartFreshQuestion => 'Start over?';
+
+  @override
+  String get recoveryStartFreshBody =>
+      'We\'ll keep a copy of the original file before creating new data.';
+
+  @override
+  String get recoveryStartFresh => 'Start over';
+
+  @override
+  String get recoveryTitle => 'We couldn\'t read your data';
+
+  @override
+  String get recoveryOriginalKept =>
+      'The original file is still saved. We haven\'t replaced or deleted it.';
+
+  @override
+  String get recoveryOptions =>
+      'You can try again, use the backup, or export the file to keep it.';
+
+  @override
+  String get recoveryRetrying => 'Trying again…';
+
+  @override
+  String get recoveryRetry => 'Try again';
+
+  @override
+  String get recoveryUseBackup => 'Use backup';
+
+  @override
+  String get recoveryExport => 'Export file';
+
+  @override
+  String get recoveryExported => 'Original file copied.';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String currencyChangeTitle(String code) {
+    return 'Switch to $code?';
+  }
+
+  @override
+  String currencyChangeBody(String example, String converted) {
+    return 'Your amounts aren\'t converted: $example stays $converted. Only the label changes.';
+  }
+
+  @override
+  String get currencyChangeConfirm => 'Change label';
+
+  @override
+  String get settingsCurrency => 'Currency';
+
+  @override
+  String get settingsBudgetCycle => 'Budget cycle';
+
+  @override
+  String get settingsCountDay => 'Count day';
+
+  @override
+  String get settingsCountDaySunday => 'Sunday';
+
+  @override
+  String get settingsReduceMotionHint =>
+      'Turns on by itself if your phone already asks for it.';
+
+  @override
+  String get settingsBackup => 'Data backup';
+
+  @override
+  String get settingsCopy => 'Copy';
+
+  @override
+  String get settingsBackupCopied => 'Backup copied to the clipboard.';
+
+  @override
+  String get settingsXpPreview => 'XP preview';
+
+  @override
+  String get settingsDesign => 'Design';
+
+  @override
+  String get settingsStorageNote =>
+      'Your data is kept on this device. You don\'t need an account to use Sobra.';
+
+  @override
+  String get settingsFixedInV1 => 'This one is fixed in version 1.';
+
+  @override
+  String get languageAutomatic => 'Automatic';
+
+  @override
+  String get languageAutomaticHint => 'Follows your phone';
+
+  @override
+  String get transactionsTitle => 'Activity';
+
+  @override
+  String get transactionsEmptyTitle => 'Nothing here yet';
+
+  @override
+  String get transactionsEmptyMessage =>
+      'Add your first expense and the cycle summary will show up here.';
+
+  @override
+  String get transactionsExpensePinned =>
+      'This expense came from a cash count. Count again to correct it.';
+
+  @override
+  String get transactionsIncomePinned =>
+      'This income came from a cash count. Count again to correct it.';
+
+  @override
+  String get transactionsExpenseDeleted => 'Expense deleted.';
+
+  @override
+  String get transactionsIncomeDeleted => 'Income deleted.';
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get identifyDifference => 'Sort out difference';
+
+  @override
+  String get editMovement => 'Edit entry';
+
+  @override
+  String get amount => 'Amount';
+
+  @override
+  String get editPendingHint =>
+      'The amount comes from your cash count. You can still change the category and the note.';
+
+  @override
+  String get category => 'Category';
+
+  @override
+  String get note => 'Note';
+
+  @override
+  String get noteExample => 'e.g. Tacos';
+
+  @override
+  String get replacesPendingHint =>
+      'This replaces the pending adjustment. It doesn\'t add another expense.';
+
+  @override
+  String get saveWithoutDuplicating => 'Save without duplicating';
+
+  @override
+  String get saveChanges => 'Save changes';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get budget => 'Budget';
+
+  @override
+  String get spent => 'Spent';
+
+  @override
+  String get appName => 'Sobra';
+
+  @override
+  String get homeCycleBalance => 'Cycle balance';
+
+  @override
+  String get homeTodayLeft => 'You have left today';
+
+  @override
+  String homeOverBudget(String budget) {
+    return 'You went over this cycle\'s $budget budget';
+  }
+
+  @override
+  String homeDailyLimit(String limit, String remaining) {
+    return 'Today\'s limit $limit · $remaining left in the cycle';
+  }
+
+  @override
+  String get homeCycleProgress => 'Cycle progress';
+
+  @override
+  String daysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '$count day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeCashEstimated => 'Estimated cash';
+
+  @override
+  String get homeCashUnset => 'Cash not set up';
+
+  @override
+  String homeLastCount(String amount) {
+    return 'Last count: $amount';
+  }
+
+  @override
+  String get homeFirstCountHint => 'Do a first count to get started.';
+
+  @override
+  String get homeRecentMovements => 'Recent activity';
+
+  @override
+  String get homeSeeAll => 'See all';
+
+  @override
+  String get homeGoingWell => 'Going well';
+
+  @override
+  String get homeAdjustCalmly => 'Let\'s adjust, calmly';
+
+  @override
+  String get budgetTitle => 'Budget';
+
+  @override
+  String get budgetCycleTotal => 'Cycle total';
+
+  @override
+  String get budgetTotal => 'Total budget';
+
+  @override
+  String budgetTooLow(String allocated) {
+    return 'The total has to be more than the income already set aside for this cycle ($allocated).';
+  }
+
+  @override
+  String get budgetChangedTitle => 'You changed your budget';
+
+  @override
+  String get budgetChangedBody =>
+      'What should we do with the category limits? Scaling them moves each one by the same proportion, so your split stays yours.';
+
+  @override
+  String get budgetKeepLimits => 'Keep them';
+
+  @override
+  String get budgetScaleLimits => 'Scale them proportionally';
+
+  @override
+  String get budgetByCategory => 'Budget by category';
+
+  @override
+  String budgetCategoryLimit(String category) {
+    return '$category limit';
+  }
+
+  @override
+  String budgetSpentOfLimit(String spent, String limit) {
+    return '$spent / $limit';
+  }
+
+  @override
+  String get budgetProjection => 'Projected at close';
+
+  @override
+  String get budgetEstimatedLeft => 'What you should have left';
+
+  @override
+  String get continueLabel => 'Continue';
+
+  @override
+  String get saving => 'Saving…';
+
+  @override
+  String dayOfMonth(int day) {
+    return 'Day $day';
+  }
+
+  @override
+  String get weekdayMonday => 'Monday';
+
+  @override
+  String get weekdayTuesday => 'Tuesday';
+
+  @override
+  String get weekdayWednesday => 'Wednesday';
+
+  @override
+  String get weekdayThursday => 'Thursday';
+
+  @override
+  String get weekdayFriday => 'Friday';
+
+  @override
+  String get weekdaySaturday => 'Saturday';
+
+  @override
+  String get weekdaySunday => 'Sunday';
+
+  @override
+  String get weekdayShortMonday => 'Mon';
+
+  @override
+  String get weekdayShortTuesday => 'Tue';
+
+  @override
+  String get weekdayShortWednesday => 'Wed';
+
+  @override
+  String get weekdayShortThursday => 'Thu';
+
+  @override
+  String get weekdayShortFriday => 'Fri';
+
+  @override
+  String get weekdayShortSaturday => 'Sat';
+
+  @override
+  String get weekdayShortSunday => 'Sun';
+
+  @override
+  String get registerTitle => 'Add';
+
+  @override
+  String get registerExpense => 'Expense';
+
+  @override
+  String get registerIncome => 'Income';
+
+  @override
+  String get registerAmountAboveZero => 'Enter an amount above zero.';
+
+  @override
+  String get registerNoFutureMovements =>
+      'You can\'t add anything dated in the future.';
+
+  @override
+  String get registerDate => 'Date';
+
+  @override
+  String get registerNoteExpenseExample => 'e.g. Taquería El Faro';
+
+  @override
+  String get registerNoteIncomeExample => 'e.g. Friday tips';
+
+  @override
+  String get registerPayment => 'Payment';
+
+  @override
+  String get registerPaymentHint => 'Cash comes off your count. Card doesn\'t.';
+
+  @override
+  String get registerIncomeKind => 'Kind of income';
+
+  @override
+  String get registerWhatToDo => 'What do you want to do?';
+
+  @override
+  String get registerThisCycle => 'This cycle';
+
+  @override
+  String get registerSaveIt => 'Save it';
+
+  @override
+  String get registerReceivedIn => 'You got it in';
+
+  @override
+  String get registerAccount => 'Account';
+
+  @override
+  String get registerReconcileQuestion =>
+      'Does this expense explain the difference?';
+
+  @override
+  String registerReconcileBody(String amount) {
+    return 'You have $amount pending from your last count. If it\'s the same expense, we\'ll match it without counting it twice.';
+  }
+
+  @override
+  String get registerReconcileNo => 'No, it\'s new';
+
+  @override
+  String get registerReconcileYes => 'Yes, match it';
+
+  @override
+  String get registerDifferenceReconciled => 'Difference matched';
+
+  @override
+  String get registerExpenseSaved => 'Expense saved';
+
+  @override
+  String get registerIncomeSaved => 'Income saved';
+
+  @override
+  String get cashCountTitle => 'Cash count';
+
+  @override
+  String get cashCountPickWhatHappened =>
+      'Pick what happened with the difference.';
+
+  @override
+  String get cashCountSavedWithoutDuplicates =>
+      'Count saved without duplicating anything.';
+
+  @override
+  String get cashCountPrompt => 'Count only the cash you have right now.';
+
+  @override
+  String get cashCountNoneYet => 'No count yet';
+
+  @override
+  String get cashCountResultPending =>
+      'The result shows up once you type the count.';
+
+  @override
+  String get cashCountBaselineHint =>
+      'This will be your starting point. It won\'t be recorded as income.';
+
+  @override
+  String get cashCountExpected => 'We expected';
+
+  @override
+  String get cashCountCounted => 'You counted';
+
+  @override
+  String get cashCountBalanced => 'It all adds up';
+
+  @override
+  String cashCountShort(String amount) {
+    return '$amount short';
+  }
+
+  @override
+  String cashCountExtra(String amount) {
+    return '$amount extra';
+  }
+
+  @override
+  String get cashCountWhatHappened => 'What happened?';
+
+  @override
+  String get cashCountHelperExpense =>
+      'It was an expense you hadn\'t recorded.';
+
+  @override
+  String get cashCountHelperIncome => 'It was new money you received.';
+
+  @override
+  String get cashCountHelperTransferOut =>
+      'You deposited it or moved it to another account.';
+
+  @override
+  String get cashCountHelperTransferIn =>
+      'You withdrew it or moved it from another account.';
+
+  @override
+  String get cashCountHelperCorrection => 'The earlier count was wrong.';
+
+  @override
+  String get cashCountHelperPending => 'Decide later.';
+
+  @override
+  String get cashCountSingleExpenseHint =>
+      'This creates one expense. You won\'t have to add it again.';
+
+  @override
+  String get cashCountNoteTipExample => 'e.g. Tip';
+
+  @override
+  String get cashCountWhatToDoWithMoney => 'What should we do with this money?';
+
+  @override
+  String get cashCountSaveFirst => 'Save first count';
+
+  @override
+  String get cashCountSave => 'Save count';
+
+  @override
+  String get cycleTitle => 'Your cycle';
+
+  @override
+  String get cycleCurrent => 'Current cycle';
+
+  @override
+  String get cycleInProgress => 'In progress';
+
+  @override
+  String get cycleUnchanged => 'Won\'t change';
+
+  @override
+  String get cycleNewFrequency => 'New frequency';
+
+  @override
+  String get cycleFirstPay => 'First payday';
+
+  @override
+  String get cyclePayDay => 'Payday';
+
+  @override
+  String get cycleNext => 'Next cycle';
+
+  @override
+  String cycleChangeAppliesRepeating(int days) {
+    return 'The change applies to the next cycle, and after that it renews every $days days.';
+  }
+
+  @override
+  String get cycleChangeApplies => 'The change applies to the next cycle.';
+
+  @override
+  String get cycleSaveChange => 'Save change';
+
+  @override
+  String get onboardingBudgetAboveZero => 'Enter a budget above zero.';
+
+  @override
+  String get onboardingCashOrSkip => 'Enter your cash or choose “Not now”.';
+
+  @override
+  String get onboardingStart => 'Start';
+
+  @override
+  String get onboardingTagline => 'Your money, no pressure.';
+
+  @override
+  String get onboardingPromise => 'We tell you how much you can spend today.';
+
+  @override
+  String get onboardingNoAccount => 'No account. Your data stays with you.';
+
+  @override
+  String get onboardingHowPaid => 'How do you get paid?';
+
+  @override
+  String get onboardingHowPaidHint => 'This sets the dates of your budget.';
+
+  @override
+  String get onboardingCycleHelperSemiMonthly =>
+      'Two paydays a month: the 15th and the last day.';
+
+  @override
+  String get onboardingCycleHelperMonthly => 'One payday a month.';
+
+  @override
+  String get onboardingCycleHelperWeekly => 'Every week.';
+
+  @override
+  String get onboardingCycleHelperIrregular => 'My income has no fixed date.';
+
+  @override
+  String get onboardingPlanWithoutFixedDate => 'Plan without a fixed date';
+
+  @override
+  String get onboardingWhichDayPaid => 'What day do you get paid?';
+
+  @override
+  String get onboardingSecondPayEndOfMonth => 'Second payday · end of month';
+
+  @override
+  String get onboardingHowManyDays => 'How many days do you want to plan for?';
+
+  @override
+  String get onboardingCyclePreview => 'Your cycle would look like this';
+
+  @override
+  String onboardingRepeatsEvery(int days) {
+    return 'When it ends, another $days-day stretch starts on its own.';
+  }
+
+  @override
+  String get onboardingShortMonthsNote =>
+      'The dates adjust themselves in short months.';
+
+  @override
+  String get onboardingBudgetQuestion =>
+      'How much do you want\nto spend this cycle?';
+
+  @override
+  String get onboardingNotNow => 'Not now';
+
+  @override
+  String get onboardingCashQuestion => 'How much cash\ndo you have today?';
+
+  @override
+  String get onboardingCashOptional =>
+      'Leave it empty if you\'d rather count later.';
+
+  @override
+  String get onboardingCashIsBaseline =>
+      'This will be your first count, not income.';
+
+  @override
+  String get onboardingGoHome => 'Go to Home';
+
+  @override
+  String get onboardingPlanReady => 'Your plan is ready';
+
+  @override
+  String get onboardingCanSpendToday => 'You can spend today';
+
+  @override
+  String onboardingStepOf(int step, int total) {
+    return '$step of $total';
+  }
+
+  @override
+  String progressPercent(int percent) {
+    return 'Progress $percent percent';
+  }
+
+  @override
+  String stepOf(int step, int total) {
+    return 'Step $step of $total';
+  }
+
+  @override
+  String xpOfTarget(int current, int target) {
+    return '$current / $target XP';
+  }
+
+  @override
+  String get xpCycleInGreenBiweekly => 'You closed the two weeks in the green';
+
+  @override
+  String get onboardingCycleHelperBiweekly =>
+      'Every two weeks, from my last payday.';
+
+  @override
+  String get cycleLastPayday => 'Last payday';
+
+  @override
+  String get onboardingWhenLastPaid => 'When was your last payday?';
+
+  @override
+  String get onboardingBiweeklyNeedsDate => 'Pick the day of your last payday.';
+
+  @override
+  String get pickDate => 'Pick a date';
+
+  @override
+  String movementSubtitle(String first, String second) {
+    return '$first · $second';
+  }
+}

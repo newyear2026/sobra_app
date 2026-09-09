@@ -8,6 +8,13 @@ import '../state/sobra_store.dart';
 
 enum SobraWidgetDestination { home, register }
 
+/// Turns a movement into the line the home screen widget shows.
+///
+/// The widget is the one surface with no element tree of its own, so the words
+/// cannot be built where every other row builds them. The app root hands this
+/// in once localizations resolve; see `SobraWidgetSync.movementLabeler`.
+typedef MovementLabeler = String Function(MoneyMovement movement);
+
 @immutable
 class SobraWidgetMovement {
   const SobraWidgetMovement({
@@ -20,14 +27,17 @@ class SobraWidgetMovement {
   final int amountCentavos;
   final String kind;
 
-  factory SobraWidgetMovement.fromMovement(MoneyMovement movement) {
+  factory SobraWidgetMovement.fromMovement(
+    MoneyMovement movement,
+    MovementLabeler label,
+  ) {
     final kind = switch (movement.type) {
       MovementType.income => 'income',
       MovementType.adjustment => 'adjustment',
       MovementType.expense => movement.expense?.category.name ?? 'expense',
     };
     return SobraWidgetMovement(
-      title: movement.title,
+      title: label(movement),
       amountCentavos: movement.amountCentavos,
       kind: kind,
     );
@@ -65,7 +75,10 @@ class SobraWidgetSnapshot {
   final bool reducedMotion;
   final List<SobraWidgetMovement> movements;
 
-  factory SobraWidgetSnapshot.fromStore(SobraStore store) {
+  factory SobraWidgetSnapshot.fromStore(
+    SobraStore store,
+    MovementLabeler label,
+  ) {
     final progress = store.budgetProgress.clamp(0.0, 1.0);
     return SobraWidgetSnapshot(
       hasCompletedOnboarding: store.hasCompletedOnboarding,
@@ -78,7 +91,7 @@ class SobraWidgetSnapshot {
       reducedMotion: store.reducedMotion,
       movements: store.movements
           .take(2)
-          .map(SobraWidgetMovement.fromMovement)
+          .map((movement) => SobraWidgetMovement.fromMovement(movement, label))
           .toList(growable: false),
     );
   }
@@ -117,6 +130,19 @@ abstract final class SobraWidgetSync {
 
   static SobraStore? _store;
   static bool _initialized = false;
+  static MovementLabeler _label = _untitled;
+
+  /// Until the app root resolves localizations there is nothing to call a
+  /// movement, and a widget row without its title still shows the amount.
+  static String _untitled(MoneyMovement movement) => '';
+
+  /// Set once the app can name a movement, and again whenever the locale
+  /// changes, which re-pushes the payload so the widget follows the app.
+  static set movementLabeler(MovementLabeler value) {
+    if (identical(_label, value)) return;
+    _label = value;
+    unawaited(_sync());
+  }
 
   static Future<void> initialize(SobraStore store) async {
     if (!_initialized) {
@@ -151,7 +177,7 @@ abstract final class SobraWidgetSync {
     try {
       await _channel.invokeMethod<void>(
         'updateWidgets',
-        SobraWidgetSnapshot.fromStore(store).toPlatformMap(),
+        SobraWidgetSnapshot.fromStore(store, _label).toPlatformMap(),
       );
     } on Object {
       // Widget sync must never prevent the budget itself from being saved.

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/generated/app_localizations.dart';
+import '../l10n/labels.dart';
 import '../models/expense_entry.dart';
 import '../models/money_movement.dart';
+import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import 'pixel_ui.dart';
 
@@ -19,6 +22,8 @@ class TransactionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final currency = SobraScope.of(context).currency;
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -32,14 +37,17 @@ class TransactionRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    entry.note,
+                    expenseTitle(l10n, entry),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: pixelText(size: 14, bold: true),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '${entry.category.label} · ${shortTime(entry.occurredAt)}',
+                    l10n.movementSubtitle(
+                      entry.category.label(l10n),
+                      shortTime(entry.occurredAt),
+                    ),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
@@ -48,7 +56,7 @@ class TransactionRow extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               '$minusSign'
-              '${formatMoney(entry.amountCentavos, currency: false)}',
+              '${formatMoney(currency, entry.amountCentavos, showCode: false)}',
               style: pixelText(size: 15, bold: true),
             ),
             ?trailing,
@@ -73,6 +81,8 @@ class MovementRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final currency = SobraScope.of(context).currency;
     final positive = movement.amountCentavos >= 0;
     final isAdjustment = movement.type == MovementType.adjustment;
     // The icon can take the plain accent; the amount and subtitle beside it
@@ -131,14 +141,14 @@ class MovementRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    movement.title,
+                    movementTitle(l10n, movement),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: pixelText(size: 14, bold: true),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    movement.subtitle,
+                    movementSubtitle(l10n, movement),
                     style: pixelText(
                       size: 12,
                       bold: movement.isPending,
@@ -160,7 +170,7 @@ class MovementRow extends StatelessWidget {
                   : positive
                   ? '+'
                   : minusSign}'
-              '${formatMoney(movement.amountCentavos.abs(), currency: false)}',
+              '${formatMoney(currency, movement.amountCentavos.abs(), showCode: false)}',
               style: pixelText(size: 15, bold: true, color: textColor),
             ),
             ?trailing,
