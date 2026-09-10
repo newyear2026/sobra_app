@@ -157,6 +157,10 @@ class TransactionsScreen extends StatelessWidget {
         children: [
           PixelTopBar(title: l10n.transactionsTitle),
           const SizedBox(height: 18),
+          if (store.cycleTransactions.isNotEmpty) ...[
+            _DailySpendCard(store: store),
+            const SizedBox(height: 20),
+          ],
           if (entries.isEmpty)
             PixelEmptyState(
               icon: Icons.receipt_long_outlined,
@@ -330,6 +334,73 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The cycle's shape, above the list that spells it out.
+class _DailySpendCard extends StatelessWidget {
+  const _DailySpendCard({required this.store});
+
+  final SobraStore store;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final bounds = store.cycleBounds;
+    // The even share of the budget, not `dailyAllowanceCentavos`: that one
+    // moves as the cycle is spent, so past days would be measured against a
+    // line that did not exist when they happened.
+    final perDay = bounds.lengthInDays <= 0
+        ? 0
+        : store.totalBudgetCentavos ~/ bounds.lengthInDays;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.dailySpendTitle,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 10),
+        PixelCard(
+          elevation: PixelElevation.none,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              DailySpendChart(
+                days: dailySpend(
+                  bounds: bounds,
+                  entries: store.cycleTransactions,
+                  today: store.today,
+                ),
+                dailyLimitCentavos: perDay,
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Text(
+                    shortCycleDate(l10n, bounds.start),
+                    style: pixelText(size: 12, color: AppColors.muted),
+                  ),
+                  const Spacer(),
+                  Text(
+                    l10n.dailySpendLimit(
+                      formatMoney(store.currency, perDay, showCode: false),
+                    ),
+                    style: pixelText(size: 12, color: AppColors.muted),
+                  ),
+                  const Spacer(),
+                  Text(
+                    shortCycleDate(l10n, bounds.end),
+                    style: pixelText(size: 12, color: AppColors.muted),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -173,6 +173,87 @@ class AppLocalizationsKo extends AppLocalizations {
   String get xpNoticeCashCountDetail => '이번 주 첫 집계예요.';
 
   @override
+  String xpLevelUpTitle(int level) {
+    return '레벨 $level 달성!';
+  }
+
+  @override
+  String get xpLevelUpContinue => '계속하기';
+
+  @override
+  String get dailyMissionTitle => '오늘의 미션';
+
+  @override
+  String get dailyMissionResetHint => '자정에 새로 시작되고, 밀린 미션은 쌓이지 않아요.';
+
+  @override
+  String dailyMissionProgress(int done, int total) {
+    return '$done / $total 완료';
+  }
+
+  @override
+  String get dailyMissionAllDone => '모두 완료';
+
+  @override
+  String get dailyMissionRecordTitle => '오늘 기록 남기기';
+
+  @override
+  String get dailyMissionRecordHint => '지출이나 수입 한 건';
+
+  @override
+  String get dailyMissionSameDayTitle => '그날 일은 그날에';
+
+  @override
+  String get dailyMissionSameDayHint => '발생한 날과 기록한 날이 같아야 해요';
+
+  @override
+  String get dailyMissionBudgetTitle => '예산 확인하기';
+
+  @override
+  String get dailyMissionBudgetHint => '예산 탭을 한 번 열기';
+
+  @override
+  String get dailyMissionDone => '완료';
+
+  @override
+  String get dailyMissionPending => '남음';
+
+  @override
+  String dailyMissionReadyAt(String time) {
+    return '완료 · $time';
+  }
+
+  @override
+  String dailyMissionBoardSummary(
+    int done,
+    int total,
+    int earned,
+    int possible,
+  ) {
+    return '$done / $total 완료 · 오늘 +$earned XP / +$possible XP';
+  }
+
+  @override
+  String get dailyMissionXpDetail => '오늘의 미션';
+
+  @override
+  String get xpRuleDailyMission => '하루에 한 번, 자정에 다시 시작';
+
+  @override
+  String xpNoticeMissionTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '미션 $count개 완료',
+      one: '미션 완료',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get xpNoticeMissionDetail => '오늘의 습관으로 XP가 적립됐어요.';
+
+  @override
   String get storeFailureGeneric => '변경 사항을 저장하지 못했어요. 다시 시도해 주세요.';
 
   @override
@@ -293,7 +374,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get tabBudget => '예산';
 
   @override
-  String get tabSettings => '설정';
+  String get tabSettings => '내 정보';
 
   @override
   String get xpHistoryTitle => '내 진행 상황';
@@ -412,7 +493,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get recoveryExported => '원본 파일을 복사했어요.';
 
   @override
-  String get settingsTitle => '설정';
+  String get settingsTitle => '내 정보';
 
   @override
   String get settingsLanguage => '언어';
@@ -440,9 +521,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsCountDay => '집계하는 날';
 
   @override
-  String get settingsCountDaySunday => '일요일';
-
-  @override
   String get settingsReduceMotionHint => '휴대폰에서 이미 설정했다면 자동으로 켜져요.';
 
   @override
@@ -464,7 +542,31 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsStorageNote => '데이터는 이 기기에만 저장돼요. Sobra를 쓰는 데 계정은 필요 없어요.';
 
   @override
-  String get settingsFixedInV1 => '이 항목은 버전 1에서 고정이에요.';
+  String get settingsSectionBudget => '예산';
+
+  @override
+  String get settingsSectionScreen => '화면';
+
+  @override
+  String get settingsSectionData => '데이터';
+
+  @override
+  String get settingsSectionDesign => '디자인';
+
+  @override
+  String settingsProfileStats(int movements, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      movements,
+      locale: localeName,
+      other: '기록 $movements건',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Sobra와 함께한 $days일',
+    );
+    return '$_temp0 · $_temp1';
+  }
 
   @override
   String get languageAutomatic => '자동';
@@ -474,6 +576,14 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get transactionsTitle => '내역';
+
+  @override
+  String get dailySpendTitle => '일별 지출';
+
+  @override
+  String dailySpendLimit(String amount) {
+    return '하루 $amount';
+  }
 
   @override
   String get transactionsEmptyTitle => '아직 내역이 없어요';
@@ -614,6 +724,47 @@ class AppLocalizationsKo extends AppLocalizations {
   String budgetTooLow(String allocated) {
     return '총액은 이번 주기에 배정한 수입($allocated)보다 커야 해요.';
   }
+
+  @override
+  String budgetSpentShare(int percent) {
+    return '예산의 $percent%';
+  }
+
+  @override
+  String budgetRingSpent(String amount) {
+    return '지출 $amount';
+  }
+
+  @override
+  String budgetRingLeft(String amount) {
+    return '$amount 남음';
+  }
+
+  @override
+  String budgetCategoryShare(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get cycleHistoryTitle => '지난 주기';
+
+  @override
+  String cycleHistorySummary(int green, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '주기 $total개 중 $green개 흑자',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cycleHistoryAmounts(String budget, String spent) {
+    return '예산 $budget · 지출 $spent';
+  }
+
+  @override
+  String get cycleHistoryEmpty => '아직 마감된 주기가 없어요.';
 
   @override
   String get budgetChangedTitle => '예산이 바뀌었어요';

@@ -8,9 +8,11 @@ import '../models/currency.dart';
 import '../l10n/labels.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
+import '../widgets/cat_sprite.dart';
 import '../widgets/pixel_ui.dart';
 import 'cycle_settings_screen.dart';
 import 'gamification_preview_screen.dart';
+import 'xp_history_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -27,21 +29,10 @@ class SettingsScreen extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
         children: [
           PixelTopBar(title: l10n.settingsTitle),
+          const SizedBox(height: 20),
+          _ProfileCard(store: store),
           const SizedBox(height: 24),
-          _SettingsRow(
-            icon: Icons.translate,
-            iconColor: AppColors.blue,
-            label: l10n.settingsLanguage,
-            value: SobraLanguage.fromCode(store.languageCode).label(l10n),
-            onTap: () => _pickLanguage(context, store),
-          ),
-          _SettingsRow(
-            icon: Icons.attach_money,
-            iconColor: AppColors.teal,
-            label: l10n.settingsCurrency,
-            value: store.currency.code,
-            onTap: () => _pickCurrency(context, store),
-          ),
+          _SectionHeader(l10n.settingsSectionBudget),
           _SettingsRow(
             icon: Icons.calendar_month,
             iconColor: AppColors.violet,
@@ -59,8 +50,24 @@ class SettingsScreen extends StatelessWidget {
             icon: Icons.event_available,
             iconColor: AppColors.blue,
             label: l10n.settingsCountDay,
-            value: l10n.settingsCountDaySunday,
-            onTap: () => _fixedSetting(context),
+            value: weekdayName(l10n, store.cashCountWeekday),
+            onTap: () => _pickCountDay(context, store),
+          ),
+          _SettingsRow(
+            icon: Icons.attach_money,
+            iconColor: AppColors.teal,
+            label: l10n.settingsCurrency,
+            value: store.currency.code,
+            onTap: () => _pickCurrency(context, store),
+          ),
+          const SizedBox(height: 10),
+          _SectionHeader(l10n.settingsSectionScreen),
+          _SettingsRow(
+            icon: Icons.translate,
+            iconColor: AppColors.blue,
+            label: l10n.settingsLanguage,
+            value: SobraLanguage.fromCode(store.languageCode).label(l10n),
+            onTap: () => _pickLanguage(context, store),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
@@ -103,6 +110,8 @@ class SettingsScreen extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 10),
+          _SectionHeader(l10n.settingsSectionData),
           _SettingsRow(
             icon: Icons.cloud_upload,
             iconColor: AppColors.teal,
@@ -116,7 +125,11 @@ class SettingsScreen extends StatelessWidget {
               );
             },
           ),
-          if (kDebugMode)
+          // Its own section: a design gallery is not data, and sitting beside
+          // the backup row made it look like one.
+          if (kDebugMode) ...[
+            const SizedBox(height: 10),
+            _SectionHeader(l10n.settingsSectionDesign),
             _SettingsRow(
               icon: Icons.auto_awesome,
               iconColor: AppColors.violet,
@@ -128,6 +141,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
             ),
+          ],
           const SizedBox(height: 18),
           Text(
             l10n.settingsStorageNote,
@@ -193,6 +207,35 @@ class SettingsScreen extends StatelessWidget {
     await guardStoreWrite(messenger, l10n, () => store.setCurrency(chosen));
   }
 
+  /// Chooses the day a cash-count week turns over.
+  Future<void> _pickCountDay(BuildContext context, SobraStore store) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final chosen = await showDialog<int>(
+      context: context,
+      builder: (dialogContext) => RadioGroup<int>(
+        groupValue: store.cashCountWeekday,
+        onChanged: (value) => Navigator.pop(dialogContext, value),
+        child: SimpleDialog(
+          title: Text(l10n.settingsCountDay),
+          children: [
+            for (var day = DateTime.monday; day <= DateTime.sunday; day++)
+              RadioListTile<int>(
+                value: day,
+                title: Text(weekdayName(l10n, day)),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (chosen == null) return;
+    await guardStoreWrite(
+      messenger,
+      l10n,
+      () => store.setCashCountWeekday(chosen),
+    );
+  }
+
   /// Offers the languages Sobra ships, plus following the phone.
   ///
   /// Language and currency are deliberately separate settings: somebody
@@ -228,10 +271,151 @@ class SettingsScreen extends StatelessWidget {
       () => store.setLanguageCode(chosen.code),
     );
   }
+}
 
-  void _fixedSetting(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context).settingsFixedInV1)),
+/// Michi, the level, and one light line of accumulated history.
+///
+/// This is the settings screen's counterpart to the home LevelStrip and its
+/// second doorway into the XP screen. It deliberately carries no money
+/// figures: those belong to Inicio, and repeating them here would give the
+/// same numbers two places to disagree.
+class _ProfileCard extends StatelessWidget {
+  const _ProfileCard({required this.store});
+
+  final SobraStore store;
+
+  /// Days since onboarding completed, counting the first day as day one.
+  int _daysWithSobra() {
+    final started = store.xpTrackingStartedAt;
+    if (started == null) return 1;
+    final startDay = DateTime(started.year, started.month, started.day);
+    return store.today.difference(startDay).inDays + 1;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final xp = store.xpProgress;
+    final progress = xp.targetLevelXp <= 0
+        ? 0.0
+        : xp.currentLevelXp / xp.targetLevelXp;
+
+    return PixelCard(
+      elevation: PixelElevation.hero,
+      color: AppColors.tealSoft,
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+      onTap: () => Navigator.of(
+        context,
+      ).push(MaterialPageRoute<void>(builder: (_) => const XpHistoryScreen())),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              // A portrait, not a scene: the shell keeps every tab alive in
+              // its IndexedStack, so a looping sprite here would tick and
+              // repaint behind every other screen. The still poster frame is
+              // also what reduced motion would show.
+              const CatSprite(
+                motion: CatMotion.idle,
+                width: 84,
+                animate: false,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: AppColors.teal,
+                            border: Border.all(
+                              color: AppColors.ink,
+                              width: 2.5,
+                            ),
+                          ),
+                          child: Text(
+                            '${xp.level}',
+                            style: pixelText(
+                              size: 15,
+                              bold: true,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            xpLevelTitle(l10n, xp.level),
+                            style: pixelText(size: 17, bold: true),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      l10n.settingsProfileStats(
+                        store.movements.length,
+                        _daysWithSobra(),
+                      ),
+                      style: pixelText(size: 12, color: AppColors.inkSoft),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right, color: AppColors.ink),
+            ],
+          ),
+          const SizedBox(height: 10),
+          SegmentedProgress(value: progress),
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              Text(
+                l10n.xpOfTarget(xp.currentLevelXp, xp.targetLevelXp),
+                style: pixelText(
+                  size: 12,
+                  bold: true,
+                  color: AppColors.inkSoft,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                xp.isMaxLevel
+                    ? l10n.xpMaxLevel
+                    : l10n.xpRemaining(xp.remainingXp),
+                style: pixelText(
+                  size: 12,
+                  bold: true,
+                  color: AppColors.inkSoft,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader(this.label);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10, left: 2),
+      child: Text(
+        label.toUpperCase(),
+        style: pixelText(size: 12, bold: true, color: AppColors.muted),
+      ),
     );
   }
 }

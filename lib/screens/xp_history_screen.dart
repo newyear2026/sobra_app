@@ -225,6 +225,9 @@ class _XpEventCard extends StatelessWidget {
       event.quantity ?? 0,
     ),
     XpEventKind.firstSuccessfulCycle => l10n.xpRuleFirstSuccessfulCycle,
+    XpEventKind.dailyMissionRecord ||
+    XpEventKind.dailyMissionSameDay ||
+    XpEventKind.dailyMissionBudget => l10n.xpRuleDailyMission,
   };
 
   IconData _iconFor(XpEventKind kind) => switch (kind) {
@@ -232,6 +235,9 @@ class _XpEventCard extends StatelessWidget {
     XpEventKind.cycleInGreen => Icons.check,
     XpEventKind.daysUnderDailyLimit => Icons.calendar_month_outlined,
     XpEventKind.firstSuccessfulCycle => Icons.star,
+    XpEventKind.dailyMissionRecord => Icons.edit_outlined,
+    XpEventKind.dailyMissionSameDay => Icons.today_outlined,
+    XpEventKind.dailyMissionBudget => Icons.bar_chart_outlined,
   };
 
   (Color, Color) _colorsFor(XpEventKind kind) => switch (kind) {
@@ -239,6 +245,9 @@ class _XpEventCard extends StatelessWidget {
     XpEventKind.cycleInGreen => (AppColors.tealSoft, AppColors.tealInk),
     XpEventKind.daysUnderDailyLimit => (AppColors.violetSoft, AppColors.violet),
     XpEventKind.firstSuccessfulCycle => (AppColors.blueSoft, AppColors.blue),
+    XpEventKind.dailyMissionRecord => (AppColors.tealSoft, AppColors.tealInk),
+    XpEventKind.dailyMissionSameDay => (AppColors.violetSoft, AppColors.violet),
+    XpEventKind.dailyMissionBudget => (AppColors.blueSoft, AppColors.blue),
   };
 }
 

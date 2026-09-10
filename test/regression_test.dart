@@ -108,6 +108,13 @@ void main() {
     for (var i = 0; i < 8; i++) {
       await tester.pump(const Duration(milliseconds: 300));
     }
+    // Recording today posts an XP toast over the nav. Hide it so the
+    // register tile can be tapped again.
+    ScaffoldMessenger.of(
+      tester.element(find.text('Movimientos recientes')),
+    ).hideCurrentSnackBar();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
 
     expect(store.transactions, hasLength(1));
     expect(find.byType(Dialog), findsNothing, reason: 'dialog must close');

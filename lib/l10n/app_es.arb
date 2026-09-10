@@ -76,6 +76,58 @@
   "xpNoticeCashCountTitle": "Conteo de efectivo guardado",
   "xpNoticeCashCountDetail": "Primer conteo con XP de la semana.",
 
+  "xpLevelUpTitle": "¡NIVEL {level}!",
+  "@xpLevelUpTitle": {
+    "description": "Headline of the celebration card shown once when the user reaches a new level.",
+    "placeholders": {
+      "level": { "type": "int" }
+    }
+  },
+  "xpLevelUpContinue": "Seguir",
+
+  "dailyMissionTitle": "Misión de hoy",
+  "dailyMissionResetHint": "Se renuevan a medianoche. No se acumulan.",
+  "dailyMissionProgress": "{done} de {total} listas",
+  "@dailyMissionProgress": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "dailyMissionAllDone": "¡Listas!",
+  "dailyMissionRecordTitle": "Registra un movimiento hoy",
+  "dailyMissionRecordHint": "Un gasto o un ingreso",
+  "dailyMissionSameDayTitle": "Anótalo el mismo día",
+  "dailyMissionSameDayHint": "El gasto y el registro, hoy",
+  "dailyMissionBudgetTitle": "Revisa tu presupuesto",
+  "dailyMissionBudgetHint": "Abre la pestaña Presupuesto",
+  "dailyMissionDone": "Completada",
+  "dailyMissionPending": "Pendiente",
+  "dailyMissionReadyAt": "Listo · {time}",
+  "@dailyMissionReadyAt": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "dailyMissionBoardSummary": "{done} de {total} listas · +{earned} XP de +{possible} XP hoy",
+  "@dailyMissionBoardSummary": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" },
+      "earned": { "type": "int" },
+      "possible": { "type": "int" }
+    }
+  },
+  "dailyMissionXpDetail": "Misión de hoy",
+  "xpRuleDailyMission": "Una vez al día; a medianoche empieza de nuevo",
+  "xpNoticeMissionTitle": "{count, plural, =1{Misión lista} other{{count} misiones listas}}",
+  "@xpNoticeMissionTitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "xpNoticeMissionDetail": "XP por el hábito de hoy.",
+
   "storeFailureGeneric": "No pudimos guardar el cambio. Vuelve a intentarlo.",
   "storeFailureBudgetBelowCycleIncome": "El total debe ser mayor que los ingresos asignados al ciclo.",
   "storeFailureFutureMovement": "No se permiten movimientos futuros.",
@@ -122,7 +174,7 @@
   "tabMovements": "Movim.",
   "tabRegister": "Registrar",
   "tabBudget": "Presup.",
-  "tabSettings": "Ajustes",
+  "tabSettings": "Mi Sobra",
 
   "xpHistoryTitle": "Tu progreso",
   "xpTotal": "{count} XP totales",
@@ -163,7 +215,7 @@
   "recoveryExport": "Exportar archivo",
   "recoveryExported": "Archivo original copiado.",
 
-  "settingsTitle": "Ajustes",
+  "settingsTitle": "Mi Sobra",
   "settingsLanguage": "Idioma",
   "currencyChangeTitle": "¿Cambiar a {code}?",
   "@currencyChangeTitle": {
@@ -181,7 +233,6 @@
   "settingsCurrency": "Moneda",
   "settingsBudgetCycle": "Ciclo de presupuesto",
   "settingsCountDay": "Día de conteo",
-  "settingsCountDaySunday": "Domingo",
   "settingsReduceMotionHint": "Se activa solo si tu teléfono ya lo pide.",
   "settingsBackup": "Respaldo de datos",
   "settingsCopy": "Copiar",
@@ -189,7 +240,21 @@
   "settingsXpPreview": "Vista previa XP",
   "settingsDesign": "Diseño",
   "settingsStorageNote": "Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobra.",
-  "settingsFixedInV1": "Esta opción queda fija en la versión 1.",
+  "settingsSectionBudget": "Presupuesto",
+  "settingsSectionScreen": "Pantalla",
+  "settingsSectionData": "Datos",
+  "settingsSectionDesign": "Diseño",
+  "@settingsSectionDesign": {
+    "description": "Groups the debug design gallery, which is not data and does not belong beside the backup row."
+  },
+  "settingsProfileStats": "{movements, plural, =1{1 movimiento} other{{movements} movimientos}} · {days, plural, =1{1 día con Sobra} other{{days} días con Sobra}}",
+  "@settingsProfileStats": {
+    "description": "The light history line under the profile card's name: how much the ledger has accumulated, without repeating the money figures the home screen already carries.",
+    "placeholders": {
+      "movements": { "type": "int" },
+      "days": { "type": "int" }
+    }
+  },
 
   "languageAutomatic": "Automático",
   "@languageAutomatic": {
@@ -198,6 +263,12 @@
   "languageAutomaticHint": "Sigue tu teléfono",
 
   "transactionsTitle": "Movimientos",
+  "dailySpendTitle": "Gasto por día",
+  "dailySpendLimit": "Límite de {amount} al día",
+  "@dailySpendLimit": {
+    "description": "The line across the daily chart: what one day of the cycle is worth.",
+    "placeholders": { "amount": { "type": "String" } }
+  },
   "transactionsEmptyTitle": "Aún no hay movimientos",
   "transactionsEmptyMessage": "Registra tu primer gasto y aquí verás el resumen del ciclo.",
   "transactionsExpensePinned": "Este gasto viene de un conteo de efectivo. Vuelve a contar para corregirlo.",
@@ -252,6 +323,37 @@
   "budgetTotal": "Presupuesto total",
   "budgetTooLow": "El total debe ser mayor que los ingresos asignados al ciclo ({allocated}).",
   "@budgetTooLow": { "placeholders": { "allocated": { "type": "String" } } },
+  "budgetSpentShare": "{percent}% del presupuesto",
+  "@budgetSpentShare": {
+    "description": "How much of the cycle's budget is already gone. Shown beside the ring, and in the danger colour once it passes 100.",
+    "placeholders": { "percent": { "type": "int" } }
+  },
+  "budgetRingSpent": "Gastado {amount}",
+  "@budgetRingSpent": { "placeholders": { "amount": { "type": "String" } } },
+  "budgetRingLeft": "Queda {amount}",
+  "@budgetRingLeft": { "placeholders": { "amount": { "type": "String" } } },
+  "budgetCategoryShare": "{percent}%",
+  "@budgetCategoryShare": {
+    "description": "A category's share of everything spent this cycle, shown next to its name.",
+    "placeholders": { "percent": { "type": "int" } }
+  },
+  "cycleHistoryTitle": "Ciclos anteriores",
+  "cycleHistorySummary": "{total, plural, =1{{green} de {total} ciclo en verde} other{{green} de {total} ciclos en verde}}",
+  "@cycleHistorySummary": {
+    "description": "How many of the closed cycles stayed inside their budget.",
+    "placeholders": {
+      "green": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "cycleHistoryAmounts": "Presupuesto {budget} · Gastado {spent}",
+  "@cycleHistoryAmounts": {
+    "placeholders": {
+      "budget": { "type": "String" },
+      "spent": { "type": "String" }
+    }
+  },
+  "cycleHistoryEmpty": "Aún no se ha cerrado ningún ciclo.",
   "budgetChangedTitle": "Cambiaste tu presupuesto",
   "budgetChangedBody": "¿Qué hacemos con los límites por categoría? Al ajustarlos, cada uno cambia en la misma proporción y conservas tu reparto.",
   "budgetKeepLimits": "Conservarlos",

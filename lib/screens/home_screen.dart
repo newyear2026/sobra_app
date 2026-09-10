@@ -11,6 +11,7 @@ import '../widgets/pixel_ui.dart';
 import '../widgets/transaction_row.dart';
 import 'app_shell.dart';
 import 'cash_count_screen.dart';
+import 'daily_mission_screen.dart';
 import 'xp_history_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -30,6 +31,7 @@ class HomeScreen extends StatelessWidget {
         !overCycleBudget &&
         store.spentTodayCentavos <= store.dailyAllowanceCentavos;
     final xp = store.xpProgress;
+    final missions = store.dailyMissions;
     final l10n = AppLocalizations.of(context);
     final currency = store.currency;
     final textTheme = Theme.of(context).textTheme;
@@ -115,6 +117,22 @@ class HomeScreen extends StatelessWidget {
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
                       builder: (_) => const XpHistoryScreen(),
+                    ),
+                  ),
+                  missionLabel: l10n.dailyMissionTitle,
+                  missionProgress: missions.allDone
+                      ? l10n.dailyMissionAllDone
+                      : l10n.dailyMissionProgress(
+                          missions.completedCount,
+                          missions.totalCount,
+                        ),
+                  missionXpLabel: missions.allDone
+                      ? l10n.dailyMissionAllDone
+                      : l10n.xpAmount(missions.possibleXp - missions.earnedXp),
+                  missionCompletedCount: missions.completedCount,
+                  onMissionTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const DailyMissionScreen(),
                     ),
                   ),
                 ),

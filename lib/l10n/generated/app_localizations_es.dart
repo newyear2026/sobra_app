@@ -175,6 +175,89 @@ class AppLocalizationsEs extends AppLocalizations {
   String get xpNoticeCashCountDetail => 'Primer conteo con XP de la semana.';
 
   @override
+  String xpLevelUpTitle(int level) {
+    return '¡NIVEL $level!';
+  }
+
+  @override
+  String get xpLevelUpContinue => 'Seguir';
+
+  @override
+  String get dailyMissionTitle => 'Misión de hoy';
+
+  @override
+  String get dailyMissionResetHint =>
+      'Se renuevan a medianoche. No se acumulan.';
+
+  @override
+  String dailyMissionProgress(int done, int total) {
+    return '$done de $total listas';
+  }
+
+  @override
+  String get dailyMissionAllDone => '¡Listas!';
+
+  @override
+  String get dailyMissionRecordTitle => 'Registra un movimiento hoy';
+
+  @override
+  String get dailyMissionRecordHint => 'Un gasto o un ingreso';
+
+  @override
+  String get dailyMissionSameDayTitle => 'Anótalo el mismo día';
+
+  @override
+  String get dailyMissionSameDayHint => 'El gasto y el registro, hoy';
+
+  @override
+  String get dailyMissionBudgetTitle => 'Revisa tu presupuesto';
+
+  @override
+  String get dailyMissionBudgetHint => 'Abre la pestaña Presupuesto';
+
+  @override
+  String get dailyMissionDone => 'Completada';
+
+  @override
+  String get dailyMissionPending => 'Pendiente';
+
+  @override
+  String dailyMissionReadyAt(String time) {
+    return 'Listo · $time';
+  }
+
+  @override
+  String dailyMissionBoardSummary(
+    int done,
+    int total,
+    int earned,
+    int possible,
+  ) {
+    return '$done de $total listas · +$earned XP de +$possible XP hoy';
+  }
+
+  @override
+  String get dailyMissionXpDetail => 'Misión de hoy';
+
+  @override
+  String get xpRuleDailyMission =>
+      'Una vez al día; a medianoche empieza de nuevo';
+
+  @override
+  String xpNoticeMissionTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count misiones listas',
+      one: 'Misión lista',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get xpNoticeMissionDetail => 'XP por el hábito de hoy.';
+
+  @override
   String get storeFailureGeneric =>
       'No pudimos guardar el cambio. Vuelve a intentarlo.';
 
@@ -300,7 +383,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tabBudget => 'Presup.';
 
   @override
-  String get tabSettings => 'Ajustes';
+  String get tabSettings => 'Mi Sobra';
 
   @override
   String get xpHistoryTitle => 'Tu progreso';
@@ -426,7 +509,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get recoveryExported => 'Archivo original copiado.';
 
   @override
-  String get settingsTitle => 'Ajustes';
+  String get settingsTitle => 'Mi Sobra';
 
   @override
   String get settingsLanguage => 'Idioma';
@@ -454,9 +537,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsCountDay => 'Día de conteo';
 
   @override
-  String get settingsCountDaySunday => 'Domingo';
-
-  @override
   String get settingsReduceMotionHint =>
       'Se activa solo si tu teléfono ya lo pide.';
 
@@ -480,7 +560,33 @@ class AppLocalizationsEs extends AppLocalizations {
       'Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobra.';
 
   @override
-  String get settingsFixedInV1 => 'Esta opción queda fija en la versión 1.';
+  String get settingsSectionBudget => 'Presupuesto';
+
+  @override
+  String get settingsSectionScreen => 'Pantalla';
+
+  @override
+  String get settingsSectionData => 'Datos';
+
+  @override
+  String get settingsSectionDesign => 'Diseño';
+
+  @override
+  String settingsProfileStats(int movements, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      movements,
+      locale: localeName,
+      other: '$movements movimientos',
+      one: '1 movimiento',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days días con Sobra',
+      one: '1 día con Sobra',
+    );
+    return '$_temp0 · $_temp1';
+  }
 
   @override
   String get languageAutomatic => 'Automático';
@@ -490,6 +596,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get transactionsTitle => 'Movimientos';
+
+  @override
+  String get dailySpendTitle => 'Gasto por día';
+
+  @override
+  String dailySpendLimit(String amount) {
+    return 'Límite de $amount al día';
+  }
 
   @override
   String get transactionsEmptyTitle => 'Aún no hay movimientos';
@@ -634,6 +748,48 @@ class AppLocalizationsEs extends AppLocalizations {
   String budgetTooLow(String allocated) {
     return 'El total debe ser mayor que los ingresos asignados al ciclo ($allocated).';
   }
+
+  @override
+  String budgetSpentShare(int percent) {
+    return '$percent% del presupuesto';
+  }
+
+  @override
+  String budgetRingSpent(String amount) {
+    return 'Gastado $amount';
+  }
+
+  @override
+  String budgetRingLeft(String amount) {
+    return 'Queda $amount';
+  }
+
+  @override
+  String budgetCategoryShare(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get cycleHistoryTitle => 'Ciclos anteriores';
+
+  @override
+  String cycleHistorySummary(int green, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '$green de $total ciclos en verde',
+      one: '$green de $total ciclo en verde',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cycleHistoryAmounts(String budget, String spent) {
+    return 'Presupuesto $budget · Gastado $spent';
+  }
+
+  @override
+  String get cycleHistoryEmpty => 'Aún no se ha cerrado ningún ciclo.';
 
   @override
   String get budgetChangedTitle => 'Cambiaste tu presupuesto';

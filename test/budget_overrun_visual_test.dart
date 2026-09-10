@@ -45,6 +45,7 @@ void main() {
       occurredAt: now,
       paymentMethod: PaymentMethod.card,
     );
+    store.takePendingXpNotice();
 
     await tester.pumpWidget(SobraApp(store: store));
     await tester.pump();

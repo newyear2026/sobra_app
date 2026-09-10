@@ -125,6 +125,12 @@ class _AppShellState extends State<AppShell> {
       if (!mounted) return;
       final notice = _store?.takePendingXpNotice();
       if (notice == null) return;
+      final newLevel = notice.newLevel;
+      if (newLevel != null) {
+        // A level-up is rare enough to interrupt for; everyday XP is not.
+        unawaited(showLevelUpCelebration(context, newLevel));
+        return;
+      }
       final messenger = ScaffoldMessenger.of(context);
       messenger
         ..hideCurrentSnackBar()
@@ -132,7 +138,12 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
-  void _select(AppTab tab) => setState(() => _selected = tab);
+  void _select(AppTab tab) {
+    setState(() => _selected = tab);
+    if (tab == AppTab.budget) {
+      unawaited(_store?.noteBudgetReviewed() ?? Future<void>.value());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

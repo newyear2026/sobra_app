@@ -75,7 +75,7 @@ void main() {
   group('a movement subtitle', () {
     test('pairs an expense category with how it was paid', () {
       expect(
-        movementSubtitle(l10n, _expenseMovement(expense())),
+        movementSubtitle(l10n, _expenseMovement(expense(note: 'Tacos'))),
         'Comida · Efectivo',
       );
       expect(
@@ -83,12 +83,26 @@ void main() {
           l10n,
           _expenseMovement(
             expense(
+              note: 'Metro',
               category: ExpenseCategory.transport,
               paymentMethod: PaymentMethod.card,
             ),
           ),
         ),
         'Transporte · Tarjeta',
+      );
+    });
+
+    // Without a note the headline is the category already, so repeating it
+    // here would give a row reading "Comida / Comida · Efectivo".
+    test('drops the category the headline is already showing', () {
+      expect(movementSubtitle(l10n, _expenseMovement(expense())), 'Efectivo');
+      expect(
+        movementSubtitle(
+          l10n,
+          _expenseMovement(expense(paymentMethod: PaymentMethod.card)),
+        ),
+        'Tarjeta',
       );
     });
 
@@ -117,7 +131,28 @@ void main() {
         income: income,
       );
       expect(incomeTitle(l10n, income), 'Ingreso extra');
-      expect(movementSubtitle(l10n, movement), 'Ingreso extra · Ahorro');
+      expect(
+        movementSubtitle(l10n, movement),
+        'Ahorro',
+        reason: 'the headline is already "Ingreso extra"',
+      );
+
+      final noted = MoneyMovement(
+        id: 'income-2',
+        amountCentavos: 25000,
+        occurredAt: moment,
+        type: MovementType.income,
+        income: IncomeEntry(
+          id: 'income-2',
+          amountCentavos: 25000,
+          kind: IncomeKind.extra,
+          note: 'Reembolso',
+          occurredAt: moment,
+          destination: PaymentMethod.card,
+          allocation: IncomeAllocation.savings,
+        ),
+      );
+      expect(movementSubtitle(l10n, noted), 'Ingreso extra · Ahorro');
     });
 
     test('says where a standalone adjustment came from', () {

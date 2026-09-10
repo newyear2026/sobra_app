@@ -1,4 +1,5 @@
 import '../models/cash_reconciliation.dart';
+import '../models/daily_mission.dart';
 import '../models/expense_entry.dart';
 import '../models/income_entry.dart';
 import '../models/money_movement.dart';
@@ -110,19 +111,30 @@ String movementTitle(AppLocalizations l10n, MoneyMovement movement) {
 String movementSubtitle(AppLocalizations l10n, MoneyMovement movement) {
   final expense = movement.expense;
   if (expense != null) {
-    return l10n.movementSubtitle(
-      expense.isPendingCashAdjustment
-          ? l10n.movementPending
-          : expense.category.label(l10n),
-      expense.paymentMethod.label(l10n),
-    );
+    if (expense.isPendingCashAdjustment) {
+      return l10n.movementSubtitle(
+        l10n.movementPending,
+        expense.paymentMethod.label(l10n),
+      );
+    }
+    // Without a note the headline is already the category, and repeating it
+    // here gives a row that reads "Comida / Comida · Efectivo". The line
+    // drops to what the headline is not saying.
+    return expense.note.trim().isEmpty
+        ? expense.paymentMethod.label(l10n)
+        : l10n.movementSubtitle(
+            expense.category.label(l10n),
+            expense.paymentMethod.label(l10n),
+          );
   }
   final income = movement.income;
   if (income != null) {
-    return l10n.movementSubtitle(
-      income.kind.label(l10n),
-      income.allocation.label(l10n),
-    );
+    return income.note.trim().isEmpty
+        ? income.allocation.label(l10n)
+        : l10n.movementSubtitle(
+            income.kind.label(l10n),
+            income.allocation.label(l10n),
+          );
   }
   return l10n.movementCashCount;
 }
@@ -149,6 +161,9 @@ extension XpEventKindL10n on XpEventKind {
       quantity ?? 0,
     ),
     XpEventKind.firstSuccessfulCycle => l10n.xpFirstSuccessfulCycleTitle,
+    XpEventKind.dailyMissionRecord => l10n.dailyMissionRecordTitle,
+    XpEventKind.dailyMissionSameDay => l10n.dailyMissionSameDayTitle,
+    XpEventKind.dailyMissionBudget => l10n.dailyMissionBudgetTitle,
   };
 
   String shortDetail(AppLocalizations l10n) => switch (this) {
@@ -156,12 +171,29 @@ extension XpEventKindL10n on XpEventKind {
     XpEventKind.cycleInGreen => l10n.xpCycleInGreenDetail,
     XpEventKind.daysUnderDailyLimit => l10n.xpDaysUnderDailyLimitDetail,
     XpEventKind.firstSuccessfulCycle => l10n.xpFirstSuccessfulCycleDetail,
+    XpEventKind.dailyMissionRecord ||
+    XpEventKind.dailyMissionSameDay ||
+    XpEventKind.dailyMissionBudget => l10n.dailyMissionXpDetail,
   };
 }
 
 extension XpEventL10n on XpEvent {
   String title(AppLocalizations l10n) =>
       kind.title(l10n, quantity: quantity, cycleType: cycleType);
+}
+
+extension DailyMissionKindL10n on DailyMissionKind {
+  String title(AppLocalizations l10n) => switch (this) {
+    DailyMissionKind.recordMovement => l10n.dailyMissionRecordTitle,
+    DailyMissionKind.sameDay => l10n.dailyMissionSameDayTitle,
+    DailyMissionKind.reviewBudget => l10n.dailyMissionBudgetTitle,
+  };
+
+  String hint(AppLocalizations l10n) => switch (this) {
+    DailyMissionKind.recordMovement => l10n.dailyMissionRecordHint,
+    DailyMissionKind.sameDay => l10n.dailyMissionSameDayHint,
+    DailyMissionKind.reviewBudget => l10n.dailyMissionBudgetHint,
+  };
 }
 
 /// The name of a level, from 1 up to [XpProgress.levelCount].
@@ -179,12 +211,16 @@ String xpNoticeTitle(AppLocalizations l10n, XpNotice notice) =>
         notice.closedCycles,
       ),
       XpNoticeKind.cashCountSaved => l10n.xpNoticeCashCountTitle,
+      XpNoticeKind.missionCompleted => l10n.xpNoticeMissionTitle(
+        notice.missionCount,
+      ),
     };
 
 String xpNoticeDetail(AppLocalizations l10n, XpNotice notice) =>
     switch (notice.kind) {
       XpNoticeKind.cyclesClosed => l10n.xpNoticeCyclesClosedDetail,
       XpNoticeKind.cashCountSaved => l10n.xpNoticeCashCountDetail,
+      XpNoticeKind.missionCompleted => l10n.xpNoticeMissionDetail,
     };
 
 /// The sentence to show when a store write did not go through.

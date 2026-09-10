@@ -7,6 +7,7 @@ import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
 import '../widgets/pixel_ui.dart';
+import 'cycle_history_screen.dart';
 
 class BudgetScreen extends StatelessWidget {
   const BudgetScreen({super.key});
@@ -123,6 +124,21 @@ class BudgetScreen extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 16),
+            _CycleRingCard(store: store),
+            // Only once there is a closed cycle to look back at: an empty
+            // history says nothing the rest of this screen does not.
+            if (store.cycleRecords.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              InkWell(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const CycleHistoryScreen(),
+                  ),
+                ),
+                child: CycleHistorySummary(records: store.cycleRecords),
+              ),
+            ],
             const SizedBox(height: 24),
             Text(
               l10n.budgetByCategory,
@@ -163,9 +179,32 @@ class BudgetScreen extends StatelessWidget {
                             Row(
                               children: [
                                 Expanded(
-                                  child: Text(
-                                    category.label(l10n),
-                                    style: pixelText(size: 15, bold: true),
+                                  child: Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          category.label(l10n),
+                                          style: pixelText(
+                                            size: 15,
+                                            bold: true,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      if (spent > 0) ...[
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          l10n.budgetCategoryShare(
+                                            _shareOfSpending(store, spent),
+                                          ),
+                                          style: pixelText(
+                                            size: 12,
+                                            bold: true,
+                                            color: AppColors.muted,
+                                          ),
+                                        ),
+                                      ],
+                                    ],
                                   ),
                                 ),
                                 Text(
@@ -327,6 +366,86 @@ class _AmountDialogState extends State<_AmountDialog> {
           child: Text(l10n.save),
         ),
       ],
+    );
+  }
+}
+
+/// A category's share of everything spent this cycle, rounded for reading.
+///
+/// Floors at 1 for anything that was actually spent: a row showing a figure
+/// beside "0%" reads as a bug rather than as a small number.
+int _shareOfSpending(SobraStore store, int spent) {
+  final total = store.totalSpentCentavos;
+  if (total <= 0 || spent <= 0) return 0;
+  final share = spent * 100 / total;
+  return share < 1 ? 1 : share.round();
+}
+
+/// The whole cycle in one ring, with the figures it cannot draw beside it.
+class _CycleRingCard extends StatelessWidget {
+  const _CycleRingCard({required this.store});
+
+  final SobraStore store;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final currency = store.currency;
+    final budget = store.totalBudgetCentavos;
+    final spent = store.totalSpentCentavos;
+    final remaining = store.remainingBudgetCentavos;
+    final percent = budget <= 0 ? 0 : (spent * 100 / budget).round();
+    // Past a hundred the ring is full and has nothing left to say — and worse,
+    // what it says depends on which categories the money went to. Overspend
+    // mostly on Hogar and the full ring comes out teal, which is the colour
+    // this app uses for going well. So the card carries the warning: a wash of
+    // colour behind everything, rather than one small line of red text losing
+    // an argument with a big teal circle.
+    final over = remaining < 0;
+    final ink = over ? AppColors.dangerInk : AppColors.ink;
+
+    return PixelCard(
+      elevation: PixelElevation.none,
+      color: over ? AppColors.dangerSoft : AppColors.surface,
+      borderColor: ink,
+      child: Row(
+        children: [
+          CategoryRing(
+            spentByCategory: {
+              for (final category in ExpenseCategory.values)
+                category: store.spentFor(category),
+            },
+            budgetCentavos: budget,
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.budgetSpentShare(percent),
+                  style: pixelText(size: 15, bold: true, color: ink),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  l10n.budgetRingSpent(formatMoney(currency, spent)),
+                  style: pixelText(
+                    size: 12,
+                    color: over ? AppColors.dangerInk : AppColors.muted,
+                  ),
+                ),
+                Text(
+                  l10n.budgetRingLeft(formatMoney(currency, remaining)),
+                  style: pixelText(
+                    size: 12,
+                    color: over ? AppColors.dangerInk : AppColors.muted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

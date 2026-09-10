@@ -5,6 +5,9 @@ enum XpEventKind {
   cycleInGreen,
   daysUnderDailyLimit,
   firstSuccessfulCycle,
+  dailyMissionRecord,
+  dailyMissionSameDay,
+  dailyMissionBudget,
 }
 
 class XpEvent {
@@ -82,10 +85,16 @@ class XpEvent {
 /// notice is produced when a cycle settles and read on a later frame, possibly
 /// after the locale has changed, so the wording is built at the moment it is
 /// shown rather than at the moment it is earned. See `l10n/labels.dart`.
-enum XpNoticeKind { cyclesClosed, cashCountSaved }
+enum XpNoticeKind { cyclesClosed, cashCountSaved, missionCompleted }
 
 class XpNotice {
-  const XpNotice({required this.kind, required this.xp, this.closedCycles = 0});
+  const XpNotice({
+    required this.kind,
+    required this.xp,
+    this.closedCycles = 0,
+    this.missionCount = 0,
+    this.newLevel,
+  });
 
   final XpNoticeKind kind;
   final int xp;
@@ -93,6 +102,19 @@ class XpNotice {
   /// How many cycles the settlement closed. Only meaningful for
   /// [XpNoticeKind.cyclesClosed], where it decides singular from plural.
   final int closedCycles;
+
+  /// How many daily missions this award completed at once.
+  ///
+  /// Recording today's movement can finish two missions in one write.
+  /// Only meaningful for [XpNoticeKind.missionCompleted].
+  final int missionCount;
+
+  /// The level this award reached, when it crossed a level boundary.
+  ///
+  /// Null for the everyday case where XP arrived but the level stayed put.
+  /// Level-ups are rare enough that the shell celebrates them with a card
+  /// instead of the usual quiet toast.
+  final int? newLevel;
 }
 
 class XpProgress {

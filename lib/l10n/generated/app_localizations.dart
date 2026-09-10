@@ -400,6 +400,131 @@ abstract class AppLocalizations {
   /// **'Primer conteo con XP de la semana.'**
   String get xpNoticeCashCountDetail;
 
+  /// Headline of the celebration card shown once when the user reaches a new level.
+  ///
+  /// In es, this message translates to:
+  /// **'¡NIVEL {level}!'**
+  String xpLevelUpTitle(int level);
+
+  /// No description provided for @xpLevelUpContinue.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguir'**
+  String get xpLevelUpContinue;
+
+  /// No description provided for @dailyMissionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Misión de hoy'**
+  String get dailyMissionTitle;
+
+  /// No description provided for @dailyMissionResetHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Se renuevan a medianoche. No se acumulan.'**
+  String get dailyMissionResetHint;
+
+  /// No description provided for @dailyMissionProgress.
+  ///
+  /// In es, this message translates to:
+  /// **'{done} de {total} listas'**
+  String dailyMissionProgress(int done, int total);
+
+  /// No description provided for @dailyMissionAllDone.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Listas!'**
+  String get dailyMissionAllDone;
+
+  /// No description provided for @dailyMissionRecordTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Registra un movimiento hoy'**
+  String get dailyMissionRecordTitle;
+
+  /// No description provided for @dailyMissionRecordHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Un gasto o un ingreso'**
+  String get dailyMissionRecordHint;
+
+  /// No description provided for @dailyMissionSameDayTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Anótalo el mismo día'**
+  String get dailyMissionSameDayTitle;
+
+  /// No description provided for @dailyMissionSameDayHint.
+  ///
+  /// In es, this message translates to:
+  /// **'El gasto y el registro, hoy'**
+  String get dailyMissionSameDayHint;
+
+  /// No description provided for @dailyMissionBudgetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu presupuesto'**
+  String get dailyMissionBudgetTitle;
+
+  /// No description provided for @dailyMissionBudgetHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Abre la pestaña Presupuesto'**
+  String get dailyMissionBudgetHint;
+
+  /// No description provided for @dailyMissionDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Completada'**
+  String get dailyMissionDone;
+
+  /// No description provided for @dailyMissionPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get dailyMissionPending;
+
+  /// No description provided for @dailyMissionReadyAt.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo · {time}'**
+  String dailyMissionReadyAt(String time);
+
+  /// No description provided for @dailyMissionBoardSummary.
+  ///
+  /// In es, this message translates to:
+  /// **'{done} de {total} listas · +{earned} XP de +{possible} XP hoy'**
+  String dailyMissionBoardSummary(
+    int done,
+    int total,
+    int earned,
+    int possible,
+  );
+
+  /// No description provided for @dailyMissionXpDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Misión de hoy'**
+  String get dailyMissionXpDetail;
+
+  /// No description provided for @xpRuleDailyMission.
+  ///
+  /// In es, this message translates to:
+  /// **'Una vez al día; a medianoche empieza de nuevo'**
+  String get xpRuleDailyMission;
+
+  /// No description provided for @xpNoticeMissionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Misión lista} other{{count} misiones listas}}'**
+  String xpNoticeMissionTitle(int count);
+
+  /// No description provided for @xpNoticeMissionDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'XP por el hábito de hoy.'**
+  String get xpNoticeMissionDetail;
+
   /// No description provided for @storeFailureGeneric.
   ///
   /// In es, this message translates to:
@@ -643,7 +768,7 @@ abstract class AppLocalizations {
   /// No description provided for @tabSettings.
   ///
   /// In es, this message translates to:
-  /// **'Ajustes'**
+  /// **'Mi Sobra'**
   String get tabSettings;
 
   /// No description provided for @xpHistoryTitle.
@@ -841,7 +966,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsTitle.
   ///
   /// In es, this message translates to:
-  /// **'Ajustes'**
+  /// **'Mi Sobra'**
   String get settingsTitle;
 
   /// No description provided for @settingsLanguage.
@@ -886,12 +1011,6 @@ abstract class AppLocalizations {
   /// **'Día de conteo'**
   String get settingsCountDay;
 
-  /// No description provided for @settingsCountDaySunday.
-  ///
-  /// In es, this message translates to:
-  /// **'Domingo'**
-  String get settingsCountDaySunday;
-
   /// No description provided for @settingsReduceMotionHint.
   ///
   /// In es, this message translates to:
@@ -934,11 +1053,35 @@ abstract class AppLocalizations {
   /// **'Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobra.'**
   String get settingsStorageNote;
 
-  /// No description provided for @settingsFixedInV1.
+  /// No description provided for @settingsSectionBudget.
   ///
   /// In es, this message translates to:
-  /// **'Esta opción queda fija en la versión 1.'**
-  String get settingsFixedInV1;
+  /// **'Presupuesto'**
+  String get settingsSectionBudget;
+
+  /// No description provided for @settingsSectionScreen.
+  ///
+  /// In es, this message translates to:
+  /// **'Pantalla'**
+  String get settingsSectionScreen;
+
+  /// No description provided for @settingsSectionData.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos'**
+  String get settingsSectionData;
+
+  /// Groups the debug design gallery, which is not data and does not belong beside the backup row.
+  ///
+  /// In es, this message translates to:
+  /// **'Diseño'**
+  String get settingsSectionDesign;
+
+  /// The light history line under the profile card's name: how much the ledger has accumulated, without repeating the money figures the home screen already carries.
+  ///
+  /// In es, this message translates to:
+  /// **'{movements, plural, =1{1 movimiento} other{{movements} movimientos}} · {days, plural, =1{1 día con Sobra} other{{days} días con Sobra}}'**
+  String settingsProfileStats(int movements, int days);
 
   /// The language setting that follows the phone. The names of the languages themselves are not translated — a reader looks for their own language written in it.
   ///
@@ -957,6 +1100,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Movimientos'**
   String get transactionsTitle;
+
+  /// No description provided for @dailySpendTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto por día'**
+  String get dailySpendTitle;
+
+  /// The line across the daily chart: what one day of the cycle is worth.
+  ///
+  /// In es, this message translates to:
+  /// **'Límite de {amount} al día'**
+  String dailySpendLimit(String amount);
 
   /// No description provided for @transactionsEmptyTitle.
   ///
@@ -1203,6 +1358,54 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'El total debe ser mayor que los ingresos asignados al ciclo ({allocated}).'**
   String budgetTooLow(String allocated);
+
+  /// How much of the cycle's budget is already gone. Shown beside the ring, and in the danger colour once it passes 100.
+  ///
+  /// In es, this message translates to:
+  /// **'{percent}% del presupuesto'**
+  String budgetSpentShare(int percent);
+
+  /// No description provided for @budgetRingSpent.
+  ///
+  /// In es, this message translates to:
+  /// **'Gastado {amount}'**
+  String budgetRingSpent(String amount);
+
+  /// No description provided for @budgetRingLeft.
+  ///
+  /// In es, this message translates to:
+  /// **'Queda {amount}'**
+  String budgetRingLeft(String amount);
+
+  /// A category's share of everything spent this cycle, shown next to its name.
+  ///
+  /// In es, this message translates to:
+  /// **'{percent}%'**
+  String budgetCategoryShare(int percent);
+
+  /// No description provided for @cycleHistoryTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ciclos anteriores'**
+  String get cycleHistoryTitle;
+
+  /// How many of the closed cycles stayed inside their budget.
+  ///
+  /// In es, this message translates to:
+  /// **'{total, plural, =1{{green} de {total} ciclo en verde} other{{green} de {total} ciclos en verde}}'**
+  String cycleHistorySummary(int green, int total);
+
+  /// No description provided for @cycleHistoryAmounts.
+  ///
+  /// In es, this message translates to:
+  /// **'Presupuesto {budget} · Gastado {spent}'**
+  String cycleHistoryAmounts(String budget, String spent);
+
+  /// No description provided for @cycleHistoryEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no se ha cerrado ningún ciclo.'**
+  String get cycleHistoryEmpty;
 
   /// No description provided for @budgetChangedTitle.
   ///

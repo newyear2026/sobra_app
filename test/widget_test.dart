@@ -45,7 +45,7 @@ void main() {
     expect(find.text('Inicio'), findsOneWidget);
     expect(find.text('Movim.'), findsOneWidget);
     expect(find.text('Presup.'), findsOneWidget);
-    expect(find.text('Ajustes'), findsOneWidget);
+    expect(find.text('Mi Sobra'), findsOneWidget);
     // The centre tile carries the add glyph instead of a text label.
     expect(find.byIcon(Icons.add), findsOneWidget);
   });

@@ -1,3 +1,6 @@
+import 'dart:math' as math;
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
@@ -916,6 +919,310 @@ class PaydayField extends StatelessWidget {
           ),
           Text(l10n.pickDate, style: pixelText(size: 12, bold: true)),
         ],
+      ),
+    );
+  }
+}
+
+/// Which category owns each block of [CategoryRing], or null for a block that
+/// has not been spent yet.
+///
+/// Rounding up matches [SegmentedProgress]: any spending at all claims a
+/// block, because a ring reading empty next to a non-zero figure is worse than
+/// one block of overstatement. Blocks are handed out largest-remainder, so the
+/// coloured run is always exactly as long as the filled run — a category can
+/// lose its block to rounding, but the ring can never gain or drop one.
+///
+/// Over budget every block is filled; the figure beside the ring is what says
+/// by how much, because the ring has no room left to say it.
+@visibleForTesting
+List<ExpenseCategory?> categoryRingSegments({
+  required Map<ExpenseCategory, int> spentByCategory,
+  required int budgetCentavos,
+  int segments = 12,
+}) {
+  final result = List<ExpenseCategory?>.filled(segments, null);
+  final spent = spentByCategory.values.fold(0, (sum, value) => sum + value);
+  if (budgetCentavos <= 0 || spent <= 0) return result;
+
+  final filled = math.min(segments, (spent / budgetCentavos * segments).ceil());
+
+  final ranked = spentByCategory.entries.where((e) => e.value > 0).toList()
+    ..sort((a, b) => b.value.compareTo(a.value));
+  final exact = {
+    for (final entry in ranked) entry.key: entry.value / spent * filled,
+  };
+  final blocks = {
+    for (final entry in exact.entries) entry.key: entry.value.floor(),
+  };
+  var spare = filled - blocks.values.fold(0, (sum, value) => sum + value);
+  final byRemainder = [
+    ...exact.keys,
+  ]..sort((a, b) => (exact[b]! - blocks[b]!).compareTo(exact[a]! - blocks[a]!));
+  for (final category in byRemainder) {
+    if (spare <= 0) break;
+    blocks[category] = blocks[category]! + 1;
+    spare--;
+  }
+
+  var index = 0;
+  for (final entry in ranked) {
+    for (var n = 0; n < blocks[entry.key]!; n++) {
+      if (index < filled) result[index++] = entry.key;
+    }
+  }
+  return result;
+}
+
+/// The cycle's budget as one ring: how much is gone, and what it went on.
+///
+/// The blocks carry the same colours the category icons do, so the ring reads
+/// without a legend — somebody who knows the red bowl is Comida already knows
+/// the red block is too.
+class CategoryRing extends StatelessWidget {
+  const CategoryRing({
+    super.key,
+    required this.spentByCategory,
+    required this.budgetCentavos,
+    this.diameter = 104,
+  });
+
+  final Map<ExpenseCategory, int> spentByCategory;
+  final int budgetCentavos;
+  final double diameter;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: diameter,
+    height: diameter,
+    child: CustomPaint(
+      painter: _CategoryRingPainter(
+        categoryRingSegments(
+          spentByCategory: spentByCategory,
+          budgetCentavos: budgetCentavos,
+        ),
+      ),
+    ),
+  );
+}
+
+class _CategoryRingPainter extends CustomPainter {
+  const _CategoryRingPainter(this.segments);
+
+  final List<ExpenseCategory?> segments;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final centre = Offset(size.width / 2, size.height / 2);
+    final outerR = size.shortestSide / 2 - 2;
+    final innerR = outerR * 0.6;
+    final outer = Rect.fromCircle(center: centre, radius: outerR);
+    final inner = Rect.fromCircle(center: centre, radius: innerR);
+
+    const gap = 0.09;
+    final step = 2 * math.pi / segments.length;
+    final sweep = step - gap;
+    final border = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5
+      ..strokeJoin = StrokeJoin.miter
+      ..color = AppColors.ink;
+
+    for (var i = 0; i < segments.length; i++) {
+      // Start at twelve o'clock so the biggest category reads first.
+      final start = -math.pi / 2 + i * step + gap / 2;
+      final path = Path()
+        ..arcTo(outer, start, sweep, true)
+        ..arcTo(inner, start + sweep, -sweep, false)
+        ..close();
+      final category = segments[i];
+      canvas
+        ..drawPath(
+          path,
+          Paint()
+            ..color = category == null
+                ? AppColors.beige
+                : categoryColor(category),
+        )
+        ..drawPath(path, border);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _CategoryRingPainter oldDelegate) =>
+      !listEquals(oldDelegate.segments, segments);
+}
+
+/// One day of a cycle, as the daily chart needs it.
+@immutable
+class DailySpend {
+  const DailySpend({
+    required this.day,
+    required this.centavos,
+    required this.isFuture,
+    required this.isToday,
+  });
+
+  final DateTime day;
+  final int centavos;
+
+  /// A day the cycle has not reached. Drawn differently from a day that came
+  /// and went without a peso: "nothing yet" and "nothing at all" are answers
+  /// to different questions, and a chart that draws them the same is lying to
+  /// whichever one the reader had in mind.
+  final bool isFuture;
+  final bool isToday;
+
+  @override
+  bool operator ==(Object other) =>
+      other is DailySpend &&
+      other.day == day &&
+      other.centavos == centavos &&
+      other.isFuture == isFuture &&
+      other.isToday == isToday;
+
+  @override
+  int get hashCode => Object.hash(day, centavos, isFuture, isToday);
+}
+
+/// Every day of [bounds], with what was spent on it.
+///
+/// Days with nothing on them are kept rather than dropped: the gaps are the
+/// point of the chart, and a bar per day only lines up with the calendar if
+/// the quiet days hold their place.
+List<DailySpend> dailySpend({
+  required CycleBounds bounds,
+  required Iterable<ExpenseEntry> entries,
+  required DateTime today,
+}) {
+  final start = dateOnly(bounds.start);
+  final now = dateOnly(today);
+  final totals = List<int>.filled(bounds.lengthInDays, 0);
+  for (final entry in entries) {
+    final index = dateOnly(entry.occurredAt).difference(start).inDays;
+    if (index >= 0 && index < totals.length) {
+      totals[index] += entry.amountCentavos;
+    }
+  }
+  return [
+    for (var i = 0; i < totals.length; i++)
+      DailySpend(
+        day: DateTime(start.year, start.month, start.day + i),
+        centavos: totals[i],
+        isFuture: DateTime(start.year, start.month, start.day + i).isAfter(now),
+        isToday: DateTime(start.year, start.month, start.day + i) == now,
+      ),
+  ];
+}
+
+/// A block per day of the cycle, against the day's share of the budget.
+///
+/// Blocks rather than a line, because every other quantity in this app is
+/// drawn as blocks — and because a cycle is a couple of dozen days at most,
+/// which is few enough to show one by one.
+class DailySpendChart extends StatelessWidget {
+  const DailySpendChart({
+    super.key,
+    required this.days,
+    required this.dailyLimitCentavos,
+  });
+
+  final List<DailySpend> days;
+  final int dailyLimitCentavos;
+
+  static const _barsHeight = 64.0;
+
+  @override
+  Widget build(BuildContext context) {
+    if (days.isEmpty) return const SizedBox.shrink();
+    final peak = [
+      dailyLimitCentavos,
+      ...days.map((day) => day.centavos),
+    ].reduce(math.max);
+    final limitTop = peak <= 0
+        ? _barsHeight
+        : _barsHeight * (1 - dailyLimitCentavos / peak);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: _barsHeight,
+          child: Stack(
+            children: [
+              // What one day is worth, so a red block reads as "over this"
+              // rather than merely "bigger than the others".
+              if (dailyLimitCentavos > 0)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: limitTop,
+                  child: Container(height: 1.5, color: AppColors.muted),
+                ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  for (var i = 0; i < days.length; i++) ...[
+                    if (i > 0) const SizedBox(width: 3),
+                    Expanded(
+                      child: _Bar(
+                        day: days[i],
+                        peak: peak,
+                        limit: dailyLimitCentavos,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 4),
+        // The today marker sits under the bars, on the same grid, so it points
+        // at a column instead of floating near one.
+        Row(
+          children: [
+            for (var i = 0; i < days.length; i++) ...[
+              if (i > 0) const SizedBox(width: 3),
+              Expanded(
+                child: Container(
+                  height: 4,
+                  color: days[i].isToday ? AppColors.ink : Colors.transparent,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _Bar extends StatelessWidget {
+  const _Bar({required this.day, required this.peak, required this.limit});
+
+  final DailySpend day;
+  final int peak;
+  final int limit;
+
+  @override
+  Widget build(BuildContext context) {
+    if (day.centavos <= 0) {
+      // A stub either way, but a paler one for a day that has not happened.
+      return Container(
+        height: 3,
+        color: day.isFuture ? AppColors.beige : AppColors.muted,
+      );
+    }
+    final height = peak <= 0
+        ? 0.0
+        : math.max(6.0, DailySpendChart._barsHeight * day.centavos / peak);
+    final over = limit > 0 && day.centavos > limit;
+    return Container(
+      height: height,
+      decoration: BoxDecoration(
+        color: over ? AppColors.danger : AppColors.teal,
+        border: Border.all(color: AppColors.ink, width: 1.5),
       ),
     );
   }

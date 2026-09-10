@@ -64,6 +64,58 @@
   "xpNoticeCashCountTitle": "Cash count saved",
   "xpNoticeCashCountDetail": "First count with XP this week.",
 
+  "xpLevelUpTitle": "LEVEL {level}!",
+  "@xpLevelUpTitle": {
+    "description": "Headline of the celebration card shown once when the user reaches a new level.",
+    "placeholders": {
+      "level": { "type": "int" }
+    }
+  },
+  "xpLevelUpContinue": "Continue",
+
+  "dailyMissionTitle": "Today's mission",
+  "dailyMissionResetHint": "They reset at midnight. They don't pile up.",
+  "dailyMissionProgress": "{done} of {total} done",
+  "@dailyMissionProgress": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "dailyMissionAllDone": "All done",
+  "dailyMissionRecordTitle": "Record a movement today",
+  "dailyMissionRecordHint": "One expense or one income",
+  "dailyMissionSameDayTitle": "Log it the same day",
+  "dailyMissionSameDayHint": "The day it happened, and the day you write it",
+  "dailyMissionBudgetTitle": "Check your budget",
+  "dailyMissionBudgetHint": "Open the Budget tab",
+  "dailyMissionDone": "Done",
+  "dailyMissionPending": "To do",
+  "dailyMissionReadyAt": "Done · {time}",
+  "@dailyMissionReadyAt": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "dailyMissionBoardSummary": "{done} of {total} done · +{earned} XP of +{possible} XP today",
+  "@dailyMissionBoardSummary": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" },
+      "earned": { "type": "int" },
+      "possible": { "type": "int" }
+    }
+  },
+  "dailyMissionXpDetail": "Today's mission",
+  "xpRuleDailyMission": "Once a day; at midnight it starts over",
+  "xpNoticeMissionTitle": "{count, plural, =1{Mission done} other{{count} missions done}}",
+  "@xpNoticeMissionTitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "xpNoticeMissionDetail": "XP added for today's habit.",
+
   "storeFailureGeneric": "We couldn't save that change. Please try again.",
   "storeFailureBudgetBelowCycleIncome": "The total has to be more than the income already set aside for this cycle.",
   "storeFailureFutureMovement": "You can't record something dated in the future.",
@@ -110,7 +162,7 @@
   "tabMovements": "Activity",
   "tabRegister": "Add",
   "tabBudget": "Budget",
-  "tabSettings": "Settings",
+  "tabSettings": "My Sobra",
 
   "xpHistoryTitle": "Your progress",
   "xpTotal": "{count} XP total",
@@ -146,7 +198,7 @@
   "recoveryExport": "Export file",
   "recoveryExported": "Original file copied.",
 
-  "settingsTitle": "Settings",
+  "settingsTitle": "My Sobra",
   "settingsLanguage": "Language",
   "currencyChangeTitle": "Switch to {code}?",
   "currencyChangeBody": "Your amounts aren't converted: {example} stays {converted}. Only the label changes.",
@@ -154,7 +206,6 @@
   "settingsCurrency": "Currency",
   "settingsBudgetCycle": "Budget cycle",
   "settingsCountDay": "Count day",
-  "settingsCountDaySunday": "Sunday",
   "settingsReduceMotionHint": "Turns on by itself if your phone already asks for it.",
   "settingsBackup": "Data backup",
   "settingsCopy": "Copy",
@@ -162,12 +213,18 @@
   "settingsXpPreview": "XP preview",
   "settingsDesign": "Design",
   "settingsStorageNote": "Your data is kept on this device. You don't need an account to use Sobra.",
-  "settingsFixedInV1": "This one is fixed in version 1.",
+  "settingsSectionBudget": "Budget",
+  "settingsSectionScreen": "Display",
+  "settingsSectionData": "Data",
+  "settingsSectionDesign": "Design",
+  "settingsProfileStats": "{movements, plural, =1{1 movement} other{{movements} movements}} · {days, plural, =1{1 day with Sobra} other{{days} days with Sobra}}",
 
   "languageAutomatic": "Automatic",
   "languageAutomaticHint": "Follows your phone",
 
   "transactionsTitle": "Activity",
+  "dailySpendTitle": "Daily spending",
+  "dailySpendLimit": "{amount} a day",
   "transactionsEmptyTitle": "Nothing here yet",
   "transactionsEmptyMessage": "Add your first expense and the cycle summary will show up here.",
   "transactionsExpensePinned": "This expense came from a cash count. Count again to correct it.",
@@ -212,6 +269,14 @@
   "budgetCycleTotal": "Cycle total",
   "budgetTotal": "Total budget",
   "budgetTooLow": "The total has to be more than the income already set aside for this cycle ({allocated}).",
+  "budgetSpentShare": "{percent}% of the budget",
+  "budgetRingSpent": "Spent {amount}",
+  "budgetRingLeft": "{amount} left",
+  "budgetCategoryShare": "{percent}%",
+  "cycleHistoryTitle": "Past cycles",
+  "cycleHistorySummary": "{total, plural, =1{{green} of {total} cycle in the green} other{{green} of {total} cycles in the green}}",
+  "cycleHistoryAmounts": "Budget {budget} · Spent {spent}",
+  "cycleHistoryEmpty": "No cycle has closed yet.",
   "budgetChangedTitle": "You changed your budget",
   "budgetChangedBody": "What should we do with the category limits? Scaling them moves each one by the same proportion, so your split stays yours.",
   "budgetKeepLimits": "Keep them",

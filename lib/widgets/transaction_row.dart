@@ -44,10 +44,14 @@ class TransactionRow extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    l10n.movementSubtitle(
-                      entry.category.label(l10n),
-                      shortTime(entry.occurredAt),
-                    ),
+                    // Same rule as a movement row: a headline that already
+                    // says the category leaves the second line to the clock.
+                    entry.note.trim().isEmpty
+                        ? shortTime(entry.occurredAt)
+                        : l10n.movementSubtitle(
+                            entry.category.label(l10n),
+                            shortTime(entry.occurredAt),
+                          ),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],

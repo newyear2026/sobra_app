@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
@@ -76,6 +78,13 @@ class _CashCountScreenState extends State<CashCountScreen> {
     if (!saved || !mounted) return;
     Navigator.pop(context);
     final notice = xpNotice;
+    final newLevel = notice?.newLevel;
+    if (newLevel != null) {
+      // The count that crossed a level boundary: celebrate over the screen
+      // underneath instead of racing a toast against the pop transition.
+      unawaited(showLevelUpCelebration(context, newLevel));
+      return;
+    }
     messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(

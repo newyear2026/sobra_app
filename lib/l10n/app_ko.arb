@@ -68,6 +68,58 @@
   "xpNoticeCashCountTitle": "현금 집계 저장됨",
   "xpNoticeCashCountDetail": "이번 주 첫 집계예요.",
 
+  "xpLevelUpTitle": "레벨 {level} 달성!",
+  "@xpLevelUpTitle": {
+    "description": "Headline of the celebration card shown once when the user reaches a new level.",
+    "placeholders": {
+      "level": { "type": "int" }
+    }
+  },
+  "xpLevelUpContinue": "계속하기",
+
+  "dailyMissionTitle": "오늘의 미션",
+  "dailyMissionResetHint": "자정에 새로 시작되고, 밀린 미션은 쌓이지 않아요.",
+  "dailyMissionProgress": "{done} / {total} 완료",
+  "@dailyMissionProgress": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "dailyMissionAllDone": "모두 완료",
+  "dailyMissionRecordTitle": "오늘 기록 남기기",
+  "dailyMissionRecordHint": "지출이나 수입 한 건",
+  "dailyMissionSameDayTitle": "그날 일은 그날에",
+  "dailyMissionSameDayHint": "발생한 날과 기록한 날이 같아야 해요",
+  "dailyMissionBudgetTitle": "예산 확인하기",
+  "dailyMissionBudgetHint": "예산 탭을 한 번 열기",
+  "dailyMissionDone": "완료",
+  "dailyMissionPending": "남음",
+  "dailyMissionReadyAt": "완료 · {time}",
+  "@dailyMissionReadyAt": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "dailyMissionBoardSummary": "{done} / {total} 완료 · 오늘 +{earned} XP / +{possible} XP",
+  "@dailyMissionBoardSummary": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" },
+      "earned": { "type": "int" },
+      "possible": { "type": "int" }
+    }
+  },
+  "dailyMissionXpDetail": "오늘의 미션",
+  "xpRuleDailyMission": "하루에 한 번, 자정에 다시 시작",
+  "xpNoticeMissionTitle": "{count, plural, =1{미션 완료} other{미션 {count}개 완료}}",
+  "@xpNoticeMissionTitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "xpNoticeMissionDetail": "오늘의 습관으로 XP가 적립됐어요.",
+
   "storeFailureGeneric": "변경 사항을 저장하지 못했어요. 다시 시도해 주세요.",
   "storeFailureBudgetBelowCycleIncome": "총액은 이번 주기에 배정한 수입보다 커야 해요.",
   "storeFailureFutureMovement": "미래 날짜로는 기록할 수 없어요.",
@@ -114,7 +166,7 @@
   "tabMovements": "내역",
   "tabRegister": "기록",
   "tabBudget": "예산",
-  "tabSettings": "설정",
+  "tabSettings": "내 정보",
 
   "xpHistoryTitle": "내 진행 상황",
   "xpTotal": "총 {count} XP",
@@ -150,7 +202,7 @@
   "recoveryExport": "파일 내보내기",
   "recoveryExported": "원본 파일을 복사했어요.",
 
-  "settingsTitle": "설정",
+  "settingsTitle": "내 정보",
   "settingsLanguage": "언어",
   "currencyChangeTitle": "{code}로 바꿀까요?",
   "currencyChangeBody": "금액은 환산되지 않아요. {example}은(는) {converted}이(가) 돼요. 표기만 바뀝니다.",
@@ -158,7 +210,6 @@
   "settingsCurrency": "통화",
   "settingsBudgetCycle": "예산 주기",
   "settingsCountDay": "집계하는 날",
-  "settingsCountDaySunday": "일요일",
   "settingsReduceMotionHint": "휴대폰에서 이미 설정했다면 자동으로 켜져요.",
   "settingsBackup": "데이터 백업",
   "settingsCopy": "복사",
@@ -166,12 +217,18 @@
   "settingsXpPreview": "XP 미리보기",
   "settingsDesign": "디자인",
   "settingsStorageNote": "데이터는 이 기기에만 저장돼요. Sobra를 쓰는 데 계정은 필요 없어요.",
-  "settingsFixedInV1": "이 항목은 버전 1에서 고정이에요.",
+  "settingsSectionBudget": "예산",
+  "settingsSectionScreen": "화면",
+  "settingsSectionData": "데이터",
+  "settingsSectionDesign": "디자인",
+  "settingsProfileStats": "{movements, plural, other{기록 {movements}건}} · {days, plural, other{Sobra와 함께한 {days}일}}",
 
   "languageAutomatic": "자동",
   "languageAutomaticHint": "휴대폰 설정을 따라요",
 
   "transactionsTitle": "내역",
+  "dailySpendTitle": "일별 지출",
+  "dailySpendLimit": "하루 {amount}",
   "transactionsEmptyTitle": "아직 내역이 없어요",
   "transactionsEmptyMessage": "첫 지출을 기록하면 이번 주기 요약이 여기에 나와요.",
   "transactionsExpensePinned": "이 지출은 현금 집계에서 만들어졌어요. 고치려면 다시 세어 주세요.",
@@ -216,6 +273,14 @@
   "budgetCycleTotal": "주기 총액",
   "budgetTotal": "총예산",
   "budgetTooLow": "총액은 이번 주기에 배정한 수입({allocated})보다 커야 해요.",
+  "budgetSpentShare": "예산의 {percent}%",
+  "budgetRingSpent": "지출 {amount}",
+  "budgetRingLeft": "{amount} 남음",
+  "budgetCategoryShare": "{percent}%",
+  "cycleHistoryTitle": "지난 주기",
+  "cycleHistorySummary": "{total, plural, other{주기 {total}개 중 {green}개 흑자}}",
+  "cycleHistoryAmounts": "예산 {budget} · 지출 {spent}",
+  "cycleHistoryEmpty": "아직 마감된 주기가 없어요.",
   "budgetChangedTitle": "예산이 바뀌었어요",
   "budgetChangedBody": "분류별 한도는 어떻게 할까요? 비례로 조정하면 각 한도가 같은 비율로 바뀌어서 지금 배분이 그대로 유지돼요.",
   "budgetKeepLimits": "그대로 두기",

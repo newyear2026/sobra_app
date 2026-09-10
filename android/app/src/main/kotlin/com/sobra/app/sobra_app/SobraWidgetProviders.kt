@@ -124,14 +124,6 @@ object SobraWidgetUpdater {
                 R.id.days_remaining,
                 if (hasData) days(preferences.getInt("daysRemaining", 0)) else "Abre Sobra",
             )
-            setTextViewText(
-                R.id.total_budget,
-                if (hasData) money(preferences.getLong("totalBudgetCentavos", 0L)) else "\$—",
-            )
-            setTextViewText(
-                R.id.total_spent,
-                if (hasData) money(preferences.getLong("totalSpentCentavos", 0L)) else "\$—",
-            )
             applyProgress(
                 this,
                 if (hasData) preferences.getInt("progressSegments", 0) else 0,

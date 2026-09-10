@@ -5,8 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/cash_reconciliation.dart';
 import '../models/currency.dart';
-import '../models/language.dart';
+import '../models/cycle_record.dart';
+import '../models/daily_mission.dart';
 import '../models/expense_entry.dart';
+import '../models/language.dart';
 import '../models/income_entry.dart';
 import '../models/money_movement.dart';
 import '../models/pay_schedule.dart';
@@ -38,12 +40,20 @@ class SobraStore extends ChangeNotifier {
   final List<CashReconciliationEntry> _cashReconciliations = [];
   final List<XpEvent> _xpEvents = [];
   final Map<String, int> _cycleBudgetExtras = {};
+  final List<CycleRecord> _cycleRecords = [];
   int _idSequence = 0;
 
   int _baseBudgetCentavos = 600000;
   int countedCashCentavos = 0;
   int expectedCashCentavos = 0;
   bool reducedMotion = false;
+
+  /// The weekday a cash-count week turns over.
+  ///
+  /// The weekly cash-count XP can be earned once per week, and this is where
+  /// that week starts. Until it was a setting the screen said Sunday while
+  /// the code counted Monday-to-Sunday, so the two disagreed by a day.
+  int cashCountWeekday = DateTime.sunday;
 
   /// What Sobra labels money in. Changing it relabels; it never converts.
   Currency currency = Currency.mxn;
@@ -160,6 +170,20 @@ class SobraStore extends ChangeNotifier {
   XpProgress get xpProgress => XpProgress.fromTotal(totalXp);
   XpNotice? get pendingXpNotice => _pendingXpNotice;
 
+  /// Today's three missions, read from XP rows keyed on [today].
+  DailyMissionBoard get dailyMissions {
+    final dateKey = _cycleKey(today);
+    return DailyMissionBoard(
+      missions: [
+        for (final kind in DailyMissionKind.values)
+          DailyMission(
+            kind: kind,
+            completedAt: _xpEventForSource(kind.sourceKey(dateKey))?.occurredAt,
+          ),
+      ],
+    );
+  }
+
   XpNotice? takePendingXpNotice() {
     final notice = _pendingXpNotice;
     _pendingXpNotice = null;
@@ -198,6 +222,10 @@ class SobraStore extends ChangeNotifier {
     ]..sort((a, b) => b.occurredAt.compareTo(a.occurredAt));
     return List.unmodifiable(result);
   }
+
+  /// Closed cycles, most recent first.
+  List<CycleRecord> get cycleRecords =>
+      List.unmodifiable(_cycleRecords.reversed);
 
   List<ExpenseEntry> get cycleTransactions => _transactions
       .where((entry) => cycleBounds.contains(entry.occurredAt))
@@ -272,6 +300,7 @@ class SobraStore extends ChangeNotifier {
   /// any later cycles are evaluated with the new boundaries.
   Future<void> settleCycles() async {
     final trackingStarted = _startXpTrackingIfNeeded();
+    final levelBefore = xpProgress.level;
     var run = const _SettlementRun();
     final effectiveAt = pendingPayScheduleEffectiveAt;
     final scheduleIsDue = effectiveAt != null && !today.isBefore(effectiveAt);
@@ -287,10 +316,12 @@ class SobraStore extends ChangeNotifier {
     }
     if (run.closedCycles > 0) {
       if (run.awardedXp > 0) {
+        final levelNow = xpProgress.level;
         _pendingXpNotice = XpNotice(
           kind: XpNoticeKind.cyclesClosed,
           xp: run.awardedXp,
           closedCycles: run.closedCycles,
+          newLevel: levelNow > levelBefore ? levelNow : null,
         );
       }
     }
@@ -340,6 +371,12 @@ class SobraStore extends ChangeNotifier {
         .fold(0, (sum, entry) => sum + entry.amountCentavos);
     final fullCycleTracked = !dateOnly(trackingStart).isAfter(bounds.start);
     final successful = budget > 0 && spent <= budget;
+    _recordCycle(
+      bounds,
+      budget: budget,
+      spent: spent,
+      tracked: fullCycleTracked,
+    );
     final occurredAt = DateTime(
       bounds.end.year,
       bounds.end.month,
@@ -456,6 +493,34 @@ class SobraStore extends ChangeNotifier {
     return xp;
   }
 
+  /// Files what a cycle came to, once, whatever it came to.
+  ///
+  /// A cycle the user only tracked part of is left out rather than written
+  /// down short: its spend is missing whatever happened before they started,
+  /// so the row would read as a good cycle for the wrong reason. Better one
+  /// fewer row than one that lies.
+  ///
+  /// Keyed on the start date so a repeated settlement cannot double-file, the
+  /// same way [_awardXp] keys on its source.
+  void _recordCycle(
+    CycleBounds bounds, {
+    required int budget,
+    required int spent,
+    required bool tracked,
+  }) {
+    if (!tracked) return;
+    if (_cycleRecords.any((record) => record.start == bounds.start)) return;
+    _cycleRecords.add(
+      CycleRecord(
+        start: bounds.start,
+        end: bounds.end,
+        budgetCentavos: budget,
+        spentCentavos: spent,
+        cycleType: paySchedule.type,
+      ),
+    );
+  }
+
   int _normalizedCycleXp(int days) {
     final raw = days * 100 / 15;
     final roundedToFive = (raw / 5).round() * 5;
@@ -470,7 +535,8 @@ class SobraStore extends ChangeNotifier {
       return;
     }
     final day = dateOnly(moment);
-    final weekStart = day.subtract(Duration(days: day.weekday - 1));
+    final weekStart = day.subtract(Duration(days: cashCountWeekOffset(day)));
+    final levelBefore = xpProgress.level;
     final awarded = _awardXp(
       kind: XpEventKind.cashCount,
       xp: 25,
@@ -478,11 +544,101 @@ class SobraStore extends ChangeNotifier {
       sourceKey: 'cash-count-week:${_cycleKey(weekStart)}',
     );
     if (awarded > 0) {
-      _pendingXpNotice = const XpNotice(
+      final levelNow = xpProgress.level;
+      _pendingXpNotice = XpNotice(
         kind: XpNoticeKind.cashCountSaved,
         xp: 25,
+        newLevel: levelNow > levelBefore ? levelNow : null,
       );
     }
+  }
+
+  XpEvent? _xpEventForSource(String sourceKey) {
+    for (final event in _xpEvents) {
+      if (event.sourceKey == sourceKey) return event;
+    }
+    return null;
+  }
+
+  XpEventKind _xpKindFor(DailyMissionKind kind) => switch (kind) {
+    DailyMissionKind.recordMovement => XpEventKind.dailyMissionRecord,
+    DailyMissionKind.sameDay => XpEventKind.dailyMissionSameDay,
+    DailyMissionKind.reviewBudget => XpEventKind.dailyMissionBudget,
+  };
+
+  int _awardDailyMission(DailyMissionKind kind, DateTime moment) {
+    if (!hasCompletedOnboarding) return 0;
+    return _awardXp(
+      kind: _xpKindFor(kind),
+      xp: kind.xp,
+      occurredAt: moment,
+      sourceKey: kind.sourceKey(_cycleKey(today)),
+    );
+  }
+
+  void _postMissionNotice({
+    required int awarded,
+    required int missionCount,
+    required int levelBefore,
+  }) {
+    if (awarded <= 0) return;
+    final levelNow = xpProgress.level;
+    _pendingXpNotice = XpNotice(
+      kind: XpNoticeKind.missionCompleted,
+      xp: awarded,
+      missionCount: missionCount,
+      newLevel: levelNow > levelBefore ? levelNow : null,
+    );
+  }
+
+  /// Completes the record / same-day missions for a user-typed movement.
+  ///
+  /// Cash-count rows skip this on purpose: that path already has its own
+  /// weekly XP, and stuffing a count through the ledger should not also
+  /// clear today's recording habit.
+  void _awardDailyMissionsForMovement(DateTime occurredAt) {
+    final moment = currentMoment;
+    final levelBefore = xpProgress.level;
+    var awarded = 0;
+    var completed = 0;
+    final recordXp = _awardDailyMission(
+      DailyMissionKind.recordMovement,
+      moment,
+    );
+    if (recordXp > 0) {
+      awarded += recordXp;
+      completed++;
+    }
+    if (_isSameDay(dateOnly(occurredAt), today)) {
+      final sameDayXp = _awardDailyMission(DailyMissionKind.sameDay, moment);
+      if (sameDayXp > 0) {
+        awarded += sameDayXp;
+        completed++;
+      }
+    }
+    _postMissionNotice(
+      awarded: awarded,
+      missionCount: completed,
+      levelBefore: levelBefore,
+    );
+  }
+
+  /// Marks the budget tab as seen for today.
+  ///
+  /// Called when the user selects the tab, not when IndexedStack first
+  /// builds it offstage.
+  Future<void> noteBudgetReviewed() async {
+    final moment = currentMoment;
+    final levelBefore = xpProgress.level;
+    final awarded = _awardDailyMission(DailyMissionKind.reviewBudget, moment);
+    if (awarded <= 0) return;
+    _postMissionNotice(
+      awarded: awarded,
+      missionCount: 1,
+      levelBefore: levelBefore,
+    );
+    await _save();
+    notifyListeners();
   }
 
   Future<ExpenseEntry> addExpense({
@@ -503,6 +659,7 @@ class SobraStore extends ChangeNotifier {
     );
     _transactions.add(entry);
     if (_affectsCurrentCash(entry)) expectedCashCentavos -= amountCentavos;
+    _awardDailyMissionsForMovement(occurredAt);
     await _save();
     notifyListeners();
     return entry;
@@ -528,6 +685,7 @@ class SobraStore extends ChangeNotifier {
     );
     _incomes.add(entry);
     _applyIncome(entry, 1);
+    _awardDailyMissionsForMovement(occurredAt);
     await _save();
     notifyListeners();
     return entry;
@@ -814,6 +972,22 @@ class SobraStore extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Moves the day a cash-count week turns over.
+  ///
+  /// Weeks already awarded keep their XP: the award is keyed on the week it
+  /// fell in, and changing the boundary cannot reach back and un-earn one.
+  Future<void> setCashCountWeekday(int weekday) async {
+    if (cashCountWeekday == weekday) return;
+    cashCountWeekday = weekday;
+    await _save();
+    notifyListeners();
+  }
+
+  /// How many days [day] sits past the start of its cash-count week.
+  @visibleForTesting
+  int cashCountWeekOffset(DateTime day) =>
+      (day.weekday - cashCountWeekday + 7) % 7;
+
   /// Relabels every amount in a new currency.
   ///
   /// Nothing is converted: 20000 stays 20000 minor units and only the code
@@ -960,6 +1134,7 @@ class SobraStore extends ChangeNotifier {
     _incomes.clear();
     _cashReconciliations.clear();
     _xpEvents.clear();
+    _cycleRecords.clear();
     _cycleBudgetExtras.clear();
     _baseBudgetCentavos = 600000;
     countedCashCentavos = 0;
@@ -1003,6 +1178,9 @@ class SobraStore extends ChangeNotifier {
     _xpEvents
       ..clear()
       ..addAll(other._xpEvents);
+    _cycleRecords
+      ..clear()
+      ..addAll(other._cycleRecords);
     _cycleBudgetExtras
       ..clear()
       ..addAll(other._cycleBudgetExtras);
@@ -1012,6 +1190,7 @@ class SobraStore extends ChangeNotifier {
     reducedMotion = other.reducedMotion;
     languageCode = other.languageCode;
     currency = other.currency;
+    cashCountWeekday = other.cashCountWeekday;
     hasCompletedOnboarding = other.hasCompletedOnboarding;
     categoryLimitsCustomized = other.categoryLimitsCustomized;
     successfulCycles = other.successfulCycles;
@@ -1056,6 +1235,13 @@ class SobraStore extends ChangeNotifier {
           (entry) => XpEvent.fromJson(entry as Map<String, dynamic>),
         ),
       );
+    _cycleRecords
+      ..clear()
+      ..addAll(
+        (json['cycleRecords'] as List<dynamic>? ?? const []).map(
+          (entry) => CycleRecord.fromJson(entry as Map<String, dynamic>),
+        ),
+      );
     _baseBudgetCentavos =
         (json['baseBudgetCentavos'] as num? ??
                 json['totalBudgetCentavos'] as num)
@@ -1068,6 +1254,8 @@ class SobraStore extends ChangeNotifier {
     final savedLanguage = json['languageCode'] as String?;
     languageCode = SobraLanguage.fromCode(savedLanguage).code;
     currency = Currency.fromCode(json['currencyCode'] as String?);
+    cashCountWeekday =
+        (json['cashCountWeekday'] as num?)?.toInt() ?? DateTime.sunday;
     hasCompletedOnboarding = json['hasCompletedOnboarding'] as bool? ?? false;
     categoryLimitsCustomized =
         json['categoryLimitsCustomized'] as bool? ?? false;
@@ -1118,6 +1306,7 @@ class SobraStore extends ChangeNotifier {
         .map((entry) => entry.toJson())
         .toList(),
     'xpEvents': _xpEvents.map((entry) => entry.toJson()).toList(),
+    'cycleRecords': _cycleRecords.map((entry) => entry.toJson()).toList(),
     'baseBudgetCentavos': _baseBudgetCentavos,
     'totalBudgetCentavos': _baseBudgetCentavos,
     'cycleBudgetExtras': _cycleBudgetExtras,
@@ -1126,6 +1315,7 @@ class SobraStore extends ChangeNotifier {
     'reducedMotion': reducedMotion,
     'languageCode': languageCode,
     'currencyCode': currency.code,
+    'cashCountWeekday': cashCountWeekday,
     'hasCompletedOnboarding': hasCompletedOnboarding,
     'categoryLimitsCustomized': categoryLimitsCustomized,
     'successfulCycles': successfulCycles,

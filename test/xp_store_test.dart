@@ -30,8 +30,12 @@ void main() {
     return store;
   }
 
-  test('a cash count awards XP at most once per Monday-based week', () async {
+  // The count week turns over on the day the user picked, which starts as
+  // Sunday. Before it was a setting the screen said Sunday while the code
+  // counted Monday to Sunday, so the two were a day apart.
+  test('a cash count awards XP at most once per count week', () async {
     final store = await newUser(cashCentavos: 200000);
+    expect(store.cashCountWeekday, DateTime.sunday);
 
     now = DateTime(2026, 9, 2, 10);
     await store.reconcileCashCount(
@@ -42,21 +46,60 @@ void main() {
     expect(store.xpEvents.single.kind, XpEventKind.cashCount);
     expect(store.takePendingXpNotice()?.xp, 25);
 
+    now = DateTime(2026, 9, 5, 10);
+    await store.reconcileCashCount(
+      actualCentavos: 200000,
+      resolution: CashResolution.correction,
+    );
+    expect(store.totalXp, 25, reason: 'Saturday is still the same count week');
+    expect(store.pendingXpNotice, isNull);
+
     now = DateTime(2026, 9, 6, 10);
     await store.reconcileCashCount(
       actualCentavos: 200000,
       resolution: CashResolution.correction,
     );
-    expect(store.totalXp, 25, reason: 'Sunday is still the same XP week');
-    expect(store.pendingXpNotice, isNull);
+    expect(store.totalXp, 50, reason: 'Sunday opens the next one');
+    expect(store.xpEvents, hasLength(2));
+  });
 
-    now = DateTime(2026, 9, 7, 10);
+  test('the count week turns over on the chosen day', () async {
+    final store = await newUser(cashCentavos: 200000);
+    await store.setCashCountWeekday(DateTime.wednesday);
+
+    // Wednesday 2 September opens a week; Tuesday the 8th still closes it.
+    expect(store.cashCountWeekOffset(DateTime(2026, 9, 2)), 0);
+    expect(store.cashCountWeekOffset(DateTime(2026, 9, 8)), 6);
+    expect(store.cashCountWeekOffset(DateTime(2026, 9, 9)), 0);
+
+    now = DateTime(2026, 9, 3, 10);
+    await store.reconcileCashCount(
+      actualCentavos: 200000,
+      resolution: CashResolution.correction,
+    );
+    expect(store.totalXp, 25);
+
+    now = DateTime(2026, 9, 8, 10);
+    await store.reconcileCashCount(
+      actualCentavos: 200000,
+      resolution: CashResolution.correction,
+    );
+    expect(store.totalXp, 25, reason: 'still inside the chosen week');
+
+    now = DateTime(2026, 9, 9, 10);
     await store.reconcileCashCount(
       actualCentavos: 200000,
       resolution: CashResolution.correction,
     );
     expect(store.totalXp, 50);
-    expect(store.xpEvents, hasLength(2));
+  });
+
+  test('the chosen count day survives a reload', () async {
+    final store = await newUser(cashCentavos: 200000);
+    await store.setCashCountWeekday(DateTime.friday);
+
+    final restored = await SobraStore.load(now: () => now);
+    expect(restored.cashCountWeekday, DateTime.friday);
   });
 
   test('a closed weekly cycle settles once and survives a reload', () async {
@@ -149,7 +192,15 @@ void main() {
       now = DateTime(2026, 9, 8, 8);
       await store.settleCycles();
 
-      expect(store.totalXp, 0);
+      expect(
+        store.xpEvents.where(
+          (event) =>
+              event.kind == XpEventKind.cycleInGreen ||
+              event.kind == XpEventKind.daysUnderDailyLimit ||
+              event.kind == XpEventKind.firstSuccessfulCycle,
+        ),
+        isEmpty,
+      );
       expect(store.successfulCycles, 0);
       expect(store.lastSettledCycleEnd, DateTime(2026, 9, 7));
     },
