@@ -646,6 +646,13 @@ class SobraStore extends ChangeNotifier {
   ///
   /// Called when the user selects the tab, not when IndexedStack first
   /// builds it offstage.
+  /// Every receipt photo the ledger still points at.
+  ///
+  /// The input to `ReceiptStore.sweepOrphans`; anything on disk and not in
+  /// here belongs to no expense.
+  Iterable<String> get referencedReceipts =>
+      _transactions.map((entry) => entry.receiptFileName).whereType<String>();
+
   Future<void> noteBudgetReviewed() async {
     final moment = currentMoment;
     final levelBefore = xpProgress.level;
@@ -666,6 +673,7 @@ class SobraStore extends ChangeNotifier {
     required String note,
     required DateTime occurredAt,
     required PaymentMethod paymentMethod,
+    String? receiptFileName,
   }) async {
     _validateMovement(amountCentavos, occurredAt);
     final entry = ExpenseEntry(
@@ -675,6 +683,7 @@ class SobraStore extends ChangeNotifier {
       note: note.trim(),
       occurredAt: occurredAt,
       paymentMethod: paymentMethod,
+      receiptFileName: receiptFileName,
     );
     _transactions.add(entry);
     if (_affectsCurrentCash(entry)) expectedCashCentavos -= amountCentavos;
@@ -721,7 +730,14 @@ class SobraStore extends ChangeNotifier {
     // can be rewritten; keeping the rest pinned to the count is what stops the
     // budget and the wallet from drifting apart.
     final next = previous.isLinkedToCashCount
-        ? previous.copyWith(category: updated.category, note: updated.note)
+        ? previous.copyWith(
+            category: updated.category,
+            note: updated.note,
+            // A photo is user knowledge, the same kind the category and note
+            // carry, so it crosses the pin that holds the measured amount.
+            receiptFileName: updated.receiptFileName,
+            clearReceipt: updated.receiptFileName == null,
+          )
         : updated;
 
     if (_affectsCurrentCash(previous)) {
@@ -743,6 +759,7 @@ class SobraStore extends ChangeNotifier {
     required String expenseId,
     required ExpenseCategory category,
     required String note,
+    String? receiptFileName,
   }) async {
     final index = _transactions.indexWhere((entry) => entry.id == expenseId);
     if (index == -1 || !_transactions[index].isPendingCashAdjustment) return;
@@ -751,6 +768,10 @@ class SobraStore extends ChangeNotifier {
       category: category,
       note: note.trim(),
       isPendingCashAdjustment: false,
+      // Putting a face on an unexplained gap is exactly what a photo is for,
+      // so a ticket travels with the answer.
+      receiptFileName: receiptFileName,
+      clearReceipt: receiptFileName == null,
     );
     await _save();
     notifyListeners();

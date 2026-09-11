@@ -9,6 +9,7 @@ import '../models/money_movement.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/receipt_field.dart';
 import '../widgets/transaction_row.dart';
 
 enum _LedgerKind { expense, income }
@@ -236,6 +237,7 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
   late final TextEditingController _amountController;
   late final TextEditingController _noteController;
   late ExpenseCategory _category;
+  late String? _receiptFileName;
 
   @override
   void initState() {
@@ -247,6 +249,7 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
       text: widget.entry.isPendingCashAdjustment ? '' : widget.entry.note,
     );
     _category = widget.entry.category;
+    _receiptFileName = widget.entry.receiptFileName;
   }
 
   @override
@@ -270,6 +273,7 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
           expenseId: widget.entry.id,
           category: _category,
           note: _noteController.text,
+          receiptFileName: _receiptFileName,
         );
       }
       return store.updateExpense(
@@ -277,6 +281,8 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
           amountCentavos: amount ?? widget.entry.amountCentavos,
           category: _category,
           note: _noteController.text.trim(),
+          receiptFileName: _receiptFileName,
+          clearReceipt: _receiptFileName == null,
         ),
       );
     });
@@ -343,6 +349,11 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
                 labelText: l10n.note,
                 hintText: l10n.noteExample,
               ),
+            ),
+            const SizedBox(height: 14),
+            ReceiptField(
+              fileName: _receiptFileName,
+              onChanged: (value) => setState(() => _receiptFileName = value),
             ),
             if (widget.entry.isPendingCashAdjustment) ...[
               const SizedBox(height: 12),

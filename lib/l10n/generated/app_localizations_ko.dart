@@ -1009,6 +1009,45 @@ class AppLocalizationsKo extends AppLocalizations {
   String get registerNoteIncomeExample => '예: 금요일 팁';
 
   @override
+  String get receiptTitle => '영수증';
+
+  @override
+  String get receiptAdd => '영수증 추가';
+
+  @override
+  String get receiptCamera => '카메라';
+
+  @override
+  String get receiptGallery => '사진첩';
+
+  @override
+  String get receiptChange => '변경';
+
+  @override
+  String get receiptRemove => '삭제';
+
+  @override
+  String get receiptHint => '이 지출이 뭐였는지 기억나게 해 줄 사진 한 장.';
+
+  @override
+  String get receiptAttached => '영수증 첨부됨';
+
+  @override
+  String get receiptView => '영수증 보기';
+
+  @override
+  String get receiptClose => '닫기';
+
+  @override
+  String get receiptMissing => '사진이 이 기기에 더 이상 없어요.';
+
+  @override
+  String get receiptFailed => '사진을 저장하지 못했어요.';
+
+  @override
+  String get receiptBackupNote => '백업에는 영수증 사진이 포함되지 않아요.';
+
+  @override
   String get registerPayment => '결제';
 
   @override

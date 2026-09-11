@@ -11,6 +11,7 @@ import 'models/money_movement.dart';
 import 'screens/app_shell.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/recovery_screen.dart';
+import 'services/receipt_store.dart';
 import 'services/sobra_widget_sync.dart';
 import 'state/sobra_store.dart';
 import 'theme/app_theme.dart';
@@ -31,13 +32,44 @@ Future<void> main() async {
   );
   final store = await SobraStore.load();
   await SobraWidgetSync.initialize(store);
-  runApp(SobraApp(store: store));
+  final receipts = ReceiptStore.forPlatform();
+  await _prepareReceipts(receipts, store);
+  runApp(SobraApp(store: store, receipts: receipts));
+}
+
+/// Resolves the receipts directory and clears what nothing points at.
+///
+/// Launch is the one moment where an orphan is provably an orphan: no delete
+/// is waiting to be undone, and no half-filled register screen is holding a
+/// photo it has not saved yet. Warming the directory here is also what lets
+/// thumbnails resolve their file during `build`, which cannot await.
+///
+/// Both steps are best-effort. A phone that will not hand over its documents
+/// directory is a reason to show the ledger without photos, never a reason to
+/// refuse to start.
+Future<void> _prepareReceipts(ReceiptStore receipts, SobraStore store) async {
+  if (receipts is! FileReceiptStore) return;
+  try {
+    await receipts.warmUp();
+    await receipts.sweepOrphans(store.referencedReceipts);
+  } on Object catch (error) {
+    debugPrint('Receipts unavailable: $error');
+  }
 }
 
 class SobraApp extends StatefulWidget {
-  const SobraApp({super.key, required this.store});
+  const SobraApp({
+    super.key,
+    required this.store,
+    this.receipts = const UnsupportedReceiptStore(),
+  });
 
   final SobraStore store;
+
+  /// Defaults to the store that can hold nothing, which is what a harness
+  /// pumping the app without a documents directory should get: every screen
+  /// renders, and the ones that offer a camera simply do not.
+  final ReceiptStore receipts;
 
   @override
   State<SobraApp> createState() => _SobraAppState();
@@ -93,26 +125,29 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return SobraScope(
-      store: widget.store,
-      child: MaterialApp(
-        title: 'Sobra',
-        debugShowCheckedModeBanner: false,
-        theme: buildSobraTheme(),
-        // A null locale hands the choice back to the phone. The list comes
-        // from `SobraLanguage` so the picker and the app can never disagree
-        // about which languages this build has.
-        locale: _languageCode == null ? null : Locale(_languageCode!),
-        supportedLocales: SobraLanguage.supportedLocales,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        builder: (context, child) =>
-            _WidgetSyncLabels(child: child ?? const SizedBox.shrink()),
-        home: const _StartupRouter(),
+    return ReceiptScope(
+      store: widget.receipts,
+      child: SobraScope(
+        store: widget.store,
+        child: MaterialApp(
+          title: 'Sobra',
+          debugShowCheckedModeBanner: false,
+          theme: buildSobraTheme(),
+          // A null locale hands the choice back to the phone. The list comes
+          // from `SobraLanguage` so the picker and the app can never disagree
+          // about which languages this build has.
+          locale: _languageCode == null ? null : Locale(_languageCode!),
+          supportedLocales: SobraLanguage.supportedLocales,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          builder: (context, child) =>
+              _WidgetSyncLabels(child: child ?? const SizedBox.shrink()),
+          home: const _StartupRouter(),
+        ),
       ),
     );
   }

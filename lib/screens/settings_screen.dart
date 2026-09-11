@@ -136,6 +136,18 @@ class SettingsScreen extends StatelessWidget {
               );
             },
           ),
+          // The backup is a JSON string on the clipboard, so receipt photos —
+          // which live as files outside it — cannot travel with it. Saying so
+          // here is cheaper than a user discovering it on a new phone.
+          Padding(
+            // Tighter above than below, so the line reads as a footnote to the
+            // backup row rather than a preamble to the next section header.
+            padding: const EdgeInsets.fromLTRB(4, 6, 4, 8),
+            child: Text(
+              l10n.receiptBackupNote,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
           // Its own section: a design gallery is not data, and sitting beside
           // the backup row made it look like one.
           if (kDebugMode) ...[

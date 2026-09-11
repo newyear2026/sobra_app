@@ -1833,6 +1833,84 @@ abstract class AppLocalizations {
   /// **'Ej. Propina del viernes'**
   String get registerNoteIncomeExample;
 
+  /// No description provided for @receiptTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ticket'**
+  String get receiptTitle;
+
+  /// No description provided for @receiptAdd.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar ticket'**
+  String get receiptAdd;
+
+  /// No description provided for @receiptCamera.
+  ///
+  /// In es, this message translates to:
+  /// **'Cámara'**
+  String get receiptCamera;
+
+  /// No description provided for @receiptGallery.
+  ///
+  /// In es, this message translates to:
+  /// **'Galería'**
+  String get receiptGallery;
+
+  /// No description provided for @receiptChange.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar'**
+  String get receiptChange;
+
+  /// No description provided for @receiptRemove.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar'**
+  String get receiptRemove;
+
+  /// No description provided for @receiptHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Una foto para recordar qué fue este gasto.'**
+  String get receiptHint;
+
+  /// No description provided for @receiptAttached.
+  ///
+  /// In es, this message translates to:
+  /// **'Ticket adjunto'**
+  String get receiptAttached;
+
+  /// No description provided for @receiptView.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver ticket'**
+  String get receiptView;
+
+  /// No description provided for @receiptClose.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get receiptClose;
+
+  /// No description provided for @receiptMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'La foto ya no está en este dispositivo.'**
+  String get receiptMissing;
+
+  /// No description provided for @receiptFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo guardar la foto.'**
+  String get receiptFailed;
+
+  /// No description provided for @receiptBackupNote.
+  ///
+  /// In es, this message translates to:
+  /// **'La copia no incluye las fotos de tickets.'**
+  String get receiptBackupNote;
+
   /// No description provided for @registerPayment.
   ///
   /// In es, this message translates to:

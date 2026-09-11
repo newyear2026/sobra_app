@@ -23,6 +23,7 @@ class ExpenseEntry {
     required this.paymentMethod,
     this.cashReconciliationId,
     this.isPendingCashAdjustment = false,
+    this.receiptFileName,
   });
 
   final String id;
@@ -33,6 +34,16 @@ class ExpenseEntry {
   final PaymentMethod paymentMethod;
   final String? cashReconciliationId;
   final bool isPendingCashAdjustment;
+
+  /// File name of the attached receipt photo, or null.
+  ///
+  /// A name, never a path: the documents directory is handed a new container
+  /// path on every iOS build and reinstall, so an absolute path saved today
+  /// points nowhere tomorrow. `ReceiptStore` resolves the name at read time.
+  /// The photo itself lives outside this JSON — see `ReceiptStore`.
+  final String? receiptFileName;
+
+  bool get hasReceipt => receiptFileName != null;
 
   /// Whether this expense exists because a physical cash count came up short.
   ///
@@ -49,6 +60,8 @@ class ExpenseEntry {
     PaymentMethod? paymentMethod,
     String? cashReconciliationId,
     bool? isPendingCashAdjustment,
+    String? receiptFileName,
+    bool clearReceipt = false,
   }) {
     return ExpenseEntry(
       id: id,
@@ -60,6 +73,11 @@ class ExpenseEntry {
       cashReconciliationId: cashReconciliationId ?? this.cashReconciliationId,
       isPendingCashAdjustment:
           isPendingCashAdjustment ?? this.isPendingCashAdjustment,
+      // Detaching a photo has to be expressible, and `?? this` can only ever
+      // set a name — it cannot take one away.
+      receiptFileName: clearReceipt
+          ? null
+          : receiptFileName ?? this.receiptFileName,
     );
   }
 
@@ -72,6 +90,7 @@ class ExpenseEntry {
     'paymentMethod': paymentMethod.name,
     'cashReconciliationId': cashReconciliationId,
     'isPendingCashAdjustment': isPendingCashAdjustment,
+    'receiptFileName': receiptFileName,
   };
 
   factory ExpenseEntry.fromJson(Map<String, dynamic> json) {
@@ -87,6 +106,7 @@ class ExpenseEntry {
       cashReconciliationId: json['cashReconciliationId'] as String?,
       isPendingCashAdjustment:
           json['isPendingCashAdjustment'] as bool? ?? false,
+      receiptFileName: json['receiptFileName'] as String?,
     );
   }
 }

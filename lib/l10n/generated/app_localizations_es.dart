@@ -1044,6 +1044,45 @@ class AppLocalizationsEs extends AppLocalizations {
   String get registerNoteIncomeExample => 'Ej. Propina del viernes';
 
   @override
+  String get receiptTitle => 'Ticket';
+
+  @override
+  String get receiptAdd => 'Agregar ticket';
+
+  @override
+  String get receiptCamera => 'Cámara';
+
+  @override
+  String get receiptGallery => 'Galería';
+
+  @override
+  String get receiptChange => 'Cambiar';
+
+  @override
+  String get receiptRemove => 'Quitar';
+
+  @override
+  String get receiptHint => 'Una foto para recordar qué fue este gasto.';
+
+  @override
+  String get receiptAttached => 'Ticket adjunto';
+
+  @override
+  String get receiptView => 'Ver ticket';
+
+  @override
+  String get receiptClose => 'Cerrar';
+
+  @override
+  String get receiptMissing => 'La foto ya no está en este dispositivo.';
+
+  @override
+  String get receiptFailed => 'No se pudo guardar la foto.';
+
+  @override
+  String get receiptBackupNote => 'La copia no incluye las fotos de tickets.';
+
+  @override
   String get registerPayment => 'Pago';
 
   @override

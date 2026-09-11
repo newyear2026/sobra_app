@@ -53,6 +53,10 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Sobra uses the camera so you can photograph a receipt and remember what an expense was.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Sobra opens your photos so you can attach a receipt you already took.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

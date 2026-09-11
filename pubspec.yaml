@@ -41,6 +41,12 @@ dependencies:
   intl: any
   shared_preferences: ^2.5.5
 
+  # Receipt capture. The picker resizes and re-encodes natively, which is the
+  # only reason no separate compression package is here: a 4 MB camera frame
+  # would otherwise land in the documents directory untouched.
+  image_picker: ^1.1.2
+  path_provider: ^2.1.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

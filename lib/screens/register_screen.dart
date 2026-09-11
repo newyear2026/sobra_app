@@ -11,6 +11,7 @@ import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/receipt_field.dart';
 
 enum _RegisterMode { expense, income }
 
@@ -32,6 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   IncomeKind _incomeKind = IncomeKind.salary;
   IncomeAllocation _incomeAllocation = IncomeAllocation.cycle;
   DateTime? _date;
+  String? _receiptFileName;
   bool _saving = false;
 
   @override
@@ -127,6 +129,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             note: _noteController.text,
             occurredAt: _occurredAt(store),
             paymentMethod: _paymentMethod,
+            receiptFileName: _receiptFileName,
           );
         }
         return store.addIncome(
@@ -171,6 +174,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() {
       _category = ExpenseCategory.food;
       _date = null;
+      // The photo belongs to the expense that just saved, not to the next one.
+      _receiptFileName = null;
     });
     widget.onSaved();
   }
@@ -263,6 +268,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       : l10n.registerNoteIncomeExample,
                 ),
               ),
+              // Expenses only. An income has no ticket to photograph, and a
+              // camera button on that tab would just be noise.
+              if (_mode == _RegisterMode.expense) ...[
+                const SizedBox(height: 18),
+                ReceiptField(
+                  fileName: _receiptFileName,
+                  onChanged: (value) =>
+                      setState(() => _receiptFileName = value),
+                ),
+              ],
               const SizedBox(height: 18),
               Text(
                 l10n.registerDate,
