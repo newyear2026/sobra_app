@@ -322,7 +322,7 @@ void main() {
     });
   });
 
-  testWidgets('Movimientos offers no way to delete a cash-count income', (
+  testWidgets('Ingresos offers no way to delete a cash-count income', (
     tester,
   ) async {
     useSpanishDevice(tester);
@@ -349,6 +349,10 @@ void main() {
     await tester.pumpWidget(SobraApp(store: store));
     await tester.pump();
     await tester.tap(find.text('Movim.'));
+    await tester.pump();
+    // The ledger opens on Gasto, and the income half of a count only lives on
+    // the other segment.
+    await tester.tap(find.text('Ingreso'));
     await tester.pump();
 
     // The count hides its own row behind this income, and the income cannot
