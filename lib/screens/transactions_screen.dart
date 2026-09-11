@@ -11,8 +11,17 @@ import '../theme/app_theme.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/transaction_row.dart';
 
-class TransactionsScreen extends StatelessWidget {
+enum _LedgerKind { expense, income }
+
+class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
+
+  @override
+  State<TransactionsScreen> createState() => _TransactionsScreenState();
+}
+
+class _TransactionsScreenState extends State<TransactionsScreen> {
+  _LedgerKind _kind = _LedgerKind.expense;
 
   String _groupLabel(AppLocalizations l10n, DateTime date, DateTime today) {
     final day = DateTime(date.year, date.month, date.day);
@@ -20,6 +29,12 @@ class TransactionsScreen extends StatelessWidget {
     if (day == today.subtract(const Duration(days: 1))) return l10n.yesterday;
     return shortCycleDate(l10n, day);
   }
+
+  bool _matches(MoneyMovement movement) => switch (_kind) {
+    _LedgerKind.expense =>
+      movement.expense != null || movement.reconciliation != null,
+    _LedgerKind.income => movement.income != null,
+  };
 
   /// Deletes what a row stands for, or says why it has to stay.
   ///
@@ -143,7 +158,7 @@ class TransactionsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final store = SobraScope.of(context);
     final l10n = AppLocalizations.of(context);
-    final entries = store.movements;
+    final entries = store.movements.where(_matches).toList();
     final grouped = <String, List<MoneyMovement>>{};
     for (final entry in entries) {
       final label = _groupLabel(l10n, entry.occurredAt, store.today);
@@ -157,15 +172,34 @@ class TransactionsScreen extends StatelessWidget {
         children: [
           PixelTopBar(title: l10n.transactionsTitle),
           const SizedBox(height: 18),
-          if (store.cycleTransactions.isNotEmpty) ...[
-            _DailySpendCard(store: store),
-            const SizedBox(height: 20),
-          ],
+          PixelSegmented<_LedgerKind>(
+            segments: [
+              PixelSegment(
+                value: _LedgerKind.expense,
+                label: l10n.registerExpense,
+              ),
+              PixelSegment(
+                value: _LedgerKind.income,
+                label: l10n.registerIncome,
+              ),
+            ],
+            selected: _kind,
+            onChanged: (value) => setState(() => _kind = value),
+          ),
+          const SizedBox(height: 18),
+          _DailyChartCard(store: store, kind: _kind),
+          const SizedBox(height: 20),
           if (entries.isEmpty)
             PixelEmptyState(
-              icon: Icons.receipt_long_outlined,
-              title: l10n.transactionsEmptyTitle,
-              message: l10n.transactionsEmptyMessage,
+              icon: _kind == _LedgerKind.income
+                  ? Icons.arrow_upward
+                  : Icons.receipt_long_outlined,
+              title: _kind == _LedgerKind.income
+                  ? l10n.transactionsEmptyIncomesTitle
+                  : l10n.transactionsEmptyExpensesTitle,
+              message: _kind == _LedgerKind.income
+                  ? l10n.transactionsEmptyIncomesMessage
+                  : l10n.transactionsEmptyExpensesMessage,
             ),
           for (final group in grouped.entries) ...[
             Padding(
@@ -339,27 +373,57 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
 }
 
 /// The cycle's shape, above the list that spells it out.
-class _DailySpendCard extends StatelessWidget {
-  const _DailySpendCard({required this.store});
+class _DailyChartCard extends StatelessWidget {
+  const _DailyChartCard({required this.store, required this.kind});
 
   final SobraStore store;
+  final _LedgerKind kind;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final bounds = store.cycleBounds;
-    // The even share of the budget, not `dailyAllowanceCentavos`: that one
-    // moves as the cycle is spent, so past days would be measured against a
-    // line that did not exist when they happened.
+    final showingIncome = kind == _LedgerKind.income;
+    // The even share of the *planned* budget. `totalBudgetCentavos` also
+    // carries extra income assigned to this cycle, and using that as the
+    // scale would squash the bars the moment a large inflow lands — the
+    // chart would stop being about spending. Home and Presupuesto still
+    // count that extra as spendable; this line does not.
+    //
+    // `dailyAllowanceCentavos` is also rejected: that one moves as the
+    // cycle is spent, so past days would be measured against a line that
+    // did not exist when they happened. Income has no such line at all.
     final perDay = bounds.lengthInDays <= 0
         ? 0
-        : store.totalBudgetCentavos ~/ bounds.lengthInDays;
+        : store.baseBudgetCentavos ~/ bounds.lengthInDays;
+    final cycleIncome = store.cycleIncomes.fold<int>(
+      0,
+      (sum, entry) => sum + entry.amountCentavos,
+    );
+    final days = showingIncome
+        ? dailyIncome(
+            bounds: bounds,
+            entries: store.cycleIncomes,
+            today: store.today,
+          )
+        : dailySpend(
+            bounds: bounds,
+            entries: store.cycleTransactions,
+            today: store.today,
+          );
+    final caption = showingIncome
+        ? l10n.dailyIncomeCycleTotal(
+            formatMoney(store.currency, cycleIncome, showCode: false),
+          )
+        : l10n.dailySpendLimit(
+            formatMoney(store.currency, perDay, showCode: false),
+          );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          l10n.dailySpendTitle,
+          showingIncome ? l10n.dailyIncomeTitle : l10n.dailySpendTitle,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 10),
@@ -369,12 +433,8 @@ class _DailySpendCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               DailySpendChart(
-                days: dailySpend(
-                  bounds: bounds,
-                  entries: store.cycleTransactions,
-                  today: store.today,
-                ),
-                dailyLimitCentavos: perDay,
+                days: days,
+                dailyLimitCentavos: showingIncome ? 0 : perDay,
               ),
               const SizedBox(height: 8),
               Row(
@@ -385,9 +445,7 @@ class _DailySpendCard extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    l10n.dailySpendLimit(
-                      formatMoney(store.currency, perDay, showCode: false),
-                    ),
+                    caption,
                     style: pixelText(size: 12, color: AppColors.muted),
                   ),
                   const Spacer(),

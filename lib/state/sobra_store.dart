@@ -322,6 +322,7 @@ class SobraStore extends ChangeNotifier {
           xp: run.awardedXp,
           closedCycles: run.closedCycles,
           newLevel: levelNow > levelBefore ? levelNow : null,
+          previousLevel: levelNow > levelBefore ? levelBefore : null,
         );
       }
     }
@@ -536,6 +537,7 @@ class SobraStore extends ChangeNotifier {
     }
     final day = dateOnly(moment);
     final weekStart = day.subtract(Duration(days: cashCountWeekOffset(day)));
+    if (_hasCashCountXpInWeek(weekStart)) return;
     final levelBefore = xpProgress.level;
     final awarded = _awardXp(
       kind: XpEventKind.cashCount,
@@ -549,8 +551,24 @@ class SobraStore extends ChangeNotifier {
         kind: XpNoticeKind.cashCountSaved,
         xp: 25,
         newLevel: levelNow > levelBefore ? levelNow : null,
+        previousLevel: levelNow > levelBefore ? levelBefore : null,
       );
     }
+  }
+
+  /// Whether a cash-count award already landed in [weekStart, weekStart + 7).
+  ///
+  /// The source key is the week start under the *current* weekday setting.
+  /// Changing that setting re-cuts the week, so a second count of the same
+  /// habit would mint a new key. Looking at the dates themselves — not the
+  /// keys — is what keeps one real week from paying twice.
+  bool _hasCashCountXpInWeek(DateTime weekStart) {
+    final weekEnd = weekStart.add(const Duration(days: 7));
+    return _xpEvents.any((event) {
+      if (event.kind != XpEventKind.cashCount) return false;
+      final at = dateOnly(event.occurredAt);
+      return !at.isBefore(weekStart) && at.isBefore(weekEnd);
+    });
   }
 
   XpEvent? _xpEventForSource(String sourceKey) {
@@ -588,6 +606,7 @@ class SobraStore extends ChangeNotifier {
       xp: awarded,
       missionCount: missionCount,
       newLevel: levelNow > levelBefore ? levelNow : null,
+      previousLevel: levelNow > levelBefore ? levelBefore : null,
     );
   }
 
@@ -710,6 +729,12 @@ class SobraStore extends ChangeNotifier {
     }
     if (_affectsCurrentCash(next)) expectedCashCentavos -= next.amountCentavos;
     _transactions[index] = next;
+    // Dated today: the same two habits a new save would complete. Cash-count
+    // rows keep their own weekly XP and must not also fill today's missions.
+    if (!next.isLinkedToCashCount &&
+        _isSameDay(dateOnly(next.occurredAt), today)) {
+      _awardDailyMissionsForMovement(next.occurredAt);
+    }
     await _save();
     notifyListeners();
   }

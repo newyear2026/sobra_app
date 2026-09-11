@@ -2,12 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../data/catalog_preview_data.dart';
+import '../l10n/catalog_labels.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../services/sobra_widget_sync.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/character_room.dart';
 import '../widgets/gamification_ui.dart';
+import '../widgets/pixel_ui.dart';
 import 'budget_screen.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
@@ -128,13 +131,28 @@ class _AppShellState extends State<AppShell> {
       final newLevel = notice.newLevel;
       if (newLevel != null) {
         // A level-up is rare enough to interrupt for; everyday XP is not.
-        unawaited(showLevelUpCelebration(context, newLevel));
+        final previousLevel = notice.previousLevel ?? newLevel - 1;
+        final l10n = AppLocalizations.of(context);
+        final unlockedItemNames =
+            CatalogPreviewData.levelItemsUnlockedBetween(
+                  previousLevel: previousLevel,
+                  currentLevel: newLevel,
+                )
+                .map((entry) => catalogEntryDisplayName(l10n, entry))
+                .toList(growable: false);
+        unawaited(
+          showLevelUpCelebration(
+            context,
+            newLevel,
+            newlyUnlockedItemNames: unlockedItemNames,
+          ),
+        );
         return;
       }
       final messenger = ScaffoldMessenger.of(context);
       messenger
         ..hideCurrentSnackBar()
-        ..showSnackBar(xpSnackBar(notice));
+        ..showSnackBar(xpSnackBar(context, notice));
     });
   }
 
@@ -202,7 +220,7 @@ class PixelBottomNavigation extends StatelessWidget {
     return SafeArea(
       top: false,
       child: Container(
-        height: 72,
+        height: kPixelBottomBarHeight,
         decoration: const BoxDecoration(
           color: AppColors.surface,
           border: Border(top: BorderSide(color: AppColors.ink, width: 3)),

@@ -9,11 +9,17 @@ import '../models/currency.dart';
 import '../models/pay_schedule.dart';
 import '../state/sobra_store.dart';
 import '../models/expense_entry.dart';
+import '../models/income_entry.dart';
 import '../theme/app_theme.dart';
 
 /// U+2212. The typographic minus, so a negative amount lines up with the
 /// digits around it. ASCII `-` is a hyphen and renders narrower.
 const minusSign = '−';
+
+/// Height of the five-tab bar, not counting the device's bottom safe inset.
+///
+/// XP toasts have to sit above this or they cover the + tile.
+const kPixelBottomBarHeight = 72.0;
 
 /// Writes an amount of minor units the way Sobra shows money.
 ///
@@ -1094,14 +1100,39 @@ List<DailySpend> dailySpend({
   required CycleBounds bounds,
   required Iterable<ExpenseEntry> entries,
   required DateTime today,
+}) => dailyTotals(
+  bounds: bounds,
+  today: today,
+  amounts: [
+    for (final entry in entries) (entry.occurredAt, entry.amountCentavos),
+  ],
+);
+
+/// Every day of [bounds], with what came in on it.
+List<DailySpend> dailyIncome({
+  required CycleBounds bounds,
+  required Iterable<IncomeEntry> entries,
+  required DateTime today,
+}) => dailyTotals(
+  bounds: bounds,
+  today: today,
+  amounts: [
+    for (final entry in entries) (entry.occurredAt, entry.amountCentavos),
+  ],
+);
+
+List<DailySpend> dailyTotals({
+  required CycleBounds bounds,
+  required DateTime today,
+  required Iterable<(DateTime occurredAt, int amountCentavos)> amounts,
 }) {
   final start = dateOnly(bounds.start);
   final now = dateOnly(today);
   final totals = List<int>.filled(bounds.lengthInDays, 0);
-  for (final entry in entries) {
-    final index = dateOnly(entry.occurredAt).difference(start).inDays;
+  for (final amount in amounts) {
+    final index = dateOnly(amount.$1).difference(start).inDays;
     if (index >= 0 && index < totals.length) {
-      totals[index] += entry.amountCentavos;
+      totals[index] += amount.$2;
     }
   }
   return [

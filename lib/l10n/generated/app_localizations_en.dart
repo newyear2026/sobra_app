@@ -156,6 +156,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get xpLevelTitle5 => 'Master Michi';
 
   @override
+  String get xpLevelTitle6 => 'Expert Michi';
+
+  @override
+  String get xpLevelTitle7 => 'Strategist Michi';
+
+  @override
+  String get xpLevelTitle8 => 'Prosperous Michi';
+
+  @override
+  String get xpLevelTitle9 => 'Wise Michi';
+
+  @override
+  String get xpLevelTitle10 => 'Legendary Michi';
+
+  @override
   String xpNoticeCyclesClosedTitle(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -182,6 +197,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get xpLevelUpContinue => 'Continue';
+
+  @override
+  String xpLevelUpItemsUnlocked(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new items unlocked!',
+      one: 'New item unlocked!',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get dailyMissionTitle => 'Today\'s mission';
@@ -239,7 +265,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get dailyMissionXpDetail => 'Today\'s mission';
+  String get dailyMissionXpDetail => 'Completed mission';
 
   @override
   String get xpRuleDailyMission => 'Once a day; at midnight it starts over';
@@ -384,6 +410,100 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tabSettings => 'My Sobra';
+
+  @override
+  String get collectionTitle => 'Collection';
+
+  @override
+  String get collectionSettingsValue => 'View';
+
+  @override
+  String get collectionCharacters => 'Characters';
+
+  @override
+  String get collectionItems => 'Items';
+
+  @override
+  String collectionLevel(int level) {
+    return 'LEVEL $level';
+  }
+
+  @override
+  String collectionOwnedCount(int owned, int total) {
+    return '$owned of $total';
+  }
+
+  @override
+  String get collectionCharactersHint => 'Choose your companion';
+
+  @override
+  String get collectionItemsHint => 'Decorate your space';
+
+  @override
+  String collectionCharacterPlaceholder(int number) {
+    return 'Character $number';
+  }
+
+  @override
+  String collectionItemPlaceholder(int number) {
+    return 'Item $number';
+  }
+
+  @override
+  String get collectionEquipped => 'EQUIPPED';
+
+  @override
+  String get collectionOwned => 'OWNED';
+
+  @override
+  String get collectionEquip => 'EQUIP';
+
+  @override
+  String get collectionBuy => 'BUY';
+
+  @override
+  String get collectionWatchAd => 'WATCH AD';
+
+  @override
+  String collectionAdProgress(int progress, int target) {
+    return 'AD $progress/$target';
+  }
+
+  @override
+  String get collectionHowToGet => 'HOW TO GET IT';
+
+  @override
+  String get collectionAlreadyOwned => 'Already part of your collection.';
+
+  @override
+  String get collectionIncludedUnlock => 'Included from the start.';
+
+  @override
+  String collectionPurchaseUnlock(String price) {
+    return 'One-time purchase · $price';
+  }
+
+  @override
+  String collectionAdUnlock(int progress, int target) {
+    return 'Watch rewarded ads · $progress/$target';
+  }
+
+  @override
+  String collectionLevelUnlock(int level) {
+    return 'Unlocks at level $level.';
+  }
+
+  @override
+  String get collectionStorePricePending => 'store price';
+
+  @override
+  String get collectionPreviewActionNotice =>
+      'Purchases and ads will be connected in a later stage.';
+
+  @override
+  String collectionEquippedNotice(String name) {
+    return '$name is now selected.';
+  }
 
   @override
   String get xpHistoryTitle => 'Your progress';
@@ -606,11 +726,33 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get dailyIncomeTitle => 'Daily income';
+
+  @override
+  String dailyIncomeCycleTotal(String amount) {
+    return 'This cycle $amount';
+  }
+
+  @override
   String get transactionsEmptyTitle => 'Nothing here yet';
 
   @override
   String get transactionsEmptyMessage =>
       'Add your first expense and the cycle summary will show up here.';
+
+  @override
+  String get transactionsEmptyExpensesTitle => 'No expenses yet';
+
+  @override
+  String get transactionsEmptyExpensesMessage =>
+      'Add an expense and the day-by-day will show up here.';
+
+  @override
+  String get transactionsEmptyIncomesTitle => 'No income yet';
+
+  @override
+  String get transactionsEmptyIncomesMessage =>
+      'Add an income and the day-by-day will show up here.';
 
   @override
   String get transactionsExpensePinned =>

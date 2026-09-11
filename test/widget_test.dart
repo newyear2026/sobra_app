@@ -27,7 +27,7 @@ void main() {
     expect(find.text('¿Cómo recibes tus ingresos?'), findsOneWidget);
   });
 
-  testWidgets('shows the five v1 destinations', (tester) async {
+  testWidgets('settings offers the collection destination', (tester) async {
     useSpanishDevice(tester);
     SharedPreferences.setMockInitialValues({});
     final store = await SobraStore.load();
@@ -48,6 +48,73 @@ void main() {
     expect(find.text('Mi Sobra'), findsOneWidget);
     // The centre tile carries the add glyph instead of a text label.
     expect(find.byIcon(Icons.add), findsOneWidget);
+
+    await tester.tap(find.text('Mi Sobra'));
+    await tester.pumpAndSettle();
+    expect(find.text('Colección'), findsOneWidget);
+    expect(find.text('Ver'), findsOneWidget);
+  });
+
+  testWidgets('opens the interactive collection preview', (tester) async {
+    useSpanishDevice(tester);
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load();
+    await store.configureOnboarding(
+      budgetCentavos: 600000,
+      schedule: const PaySchedule.semiMonthly(),
+      cashCentavos: 124000,
+    );
+    await store.completeOnboarding();
+
+    await tester.pumpWidget(SobraApp(store: store));
+    await tester.tap(find.text('Mi Sobra'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Colección'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Colección'), findsOneWidget);
+    expect(find.text('PERSONAJES'), findsOneWidget);
+    expect(find.text('Personaje 2'), findsOneWidget);
+    expect(find.text('EQUIPADO'), findsOneWidget);
+
+    await tester.tap(find.text('OBJETOS'));
+    await tester.pump();
+    expect(find.text('Objeto 1'), findsOneWidget);
+    expect(find.text('NIVEL 5'), findsOneWidget);
+    expect(find.text('NIVEL 8'), findsOneWidget);
+
+    await tester.tap(find.text('Objeto 1'));
+    await tester.pump();
+    expect(find.text('CÓMO OBTENERLO'), findsOneWidget);
+    expect(find.text('Ya forma parte de tu colección.'), findsOneWidget);
+
+    await tester.tap(find.text('EQUIPAR'));
+    await tester.pump();
+    expect(find.text('EQUIPADO'), findsOneWidget);
+  });
+
+  testWidgets('collection fits a compact phone width', (tester) async {
+    useSpanishDevice(tester);
+    await tester.binding.setSurfaceSize(const Size(360, 720));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load();
+    await store.configureOnboarding(
+      budgetCentavos: 600000,
+      schedule: const PaySchedule.semiMonthly(),
+      cashCentavos: 124000,
+    );
+    await store.completeOnboarding();
+
+    await tester.pumpWidget(SobraApp(store: store));
+    await tester.tap(find.text('Mi Sobra'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Colección'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Colección'), findsOneWidget);
+    expect(find.text('Personaje 2'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('opens the expense form from bottom navigation', (tester) async {

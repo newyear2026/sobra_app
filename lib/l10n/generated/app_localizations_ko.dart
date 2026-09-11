@@ -154,6 +154,21 @@ class AppLocalizationsKo extends AppLocalizations {
   String get xpLevelTitle5 => '마스터 미치';
 
   @override
+  String get xpLevelTitle6 => '전문가 미치';
+
+  @override
+  String get xpLevelTitle7 => '전략가 미치';
+
+  @override
+  String get xpLevelTitle8 => '성장하는 미치';
+
+  @override
+  String get xpLevelTitle9 => '현명한 미치';
+
+  @override
+  String get xpLevelTitle10 => '전설의 미치';
+
+  @override
   String xpNoticeCyclesClosedTitle(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -179,6 +194,11 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get xpLevelUpContinue => '계속하기';
+
+  @override
+  String xpLevelUpItemsUnlocked(int count) {
+    return '새 아이템 $count개가 해금됐어요!';
+  }
 
   @override
   String get dailyMissionTitle => '오늘의 미션';
@@ -234,7 +254,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get dailyMissionXpDetail => '오늘의 미션';
+  String get dailyMissionXpDetail => '완료한 미션';
 
   @override
   String get xpRuleDailyMission => '하루에 한 번, 자정에 다시 시작';
@@ -375,6 +395,99 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get tabSettings => '내 정보';
+
+  @override
+  String get collectionTitle => '컬렉션';
+
+  @override
+  String get collectionSettingsValue => '보기';
+
+  @override
+  String get collectionCharacters => '캐릭터';
+
+  @override
+  String get collectionItems => '아이템';
+
+  @override
+  String collectionLevel(int level) {
+    return '레벨 $level';
+  }
+
+  @override
+  String collectionOwnedCount(int owned, int total) {
+    return '$owned / $total';
+  }
+
+  @override
+  String get collectionCharactersHint => '함께할 캐릭터를 골라요';
+
+  @override
+  String get collectionItemsHint => '내 공간을 꾸며요';
+
+  @override
+  String collectionCharacterPlaceholder(int number) {
+    return '캐릭터 $number';
+  }
+
+  @override
+  String collectionItemPlaceholder(int number) {
+    return '아이템 $number';
+  }
+
+  @override
+  String get collectionEquipped => '선택됨';
+
+  @override
+  String get collectionOwned => '보유 중';
+
+  @override
+  String get collectionEquip => '선택하기';
+
+  @override
+  String get collectionBuy => '구매하기';
+
+  @override
+  String get collectionWatchAd => '광고 보기';
+
+  @override
+  String collectionAdProgress(int progress, int target) {
+    return '광고 $progress/$target';
+  }
+
+  @override
+  String get collectionHowToGet => '획득 방법';
+
+  @override
+  String get collectionAlreadyOwned => '이미 컬렉션에 포함되어 있어요.';
+
+  @override
+  String get collectionIncludedUnlock => '처음부터 포함되어 있어요.';
+
+  @override
+  String collectionPurchaseUnlock(String price) {
+    return '1회 구매 · $price';
+  }
+
+  @override
+  String collectionAdUnlock(int progress, int target) {
+    return '보상형 광고 보기 · $progress/$target';
+  }
+
+  @override
+  String collectionLevelUnlock(int level) {
+    return '레벨 $level에서 해금돼요.';
+  }
+
+  @override
+  String get collectionStorePricePending => '스토어 가격';
+
+  @override
+  String get collectionPreviewActionNotice => '구매와 광고는 다음 단계에서 연결할 예정이에요.';
+
+  @override
+  String collectionEquippedNotice(String name) {
+    return '$name을(를) 선택했어요.';
+  }
 
   @override
   String get xpHistoryTitle => '내 진행 상황';
@@ -586,10 +699,30 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get dailyIncomeTitle => '일별 수입';
+
+  @override
+  String dailyIncomeCycleTotal(String amount) {
+    return '이번 주기 $amount';
+  }
+
+  @override
   String get transactionsEmptyTitle => '아직 내역이 없어요';
 
   @override
   String get transactionsEmptyMessage => '첫 지출을 기록하면 이번 주기 요약이 여기에 나와요.';
+
+  @override
+  String get transactionsEmptyExpensesTitle => '아직 지출이 없어요';
+
+  @override
+  String get transactionsEmptyExpensesMessage => '지출을 기록하면 날짜별로 여기에 나와요.';
+
+  @override
+  String get transactionsEmptyIncomesTitle => '아직 수입이 없어요';
+
+  @override
+  String get transactionsEmptyIncomesMessage => '수입을 기록하면 날짜별로 여기에 나와요.';
 
   @override
   String get transactionsExpensePinned =>

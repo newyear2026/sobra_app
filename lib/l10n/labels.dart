@@ -202,7 +202,12 @@ String xpLevelTitle(AppLocalizations l10n, int level) => switch (level) {
   2 => l10n.xpLevelTitle2,
   3 => l10n.xpLevelTitle3,
   4 => l10n.xpLevelTitle4,
-  _ => l10n.xpLevelTitle5,
+  5 => l10n.xpLevelTitle5,
+  6 => l10n.xpLevelTitle6,
+  7 => l10n.xpLevelTitle7,
+  8 => l10n.xpLevelTitle8,
+  9 => l10n.xpLevelTitle9,
+  _ => l10n.xpLevelTitle10,
 };
 
 String xpNoticeTitle(AppLocalizations l10n, XpNotice notice) =>

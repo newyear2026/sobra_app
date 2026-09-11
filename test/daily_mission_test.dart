@@ -78,7 +78,9 @@ void main() {
     final board = store.dailyMissions;
     expect(
       board.missions
-          .singleWhere((mission) => mission.kind == DailyMissionKind.recordMovement)
+          .singleWhere(
+            (mission) => mission.kind == DailyMissionKind.recordMovement,
+          )
           .isDone,
       isTrue,
     );
@@ -89,6 +91,24 @@ void main() {
       isFalse,
     );
     expect(store.takePendingXpNotice()?.xp, 10);
+  });
+
+  test('editing a past expense to today completes both missions', () async {
+    final start = DateTime(2026, 9, 8, 10);
+    final (store, _) = await _storeAt(start);
+    final entry = await store.addExpense(
+      amountCentavos: 4500,
+      category: ExpenseCategory.food,
+      note: '',
+      occurredAt: DateTime(2026, 9, 6, 9),
+      paymentMethod: PaymentMethod.cash,
+    );
+    expect(store.dailyMissions.completedCount, 1);
+    store.takePendingXpNotice();
+
+    await store.updateExpense(entry.copyWith(occurredAt: start));
+    expect(store.dailyMissions.completedCount, 2);
+    expect(store.takePendingXpNotice()?.xp, 5);
   });
 
   test('missions reset with the calendar day', () async {
@@ -113,7 +133,9 @@ void main() {
     await store.noteBudgetReviewed();
     expect(
       store.dailyMissions.missions
-          .singleWhere((mission) => mission.kind == DailyMissionKind.reviewBudget)
+          .singleWhere(
+            (mission) => mission.kind == DailyMissionKind.reviewBudget,
+          )
           .isDone,
       isTrue,
     );
@@ -176,7 +198,9 @@ void main() {
 
     expect(
       store.dailyMissions.missions
-          .singleWhere((mission) => mission.kind == DailyMissionKind.reviewBudget)
+          .singleWhere(
+            (mission) => mission.kind == DailyMissionKind.reviewBudget,
+          )
           .isDone,
       isTrue,
     );

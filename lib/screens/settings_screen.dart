@@ -10,6 +10,7 @@ import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
 import '../widgets/pixel_ui.dart';
+import 'collection_screen.dart';
 import 'cycle_settings_screen.dart';
 import 'gamification_preview_screen.dart';
 import 'xp_history_screen.dart';
@@ -31,6 +32,16 @@ class SettingsScreen extends StatelessWidget {
           PixelTopBar(title: l10n.settingsTitle),
           const SizedBox(height: 20),
           _ProfileCard(store: store),
+          const SizedBox(height: 14),
+          _SettingsRow(
+            icon: Icons.pets,
+            iconColor: AppColors.teal,
+            label: l10n.collectionTitle,
+            value: l10n.collectionSettingsValue,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const CollectionScreen()),
+            ),
+          ),
           const SizedBox(height: 24),
           _SectionHeader(l10n.settingsSectionBudget),
           _SettingsRow(

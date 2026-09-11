@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
@@ -68,7 +66,15 @@ class _CashCountScreenState extends State<CashCountScreen> {
           note: _noteController.text,
           incomeAllocation: _incomeAllocation,
         );
-        xpNotice = store.takePendingXpNotice();
+        final pending = store.pendingXpNotice;
+        // A level-up stays queued so AppShell can celebrate on a living
+        // route. Taking it here and then popping would show the card
+        // against a deactivated context — and consume the only copy.
+        if (pending?.newLevel == null) {
+          xpNotice = store.takePendingXpNotice();
+        } else {
+          xpNotice = pending;
+        }
       });
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -76,22 +82,18 @@ class _CashCountScreenState extends State<CashCountScreen> {
     // The count screen stays put on a failure. Popping back to Inicio would
     // show the old estimate as though the recount had been accepted.
     if (!saved || !mounted) return;
-    Navigator.pop(context);
     final notice = xpNotice;
-    final newLevel = notice?.newLevel;
-    if (newLevel != null) {
-      // The count that crossed a level boundary: celebrate over the screen
-      // underneath instead of racing a toast against the pop transition.
-      unawaited(showLevelUpCelebration(context, newLevel));
+    if (notice?.newLevel != null) {
+      Navigator.pop(context);
       return;
     }
+    final bar = notice == null
+        ? SnackBar(content: Text(l10n.cashCountSavedWithoutDuplicates))
+        : xpSnackBar(context, notice);
+    Navigator.pop(context);
     messenger
       ..hideCurrentSnackBar()
-      ..showSnackBar(
-        notice == null
-            ? SnackBar(content: Text(l10n.cashCountSavedWithoutDuplicates))
-            : xpSnackBar(notice),
-      );
+      ..showSnackBar(bar);
   }
 
   @override

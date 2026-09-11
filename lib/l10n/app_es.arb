@@ -64,6 +64,11 @@
   "xpLevelTitle3": "Michi contador",
   "xpLevelTitle4": "Michi guardián",
   "xpLevelTitle5": "Michi maestro",
+  "xpLevelTitle6": "Michi experto",
+  "xpLevelTitle7": "Michi estratega",
+  "xpLevelTitle8": "Michi próspero",
+  "xpLevelTitle9": "Michi sabio",
+  "xpLevelTitle10": "Michi leyenda",
 
   "xpNoticeCyclesClosedTitle": "{count, plural, =1{Ciclo cerrado} other{{count} ciclos cerrados}}",
   "@xpNoticeCyclesClosedTitle": {
@@ -84,6 +89,13 @@
     }
   },
   "xpLevelUpContinue": "Seguir",
+  "xpLevelUpItemsUnlocked": "{count, plural, =1{¡Nuevo objeto desbloqueado!} other{¡{count} objetos nuevos desbloqueados!}}",
+  "@xpLevelUpItemsUnlocked": {
+    "description": "Shown inside the level-up card when that level grants collection items.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
 
   "dailyMissionTitle": "Misión de hoy",
   "dailyMissionResetHint": "Se renuevan a medianoche. No se acumulan.",
@@ -118,7 +130,7 @@
       "possible": { "type": "int" }
     }
   },
-  "dailyMissionXpDetail": "Misión de hoy",
+  "dailyMissionXpDetail": "Misión completada",
   "xpRuleDailyMission": "Una vez al día; a medianoche empieza de nuevo",
   "xpNoticeMissionTitle": "{count, plural, =1{Misión lista} other{{count} misiones listas}}",
   "@xpNoticeMissionTitle": {
@@ -175,6 +187,68 @@
   "tabRegister": "Registrar",
   "tabBudget": "Presup.",
   "tabSettings": "Mi Sobra",
+
+  "collectionTitle": "Colección",
+  "collectionSettingsValue": "Ver",
+  "collectionCharacters": "Personajes",
+  "collectionItems": "Objetos",
+  "collectionLevel": "NIVEL {level}",
+  "@collectionLevel": {
+    "placeholders": { "level": { "type": "int" } }
+  },
+  "collectionOwnedCount": "{owned} de {total}",
+  "@collectionOwnedCount": {
+    "placeholders": {
+      "owned": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "collectionCharactersHint": "Elige quién te acompaña",
+  "collectionItemsHint": "Decora tu espacio",
+  "collectionCharacterPlaceholder": "Personaje {number}",
+  "@collectionCharacterPlaceholder": {
+    "placeholders": { "number": { "type": "int" } }
+  },
+  "collectionItemPlaceholder": "Objeto {number}",
+  "@collectionItemPlaceholder": {
+    "placeholders": { "number": { "type": "int" } }
+  },
+  "collectionEquipped": "EQUIPADO",
+  "collectionOwned": "OBTENIDO",
+  "collectionEquip": "EQUIPAR",
+  "collectionBuy": "COMPRAR",
+  "collectionWatchAd": "VER ANUNCIO",
+  "collectionAdProgress": "ANUNCIO {progress}/{target}",
+  "@collectionAdProgress": {
+    "placeholders": {
+      "progress": { "type": "int" },
+      "target": { "type": "int" }
+    }
+  },
+  "collectionHowToGet": "CÓMO OBTENERLO",
+  "collectionAlreadyOwned": "Ya forma parte de tu colección.",
+  "collectionIncludedUnlock": "Incluido desde el inicio.",
+  "collectionPurchaseUnlock": "Compra única · {price}",
+  "@collectionPurchaseUnlock": {
+    "placeholders": { "price": { "type": "String" } }
+  },
+  "collectionAdUnlock": "Mira anuncios de recompensa · {progress}/{target}",
+  "@collectionAdUnlock": {
+    "placeholders": {
+      "progress": { "type": "int" },
+      "target": { "type": "int" }
+    }
+  },
+  "collectionLevelUnlock": "Se desbloquea en el nivel {level}.",
+  "@collectionLevelUnlock": {
+    "placeholders": { "level": { "type": "int" } }
+  },
+  "collectionStorePricePending": "precio de la tienda",
+  "collectionPreviewActionNotice": "La compra y los anuncios se conectarán en una etapa posterior.",
+  "collectionEquippedNotice": "{name} quedó seleccionado.",
+  "@collectionEquippedNotice": {
+    "placeholders": { "name": { "type": "String" } }
+  },
 
   "xpHistoryTitle": "Tu progreso",
   "xpTotal": "{count} XP totales",
@@ -269,8 +343,18 @@
     "description": "The line across the daily chart: what one day of the cycle is worth.",
     "placeholders": { "amount": { "type": "String" } }
   },
+  "dailyIncomeTitle": "Ingreso por día",
+  "dailyIncomeCycleTotal": "Este ciclo {amount}",
+  "@dailyIncomeCycleTotal": {
+    "description": "The caption under the income chart: what came in during this cycle. Income has no daily limit line.",
+    "placeholders": { "amount": { "type": "String" } }
+  },
   "transactionsEmptyTitle": "Aún no hay movimientos",
   "transactionsEmptyMessage": "Registra tu primer gasto y aquí verás el resumen del ciclo.",
+  "transactionsEmptyExpensesTitle": "Aún no hay gastos",
+  "transactionsEmptyExpensesMessage": "Registra un gasto y aquí verás el día a día.",
+  "transactionsEmptyIncomesTitle": "Aún no hay ingresos",
+  "transactionsEmptyIncomesMessage": "Registra un ingreso y aquí verás el día a día.",
   "transactionsExpensePinned": "Este gasto viene de un conteo de efectivo. Vuelve a contar para corregirlo.",
   "transactionsIncomePinned": "Este ingreso viene de un conteo de efectivo. Vuelve a contar para corregirlo.",
   "transactionsExpenseDeleted": "Movimiento eliminado.",

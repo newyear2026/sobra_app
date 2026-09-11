@@ -64,6 +64,17 @@ void main() {
         expect(kind.shortDetail(l10n), isNotEmpty, reason: '$kind');
       }
     });
+
+    test('mission rows read as a completed record, not today\'s board', () {
+      expect(
+        XpEventKind.dailyMissionRecord.shortDetail(l10n),
+        'Misión completada',
+      );
+      expect(
+        XpEventKind.dailyMissionRecord.shortDetail(l10n),
+        isNot(l10n.dailyMissionTitle),
+      );
+    });
   });
 
   test('every level has a name', () {
@@ -71,7 +82,7 @@ void main() {
       expect(xpLevelTitle(l10n, level), isNotEmpty, reason: 'level $level');
     }
     expect(xpLevelTitle(l10n, 1), 'Michi curioso');
-    expect(xpLevelTitle(l10n, XpProgress.levelCount), 'Michi maestro');
+    expect(xpLevelTitle(l10n, XpProgress.levelCount), 'Michi leyenda');
   });
 
   group('an XP notice', () {

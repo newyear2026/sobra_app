@@ -376,6 +376,36 @@ abstract class AppLocalizations {
   /// **'Michi maestro'**
   String get xpLevelTitle5;
 
+  /// No description provided for @xpLevelTitle6.
+  ///
+  /// In es, this message translates to:
+  /// **'Michi experto'**
+  String get xpLevelTitle6;
+
+  /// No description provided for @xpLevelTitle7.
+  ///
+  /// In es, this message translates to:
+  /// **'Michi estratega'**
+  String get xpLevelTitle7;
+
+  /// No description provided for @xpLevelTitle8.
+  ///
+  /// In es, this message translates to:
+  /// **'Michi próspero'**
+  String get xpLevelTitle8;
+
+  /// No description provided for @xpLevelTitle9.
+  ///
+  /// In es, this message translates to:
+  /// **'Michi sabio'**
+  String get xpLevelTitle9;
+
+  /// No description provided for @xpLevelTitle10.
+  ///
+  /// In es, this message translates to:
+  /// **'Michi leyenda'**
+  String get xpLevelTitle10;
+
   /// Shown after settling closed cycles, when at least one of them earned XP.
   ///
   /// In es, this message translates to:
@@ -411,6 +441,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Seguir'**
   String get xpLevelUpContinue;
+
+  /// Shown inside the level-up card when that level grants collection items.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{¡Nuevo objeto desbloqueado!} other{¡{count} objetos nuevos desbloqueados!}}'**
+  String xpLevelUpItemsUnlocked(int count);
 
   /// No description provided for @dailyMissionTitle.
   ///
@@ -504,7 +540,7 @@ abstract class AppLocalizations {
   /// No description provided for @dailyMissionXpDetail.
   ///
   /// In es, this message translates to:
-  /// **'Misión de hoy'**
+  /// **'Misión completada'**
   String get dailyMissionXpDetail;
 
   /// No description provided for @xpRuleDailyMission.
@@ -770,6 +806,156 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Mi Sobra'**
   String get tabSettings;
+
+  /// No description provided for @collectionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Colección'**
+  String get collectionTitle;
+
+  /// No description provided for @collectionSettingsValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver'**
+  String get collectionSettingsValue;
+
+  /// No description provided for @collectionCharacters.
+  ///
+  /// In es, this message translates to:
+  /// **'Personajes'**
+  String get collectionCharacters;
+
+  /// No description provided for @collectionItems.
+  ///
+  /// In es, this message translates to:
+  /// **'Objetos'**
+  String get collectionItems;
+
+  /// No description provided for @collectionLevel.
+  ///
+  /// In es, this message translates to:
+  /// **'NIVEL {level}'**
+  String collectionLevel(int level);
+
+  /// No description provided for @collectionOwnedCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{owned} de {total}'**
+  String collectionOwnedCount(int owned, int total);
+
+  /// No description provided for @collectionCharactersHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige quién te acompaña'**
+  String get collectionCharactersHint;
+
+  /// No description provided for @collectionItemsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Decora tu espacio'**
+  String get collectionItemsHint;
+
+  /// No description provided for @collectionCharacterPlaceholder.
+  ///
+  /// In es, this message translates to:
+  /// **'Personaje {number}'**
+  String collectionCharacterPlaceholder(int number);
+
+  /// No description provided for @collectionItemPlaceholder.
+  ///
+  /// In es, this message translates to:
+  /// **'Objeto {number}'**
+  String collectionItemPlaceholder(int number);
+
+  /// No description provided for @collectionEquipped.
+  ///
+  /// In es, this message translates to:
+  /// **'EQUIPADO'**
+  String get collectionEquipped;
+
+  /// No description provided for @collectionOwned.
+  ///
+  /// In es, this message translates to:
+  /// **'OBTENIDO'**
+  String get collectionOwned;
+
+  /// No description provided for @collectionEquip.
+  ///
+  /// In es, this message translates to:
+  /// **'EQUIPAR'**
+  String get collectionEquip;
+
+  /// No description provided for @collectionBuy.
+  ///
+  /// In es, this message translates to:
+  /// **'COMPRAR'**
+  String get collectionBuy;
+
+  /// No description provided for @collectionWatchAd.
+  ///
+  /// In es, this message translates to:
+  /// **'VER ANUNCIO'**
+  String get collectionWatchAd;
+
+  /// No description provided for @collectionAdProgress.
+  ///
+  /// In es, this message translates to:
+  /// **'ANUNCIO {progress}/{target}'**
+  String collectionAdProgress(int progress, int target);
+
+  /// No description provided for @collectionHowToGet.
+  ///
+  /// In es, this message translates to:
+  /// **'CÓMO OBTENERLO'**
+  String get collectionHowToGet;
+
+  /// No description provided for @collectionAlreadyOwned.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya forma parte de tu colección.'**
+  String get collectionAlreadyOwned;
+
+  /// No description provided for @collectionIncludedUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'Incluido desde el inicio.'**
+  String get collectionIncludedUnlock;
+
+  /// No description provided for @collectionPurchaseUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'Compra única · {price}'**
+  String collectionPurchaseUnlock(String price);
+
+  /// No description provided for @collectionAdUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'Mira anuncios de recompensa · {progress}/{target}'**
+  String collectionAdUnlock(int progress, int target);
+
+  /// No description provided for @collectionLevelUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'Se desbloquea en el nivel {level}.'**
+  String collectionLevelUnlock(int level);
+
+  /// No description provided for @collectionStorePricePending.
+  ///
+  /// In es, this message translates to:
+  /// **'precio de la tienda'**
+  String get collectionStorePricePending;
+
+  /// No description provided for @collectionPreviewActionNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'La compra y los anuncios se conectarán en una etapa posterior.'**
+  String get collectionPreviewActionNotice;
+
+  /// No description provided for @collectionEquippedNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} quedó seleccionado.'**
+  String collectionEquippedNotice(String name);
 
   /// No description provided for @xpHistoryTitle.
   ///
@@ -1113,6 +1299,18 @@ abstract class AppLocalizations {
   /// **'Límite de {amount} al día'**
   String dailySpendLimit(String amount);
 
+  /// No description provided for @dailyIncomeTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingreso por día'**
+  String get dailyIncomeTitle;
+
+  /// The caption under the income chart: what came in during this cycle. Income has no daily limit line.
+  ///
+  /// In es, this message translates to:
+  /// **'Este ciclo {amount}'**
+  String dailyIncomeCycleTotal(String amount);
+
   /// No description provided for @transactionsEmptyTitle.
   ///
   /// In es, this message translates to:
@@ -1124,6 +1322,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Registra tu primer gasto y aquí verás el resumen del ciclo.'**
   String get transactionsEmptyMessage;
+
+  /// No description provided for @transactionsEmptyExpensesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay gastos'**
+  String get transactionsEmptyExpensesTitle;
+
+  /// No description provided for @transactionsEmptyExpensesMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Registra un gasto y aquí verás el día a día.'**
+  String get transactionsEmptyExpensesMessage;
+
+  /// No description provided for @transactionsEmptyIncomesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay ingresos'**
+  String get transactionsEmptyIncomesTitle;
+
+  /// No description provided for @transactionsEmptyIncomesMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Registra un ingreso y aquí verás el día a día.'**
+  String get transactionsEmptyIncomesMessage;
 
   /// No description provided for @transactionsExpensePinned.
   ///
