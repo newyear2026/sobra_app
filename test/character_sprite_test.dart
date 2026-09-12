@@ -15,6 +15,7 @@ void main() {
 
     for (final role in CharacterMotionRole.values) {
       final asset = CharacterCatalog.michi.assetFor(role);
+      final motion = CharacterCatalog.michi.motionFor(role);
       final bytes = await rootBundle.load(asset);
       final codec = await ui.instantiateImageCodec(
         bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
@@ -23,8 +24,7 @@ void main() {
 
       expect(
         frame.image.width,
-        CharacterAnimationStandard.frameWidth.toInt() *
-            CharacterAnimationStandard.frameCount,
+        CharacterAnimationStandard.frameWidth.toInt() * motion.frameCount,
         reason: asset,
       );
       expect(
@@ -32,6 +32,30 @@ void main() {
         CharacterAnimationStandard.frameHeight.toInt(),
         reason: asset,
       );
+
+      if (role == CharacterMotionRole.activity ||
+          role == CharacterMotionRole.processing ||
+          role == CharacterMotionRole.positive) {
+        final pixels = (await frame.image.toByteData(
+          format: ui.ImageByteFormat.rawRgba,
+        ))!;
+        for (var index = 0; index < motion.frameCount; index++) {
+          var bottom = 0;
+          for (var y = 0; y < 360; y++) {
+            var opaque = 0;
+            for (var x = 0; x < 320; x++) {
+              final offset = (y * frame.image.width + index * 320 + x) * 4;
+              if (pixels.getUint8(offset + 3) > 192) opaque++;
+            }
+            if (opaque >= 8) bottom = y + 1;
+          }
+          expect(
+            bottom + motion.frameOffsets[index],
+            344,
+            reason: '$asset frame $index must remain grounded',
+          );
+        }
+      }
 
       frame.image.dispose();
       codec.dispose();
@@ -63,7 +87,13 @@ void main() {
           .motionFor(CharacterMotionRole.success)
           .playbackSpec
           .holdFrame,
-      0,
+      11,
+    );
+    expect(
+      CharacterCatalog.michi.motions.values
+          .where((motion) => motion.frameCount == 12)
+          .length,
+      4,
     );
   });
 
@@ -77,7 +107,8 @@ void main() {
       sprite.motionSpec,
       same(CharacterCatalog.michi.motionFor(CharacterMotionRole.processing)),
     );
-    expect(sprite.asset, endsWith('/michi/processing-8.png'));
+    expect(sprite.asset, endsWith('/michi/processing-12.png'));
+    expect(sprite.motionSpec.frameCount, 12);
     expect(sprite.effectiveLoop, isTrue);
   });
 
@@ -101,14 +132,14 @@ void main() {
           .motionFor(CharacterMotionRole.processing)
           .playbackSpec
           .resolveFrame(progress: 0, animate: false, completed: false),
-      4,
+      7,
     );
     expect(
       motions
           .motionFor(CharacterMotionRole.positive)
           .playbackSpec
           .resolveFrame(progress: 0, animate: false, completed: false),
-      6,
+      8,
     );
     expect(
       motions
@@ -130,26 +161,26 @@ void main() {
     );
     expect(
       positive.resolveFrame(progress: 0.999, animate: true, completed: false),
-      6,
+      11,
     );
     expect(
       positive.resolveFrame(progress: 1, animate: true, completed: false),
-      6,
+      11,
     );
   });
 
-  test('success uses the landing seam frame after one-shot completion', () {
+  test('success holds its settled frame after one-shot completion', () {
     final success = CharacterCatalog.michi
         .motionFor(CharacterMotionRole.success)
         .playbackSpec;
 
     expect(
       success.resolveFrame(progress: 0.999, animate: true, completed: false),
-      7,
+      11,
     );
     expect(
       success.resolveFrame(progress: 1, animate: true, completed: true),
-      0,
+      11,
     );
   });
 

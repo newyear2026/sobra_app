@@ -16,6 +16,11 @@ import '../theme/app_theme.dart';
 /// digits around it. ASCII `-` is a hyphen and renders narrower.
 const minusSign = '−';
 
+/// Stands where a figure would go when there is none to show.
+///
+/// Not a zero: zero is a measurement, and this is the absence of one.
+const emDash = '—';
+
 /// Height of the five-tab bar, not counting the device's bottom safe inset.
 ///
 /// XP toasts have to sit above this or they cover the + tile.

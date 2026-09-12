@@ -699,6 +699,11 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String dailySpendCycleTotal(String amount) {
+    return '이번 주기 $amount';
+  }
+
+  @override
   String get dailyIncomeTitle => '일별 수입';
 
   @override
@@ -806,6 +811,12 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get homeFirstQuestLabel => '첫 퀘스트';
+
+  @override
+  String get homeBudgetQuestBody => '예산을 정해줘. 그래야 하루에 쓸 수 있는 돈을 계산해 줄게.';
+
+  @override
   String get homeCycleProgress => '주기 진행';
 
   @override
@@ -852,6 +863,15 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get budgetTotal => '총예산';
+
+  @override
+  String get budgetNotSetTitle => '아직 예산이 없어요';
+
+  @override
+  String get budgetNotSetBody => '예산을 정하면 하루에 얼마 쓸 수 있는지 알려드려요.';
+
+  @override
+  String get budgetSetAction => '예산 정하기';
 
   @override
   String budgetTooLow(String allocated) {
@@ -1212,6 +1232,82 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboardingCashOrSkip => '현금을 입력하거나 “나중에”를 선택해 주세요.';
 
   @override
+  String get prologueRainNoEnd => '비가 그칠 기미가 없다.';
+
+  @override
+  String get prologueRentPaid => '월세는 냈고, 통장에는 다음 급여일까지 쓸 돈이 남아 있었다.';
+
+  @override
+  String get prologueSoundAtDoor => '현관 쪽에서 소리가 났다.';
+
+  @override
+  String get prologueGoLook => '나가 본다';
+
+  @override
+  String get prologueWetTracks => '젖은 발자국 두 줄이 마루를 가로질렀다.';
+
+  @override
+  String get prologueShelter => '비 좀 피하자.';
+
+  @override
+  String get prologueItSpoke => '…말을 했다.';
+
+  @override
+  String get prologueReplySurprised => '지금 말했어?';
+
+  @override
+  String get prologueReplyTowel => '(조용히 수건을 가져온다)';
+
+  @override
+  String get prologueEarnKeep => '재워준 값은 해야지. 숫자 세는 건 내가 맡을게.';
+
+  @override
+  String get prologueAskSchedule => '그럼 먼저 — 돈이 언제 들어와?';
+
+  @override
+  String get prologueAskPayday => '며칠에 받아? 앞 날짜만 알려주면 나머지는 내가 셀게.';
+
+  @override
+  String prologueAskBudget(int days) {
+    return '다음 급여일까지 $days일 남았어. 이 기간에 얼마나 쓸 생각이야?';
+  }
+
+  @override
+  String get prologueSkipIsFine => '건너뛰어도 괜찮아. 대신 집에 가서 잊지 말라고 한 번 물어볼게.';
+
+  @override
+  String get prologueSkip => '건너뛰기';
+
+  @override
+  String get prologueDriedOff => '수건으로 닦아주자 둘 다 얌전해졌다. 비는 아직 그치지 않았다.';
+
+  @override
+  String get prologueWhoSits => '누가 옆에 앉을까?';
+
+  @override
+  String get prologueMichiTrait => '조용하다.\n셈이 빠르다.';
+
+  @override
+  String get prologueLockedName => '???';
+
+  @override
+  String get prologueLockedTrait => '기운이 넘친다.\n잘 챙긴다.';
+
+  @override
+  String get prologueLockedSoon => '아트 준비 중';
+
+  @override
+  String get prologueOtherStays => '다른 한 쪽도 집에 남아요. 아직 낯을 가릴 뿐이에요.';
+
+  @override
+  String get prologueLiveTogether => '같이 지내자';
+
+  @override
+  String prologueGreeting(String name) {
+    return '미치야. 문 열어줘서 고마워.';
+  }
+
+  @override
   String get onboardingStart => '시작하기';
 
   @override
@@ -1268,6 +1364,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboardingBudgetQuestion => '이번 주기에\n얼마를 쓸까요?';
 
   @override
+  String get onboardingBudgetLater => '예산은 나중에 홈에서 정할 수 있어요.';
+
+  @override
   String get onboardingNotNow => '나중에';
 
   @override
@@ -1278,6 +1377,17 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onboardingCashIsBaseline => '이건 첫 집계예요. 수입이 아니에요.';
+
+  @override
+  String onboardingSettledIn(String name) {
+    return '비가 그쳤다. $name가 네 옆에 자리를 잡았다.';
+  }
+
+  @override
+  String get onboardingFirstQuests => '오늘의 퀘스트';
+
+  @override
+  String get onboardingWaitingAtHome => '집에서 기다리는 것';
 
   @override
   String get onboardingGoHome => '홈으로';
@@ -1330,4 +1440,30 @@ class AppLocalizationsKo extends AppLocalizations {
   String movementSubtitle(String first, String second) {
     return '$first · $second';
   }
+
+  @override
+  String get settingsSectionAbout => '정보';
+
+  @override
+  String get settingsReleaseNotes => '새로운 소식';
+
+  @override
+  String get settingsVersion => '버전';
+
+  @override
+  String get settingsVersionUnknown => '—';
+
+  @override
+  String get releaseNotesTitle => '새로운 소식';
+
+  @override
+  String get releaseNotesCurrent => '현재';
+
+  @override
+  String releaseNotesRetention(int count) {
+    return '최근 $count개 버전까지 보관해요.';
+  }
+
+  @override
+  String get releaseNote100Launch => 'Sobra의 첫 번째 버전이에요.';
 }

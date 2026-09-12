@@ -343,6 +343,11 @@
     "description": "The line across the daily chart: what one day of the cycle is worth.",
     "placeholders": { "amount": { "type": "String" } }
   },
+  "dailySpendCycleTotal": "Este ciclo {amount}",
+  "@dailySpendCycleTotal": {
+    "description": "The caption under the spending chart when no budget has been set, so there is no daily limit line to name.",
+    "placeholders": { "amount": { "type": "String" } }
+  },
   "dailyIncomeTitle": "Ingreso por día",
   "dailyIncomeCycleTotal": "Este ciclo {amount}",
   "@dailyIncomeCycleTotal": {
@@ -389,6 +394,8 @@
       "remaining": { "type": "String" }
     }
   },
+  "homeFirstQuestLabel": "Primera misión",
+  "homeBudgetQuestBody": "Ponle un presupuesto y te digo cuánto puedes gastar cada día.",
   "homeCycleProgress": "Avance del ciclo",
   "daysCount": "{count, plural, =1{{count} día} other{{count} días}}",
   "@daysCount": { "placeholders": { "count": { "type": "int" } } },
@@ -405,6 +412,9 @@
   "budgetTitle": "Presupuesto",
   "budgetCycleTotal": "Total del ciclo",
   "budgetTotal": "Presupuesto total",
+  "budgetNotSetTitle": "Aún no hay presupuesto",
+  "budgetNotSetBody": "Defínelo y calculamos cuánto puedes gastar cada día.",
+  "budgetSetAction": "Definir presupuesto",
   "budgetTooLow": "El total debe ser mayor que los ingresos asignados al ciclo ({allocated}).",
   "@budgetTooLow": { "placeholders": { "allocated": { "type": "String" } } },
   "budgetSpentShare": "{percent}% del presupuesto",
@@ -555,6 +565,37 @@
 
   "onboardingBudgetAboveZero": "Ingresa un presupuesto mayor a cero.",
   "onboardingCashOrSkip": "Ingresa el efectivo o elige “Ahora no”.",
+  "prologueRainNoEnd": "La lluvia no daba señales de parar.",
+  "prologueRentPaid": "La renta estaba pagada, y en la cuenta quedaba lo justo hasta el próximo pago.",
+  "prologueSoundAtDoor": "Algo se movió junto a la puerta.",
+  "prologueGoLook": "Ir a ver",
+  "prologueWetTracks": "Dos hileras de huellas mojadas cruzaron el piso.",
+  "prologueShelter": "Déjanos esperar a que pase.",
+  "prologueItSpoke": "…habló.",
+  "prologueReplySurprised": "¿Acabas de hablar?",
+  "prologueReplyTowel": "(traes una toalla sin decir nada)",
+  "prologueEarnKeep": "Algo tengo que aportar. Yo llevo los números.",
+  "prologueAskSchedule": "Primero: ¿cuándo entra el dinero?",
+  "prologueAskPayday": "¿Qué día te pagan? Con el primero me basta; el resto lo cuento yo.",
+  "prologueAskBudget": "Faltan {days} días para el próximo pago. ¿Cuánto piensas gastar?",
+  "@prologueAskBudget": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "prologueSkipIsFine": "Puedes saltarlo. Te lo recuerdo en casa.",
+  "prologueSkip": "Saltar",
+  "prologueDriedOff": "Secos, los dos se calmaron. Afuera seguía lloviendo.",
+  "prologueWhoSits": "¿Quién se sienta contigo?",
+  "prologueMichiTrait": "Callado.\nBueno con los números.",
+  "prologueLockedName": "???",
+  "prologueLockedTrait": "Puro ánimo.\nMuy atento.",
+  "prologueLockedSoon": "Arte en camino",
+  "prologueOtherStays": "El otro también se queda. Solo es más tímido.",
+  "prologueLiveTogether": "Que se queden",
+  "prologueGreeting": "Me llamo {name}. Gracias por abrir.",
+  "@prologueGreeting": {
+    "description": "The chosen character introducing itself, right after it is picked.",
+    "placeholders": { "name": { "type": "String" } }
+  },
   "onboardingStart": "Empezar",
   "onboardingTagline": "Tu dinero, sin presión.",
   "onboardingPromise": "Te decimos cuánto puedes gastar hoy.",
@@ -574,10 +615,18 @@
   "@onboardingRepeatsEvery": { "placeholders": { "days": { "type": "int" } } },
   "onboardingShortMonthsNote": "Las fechas se ajustan solas en meses cortos.",
   "onboardingBudgetQuestion": "¿Cuánto quieres gastar\nen este ciclo?",
+  "onboardingBudgetLater": "Puedes ponerlo después desde Inicio.",
   "onboardingNotNow": "Ahora no",
   "onboardingCashQuestion": "¿Cuánto efectivo\ntienes hoy?",
   "onboardingCashOptional": "Déjalo vacío si prefieres contarlo después.",
   "onboardingCashIsBaseline": "Este será tu primer conteo, no un ingreso.",
+  "onboardingSettledIn": "Dejó de llover. {name} se acomodó a tu lado.",
+  "@onboardingSettledIn": {
+    "description": "The last prologue line, once the character has moved in.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "onboardingFirstQuests": "Tus primeras misiones",
+  "onboardingWaitingAtHome": "Te espera en casa",
   "onboardingGoHome": "Ir a Inicio",
   "onboardingPlanReady": "Tu plan está listo",
   "onboardingCanSpendToday": "Hoy puedes gastar",
@@ -620,5 +669,26 @@
       "first": { "type": "String" },
       "second": { "type": "String" }
     }
-  }
+  },
+
+  "settingsSectionAbout": "Acerca de",
+  "settingsReleaseNotes": "Novedades",
+  "settingsVersion": "Versión",
+  "settingsVersionUnknown": "—",
+  "@settingsVersionUnknown": {
+    "description": "Stands in the version column when the platform will not report the running build, such as in a test harness. A dash rather than a number, because a wrong version is worse here than none."
+  },
+
+  "releaseNotesTitle": "Novedades",
+  "releaseNotesCurrent": "Actual",
+  "@releaseNotesCurrent": {
+    "description": "Tag on the card for the version the phone is running."
+  },
+  "releaseNotesRetention": "Guardamos las últimas {count} versiones.",
+  "@releaseNotesRetention": {
+    "description": "Footnote under the list, saying why older versions are not there.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "releaseNote100Launch": "Primera versión de Sobra."
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/expense_entry.dart';
@@ -62,6 +63,17 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     await _loadGoldenFonts();
+    // The real plugin channel is absent here, so Acerca de would render its
+    // dash. This image is a design reference as much as a regression guard,
+    // and a dash where the version goes teaches the wrong thing — so answer
+    // the way a phone would, through the same call the app makes.
+    PackageInfo.setMockInitialValues(
+      appName: 'Sobra',
+      packageName: 'com.sobra.app.sobra_app',
+      version: '1.0.0',
+      buildNumber: '1',
+      buildSignature: '',
+    );
 
     final store = await _buildStore();
     await tester.pumpWidget(SobraApp(store: store));
@@ -84,14 +96,23 @@ void main() {
     expect(find.text('PRESUPUESTO'), findsOneWidget);
     expect(find.text('PANTALLA'), findsOneWidget);
     expect(find.text('DATOS'), findsOneWidget);
+    // Acerca de reports the running build rather than guessing at one.
+    expect(find.text('ACERCA DE'), findsOneWidget);
+    expect(find.text('1.0.0 (1)'), findsOneWidget);
     // The design gallery has a section of its own: it is not data, and
     // sitting beside the backup row read as though it were.
     expect(find.text('DISEÑO'), findsOneWidget);
     final design = tester.getTopLeft(find.text('DISEÑO')).dy;
+    final about = tester.getTopLeft(find.text('ACERCA DE')).dy;
     expect(
       tester.getTopLeft(find.text('DATOS')).dy,
+      lessThan(about),
+      reason: 'Acerca de follows the data section',
+    );
+    expect(
+      about,
       lessThan(design),
-      reason: 'the debug section comes last',
+      reason: 'the debug section comes last, so Acerca de ends a release build',
     );
     expect(
       tester.getTopLeft(find.text('Vista previa XP')).dy,

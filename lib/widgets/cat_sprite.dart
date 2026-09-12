@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
+import '../state/sobra_store.dart';
 import '../l10n/labels.dart';
 
 /// Stable, character-independent roles used by every Sobra character pack.
@@ -16,7 +17,6 @@ enum CharacterMotionRole {
 }
 
 abstract final class CharacterAnimationStandard {
-  static const int frameCount = 8;
   static const double frameWidth = 320;
   static const double frameHeight = 360;
   static const Size frameSize = Size(frameWidth, frameHeight);
@@ -26,8 +26,7 @@ abstract final class CharacterAnimationStandard {
 class CharacterFrameRange {
   const CharacterFrameRange(this.start, this.end)
     : assert(start >= 0),
-      assert(end >= start),
-      assert(end < CharacterAnimationStandard.frameCount);
+      assert(end >= start);
 
   final int start;
   final int end;
@@ -48,11 +47,7 @@ class CharacterPlaybackSpec {
     required this.posterFrame,
     this.holdFrame,
   }) : assert(posterFrame >= 0),
-       assert(posterFrame < CharacterAnimationStandard.frameCount),
-       assert(holdFrame == null || holdFrame >= 0),
-       assert(
-         holdFrame == null || holdFrame < CharacterAnimationStandard.frameCount,
-       );
+       assert(holdFrame == null || holdFrame >= 0);
 
   final CharacterFrameRange playRange;
 
@@ -81,15 +76,21 @@ class CharacterPlaybackSpec {
 class CharacterMotionSpec {
   const CharacterMotionSpec({
     required this.assetFileName,
+    required this.frameCount,
     required this.duration,
     required this.defaultLoop,
     required this.playbackSpec,
-  });
+    this.frameOffsets = const [],
+  }) : assert(frameCount > 0);
 
   final String assetFileName;
+  final int frameCount;
   final Duration duration;
   final bool defaultLoop;
   final CharacterPlaybackSpec playbackSpec;
+
+  /// Vertical registration correction in source pixels; preserves the art.
+  final List<double> frameOffsets;
 }
 
 @immutable
@@ -124,6 +125,7 @@ abstract final class CharacterCatalog {
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
         assetFileName: 'idle-8.png',
+        frameCount: 8,
         duration: Duration(milliseconds: 2800),
         defaultLoop: true,
         playbackSpec: CharacterPlaybackSpec(
@@ -132,44 +134,54 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.activity: CharacterMotionSpec(
-        assetFileName: 'activity-8.png',
-        duration: Duration(milliseconds: 800),
+        assetFileName: 'activity-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        frameOffsets: [22, 23, 21, 23, 47, 48, 48, 46, 75, 72, 72, 72],
         defaultLoop: true,
         playbackSpec: CharacterPlaybackSpec(
-          playRange: CharacterFrameRange(0, 7),
+          playRange: CharacterFrameRange(0, 11),
           posterFrame: 0,
         ),
       ),
       CharacterMotionRole.processing: CharacterMotionSpec(
-        assetFileName: 'processing-8.png',
-        duration: Duration(milliseconds: 2200),
+        assetFileName: 'processing-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        frameOffsets: [4, 4, 4, 4, 23, 23, 23, 24, 49, 49, 49, 49],
         defaultLoop: true,
         playbackSpec: CharacterPlaybackSpec(
-          playRange: CharacterFrameRange(0, 7),
-          posterFrame: 4,
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 7,
         ),
       ),
       CharacterMotionRole.positive: CharacterMotionSpec(
-        assetFileName: 'positive-8.png',
-        duration: Duration(milliseconds: 2400),
+        assetFileName: 'positive-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        frameOffsets: [4, 4, 4, 4, 20, 20, 20, 21, 45, 45, 45, 45],
         defaultLoop: true,
         playbackSpec: CharacterPlaybackSpec(
-          playRange: CharacterFrameRange(0, 6),
-          posterFrame: 6,
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 8,
         ),
       ),
       CharacterMotionRole.success: CharacterMotionSpec(
-        assetFileName: 'success-8.png',
-        duration: Duration(milliseconds: 1250),
+        assetFileName: 'success-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        // Grounded frames share a baseline; the middle frames retain a jump.
+        frameOffsets: [14, 15, 14, -5, -15, -8, 8, 12, 64, 67, 64, 64],
         defaultLoop: false,
         playbackSpec: CharacterPlaybackSpec(
-          playRange: CharacterFrameRange(0, 7),
+          playRange: CharacterFrameRange(0, 11),
           posterFrame: 5,
-          holdFrame: 0,
+          holdFrame: 11,
         ),
       ),
       CharacterMotionRole.warning: CharacterMotionSpec(
         assetFileName: 'warning-8.png',
+        frameCount: 8,
         duration: Duration(milliseconds: 1600),
         defaultLoop: false,
         playbackSpec: CharacterPlaybackSpec(
@@ -181,6 +193,17 @@ abstract final class CharacterCatalog {
   );
 
   static const Map<String, CharacterDefinition> all = {'michi': michi};
+
+  /// The pack for [characterId], or Michi when there is no such pack.
+  ///
+  /// Saved state can name a character this build does not ship — an id from a
+  /// newer version, or one that was withdrawn. Falling back keeps the app
+  /// drawable instead of throwing on every frame.
+  static CharacterDefinition resolve(String characterId) =>
+      all[characterId] ?? michi;
+
+  /// The pack every install starts with.
+  static String get defaultId => michi.id;
 
   static CharacterDefinition require(String characterId) {
     final definition = all[characterId];
@@ -276,9 +299,19 @@ class _CharacterSpriteState extends State<CharacterSprite>
     final listener = ImageStreamListener((info, _) {
       if (!mounted) return;
       assert(() {
+        final motion = widget.motionSpec;
+        final playback = motion.playbackSpec;
+        if (playback.playRange.end >= motion.frameCount ||
+            playback.posterFrame >= motion.frameCount ||
+            (playback.holdFrame != null &&
+                playback.holdFrame! >= motion.frameCount)) {
+          throw FlutterError(
+            '${widget.asset} playback frames must stay below '
+            '${motion.frameCount}.',
+          );
+        }
         final expectedWidth =
-            CharacterAnimationStandard.frameWidth.toInt() *
-            CharacterAnimationStandard.frameCount;
+            CharacterAnimationStandard.frameWidth.toInt() * motion.frameCount;
         final expectedHeight = CharacterAnimationStandard.frameHeight.toInt();
         if (info.image.width != expectedWidth ||
             info.image.height != expectedHeight) {
@@ -352,7 +385,14 @@ class _CharacterSpriteState extends State<CharacterSprite>
                   _controller.status == AnimationStatus.completed,
             );
             return CustomPaint(
-              painter: _SpritePainter(image: _image, frame: frame),
+              painter: _SpritePainter(
+                image: _image,
+                frame: frame,
+                frameCount: widget.motionSpec.frameCount,
+                verticalOffset: widget.motionSpec.frameOffsets.isEmpty
+                    ? 0
+                    : widget.motionSpec.frameOffsets[frame],
+              ),
             );
           },
         ),
@@ -404,8 +444,13 @@ class CatSprite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Whichever character the user is living with. Rendered outside the app
+    // — a preview, a test — it still draws Michi rather than throwing.
+    final chosen = SobraScope.maybeOf(context)?.characterId;
     return CharacterSprite(
-      characterId: 'michi',
+      characterId: CharacterCatalog.resolve(
+        chosen ?? CharacterCatalog.defaultId,
+      ).id,
       role: motion.role,
       width: width,
       animate: animate,
@@ -418,23 +463,31 @@ class CatSprite extends StatelessWidget {
 }
 
 class _SpritePainter extends CustomPainter {
-  const _SpritePainter({required this.image, required this.frame});
+  const _SpritePainter({
+    required this.image,
+    required this.frame,
+    required this.frameCount,
+    required this.verticalOffset,
+  });
 
   final ui.Image? image;
   final int frame;
+  final int frameCount;
+  final double verticalOffset;
 
   @override
   void paint(Canvas canvas, Size size) {
     final sprite = image;
     if (sprite == null) return;
-    final frameWidth = sprite.width / CharacterAnimationStandard.frameCount;
+    final frameWidth = sprite.width / frameCount;
     final source = Rect.fromLTWH(
       frame * frameWidth,
       0,
       frameWidth,
       sprite.height.toDouble(),
     );
-    final destination = Offset.zero & size;
+    final destination =
+        Offset(0, verticalOffset * size.height / sprite.height) & size;
     final paint = Paint()
       ..isAntiAlias = false
       ..filterQuality = FilterQuality.none;
@@ -443,5 +496,8 @@ class _SpritePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _SpritePainter oldDelegate) =>
-      oldDelegate.image != image || oldDelegate.frame != frame;
+      oldDelegate.image != image ||
+      oldDelegate.frame != frame ||
+      oldDelegate.frameCount != frameCount ||
+      oldDelegate.verticalOffset != verticalOffset;
 }

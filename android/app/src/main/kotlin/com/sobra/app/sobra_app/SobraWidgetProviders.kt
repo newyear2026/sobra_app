@@ -87,13 +87,19 @@ object SobraWidgetUpdater {
     fun compact(context: Context): RemoteViews {
         val preferences = preferences(context)
         val hasData = preferences.getBoolean("hasData", false)
-        val overCycleBudget = hasData &&
+        // Absent from every payload written before the budget could be left
+        // unanswered, and those users had answered it.
+        val hasBudget = preferences.getBoolean("hasBudget", true)
+        // The day's room is a slice of the budget. With no budget there is no
+        // slice, and a confident "0" would read as a day already spent.
+        val showsMoney = hasData && hasBudget
+        val overCycleBudget = showsMoney &&
             preferences.getBoolean("overCycleBudget", false)
         return RemoteViews(context.packageName, R.layout.sobra_widget_compact).apply {
             setTextViewText(R.id.today_label, todayLabel(context, preferences))
             setTextViewText(
                 R.id.today_amount,
-                if (hasData) money(preferences.getLong("todayRemainingCentavos", 0L)) else "\$—",
+                if (showsMoney) money(preferences.getLong("todayRemainingCentavos", 0L)) else "\$—",
             )
             setTextViewText(
                 R.id.days_remaining,
@@ -101,7 +107,7 @@ object SobraWidgetUpdater {
             )
             applyProgress(
                 this,
-                if (hasData) preferences.getInt("progressSegments", 0) else 0,
+                if (showsMoney) preferences.getInt("progressSegments", 0) else 0,
                 danger = overCycleBudget,
             )
             applyMotionPreference(this, preferences.getBoolean("reducedMotion", false))
@@ -112,13 +118,19 @@ object SobraWidgetUpdater {
     fun summary(context: Context): RemoteViews {
         val preferences = preferences(context)
         val hasData = preferences.getBoolean("hasData", false)
-        val overCycleBudget = hasData &&
+        // Absent from every payload written before the budget could be left
+        // unanswered, and those users had answered it.
+        val hasBudget = preferences.getBoolean("hasBudget", true)
+        // The day's room is a slice of the budget. With no budget there is no
+        // slice, and a confident "0" would read as a day already spent.
+        val showsMoney = hasData && hasBudget
+        val overCycleBudget = showsMoney &&
             preferences.getBoolean("overCycleBudget", false)
         return RemoteViews(context.packageName, R.layout.sobra_widget_summary).apply {
             setTextViewText(R.id.today_label, todayLabel(context, preferences))
             setTextViewText(
                 R.id.today_amount,
-                if (hasData) money(preferences.getLong("todayRemainingCentavos", 0L)) else "\$—",
+                if (showsMoney) money(preferences.getLong("todayRemainingCentavos", 0L)) else "\$—",
             )
             setTextViewText(
                 R.id.days_remaining,
@@ -126,7 +138,7 @@ object SobraWidgetUpdater {
             )
             applyProgress(
                 this,
-                if (hasData) preferences.getInt("progressSegments", 0) else 0,
+                if (showsMoney) preferences.getInt("progressSegments", 0) else 0,
                 danger = overCycleBudget,
             )
             applyMotionPreference(this, preferences.getBoolean("reducedMotion", false))
@@ -186,6 +198,7 @@ object SobraWidgetUpdater {
     // Over budget the figure is the cycle's deficit, not the day's room.
     private fun todayLabel(context: Context, preferences: SharedPreferences): String {
         val overCycleBudget = preferences.getBoolean("hasData", false) &&
+            preferences.getBoolean("hasBudget", true) &&
             preferences.getBoolean("overCycleBudget", false)
         return context.getString(
             if (overCycleBudget) R.string.widget_cycle_balance else R.string.widget_today_remaining,

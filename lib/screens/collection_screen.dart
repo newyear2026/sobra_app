@@ -99,84 +99,92 @@ class _CollectionScreenState extends State<CollectionScreen> {
     final states = [for (final entry in entries) _stateFor(entry, xp.level)];
     final ownedCount = states.where((state) => state.isOwned).length;
 
-    return SafeArea(
-      bottom: false,
-      child: CustomScrollView(
-        key: const PageStorageKey('collection-scroll'),
-        slivers: [
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 18, 20, 14),
-            sliver: SliverList.list(
-              children: [
-                _CollectionHeader(
-                  title: l10n.collectionTitle,
-                  onBack: Navigator.of(context).canPop()
-                      ? () => Navigator.of(context).pop()
-                      : null,
-                  level: xp.level,
-                  current: xp.currentLevelXp,
-                  target: xp.targetLevelXp,
-                  isMaxLevel: xp.isMaxLevel,
+    return Scaffold(
+      backgroundColor: AppColors.surface,
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 520),
+            child: CustomScrollView(
+              key: const PageStorageKey('collection-scroll'),
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 14),
+                  sliver: SliverList.list(
+                    children: [
+                      _CollectionHeader(
+                        title: l10n.collectionTitle,
+                        onBack: Navigator.of(context).canPop()
+                            ? () => Navigator.of(context).pop()
+                            : null,
+                        level: xp.level,
+                        current: xp.currentLevelXp,
+                        target: xp.targetLevelXp,
+                        isMaxLevel: xp.isMaxLevel,
+                      ),
+                      const SizedBox(height: 18),
+                      _CatalogTabs(
+                        selected: _selectedKind,
+                        onChanged: (kind) {
+                          if (_selectedKind != kind) {
+                            setState(() => _selectedKind = kind);
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _SummaryPanel(
+                              icon: _selectedKind == CatalogKind.character
+                                  ? Icons.pets
+                                  : Icons.chair_outlined,
+                              text: l10n.collectionOwnedCount(
+                                ownedCount,
+                                states.length,
+                              ),
+                              bold: true,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: _SummaryPanel(
+                              icon: _selectedKind == CatalogKind.character
+                                  ? Icons.auto_awesome_outlined
+                                  : Icons.home_outlined,
+                              text: _selectedKind == CatalogKind.character
+                                  ? l10n.collectionCharactersHint
+                                  : l10n.collectionItemsHint,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 18),
-                _CatalogTabs(
-                  selected: _selectedKind,
-                  onChanged: (kind) {
-                    if (_selectedKind != kind) {
-                      setState(() => _selectedKind = kind);
-                    }
-                  },
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _SummaryPanel(
-                        icon: _selectedKind == CatalogKind.character
-                            ? Icons.pets
-                            : Icons.chair_outlined,
-                        text: l10n.collectionOwnedCount(
-                          ownedCount,
-                          states.length,
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
+                  sliver: SliverGrid(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          mainAxisExtent: 236,
                         ),
-                        bold: true,
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => _CatalogCard(
+                        state: states[index],
+                        onTap: () => _openDetails(states[index]),
                       ),
+                      childCount: states.length,
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: _SummaryPanel(
-                        icon: _selectedKind == CatalogKind.character
-                            ? Icons.auto_awesome_outlined
-                            : Icons.home_outlined,
-                        text: _selectedKind == CatalogKind.character
-                            ? l10n.collectionCharactersHint
-                            : l10n.collectionItemsHint,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                mainAxisExtent: 236,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => _CatalogCard(
-                  state: states[index],
-                  onTap: () => _openDetails(states[index]),
-                ),
-                childCount: states.length,
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

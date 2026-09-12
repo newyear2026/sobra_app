@@ -47,6 +47,7 @@ class MainActivity : FlutterActivity() {
         getSharedPreferences(SobraWidgetUpdater.PREFERENCES, MODE_PRIVATE)
             .edit()
             .putBoolean("hasData", arguments["hasData"] as? Boolean ?: false)
+            .putBoolean("hasBudget", arguments["hasBudget"] as? Boolean ?: true)
             .putLong("todayRemainingCentavos", number("todayRemainingCentavos"))
             .putBoolean("overCycleBudget", arguments["overCycleBudget"] as? Boolean ?: false)
             .putInt("daysRemaining", number("daysRemaining").toInt())

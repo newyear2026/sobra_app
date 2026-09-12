@@ -6,6 +6,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/language.dart';
 import '../models/currency.dart';
 import '../l10n/labels.dart';
+import '../services/app_version_service.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
@@ -13,10 +14,38 @@ import '../widgets/pixel_ui.dart';
 import 'collection_screen.dart';
 import 'cycle_settings_screen.dart';
 import 'gamification_preview_screen.dart';
+import 'release_notes_screen.dart';
 import 'xp_history_screen.dart';
 
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key, this.versionLoader = loadAppVersion});
+
+  /// Injected so a test can say what the platform reports without standing up
+  /// the plugin channel.
+  final AppVersionLoader versionLoader;
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  /// Null until the platform answers, and null for good if it will not. The
+  /// rows read as a dash in the meantime rather than flickering a wrong
+  /// number, and this screen rebuilds on every store change — so the read
+  /// happens here once instead of inside a FutureBuilder that would re-fire.
+  AppVersion? _version;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVersion();
+  }
+
+  Future<void> _loadVersion() async {
+    final version = await widget.versionLoader();
+    if (!mounted) return;
+    setState(() => _version = version);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,6 +177,29 @@ class SettingsScreen extends StatelessWidget {
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
+          const SizedBox(height: 10),
+          _SectionHeader(l10n.settingsSectionAbout),
+          _SettingsRow(
+            // A document, not the sparkle the debug gallery row already uses.
+            icon: Icons.article_outlined,
+            iconColor: AppColors.teal,
+            label: l10n.settingsReleaseNotes,
+            value: _version == null ? l10n.settingsVersionUnknown
+                : 'v${_version!.version}',
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => ReleaseNotesScreen(currentVersion: _version),
+              ),
+            ),
+          ),
+          // No destination, so no chevron: this row is the answer, not a way
+          // to one. It exists so a support question has a number to quote.
+          _SettingsRow(
+            icon: Icons.info_outline,
+            iconColor: AppColors.slate,
+            label: l10n.settingsVersion,
+            value: _version?.displayLabel ?? l10n.settingsVersionUnknown,
+          ),
           // Its own section: a design gallery is not data, and sitting beside
           // the backup row made it look like one.
           if (kDebugMode) ...[
@@ -185,6 +237,10 @@ class SettingsScreen extends StatelessWidget {
   Future<void> _pickCurrency(BuildContext context, SobraStore store) async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
+    // A formatting sample, not a figure of the user's. Without a budget the
+    // stored default is nothing they chose, so showing it here would invent
+    // an amount for them.
+    final sample = store.hasBudget ? store.totalBudgetCentavos : 123456;
     final chosen = await showDialog<Currency>(
       context: context,
       builder: (dialogContext) => RadioGroup<Currency>(
@@ -197,9 +253,7 @@ class SettingsScreen extends StatelessWidget {
               RadioListTile<Currency>(
                 value: currency,
                 title: Text(currency.code),
-                subtitle: Text(
-                  formatMoney(currency, store.totalBudgetCentavos),
-                ),
+                subtitle: Text(formatMoney(currency, sample)),
               ),
           ],
         ),
@@ -207,8 +261,8 @@ class SettingsScreen extends StatelessWidget {
     );
     if (chosen == null || chosen == store.currency || !context.mounted) return;
 
-    final example = formatMoney(store.currency, store.totalBudgetCentavos);
-    final relabelled = formatMoney(chosen, store.totalBudgetCentavos);
+    final example = formatMoney(store.currency, sample);
+    final relabelled = formatMoney(chosen, sample);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -449,14 +503,18 @@ class _SettingsRow extends StatelessWidget {
     required this.iconColor,
     required this.label,
     required this.value,
-    required this.onTap,
+    this.onTap,
   });
 
   final IconData icon;
   final Color iconColor;
   final String label;
   final String value;
-  final VoidCallback onTap;
+
+  /// Null for a row that only reports something. It then loses its chevron
+  /// and its press-down, because a surface that moves under a finger and
+  /// leads nowhere reads as a broken button.
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -476,8 +534,10 @@ class _SettingsRow extends StatelessWidget {
               value,
               style: pixelText(size: 14, bold: true, color: AppColors.muted),
             ),
-            const SizedBox(width: 4),
-            const Icon(Icons.chevron_right, color: AppColors.ink),
+            if (onTap != null) ...[
+              const SizedBox(width: 4),
+              const Icon(Icons.chevron_right, color: AppColors.ink),
+            ],
           ],
         ),
       ),

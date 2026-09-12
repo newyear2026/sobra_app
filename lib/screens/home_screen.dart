@@ -14,6 +14,42 @@ import 'cash_count_screen.dart';
 import 'daily_mission_screen.dart';
 import 'xp_history_screen.dart';
 
+/// What stands in for the headline while no budget has been set.
+///
+/// It leads to Presupuesto rather than opening an amount dialog of its own:
+/// that screen already asks this exact question, and one place to answer it
+/// keeps the two from drifting apart.
+class _BudgetQuest extends StatelessWidget {
+  const _BudgetQuest({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return PixelCard(
+      color: AppColors.tealSoft,
+      borderColor: AppColors.tealInk,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.homeFirstQuestLabel,
+            style: pixelText(size: 12, bold: true, color: AppColors.tealInk),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            l10n.homeBudgetQuestBody,
+            style: pixelText(size: 14, bold: true, height: 1.45),
+          ),
+          const SizedBox(height: 12),
+          PixelButton(label: l10n.budgetSetAction, onPressed: onTap),
+        ],
+      ),
+    );
+  }
+}
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -22,14 +58,19 @@ class HomeScreen extends StatelessWidget {
     final store = SobraScope.of(context);
     final shell = AppShellScope.of(context);
     final recent = store.movements.take(3).toList();
+    final hasBudget = store.hasBudget;
     // Over budget the headline stops being about today and reports the
-    // cycle's own deficit, so the label and the colour follow it.
-    final overCycleBudget = store.remainingBudgetCentavos < 0;
+    // cycle's own deficit, so the label and the colour follow it. Nothing is
+    // over when nothing was set.
+    final overCycleBudget = hasBudget && store.remainingBudgetCentavos < 0;
     // The cat still reacts to the day itself: the headline now floors at
     // zero, so it can no longer tell a spent day from an untouched one.
+    // Without a budget the allowance is zero, and measuring the day against
+    // it would have the cat counselling restraint about a limit nobody set.
     final onTrack =
-        !overCycleBudget &&
-        store.spentTodayCentavos <= store.dailyAllowanceCentavos;
+        !hasBudget ||
+        (!overCycleBudget &&
+            store.spentTodayCentavos <= store.dailyAllowanceCentavos);
     final xp = store.xpProgress;
     final missions = store.dailyMissions;
     final l10n = AppLocalizations.of(context);
@@ -60,6 +101,19 @@ class HomeScreen extends StatelessWidget {
                   style: textTheme.titleSmall,
                 ),
                 const SizedBox(height: 4),
+                if (!hasBudget) ...[
+                  // The figure's place is kept rather than closed up, so the
+                  // screen still reads as the one it always was and the card
+                  // under it is plainly what fills the gap.
+                  Text(
+                    emDash,
+                    style: textTheme.displayLarge?.copyWith(
+                      color: AppColors.line,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  _BudgetQuest(onTap: () => shell.select(AppTab.budget)),
+                ] else ...[
                 FittedBox(
                   alignment: Alignment.centerLeft,
                   fit: BoxFit.scaleDown,
@@ -104,6 +158,7 @@ class HomeScreen extends StatelessWidget {
                         : AppColors.muted,
                   ),
                 ),
+                ],
                 const SizedBox(height: 18),
                 LevelStrip(
                   level: xp.level,
@@ -148,37 +203,50 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                SegmentedProgress(
-                  value: store.budgetProgress,
-                  danger: store.budgetProgress > 1,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _BudgetFigure(
-                        label: l10n.budget,
-                        value: formatMoney(
-                          currency,
-                          store.totalBudgetCentavos,
-                          showCode: false,
+                // The bar is a share of the budget, so it has nothing to fill
+                // without one. Days remaining and what was spent are both
+                // true either way, and they stay.
+                if (hasBudget) ...[
+                  SegmentedProgress(
+                    value: store.budgetProgress,
+                    danger: store.budgetProgress > 1,
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _BudgetFigure(
+                          label: l10n.budget,
+                          value: formatMoney(
+                            currency,
+                            store.totalBudgetCentavos,
+                            showCode: false,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: _BudgetFigure(
-                        label: l10n.spent,
-                        value: formatMoney(
-                          currency,
-                          store.totalSpentCentavos,
-                          showCode: false,
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _BudgetFigure(
+                          label: l10n.spent,
+                          value: formatMoney(
+                            currency,
+                            store.totalSpentCentavos,
+                            showCode: false,
+                          ),
+                          alignEnd: true,
                         ),
-                        alignEnd: true,
                       ),
+                    ],
+                  ),
+                ] else
+                  _BudgetFigure(
+                    label: l10n.spent,
+                    value: formatMoney(
+                      currency,
+                      store.totalSpentCentavos,
+                      showCode: false,
                     ),
-                  ],
-                ),
+                  ),
                 const SizedBox(height: 18),
                 PixelCard(
                   // The one card on the screen that leads somewhere else, so

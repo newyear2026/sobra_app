@@ -1299,6 +1299,12 @@ abstract class AppLocalizations {
   /// **'Límite de {amount} al día'**
   String dailySpendLimit(String amount);
 
+  /// The caption under the spending chart when no budget has been set, so there is no daily limit line to name.
+  ///
+  /// In es, this message translates to:
+  /// **'Este ciclo {amount}'**
+  String dailySpendCycleTotal(String amount);
+
   /// No description provided for @dailyIncomeTitle.
   ///
   /// In es, this message translates to:
@@ -1497,6 +1503,18 @@ abstract class AppLocalizations {
   /// **'Límite de hoy {limit} · Quedan {remaining} en el ciclo'**
   String homeDailyLimit(String limit, String remaining);
 
+  /// No description provided for @homeFirstQuestLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Primera misión'**
+  String get homeFirstQuestLabel;
+
+  /// No description provided for @homeBudgetQuestBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponle un presupuesto y te digo cuánto puedes gastar cada día.'**
+  String get homeBudgetQuestBody;
+
   /// No description provided for @homeCycleProgress.
   ///
   /// In es, this message translates to:
@@ -1574,6 +1592,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Presupuesto total'**
   String get budgetTotal;
+
+  /// No description provided for @budgetNotSetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay presupuesto'**
+  String get budgetNotSetTitle;
+
+  /// No description provided for @budgetNotSetBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Defínelo y calculamos cuánto puedes gastar cada día.'**
+  String get budgetNotSetBody;
+
+  /// No description provided for @budgetSetAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Definir presupuesto'**
+  String get budgetSetAction;
 
   /// No description provided for @budgetTooLow.
   ///
@@ -2223,6 +2259,150 @@ abstract class AppLocalizations {
   /// **'Ingresa el efectivo o elige “Ahora no”.'**
   String get onboardingCashOrSkip;
 
+  /// No description provided for @prologueRainNoEnd.
+  ///
+  /// In es, this message translates to:
+  /// **'La lluvia no daba señales de parar.'**
+  String get prologueRainNoEnd;
+
+  /// No description provided for @prologueRentPaid.
+  ///
+  /// In es, this message translates to:
+  /// **'La renta estaba pagada, y en la cuenta quedaba lo justo hasta el próximo pago.'**
+  String get prologueRentPaid;
+
+  /// No description provided for @prologueSoundAtDoor.
+  ///
+  /// In es, this message translates to:
+  /// **'Algo se movió junto a la puerta.'**
+  String get prologueSoundAtDoor;
+
+  /// No description provided for @prologueGoLook.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir a ver'**
+  String get prologueGoLook;
+
+  /// No description provided for @prologueWetTracks.
+  ///
+  /// In es, this message translates to:
+  /// **'Dos hileras de huellas mojadas cruzaron el piso.'**
+  String get prologueWetTracks;
+
+  /// No description provided for @prologueShelter.
+  ///
+  /// In es, this message translates to:
+  /// **'Déjanos esperar a que pase.'**
+  String get prologueShelter;
+
+  /// No description provided for @prologueItSpoke.
+  ///
+  /// In es, this message translates to:
+  /// **'…habló.'**
+  String get prologueItSpoke;
+
+  /// No description provided for @prologueReplySurprised.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Acabas de hablar?'**
+  String get prologueReplySurprised;
+
+  /// No description provided for @prologueReplyTowel.
+  ///
+  /// In es, this message translates to:
+  /// **'(traes una toalla sin decir nada)'**
+  String get prologueReplyTowel;
+
+  /// No description provided for @prologueEarnKeep.
+  ///
+  /// In es, this message translates to:
+  /// **'Algo tengo que aportar. Yo llevo los números.'**
+  String get prologueEarnKeep;
+
+  /// No description provided for @prologueAskSchedule.
+  ///
+  /// In es, this message translates to:
+  /// **'Primero: ¿cuándo entra el dinero?'**
+  String get prologueAskSchedule;
+
+  /// No description provided for @prologueAskPayday.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué día te pagan? Con el primero me basta; el resto lo cuento yo.'**
+  String get prologueAskPayday;
+
+  /// No description provided for @prologueAskBudget.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltan {days} días para el próximo pago. ¿Cuánto piensas gastar?'**
+  String prologueAskBudget(int days);
+
+  /// No description provided for @prologueSkipIsFine.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes saltarlo. Te lo recuerdo en casa.'**
+  String get prologueSkipIsFine;
+
+  /// No description provided for @prologueSkip.
+  ///
+  /// In es, this message translates to:
+  /// **'Saltar'**
+  String get prologueSkip;
+
+  /// No description provided for @prologueDriedOff.
+  ///
+  /// In es, this message translates to:
+  /// **'Secos, los dos se calmaron. Afuera seguía lloviendo.'**
+  String get prologueDriedOff;
+
+  /// No description provided for @prologueWhoSits.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quién se sienta contigo?'**
+  String get prologueWhoSits;
+
+  /// No description provided for @prologueMichiTrait.
+  ///
+  /// In es, this message translates to:
+  /// **'Callado.\nBueno con los números.'**
+  String get prologueMichiTrait;
+
+  /// No description provided for @prologueLockedName.
+  ///
+  /// In es, this message translates to:
+  /// **'???'**
+  String get prologueLockedName;
+
+  /// No description provided for @prologueLockedTrait.
+  ///
+  /// In es, this message translates to:
+  /// **'Puro ánimo.\nMuy atento.'**
+  String get prologueLockedTrait;
+
+  /// No description provided for @prologueLockedSoon.
+  ///
+  /// In es, this message translates to:
+  /// **'Arte en camino'**
+  String get prologueLockedSoon;
+
+  /// No description provided for @prologueOtherStays.
+  ///
+  /// In es, this message translates to:
+  /// **'El otro también se queda. Solo es más tímido.'**
+  String get prologueOtherStays;
+
+  /// No description provided for @prologueLiveTogether.
+  ///
+  /// In es, this message translates to:
+  /// **'Que se queden'**
+  String get prologueLiveTogether;
+
+  /// The chosen character introducing itself, right after it is picked.
+  ///
+  /// In es, this message translates to:
+  /// **'Me llamo {name}. Gracias por abrir.'**
+  String prologueGreeting(String name);
+
   /// No description provided for @onboardingStart.
   ///
   /// In es, this message translates to:
@@ -2331,6 +2511,12 @@ abstract class AppLocalizations {
   /// **'¿Cuánto quieres gastar\nen este ciclo?'**
   String get onboardingBudgetQuestion;
 
+  /// No description provided for @onboardingBudgetLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes ponerlo después desde Inicio.'**
+  String get onboardingBudgetLater;
+
   /// No description provided for @onboardingNotNow.
   ///
   /// In es, this message translates to:
@@ -2354,6 +2540,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Este será tu primer conteo, no un ingreso.'**
   String get onboardingCashIsBaseline;
+
+  /// The last prologue line, once the character has moved in.
+  ///
+  /// In es, this message translates to:
+  /// **'Dejó de llover. {name} se acomodó a tu lado.'**
+  String onboardingSettledIn(String name);
+
+  /// No description provided for @onboardingFirstQuests.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus primeras misiones'**
+  String get onboardingFirstQuests;
+
+  /// No description provided for @onboardingWaitingAtHome.
+  ///
+  /// In es, this message translates to:
+  /// **'Te espera en casa'**
+  String get onboardingWaitingAtHome;
 
   /// No description provided for @onboardingGoHome.
   ///
@@ -2438,6 +2642,54 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{first} · {second}'**
   String movementSubtitle(String first, String second);
+
+  /// No description provided for @settingsSectionAbout.
+  ///
+  /// In es, this message translates to:
+  /// **'Acerca de'**
+  String get settingsSectionAbout;
+
+  /// No description provided for @settingsReleaseNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Novedades'**
+  String get settingsReleaseNotes;
+
+  /// No description provided for @settingsVersion.
+  ///
+  /// In es, this message translates to:
+  /// **'Versión'**
+  String get settingsVersion;
+
+  /// Stands in the version column when the platform will not report the running build, such as in a test harness. A dash rather than a number, because a wrong version is worse here than none.
+  ///
+  /// In es, this message translates to:
+  /// **'—'**
+  String get settingsVersionUnknown;
+
+  /// No description provided for @releaseNotesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Novedades'**
+  String get releaseNotesTitle;
+
+  /// Tag on the card for the version the phone is running.
+  ///
+  /// In es, this message translates to:
+  /// **'Actual'**
+  String get releaseNotesCurrent;
+
+  /// Footnote under the list, saying why older versions are not there.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardamos las últimas {count} versiones.'**
+  String releaseNotesRetention(int count);
+
+  /// No description provided for @releaseNote100Launch.
+  ///
+  /// In es, this message translates to:
+  /// **'Primera versión de Sobra.'**
+  String get releaseNote100Launch;
 }
 
 class _AppLocalizationsDelegate

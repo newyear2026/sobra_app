@@ -86,6 +86,7 @@ void main() {
       SobraWidgetSnapshot.fromStore(store, _label).toPlatformMap().keys.toSet(),
       {
         'hasData',
+        'hasBudget',
         'todayRemainingCentavos',
         'overCycleBudget',
         'daysRemaining',

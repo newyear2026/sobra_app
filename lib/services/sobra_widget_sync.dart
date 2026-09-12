@@ -52,6 +52,7 @@ class SobraWidgetMovement {
 class SobraWidgetSnapshot {
   const SobraWidgetSnapshot({
     required this.hasCompletedOnboarding,
+    required this.hasBudget,
     required this.todayRemainingCentavos,
     required this.overCycleBudget,
     required this.daysRemaining,
@@ -63,6 +64,13 @@ class SobraWidgetSnapshot {
   });
 
   final bool hasCompletedOnboarding;
+
+  /// Whether the figures below describe a plan the user actually set.
+  ///
+  /// Without it every budget-derived number reads zero, and a widget that
+  /// cannot tell that apart would show a confident "0 left today".
+  final bool hasBudget;
+
   final int todayRemainingCentavos;
 
   /// Over budget, [todayRemainingCentavos] carries the cycle's deficit rather
@@ -82,6 +90,7 @@ class SobraWidgetSnapshot {
     final progress = store.budgetProgress.clamp(0.0, 1.0);
     return SobraWidgetSnapshot(
       hasCompletedOnboarding: store.hasCompletedOnboarding,
+      hasBudget: store.hasBudget,
       todayRemainingCentavos: store.todayRemainingCentavos,
       overCycleBudget: store.remainingBudgetCentavos < 0,
       daysRemaining: store.daysRemaining,
@@ -99,6 +108,7 @@ class SobraWidgetSnapshot {
   Map<String, Object> toPlatformMap() {
     final result = <String, Object>{
       'hasData': hasCompletedOnboarding,
+      'hasBudget': hasBudget,
       'todayRemainingCentavos': todayRemainingCentavos,
       'overCycleBudget': overCycleBudget,
       'daysRemaining': daysRemaining,

@@ -44,10 +44,59 @@ class BudgetScreen extends StatelessWidget {
         _AmountDialog(title: title, currentCentavos: currentCentavos),
   );
 
+  Widget _budgetPrompt(
+    BuildContext context,
+    SobraStore store,
+    AppLocalizations l10n,
+  ) => SafeArea(
+    bottom: false,
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PixelTopBar(title: l10n.budgetTitle),
+          const SizedBox(height: 18),
+          PixelEmptyState(
+            icon: Icons.savings_outlined,
+            title: l10n.budgetNotSetTitle,
+            message: l10n.budgetNotSetBody,
+          ),
+          const SizedBox(height: 16),
+          PixelButton(
+            label: l10n.budgetSetAction,
+            icon: Icons.add,
+            onPressed: () async {
+              final messenger = ScaffoldMessenger.of(context);
+              final value = await _requestAmount(
+                context,
+                title: l10n.budgetTotal,
+                currentCentavos: 0,
+              );
+              if (value == null) return;
+              await guardStoreWrite(
+                messenger,
+                l10n,
+                // The limits still hold the stock split of the default
+                // figure, and scaling that split reproduces it at whatever
+                // the first real budget turns out to be.
+                () => store.setTotalBudget(value, adjustCategoryLimits: true),
+              );
+            },
+          ),
+        ],
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final store = SobraScope.of(context);
+    // Nothing on this screen survives a missing budget: the ring, the
+    // projection and every category limit are shares of a number that was
+    // never chosen. One prompt is the whole screen until it exists.
+    if (!store.hasBudget) return _budgetPrompt(context, store, l10n);
     final currency = store.currency;
     final projectionPositive = store.projectedRemainderCentavos >= 0;
     final motionToken = Object.hashAll([

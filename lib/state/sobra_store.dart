@@ -44,6 +44,22 @@ class SobraStore extends ChangeNotifier {
   int _idSequence = 0;
 
   int _baseBudgetCentavos = 600000;
+
+  /// Whether the user has actually chosen a budget.
+  ///
+  /// [_baseBudgetCentavos] always holds a number, so it cannot say "not
+  /// answered" on its own: zero would read as a budget of nothing that the
+  /// first expense instantly overruns, which is the opposite of what an
+  /// unanswered question means. This is the budget's [hasCashBaseline].
+  bool _hasBudget = true;
+
+  /// Which character pack the app draws.
+  ///
+  /// Stored as a plain id rather than validated here: this layer has no
+  /// opinion about what art exists, and a pack that a later build no longer
+  /// ships must not stop the file from opening. The sprite resolves it.
+  String characterId = 'michi';
+
   int countedCashCentavos = 0;
   int expectedCashCentavos = 0;
   bool reducedMotion = false;
@@ -124,6 +140,15 @@ class SobraStore extends ChangeNotifier {
   DateTime get cycleStart => cycleBounds.start;
   DateTime get cycleEnd => cycleBounds.end;
   bool get hasCashBaseline => lastCashCountAt != null;
+
+  /// Whether a budget has been set, and so whether the figures derived from
+  /// it mean anything.
+  ///
+  /// Every budget-derived getter reads zero while this is false. Zero is a
+  /// placeholder there, not a measurement: ask this before presenting any of
+  /// them, the way the cash figures are gated on [hasCashBaseline].
+  bool get hasBudget => _hasBudget;
+
   int get baseBudgetCentavos => _baseBudgetCentavos;
   int get cycleBudgetExtrasCentavos =>
       _cycleBudgetExtras[_cycleKey(cycleStart)] ?? 0;
@@ -247,9 +272,11 @@ class SobraStore extends ChangeNotifier {
       .where((entry) => _isSameDay(entry.occurredAt, today))
       .fold(0, (total, entry) => total + entry.amountCentavos);
   int get spentBeforeTodayCentavos => totalSpentCentavos - spentTodayCentavos;
-  int get remainingBudgetCentavos => totalBudgetCentavos - totalSpentCentavos;
+  int get remainingBudgetCentavos =>
+      _hasBudget ? totalBudgetCentavos - totalSpentCentavos : 0;
 
   int get dailyAllowanceCentavos {
+    if (!_hasBudget) return 0;
     final availableAtStartOfDay =
         totalBudgetCentavos - spentBeforeTodayCentavos;
     return daysRemaining <= 0 ? 0 : availableAtStartOfDay ~/ daysRemaining;
@@ -266,15 +293,18 @@ class SobraStore extends ChangeNotifier {
   /// reports its own deficit instead — a quantity that only moves when money
   /// actually moves.
   int get todayRemainingCentavos {
+    if (!_hasBudget) return 0;
     if (remainingBudgetCentavos < 0) return remainingBudgetCentavos;
     final remaining = dailyAllowanceCentavos - spentTodayCentavos;
     return remaining < 0 ? 0 : remaining;
   }
 
-  double get budgetProgress =>
-      totalBudgetCentavos == 0 ? 0 : totalSpentCentavos / totalBudgetCentavos;
+  double get budgetProgress => !_hasBudget || totalBudgetCentavos == 0
+      ? 0
+      : totalSpentCentavos / totalBudgetCentavos;
 
   int get projectedRemainderCentavos {
+    if (!_hasBudget) return 0;
     if (elapsedDays <= 0) return remainingBudgetCentavos;
     final average = totalSpentCentavos / elapsedDays;
     final futureDays = daysRemaining > 0 ? daysRemaining - 1 : 0;
@@ -845,6 +875,7 @@ class SobraStore extends ChangeNotifier {
       throw const SobraStoreException(StoreFailure.budgetBelowCycleIncome);
     }
     _baseBudgetCentavos = nextBaseBudget;
+    _hasBudget = true;
     if (adjustCategoryLimits) {
       // Scale what is there rather than reinstating the stock split: somebody
       // who moved Comida to half their budget asked for that, and "adjust
@@ -1057,12 +1088,19 @@ class SobraStore extends ChangeNotifier {
   String exportJson() => const JsonEncoder.withIndent('  ').convert(_toJson());
   String? get exportCorruptedJson => corruptedStorage;
 
+  /// Writes the answers onboarding collected.
+  ///
+  /// A null [budgetCentavos] is "not answered yet", not a budget of nothing —
+  /// see [hasBudget]. The stored figure keeps its default anyway so the
+  /// category split has something to be a share of; nothing reads it until a
+  /// budget is actually set.
   Future<void> configureOnboarding({
-    required int budgetCentavos,
+    required int? budgetCentavos,
     required PaySchedule schedule,
     int? cashCentavos,
   }) async {
-    _baseBudgetCentavos = budgetCentavos;
+    _baseBudgetCentavos = budgetCentavos ?? 600000;
+    _hasBudget = budgetCentavos != null;
     paySchedule =
         schedule.type == PayCycleType.irregular &&
             schedule.irregularCycleStart == null
@@ -1074,8 +1112,15 @@ class SobraStore extends ChangeNotifier {
     countedCashCentavos = cashCentavos ?? 0;
     expectedCashCentavos = cashCentavos ?? 0;
     lastCashCountAt = cashCentavos == null ? null : currentMoment;
-    categoryLimits = _categoryLimitsForBudget(budgetCentavos);
+    categoryLimits = _categoryLimitsForBudget(_baseBudgetCentavos);
     categoryLimitsCustomized = false;
+    await _save();
+    notifyListeners();
+  }
+
+  Future<void> chooseCharacter(String id) async {
+    if (id.isEmpty || id == characterId) return;
+    characterId = id;
     await _save();
     notifyListeners();
   }
@@ -1183,6 +1228,8 @@ class SobraStore extends ChangeNotifier {
     _cycleRecords.clear();
     _cycleBudgetExtras.clear();
     _baseBudgetCentavos = 600000;
+    _hasBudget = true;
+    characterId = 'michi';
     countedCashCentavos = 0;
     expectedCashCentavos = 0;
     reducedMotion = false;
@@ -1231,6 +1278,8 @@ class SobraStore extends ChangeNotifier {
       ..clear()
       ..addAll(other._cycleBudgetExtras);
     _baseBudgetCentavos = other._baseBudgetCentavos;
+    _hasBudget = other._hasBudget;
+    characterId = other.characterId;
     countedCashCentavos = other.countedCashCentavos;
     expectedCashCentavos = other.expectedCashCentavos;
     reducedMotion = other.reducedMotion;
@@ -1292,6 +1341,11 @@ class SobraStore extends ChangeNotifier {
         (json['baseBudgetCentavos'] as num? ??
                 json['totalBudgetCentavos'] as num)
             .toInt();
+    // Absent from every state written before the budget could be left
+    // unanswered. Those users answered it during onboarding, so their saved
+    // figure is a real one and the flag reads true.
+    _hasBudget = json['hasBudget'] as bool? ?? true;
+    characterId = json['characterId'] as String? ?? 'michi';
     countedCashCentavos = (json['countedCashCentavos'] as num).toInt();
     expectedCashCentavos = (json['expectedCashCentavos'] as num).toInt();
     reducedMotion = json['reducedMotion'] as bool? ?? false;
@@ -1355,6 +1409,8 @@ class SobraStore extends ChangeNotifier {
     'cycleRecords': _cycleRecords.map((entry) => entry.toJson()).toList(),
     'baseBudgetCentavos': _baseBudgetCentavos,
     'totalBudgetCentavos': _baseBudgetCentavos,
+    'hasBudget': _hasBudget,
+    'characterId': characterId,
     'cycleBudgetExtras': _cycleBudgetExtras,
     'countedCashCentavos': countedCashCentavos,
     'expectedCashCentavos': expectedCashCentavos,
@@ -1454,6 +1510,14 @@ class _SettlementRun {
 class SobraScope extends InheritedNotifier<SobraStore> {
   const SobraScope({super.key, required SobraStore store, required super.child})
     : super(notifier: store);
+
+  /// The store above [context], or null where there is none.
+  ///
+  /// For widgets that can still draw something sensible without app state —
+  /// a sprite in a preview or a test. Anything that needs the store uses
+  /// [of], which says so.
+  static SobraStore? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<SobraScope>()?.notifier;
 
   static SobraStore of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<SobraScope>();

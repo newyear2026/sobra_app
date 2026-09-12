@@ -1,0 +1,432 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Sobra 업데이트 안내 — 시안 v1</title>
+<style>
+@font-face{font-family:PixelifySans;src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");}
+:root{--paper:#F6EFE0;--paperLight:#FBF5E9;--surface:#FFFDF7;--beige:#EFE7D6;--ink:#202848;
+      --inkSoft:#4E5878;--muted:#5F6885;--line:#E7DDC8;--teal:#0E7A72;--tealSoft:#D8EDEA;
+      --tealInk:#0B6660;--cash:#C0873A;--cashSoft:#F7E9CE;--cashInk:#845A1E;--danger:#D4553F;
+      --dangerSoft:#FBE1DA;--dangerInk:#A63A25;--blue:#39558E;--blueSoft:#DCE4F2;--violet:#6E4A8C;
+      --shadow:rgba(32,40,72,.16);}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);font-family:PixelifySans,monospace;color:var(--ink);
+     padding:34px 40px 52px;-webkit-font-smoothing:none;width:1700px}
+
+/* ---- page furniture ---- */
+.head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px;padding-left:6px}
+.head h1{font-size:27px;font-weight:900}
+.head span{font-size:14px;color:var(--inkSoft);font-weight:800}
+.lede{font-size:13px;color:var(--inkSoft);line-height:1.7;padding-left:6px;margin-bottom:6px;max-width:1280px;font-weight:800}
+.lede b{color:var(--ink)} .lede .new{color:var(--teal);font-weight:900} .lede .bad{color:var(--dangerInk)}
+.band{font-size:14px;font-weight:900;color:var(--ink);border-left:6px solid var(--teal);
+      padding:3px 0 3px 12px;margin:34px 0 18px 6px}
+.band span{font-weight:800;color:var(--inkSoft);font-size:12.5px;margin-left:8px}
+.row{display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap}
+.col{width:372px}
+.cap{font-size:12px;color:var(--inkSoft);line-height:1.6;margin-top:12px;padding:0 4px;font-weight:800}
+.cap b{color:var(--ink)} .cap .new{color:var(--teal)} .cap .bad{color:var(--dangerInk)}
+.cap code{background:var(--surface);border:2px solid var(--line);padding:0 3px;font-size:11px}
+.capttl{font-size:13.5px;font-weight:900;color:var(--ink);margin-bottom:5px;padding:0 4px}
+
+/* ---- phone ---- */
+.phone{width:372px;height:790px;background:var(--surface);border:5px solid var(--ink);
+       border-radius:26px;padding:0;display:flex;flex-direction:column;
+       box-shadow:7px 7px 0 rgba(32,40,72,.14);position:relative;overflow:hidden}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;padding:12px 16px 0}
+.status{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;font-weight:900;padding:0 2px 8px}
+.dots{display:flex;gap:3px;align-items:center}
+.dots i{width:6px;height:6px;background:var(--ink);border-radius:50%}
+.dots b{width:13px;height:8px;border:2px solid var(--ink);display:inline-block;margin-left:3px}
+
+/* ---- home content ---- */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.topbar .logo{font-size:25px;font-weight:900;letter-spacing:1px}
+.gear{width:24px;height:24px;border:2.5px solid var(--ink);position:relative}
+.gear:after{content:"";position:absolute;inset:6px;border:2.5px solid var(--ink)}
+.lvl{background:var(--tealSoft);border:2.5px solid var(--ink);padding:11px 12px;margin-bottom:15px}
+.lvl .t{display:flex;align-items:center;gap:10px}
+.lvl .sq{width:38px;height:38px;background:var(--teal);border:2.5px solid var(--ink);color:#fff;
+         font-size:17px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.lvl .nm{font-size:14px;font-weight:900;line-height:1.2}
+.lvl .sb{font-size:11.5px;color:var(--inkSoft);font-weight:800;margin-top:2px}
+.lvl .ch{margin-left:auto;font-size:17px;font-weight:900}
+.lvl .xp{display:flex;justify-content:space-between;font-size:11px;font-weight:900;color:var(--inkSoft);margin-top:6px}
+.seg{height:19px;background:var(--surface);border:2.5px solid var(--ink);padding:3px;display:flex;gap:2px}
+.seg i{flex:1;background:var(--line)} .seg i.on{background:var(--teal)}
+.klabel{font-size:12.5px;font-weight:900;color:var(--ink)}
+.big{font-size:36px;font-weight:900;color:var(--teal);letter-spacing:1px;line-height:1.1;margin:3px 0 14px}
+.metaline{display:flex;justify-content:space-between;font-size:11.5px;font-weight:900;color:var(--inkSoft);margin:6px 0 15px}
+.metaline .t{color:var(--teal)}
+.cashcard{background:var(--cashSoft);border:2.5px solid var(--cash);padding:11px 12px;display:flex;
+          align-items:center;gap:11px;box-shadow:4px 4px 0 var(--shadow);margin-bottom:16px}
+.cashcard .ic{width:38px;height:38px;background:var(--cash);border:2.5px solid var(--ink)}
+.cashcard .k{font-size:11.5px;font-weight:900;color:var(--cashInk)}
+.cashcard .v{font-size:20px;font-weight:900;color:var(--cashInk);line-height:1.2;margin:1px 0}
+.cashcard .s{font-size:10.5px;font-weight:800;color:var(--cashInk);opacity:.85}
+.cashcard .ch{margin-left:auto;font-size:17px;font-weight:900;color:var(--cashInk)}
+.mvhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+.mvhead .a{font-size:11.5px;font-weight:900;color:var(--teal)}
+.mv{display:flex;align-items:center;gap:11px;margin-bottom:10px}
+.mv .ic{width:36px;height:36px;border:2.5px solid var(--ink)}
+.mv .n{font-size:13.5px;font-weight:900} .mv .d{font-size:10.5px;font-weight:800;color:var(--inkSoft);margin-top:1px}
+.mv .amt{margin-left:auto;font-size:14px;font-weight:900}
+
+/* ---- bottom nav ---- */
+.nav{position:absolute;left:0;right:0;bottom:0;height:76px;background:var(--surface);
+     border-top:3px solid var(--ink);display:flex;align-items:stretch}
+.nav d{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+       font-size:10.5px;font-weight:900;color:var(--ink)}
+.nav d.on{background:var(--teal);color:#fff}
+.nav d i{width:19px;height:19px;border:2.5px solid currentColor;display:block}
+.nav d.mid i{width:44px;height:40px;background:var(--teal);border:3px solid var(--ink);color:#fff;
+             display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:900}
+.nav d.mid{gap:3px}
+
+/* ---- modal ---- */
+.barrier{position:absolute;inset:0;z-index:5;background:rgba(36,43,74,.6);display:flex;align-items:center;
+         justify-content:center;padding:0 32px}
+.dlg{width:100%;background:var(--surface);border:2.5px solid var(--ink);padding:16px 14px 14px;
+     box-shadow:4px 4px 0 var(--shadow)}
+.dlg .h{font-size:22px;font-weight:900;color:var(--tealInk);text-align:center;line-height:1.15}
+.dlg .h.cash{color:var(--cashInk)}
+.dlg .sub{font-size:13px;font-weight:800;color:var(--inkSoft);text-align:center;margin-top:5px}
+.dlg .stage{display:flex;justify-content:center;margin:12px 0 4px}
+.dlg .body{font-size:13.5px;font-weight:800;color:var(--inkSoft);text-align:center;line-height:1.6;margin:10px 2px 4px}
+.notes{background:var(--tealSoft);border:2.5px solid var(--tealInk);padding:11px 12px;margin:12px 0 4px}
+.notes n{display:flex;gap:8px;font-size:12.5px;font-weight:800;color:var(--tealInk);line-height:1.5;margin-bottom:7px}
+.notes n:last-child{margin-bottom:0}
+.notes n b{flex:0 0 auto;font-weight:900}
+.btn{border:2.5px solid var(--ink);padding:13px 16px;text-align:center;font-size:15px;font-weight:900;
+     box-shadow:0 5px 0 var(--ink);margin-bottom:5px}
+.btn.p{background:var(--teal);color:#fff}
+.btn.s{background:var(--surface);color:var(--ink)}
+.btns{display:flex;gap:10px;margin-top:14px}
+.btns .btn{flex:1}
+.one{margin-top:14px}
+.sprite{image-rendering:pixelated;background-repeat:no-repeat}
+
+/* ---- hint + snackbar ---- */
+.hint{border:2.5px solid var(--tealInk);background:var(--tealSoft);padding:11px 12px;display:flex;
+      gap:10px;align-items:flex-start}
+.hint .i{flex:0 0 auto;width:18px;height:18px;border:2.5px solid var(--tealInk);border-radius:50%;
+         font-size:11px;font-weight:900;color:var(--tealInk);display:flex;align-items:center;justify-content:center;margin-top:1px}
+.hint .tx{font-size:12.5px;font-weight:800;color:var(--tealInk);line-height:1.5}
+.hint .go{margin-left:auto;flex:0 0 auto;background:var(--teal);color:#fff;border:2.5px solid var(--ink);
+          font-size:12px;font-weight:900;padding:7px 11px;box-shadow:0 4px 0 var(--ink);align-self:center}
+.snack{position:absolute;left:16px;right:16px;bottom:92px;background:var(--ink);border:2px solid var(--ink);
+       color:#fff;font-size:13px;font-weight:800;padding:13px 14px;display:flex;align-items:center;gap:12px}
+.snack .act{margin-left:auto;color:var(--tealSoft);font-weight:900;font-size:13px}
+
+/* ---- settings ---- */
+.sechd{font-size:11.5px;font-weight:900;color:var(--muted);letter-spacing:1px;margin:16px 0 9px 2px}
+.srow{border:2.5px solid var(--ink);background:var(--surface);padding:9px 11px;display:flex;
+      align-items:center;gap:12px;margin-bottom:11px}
+.srow .ic{width:38px;height:38px;border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;
+          font-size:16px;font-weight:900}
+.srow .lb{font-size:14px;font-weight:900}
+.srow .vl{margin-left:auto;font-size:13px;font-weight:900;color:var(--muted)}
+.srow .ch{font-size:16px;font-weight:900;margin-left:3px}
+.srow.new{border-color:var(--tealInk);background:var(--tealSoft)}
+.foot{font-size:11px;font-weight:800;color:var(--muted);line-height:1.5;padding:0 3px;margin-top:-3px}
+
+/* ---- logic panel ---- */
+.panel{border:3px solid var(--ink);background:var(--surface);padding:20px 22px;box-shadow:6px 6px 0 var(--shadow)}
+.panel h3{font-size:15px;font-weight:900;margin-bottom:13px}
+.ladder{display:flex;flex-direction:column;gap:9px;max-width:560px}
+.ladder r{display:flex;align-items:center;gap:11px;border:2.5px solid var(--ink);padding:9px 12px;background:var(--paperLight)}
+.ladder r .n{width:24px;height:24px;background:var(--ink);color:#fff;font-size:13px;font-weight:900;
+             display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.ladder r .t{font-size:13px;font-weight:900}
+.ladder r .d{font-size:11.5px;font-weight:800;color:var(--inkSoft);margin-left:auto;text-align:right}
+.ladder r.win{background:var(--tealSoft);border-color:var(--tealInk)}
+.ladder r.win .n{background:var(--teal)}
+.gates{display:flex;flex-direction:column;gap:9px;max-width:520px}
+.gates g{display:flex;align-items:flex-start;gap:11px;border:2.5px dashed var(--dangerInk);
+         background:var(--dangerSoft);padding:10px 12px}
+.gates g .x{flex:0 0 auto;width:22px;height:22px;background:var(--danger);color:#fff;font-size:13px;font-weight:900;
+            display:flex;align-items:center;justify-content:center}
+.gates g .t{font-size:12.5px;font-weight:900;color:var(--dangerInk);line-height:1.45}
+.gates g .t s{display:block;text-decoration:none;font-weight:800;font-size:11.5px;opacity:.9;margin-top:3px}
+.two{display:flex;gap:46px;flex-wrap:wrap}
+.spec{display:flex;flex-wrap:wrap;gap:9px;max-width:1220px;margin-top:4px}
+.spec t{border:2.5px solid var(--ink);background:var(--paperLight);padding:7px 10px;font-size:11.5px;font-weight:800}
+.spec t b{font-weight:900;color:var(--tealInk)}
+</style>
+
+<div class="head"><h1>Sobra — 업데이트 안내 시안</h1><span>v1 · 2026-09-11 · 실제 토큰/폰트/스프라이트 사용</span></div>
+<p class="lede">
+randomfocus_app의 2단계 구조(<b>릴리스 노트</b> + <b>Play 업데이트 권유</b>)를 Sobra의 픽셀 언어로 옮긴 안입니다.
+바텀시트가 아니라 <span class="new">레벨업 축하와 같은 형태</span>(투명 Dialog + PixelCard + Michi)를 씁니다 —
+앱 안에 이미 확립된 "순간" 패턴이 그것 하나뿐이기 때문입니다.
+모서리는 전부 직각, 테두리 2.5px ink, 그림자는 하드 오프셋. 카피는 <b>스페인어가 원본</b>입니다.
+</p>
+
+<div class="band">A. 화면에 어떻게 나오는가 <span>4개 지점</span></div>
+<div class="row">
+
+  <!-- ============ 1. 릴리스 노트 ============ -->
+  <div class="col">
+    <div class="phone">
+      <div class="scr">
+        <div class="status"><span>9:41</span><div class="dots"><i></i><i></i><i></i><b></b></div></div>
+        <div class="topbar"><div class="logo">Sobra</div><div class="gear"></div></div>
+        <div class="lvl">
+          <div class="t"><div class="sq">4</div>
+            <div><div class="nm">Ahorradora constante</div><div class="sb">Nivel 4</div></div>
+            <div class="ch">›</div></div>
+          <div class="xp" style="margin-top:9px"><span>320 / 500 XP</span><span>2 misiones hoy</span></div>
+        </div>
+        <div class="klabel">Hoy te queda</div>
+        <div class="big">$189.27 MXN</div>
+        <div class="seg"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="metaline"><span>Presupuesto $6,900</span><span>Gastado $498</span></div>
+        <div class="cashcard"><div class="ic"></div>
+          <div><div class="k">Efectivo estimado</div><div class="v">$1,880 MXN</div><div class="s">Último conteo: $1,970</div></div>
+          <div class="ch">›</div></div>
+        <div class="mvhead"><div class="klabel">Movimientos recientes</div><div class="a">Ver todos</div></div>
+        <div class="mv"><div class="ic" style="background:var(--dangerSoft)"></div>
+          <div><div class="n">Farmacia</div><div class="d">Salud · Efectivo</div></div><div class="amt">−$840</div></div>
+        <div class="mv"><div class="ic" style="background:var(--blueSoft)"></div>
+          <div><div class="n">Metro</div><div class="d">Transporte · Tarjeta</div></div><div class="amt">−$18</div></div>
+        <div class="mv"><div class="ic" style="background:var(--cashSoft)"></div>
+          <div><div class="n">Taquería El Faro</div><div class="d">Comida · Efectivo</div></div><div class="amt">−$180</div></div>
+      </div>
+
+      <div class="barrier">
+        <div class="dlg">
+          <div class="h">Sobra se actualizó</div>
+          <div class="sub">v1.1.0</div>
+          <div class="stage">
+            <div class="sprite" style="width:118px;height:133px;background-image:url('../../assets/characters/michi/success-8.png');background-size:944px 133px;background-position:-590px 0"></div>
+          </div>
+          <div class="notes">
+            <n><b>›</b><span>Ya puedes guardar la foto del ticket junto al gasto.</span></n>
+            <n><b>›</b><span>El conteo de efectivo se guarda más rápido.</span></n>
+            <n><b>›</b><span>Michi estrena dos poses nuevas en casa.</span></n>
+          </div>
+          <div class="one"><div class="btn p">Entendido</div></div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <d class="on"><i></i>Inicio</d><d><i></i>Movim.</d>
+        <d class="mid"><i>+</i>Registrar</d><d><i></i>Presup.</d><d><i></i>Ajustes</d>
+      </div>
+    </div>
+    <div class="capttl">① 업데이트 <b>직후</b> 첫 실행 — 릴리스 노트</div>
+    <div class="cap">
+      <b>양 플랫폼 공통.</b> "업데이트했다는 안내"라는 원래 질문에 답하는 건 이 화면입니다.
+      버전당 <b>딱 한 번</b>, 홈 탭이 뜬 다음 프레임에. 성공 포즈는 <code>success-8</code>의
+      posterFrame 5를 <b class="new">정지 프레임</b>으로 씁니다 — 루프 스프라이트는 이 다이얼로그를
+      만나는 테스트의 <code>pumpAndSettle</code>을 멈춥니다.
+    </div>
+  </div>
+
+  <!-- ============ 2. 업데이트 권유 ============ -->
+  <div class="col">
+    <div class="phone">
+      <div class="scr">
+        <div class="status"><span>9:41</span><div class="dots"><i></i><i></i><i></i><b></b></div></div>
+        <div class="topbar"><div class="logo">Sobra</div><div class="gear"></div></div>
+        <div class="lvl">
+          <div class="t"><div class="sq">4</div>
+            <div><div class="nm">Ahorradora constante</div><div class="sb">Nivel 4</div></div>
+            <div class="ch">›</div></div>
+          <div class="xp" style="margin-top:9px"><span>320 / 500 XP</span><span>2 misiones hoy</span></div>
+        </div>
+        <div class="klabel">Hoy te queda</div>
+        <div class="big">$189.27 MXN</div>
+        <div class="seg"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="metaline"><span>Presupuesto $6,900</span><span>Gastado $498</span></div>
+        <div class="cashcard"><div class="ic"></div>
+          <div><div class="k">Efectivo estimado</div><div class="v">$1,880 MXN</div><div class="s">Último conteo: $1,970</div></div>
+          <div class="ch">›</div></div>
+        <div class="mvhead"><div class="klabel">Movimientos recientes</div><div class="a">Ver todos</div></div>
+        <div class="mv"><div class="ic" style="background:var(--dangerSoft)"></div>
+          <div><div class="n">Farmacia</div><div class="d">Salud · Efectivo</div></div><div class="amt">−$840</div></div>
+        <div class="mv"><div class="ic" style="background:var(--blueSoft)"></div>
+          <div><div class="n">Metro</div><div class="d">Transporte · Tarjeta</div></div><div class="amt">−$18</div></div>
+        <div class="mv"><div class="ic" style="background:var(--cashSoft)"></div>
+          <div><div class="n">Taquería El Faro</div><div class="d">Comida · Efectivo</div></div><div class="amt">−$180</div></div>
+      </div>
+
+      <div class="barrier">
+        <div class="dlg">
+          <div class="h cash">Hay una versión nueva</div>
+          <div class="sub">v1.2.0 · 4 MB</div>
+          <div class="stage">
+            <div class="sprite" style="width:106px;height:119px;background-image:url('../../assets/characters/michi/positive-8.png');background-size:848px 119px;background-position:-636px 0"></div>
+          </div>
+          <div class="body">Se descarga sola, en segundo plano.<br>Sobra sigue funcionando mientras tanto.</div>
+          <div class="btns">
+            <div class="btn s">Ahora no</div>
+            <div class="btn p">Descargar</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <d class="on"><i></i>Inicio</d><d><i></i>Movim.</d>
+        <d class="mid"><i>+</i>Registrar</d><d><i></i>Presup.</d><d><i></i>Ajustes</d>
+      </div>
+    </div>
+    <div class="capttl">② 스토어에 새 버전이 있을 때 — 권유</div>
+    <div class="cap">
+      <b>Android(Play 설치본) 전용.</b> iOS·기타 경로에서는 조용히 건너뜁니다.
+      24시간에 한 번만. 제목을 <b class="new">cash 계열</b>로 둔 건 teal(=돈이 남았다)과 구별하기 위해서입니다.
+      "Ahora no"가 왼쪽·secondary — 이 앱에서 업데이트는 <b>권유지 요구가 아닙니다</b>.
+    </div>
+  </div>
+
+  <!-- ============ 3. 다운로드 완료 ============ -->
+  <div class="col">
+    <div class="phone">
+      <div class="scr">
+        <div class="status"><span>9:43</span><div class="dots"><i></i><i></i><i></i><b></b></div></div>
+        <div class="topbar"><div class="logo">Sobra</div><div class="gear"></div></div>
+        <div class="lvl">
+          <div class="t"><div class="sq">4</div>
+            <div><div class="nm">Ahorradora constante</div><div class="sb">Nivel 4</div></div>
+            <div class="ch">›</div></div>
+          <div class="xp" style="margin-top:9px"><span>320 / 500 XP</span><span>2 misiones hoy</span></div>
+        </div>
+
+        <div style="margin-bottom:15px">
+          <div class="hint">
+            <div class="i">↓</div>
+            <div class="tx">Actualización lista.<br>Se instala cuando tú digas.</div>
+            <div class="go">Instalar</div>
+          </div>
+        </div>
+
+        <div class="klabel">Hoy te queda</div>
+        <div class="big">$189.27 MXN</div>
+        <div class="seg"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="metaline"><span>Presupuesto $6,900</span><span>Gastado $498</span></div>
+        <div class="cashcard"><div class="ic"></div>
+          <div><div class="k">Efectivo estimado</div><div class="v">$1,880 MXN</div><div class="s">Último conteo: $1,970</div></div>
+          <div class="ch">›</div></div>
+        <div class="mvhead"><div class="klabel">Movimientos recientes</div><div class="a">Ver todos</div></div>
+        <div class="mv"><div class="ic" style="background:var(--dangerSoft)"></div>
+          <div><div class="n">Farmacia</div><div class="d">Salud · Efectivo</div></div><div class="amt">−$840</div></div>
+        <div class="mv"><div class="ic" style="background:var(--blueSoft)"></div>
+          <div><div class="n">Metro</div><div class="d">Transporte · Tarjeta</div></div><div class="amt">−$18</div></div>
+        <div class="mv"><div class="ic" style="background:var(--cashSoft)"></div>
+          <div><div class="n">Taquería El Faro</div><div class="d">Comida · Efectivo</div></div><div class="amt">−$180</div></div>
+      </div>
+
+      <div class="nav">
+        <d class="on"><i></i>Inicio</d><d><i></i>Movim.</d>
+        <d class="mid"><i>+</i>Registrar</d><d><i></i>Presup.</d><d><i></i>Ajustes</d>
+      </div>
+    </div>
+    <div class="capttl">③ 다운로드 끝 — <b class="bad">자동 재시작 금지</b></div>
+    <div class="cap">
+      randomfocus는 여기서 <code>completeFlexibleUpdate()</code>를 바로 불러 <b class="bad">앱을 재시작</b>합니다.
+      Sobra에서는 영수증을 찍다 말았거나 금액을 입력하던 중일 수 있고, 저장 전 입력은 그대로 날아갑니다.
+      대신 <b class="new">PixelHint(teal)</b>로 홈 상단에 <b>계속 머무는</b> 안내를 두고 설치 시점을 넘깁니다 —
+      "대부분의 안내는 사건이 아니라 지속되는 상태"라는 <code>PixelHint</code>의 원래 주석 그대로입니다.
+    </div>
+  </div>
+
+  <!-- ============ 4. 설정 ============ -->
+  <div class="col">
+    <div class="phone">
+      <div class="scr">
+        <div class="status"><span>9:41</span><div class="dots"><i></i><i></i><i></i><b></b></div></div>
+        <div class="topbar"><div class="logo" style="font-size:22px">Ajustes</div></div>
+
+        <div class="sechd">PANTALLA</div>
+        <div class="srow"><div class="ic" style="background:rgba(110,74,140,.13);color:var(--violet)">A</div>
+          <div class="lb">Idioma</div><div class="vl">Español</div><div class="ch">›</div></div>
+        <div class="srow"><div class="ic" style="background:rgba(14,122,114,.13);color:var(--teal)">◐</div>
+          <div class="lb">Menos movimiento</div><div class="vl">No</div><div class="ch">›</div></div>
+
+        <div class="sechd">DATOS</div>
+        <div class="srow"><div class="ic" style="background:rgba(14,122,114,.13);color:var(--teal)">↑</div>
+          <div class="lb">Respaldo</div><div class="vl">Copiar</div><div class="ch">›</div></div>
+        <div class="foot">El respaldo es un texto en el portapapeles, así que las fotos de los tickets no viajan con él.</div>
+
+        <div class="sechd" style="color:var(--tealInk)">ACERCA DE &nbsp;— nuevo</div>
+        <div class="srow new"><div class="ic" style="background:rgba(14,122,114,.16);color:var(--tealInk);border-color:var(--tealInk)">★</div>
+          <div class="lb">Novedades</div><div class="vl">v1.1.0</div><div class="ch">›</div></div>
+        <div class="srow new"><div class="ic" style="background:rgba(14,122,114,.16);color:var(--tealInk);border-color:var(--tealInk)">i</div>
+          <div class="lb">Versión</div><div class="vl">1.1.0 (12)</div><div class="ch">›</div></div>
+        <div class="foot" style="color:var(--tealInk)">탭하면 ①의 릴리스 노트가 다시 열립니다.</div>
+      </div>
+
+      <div class="nav">
+        <d><i></i>Inicio</d><d><i></i>Movim.</d>
+        <d class="mid"><i>+</i>Registrar</d><d><i></i>Presup.</d><d class="on"><i></i>Ajustes</d>
+      </div>
+    </div>
+    <div class="capttl">④ 설정 — 새 «Acerca de» 섹션</div>
+    <div class="cap">
+      지금 Sobra 설정엔 <b class="bad">버전 표시가 아예 없습니다</b>. 유저 문의를 받을 때
+      "어떤 버전 쓰세요?"를 물을 수 있게 되는 실용적 이득이 큽니다.
+      기존 <code>_SettingsRow</code>를 그대로 쓰므로 새 위젯이 필요 없습니다.
+    </div>
+  </div>
+
+</div>
+
+<div class="band">B. 언제 뜨고, 언제 절대 안 뜨는가 <span>randomfocus를 그대로 복사하면 깨지는 지점</span></div>
+<div class="panel">
+  <div class="two">
+    <div>
+      <h3>실행 1회당 최대 하나 — 우선순위</h3>
+      <div class="ladder">
+        <r class="win"><div class="n">1</div><div class="t">레벨업 축하</div><div class="d">유저가 이룬 것 · 항상 이김</div></r>
+        <r><div class="n">2</div><div class="t">릴리스 노트 «Sobra se actualizó»</div><div class="d">버전당 1회</div></r>
+        <r><div class="n">3</div><div class="t">업데이트 권유 «Hay una versión nueva»</div><div class="d">24h 쿨다운 · Android</div></r>
+        <r style="border-style:dashed;background:var(--paperLight)"><div class="n" style="background:var(--muted)">–</div>
+          <div class="t" style="color:var(--inkSoft)">밀린 것은 다음 실행으로</div><div class="d">쌓아서 연속으로 띄우지 않음</div></r>
+      </div>
+      <div class="cap" style="margin-top:12px;padding:0;max-width:560px">
+        ②와 ③은 본래 상호배타적입니다 — 방금 업데이트했으면 받을 업데이트가 없으니까요.
+        진짜 경쟁자는 <b>레벨업 하나</b>이고, 이건 실제로 부딪힙니다:
+        <code>SobraStore.load()</code>가 <code>settleCycles()</code>에서
+        <code>cyclesClosed</code> 알림을 콜드 스타트에 큐잉하기 때문입니다.
+        Sobra엔 이미 <code>pendingXpNotice</code> 큐가 있으니 <b class="new">새 경쟁 상태를 만들지 말고 거기 합류</b>시킵니다.
+      </div>
+    </div>
+
+    <div>
+      <h3>여기서는 절대 뜨지 않는다</h3>
+      <div class="gates">
+        <g><div class="x">✕</div><div class="t">온보딩 · 프롤로그
+          <s>첫 실행 인상을 스토리 위의 시스템 팝업으로 망침</s></div></g>
+        <g><div class="x">✕</div><div class="t">RecoveryScreen
+          <s>장부가 깨져서 살리는 중인 사람에게 업데이트 권유는 무례함</s></div></g>
+        <g><div class="x">✕</div><div class="t">신규 설치 첫 실행
+          <s>«Sobra se actualizó»가 방금 깐 사람에게 뜸 — randomfocus의 현재 로직이 이렇습니다</s></div></g>
+        <g><div class="x">✕</div><div class="t">핫픽스 재노출
+          <s>키를 <code>version+build</code>로 잡으면 1.2.5+21에 같은 노트가 또 뜸</s></div></g>
+      </div>
+      <div class="cap" style="margin-top:12px;padding:0;max-width:520px">
+        앞의 둘은 <b class="new">체크를 <code>AppShell</code> 안으로 내리면</b> 자동 해결됩니다
+        (<code>hasCompletedOnboarding &amp;&amp; !hasStorageError</code>가 보장됨).
+        randomfocus처럼 <code>MaterialApp.home</code>을 감싸면 셋 다 통과해 버립니다 —
+        Sobra의 <code>_StartupRouter</code>는 3분기니까요.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="band">C. 디자인 스펙 <span>새로 만드는 토큰 없음 — 전부 기존 것</span></div>
+<div class="panel">
+  <div class="spec">
+    <t>다이얼로그 <b>PixelCard</b> · surface · border 2.5 ink · radius 0</t>
+    <t>배리어 <b>#242B4A 60%</b> — LevelUpCelebration과 동일</t>
+    <t>가로 여백 <b>insetPadding 32</b></t>
+    <t>제목 <b>pixelText(22, bold)</b> · tealInk / cashInk</t>
+    <t>본문 <b>pixelText(13.5)</b> · inkSoft · height 1.6</t>
+    <t>노트 박스 <b>tealSoft + tealInk 2.5</b></t>
+    <t>버튼 <b>PixelButton</b> · 하드 그림자 offset(0,5) ink</t>
+    <t>스프라이트 <b>320×360 / 8프레임</b> · posterFrame 정지</t>
+    <t>업데이트 대기 <b>PixelHint(tone: teal)</b></t>
+    <t>설정 행 <b>_SettingsRow</b> 재사용</t>
+    <t>l10n <b>타입 getter</b> — <code>l10n.updateTitle</code>, 폴백 문자열 없음</t>
+    <t>저장 <b>독립 prefs 키</b> — exportJson() 백업에 섞이지 않게</t>
+  </div>
+</div>

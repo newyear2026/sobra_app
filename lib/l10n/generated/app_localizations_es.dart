@@ -726,6 +726,11 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String dailySpendCycleTotal(String amount) {
+    return 'Este ciclo $amount';
+  }
+
+  @override
   String get dailyIncomeTitle => 'Ingreso por día';
 
   @override
@@ -838,6 +843,13 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get homeFirstQuestLabel => 'Primera misión';
+
+  @override
+  String get homeBudgetQuestBody =>
+      'Ponle un presupuesto y te digo cuánto puedes gastar cada día.';
+
+  @override
   String get homeCycleProgress => 'Avance del ciclo';
 
   @override
@@ -885,6 +897,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get budgetTotal => 'Presupuesto total';
+
+  @override
+  String get budgetNotSetTitle => 'Aún no hay presupuesto';
+
+  @override
+  String get budgetNotSetBody =>
+      'Defínelo y calculamos cuánto puedes gastar cada día.';
+
+  @override
+  String get budgetSetAction => 'Definir presupuesto';
 
   @override
   String budgetTooLow(String allocated) {
@@ -1256,6 +1278,88 @@ class AppLocalizationsEs extends AppLocalizations {
   String get onboardingCashOrSkip => 'Ingresa el efectivo o elige “Ahora no”.';
 
   @override
+  String get prologueRainNoEnd => 'La lluvia no daba señales de parar.';
+
+  @override
+  String get prologueRentPaid =>
+      'La renta estaba pagada, y en la cuenta quedaba lo justo hasta el próximo pago.';
+
+  @override
+  String get prologueSoundAtDoor => 'Algo se movió junto a la puerta.';
+
+  @override
+  String get prologueGoLook => 'Ir a ver';
+
+  @override
+  String get prologueWetTracks =>
+      'Dos hileras de huellas mojadas cruzaron el piso.';
+
+  @override
+  String get prologueShelter => 'Déjanos esperar a que pase.';
+
+  @override
+  String get prologueItSpoke => '…habló.';
+
+  @override
+  String get prologueReplySurprised => '¿Acabas de hablar?';
+
+  @override
+  String get prologueReplyTowel => '(traes una toalla sin decir nada)';
+
+  @override
+  String get prologueEarnKeep =>
+      'Algo tengo que aportar. Yo llevo los números.';
+
+  @override
+  String get prologueAskSchedule => 'Primero: ¿cuándo entra el dinero?';
+
+  @override
+  String get prologueAskPayday =>
+      '¿Qué día te pagan? Con el primero me basta; el resto lo cuento yo.';
+
+  @override
+  String prologueAskBudget(int days) {
+    return 'Faltan $days días para el próximo pago. ¿Cuánto piensas gastar?';
+  }
+
+  @override
+  String get prologueSkipIsFine => 'Puedes saltarlo. Te lo recuerdo en casa.';
+
+  @override
+  String get prologueSkip => 'Saltar';
+
+  @override
+  String get prologueDriedOff =>
+      'Secos, los dos se calmaron. Afuera seguía lloviendo.';
+
+  @override
+  String get prologueWhoSits => '¿Quién se sienta contigo?';
+
+  @override
+  String get prologueMichiTrait => 'Callado.\nBueno con los números.';
+
+  @override
+  String get prologueLockedName => '???';
+
+  @override
+  String get prologueLockedTrait => 'Puro ánimo.\nMuy atento.';
+
+  @override
+  String get prologueLockedSoon => 'Arte en camino';
+
+  @override
+  String get prologueOtherStays =>
+      'El otro también se queda. Solo es más tímido.';
+
+  @override
+  String get prologueLiveTogether => 'Que se queden';
+
+  @override
+  String prologueGreeting(String name) {
+    return 'Me llamo $name. Gracias por abrir.';
+  }
+
+  @override
   String get onboardingStart => 'Empezar';
 
   @override
@@ -1317,6 +1421,9 @@ class AppLocalizationsEs extends AppLocalizations {
       '¿Cuánto quieres gastar\nen este ciclo?';
 
   @override
+  String get onboardingBudgetLater => 'Puedes ponerlo después desde Inicio.';
+
+  @override
   String get onboardingNotNow => 'Ahora no';
 
   @override
@@ -1329,6 +1436,17 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get onboardingCashIsBaseline =>
       'Este será tu primer conteo, no un ingreso.';
+
+  @override
+  String onboardingSettledIn(String name) {
+    return 'Dejó de llover. $name se acomodó a tu lado.';
+  }
+
+  @override
+  String get onboardingFirstQuests => 'Tus primeras misiones';
+
+  @override
+  String get onboardingWaitingAtHome => 'Te espera en casa';
 
   @override
   String get onboardingGoHome => 'Ir a Inicio';
@@ -1382,4 +1500,30 @@ class AppLocalizationsEs extends AppLocalizations {
   String movementSubtitle(String first, String second) {
     return '$first · $second';
   }
+
+  @override
+  String get settingsSectionAbout => 'Acerca de';
+
+  @override
+  String get settingsReleaseNotes => 'Novedades';
+
+  @override
+  String get settingsVersion => 'Versión';
+
+  @override
+  String get settingsVersionUnknown => '—';
+
+  @override
+  String get releaseNotesTitle => 'Novedades';
+
+  @override
+  String get releaseNotesCurrent => 'Actual';
+
+  @override
+  String releaseNotesRetention(int count) {
+    return 'Guardamos las últimas $count versiones.';
+  }
+
+  @override
+  String get releaseNote100Launch => 'Primera versión de Sobra.';
 }

@@ -10,21 +10,32 @@ import 'support/localizations.dart';
 void main() {
   testWidgets('shows onboarding for a new user', (tester) async {
     useSpanishDevice(tester);
+    // A phone rather than the 800x600 default: the prologue carries art and
+    // prose, and the 600 the harness assumes is shorter than any handset.
+    tester.view.physicalSize = const Size(400, 860);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
     SharedPreferences.setMockInitialValues({});
     final store = await SobraStore.load();
+    // The sprites loop, so nothing would ever settle otherwise.
+    await store.setReducedMotion(true);
 
     await tester.pumpWidget(SobraApp(store: store));
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Tu dinero, sin presión.'), findsOneWidget);
-    expect(find.text('Empezar'), findsOneWidget);
+    expect(find.text('La lluvia no daba señales de parar.'), findsOneWidget);
+    expect(find.text('Ir a ver'), findsOneWidget);
 
-    await tester.tap(find.text('Empezar'));
+    await tester.tap(find.text('Ir a ver'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
 
-    expect(find.text('1 de 4'), findsOneWidget);
-    expect(find.text('¿Cómo recibes tus ingresos?'), findsOneWidget);
+    // The prologue, not the first question: the questions start once the
+    // companion has been chosen.
+    expect(find.text('…habló.'), findsOneWidget);
+    expect(find.text('¿Acabas de hablar?'), findsOneWidget);
   });
 
   testWidgets('settings offers the collection destination', (tester) async {

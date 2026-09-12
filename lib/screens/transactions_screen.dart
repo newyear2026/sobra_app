@@ -404,7 +404,9 @@ class _DailyChartCard extends StatelessWidget {
     // `dailyAllowanceCentavos` is also rejected: that one moves as the
     // cycle is spent, so past days would be measured against a line that
     // did not exist when they happened. Income has no such line at all.
-    final perDay = bounds.lengthInDays <= 0
+    // Zero already means "draw no limit line": that is what the income tab
+    // passes. A cycle with no budget has no daily share to draw either.
+    final perDay = !store.hasBudget || bounds.lengthInDays <= 0
         ? 0
         : store.baseBudgetCentavos ~/ bounds.lengthInDays;
     final cycleIncome = store.cycleIncomes.fold<int>(
@@ -426,8 +428,14 @@ class _DailyChartCard extends StatelessWidget {
         ? l10n.dailyIncomeCycleTotal(
             formatMoney(store.currency, cycleIncome, showCode: false),
           )
-        : l10n.dailySpendLimit(
+        : store.hasBudget
+        ? l10n.dailySpendLimit(
             formatMoney(store.currency, perDay, showCode: false),
+          )
+        // No limit to name, so the caption reports what did happen instead.
+        : l10n.dailySpendCycleTotal(
+            formatMoney(store.currency, store.totalSpentCentavos,
+                showCode: false),
           );
 
     return Column(

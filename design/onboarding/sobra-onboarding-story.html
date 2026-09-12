@@ -1,0 +1,435 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Sobra 온보딩 — 스토리 시안 v3</title>
+<style>
+@font-face{font-family:PixelifySans;src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");}
+:root{--paper:#F6EFE0;--paperLight:#FBF5E9;--surface:#FFFDF7;--beige:#EFE7D6;--ink:#202848;
+      --inkSoft:#4E5878;--muted:#5F6885;--line:#E7DDC8;--teal:#0E7A72;--tealSoft:#D8EDEA;
+      --tealInk:#0B6660;--cash:#C0873A;--cashSoft:#F7E9CE;--cashInk:#845A1E;--danger:#D4553F;
+      --dangerSoft:#FBE1DA;--blue:#39558E;--violet:#6E4A8C;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);font-family:PixelifySans,monospace;color:var(--ink);
+     padding:32px 40px 48px;-webkit-font-smoothing:none}
+.head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;padding-left:6px}
+.head h1{font-size:26px;font-weight:900}
+.head span{font-size:14px;color:var(--inkSoft)}
+.lede{font-size:13px;color:var(--inkSoft);line-height:1.65;padding-left:6px;margin-bottom:18px;max-width:1180px}
+.lede b{color:var(--ink)} .lede .new{color:var(--teal);font-weight:900}
+.band{font-size:14px;font-weight:900;color:var(--ink);border-left:6px solid var(--teal);
+      padding:3px 0 3px 12px;margin:32px 0 18px 6px}
+.band span{font-weight:800;color:var(--inkSoft);font-size:12.5px;margin-left:8px}
+.row{display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap}
+.col{width:372px}
+.phone{width:372px;height:806px;background:var(--surface);border:5px solid var(--ink);
+       border-radius:26px;padding:14px 18px 16px;display:flex;flex-direction:column;
+       box-shadow:7px 7px 0 rgba(32,40,72,.14);position:relative;overflow:hidden}
+.cap{font-size:12px;color:var(--inkSoft);line-height:1.55;margin-top:12px;padding:0 4px;font-weight:800}
+.cap b{color:var(--ink)} .cap .new{color:var(--teal)} .cap .bad{color:#A63A25}
+.cap code{background:var(--surface);border:2px solid var(--line);padding:0 3px;font-size:11px}
+.status{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:900;padding:2px 4px 6px}
+.dots{display:flex;gap:3px;align-items:center}
+.dots i{width:7px;height:7px;background:var(--ink);border-radius:50%}
+.dots b{width:14px;height:8px;border:2px solid var(--ink);display:inline-block;margin-left:3px}
+.nav{display:flex;align-items:center;gap:10px;height:26px;margin-bottom:8px}
+.nav .back{font-size:19px;font-weight:900;width:24px}
+.nav .step{flex:1;text-align:center;font-size:12.5px;color:var(--inkSoft);font-weight:800}
+.nav .skip{font-size:11.5px;color:var(--muted);font-weight:800;border-bottom:2px solid var(--line)}
+.steps{display:flex;gap:4px;margin-bottom:12px}
+.steps s{flex:1;height:7px;background:var(--line);border:2px solid var(--ink)}
+.steps s.on{background:var(--teal)}
+.title{font-size:50px;font-weight:900;text-align:center;letter-spacing:2px;line-height:1}
+.tag{font-size:18px;font-weight:900;text-align:center;color:var(--inkSoft);margin-top:8px}
+.pr{font-size:14px;line-height:1.7;font-weight:800;color:var(--ink);text-indent:11px;margin-bottom:12px}
+.pr.soft{color:var(--inkSoft)} .pr.mid{text-indent:0;text-align:center}
+/* scene + rain */
+.scene{border:3px solid var(--ink);background:var(--beige);height:218px;position:relative;
+       overflow:hidden;box-shadow:4px 4px 0 rgba(32,40,72,.16);margin-bottom:14px}
+.scene .bg{position:absolute;inset:0;background-image:url('../../assets/rooms/casa_clara/background.webp');
+           background-size:cover;background-position:center 62%;image-rendering:pixelated}
+.scene .chill{position:absolute;inset:0;background:rgba(58,84,132,.26)}
+.scene .rain{position:absolute;inset:-20%;opacity:.5;background:repeating-linear-gradient(76deg,
+      transparent 0 7px, rgba(203,224,242,.85) 7px 8.5px, transparent 8.5px 16px)}
+.scene .vig{position:absolute;inset:0;box-shadow:inset 0 0 46px rgba(24,32,60,.5)}
+.scene .actor{position:absolute;bottom:12px}
+.sprite{image-rendering:pixelated;background-repeat:no-repeat}
+.wet{filter:saturate(.6) brightness(.8)}
+.ch{display:flex;gap:10px;align-items:flex-start;border:2.5px solid var(--ink);background:var(--surface);
+    padding:11px 13px;margin-bottom:9px;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.ch.on{background:var(--tealSoft);border-color:var(--tealInk)}
+.ch .dia{flex:0 0 auto;color:var(--teal);font-size:15px;font-weight:900;line-height:1.35}
+.ch .t{font-size:14.5px;font-weight:900;line-height:1.35}
+.ch .d{font-size:11.5px;color:var(--inkSoft);font-weight:800;line-height:1.45;margin-top:4px}
+.ch.quiet{box-shadow:none;background:var(--paperLight);border-style:dashed}
+.ch.quiet .dia{color:var(--muted)} .ch.quiet .t{color:var(--inkSoft)}
+.say{border:2.5px solid var(--ink);background:var(--cashSoft);padding:11px 13px;position:relative;
+     box-shadow:4px 4px 0 rgba(32,40,72,.16);margin-bottom:18px}
+.say .who{font-size:11px;font-weight:900;color:var(--cashInk);margin-bottom:5px;letter-spacing:.5px}
+.say .tx{font-size:14.5px;font-weight:900;line-height:1.5}
+.say:after{content:"";position:absolute;left:26px;bottom:-11px;width:14px;height:11px;
+           background:var(--cashSoft);border-left:2.5px solid var(--ink);border-right:2.5px solid var(--ink);
+           border-bottom:2.5px solid var(--ink);clip-path:polygon(0 0,100% 0,42% 100%)}
+.say.big .tx{font-size:19px;text-align:center}
+.say.notail:after{display:none}
+.say.cont{background:var(--paperLight)}
+.pick{display:flex;gap:12px}
+.pick .p{flex:1;border:2.5px solid var(--ink);background:var(--surface);padding:9px 8px 8px;
+         text-align:center;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.pick .p.on{background:var(--tealSoft);border-color:var(--tealInk);box-shadow:4px 4px 0 rgba(11,102,96,.3)}
+.pick .stage{height:104px;border:2.5px solid var(--ink);background:var(--beige);display:flex;
+             align-items:flex-end;justify-content:center;overflow:hidden;margin-bottom:7px}
+.pick .nm{font-size:14px;font-weight:900}
+.pick .rl{font-size:10px;font-weight:800;color:var(--inkSoft);margin-top:2px;line-height:1.35}
+.pick .p.on .rl{color:var(--tealInk)}
+.silho{filter:brightness(0);opacity:.22}
+.soon{font-size:9.5px;font-weight:900;color:var(--muted);border:2px dashed var(--line);
+      padding:1px 5px;display:inline-block;margin-top:4px}
+.qlbl{font-size:12px;font-weight:900;color:var(--teal);letter-spacing:.5px;margin-bottom:8px;text-align:center}
+.inp{border:2.5px solid var(--ink);background:var(--surface);padding:13px 14px;display:flex;
+     align-items:center;gap:9px;margin:2px 0 10px 26px}
+.inp .cur{font-size:20px;font-weight:900;color:var(--muted)}
+.inp .val{font-size:26px;font-weight:900;color:var(--ink)}
+.inp .car{width:3px;height:26px;background:var(--teal)}
+.card{border:2.5px solid var(--ink);background:var(--surface);padding:12px 13px;
+      box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.card.flat{box-shadow:none} .card.beige{background:var(--beige)}
+.lbl{font-size:12.5px;font-weight:900;color:var(--inkSoft);text-align:center}
+.big{font-size:46px;font-weight:900;color:var(--teal);line-height:1.12;text-align:center}
+.big.dim{color:var(--line)}
+.lvl{display:flex;align-items:center;gap:11px;border:2.5px solid var(--ink);background:var(--tealSoft);
+     padding:9px 11px;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.lvl .bdg{width:36px;height:36px;border:2.5px solid var(--ink);background:var(--teal);color:#fff;
+          display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex:0 0 auto;line-height:1.1}
+.lvl .nm{font-size:13px;font-weight:900} .lvl .xp{font-size:11.5px;font-weight:800;color:var(--tealInk);margin-top:3px}
+.mis{border:2.5px solid var(--ink);background:var(--surface);padding:10px 11px;margin-bottom:8px;
+     display:flex;align-items:center;gap:10px}
+.mis .bx{width:22px;height:22px;border:2.5px solid var(--ink);flex:0 0 auto}
+.mis .t{flex:1;font-size:12.5px;font-weight:900;line-height:1.35}
+.mis .xp{font-size:13px;font-weight:900;color:var(--teal);flex:0 0 auto}
+.cashcard{border:2.5px solid var(--cashInk);background:var(--cashSoft);padding:11px 12px;
+          display:flex;align-items:center;gap:10px;box-shadow:4px 4px 0 rgba(132,90,30,.26)}
+.cashcard .t{flex:1;font-size:12.5px;font-weight:900;color:var(--cashInk);line-height:1.4}
+.cashcard .xp{font-size:16px;font-weight:900;color:var(--cashInk)}
+.quest{border:3px solid var(--teal);background:var(--tealSoft);padding:13px;box-shadow:4px 4px 0 rgba(11,102,96,.28)}
+.quest .hd{font-size:11px;font-weight:900;color:var(--tealInk);letter-spacing:.6px;margin-bottom:7px}
+.quest .tx{font-size:14px;font-weight:900;line-height:1.5;margin-bottom:11px}
+.spacer{flex:1}
+.btn{border:3px solid var(--ink);background:var(--teal);color:#fff;text-align:center;padding:13px 0;
+     font-size:16px;font-weight:900;box-shadow:0 5px 0 var(--ink);margin-top:6px}
+.btn.sm{padding:10px 0;font-size:14px;box-shadow:0 4px 0 var(--ink)}
+.note{display:flex;align-items:center;justify-content:center;gap:7px;font-size:11.5px;
+      font-weight:800;color:var(--muted);margin-top:10px}
+.tabs{display:flex;gap:2px;border-top:3px solid var(--ink);margin:0 -18px -16px;padding:9px 10px 6px;background:var(--paperLight)}
+.tabs d{flex:1;text-align:center;font-size:9.5px;font-weight:900;color:var(--muted)}
+.tabs d.on{color:var(--teal)}
+.tabs d i{display:block;width:17px;height:17px;border:2.5px solid currentColor;margin:0 auto 4px}
+.warn{border:3px solid var(--danger);background:var(--dangerSoft);padding:14px 16px;margin:0 6px 12px;
+      max-width:1560px;box-shadow:5px 5px 0 rgba(212,85,63,.25)}
+.warn .h{font-size:14px;font-weight:900;color:#A63A25;margin-bottom:7px}
+.warn .b{font-size:12.5px;font-weight:800;color:var(--ink);line-height:1.65}
+.warn .b code{background:var(--surface);border:2px solid var(--line);padding:0 4px}
+.warn .b em{font-style:normal;color:#A63A25;font-weight:900}
+.rule{border:3px solid var(--teal);background:var(--tealSoft);padding:15px 17px;margin:0 6px 12px;
+      max-width:1560px;box-shadow:5px 5px 0 rgba(11,102,96,.22)}
+.rule .h{font-size:14px;font-weight:900;color:var(--tealInk);margin-bottom:9px}
+.rule .b{font-size:12.5px;font-weight:800;color:var(--ink);line-height:1.7}
+.rule .b em{font-style:normal;color:var(--tealInk);font-weight:900}
+.roles{display:flex;margin-top:11px;border:2.5px solid var(--ink);background:var(--surface)}
+.roles div{flex:1;padding:9px 11px;font-size:11.5px;font-weight:800;line-height:1.55}
+.roles div+div{border-left:2.5px solid var(--ink)}
+.roles b{display:block;font-size:11px;letter-spacing:.4px;margin-bottom:5px}
+.roles .use{color:var(--tealInk)} .roles .no{color:#A63A25}
+</style>
+
+<div class="head"><h1>Sobra 온보딩 — 스토리 시안</h1><span>v3 · 비 오는 날 프롤로그 · 7장 · 신규 모션 0</span></div>
+<div class="lede">
+프롤로그를 <b class="new">비 오는 날 실내</b>로 바꿨습니다. 집주인 NPC가 “갈 데가 없대”라고 <b>설명하던 것</b>을
+날씨가 한 컷에 대신하고, <b class="new">말하는 동물</b>이라는 전제가 “왜 고양이가 내 예산을 계산하지?”를 없앱니다.
+둘 다 들이고 <b>“누가 옆에 앉을까”</b>만 고르므로, 고르지 않은 쪽은 집에 남아 나중에 컬렉션에서 다시 만납니다.<br>
+<b style="color:#A63A25">분량 주의 — 이건 7장입니다(현재 6장 대비 +1).</b> 프롤로그를 도입·만남·선택 3장으로 나눈 결과입니다.
+6장으로 줄이려면 <b>2·3장을 합치고 놀람 선택지를 빼면</b> 됩니다(아래 3번 캡션 참고).
+</div>
+
+<div class="rule">
+  <div class="h">◈ 신규 모션 애니메이션은 <em>0개</em>입니다 — 6역할 계약을 건드리지 마세요</div>
+  <div class="b">
+    이 프롤로그에 필요한 동작은 <em>기존 6역할로 전부 커버됩니다</em>. 새로 그릴 것은 없습니다.
+    <div class="roles">
+      <div class="use"><b>✓ 이미 있는 것으로 해결</b>
+        걸어 들어옴 → <code>activity</code> (온보딩 미사용이던 역할)<br>
+        멈춰 서서 말함 → <code>idle</code><br>
+        주기 계산 → <code>processing</code> · 예산 → <code>positive</code> · 완료 → <code>success</code></div>
+      <div class="no"><b>✗ 추가하면 안 되는 것</b>
+        <em>“젖은 idle”, “몸 털기”</em>를 역할로 추가하면
+        <code>CharacterMotionRole</code> enum이 늘어나고, <code>motionFor</code>가
+        없는 역할에 <em>throw</em>하므로 <b>모든 캐릭터가 그 역할을 제공해야</b> 합니다.
+        캐릭터 10마리 계획이면 프롤로그 2초를 위해 <em>160프레임이 영구히</em> 추가됩니다.</div>
+    </div>
+    <div style="margin-top:10px">
+      젖은 느낌은 <em>스프라이트 색조 + 빗줄기 레이어</em>로 처리합니다(아래 화면이 그 방식). 코드로 공짜이고,
+      캐릭터가 몇 마리로 늘어나든 비용이 0입니다. 프레임을 쓴다면 강아지 48프레임 쪽에 쓰세요.
+    </div>
+  </div>
+</div>
+
+<div class="warn">
+  <div class="h">⚠ 선행 이슈 — PixelifySans에 한글 글리프가 0개입니다</div>
+  <div class="b">
+    글리프 <b>574개</b>, 라틴 + 스페인어 악센트뿐입니다. 한글은 전부 <em>시스템 대체 폰트</em>로 떨어져서
+    아래 화면도 <b>숫자·영문만 픽셀이고 한글은 매끈합니다</b>. 프롤로그는 산문이 길어 <b>이 문제를 가장 크게 드러냅니다</b>.
+    → 한글 픽셀 폰트(갈무리 / 둥근모 등)를 <code>fontFamilyFallback</code>으로 추가해야 합니다.
+    <b>스페인어·영어는 영향 없음</b>.
+  </div>
+</div>
+
+<div class="band">온보딩 7장 <span>프롤로그 3 + 세팅 3 + 도착 1 · 현재는 6장</span></div>
+<div class="row">
+
+  <!-- 1 -->
+  <div class="col"><div class="phone">
+    <div class="status"><span>9:41</span><div class="dots"><i></i><i></i><i></i><b></b></div></div>
+    <div style="height:14px"></div>
+    <div class="title">SOBRA</div>
+    <div class="tag">부담 없는 돈 관리.</div>
+    <div style="height:20px"></div>
+    <div class="scene" style="height:236px">
+      <div class="bg"></div><div class="chill"></div><div class="rain"></div><div class="vig"></div>
+    </div>
+    <div class="pr">비가 그칠 기미가 없다.</div>
+    <div class="pr">월세는 냈고, 통장에는 다음 급여일까지 쓸 돈이 남아 있었다.</div>
+    <div class="pr">현관 쪽에서 소리가 났다.</div>
+    <div class="spacer"></div>
+    <div class="note">🔒 계정이 필요 없어요. 데이터는 기기에만 남아요.</div>
+    <div class="btn">나가 본다</div>
+  </div>
+  <div class="cap"><b>1 · 타이틀 + 도입</b><br>
+  방은 기존 <code>casa_clara</code> 그대로이고 <b class="new">창밖만 비</b>입니다 —
+  거리 장면을 새로 그리는 게 아니라 하늘·도시 부분만 바꾼 <b>배경 변형 1장</b>.
+  캐릭터는 아직 등장하지 않습니다. <b>소리만 들리는 게 훅</b>이라, 여기서 보여주면 다음 장이 김빠집니다.</div></div>
+
+  <!-- 2 -->
+  <div class="col"><div class="phone">
+    <div class="status"><span>9:41</span><div class="dots"><i></i><i></i><i></i><b></b></div></div>
+    <div class="nav"><span class="back">←</span><span class="step"></span><span class="skip">건너뛰기</span></div>
+    <div class="scene" style="height:188px">
+      <div class="bg"></div><div class="chill"></div><div class="rain"></div><div class="vig"></div>
+      <div class="actor" style="left:20%"><div class="sprite wet" style="width:104px;height:117px;background-image:url('../../assets/characters/michi/activity-8.png');background-size:832px 117px;background-position:-208px 0"></div></div>
+      <div class="actor" style="left:52%"><div class="sprite wet silho" style="width:104px;height:117px;background-image:url('../../assets/characters/michi/activity-8.png');background-size:832px 117px;background-position:-416px 0"></div></div>
+    </div>
+    <div class="pr">젖은 발자국 두 줄이 마루를 가로질렀다.</div>
+    <div class="say big" style="margin-bottom:12px">
+      <div class="tx">“비 좀 피하자.”</div>
+    </div>
+    <div class="pr mid" style="margin-bottom:14px">…말을 했다.</div>
+    <div class="ch on"><span class="dia">◈</span><div><div class="t">지금 말했어?</div></div></div>
+    <div class="ch"><span class="dia">◈</span><div><div class="t">(조용히 수건을 가져온다)</div></div></div>
+    <div class="spacer"></div>
+    <div class="note">두 선택지 모두 같은 다음 장으로 (톤만 분기)</div>
+  </div>
+  <div class="cap"><b>2 · 만남 — 유일한 순수 서사 페이지</b><br>
+  <b class="new">놀람을 사용자의 선택지로</b> 처리해서 페이지를 늘리지 않았습니다. 두 번째 선택지가 특히 좋습니다 —
+  놀라는 대신 수건을 가져오는 건 말없이 성격을 드러내고, <b>사용자가 거둬주는 쪽</b>임을 행동으로 확정합니다.
+  걸어 들어오는 연출은 미사용이던 <code>activity</code> 역할, 젖은 느낌은 <b>색조 + 빗줄기</b>(신규 아트 0).</div></div>
+
+  <!-- 3 : 선택 -->
+  <div class="col"><div class="phone">
+    <div class="status"><span>9:41</span><div class="dots"><i></i><i></i><i></i><b></b></div></div>
+    <div class="nav"><span class="back">←</span><span class="step"></span><span style="width:24px"></span></div>
+    <div class="scene" style="height:176px">
+      <div class="bg"></div>
+      <div class="actor" style="left:22%"><div class="sprite" style="width:98px;height:110px;background-image:url('../../assets/characters/michi/idle-8.png');background-size:784px 110px;background-position:0 0"></div></div>
+      <div class="actor" style="left:54%"><div class="sprite silho" style="width:98px;height:110px;background-image:url('../../assets/characters/michi/idle-8.png');background-size:784px 110px;background-position:0 0"></div></div>
+    </div>
+    <div class="pr">수건으로 닦아주자 둘 다 얌전해졌다. 비는 아직 그치지 않았다.</div>
+    <div class="qlbl">누가 옆에 앉을까?</div>
+    <div class="pick">
+      <div class="p on">
+        <div class="stage"><div class="sprite" style="width:96px;height:108px;background-image:url('../../assets/characters/michi/idle-8.png');background-size:768px 108px;background-position:0 0"></div></div>
+        <div class="nm">미치</div>
+        <div class="rl">조용하다.<br>셈이 빠르다.</div>
+      </div>
+      <div class="p">
+        <div class="stage"><div class="sprite silho" style="width:96px;height:108px;background-image:url('../../assets/characters/michi/activity-8.png');background-size:768px 108px;background-position:-192px 0"></div></div>
+        <div class="nm">???</div>
+        <div class="rl">기운이 넘친다.<br>잘 챙긴다.</div>
+        <div class="soon">아트 준비 중</div>
+      </div>
+    </div>
+    <div style="height:12px"></div>
+    <div class="say" style="margin-bottom:9px">
+      <div class="tx">“미치야. 잘 부탁해.”</div>
+    </div>
+    <div class="card flat beige">
+      <div style="font-size:11.5px;font-weight:800;color:var(--inkSoft);line-height:1.55">
+        다른 한 쪽도 집에 남습니다. <b style="color:var(--teal)">아직 낯을 가릴 뿐</b>이에요.</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn">같이 지낼게</div>
+  </div>
+  <div class="cap"><b>3 · 선택 — 버리는 선택이 아닙니다</b><br>
+  비 오는데 하나만 들이면 매정합니다. <b class="new">둘 다 들이고 “누가 옆에 앉을까”만</b> 고르면
+  그 문제가 사라지고, 고르지 않은 쪽은 집에 남아 <b>나중에 컬렉션에서 다시 만날 명분</b>이 생깁니다 —
+  상점 슬롯에 서사가 붙습니다.<br>
+  <b class="new">고르는 즉시 이름이 도착합니다</b> — 선택이 다음 화면까지 보상 없이 매달려 있지 않도록,
+  이름만 여기서 받고 <b>역할 선언은 다음 장</b>으로 미룹니다.</div></div>
+
+  <!-- 4 -->
+  <div class="col"><div class="phone">
+    <div class="status"><span>9:41</span><div class="dots"><i></i><i></i><i></i><b></b></div></div>
+    <div class="nav"><span class="back">←</span><span class="step">3단계 중 1</span><span style="width:24px"></span></div>
+    <div class="steps"><s class="on"></s><s></s><s></s></div>
+    <div style="display:flex;justify-content:center;margin-bottom:6px">
+      <div class="sprite" style="width:106px;height:119px;background-image:url('../../assets/characters/michi/processing-8.png');background-size:848px 119px;background-position:-424px 0"></div>
+    </div>
+    <div class="say notail" style="margin-bottom:9px">
+      <div class="who">미치</div>
+      <div class="tx">“재워준 값은 해야지.<br>숫자 세는 건 내가 맡을게.”</div>
+    </div>
+    <div class="say cont" style="margin-bottom:16px">
+      <div class="tx">“그럼 먼저 — 돈이 언제 들어와?”</div>
+    </div>
+    <div class="ch on"><span class="dia">◈</span><div><div class="t">한 달에 두 번</div><div class="d">15일이랑 말일에 들어와</div></div></div>
+    <div class="ch"><span class="dia">◈</span><div><div class="t">2주마다 꼬박꼬박</div><div class="d">마지막 급여일부터 2주 간격</div></div></div>
+    <div class="ch"><span class="dia">◈</span><div><div class="t">한 달에 한 번</div><div class="d">정해진 날짜에 한 번</div></div></div>
+    <div class="ch"><span class="dia">◈</span><div><div class="t">매주</div><div class="d">요일 하나를 정해두고</div></div></div>
+    <div class="ch"><span class="dia">◈</span><div><div class="t">그때그때 달라</div><div class="d">정해진 날이 없어. 그래도 계획은 세울 수 있어</div></div></div>
+    <div class="spacer"></div>
+    <div class="btn">계속</div>
+  </div>
+  <div class="cap"><b>4 · 급여 주기 — 구조 변경 0</b><br>
+  <b class="new">자기소개를 첫 질문과 한 호흡에</b> 넣어 페이지를 늘리지 않았습니다.
+  <b class="bad">“네 예산을 관리해주러 왔어”는 쓰지 않았습니다</b> — 관리자가 되는 순간 위계가 생기고,
+  비 맞고 들어와 거둬준 프롤로그가 무너져 <b>얹혀사는 녀석이 파견 직원</b>이 됩니다.
+  <b class="new">“재워준 값은 해야지”</b>는 같은 정보(숫자를 맡는다)를 주면서 빚진 쪽을 캐릭터로 유지합니다.
+  마지막 선택지는 “그때그때 달라”를 <b class="new">정상 경로</b>로 만듭니다.</div></div>
+
+  <!-- 5 -->
+  <div class="col"><div class="phone">
+    <div class="status"><span>9:41</span><div class="dots"><i></i><i></i><i></i><b></b></div></div>
+    <div class="nav"><span class="back">←</span><span class="step">3단계 중 2</span><span style="width:24px"></span></div>
+    <div class="steps"><s class="on"></s><s class="on"></s><s></s></div>
+    <div class="say">
+      <div class="who">미치</div>
+      <div class="tx">“며칠에 받아?<br>앞 날짜만 알려주면 나머지는 내가 셀게.”</div>
+    </div>
+    <div class="card flat" style="margin-bottom:11px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px;font-weight:900;color:var(--inkSoft)">첫 번째 급여</span>
+        <span style="font-size:19px;font-weight:900">15일 ▾</span></div></div>
+    <div class="card flat beige" style="margin-bottom:15px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px;font-weight:900;color:var(--inkSoft)">두 번째 급여</span>
+        <span style="font-size:15px;font-weight:900">말일</span></div></div>
+    <div class="card">
+      <div style="font-size:11px;font-weight:900;color:var(--teal);letter-spacing:.5px;margin-bottom:8px">이번 주기는 이렇게 돼</div>
+      <div style="font-size:17px;font-weight:900;margin-bottom:8px">9월 1일 — 9월 15일</div>
+      <div class="steps" style="margin:0"><s class="on"></s><s class="on"></s><s class="on"></s><s></s><s></s><s></s><s></s></div>
+      <div style="font-size:11.5px;font-weight:800;color:var(--inkSoft);margin-top:9px;line-height:1.5">
+        날짜가 짧은 달에는 알아서 조정할게.</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn">계속</div>
+  </div>
+  <div class="cap"><b>5 · 급여일 — 폼은 폼으로 둡니다</b><br>
+  여기는 <b>숫자 입력</b>이라 선택지로 위장하지 않았습니다. 말풍선 한 줄로 화자만 유지합니다.
+  양피지 테두리를 둘러도 드롭다운은 드롭다운이고, 억지로 꾸미면 포맷 신뢰가 깨집니다.</div></div>
+
+  <!-- 6 -->
+  <div class="col"><div class="phone">
+    <div class="status"><span>9:41</span><div class="dots"><i></i><i></i><i></i><b></b></div></div>
+    <div class="nav"><span class="back">←</span><span class="step">3단계 중 3</span><span style="width:24px"></span></div>
+    <div class="steps"><s class="on"></s><s class="on"></s><s class="on"></s></div>
+    <div style="display:flex;justify-content:center;margin-bottom:6px">
+      <div class="sprite" style="width:106px;height:119px;background-image:url('../../assets/characters/michi/positive-8.png');background-size:848px 119px;background-position:-636px 0"></div>
+    </div>
+    <div class="say">
+      <div class="who">미치</div>
+      <div class="tx">“다음 급여일까지 22일 남았어.<br>이 기간에 얼마나 쓸 생각이야?”</div>
+    </div>
+    <div class="ch on"><span class="dia">◈</span><div><div class="t">이만큼 쓸게</div><div class="d">정해두면 하루치를 계산해 줄게</div></div></div>
+    <div class="inp"><span class="cur">$</span><span class="val">6,000</span><span class="car"></span>
+      <span style="margin-left:auto;font-size:12px;font-weight:900;color:var(--muted)">MXN</span></div>
+    <div class="ch quiet"><span class="dia">◈</span><div><div class="t">아직 모르겠어</div><div class="d">나중에 정할래. 지금은 그냥 기록만 할게</div></div></div>
+    <div style="height:10px"></div>
+    <div class="card flat beige">
+      <div style="font-size:11.5px;font-weight:800;color:var(--inkSoft);line-height:1.6">
+        “건너뛰어도 괜찮아. 대신 집에 가서 <b style="color:var(--teal)">잊지 말라고 한 번 물어볼게.</b>”</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn">이걸로 할게</div>
+  </div>
+  <div class="cap"><b>6 · 예산 — 이 시안의 핵심</b><br>
+  <b class="bad">현재는 건너뛸 수 없습니다.</b> <code>_continueFromBudget</code>
+  (<code>onboarding_screen.dart:76</code>)이 금액이 없으면 막습니다. 선택지로 감싸면 건너뛰기가
+  <b class="new">실패가 아니라 정당한 경로</b>가 됩니다 — 포맷이 기능을 실제로 개선하는 지점.</div></div>
+
+  <!-- 7 -->
+  <div class="col"><div class="phone">
+    <div class="status"><span>9:41</span><div class="dots"><i></i><i></i><i></i><b></b></div></div>
+    <div style="height:6px"></div>
+    <div class="scene" style="height:184px">
+      <div class="bg"></div><div class="vig" style="box-shadow:inset 0 0 40px rgba(32,40,72,.28)"></div>
+      <div class="actor" style="left:50%;transform:translateX(-50%)"><div class="sprite" style="width:118px;height:133px;background-image:url('../../assets/characters/michi/success-8.png');background-size:944px 133px;background-position:-590px 0"></div></div>
+    </div>
+    <div class="pr mid" style="margin-bottom:12px">비가 그쳤다. 미치가 네 옆에 자리를 잡았다.</div>
+    <div class="lvl" style="margin-bottom:13px">
+      <div class="bdg">Lv<br>1</div>
+      <div style="flex:1"><div class="nm">미치와 함께</div><div class="xp">0 / 100 XP</div></div>
+    </div>
+    <div class="lbl">오늘 쓸 수 있는 돈</div>
+    <div class="big">$272.72</div>
+    <div style="height:12px"></div>
+    <div style="font-size:11px;font-weight:900;color:var(--teal);letter-spacing:.6px;margin-bottom:8px">오늘의 퀘스트</div>
+    <div class="mis"><span class="bx"></span><span class="t">오늘 쓴 돈 하나 적기</span><span class="xp">+10</span></div>
+    <div class="mis"><span class="bx"></span><span class="t">그날 날짜로 적기</span><span class="xp">+5</span></div>
+    <div class="mis"><span class="bx"></span><span class="t">예산 한 번 열어보기</span><span class="xp">+5</span></div>
+    <div style="height:3px"></div>
+    <div class="cashcard"><span class="t">집에서 기다리는 것<br>지갑 현금 세어 보기</span><span class="xp">+25</span></div>
+    <div class="spacer"></div>
+    <div class="btn">집으로</div>
+  </div>
+  <div class="cap"><b>7 · 도착 — 비가 그치면서 프롤로그가 닫힙니다</b><br>
+  날씨가 <b class="new">서사의 괄호</b> 역할을 합니다 — 비로 열고 갬으로 닫으니 별도 마무리 대사가 필요 없습니다.
+  퀘스트 3개는 실제 <code>DailyMissionKind</code>(10·5·5), <b>현금 +25</b>는 별도
+  <code>XpEventKind.cashCount</code>라 구분했습니다.</div></div>
+
+</div>
+
+<div class="band">참고 — 예산을 건너뛴 홈 <span>먼저 확정해야 할 store 상태</span></div>
+<div class="row">
+  <div class="col"><div class="phone">
+    <div class="status"><span>9:41</span><div class="dots"><i></i><i></i><i></i><b></b></div></div>
+    <div style="display:flex;align-items:center;margin-bottom:12px">
+      <div style="font-size:25px;font-weight:900;flex:1">Inicio</div>
+      <div class="lvl" style="box-shadow:none;padding:5px 9px"><div class="bdg" style="width:26px;height:26px;font-size:10px">Lv1</div></div>
+    </div>
+    <div class="lbl">오늘 쓸 수 있는 돈</div>
+    <div class="big dim">— — —</div>
+    <div style="height:14px"></div>
+    <div class="quest">
+      <div class="hd">◈ 첫 퀘스트</div>
+      <div class="tx">“예산을 정해줘.<br>그래야 하루에 얼마 쓸 수 있는지<br>계산해 줄 수 있어.”</div>
+      <div class="btn sm" style="margin-top:0">예산 정하기</div>
+    </div>
+    <div style="height:14px"></div>
+    <div class="cashcard" style="box-shadow:7px 7px 0 rgba(132,90,30,.26);border-width:3px;padding:13px">
+      <span class="t" style="font-size:13px">현금 미설정<br>
+        <span style="font-weight:800;font-size:11.5px">먼저 한 번 세어 보면 시작할 수 있어요.</span></span>
+      <span class="xp">+25 ›</span></div>
+    <div style="height:14px"></div>
+    <div class="scene" style="height:136px">
+      <div class="bg"></div>
+      <div class="actor" style="left:50%;transform:translateX(-50%);bottom:8px"><div class="sprite" style="width:88px;height:99px;background-image:url('../../assets/characters/michi/idle-8.png');background-size:704px 99px;background-position:0 0"></div></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="tabs">
+      <d class="on"><i></i>Inicio</d><d><i></i>Registrar</d><d><i></i>Movimientos</d>
+      <d><i></i>Presupuesto</d><d><i></i>Mi Sobra</d></div>
+  </div>
+  <div class="cap"><b>참고 · 예산을 건너뛴 홈 <span class="new">(먼저 결정할 것)</span></b><br>
+  앱 전체가 <code>todayRemainingCentavos</code>(예산 ÷ 남은 날) 위에 서 있어 예산이 없으면 <b>대표 숫자가 없습니다</b>.
+  그 자리를 퀘스트 카드로 채웁니다.<br><br>
+  아래 <b>현금 카드는 새로 만들 것이 없습니다</b> — <code>homeCashUnset</code> +
+  <code>homeFirstCountHint</code> 카피가 3개국어로 있고, <code>PixelElevation.hero</code>로 화면에서
+  <b>유일하게 다른 곳으로 이동하는 카드</b>이며 <code>CashCountScreen</code>에 연결돼 있습니다.
+  <b class="new">+25 XP 뱃지만 추가</b>하면 됩니다.</div></div>
+</div>
