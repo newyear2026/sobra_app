@@ -957,6 +957,114 @@ abstract class AppLocalizations {
   /// **'{name} quedó seleccionado.'**
   String collectionEquippedNotice(String name);
 
+  /// No description provided for @roomTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi casa'**
+  String get roomTitle;
+
+  /// No description provided for @roomOpen.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir mi casa'**
+  String get roomOpen;
+
+  /// No description provided for @roomDecorate.
+  ///
+  /// In es, this message translates to:
+  /// **'Decorar'**
+  String get roomDecorate;
+
+  /// No description provided for @roomDecorateTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Decorar casa'**
+  String get roomDecorateTitle;
+
+  /// No description provided for @roomDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get roomDone;
+
+  /// No description provided for @roomThemeCasaClara.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa clara'**
+  String get roomThemeCasaClara;
+
+  /// No description provided for @roomCatReaction.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Hoy lo hiciste muy bien!'**
+  String get roomCatReaction;
+
+  /// No description provided for @roomInstruction.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige un objeto y toca el lugar donde va.'**
+  String get roomInstruction;
+
+  /// No description provided for @roomCategoryRooms.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa'**
+  String get roomCategoryRooms;
+
+  /// No description provided for @roomCategoryFurniture.
+  ///
+  /// In es, this message translates to:
+  /// **'Muebles'**
+  String get roomCategoryFurniture;
+
+  /// No description provided for @roomCategoryWallFloor.
+  ///
+  /// In es, this message translates to:
+  /// **'Pared y piso'**
+  String get roomCategoryWallFloor;
+
+  /// No description provided for @roomCategoryProps.
+  ///
+  /// In es, this message translates to:
+  /// **'Adornos'**
+  String get roomCategoryProps;
+
+  /// No description provided for @roomCategoryCats.
+  ///
+  /// In es, this message translates to:
+  /// **'Gatos'**
+  String get roomCategoryCats;
+
+  /// No description provided for @roomDefaultRug.
+  ///
+  /// In es, this message translates to:
+  /// **'Tapete lavanda'**
+  String get roomDefaultRug;
+
+  /// No description provided for @roomFloorLamp.
+  ///
+  /// In es, this message translates to:
+  /// **'Lámpara verde'**
+  String get roomFloorLamp;
+
+  /// No description provided for @roomTablePlant.
+  ///
+  /// In es, this message translates to:
+  /// **'Planta de mesa'**
+  String get roomTablePlant;
+
+  /// No description provided for @roomWallFrame.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuadro'**
+  String get roomWallFrame;
+
+  /// No description provided for @roomSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu casa quedó guardada.'**
+  String get roomSaved;
+
   /// No description provided for @xpHistoryTitle.
   ///
   /// In es, this message translates to:

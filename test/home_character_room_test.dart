@@ -5,10 +5,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'support/localizations.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/models/room_design.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
 import 'package:sobra_app/widgets/character_room.dart';
+import 'package:sobra_app/widgets/room_scene.dart';
 
 Future<void> _loadGoldenFonts() async {
   final pixelify = FontLoader('PixelifySans')
@@ -36,7 +38,8 @@ void main() {
     tester,
   ) async {
     useSpanishDevice(tester);
-    tester.view.physicalSize = const Size(520, 1600);
+    // Matches the source mockup's phone aspect ratio (852 × 1838 at 2×).
+    tester.view.physicalSize = const Size(426, 919);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -48,10 +51,16 @@ void main() {
     await tester.runAsync(
       () => Future.wait([
         precacheImage(
-          CharacterRoom.backgroundProvider(
-            tester.element(find.byType(CharacterRoom)),
-          ),
-          tester.element(find.byType(CharacterRoom)),
+          const AssetImage(RoomThemes.casaClaraPreviewAsset),
+          tester.element(find.byType(RoomScene)),
+        ),
+        precacheImage(
+          const AssetImage(RoomDecorAssets.rug),
+          tester.element(find.byType(RoomScene)),
+        ),
+        precacheImage(
+          const AssetImage(RoomDecorAssets.tablePlant),
+          tester.element(find.byType(RoomScene)),
         ),
         precacheImage(
           AssetImage(CatMotion.idle.asset),
@@ -61,15 +70,15 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.byType(CharacterRoom), findsOneWidget);
-    expect(find.byKey(CharacterRoom.backgroundKey), findsOneWidget);
+    expect(find.byType(RoomScene), findsOneWidget);
+    expect(find.text('Mi casa'), findsOneWidget);
     expect(find.text('Vas muy bien'), findsOneWidget);
     expect(find.byType(CatSprite), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await expectLater(
       find.byType(Scaffold).first,
-      matchesGoldenFile('../design/rooms/sobra-home-casa-clara-applied.png'),
+      matchesGoldenFile('../design/rooms/sobra-home-room-hybrid-applied.png'),
     );
   });
 

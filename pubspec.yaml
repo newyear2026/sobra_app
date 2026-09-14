@@ -107,6 +107,7 @@ flutter:
     - assets/characters/michi/
     - assets/login/
     - assets/rooms/casa_clara/
+    - assets/rooms/casa_clara/items/
 
   fonts:
     - family: PixelifySans

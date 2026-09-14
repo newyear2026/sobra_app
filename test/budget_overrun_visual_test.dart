@@ -5,9 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/expense_entry.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/models/room_design.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
-import 'package:sobra_app/widgets/character_room.dart';
+import 'package:sobra_app/widgets/room_scene.dart';
 
 import 'support/localizations.dart';
 
@@ -52,10 +53,8 @@ void main() {
     await tester.runAsync(
       () => Future.wait([
         precacheImage(
-          CharacterRoom.backgroundProvider(
-            tester.element(find.byType(CharacterRoom)),
-          ),
-          tester.element(find.byType(CharacterRoom)),
+          const AssetImage(RoomThemes.casaClaraPreviewAsset),
+          tester.element(find.byType(RoomScene)),
         ),
         precacheImage(
           AssetImage(CatMotion.concern.asset),

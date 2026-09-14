@@ -6,7 +6,7 @@ import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
-import 'package:sobra_app/widgets/character_room.dart';
+import 'package:sobra_app/widgets/room_scene.dart';
 import 'support/localizations.dart';
 
 /// The character is the one thing on Inicio that has to keep moving, and
@@ -53,10 +53,8 @@ void main() {
 
     await tester.pumpWidget(SobraApp(store: store));
     await tester.pump();
-    await tester.drag(find.byType(CustomScrollView), const Offset(0, -400));
-    await tester.pump();
 
-    expect(find.byType(CharacterRoom), findsOneWidget);
+    expect(find.byType(RoomScene), findsOneWidget);
     final sprite = tester.widget<CharacterSprite>(find.byType(CharacterSprite));
 
     final state = tester.state<State>(find.byType(CharacterSprite));

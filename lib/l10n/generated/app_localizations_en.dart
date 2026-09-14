@@ -506,6 +506,60 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get roomTitle => 'My room';
+
+  @override
+  String get roomOpen => 'Open my room';
+
+  @override
+  String get roomDecorate => 'Decorate';
+
+  @override
+  String get roomDecorateTitle => 'Decorate room';
+
+  @override
+  String get roomDone => 'Done';
+
+  @override
+  String get roomThemeCasaClara => 'Casa clara';
+
+  @override
+  String get roomCatReaction => 'You did great today!';
+
+  @override
+  String get roomInstruction => 'Choose an item, then tap where you want it.';
+
+  @override
+  String get roomCategoryRooms => 'Room';
+
+  @override
+  String get roomCategoryFurniture => 'Furniture';
+
+  @override
+  String get roomCategoryWallFloor => 'Wall & floor';
+
+  @override
+  String get roomCategoryProps => 'Decor';
+
+  @override
+  String get roomCategoryCats => 'Cats';
+
+  @override
+  String get roomDefaultRug => 'Lavender rug';
+
+  @override
+  String get roomFloorLamp => 'Green lamp';
+
+  @override
+  String get roomTablePlant => 'Table plant';
+
+  @override
+  String get roomWallFrame => 'Wall picture';
+
+  @override
+  String get roomSaved => 'Your room was saved.';
+
+  @override
   String get xpHistoryTitle => 'Your progress';
 
   @override

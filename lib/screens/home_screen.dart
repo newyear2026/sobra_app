@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
+import '../models/room_design.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
-import '../widgets/character_room.dart';
 import '../widgets/gamification_ui.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/room_scene.dart';
 import '../widgets/transaction_row.dart';
 import 'app_shell.dart';
 import 'cash_count_screen.dart';
 import 'daily_mission_screen.dart';
+import 'room_screen.dart';
 import 'xp_history_screen.dart';
 
 /// What stands in for the headline while no budget has been set.
@@ -114,51 +116,61 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   _BudgetQuest(onTap: () => shell.select(AppTab.budget)),
                 ] else ...[
-                FittedBox(
-                  alignment: Alignment.centerLeft,
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    formatMoney(currency, store.todayRemainingCentavos),
-                    style: textTheme.displayLarge?.copyWith(
-                      color: overCycleBudget
-                          ? AppColors.dangerInk
-                          : AppColors.teal,
+                  FittedBox(
+                    alignment: Alignment.centerLeft,
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      formatMoney(currency, store.todayRemainingCentavos),
+                      style: textTheme.displayLarge?.copyWith(
+                        color: overCycleBudget
+                            ? AppColors.dangerInk
+                            : AppColors.teal,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 6),
-                // Whichever figure the headline carries, the other one goes
-                // right under it: a zero day is only readable next to the
-                // limit it ran out of, and a deficit next to the budget it
-                // came from.
-                Text(
-                  overCycleBudget
-                      ? l10n.homeOverBudget(
-                          formatMoney(
-                            currency,
-                            store.totalBudgetCentavos,
-                            showCode: false,
+                  const SizedBox(height: 6),
+                  // Whichever figure the headline carries, the other one goes
+                  // right under it: a zero day is only readable next to the
+                  // limit it ran out of, and a deficit next to the budget it
+                  // came from.
+                  Text(
+                    overCycleBudget
+                        ? l10n.homeOverBudget(
+                            formatMoney(
+                              currency,
+                              store.totalBudgetCentavos,
+                              showCode: false,
+                            ),
+                          )
+                        : l10n.homeDailyLimit(
+                            formatMoney(
+                              currency,
+                              store.dailyAllowanceCentavos,
+                              showCode: false,
+                            ),
+                            formatMoney(
+                              currency,
+                              store.remainingBudgetCentavos,
+                              showCode: false,
+                            ),
                           ),
-                        )
-                      : l10n.homeDailyLimit(
-                          formatMoney(
-                            currency,
-                            store.dailyAllowanceCentavos,
-                            showCode: false,
-                          ),
-                          formatMoney(
-                            currency,
-                            store.remainingBudgetCentavos,
-                            showCode: false,
-                          ),
-                        ),
-                  style: textTheme.bodySmall?.copyWith(
-                    color: overCycleBudget
-                        ? AppColors.dangerInk
-                        : AppColors.muted,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: overCycleBudget
+                          ? AppColors.dangerInk
+                          : AppColors.muted,
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 18),
+                _HomeRoomCard(
+                  message: onTrack ? l10n.homeGoingWell : l10n.homeAdjustCalmly,
+                  placements: store.roomDecorationsFor(),
+                  catMotion: onTrack ? CatMotion.idle : CatMotion.concern,
+                  catLoop: onTrack,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(builder: (_) => const RoomScreen()),
                   ),
                 ),
-                ],
                 const SizedBox(height: 18),
                 LevelStrip(
                   level: xp.level,
@@ -347,22 +359,80 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ] else
                   ...recent.map((entry) => MovementRow(movement: entry)),
-                const SizedBox(height: 16),
-                CharacterRoom(
-                  message: onTrack ? l10n.homeGoingWell : l10n.homeAdjustCalmly,
-                  characterBuilder: (width) => CatSprite(
-                    motion: overCycleBudget
-                        ? CatMotion.concern
-                        : CatMotion.idle,
-                    width: width,
-                    animate: !reducedMotionOf(context),
-                    loop: !overCycleBudget,
-                  ),
-                ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _HomeRoomCard extends StatelessWidget {
+  const _HomeRoomCard({
+    required this.message,
+    required this.placements,
+    required this.catMotion,
+    required this.catLoop,
+    required this.onTap,
+  });
+
+  final String message;
+  final Map<RoomSlot, String> placements;
+  final CatMotion catMotion;
+  final bool catLoop;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Semantics(
+      button: true,
+      label: l10n.roomOpen,
+      child: PixelCard(
+        padding: EdgeInsets.zero,
+        elevation: PixelElevation.none,
+        onTap: onTap,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+              child: Row(
+                children: [
+                  const Icon(Icons.home, color: AppColors.ink, size: 24),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      l10n.roomTitle,
+                      style: pixelText(size: 16, bold: true),
+                    ),
+                  ),
+                  Text(
+                    l10n.roomDecorate,
+                    style: pixelText(
+                      size: 13,
+                      bold: true,
+                      color: AppColors.tealInk,
+                    ),
+                  ),
+                  const SizedBox(width: 3),
+                  const Icon(Icons.chevron_right, color: AppColors.ink),
+                ],
+              ),
+            ),
+            const Divider(height: 2.5, thickness: 2.5, color: AppColors.ink),
+            AspectRatio(
+              aspectRatio: 2,
+              child: RoomScene(
+                variant: RoomSceneVariant.preview,
+                placements: placements,
+                message: message,
+                catMotion: catMotion,
+                catLoop: catLoop,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -490,6 +490,60 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get roomTitle => '내 방';
+
+  @override
+  String get roomOpen => '내 방 열기';
+
+  @override
+  String get roomDecorate => '꾸미기';
+
+  @override
+  String get roomDecorateTitle => '방 꾸미기';
+
+  @override
+  String get roomDone => '완료';
+
+  @override
+  String get roomThemeCasaClara => 'Casa clara';
+
+  @override
+  String get roomCatReaction => '오늘도 잘했어!';
+
+  @override
+  String get roomInstruction => '아이템을 고르고 놓을 자리를 눌러주세요.';
+
+  @override
+  String get roomCategoryRooms => '방';
+
+  @override
+  String get roomCategoryFurniture => '가구';
+
+  @override
+  String get roomCategoryWallFloor => '벽·바닥';
+
+  @override
+  String get roomCategoryProps => '소품';
+
+  @override
+  String get roomCategoryCats => '고양이';
+
+  @override
+  String get roomDefaultRug => '라벤더 러그';
+
+  @override
+  String get roomFloorLamp => '초록 조명';
+
+  @override
+  String get roomTablePlant => '테이블 화분';
+
+  @override
+  String get roomWallFrame => '벽 액자';
+
+  @override
+  String get roomSaved => '방 꾸미기를 저장했어요.';
+
+  @override
   String get xpHistoryTitle => '내 진행 상황';
 
   @override

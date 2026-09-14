@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sobra login comparison</title>
+    <style>
+      :root {
+        color: #202848;
+        background: #f6efe0;
+        font-family: system-ui, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 24px;
+      }
+
+      main {
+        display: flex;
+        justify-content: center;
+        gap: 28px;
+        min-width: 836px;
+      }
+
+      figure {
+        margin: 0;
+      }
+
+      figcaption {
+        margin-bottom: 10px;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      img,
+      iframe {
+        display: block;
+        width: 390px;
+        height: 844px;
+        border: 2px solid #202848;
+        background: #fffdf7;
+      }
+
+      img {
+        object-fit: fill;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <figure>
+        <figcaption>선택한 시안</figcaption>
+        <img
+          src="../login/sobra-google-login-selected.png"
+          alt="선택한 Sobra 구글 로그인 시안"
+        />
+      </figure>
+      <figure>
+        <figcaption>Flutter 구현</figcaption>
+        <iframe
+          src="http://127.0.0.1:4173/?locale=ko"
+          title="Sobra Flutter 로그인 구현"
+        ></iframe>
+      </figure>
+    </main>
+  </body>
+</html>

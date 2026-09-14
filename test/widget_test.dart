@@ -98,7 +98,9 @@ void main() {
     expect(find.byIcon(Icons.add), findsOneWidget);
 
     await tester.tap(find.text('Mi Sobra'));
-    await tester.pumpAndSettle();
+    // The room cat now animates above the fold, so the home tree never fully
+    // settles. A bounded pump is enough for the tab switch.
+    await tester.pump(const Duration(milliseconds: 500));
     expect(find.text('Colección'), findsOneWidget);
     expect(find.text('Ver'), findsOneWidget);
   });
@@ -116,9 +118,12 @@ void main() {
 
     await tester.pumpWidget(SobraApp(store: store));
     await tester.tap(find.text('Mi Sobra'));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.ensureVisible(find.text('Colección'));
+    await tester.pump();
     await tester.tap(find.text('Colección'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('Colección'), findsOneWidget);
     expect(find.text('PERSONAJES'), findsOneWidget);
@@ -156,9 +161,12 @@ void main() {
 
     await tester.pumpWidget(SobraApp(store: store));
     await tester.tap(find.text('Mi Sobra'));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.ensureVisible(find.text('Colección'));
+    await tester.pump();
     await tester.tap(find.text('Colección'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('Colección'), findsOneWidget);
     expect(find.text('Personaje 2'), findsOneWidget);

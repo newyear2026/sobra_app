@@ -506,6 +506,60 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get roomTitle => 'Mi casa';
+
+  @override
+  String get roomOpen => 'Abrir mi casa';
+
+  @override
+  String get roomDecorate => 'Decorar';
+
+  @override
+  String get roomDecorateTitle => 'Decorar casa';
+
+  @override
+  String get roomDone => 'Listo';
+
+  @override
+  String get roomThemeCasaClara => 'Casa clara';
+
+  @override
+  String get roomCatReaction => '¡Hoy lo hiciste muy bien!';
+
+  @override
+  String get roomInstruction => 'Elige un objeto y toca el lugar donde va.';
+
+  @override
+  String get roomCategoryRooms => 'Casa';
+
+  @override
+  String get roomCategoryFurniture => 'Muebles';
+
+  @override
+  String get roomCategoryWallFloor => 'Pared y piso';
+
+  @override
+  String get roomCategoryProps => 'Adornos';
+
+  @override
+  String get roomCategoryCats => 'Gatos';
+
+  @override
+  String get roomDefaultRug => 'Tapete lavanda';
+
+  @override
+  String get roomFloorLamp => 'Lámpara verde';
+
+  @override
+  String get roomTablePlant => 'Planta de mesa';
+
+  @override
+  String get roomWallFrame => 'Cuadro';
+
+  @override
+  String get roomSaved => 'Tu casa quedó guardada.';
+
+  @override
   String get xpHistoryTitle => 'Tu progreso';
 
   @override

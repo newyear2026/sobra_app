@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import '../data/catalog_preview_data.dart';
 import '../l10n/catalog_labels.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../models/room_design.dart';
 import '../services/sobra_widget_sync.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
-import '../widgets/character_room.dart';
 import '../widgets/gamification_ui.dart';
 import '../widgets/pixel_ui.dart';
 import 'budget_screen.dart';
@@ -93,11 +93,17 @@ class _AppShellState extends State<AppShell> {
       _store?.removeListener(_onStoreChanged);
       _store = nextStore..addListener(_onStoreChanged);
     }
-    // Inicio builds its list lazily, so the room is only created once the
-    // user scrolls down to it — decoding there would show an empty card for
-    // a frame. Warm it here instead, where nothing is waiting on it.
+    // The room is now above the fold, so its fixed layer and included decor
+    // are warmed before Inicio asks for them.
     unawaited(
-      precacheImage(CharacterRoom.backgroundProvider(context), context),
+      Future.wait([
+        precacheImage(
+          const AssetImage(RoomThemes.casaClaraPreviewAsset),
+          context,
+        ),
+        precacheImage(const AssetImage(RoomDecorAssets.rug), context),
+        precacheImage(const AssetImage(RoomDecorAssets.tablePlant), context),
+      ]),
     );
     _scheduleXpNotice();
   }

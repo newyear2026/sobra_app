@@ -72,7 +72,11 @@ class _CollectionScreenState extends State<CollectionScreen> {
     return CatalogEntryState(
       entry: entry,
       isOwned: isOwned,
-      isEquipped: isOwned && store.equippedIdFor(entry.kind) == entry.id,
+      isEquipped:
+          isOwned &&
+          (entry.kind == CatalogKind.item
+              ? store.isRoomItemEquipped(entry.id)
+              : store.equippedIdFor(entry.kind) == entry.id),
       rewardedAdProgress: store.rewardedAdProgressFor(entry.id),
       localizedStorePrice: productId == null
           ? null

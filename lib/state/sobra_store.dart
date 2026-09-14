@@ -14,6 +14,7 @@ import '../models/language.dart';
 import '../models/income_entry.dart';
 import '../models/money_movement.dart';
 import '../models/pay_schedule.dart';
+import '../models/room_design.dart';
 import '../models/store_failure.dart';
 import '../models/xp_event.dart';
 
@@ -84,6 +85,14 @@ class SobraStore extends ChangeNotifier {
   /// collection screen held the choice in its own State and lost it on every
   /// rebuild of the route.
   String? equippedItemId;
+
+  /// The visible room theme and the replaceable layers stored for each room.
+  ///
+  /// Placements are keyed by room so changing themes never destroys a room
+  /// the user already arranged. A missing slot falls back to that theme's
+  /// included decoration (the Casa clara rug and tabletop plant today).
+  String equippedRoomId = RoomThemes.casaClaraId;
+  final Map<String, Map<RoomSlot, String>> _roomPlacementsByRoom = {};
 
   int countedCashCentavos = 0;
   int expectedCashCentavos = 0;
@@ -1195,6 +1204,36 @@ class SobraStore extends ChangeNotifier {
     CatalogKind.item => equippedItemId,
   };
 
+  Map<RoomSlot, String> roomDecorationsFor([String? roomId]) =>
+      Map.unmodifiable({
+        ...RoomThemes.defaultPlacementsFor(roomId ?? equippedRoomId),
+        ...?_roomPlacementsByRoom[roomId ?? equippedRoomId],
+      });
+
+  bool isRoomItemEquipped(String id) =>
+      roomDecorationsFor().values.contains(id);
+
+  Future<void> saveRoomDecorations(Map<RoomSlot, String> placements) async {
+    for (final itemId in placements.values) {
+      if (RoomDecorAssets.assetFor(itemId) == null) {
+        throw ArgumentError.value(itemId, 'placements', 'unknown room item');
+      }
+      final entry = CatalogPreviewData.items
+          .where((candidate) => candidate.id == itemId)
+          .firstOrNull;
+      if (entry != null && !ownsCatalogEntry(entry)) {
+        throw ArgumentError.value(itemId, 'placements', 'item not owned');
+      }
+    }
+    _roomPlacementsByRoom[equippedRoomId] = Map.of(placements);
+    final catalogItems = placements.values.where(
+      (id) => CatalogPreviewData.items.any((entry) => entry.id == id),
+    );
+    equippedItemId = catalogItems.isEmpty ? null : catalogItems.last;
+    await _save();
+    notifyListeners();
+  }
+
   /// Records that [entry] was acquired.
   ///
   /// Takes a bare id rather than a [CatalogEntry] because the caller that
@@ -1241,8 +1280,19 @@ class SobraStore extends ChangeNotifier {
       case CatalogKind.character:
         await chooseCharacter(entry.id);
       case CatalogKind.item:
-        if (entry.id == equippedItemId) return;
-        equippedItemId = entry.id;
+        final slot = RoomDecorAssets.slotForCatalogEntry(entry);
+        if (slot == null) {
+          if (entry.id == equippedItemId) return;
+          equippedItemId = entry.id;
+        } else {
+          final placements = Map<RoomSlot, String>.of(
+            roomDecorationsFor(equippedRoomId),
+          );
+          if (placements[slot] == entry.id) return;
+          placements[slot] = entry.id;
+          _roomPlacementsByRoom[equippedRoomId] = placements;
+          equippedItemId = entry.id;
+        }
         await _save();
         notifyListeners();
     }
@@ -1367,6 +1417,8 @@ class SobraStore extends ChangeNotifier {
     _hasBudget = true;
     characterId = 'michi';
     equippedItemId = null;
+    equippedRoomId = RoomThemes.casaClaraId;
+    _roomPlacementsByRoom.clear();
     _ownedCatalogIds.clear();
     _rewardedAdProgress.clear();
     countedCashCentavos = 0;
@@ -1427,6 +1479,13 @@ class SobraStore extends ChangeNotifier {
     _hasBudget = other._hasBudget;
     characterId = other.characterId;
     equippedItemId = other.equippedItemId;
+    equippedRoomId = other.equippedRoomId;
+    _roomPlacementsByRoom
+      ..clear()
+      ..addAll({
+        for (final entry in other._roomPlacementsByRoom.entries)
+          entry.key: Map.of(entry.value),
+      });
     countedCashCentavos = other.countedCashCentavos;
     expectedCashCentavos = other.expectedCashCentavos;
     reducedMotion = other.reducedMotion;
@@ -1495,6 +1554,30 @@ class SobraStore extends ChangeNotifier {
     _hasBudget = json['hasBudget'] as bool? ?? true;
     characterId = json['characterId'] as String? ?? 'michi';
     equippedItemId = json['equippedItemId'] as String?;
+    equippedRoomId =
+        json['equippedRoomId'] as String? ?? RoomThemes.casaClaraId;
+    final savedRoomPlacements =
+        json['roomPlacementsByRoom'] as Map<String, dynamic>? ?? {};
+    _roomPlacementsByRoom
+      ..clear()
+      ..addAll({
+        for (final room in savedRoomPlacements.entries)
+          room.key: {
+            for (final placement
+                in (room.value as Map<String, dynamic>).entries)
+              if (RoomSlot.values.any((slot) => slot.name == placement.key))
+                RoomSlot.values.firstWhere(
+                  (slot) => slot.name == placement.key,
+                ): placement.value as String,
+          },
+      });
+    if (_roomPlacementsByRoom[equippedRoomId] == null &&
+        equippedItemId != null) {
+      final legacySlot = RoomDecorAssets.slotForItemId(equippedItemId!);
+      if (legacySlot != null) {
+        _roomPlacementsByRoom[equippedRoomId] = {legacySlot: equippedItemId!};
+      }
+    }
     // Absent from every state written before the collection was persisted.
     // Those users owned nothing beyond what their level already grants, and
     // that part is derived rather than read from here.
@@ -1570,7 +1653,7 @@ class SobraStore extends ChangeNotifier {
   }
 
   Map<String, Object?> _toJson() => {
-    'schemaVersion': 6,
+    'schemaVersion': 7,
     'transactions': _transactions.map((entry) => entry.toJson()).toList(),
     'incomes': _incomes.map((entry) => entry.toJson()).toList(),
     'cashReconciliations': _cashReconciliations
@@ -1583,6 +1666,14 @@ class SobraStore extends ChangeNotifier {
     'hasBudget': _hasBudget,
     'characterId': characterId,
     'equippedItemId': equippedItemId,
+    'equippedRoomId': equippedRoomId,
+    'roomPlacementsByRoom': {
+      for (final room in _roomPlacementsByRoom.entries)
+        room.key: {
+          for (final placement in room.value.entries)
+            placement.key.name: placement.value,
+        },
+    },
     // Sorted so that the same ownership serialises to the same string. [_save]
     // compares against what is stored to decide whether to take a backup, and
     // set iteration order alone would make an unchanged state look changed.

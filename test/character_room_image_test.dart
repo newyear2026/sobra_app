@@ -3,10 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/models/room_design.dart';
 import 'package:sobra_app/screens/app_shell.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/character_room.dart';
+import 'package:sobra_app/widgets/room_scene.dart';
 
 import 'support/localizations.dart';
 
@@ -159,9 +161,7 @@ void main() {
     );
   });
 
-  testWidgets('the shell warms the room before it is scrolled into view', (
-    tester,
-  ) async {
+  testWidgets('the shell warms the hybrid room layers', (tester) async {
     useSpanishDevice(tester);
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 3;
@@ -179,16 +179,15 @@ void main() {
     await tester.runAsync(() async {
       await tester.pumpWidget(SobraApp(store: store));
       await tester.pump();
-      // Let the warm-up land without ever building the room.
+      // Let the shell's warm-up land.
       await Future<void>.delayed(const Duration(milliseconds: 50));
     });
     await tester.pump();
 
-    // Inicio's list is lazy, so the room really has not been built yet.
-    expect(find.byType(CharacterRoom), findsNothing);
+    expect(find.byType(RoomScene), findsOneWidget);
 
     final context = tester.element(find.byType(AppShell));
-    final provider = CharacterRoom.backgroundProvider(context);
+    const provider = AssetImage(RoomThemes.casaClaraPreviewAsset);
     final key = await provider.obtainKey(
       createLocalImageConfiguration(context),
     );
