@@ -134,6 +134,9 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
       await store.setReducedMotion(true);
+      // This walks the prologue, not the account offer that now precedes it.
+      // Answering it here keeps the test on its own subject.
+      await store.answerLoginOffer();
       await tester.pumpWidget(SobraApp(store: store));
       await tester.pump();
     }
@@ -219,6 +222,9 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final store = await SobraStore.load(now: () => DateTime(2026, 9, 5, 12));
       await store.setReducedMotion(true);
+      // This walks the prologue, not the account offer that now precedes it.
+      // Answering it here keeps the test on its own subject.
+      await store.answerLoginOffer();
       await tester.pumpWidget(SobraApp(store: store));
       await tester.pumpAndSettle();
       return store;

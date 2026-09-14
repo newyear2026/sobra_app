@@ -661,6 +661,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsRestorePurchases => '구매 복원';
 
   @override
+  String get settingsAccount => '구글 계정';
+
+  @override
+  String get settingsAccountConnect => '연결';
+
+  @override
   String get settingsRestore => '복원';
 
   @override

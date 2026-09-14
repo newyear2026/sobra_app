@@ -247,6 +247,8 @@
   "settingsCopy": "Copy",
   "settingsBackupCopied": "Backup copied to the clipboard.",
   "settingsRestorePurchases": "Restore purchases",
+  "settingsAccount": "Google account",
+  "settingsAccountConnect": "Connect",
   "settingsRestore": "Restore",
   "purchaseRestored": "Done. Your purchases are back.",
   "purchaseFailureStoreUnavailable": "The store is unavailable right now. Try again later.",

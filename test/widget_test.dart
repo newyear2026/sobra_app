@@ -8,6 +8,40 @@ import 'package:sobra_app/state/sobra_store.dart';
 import 'support/localizations.dart';
 
 void main() {
+  testWidgets('Google login continues into onboarding', (tester) async {
+    tester.platformDispatcher
+      ..localeTestValue = const Locale('ko')
+      ..localesTestValue = const <Locale>[Locale('ko')];
+    addTearDown(tester.platformDispatcher.clearLocaleTestValue);
+    addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load();
+    await store.setReducedMotion(true);
+
+    // A fresh store has not answered the account offer, which is what puts
+    // the login screen first. The app no longer takes a flag for it: the
+    // stored answer is the only thing that decides.
+    await tester.pumpWidget(SobraApp(store: store));
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text('내 기록,\n어디서든 그대로'), findsOneWidget);
+    expect(find.text('Google로 계속하기'), findsOneWidget);
+    expect(find.text('계정 없이 시작하기'), findsOneWidget);
+
+    await tester.tap(find.text('Google로 계속하기'));
+    await tester.pump();
+    expect(find.text('Google에 연결하는 중…'), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 700));
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(find.text('Sobra'), findsOneWidget);
+    expect(find.text('나가 본다'), findsOneWidget);
+  });
+
   testWidgets('shows onboarding for a new user', (tester) async {
     useSpanishDevice(tester);
     // A phone rather than the 800x600 default: the prologue carries art and
@@ -20,6 +54,9 @@ void main() {
     final store = await SobraStore.load();
     // The sprites loop, so nothing would ever settle otherwise.
     await store.setReducedMotion(true);
+    // Past the account offer, which now opens the app. The test above covers
+    // that screen; this one is about what follows it.
+    await store.answerLoginOffer();
 
     await tester.pumpWidget(SobraApp(store: store));
     await tester.pump(const Duration(milliseconds: 100));

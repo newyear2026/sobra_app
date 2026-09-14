@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart' show defaultTargetPlatform;
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -10,6 +11,7 @@ import 'l10n/labels.dart';
 import 'models/language.dart';
 import 'models/money_movement.dart';
 import 'screens/app_shell.dart';
+import 'screens/login_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/recovery_screen.dart';
 import 'services/purchase_service.dart';
@@ -38,19 +40,24 @@ Future<void> main() async {
   await SobraQuickEntry.initialize();
   final receipts = ReceiptStore.forPlatform();
   await _prepareReceipts(receipts, store);
-  final purchases = SobraPurchases(
-    backend: PluginPurchaseBackend(),
-    store: store,
-    // Android replays past purchases with a silent query, so a reinstall can
-    // hand everything back before the user has looked at anything. iOS cannot:
-    // a StoreKit restore may raise an App Store sign-in prompt, and one of
-    // those at launch is exactly the login wall this design set out to avoid.
-    // There the Ajustes row asks instead.
-    restoreOnStart: defaultTargetPlatform == TargetPlatform.android,
-  );
+  final purchasePlatform =
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS);
+  final purchases = purchasePlatform
+      ? SobraPurchases(
+          backend: PluginPurchaseBackend(),
+          store: store,
+          // Android replays past purchases with a silent query, so a reinstall
+          // can hand everything back before the user has looked at anything.
+          // iOS cannot: a StoreKit restore may raise an App Store sign-in
+          // prompt, so the Ajustes row asks instead.
+          restoreOnStart: defaultTargetPlatform == TargetPlatform.android,
+        )
+      : null;
   // Not awaited. Reaching the store takes a network round trip, and the whole
   // app — a ledger that works offline — must not wait behind it to draw.
-  unawaited(purchases.start());
+  if (purchases != null) unawaited(purchases.start());
   runApp(SobraApp(store: store, receipts: receipts, purchases: purchases));
 }
 
@@ -149,6 +156,7 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final debugLocale = kDebugMode ? Uri.base.queryParameters['locale'] : null;
     final app = ReceiptScope(
       store: widget.receipts,
       child: SobraScope(
@@ -160,7 +168,9 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
           // A null locale hands the choice back to the phone. The list comes
           // from `SobraLanguage` so the picker and the app can never disagree
           // about which languages this build has.
-          locale: _languageCode == null ? null : Locale(_languageCode!),
+          locale: debugLocale == null
+              ? (_languageCode == null ? null : Locale(_languageCode!))
+              : Locale(debugLocale),
           supportedLocales: SobraLanguage.supportedLocales,
           localizationsDelegates: const [
             AppLocalizations.delegate,
@@ -225,12 +235,27 @@ class _StartupRouter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final store = SobraScope.of(context);
+    // Order matters. A ledger that will not open is more urgent than anything
+    // else here, so recovery comes before the account offer rather than behind
+    // it: somebody whose data is unreadable should not be asked about backups
+    // first.
+    //
+    // The offer is read from the store rather than held in this widget. It
+    // used to live in State, so "start without an account" lasted until the
+    // process died and every cold start asked again — including of people who
+    // had been using Sobra for months.
     return AnimatedSwitcher(
       duration: reducedMotionOf(context)
           ? Duration.zero
           : const Duration(milliseconds: 280),
       child: store.hasStorageError
           ? const RecoveryScreen(key: ValueKey('recovery'))
+          : !store.hasAnsweredLoginOffer
+          ? LoginScreen(
+              key: const ValueKey('login'),
+              onGoogleContinue: () => unawaited(store.answerLoginOffer()),
+              onGuestContinue: () => unawaited(store.answerLoginOffer()),
+            )
           : store.hasCompletedOnboarding
           ? const AppShell(key: ValueKey('app'))
           : const OnboardingScreen(key: ValueKey('onboarding')),

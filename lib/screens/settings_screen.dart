@@ -14,6 +14,7 @@ import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
 import '../widgets/pixel_ui.dart';
 import 'collection_screen.dart';
+import 'login_screen.dart';
 import 'cycle_settings_screen.dart';
 import 'gamification_preview_screen.dart';
 import 'release_notes_screen.dart';
@@ -55,6 +56,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final version = await widget.versionLoader();
     if (!mounted) return;
     setState(() => _version = version);
+  }
+
+  Future<void> _openAccountOffer() async {
+    final navigator = Navigator.of(context);
+    await navigator.push(
+      MaterialPageRoute<void>(
+        builder: (routeContext) => LoginScreen(
+          isInitialOffer: false,
+          // Both close the screen for now. Connecting an account is still a
+          // stub: there is no Google client configured, so a row that claimed
+          // to sign somebody in would be lying to them.
+          onGoogleContinue: () => Navigator.of(routeContext).pop(),
+          onGuestContinue: () => Navigator.of(routeContext).pop(),
+        ),
+      ),
+    );
   }
 
   Future<void> _restorePurchases(SobraPurchases purchases) async {
@@ -241,17 +258,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               );
             },
           ),
-          // Required by the App Store the moment Sobra ships on iOS, and
-          // worth having on Android too: a user whose purchases did not come
-          // back needs somewhere to press before they ask for a refund.
-          if (purchases != null)
-            _SettingsRow(
-              icon: Icons.restore,
-              iconColor: AppColors.teal,
-              label: l10n.settingsRestorePurchases,
-              value: l10n.settingsRestore,
-              onTap: _restoring ? null : () => _restorePurchases(purchases),
-            ),
           // The backup is a JSON string on the clipboard, so receipt photos —
           // which live as files outside it — cannot travel with it. Saying so
           // here is cheaper than a user discovering it on a new phone.
@@ -264,6 +270,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
+          // The offer is made once, at first launch, and then never again on
+          // its own. This row is the only way back to it — without it,
+          // declining at the start would be a decision with no undo.
+          _SettingsRow(
+            icon: Icons.account_circle_outlined,
+            iconColor: AppColors.blue,
+            label: l10n.settingsAccount,
+            value: l10n.settingsAccountConnect,
+            onTap: _openAccountOffer,
+          ),
+          // Required by the App Store the moment Sobra ships on iOS, and
+          // worth having on Android too: a user whose purchases did not come
+          // back needs somewhere to press before they ask for a refund.
+          if (purchases != null)
+            _SettingsRow(
+              icon: Icons.restore,
+              iconColor: AppColors.teal,
+              label: l10n.settingsRestorePurchases,
+              value: l10n.settingsRestore,
+              onTap: _restoring ? null : () => _restorePurchases(purchases),
+            ),
           const SizedBox(height: 10),
           _SectionHeader(l10n.settingsSectionAbout),
           _SettingsRow(

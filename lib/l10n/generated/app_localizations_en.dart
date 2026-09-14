@@ -687,6 +687,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsRestorePurchases => 'Restore purchases';
 
   @override
+  String get settingsAccount => 'Google account';
+
+  @override
+  String get settingsAccountConnect => 'Connect';
+
+  @override
   String get settingsRestore => 'Restore';
 
   @override

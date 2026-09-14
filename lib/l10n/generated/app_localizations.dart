@@ -1251,6 +1251,18 @@ abstract class AppLocalizations {
   /// **'Restaurar compras'**
   String get settingsRestorePurchases;
 
+  /// No description provided for @settingsAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuenta de Google'**
+  String get settingsAccount;
+
+  /// No description provided for @settingsAccountConnect.
+  ///
+  /// In es, this message translates to:
+  /// **'Conectar'**
+  String get settingsAccountConnect;
+
   /// No description provided for @settingsRestore.
   ///
   /// In es, this message translates to:

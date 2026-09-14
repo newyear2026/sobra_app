@@ -316,6 +316,8 @@
   "settingsCopy": "Copiar",
   "settingsBackupCopied": "Respaldo copiado al portapapeles.",
   "settingsRestorePurchases": "Restaurar compras",
+  "settingsAccount": "Cuenta de Google",
+  "settingsAccountConnect": "Conectar",
   "settingsRestore": "Restaurar",
   "purchaseRestored": "Listo. Tus compras volvieron.",
   "purchaseFailureStoreUnavailable": "La tienda no está disponible ahora. Inténtalo más tarde.",

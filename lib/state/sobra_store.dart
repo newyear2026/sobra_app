@@ -106,6 +106,18 @@ class SobraStore extends ChangeNotifier {
   /// it, and the region only decides formatting the app does not delegate.
   String? languageCode;
   bool hasCompletedOnboarding = false;
+
+  /// Whether the user has answered the one-time offer to connect an account.
+  ///
+  /// True once they have chosen either way, which is the whole point: the
+  /// offer used to live in a widget's State, so "start without an account"
+  /// lasted until the process died and every cold start asked again. Somebody
+  /// who declined is entitled to have that remembered.
+  ///
+  /// Not the same as being signed in. Nothing here says an account exists —
+  /// only that Sobra has stopped asking on its own. Ajustes is where it can
+  /// be picked up later.
+  bool hasAnsweredLoginOffer = false;
   bool categoryLimitsCustomized = false;
   int successfulCycles = 0;
   DateTime? lastCashCountAt;
@@ -1236,8 +1248,21 @@ class SobraStore extends ChangeNotifier {
     }
   }
 
+  /// Records that the account offer has been answered, whichever way.
+  Future<void> answerLoginOffer() async {
+    if (hasAnsweredLoginOffer) return;
+    hasAnsweredLoginOffer = true;
+    await _save();
+    notifyListeners();
+  }
+
   Future<void> completeOnboarding() async {
     hasCompletedOnboarding = true;
+    // Onboarding sits behind the account offer, so reaching the end of it is
+    // proof the offer was answered. Recording that here keeps the two from
+    // ever disagreeing — an install that finished onboarding can never be
+    // asked the opening question again.
+    hasAnsweredLoginOffer = true;
     xpTrackingStartedAt ??= today;
     await _save();
     notifyListeners();
@@ -1348,6 +1373,7 @@ class SobraStore extends ChangeNotifier {
     expectedCashCentavos = 0;
     reducedMotion = false;
     hasCompletedOnboarding = false;
+    hasAnsweredLoginOffer = false;
     categoryLimitsCustomized = false;
     successfulCycles = 0;
     lastCashCountAt = null;
@@ -1408,6 +1434,7 @@ class SobraStore extends ChangeNotifier {
     currency = other.currency;
     cashCountWeekday = other.cashCountWeekday;
     hasCompletedOnboarding = other.hasCompletedOnboarding;
+    hasAnsweredLoginOffer = other.hasAnsweredLoginOffer;
     categoryLimitsCustomized = other.categoryLimitsCustomized;
     successfulCycles = other.successfulCycles;
     lastCashCountAt = other.lastCashCountAt;
@@ -1495,6 +1522,12 @@ class SobraStore extends ChangeNotifier {
     cashCountWeekday =
         (json['cashCountWeekday'] as num?)?.toInt() ?? DateTime.sunday;
     hasCompletedOnboarding = json['hasCompletedOnboarding'] as bool? ?? false;
+    // Absent from every state written before the offer existed. Those users
+    // have been using Sobra without an account all along, so reading a missing
+    // flag as "not answered" would interrupt them to ask a question they have
+    // effectively already answered.
+    hasAnsweredLoginOffer =
+        json['hasAnsweredLoginOffer'] as bool? ?? hasCompletedOnboarding;
     categoryLimitsCustomized =
         json['categoryLimitsCustomized'] as bool? ?? false;
     successfulCycles = (json['successfulCycles'] as num?)?.toInt() ?? 0;
@@ -1537,7 +1570,7 @@ class SobraStore extends ChangeNotifier {
   }
 
   Map<String, Object?> _toJson() => {
-    'schemaVersion': 5,
+    'schemaVersion': 6,
     'transactions': _transactions.map((entry) => entry.toJson()).toList(),
     'incomes': _incomes.map((entry) => entry.toJson()).toList(),
     'cashReconciliations': _cashReconciliations
@@ -1563,6 +1596,7 @@ class SobraStore extends ChangeNotifier {
     'currencyCode': currency.code,
     'cashCountWeekday': cashCountWeekday,
     'hasCompletedOnboarding': hasCompletedOnboarding,
+    'hasAnsweredLoginOffer': hasAnsweredLoginOffer,
     'categoryLimitsCustomized': categoryLimitsCustomized,
     'successfulCycles': successfulCycles,
     'lastCashCountAt': lastCashCountAt?.toIso8601String(),
