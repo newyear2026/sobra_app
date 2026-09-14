@@ -23,6 +23,14 @@ enum PurchaseFailure {
 
   /// A restore ran and found nothing to give back.
   nothingToRestore,
+
+  /// The store delivered, but writing the entitlement to disk did not land.
+  ///
+  /// Recoverable rather than lost: the purchase is deliberately left
+  /// uncompleted, so the store replays it on the next launch and it is granted
+  /// then. Saying nothing here would leave somebody who just paid watching an
+  /// entry that is still for sale.
+  deliveryNotSaved,
 }
 
 /// What the store is able to do for this install right now.
@@ -83,6 +91,7 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
     required SobraStore store,
     this.restoreOnStart = true,
     this.restoreGrace = const Duration(seconds: 6),
+    this.checkoutTimeout = const Duration(minutes: 3),
   }) : _backend = backend,
        _store = store;
 
@@ -109,9 +118,28 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   /// empty account is not left waiting.
   final Duration restoreGrace;
 
+  /// How long a card may say the store is working before it goes back to
+  /// offering the purchase.
+  ///
+  /// Every ordinary end to a checkout arrives on the purchase stream, but not
+  /// every end is ordinary: a sheet dismissed with a swipe, or a process
+  /// killed behind it, can leave nothing to arrive. Without a deadline the
+  /// entry reads as mid-purchase until the app is restarted, and the one
+  /// control that would fix it is the one that has been disabled.
+  ///
+  /// Only checkouts expire. A purchase Play has actually taken and is holding
+  /// is tracked separately and waits as long as Play does.
+  final Duration checkoutTimeout;
   StreamSubscription<List<PurchaseDetails>>? _subscription;
   final Map<String, ProductDetails> _products = {};
-  final Set<String> _inFlight = {};
+
+  /// Products whose checkout the app opened, against the timer that gives up
+  /// on each.
+  final Map<String, Timer> _checkingOut = {};
+
+  /// Products Play has taken payment for and not yet cleared — a cash payment
+  /// at a shop, or a parent still to approve it. These do not expire.
+  final Set<String> _pending = {};
   StoreReadiness _readiness = StoreReadiness.checking;
   PurchaseFailure? _pendingFailure;
   bool _restoreGrantedSomething = false;
@@ -120,10 +148,11 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   StoreReadiness get readiness => _readiness;
 
   /// True while the store is working on [productId].
-  bool isBuying(String productId) => _inFlight.contains(productId);
+  bool isBuying(String productId) =>
+      _checkingOut.containsKey(productId) || _pending.contains(productId);
 
   /// True while any purchase is in flight, so one tap cannot start a second.
-  bool get isBusy => _inFlight.isNotEmpty;
+  bool get isBusy => _checkingOut.isNotEmpty || _pending.isNotEmpty;
 
   @override
   String? localizedPriceFor(String storeProductId) =>
@@ -133,6 +162,10 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   ///
   /// Read-once like [SobraStore.takePendingXpNotice], so a rebuild for an
   /// unrelated reason cannot show the same error a second time.
+  ///
+  /// Carries only what the purchase stream raises on its own — the failures
+  /// that arrive with no call still waiting for them. A restore answers its
+  /// caller directly instead; see [restore].
   PurchaseFailure? takeFailure() {
     final failure = _pendingFailure;
     _pendingFailure = null;
@@ -206,65 +239,96 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   Future<void> buy(CatalogEntry entry) async {
     final productId = entry.storeProductId;
     if (productId == null || _store.ownsCatalogEntry(entry)) return;
-    if (_inFlight.contains(productId)) return;
+    if (isBuying(productId)) return;
     final product = _products[productId];
     if (product == null) {
       _report(PurchaseFailure.storeUnavailable);
       return;
     }
-    _inFlight.add(productId);
+    _checkingOut[productId] = Timer(checkoutTimeout, () {
+      _checkingOut.remove(productId);
+      notifyListeners();
+    });
     notifyListeners();
     try {
       await _backend.buyNonConsumable(product);
     } on Object {
-      _inFlight.remove(productId);
+      _endCheckout(productId);
       _report(PurchaseFailure.purchaseRejected);
     }
   }
 
-  /// Replays what this store account already owns.
+  void _endCheckout(String productId) =>
+      _checkingOut.remove(productId)?.cancel();
+
+  /// Replays what this store account already owns, answering with how it went.
   ///
-  /// Reports when it finds nothing, unlike the restore [start] runs: this one
-  /// the user asked for, and a button that answers nothing at all reads as
-  /// broken.
-  Future<void> restore() async {
+  /// Returns its outcome rather than leaving it in [takeFailure], so that the
+  /// row which asked is the one that reports. The catalog screen watches that
+  /// queue for purchases arriving on their own and stays mounted behind
+  /// Ajustes while a restore runs — it would otherwise consume the answer to
+  /// a question it never asked.
+  ///
+  /// Null means purchases came back. Unlike the restore [start] runs, an empty
+  /// result is worth saying here: this one the user asked for, and a button
+  /// that answers nothing at all reads as broken.
+  Future<PurchaseFailure?> restore() async {
     _restoreGrantedSomething = false;
+    // Opened before the request, not after it. The replay can reach the stream
+    // while `restorePurchases` is still returning, and a window opened
+    // afterwards races that grant: lose the race and an account full of
+    // purchases sits out the whole grace period to be told it has none.
+    final waiting = _awaitingRestore = Completer<void>();
     try {
       await _backend.restorePurchases();
     } on Object {
-      _report(PurchaseFailure.storeUnavailable);
-      return;
+      _awaitingRestore = null;
+      return PurchaseFailure.storeUnavailable;
     }
     // Waits for the replay rather than for the request. The first grant ends
     // the wait early, so an account with purchases answers as fast as the
     // store does and only an empty one spends the whole grace period.
-    final waiting = _awaitingRestore = Completer<void>();
     await Future.any([waiting.future, Future<void>.delayed(restoreGrace)]);
     _awaitingRestore = null;
-    if (!_restoreGrantedSomething) _report(PurchaseFailure.nothingToRestore);
+    return _restoreGrantedSomething ? null : PurchaseFailure.nothingToRestore;
   }
 
   Future<void> _handlePurchases(List<PurchaseDetails> purchases) async {
     for (final purchase in purchases) {
       switch (purchase.status) {
         case PurchaseStatus.pending:
-          // Play can hold a purchase for hours — cash payment at a shop, or a
-          // parent still to approve it. The entry stays locked and the card
-          // keeps saying so rather than claiming a delivery that has not
-          // happened.
-          _inFlight.add(purchase.productID);
+          // Play has the payment and has not cleared it. The entry stays
+          // locked and the card keeps saying so rather than claiming a
+          // delivery that has not happened, for as long as Play takes.
+          _endCheckout(purchase.productID);
+          _pending.add(purchase.productID);
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
-          _inFlight.remove(purchase.productID);
-          await _grant(purchase.productID);
+          _endCheckout(purchase.productID);
+          _pending.remove(purchase.productID);
+          final delivered = await _grant(
+            purchase.productID,
+            fromRestore: purchase.status == PurchaseStatus.restored,
+          );
+          if (!delivered) {
+            // Left uncompleted on purpose, so the store replays it and the
+            // next launch can write what this one could not. Telling the user
+            // is the part that used to be missing: the save threw, the error
+            // escaped an async stream handler where nothing was listening,
+            // and somebody who had just paid saw an entry still for sale.
+            _pendingFailure = PurchaseFailure.deliveryNotSaved;
+            continue;
+          }
         case PurchaseStatus.error:
-          _inFlight.remove(purchase.productID);
+          _endCheckout(purchase.productID);
+          _pending.remove(purchase.productID);
           _pendingFailure = PurchaseFailure.purchaseRejected;
         case PurchaseStatus.canceled:
           // The user backed out. That is an answer, not a fault, and saying
           // anything about it would be scolding them for using the cancel
           // button.
-          _inFlight.remove(purchase.productID);
+          _endCheckout(purchase.productID);
+          _pending.remove(purchase.productID);
       }
       if (purchase.pendingCompletePurchase) {
         // Strictly after the grant above. Completing first and failing to
@@ -283,11 +347,28 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   /// Falls back to the raw product id so a purchase from a lineup this build
   /// no longer ships survives in the saved state. [SobraStore.ownsCatalogEntry]
   /// matches on both, so a later build that restores the entry finds it owned.
-  Future<void> _grant(String productId) async {
+  ///
+  /// Returns whether the write landed. The in-memory state is left as the
+  /// store put it rather than rolled back — every other mutation in the app
+  /// is optimistic the same way, and here the optimism turns out to be right:
+  /// an undelivered purchase is replayed and granted on the next launch.
+  ///
+  /// Only a grant that came from a restore answers [restore], so a purchase
+  /// completing while a restore happens to be waiting cannot make an account
+  /// with nothing in it report that something came back.
+  Future<bool> _grant(String productId, {required bool fromRestore}) async {
     final entry = CatalogPreviewData.entryForProductId(productId);
-    await _store.grantCatalogEntry(entry?.id ?? productId);
-    _restoreGrantedSomething = true;
-    if (_awaitingRestore?.isCompleted == false) _awaitingRestore!.complete();
+    try {
+      await _store.grantCatalogEntry(entry?.id ?? productId);
+    } on Object catch (error) {
+      debugPrint('Sobra: could not save the purchase of $productId: $error');
+      return false;
+    }
+    if (fromRestore) {
+      _restoreGrantedSomething = true;
+      if (_awaitingRestore?.isCompleted == false) _awaitingRestore!.complete();
+    }
+    return true;
   }
 
   void _report(PurchaseFailure failure) {
@@ -299,6 +380,10 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   void dispose() {
     unawaited(_subscription?.cancel());
     _subscription = null;
+    for (final timer in _checkingOut.values) {
+      timer.cancel();
+    }
+    _checkingOut.clear();
     super.dispose();
   }
 }

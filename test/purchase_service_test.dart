@@ -1,12 +1,29 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 import 'package:sobra_app/data/catalog_preview_data.dart';
 import 'package:sobra_app/models/catalog_entry.dart';
 import 'package:sobra_app/services/purchase_service.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 
 import 'support/fake_purchase_backend.dart';
+
+/// A preferences store whose writes can be switched off mid-test.
+///
+/// The one way to reach a failed save: nothing in the purchase flow can
+/// provoke one on its own, so the disk has to be broken from underneath.
+class _BreakableStore extends InMemorySharedPreferencesStore {
+  _BreakableStore.empty() : super.empty();
+
+  bool writesFail = false;
+
+  @override
+  Future<bool> setValue(String valueType, String key, Object value) =>
+      writesFail
+      ? Future<bool>.value(false)
+      : super.setValue(valueType, key, value);
+}
 
 void main() {
   late SobraStore store;
@@ -201,19 +218,16 @@ void main() {
   test('a manual restore that finds nothing says so', () async {
     final purchases = await started(restoreOnStart: false);
 
-    await purchases.restore();
-    await pumpEventQueue();
-
-    expect(purchases.takeFailure(), PurchaseFailure.nothingToRestore);
+    expect(await purchases.restore(), PurchaseFailure.nothingToRestore);
+    // Answered its caller, not the queue the catalog screen is watching.
+    expect(purchases.takeFailure(), isNull);
   });
 
   test('a manual restore that finds something stays quiet', () async {
     final purchases = await started(restoreOnStart: false);
     backend.ownedProductIds = [soldProductId];
 
-    await purchases.restore();
-    await pumpEventQueue();
-
+    expect(await purchases.restore(), isNull);
     expect(purchases.takeFailure(), isNull);
     expect(store.ownsCatalogEntry(entryById(soldEntryId)), isTrue);
   });
@@ -222,8 +236,111 @@ void main() {
     final purchases = await started(restoreOnStart: false);
     backend.failRestore = true;
 
-    await purchases.restore();
+    expect(await purchases.restore(), PurchaseFailure.storeUnavailable);
+  });
 
-    expect(purchases.takeFailure(), PurchaseFailure.storeUnavailable);
+  // A purchase arriving while a restore waits used to answer for the restore,
+  // so an account that owned nothing could report that something came back.
+  test('a purchase during a restore does not answer for it', () async {
+    final purchases = await started(restoreOnStart: false);
+    backend.onRestore = () =>
+        backend.emit([detailsFor(soldProductId, PurchaseStatus.purchased)]);
+
+    expect(await purchases.restore(), PurchaseFailure.nothingToRestore);
+    await pumpEventQueue();
+
+    expect(store.ownsCatalogEntry(entryById(soldEntryId)), isTrue);
+  });
+
+  group('when the disk refuses the write', () {
+    late _BreakableStore preferences;
+
+    setUp(() async {
+      // setMockInitialValues installs a platform store of its own, so the
+      // breakable one has to replace it afterwards or writes never fail.
+      SharedPreferences.setMockInitialValues({});
+      preferences = _BreakableStore.empty();
+      SharedPreferencesStorePlatform.instance = preferences;
+      store = await SobraStore.load(now: () => DateTime(2026, 9, 14, 11));
+    });
+
+    // The delivery used to be lost in silence: the save threw inside an async
+    // stream handler nobody was listening to, the purchase was never
+    // completed, and the user who had just paid was told nothing. Play
+    // refunds an unacknowledged purchase after three days, so the entry
+    // quietly went away again.
+    test('the purchase is reported and left for the next launch', () async {
+      final purchases = await started(restoreOnStart: false);
+      await purchases.buy(entryById(soldEntryId));
+      preferences.writesFail = true;
+
+      backend.emit([detailsFor(soldProductId, PurchaseStatus.purchased)]);
+      await pumpEventQueue();
+
+      expect(purchases.takeFailure(), PurchaseFailure.deliveryNotSaved);
+      // Not completed, so the store still owes it.
+      expect(backend.completed, isEmpty);
+      expect(purchases.isBuying(soldProductId), isFalse);
+    });
+
+    test('the next launch finishes what the failed save started', () async {
+      await started(restoreOnStart: false);
+      preferences.writesFail = true;
+      backend.emit([detailsFor(soldProductId, PurchaseStatus.purchased)]);
+      await pumpEventQueue();
+      expect(backend.completed, isEmpty);
+
+      // The store replays what it was never told was delivered.
+      preferences.writesFail = false;
+      backend.emit([detailsFor(soldProductId, PurchaseStatus.restored)]);
+      await pumpEventQueue();
+
+      expect(store.ownsCatalogEntry(entryById(soldEntryId)), isTrue);
+      expect(backend.completed, [soldProductId]);
+    });
+  });
+
+  // A sheet dismissed with a swipe, or a process killed behind it, can leave
+  // nothing to arrive on the stream at all.
+  test('a checkout nothing answers stops claiming the card forever', () async {
+    final purchases = SobraPurchases(
+      backend: backend,
+      store: store,
+      restoreOnStart: false,
+      checkoutTimeout: const Duration(milliseconds: 30),
+    );
+    addTearDown(purchases.dispose);
+    await purchases.start();
+
+    await purchases.buy(entryById(soldEntryId));
+    expect(purchases.isBuying(soldProductId), isTrue);
+
+    await Future<void>.delayed(const Duration(milliseconds: 60));
+
+    expect(purchases.isBuying(soldProductId), isFalse);
+    // And the entry can be bought again rather than staying dead.
+    await purchases.buy(entryById(soldEntryId));
+    expect(backend.bought, [soldProductId, soldProductId]);
+  });
+
+  test('a purchase Play is holding is never timed out', () async {
+    final purchases = SobraPurchases(
+      backend: backend,
+      store: store,
+      restoreOnStart: false,
+      checkoutTimeout: const Duration(milliseconds: 30),
+    );
+    addTearDown(purchases.dispose);
+    await purchases.start();
+
+    await purchases.buy(entryById(soldEntryId));
+    backend.emit([
+      detailsFor(soldProductId, PurchaseStatus.pending, needsCompleting: false),
+    ]);
+    await pumpEventQueue();
+    await Future<void>.delayed(const Duration(milliseconds: 60));
+
+    // Play can hold one of these for hours. Waiting is the correct answer.
+    expect(purchases.isBuying(soldProductId), isTrue);
   });
 }

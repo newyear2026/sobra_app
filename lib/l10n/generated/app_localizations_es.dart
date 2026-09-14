@@ -701,6 +701,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo completar la compra. No se te cobró nada.';
 
   @override
+  String get purchaseFailureDeliveryNotSaved =>
+      'Tu compra llegó, pero no se pudo guardar. Se aplicará la próxima vez que abras Sobra.';
+
+  @override
   String get purchaseFailureNothingToRestore =>
       'No encontramos compras en esta cuenta.';
 

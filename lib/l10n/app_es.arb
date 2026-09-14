@@ -320,6 +320,7 @@
   "purchaseRestored": "Listo. Tus compras volvieron.",
   "purchaseFailureStoreUnavailable": "La tienda no está disponible ahora. Inténtalo más tarde.",
   "purchaseFailureRejected": "No se pudo completar la compra. No se te cobró nada.",
+  "purchaseFailureDeliveryNotSaved": "Tu compra llegó, pero no se pudo guardar. Se aplicará la próxima vez que abras Sobra.",
   "purchaseFailureNothingToRestore": "No encontramos compras en esta cuenta.",
   "collectionPurchasing": "COMPRANDO…",
   "settingsXpPreview": "Vista previa XP",

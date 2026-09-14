@@ -26,6 +26,10 @@ void main() {
       backend: backend,
       store: store,
       restoreGrace: const Duration(milliseconds: 40),
+      // Long enough to survive the dialog's own animation, which pumpAndSettle
+      // advances the clock through, and short enough that the expiry test can
+      // step over it without a wait anybody would notice.
+      checkoutTimeout: const Duration(seconds: 2),
     );
     addTearDown(purchases.dispose);
     addTearDown(backend.close);
@@ -120,26 +124,53 @@ void main() {
     expect(inDialog('EQUIPAR'), findsNothing);
   });
 
-  testWidgets('a rejected purchase tells the user they were not charged', (
+  // In the real sequence the tap only opens the sheet; the rejection lands on
+  // the purchase stream afterwards, with no call left waiting to read it.
+  testWidgets('a rejection arriving after the tap still reaches the user', (
     tester,
   ) async {
     await purchases.start();
     await pump(tester, const CollectionScreen());
+
+    await tester.tap(find.text('Personaje 2'));
+    await tester.pumpAndSettle();
+    await tester.tap(inDialog('COMPRAR'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('No se pudo completar la compra. No se te cobró nada.'),
+      findsNothing,
+    );
 
     backend.emit([
       detailsFor(productId, PurchaseStatus.error, needsCompleting: false),
     ]);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Personaje 2'));
-    await tester.pumpAndSettle();
-    await tester.tap(inDialog('COMPRAR'));
-    await tester.pumpAndSettle();
-
     expect(
       find.text('No se pudo completar la compra. No se te cobró nada.'),
       findsOneWidget,
     );
+  });
+
+  testWidgets('a checkout nothing answers frees the card again', (
+    tester,
+  ) async {
+    await purchases.start();
+    await pump(tester, const CollectionScreen());
+
+    await tester.tap(find.text('Personaje 2'));
+    await tester.pumpAndSettle();
+    await tester.tap(inDialog('COMPRAR'));
+    await tester.pumpAndSettle();
+    expect(find.text('COMPRANDO…'), findsOneWidget);
+
+    // The store never answers — a sheet swiped away, or a process killed
+    // behind it. Without a deadline the card would say this until restart.
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpAndSettle();
+
+    expect(find.text('COMPRANDO…'), findsNothing);
+    expect(find.text('COMPRAR'), findsWidgets);
   });
 
   testWidgets('an unreachable store leaves the catalog usable', (tester) async {

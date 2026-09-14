@@ -46,9 +46,14 @@ class FakeBackend implements PurchaseBackend {
     bought.add(product.id);
   }
 
+  /// Runs inside restorePurchases, for tests that need something to land on
+  /// the stream while a restore is waiting on it.
+  void Function()? onRestore;
+
   @override
   Future<void> restorePurchases() async {
     if (failRestore) throw StateError('store unreachable');
+    onRestore?.call();
     if (ownedProductIds.isEmpty) return;
     emit([
       for (final id in ownedProductIds) detailsFor(id, PurchaseStatus.restored),

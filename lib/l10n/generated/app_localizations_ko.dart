@@ -674,6 +674,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get purchaseFailureRejected => '구매를 완료하지 못했어요. 결제된 금액은 없어요.';
 
   @override
+  String get purchaseFailureDeliveryNotSaved =>
+      '구매는 도착했지만 저장하지 못했어요. 다음에 앱을 열 때 적용돼요.';
+
+  @override
   String get purchaseFailureNothingToRestore => '이 계정에서 구매 내역을 찾지 못했어요.';
 
   @override

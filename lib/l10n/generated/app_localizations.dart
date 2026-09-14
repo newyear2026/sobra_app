@@ -1275,6 +1275,12 @@ abstract class AppLocalizations {
   /// **'No se pudo completar la compra. No se te cobró nada.'**
   String get purchaseFailureRejected;
 
+  /// No description provided for @purchaseFailureDeliveryNotSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu compra llegó, pero no se pudo guardar. Se aplicará la próxima vez que abras Sobra.'**
+  String get purchaseFailureDeliveryNotSaved;
+
   /// No description provided for @purchaseFailureNothingToRestore.
   ///
   /// In es, this message translates to:

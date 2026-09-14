@@ -255,6 +255,7 @@
   "purchaseRestored": "완료했어요. 구매 항목이 돌아왔어요.",
   "purchaseFailureStoreUnavailable": "지금은 스토어에 연결할 수 없어요. 잠시 후 다시 시도해 주세요.",
   "purchaseFailureRejected": "구매를 완료하지 못했어요. 결제된 금액은 없어요.",
+  "purchaseFailureDeliveryNotSaved": "구매는 도착했지만 저장하지 못했어요. 다음에 앱을 열 때 적용돼요.",
   "purchaseFailureNothingToRestore": "이 계정에서 구매 내역을 찾지 못했어요.",
   "collectionPurchasing": "구매 중…",
   "settingsXpPreview": "XP 미리보기",

@@ -261,6 +261,7 @@ String describePurchaseFailure(
   PurchaseFailure.storeUnavailable => l10n.purchaseFailureStoreUnavailable,
   PurchaseFailure.purchaseRejected => l10n.purchaseFailureRejected,
   PurchaseFailure.nothingToRestore => l10n.purchaseFailureNothingToRestore,
+  PurchaseFailure.deliveryNotSaved => l10n.purchaseFailureDeliveryNotSaved,
 };
 
 /// The three-letter month, kept short enough for the pixel layouts.

@@ -701,6 +701,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'The purchase could not be completed. You were not charged.';
 
   @override
+  String get purchaseFailureDeliveryNotSaved =>
+      'Your purchase arrived but could not be saved. It will be applied the next time you open Sobra.';
+
+  @override
   String get purchaseFailureNothingToRestore =>
       'We found no purchases on this account.';
 

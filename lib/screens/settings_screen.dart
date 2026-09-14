@@ -61,10 +61,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _restoring = true);
-    await purchases.restore();
+    final failure = await purchases.restore();
     if (!mounted) return;
     setState(() => _restoring = false);
-    final failure = purchases.takeFailure();
     messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(

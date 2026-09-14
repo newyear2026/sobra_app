@@ -30,6 +30,37 @@ class CollectionScreen extends StatefulWidget {
 class _CollectionScreenState extends State<CollectionScreen> {
   CatalogKind _selectedKind = CatalogKind.character;
 
+  /// Watched rather than polled.
+  ///
+  /// [SobraPurchases.buy] returns the moment the store sheet is open, so a
+  /// rejection — which arrives later, on the purchase stream — is not there to
+  /// read when the call comes back. Reading it then reported nothing at all
+  /// for the one case that matters: the user who tried to pay and could not.
+  SobraPurchases? _purchases;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final purchases = PurchaseScope.maybeOf(context);
+    if (identical(purchases, _purchases)) return;
+    _purchases?.removeListener(_onPurchasesChanged);
+    _purchases = purchases;
+    _purchases?.addListener(_onPurchasesChanged);
+  }
+
+  @override
+  void dispose() {
+    _purchases?.removeListener(_onPurchasesChanged);
+    super.dispose();
+  }
+
+  void _onPurchasesChanged() {
+    if (!mounted) return;
+    final failure = _purchases?.takeFailure();
+    if (failure == null) return;
+    _showNotice(describePurchaseFailure(AppLocalizations.of(context), failure));
+  }
+
   CatalogEntryState _stateFor(
     CatalogEntry entry,
     SobraStore store,
@@ -62,12 +93,9 @@ class _CollectionScreenState extends State<CollectionScreen> {
     if (!state.isOwned) {
       if (state.entry.unlockMethod == CatalogUnlockMethod.purchase &&
           purchases != null) {
+        // Nothing to report here. What comes back from the store arrives on
+        // the stream, and [_onPurchasesChanged] is what says so.
         await purchases.buy(state.entry);
-        if (!mounted) return;
-        final failure = purchases.takeFailure();
-        if (failure != null) {
-          _showNotice(describePurchaseFailure(l10n, failure));
-        }
         return;
       }
       // Rewarded ads have no provider yet, and a purchase with no store above
