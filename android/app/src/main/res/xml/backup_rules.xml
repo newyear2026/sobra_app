@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Auto Backup rules for Android 11 and below, referenced from the manifest as
+  android:fullBackupContent.
+
+  Only excludes: everything else is still backed up, which is the point. The
+  ledger is one JSON string in shared_preferences and stays well under a
+  megabyte even after thousands of entries, so it travels for free.
+
+  Receipt photos do not. They land in <documents>/receipts — which on Android
+  is app_flutter/receipts under the app's data root, because Flutter's
+  getApplicationDocumentsDirectory maps to getDir("flutter", MODE_PRIVATE).
+  At 1600 px and quality 78 each is roughly a third of a megabyte, so about
+  eighty of them reach the 25 MB Auto Backup quota. Past the quota the system
+  does not drop the photos and keep the rest: it stops backing the app up at
+  all, silently, taking the ledger with it. Leaving them in would trade the
+  thing that must survive for the thing that was never promised to.
+
+  ReceiptStore.fileFor already documents that a restored backup arrives without
+  its photos, and Ajustes says so to the user, so nothing here is news to the
+  rest of the app.
+-->
+<full-backup-content>
+    <exclude domain="root" path="app_flutter/receipts" />
+</full-backup-content>
