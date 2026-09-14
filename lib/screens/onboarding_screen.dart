@@ -20,7 +20,9 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final _pageController = PageController();
-  final _budgetController = TextEditingController(text: '6000');
+  final _budgetController = TextEditingController(
+    text: amountFieldText(600000),
+  );
   PayCycleType _type = PayCycleType.semiMonthly;
   int _firstPayDay = 15;
   int _monthlyPayDay = 30;
@@ -911,6 +913,7 @@ class _BudgetSetupPage extends StatelessWidget {
         TextField(
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          inputFormatters: amountInputFormatters,
           textAlign: TextAlign.center,
           style: const TextStyle(
             color: AppColors.teal,

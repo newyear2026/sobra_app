@@ -242,6 +242,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
+                inputFormatters: amountInputFormatters,
                 style: pixelText(size: 34, bold: true),
                 decoration: InputDecoration(
                   hintText: '${store.currency.symbol}0',

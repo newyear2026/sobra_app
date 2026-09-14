@@ -381,7 +381,7 @@ class _AmountDialogState extends State<_AmountDialog> {
   void initState() {
     super.initState();
     _controller = TextEditingController(
-      text: (widget.currentCentavos / 100).toStringAsFixed(0),
+      text: amountFieldText(widget.currentCentavos),
     );
   }
 
@@ -400,6 +400,7 @@ class _AmountDialogState extends State<_AmountDialog> {
         controller: _controller,
         autofocus: true,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: amountInputFormatters,
         decoration: InputDecoration(
           suffixText: SobraScope.of(context).currency.code,
         ),

@@ -243,7 +243,7 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
   void initState() {
     super.initState();
     _amountController = TextEditingController(
-      text: (widget.entry.amountCentavos / 100).toStringAsFixed(0),
+      text: amountFieldText(widget.entry.amountCentavos),
     );
     _noteController = TextEditingController(
       text: widget.entry.isPendingCashAdjustment ? '' : widget.entry.note,
@@ -317,6 +317,7 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
+              inputFormatters: amountInputFormatters,
               decoration: InputDecoration(
                 labelText: l10n.amount,
                 suffixText: SobraScope.of(context).currency.code,

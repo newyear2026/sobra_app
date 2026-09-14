@@ -136,6 +136,7 @@ class _CashCountScreenState extends State<CashCountScreen> {
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
+                  inputFormatters: amountInputFormatters,
                   textAlign: TextAlign.center,
                   style: pixelText(size: 38, bold: true, color: AppColors.teal),
                   decoration: InputDecoration(

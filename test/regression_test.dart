@@ -35,6 +35,18 @@ void main() {
     expect(parseNonNegativeAmount('.'), isNull);
   });
 
+  test('money parser turns down what it cannot register faithfully', () {
+    // Finer than a centavo used to round: 0.001 registered as nothing at all
+    // and 9.999 as ten pesos.
+    expect(parseAmount('0.001'), isNull);
+    expect(parseAmount('9.999'), isNull);
+    expect(parseNonNegativeAmount('0.001'), isNull);
+    // And a pasted wall of digits used to land at the far end of int64.
+    expect(parseAmount('99999999999999999999'), isNull);
+    expect(parseAmount('9.99'), 999);
+    expect(parseAmount('999999999999'), 99999999999900);
+  });
+
   testWidgets('Inicio relabels its headline when the cycle goes over', (
     tester,
   ) async {
