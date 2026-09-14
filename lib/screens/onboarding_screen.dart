@@ -356,21 +356,12 @@ class _TitlePage extends StatelessWidget {
           _Prose(l10n.prologueRainNoEnd),
           _Prose(l10n.prologueRentPaid),
           _Prose(l10n.prologueSoundAtDoor),
+          // No reassurance about accounts here any more. The screen before
+          // this one is where that belongs now: it says what is stored and
+          // offers "start without an account" as a button the user presses.
+          // Repeating "no account needed" one page later told somebody who
+          // had just chosen to connect one the opposite of what they did.
           const Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.lock_outline, size: 17, color: AppColors.teal),
-              const SizedBox(width: 7),
-              Flexible(
-                child: Text(
-                  l10n.onboardingNoAccount,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: AppColors.inkSoft),
-                ),
-              ),
-            ],
-          ),
         ],
       ),
     );

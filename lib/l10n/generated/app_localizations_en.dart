@@ -1417,9 +1417,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingPromise => 'We tell you how much you can spend today.';
 
   @override
-  String get onboardingNoAccount => 'No account. Your data stays with you.';
-
-  @override
   String get onboardingHowPaid => 'How do you get paid?';
 
   @override

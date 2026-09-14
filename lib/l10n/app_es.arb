@@ -613,7 +613,6 @@
   "onboardingStart": "Empezar",
   "onboardingTagline": "Tu dinero, sin presión.",
   "onboardingPromise": "Te decimos cuánto puedes gastar hoy.",
-  "onboardingNoAccount": "Sin cuenta. Tus datos se quedan contigo.",
   "onboardingHowPaid": "¿Cómo recibes tus ingresos?",
   "onboardingHowPaidHint": "Esto define las fechas de tu presupuesto.",
   "onboardingCycleHelperSemiMonthly": "Dos pagos al mes: el 15 y el fin de mes.",

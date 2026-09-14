@@ -467,7 +467,6 @@
   "onboardingStart": "Start",
   "onboardingTagline": "Your money, no pressure.",
   "onboardingPromise": "We tell you how much you can spend today.",
-  "onboardingNoAccount": "No account. Your data stays with you.",
   "onboardingHowPaid": "How do you get paid?",
   "onboardingHowPaidHint": "This sets the dates of your budget.",
   "onboardingCycleHelperSemiMonthly": "Two paydays a month: the 15th and the last day.",

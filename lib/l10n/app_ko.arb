@@ -472,7 +472,6 @@
   "onboardingStart": "시작하기",
   "onboardingTagline": "부담 없는 돈 관리.",
   "onboardingPromise": "오늘 얼마나 쓸 수 있는지 알려드려요.",
-  "onboardingNoAccount": "계정이 필요 없어요. 데이터는 기기에만 남아요.",
   "onboardingHowPaid": "수입을 어떻게 받나요?",
   "onboardingHowPaidHint": "예산 주기의 날짜가 여기서 정해져요.",
   "onboardingCycleHelperSemiMonthly": "한 달에 두 번: 15일과 말일.",

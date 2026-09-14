@@ -2505,12 +2505,6 @@ abstract class AppLocalizations {
   /// **'Te decimos cuánto puedes gastar hoy.'**
   String get onboardingPromise;
 
-  /// No description provided for @onboardingNoAccount.
-  ///
-  /// In es, this message translates to:
-  /// **'Sin cuenta. Tus datos se quedan contigo.'**
-  String get onboardingNoAccount;
-
   /// No description provided for @onboardingHowPaid.
   ///
   /// In es, this message translates to:

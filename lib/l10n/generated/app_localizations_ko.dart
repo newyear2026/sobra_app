@@ -1361,9 +1361,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboardingPromise => '오늘 얼마나 쓸 수 있는지 알려드려요.';
 
   @override
-  String get onboardingNoAccount => '계정이 필요 없어요. 데이터는 기기에만 남아요.';
-
-  @override
   String get onboardingHowPaid => '수입을 어떻게 받나요?';
 
   @override
