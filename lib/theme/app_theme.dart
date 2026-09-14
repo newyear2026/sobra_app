@@ -53,6 +53,15 @@ abstract final class AppColors {
 /// font, so hierarchy comes from size and from the ink scale, not from more
 /// weight steps. Nothing goes below [minFontSize]; the glyphs are a pixel grid
 /// and they fall apart under it.
+///
+/// The copy of the font in `assets/fonts` is not the one upstream ships: its
+/// figures are redrawn. Pixelify's own `5` is an S with a diagonal waist and
+/// shares the closed double-loop frame of `8` cell for cell, so at the sizes
+/// an amount is read here it is read as an 8 — and `0`, `3`, `6` and `9` sat
+/// no further from `8` than that. `tool/patch_pixelify_digits.py` draws the
+/// five that needed it on the font's own lattice, at the font's own stroke
+/// weight, and along the same `wght` axis; every letter is untouched. Re-run
+/// it if the font is ever updated from upstream.
 abstract final class AppType {
   static const family = 'PixelifySans';
   static const minFontSize = 12.0;
