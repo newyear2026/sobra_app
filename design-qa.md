@@ -63,3 +63,70 @@
 - [ ] Replace placeholder visuals and connect persistence/store/ad services in later phases.
 
 final result: passed
+
+---
+
+# Quick Entry Notification Design QA
+
+**Findings**
+
+- No actionable P0, P1, or P2 mismatches remain in the app-owned notification surface.
+- Android 16 owns the outer notification card, lock-screen wallpaper, header, expansion affordance, and default collapsed/expanded behavior. Those expected system differences are not implementation defects.
+
+**Evidence**
+
+- Selected source visual: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-lockscreen-retro-source.png`
+- Secure lock-screen capture: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-lockscreen-retro-implementation-final.png`
+- Expanded secure-notification capture: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-notification-retro-expanded-final.png`
+- Full three-state comparison: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-retro-comparison.png`
+- Focused source-to-implementation comparison: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-retro-focused-comparison.png`
+- Source pixels: 852 × 1846.
+- Implementation pixels: 1080 × 2160 on the Android 16 emulator.
+
+**Required Fidelity Surfaces**
+
+- Composition: the app-owned panel preserves the source's cat-first question row, horizontal divider, and balanced Income/Expense action row.
+- Colors and visual language: cream paper, navy outline and copy, teal inner border, teal plus signs, and the selected pixel cat all match the chosen direction.
+- Typography: the app uses Pixelify Sans where Android RemoteViews permits it. Android 16 renders notification text with its host typography for consistency and accessibility.
+- Copy: Spanish and English labels are supplied by the app localization currently selected by the user.
+- Accessibility: the cat has a content description; Income and Expense expose individual accessible names and full-width clickable targets.
+
+**Full-view Comparison**
+
+- The combined comparison places the selected source, the secure lock-screen result, and the expanded secure notification together at normalized height.
+- The implemented notification is intentionally nested inside Android's native card. Its internal palette, content order, scale, border contrast, and action balance retain the source hierarchy.
+
+**Focused Region Comparison**
+
+- The focused comparison confirms the cream panel, double navy/teal outline, pixel-cat framing, divider, teal plus signs, navy labels, and 50/50 action split.
+- The source's decorative notched corners and pixel action font are simplified by Android RemoteViews/SystemUI constraints; the resulting square retro panel remains visually coherent and has no readability or interaction regression.
+
+**Comparison History**
+
+1. The first custom layout used generic `View` separators, which Android 16 rejected during RemoteViews inflation. They were replaced with supported `ImageView` separators; the notification then rendered normally.
+2. The first successful render duplicated Sobra's title and large icon inside Android's native header, narrowing and truncating the question. The duplicate title/large icon were removed and the internal spacing compacted.
+3. The first retro action pass colored the entire label teal. The final pass uses teal only for the plus signs and navy for the action names, matching the selected source.
+4. Final Android logs contain no notification inflation or RemoteViews rendering errors.
+
+**Primary Interactions Tested**
+
+- Secure lock screen shows the notification's public copy and does not open Sobra without unlock.
+- Income action survives the lock/login gate and opens the income registration mode with the amount keyboard focused.
+- Expense action opens the expense registration mode with the amount keyboard focused.
+- Expanding the notification reveals both full-width actions without clipping.
+
+**Implementation Checklist**
+
+- [x] Selected option 2 translated into Android RemoteViews.
+- [x] Existing Sobra pixel cat and Pixelify Sans resource reused.
+- [x] Spanish and English copy supported.
+- [x] Income and Expense actions wired and manually verified.
+- [x] Secure lock-screen behavior verified with a temporary emulator PIN; the PIN was removed after testing.
+- [x] Source and implementation compared together at full view and focused notification view.
+- [x] Debug APK builds successfully and notification logs are clean.
+
+**Follow-up Polish**
+
+- [P3] Device makers can render custom notifications differently. A final spot-check on the target Samsung device is worthwhile before release, especially for expanded-by-default behavior and font substitution.
+
+final result: passed

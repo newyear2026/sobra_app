@@ -11,6 +11,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.os.Build
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.widget.RemoteViews
 
 /** The opt-in notification that keeps Income and Expense one tap away. */
 object SobraQuickEntryNotification {
@@ -97,15 +101,8 @@ object SobraQuickEntryNotification {
             // Android masks notification icons to a single colour. This reuses
             // the cat silhouette already drawn for Sobra's widget.
             .setSmallIcon(R.drawable.cat_peek_open)
-            .setLargeIcon(
-                BitmapFactory.decodeResource(
-                    context.resources,
-                    R.drawable.cat_saving_original_done,
-                ),
-            )
             .setContentTitle(context.getString(R.string.app_name))
             .setContentText(question)
-            .setStyle(Notification.BigTextStyle().bigText(question))
             .setContentIntent(destination(context, "home", 300))
             .setCategory(Notification.CATEGORY_REMINDER)
             .setVisibility(Notification.VISIBILITY_PUBLIC)
@@ -113,11 +110,88 @@ object SobraQuickEntryNotification {
             .setShowWhen(false)
             .setOnlyAlertOnce(true)
             .setOngoing(true)
-            .addAction(action(context, "＋ $income", "register_income", 301))
-            .addAction(action(context, "＋ $expense", "register_expense", 302))
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            // A custom content area is the only part of a lock-screen
+            // notification an application can art-direct. Android still owns
+            // the outer card, app header and accessibility affordances.
+            builder
+                .setStyle(Notification.DecoratedCustomViewStyle())
+                .setCustomContentView(
+                    collapsedView(context, question),
+                )
+                .setCustomBigContentView(
+                    expandedView(context, question, income, expense),
+                )
+        } else {
+            // Older Android releases do not consistently decorate custom
+            // layouts, so the native template is the safer readable fallback.
+            builder
+                .setLargeIcon(
+                    BitmapFactory.decodeResource(
+                        context.resources,
+                        R.drawable.cat_saving_original_done,
+                    ),
+                )
+                .setStyle(Notification.BigTextStyle().bigText(question))
+                .addAction(action(context, "＋ $income", "register_income", 301))
+                .addAction(action(context, "＋ $expense", "register_expense", 302))
+        }
 
         manager(context).notify(NOTIFICATION_ID, builder.build())
     }
+
+    private fun collapsedView(context: Context, question: String): RemoteViews =
+        RemoteViews(context.packageName, R.layout.notification_quick_entry_collapsed).apply {
+            setTextViewText(R.id.quick_entry_question, question)
+            setOnClickPendingIntent(
+                R.id.quick_entry_root,
+                destination(context, "home", 303),
+            )
+        }
+
+    private fun expandedView(
+        context: Context,
+        question: String,
+        income: String,
+        expense: String,
+    ): RemoteViews =
+        RemoteViews(context.packageName, R.layout.notification_quick_entry_expanded).apply {
+            setTextViewText(R.id.quick_entry_question, question)
+            setTextViewText(R.id.quick_entry_income, actionLabel(income))
+            setTextViewText(R.id.quick_entry_expense, actionLabel(expense))
+            setContentDescription(R.id.quick_entry_income, income)
+            setContentDescription(R.id.quick_entry_expense, expense)
+            setOnClickPendingIntent(
+                R.id.quick_entry_root,
+                destination(context, "home", 304),
+            )
+            setOnClickPendingIntent(
+                R.id.quick_entry_income,
+                destination(context, "register_income", 305),
+            )
+            setOnClickPendingIntent(
+                R.id.quick_entry_expense,
+                destination(context, "register_expense", 306),
+            )
+        }
+
+    /** Keeps the pixel-teal plus while matching the mockup's navy action copy. */
+    private fun actionLabel(label: String): CharSequence =
+        SpannableString("＋ $label").apply {
+            setSpan(
+                ForegroundColorSpan(0xFF0E7A72.toInt()),
+                0,
+                1,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
+            )
+            setSpan(
+                ForegroundColorSpan(0xFF202848.toInt()),
+                2,
+                length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
+            )
+        }
 
     private fun action(
         context: Context,
