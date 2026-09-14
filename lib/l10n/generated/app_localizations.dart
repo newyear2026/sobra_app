@@ -1245,6 +1245,48 @@ abstract class AppLocalizations {
   /// **'Respaldo copiado al portapapeles.'**
   String get settingsBackupCopied;
 
+  /// No description provided for @settingsRestorePurchases.
+  ///
+  /// In es, this message translates to:
+  /// **'Restaurar compras'**
+  String get settingsRestorePurchases;
+
+  /// No description provided for @settingsRestore.
+  ///
+  /// In es, this message translates to:
+  /// **'Restaurar'**
+  String get settingsRestore;
+
+  /// No description provided for @purchaseRestored.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo. Tus compras volvieron.'**
+  String get purchaseRestored;
+
+  /// No description provided for @purchaseFailureStoreUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'La tienda no está disponible ahora. Inténtalo más tarde.'**
+  String get purchaseFailureStoreUnavailable;
+
+  /// No description provided for @purchaseFailureRejected.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo completar la compra. No se te cobró nada.'**
+  String get purchaseFailureRejected;
+
+  /// No description provided for @purchaseFailureNothingToRestore.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos compras en esta cuenta.'**
+  String get purchaseFailureNothingToRestore;
+
+  /// No description provided for @collectionPurchasing.
+  ///
+  /// In es, this message translates to:
+  /// **'COMPRANDO…'**
+  String get collectionPurchasing;
+
   /// No description provided for @settingsXpPreview.
   ///
   /// In es, this message translates to:

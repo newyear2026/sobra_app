@@ -52,6 +52,11 @@ dependencies:
   # comparing versions, so there is no "is this newer than" logic to get wrong.
   package_info_plus: ^10.2.1
 
+  # Non-consumable character and item purchases. Restoring them is what makes a
+  # reinstall recoverable without an account of Sobra's own: the platform keeps
+  # the entitlement against the user's store account and replays it on request.
+  in_app_purchase: ^3.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

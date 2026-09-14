@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../data/catalog_preview_data.dart';
 import '../l10n/catalog_labels.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../l10n/labels.dart';
 import '../models/catalog_entry.dart';
+import '../services/purchase_service.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
@@ -16,6 +18,9 @@ class CollectionScreen extends StatefulWidget {
     this.priceSource = const PreviewCatalogPriceSource(),
   });
 
+  /// Used only where no [PurchaseScope] sits above this screen — a test, or
+  /// the debug design gallery. The running app puts the live store there, and
+  /// its prices win: they are the ones the user will actually be charged.
   final CatalogPriceSource priceSource;
 
   @override
@@ -24,44 +29,58 @@ class CollectionScreen extends StatefulWidget {
 
 class _CollectionScreenState extends State<CollectionScreen> {
   CatalogKind _selectedKind = CatalogKind.character;
-  final Set<String> _previewOwnedIds = {'michi', 'item-01'};
-  final Map<CatalogKind, String?> _equippedIds = {
-    CatalogKind.character: 'michi',
-    CatalogKind.item: null,
-  };
 
-  int _adProgressFor(String id) => id == 'character-03' ? 1 : 0;
-
-  CatalogEntryState _stateFor(CatalogEntry entry, int playerLevel) {
-    final unlockedByLevel = CatalogPreviewData.isUnlockedAtLevel(
-      entry,
-      playerLevel,
-    );
-    final isOwned = _previewOwnedIds.contains(entry.id) || unlockedByLevel;
+  CatalogEntryState _stateFor(
+    CatalogEntry entry,
+    SobraStore store,
+    CatalogPriceSource prices,
+    bool Function(String)? buying,
+  ) {
+    final isOwned = store.ownsCatalogEntry(entry);
     final productId = entry.storeProductId;
     return CatalogEntryState(
       entry: entry,
       isOwned: isOwned,
-      isEquipped: isOwned && _equippedIds[entry.kind] == entry.id,
-      rewardedAdProgress: _adProgressFor(entry.id),
+      isEquipped: isOwned && store.equippedIdFor(entry.kind) == entry.id,
+      rewardedAdProgress: store.rewardedAdProgressFor(entry.id),
       localizedStorePrice: productId == null
           ? null
-          : widget.priceSource.localizedPriceFor(productId),
+          : prices.localizedPriceFor(productId),
+      isPurchasing:
+          !isOwned && productId != null && (buying?.call(productId) ?? false),
     );
   }
 
-  void _performPrimaryAction(CatalogEntryState state) {
+  Future<void> _performPrimaryAction(CatalogEntryState state) async {
     final l10n = AppLocalizations.of(context);
-    if (state.isOwned) {
-      setState(() => _equippedIds[state.entry.kind] = state.entry.id);
-      _showNotice(
-        l10n.collectionEquippedNotice(
-          catalogEntryDisplayName(l10n, state.entry),
-        ),
-      );
+    // Read before any await: this route can be popped while a write or a
+    // checkout is in flight, and looking the scope up afterwards would be a
+    // use of a dead context rather than of the store the user acted on.
+    final store = SobraScope.of(context);
+    final purchases = PurchaseScope.maybeOf(context);
+
+    if (!state.isOwned) {
+      if (state.entry.unlockMethod == CatalogUnlockMethod.purchase &&
+          purchases != null) {
+        await purchases.buy(state.entry);
+        if (!mounted) return;
+        final failure = purchases.takeFailure();
+        if (failure != null) {
+          _showNotice(describePurchaseFailure(l10n, failure));
+        }
+        return;
+      }
+      // Rewarded ads have no provider yet, and a purchase with no store above
+      // this screen is the design gallery rather than the app.
+      _showNotice(l10n.collectionPreviewActionNotice);
       return;
     }
-    _showNotice(l10n.collectionPreviewActionNotice);
+
+    await store.equipCatalogEntry(state.entry);
+    if (!mounted) return;
+    _showNotice(
+      l10n.collectionEquippedNotice(catalogEntryDisplayName(l10n, state.entry)),
+    );
   }
 
   void _showNotice(String message) {
@@ -88,15 +107,24 @@ class _CollectionScreenState extends State<CollectionScreen> {
 
   bool _canAct(CatalogEntryState state) {
     if (state.isOwned) return !state.isEquipped;
+    // A second tap during a checkout cannot open a second one, so the control
+    // stops looking live rather than accepting a tap and doing nothing.
+    if (state.isPurchasing) return false;
     return state.entry.unlockMethod != CatalogUnlockMethod.level;
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final xp = SobraScope.of(context).xpProgress;
+    final store = SobraScope.of(context);
+    final purchases = PurchaseScope.maybeOf(context);
+    final prices = purchases ?? widget.priceSource;
+    final xp = store.xpProgress;
     final entries = CatalogPreviewData.forKind(_selectedKind);
-    final states = [for (final entry in entries) _stateFor(entry, xp.level)];
+    final states = [
+      for (final entry in entries)
+        _stateFor(entry, store, prices, purchases?.isBuying),
+    ];
     final ownedCount = states.where((state) => state.isOwned).length;
 
     return Scaffold(
@@ -726,6 +754,7 @@ class _CatalogTones {
 }
 
 String _cardActionLabel(AppLocalizations l10n, CatalogEntryState state) {
+  if (state.isPurchasing) return l10n.collectionPurchasing;
   if (state.isEquipped) return l10n.collectionEquipped;
   if (state.isOwned) {
     return state.entry.kind == CatalogKind.item
@@ -749,6 +778,7 @@ String _cardActionLabel(AppLocalizations l10n, CatalogEntryState state) {
 }
 
 String _dialogActionLabel(AppLocalizations l10n, CatalogEntryState state) {
+  if (state.isPurchasing) return l10n.collectionPurchasing;
   if (state.isEquipped) return l10n.collectionEquipped;
   if (state.isOwned) return l10n.collectionEquip;
   return switch (state.entry.unlockMethod) {

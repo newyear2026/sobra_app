@@ -684,6 +684,30 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsBackupCopied => 'Respaldo copiado al portapapeles.';
 
   @override
+  String get settingsRestorePurchases => 'Restaurar compras';
+
+  @override
+  String get settingsRestore => 'Restaurar';
+
+  @override
+  String get purchaseRestored => 'Listo. Tus compras volvieron.';
+
+  @override
+  String get purchaseFailureStoreUnavailable =>
+      'La tienda no está disponible ahora. Inténtalo más tarde.';
+
+  @override
+  String get purchaseFailureRejected =>
+      'No se pudo completar la compra. No se te cobró nada.';
+
+  @override
+  String get purchaseFailureNothingToRestore =>
+      'No encontramos compras en esta cuenta.';
+
+  @override
+  String get collectionPurchasing => 'COMPRANDO…';
+
+  @override
   String get settingsXpPreview => 'Vista previa XP';
 
   @override

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -11,6 +12,7 @@ import 'models/money_movement.dart';
 import 'screens/app_shell.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/recovery_screen.dart';
+import 'services/purchase_service.dart';
 import 'services/receipt_store.dart';
 import 'services/sobra_quick_entry.dart';
 import 'services/sobra_widget_sync.dart';
@@ -36,7 +38,20 @@ Future<void> main() async {
   await SobraQuickEntry.initialize();
   final receipts = ReceiptStore.forPlatform();
   await _prepareReceipts(receipts, store);
-  runApp(SobraApp(store: store, receipts: receipts));
+  final purchases = SobraPurchases(
+    backend: PluginPurchaseBackend(),
+    store: store,
+    // Android replays past purchases with a silent query, so a reinstall can
+    // hand everything back before the user has looked at anything. iOS cannot:
+    // a StoreKit restore may raise an App Store sign-in prompt, and one of
+    // those at launch is exactly the login wall this design set out to avoid.
+    // There the Ajustes row asks instead.
+    restoreOnStart: defaultTargetPlatform == TargetPlatform.android,
+  );
+  // Not awaited. Reaching the store takes a network round trip, and the whole
+  // app — a ledger that works offline — must not wait behind it to draw.
+  unawaited(purchases.start());
+  runApp(SobraApp(store: store, receipts: receipts, purchases: purchases));
 }
 
 /// Resolves the receipts directory and clears what nothing points at.
@@ -64,9 +79,16 @@ class SobraApp extends StatefulWidget {
     super.key,
     required this.store,
     this.receipts = const UnsupportedReceiptStore(),
+    this.purchases,
   });
 
   final SobraStore store;
+
+  /// Null where there is no store to talk to — every widget test that pumps
+  /// the app, and any build with billing unavailable. The catalog then shows
+  /// its entries without prices and Ajustes drops its restore row, which is
+  /// the same screen a phone with no Play services would get.
+  final SobraPurchases? purchases;
 
   /// Defaults to the store that can hold nothing, which is what a harness
   /// pumping the app without a documents directory should get: every screen
@@ -127,7 +149,7 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return ReceiptScope(
+    final app = ReceiptScope(
       store: widget.receipts,
       child: SobraScope(
         store: widget.store,
@@ -152,6 +174,12 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
         ),
       ),
     );
+    // Outside the scopes it reads from rather than inside them: the store and
+    // the receipts have to resolve for every screen, while the purchases are
+    // optional and only two screens ask.
+    final purchases = widget.purchases;
+    if (purchases == null) return app;
+    return PurchaseScope(purchases: purchases, child: app);
   }
 }
 

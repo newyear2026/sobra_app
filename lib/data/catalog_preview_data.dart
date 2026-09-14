@@ -179,6 +179,29 @@ abstract final class CatalogPreviewData {
   static List<CatalogEntry> forKind(CatalogKind kind) =>
       kind == CatalogKind.character ? characters : items;
 
+  /// Every entry this build ships, characters first.
+  static List<CatalogEntry> get all => [...characters, ...items];
+
+  /// The entry a store product id belongs to, or null where this build has
+  /// none for it.
+  ///
+  /// Null is an ordinary answer rather than an error. A store restore replays
+  /// everything the account ever bought, including products from a lineup this
+  /// build has since dropped, and the caller keeps those ids rather than
+  /// discarding what the user paid for.
+  static CatalogEntry? entryForProductId(String storeProductId) {
+    for (final entry in all) {
+      if (entry.storeProductId == storeProductId) return entry;
+    }
+    return null;
+  }
+
+  /// Every product id the store should be asked to price.
+  static Set<String> get storeProductIds => {
+    for (final entry in all)
+      if (entry.storeProductId != null) entry.storeProductId!,
+  };
+
   static bool isUnlockedAtLevel(CatalogEntry entry, int playerLevel) =>
       entry.unlockMethod == CatalogUnlockMethod.level &&
       playerLevel >= entry.requiredLevel!;

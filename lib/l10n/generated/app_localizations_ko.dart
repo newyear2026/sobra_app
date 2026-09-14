@@ -658,6 +658,28 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsBackupCopied => '백업을 클립보드에 복사했어요.';
 
   @override
+  String get settingsRestorePurchases => '구매 복원';
+
+  @override
+  String get settingsRestore => '복원';
+
+  @override
+  String get purchaseRestored => '완료했어요. 구매 항목이 돌아왔어요.';
+
+  @override
+  String get purchaseFailureStoreUnavailable =>
+      '지금은 스토어에 연결할 수 없어요. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get purchaseFailureRejected => '구매를 완료하지 못했어요. 결제된 금액은 없어요.';
+
+  @override
+  String get purchaseFailureNothingToRestore => '이 계정에서 구매 내역을 찾지 못했어요.';
+
+  @override
+  String get collectionPurchasing => '구매 중…';
+
+  @override
   String get settingsXpPreview => 'XP 미리보기';
 
   @override

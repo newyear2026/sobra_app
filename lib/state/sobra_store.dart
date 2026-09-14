@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../data/catalog_preview_data.dart';
 import '../models/cash_reconciliation.dart';
+import '../models/catalog_entry.dart';
 import '../models/currency.dart';
 import '../models/cycle_record.dart';
 import '../models/daily_mission.dart';
@@ -41,6 +43,22 @@ class SobraStore extends ChangeNotifier {
   final List<XpEvent> _xpEvents = [];
   final Map<String, int> _cycleBudgetExtras = {};
   final List<CycleRecord> _cycleRecords = [];
+
+  /// Catalog entries the user actually acquired — a real-money purchase, or a
+  /// rewarded-ad run they finished.
+  ///
+  /// Level rewards are deliberately absent. [CatalogPreviewData.isUnlockedAtLevel]
+  /// derives those from XP every time it is asked, and writing them here too
+  /// would create a second answer that can disagree with the first: an entry
+  /// whose required level later moves would stay owned at the old threshold.
+  final Set<String> _ownedCatalogIds = {};
+
+  /// Rewarded ads watched so far toward each entry, for runs still in progress.
+  ///
+  /// An entry drops out of this map the moment it is granted. Progress only
+  /// means anything while it is short of the target, and keeping a finished
+  /// count would grow the saved state for something nothing reads.
+  final Map<String, int> _rewardedAdProgress = {};
   int _idSequence = 0;
 
   int _baseBudgetCentavos = 600000;
@@ -59,6 +77,13 @@ class SobraStore extends ChangeNotifier {
   /// opinion about what art exists, and a pack that a later build no longer
   /// ships must not stop the file from opening. The sprite resolves it.
   String characterId = 'michi';
+
+  /// The room item the user is showing, or null while the room is bare.
+  ///
+  /// Characters already had [characterId]; items had nowhere to live, so the
+  /// collection screen held the choice in its own State and lost it on every
+  /// rebuild of the route.
+  String? equippedItemId;
 
   int countedCashCentavos = 0;
   int expectedCashCentavos = 0;
@@ -1125,6 +1150,92 @@ class SobraStore extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Whether [entry] is available to the user right now.
+  ///
+  /// The only place that answers this. Three unlock routes resolve three
+  /// different ways — included entries always, level rewards from XP, and the
+  /// rest from what was acquired — and a caller that checks only the stored
+  /// set would report a level reward as locked.
+  /// Matched on both ids on purpose. A store restore knows products, not
+  /// catalog entries, and an id it could not map to this build's lineup is
+  /// kept verbatim — so the same entitlement can be sitting in the set under
+  /// either name, and asking for only one of them silently revokes a purchase.
+  bool ownsCatalogEntry(CatalogEntry entry) {
+    final productId = entry.storeProductId;
+    return entry.unlockMethod == CatalogUnlockMethod.included ||
+        CatalogPreviewData.isUnlockedAtLevel(entry, xpProgress.level) ||
+        _ownedCatalogIds.contains(entry.id) ||
+        (productId != null && _ownedCatalogIds.contains(productId));
+  }
+
+  /// Ids acquired by purchase or by finishing a rewarded-ad run.
+  ///
+  /// Level rewards are not in here by design — read [ownsCatalogEntry] rather
+  /// than this to ask whether something is available.
+  Set<String> get ownedCatalogIds => Set.unmodifiable(_ownedCatalogIds);
+
+  /// Rewarded ads watched toward [id], or zero once it has been granted.
+  int rewardedAdProgressFor(String id) => _rewardedAdProgress[id] ?? 0;
+
+  /// The entry the user is showing for [kind], or null for none.
+  String? equippedIdFor(CatalogKind kind) => switch (kind) {
+    CatalogKind.character => characterId,
+    CatalogKind.item => equippedItemId,
+  };
+
+  /// Records that [entry] was acquired.
+  ///
+  /// Takes a bare id rather than a [CatalogEntry] because the caller that
+  /// matters most cannot supply one: a store restore hands back product ids
+  /// for entries this build may no longer ship, and dropping those would
+  /// silently revoke something the user paid for.
+  Future<void> grantCatalogEntry(String id) async {
+    if (id.isEmpty || !_ownedCatalogIds.add(id)) return;
+    _rewardedAdProgress.remove(id);
+    await _save();
+    notifyListeners();
+  }
+
+  /// Counts one watched ad toward [entry], granting it once the run completes.
+  ///
+  /// Called by the ad surface after the network confirms a completed view, so
+  /// that a dismissed ad cannot advance the count.
+  Future<void> recordRewardedAdView(CatalogEntry entry) async {
+    final target = entry.rewardedAdTarget;
+    if (target == null) {
+      throw ArgumentError.value(entry.id, 'entry', 'not a rewarded-ad entry');
+    }
+    if (_ownedCatalogIds.contains(entry.id)) return;
+    final next = rewardedAdProgressFor(entry.id) + 1;
+    if (next >= target) {
+      await grantCatalogEntry(entry.id);
+      return;
+    }
+    _rewardedAdProgress[entry.id] = next;
+    await _save();
+    notifyListeners();
+  }
+
+  /// Shows [entry] in the room.
+  ///
+  /// Refuses an entry the user does not own rather than storing it and letting
+  /// the room fall back to placeholder art, which would read as a bug the user
+  /// cannot undo.
+  Future<void> equipCatalogEntry(CatalogEntry entry) async {
+    if (!ownsCatalogEntry(entry)) {
+      throw ArgumentError.value(entry.id, 'entry', 'not owned');
+    }
+    switch (entry.kind) {
+      case CatalogKind.character:
+        await chooseCharacter(entry.id);
+      case CatalogKind.item:
+        if (entry.id == equippedItemId) return;
+        equippedItemId = entry.id;
+        await _save();
+        notifyListeners();
+    }
+  }
+
   Future<void> completeOnboarding() async {
     hasCompletedOnboarding = true;
     xpTrackingStartedAt ??= today;
@@ -1230,6 +1341,9 @@ class SobraStore extends ChangeNotifier {
     _baseBudgetCentavos = 600000;
     _hasBudget = true;
     characterId = 'michi';
+    equippedItemId = null;
+    _ownedCatalogIds.clear();
+    _rewardedAdProgress.clear();
     countedCashCentavos = 0;
     expectedCashCentavos = 0;
     reducedMotion = false;
@@ -1277,9 +1391,16 @@ class SobraStore extends ChangeNotifier {
     _cycleBudgetExtras
       ..clear()
       ..addAll(other._cycleBudgetExtras);
+    _ownedCatalogIds
+      ..clear()
+      ..addAll(other._ownedCatalogIds);
+    _rewardedAdProgress
+      ..clear()
+      ..addAll(other._rewardedAdProgress);
     _baseBudgetCentavos = other._baseBudgetCentavos;
     _hasBudget = other._hasBudget;
     characterId = other.characterId;
+    equippedItemId = other.equippedItemId;
     countedCashCentavos = other.countedCashCentavos;
     expectedCashCentavos = other.expectedCashCentavos;
     reducedMotion = other.reducedMotion;
@@ -1346,6 +1467,23 @@ class SobraStore extends ChangeNotifier {
     // figure is a real one and the flag reads true.
     _hasBudget = json['hasBudget'] as bool? ?? true;
     characterId = json['characterId'] as String? ?? 'michi';
+    equippedItemId = json['equippedItemId'] as String?;
+    // Absent from every state written before the collection was persisted.
+    // Those users owned nothing beyond what their level already grants, and
+    // that part is derived rather than read from here.
+    _ownedCatalogIds
+      ..clear()
+      ..addAll(
+        (json['ownedCatalogIds'] as List<dynamic>? ?? const []).cast<String>(),
+      );
+    final adProgress =
+        json['rewardedAdProgress'] as Map<String, dynamic>? ?? {};
+    _rewardedAdProgress
+      ..clear()
+      ..addAll({
+        for (final entry in adProgress.entries)
+          entry.key: (entry.value as num).toInt(),
+      });
     countedCashCentavos = (json['countedCashCentavos'] as num).toInt();
     expectedCashCentavos = (json['expectedCashCentavos'] as num).toInt();
     reducedMotion = json['reducedMotion'] as bool? ?? false;
@@ -1399,7 +1537,7 @@ class SobraStore extends ChangeNotifier {
   }
 
   Map<String, Object?> _toJson() => {
-    'schemaVersion': 4,
+    'schemaVersion': 5,
     'transactions': _transactions.map((entry) => entry.toJson()).toList(),
     'incomes': _incomes.map((entry) => entry.toJson()).toList(),
     'cashReconciliations': _cashReconciliations
@@ -1411,6 +1549,12 @@ class SobraStore extends ChangeNotifier {
     'totalBudgetCentavos': _baseBudgetCentavos,
     'hasBudget': _hasBudget,
     'characterId': characterId,
+    'equippedItemId': equippedItemId,
+    // Sorted so that the same ownership serialises to the same string. [_save]
+    // compares against what is stored to decide whether to take a backup, and
+    // set iteration order alone would make an unchanged state look changed.
+    'ownedCatalogIds': _ownedCatalogIds.toList()..sort(),
+    'rewardedAdProgress': _rewardedAdProgress,
     'cycleBudgetExtras': _cycleBudgetExtras,
     'countedCashCentavos': countedCashCentavos,
     'expectedCashCentavos': expectedCashCentavos,

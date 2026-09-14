@@ -6,6 +6,7 @@ import '../models/money_movement.dart';
 import '../models/language.dart';
 import '../models/pay_schedule.dart';
 import '../models/store_failure.dart';
+import '../services/purchase_service.dart';
 import '../models/xp_event.dart';
 import '../widgets/cat_sprite.dart';
 import 'generated/app_localizations.dart';
@@ -247,6 +248,20 @@ String describeStoreFailure(AppLocalizations l10n, Object error) =>
       },
       _ => l10n.storeFailureGeneric,
     };
+
+/// The sentence to show when a purchase did not go through.
+///
+/// There is no case for a cancellation. [PurchaseFailure] has none, because a
+/// user who backed out of the store sheet got the outcome they asked for and
+/// telling them about it would read as a complaint.
+String describePurchaseFailure(
+  AppLocalizations l10n,
+  PurchaseFailure failure,
+) => switch (failure) {
+  PurchaseFailure.storeUnavailable => l10n.purchaseFailureStoreUnavailable,
+  PurchaseFailure.purchaseRejected => l10n.purchaseFailureRejected,
+  PurchaseFailure.nothingToRestore => l10n.purchaseFailureNothingToRestore,
+};
 
 /// The three-letter month, kept short enough for the pixel layouts.
 String monthAbbreviation(AppLocalizations l10n, int month) => switch (month) {

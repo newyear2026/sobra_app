@@ -84,11 +84,16 @@ class CatalogEntryState {
     required this.isEquipped,
     this.rewardedAdProgress = 0,
     this.localizedStorePrice,
+    this.isPurchasing = false,
   }) : assert(!isEquipped || isOwned),
        assert(rewardedAdProgress >= 0),
        assert(
          localizedStorePrice == null ||
              entry.unlockMethod == CatalogUnlockMethod.purchase,
+       ),
+       assert(
+         !isPurchasing ||
+             (!isOwned && entry.unlockMethod == CatalogUnlockMethod.purchase),
        );
 
   final CatalogEntry entry;
@@ -98,4 +103,12 @@ class CatalogEntryState {
 
   /// Presentation-only price received from a store price source.
   final String? localizedStorePrice;
+
+  /// Whether the store is working on this entry right now.
+  ///
+  /// Covers both the seconds a checkout sheet takes and the hours Play can
+  /// hold a pending payment. The card has to say so either way: an entry that
+  /// still reads COMPRAR after the user paid looks like the money went
+  /// nowhere.
+  final bool isPurchasing;
 }

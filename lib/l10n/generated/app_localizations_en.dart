@@ -684,6 +684,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsBackupCopied => 'Backup copied to the clipboard.';
 
   @override
+  String get settingsRestorePurchases => 'Restore purchases';
+
+  @override
+  String get settingsRestore => 'Restore';
+
+  @override
+  String get purchaseRestored => 'Done. Your purchases are back.';
+
+  @override
+  String get purchaseFailureStoreUnavailable =>
+      'The store is unavailable right now. Try again later.';
+
+  @override
+  String get purchaseFailureRejected =>
+      'The purchase could not be completed. You were not charged.';
+
+  @override
+  String get purchaseFailureNothingToRestore =>
+      'We found no purchases on this account.';
+
+  @override
+  String get collectionPurchasing => 'BUYING…';
+
+  @override
   String get settingsXpPreview => 'XP preview';
 
   @override

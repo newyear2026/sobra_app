@@ -7,6 +7,7 @@ import '../models/language.dart';
 import '../models/currency.dart';
 import '../l10n/labels.dart';
 import '../services/app_version_service.dart';
+import '../services/purchase_service.dart';
 import '../services/sobra_quick_entry.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
@@ -37,6 +38,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   AppVersion? _version;
   bool _quickEntrySaving = false;
 
+  /// Guards the restore row while the store is being asked.
+  ///
+  /// A restore takes as long as the network does and reports only once it is
+  /// finished, so without this the row invites a second tap that would race
+  /// the first and answer twice.
+  bool _restoring = false;
+
   @override
   void initState() {
     super.initState();
@@ -49,10 +57,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() => _version = version);
   }
 
+  Future<void> _restorePurchases(SobraPurchases purchases) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _restoring = true);
+    await purchases.restore();
+    if (!mounted) return;
+    setState(() => _restoring = false);
+    final failure = purchases.takeFailure();
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            failure == null
+                ? l10n.purchaseRestored
+                : describePurchaseFailure(l10n, failure),
+          ),
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final store = SobraScope.of(context);
+    // Null in a test or the design gallery, where there is no store to ask.
+    // The row is then absent rather than present and dead.
+    final purchases = PurchaseScope.maybeOf(context);
 
     return SafeArea(
       bottom: false,
@@ -210,6 +242,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
               );
             },
           ),
+          // Required by the App Store the moment Sobra ships on iOS, and
+          // worth having on Android too: a user whose purchases did not come
+          // back needs somewhere to press before they ask for a refund.
+          if (purchases != null)
+            _SettingsRow(
+              icon: Icons.restore,
+              iconColor: AppColors.teal,
+              label: l10n.settingsRestorePurchases,
+              value: l10n.settingsRestore,
+              onTap: _restoring ? null : () => _restorePurchases(purchases),
+            ),
           // The backup is a JSON string on the clipboard, so receipt photos —
           // which live as files outside it — cannot travel with it. Saying so
           // here is cheaper than a user discovering it on a new phone.
