@@ -7,6 +7,7 @@ import '../models/language.dart';
 import '../models/currency.dart';
 import '../l10n/labels.dart';
 import '../services/app_version_service.dart';
+import '../services/sobra_quick_entry.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
@@ -34,6 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// number, and this screen rebuilds on every store change — so the read
   /// happens here once instead of inside a FutureBuilder that would re-fire.
   AppVersion? _version;
+  bool _quickEntrySaving = false;
 
   @override
   void initState() {
@@ -109,6 +111,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
             value: SobraLanguage.fromCode(store.languageCode).label(l10n),
             onTap: () => _pickLanguage(context, store),
           ),
+          if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
+            ValueListenableBuilder<bool>(
+              valueListenable: SobraQuickEntry.enabled,
+              builder: (context, enabled, _) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: PixelCard(
+                  elevation: PixelElevation.none,
+                  child: Row(
+                    children: [
+                      const _IconTile(
+                        icon: Icons.notifications_active_outlined,
+                        color: AppColors.teal,
+                      ),
+                      const SizedBox(width: 13),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l10n.settingsQuickEntry,
+                              style: pixelText(size: 15, bold: true),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              l10n.settingsQuickEntryHint,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      PixelSwitch(
+                        value: enabled,
+                        onChanged: _quickEntrySaving
+                            ? null
+                            : (value) => _setQuickEntry(value),
+                        semanticLabel: l10n.settingsQuickEntry,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: PixelCard(
@@ -184,7 +229,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             icon: Icons.article_outlined,
             iconColor: AppColors.teal,
             label: l10n.settingsReleaseNotes,
-            value: _version == null ? l10n.settingsVersionUnknown
+            value: _version == null
+                ? l10n.settingsVersionUnknown
                 : 'v${_version!.version}',
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
@@ -225,6 +271,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _setQuickEntry(bool value) async {
+    setState(() => _quickEntrySaving = true);
+    final applied = await SobraQuickEntry.setEnabled(value);
+    if (!mounted) return;
+    setState(() => _quickEntrySaving = false);
+    if (!applied && value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).quickEntryDenied)),
+      );
+    }
   }
 
   /// Relabels money in another currency, after saying that is all it does.

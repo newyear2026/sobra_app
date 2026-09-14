@@ -1203,6 +1203,30 @@ abstract class AppLocalizations {
   /// **'Se activa solo si tu teléfono ya lo pide.'**
   String get settingsReduceMotionHint;
 
+  /// No description provided for @settingsQuickEntry.
+  ///
+  /// In es, this message translates to:
+  /// **'Acceso rápido'**
+  String get settingsQuickEntry;
+
+  /// No description provided for @settingsQuickEntryHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Muestra Ingreso y Gasto en la pantalla bloqueada.'**
+  String get settingsQuickEntryHint;
+
+  /// No description provided for @quickEntryQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué quieres registrar?'**
+  String get quickEntryQuestion;
+
+  /// No description provided for @quickEntryDenied.
+  ///
+  /// In es, this message translates to:
+  /// **'Permite las notificaciones de Sobra para activar el acceso rápido.'**
+  String get quickEntryDenied;
+
   /// No description provided for @settingsBackup.
   ///
   /// In es, this message translates to:

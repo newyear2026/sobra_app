@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import '../models/money_movement.dart';
 import '../state/sobra_store.dart';
 
-enum SobraWidgetDestination { home, register }
+enum SobraWidgetDestination { home, register, registerExpense, registerIncome }
 
 /// Turns a movement into the line the home screen widget shows.
 ///
@@ -204,6 +204,8 @@ abstract final class SobraWidgetSync {
   static void _setDestination(String? raw) {
     final value = switch (raw) {
       'register' => SobraWidgetDestination.register,
+      'register_expense' => SobraWidgetDestination.registerExpense,
+      'register_income' => SobraWidgetDestination.registerIncome,
       'home' => SobraWidgetDestination.home,
       _ => null,
     };

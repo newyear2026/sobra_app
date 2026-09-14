@@ -12,6 +12,7 @@ import 'screens/app_shell.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/recovery_screen.dart';
 import 'services/receipt_store.dart';
+import 'services/sobra_quick_entry.dart';
 import 'services/sobra_widget_sync.dart';
 import 'state/sobra_store.dart';
 import 'theme/app_theme.dart';
@@ -32,6 +33,7 @@ Future<void> main() async {
   );
   final store = await SobraStore.load();
   await SobraWidgetSync.initialize(store);
+  await SobraQuickEntry.initialize();
   final receipts = ReceiptStore.forPlatform();
   await _prepareReceipts(receipts, store);
   runApp(SobraApp(store: store, receipts: receipts));
@@ -178,6 +180,11 @@ class _WidgetSyncLabelsState extends State<_WidgetSyncLabels> {
     _installed = l10n;
     SobraWidgetSync.movementLabeler = (MoneyMovement movement) =>
         movementTitle(l10n, movement);
+    SobraQuickEntry.copy = SobraQuickEntryCopy(
+      question: l10n.quickEntryQuestion,
+      income: l10n.registerIncome,
+      expense: l10n.registerExpense,
+    );
   }
 
   @override

@@ -661,6 +661,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Turns on by itself if your phone already asks for it.';
 
   @override
+  String get settingsQuickEntry => 'Quick entry';
+
+  @override
+  String get settingsQuickEntryHint =>
+      'Shows Income and Expense on the lock screen.';
+
+  @override
+  String get quickEntryQuestion => 'What do you want to add?';
+
+  @override
+  String get quickEntryDenied =>
+      'Allow Sobra notifications to turn on quick entry.';
+
+  @override
   String get settingsBackup => 'Data backup';
 
   @override

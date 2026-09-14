@@ -661,6 +661,20 @@ class AppLocalizationsEs extends AppLocalizations {
       'Se activa solo si tu teléfono ya lo pide.';
 
   @override
+  String get settingsQuickEntry => 'Acceso rápido';
+
+  @override
+  String get settingsQuickEntryHint =>
+      'Muestra Ingreso y Gasto en la pantalla bloqueada.';
+
+  @override
+  String get quickEntryQuestion => '¿Qué quieres registrar?';
+
+  @override
+  String get quickEntryDenied =>
+      'Permite las notificaciones de Sobra para activar el acceso rápido.';
+
+  @override
   String get settingsBackup => 'Respaldo de datos';
 
   @override

@@ -283,6 +283,8 @@ void main() {
       ReceiptStore receipts,
       SobraStore store, {
       VoidCallback? onSaved,
+      RegisterMode initialMode = RegisterMode.expense,
+      bool focusAmountOnOpen = false,
     }) async {
       tester.view.physicalSize = const Size(520, 1400);
       tester.view.devicePixelRatio = 1;
@@ -297,7 +299,13 @@ void main() {
               locale: const Locale('es', 'MX'),
               localizationsDelegates: sobraLocalizationsDelegates,
               supportedLocales: sobraSupportedLocales,
-              home: Scaffold(body: RegisterScreen(onSaved: onSaved ?? () {})),
+              home: Scaffold(
+                body: RegisterScreen(
+                  onSaved: onSaved ?? () {},
+                  initialMode: initialMode,
+                  focusAmountOnOpen: focusAmountOnOpen,
+                ),
+              ),
             ),
           ),
         ),
@@ -310,6 +318,26 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 1400));
     }
+
+    testWidgets('a quick-income launch selects income and focuses amount', (
+      tester,
+    ) async {
+      final store = await loadStore();
+      await openRegister(
+        tester,
+        const UnsupportedReceiptStore(),
+        store,
+        initialMode: RegisterMode.income,
+        focusAmountOnOpen: true,
+      );
+
+      expect(find.text('Tipo de ingreso'), findsOneWidget);
+      expect(find.text('Categoría'), findsNothing);
+      final amountField = tester.widget<EditableText>(
+        find.byType(EditableText).first,
+      );
+      expect(amountField.focusNode.hasFocus, isTrue);
+    });
 
     testWidgets('attaching a photo puts it on the saved expense', (
       tester,

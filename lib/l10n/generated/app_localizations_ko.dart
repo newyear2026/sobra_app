@@ -637,6 +637,18 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsReduceMotionHint => '휴대폰에서 이미 설정했다면 자동으로 켜져요.';
 
   @override
+  String get settingsQuickEntry => '빠른 기록';
+
+  @override
+  String get settingsQuickEntryHint => '잠금화면에 수입과 지출 버튼을 표시해요.';
+
+  @override
+  String get quickEntryQuestion => '무엇을 기록할까요?';
+
+  @override
+  String get quickEntryDenied => '빠른 기록을 사용하려면 Sobra 알림을 허용해 주세요.';
+
+  @override
   String get settingsBackup => '데이터 백업';
 
   @override

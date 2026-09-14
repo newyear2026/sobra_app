@@ -95,30 +95,32 @@ void main() {
     expect(find.text('2 movimientos · 11 días con Sobra'), findsOneWidget);
     expect(find.text('PRESUPUESTO'), findsOneWidget);
     expect(find.text('PANTALLA'), findsOneWidget);
+    expect(find.text('Acceso rápido'), findsOneWidget);
     expect(find.text('DATOS'), findsOneWidget);
     // Acerca de reports the running build rather than guessing at one.
     expect(find.text('ACERCA DE'), findsOneWidget);
     expect(find.text('1.0.0 (1)'), findsOneWidget);
     // The design gallery has a section of its own: it is not data, and
     // sitting beside the backup row read as though it were.
-    expect(find.text('DISEÑO'), findsOneWidget);
-    final design = tester.getTopLeft(find.text('DISEÑO')).dy;
     final about = tester.getTopLeft(find.text('ACERCA DE')).dy;
     expect(
       tester.getTopLeft(find.text('DATOS')).dy,
       lessThan(about),
       reason: 'Acerca de follows the data section',
     );
-    expect(
-      about,
-      lessThan(design),
-      reason: 'the debug section comes last, so Acerca de ends a release build',
-    );
+    await tester.scrollUntilVisible(find.text('DISEÑO'), 200);
+    final aboutAfterScroll = tester.getTopLeft(find.text('ACERCA DE')).dy;
+    final design = tester.getTopLeft(find.text('DISEÑO')).dy;
+    expect(aboutAfterScroll, lessThan(design));
     expect(
       tester.getTopLeft(find.text('Vista previa XP')).dy,
       greaterThan(design),
     );
     expect(tester.takeException(), isNull);
+
+    // Return to the top so the golden remains the first view a user sees.
+    await tester.fling(find.byType(ListView), const Offset(0, 2000), 2000);
+    await tester.pumpAndSettle();
 
     await expectLater(
       find.byType(Scaffold).first,

@@ -75,6 +75,8 @@ class _AppShellState extends State<AppShell> {
   AppTab _selected = AppTab.home;
   SobraStore? _store;
   bool _xpNoticeScheduled = false;
+  RegisterMode _registerMode = RegisterMode.expense;
+  int _registerSession = 0;
 
   @override
   void initState() {
@@ -110,11 +112,23 @@ class _AppShellState extends State<AppShell> {
   void _onWidgetDestination() {
     final destination = SobraWidgetSync.destination.value;
     if (!mounted || destination == null) return;
-    final tab = switch (destination) {
-      SobraWidgetDestination.home => AppTab.home,
-      SobraWidgetDestination.register => AppTab.register,
-    };
-    if (_selected != tab) setState(() => _selected = tab);
+    switch (destination) {
+      case SobraWidgetDestination.home:
+        if (_selected != AppTab.home) setState(() => _selected = AppTab.home);
+      case SobraWidgetDestination.register:
+      case SobraWidgetDestination.registerExpense:
+        setState(() {
+          _selected = AppTab.register;
+          _registerMode = RegisterMode.expense;
+          _registerSession++;
+        });
+      case SobraWidgetDestination.registerIncome:
+        setState(() {
+          _selected = AppTab.register;
+          _registerMode = RegisterMode.income;
+          _registerSession++;
+        });
+    }
     SobraWidgetSync.consumeDestination(destination);
   }
 
@@ -168,7 +182,12 @@ class _AppShellState extends State<AppShell> {
     final screens = [
       const HomeScreen(),
       const TransactionsScreen(),
-      RegisterScreen(onSaved: () => _select(AppTab.home)),
+      RegisterScreen(
+        key: ValueKey('register-$_registerSession'),
+        onSaved: () => _select(AppTab.home),
+        initialMode: _registerMode,
+        focusAmountOnOpen: _registerSession > 0,
+      ),
       const BudgetScreen(),
       const SettingsScreen(),
     ];

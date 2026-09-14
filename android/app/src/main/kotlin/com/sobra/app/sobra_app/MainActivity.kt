@@ -1,12 +1,16 @@
 package com.sobra.app.sobra_app
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     private var widgetChannel: MethodChannel? = null
+    private var pendingQuickEntryResult: MethodChannel.Result? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -31,6 +35,55 @@ class MainActivity : FlutterActivity() {
                 }
             }
         }
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            QUICK_ENTRY_CHANNEL,
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "getQuickEntryEnabled" -> result.success(
+                    SobraQuickEntryNotification.isEnabled(this),
+                )
+                "setQuickEntryEnabled" -> {
+                    val enabled = call.arguments as? Boolean
+                    if (enabled == null) {
+                        result.error("INVALID_VALUE", "Enabled must be a boolean.", null)
+                    } else if (
+                        enabled &&
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                        SobraQuickEntryNotification.needsRuntimePermission(this)
+                    ) {
+                        if (pendingQuickEntryResult != null) {
+                            result.error(
+                                "PERMISSION_PENDING",
+                                "Notification permission is already being requested.",
+                                null,
+                            )
+                        } else {
+                            pendingQuickEntryResult = result
+                            requestPermissions(
+                                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                                QUICK_ENTRY_PERMISSION_REQUEST,
+                            )
+                        }
+                    } else {
+                        result.success(
+                            SobraQuickEntryNotification.setEnabled(this, enabled),
+                        )
+                    }
+                }
+                "updateQuickEntryCopy" -> {
+                    val arguments = call.arguments as? Map<*, *>
+                    if (arguments == null) {
+                        result.error("INVALID_PAYLOAD", "Quick-entry copy is missing.", null)
+                    } else {
+                        SobraQuickEntryNotification.updateCopy(this, arguments)
+                        result.success(null)
+                    }
+                }
+                else -> result.notImplemented()
+            }
+        }
+        SobraQuickEntryNotification.restore(this)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -38,6 +91,19 @@ class MainActivity : FlutterActivity() {
         setIntent(intent)
         val destination = takePendingDestination() ?: return
         widgetChannel?.invokeMethod("openDestination", destination)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode != QUICK_ENTRY_PERMISSION_REQUEST) return
+        val granted = grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED
+        val enabled = granted && SobraQuickEntryNotification.setEnabled(this, true)
+        pendingQuickEntryResult?.success(enabled)
+        pendingQuickEntryResult = null
     }
 
     private fun saveWidgetData(arguments: Map<*, *>) {
@@ -74,5 +140,7 @@ class MainActivity : FlutterActivity() {
     companion object {
         const val EXTRA_DESTINATION = "sobra_destination"
         private const val WIDGET_CHANNEL = "com.sobra.app/widgets"
+        private const val QUICK_ENTRY_CHANNEL = "com.sobra.app/quick_entry"
+        private const val QUICK_ENTRY_PERMISSION_REQUEST = 2609
     }
 }
