@@ -16,7 +16,7 @@ void main() {
   late FakeBackend backend;
   late SobraPurchases purchases;
 
-  const productId = 'sobra.character.02';
+  const productId = 'sobra.character.07';
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
@@ -88,7 +88,7 @@ void main() {
     await purchases.start();
     await pump(tester, const CollectionScreen());
 
-    await tester.tap(find.text('Personaje 2'));
+    await tester.tap(find.text('Personaje 7'));
     await tester.pumpAndSettle();
     await tester.tap(inDialog('COMPRAR'));
     await tester.pumpAndSettle();
@@ -100,7 +100,7 @@ void main() {
 
     // The catalog answers for itself once the store confirms — no reload, no
     // second trip through the screen.
-    await tester.tap(find.text('Personaje 2'));
+    await tester.tap(find.text('Personaje 7'));
     await tester.pumpAndSettle();
     expect(inDialog('EQUIPAR'), findsOneWidget);
     expect(inDialog('COMPRAR'), findsNothing);
@@ -119,7 +119,7 @@ void main() {
 
     expect(find.text('COMPRANDO…'), findsOneWidget);
     // Still locked: the money has not moved yet.
-    await tester.tap(find.text('Personaje 2'));
+    await tester.tap(find.text('Personaje 7'));
     await tester.pumpAndSettle();
     expect(inDialog('EQUIPAR'), findsNothing);
   });
@@ -132,7 +132,7 @@ void main() {
     await purchases.start();
     await pump(tester, const CollectionScreen());
 
-    await tester.tap(find.text('Personaje 2'));
+    await tester.tap(find.text('Personaje 7'));
     await tester.pumpAndSettle();
     await tester.tap(inDialog('COMPRAR'));
     await tester.pumpAndSettle();
@@ -158,7 +158,7 @@ void main() {
     await purchases.start();
     await pump(tester, const CollectionScreen());
 
-    await tester.tap(find.text('Personaje 2'));
+    await tester.tap(find.text('Personaje 7'));
     await tester.pumpAndSettle();
     await tester.tap(inDialog('COMPRAR'));
     await tester.pumpAndSettle();
@@ -179,7 +179,7 @@ void main() {
 
     await pump(tester, const CollectionScreen());
 
-    expect(find.text('Personaje 2'), findsOneWidget);
+    expect(find.text('Personaje 7'), findsOneWidget);
     expect(find.text(r'MX$ 79'), findsNothing);
     expect(find.text('COMPRAR'), findsWidgets);
   });
@@ -197,7 +197,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pumpAndSettle();
 
-    expect(store.ownedCatalogIds, {'character-02'});
+    expect(store.ownedCatalogIds, {'character-07'});
     expect(find.text('Listo. Tus compras volvieron.'), findsOneWidget);
   });
 

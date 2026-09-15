@@ -4,7 +4,7 @@ import 'package:sobra_app/models/catalog_entry.dart';
 import 'package:sobra_app/models/xp_event.dart';
 
 void main() {
-  test('preview character catalog keeps the undecided 1 + 6 + 3 shape', () {
+  test('preview character catalog keeps the undecided 1 + 3 + 3 + 3 shape', () {
     final entries = CatalogPreviewData.characters;
 
     expect(entries, hasLength(10));
@@ -18,11 +18,18 @@ void main() {
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.purchase,
       ),
-      hasLength(6),
+      hasLength(3),
     );
     expect(
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.rewardedAd,
+      ),
+      hasLength(3),
+    );
+    // The three the pack delivers, which are sold no other way.
+    expect(
+      entries.where(
+        (entry) => entry.unlockMethod == CatalogUnlockMethod.bundle,
       ),
       hasLength(3),
     );
@@ -31,8 +38,8 @@ void main() {
   test('preview item catalog has seven level and three ad slots', () {
     final entries = CatalogPreviewData.items;
 
-    // Eleven rather than ten: the supporter decoration sits alongside the
-    // numbered lineup and arrives only inside the supporter bundle.
+    // Eleven rather than ten: the pack decoration sits alongside the
+    // numbered lineup and arrives only inside Michi & Friends.
     expect(entries, hasLength(11));
     expect(
       entries.where(

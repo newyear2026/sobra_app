@@ -927,23 +927,23 @@ abstract class AppLocalizations {
   /// **'Mira el anuncio completo para que cuente.'**
   String get collectionAdDismissedNotice;
 
-  /// No description provided for @collectionSupporterOnly.
+  /// No description provided for @collectionPackOnly.
   ///
   /// In es, this message translates to:
-  /// **'MECENAS'**
-  String get collectionSupporterOnly;
+  /// **'PAQUETE'**
+  String get collectionPackOnly;
 
-  /// No description provided for @collectionSupporterDecoration.
+  /// No description provided for @collectionPackDecoration.
   ///
   /// In es, this message translates to:
-  /// **'Estrella de mecenas'**
-  String get collectionSupporterDecoration;
+  /// **'Estrella de Michi'**
+  String get collectionPackDecoration;
 
-  /// No description provided for @collectionSupporterUnlock.
+  /// No description provided for @collectionPackUnlock.
   ///
   /// In es, this message translates to:
-  /// **'Llega con Apoya a Sobra. No se vende por separado.'**
-  String get collectionSupporterUnlock;
+  /// **'Llega con Michi y sus amigos. No se vende por separado.'**
+  String get collectionPackUnlock;
 
   /// No description provided for @collectionAdProgress.
   ///

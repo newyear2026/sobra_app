@@ -483,14 +483,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'Mira el anuncio completo para que cuente.';
 
   @override
-  String get collectionSupporterOnly => 'MECENAS';
+  String get collectionPackOnly => 'PAQUETE';
 
   @override
-  String get collectionSupporterDecoration => 'Estrella de mecenas';
+  String get collectionPackDecoration => 'Estrella de Michi';
 
   @override
-  String get collectionSupporterUnlock =>
-      'Llega con Apoya a Sobra. No se vende por separado.';
+  String get collectionPackUnlock =>
+      'Llega con Michi y sus amigos. No se vende por separado.';
 
   @override
   String collectionAdProgress(int progress, int target) {

@@ -467,13 +467,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get collectionAdDismissedNotice => '광고를 끝까지 봐야 진행돼요.';
 
   @override
-  String get collectionSupporterOnly => '후원 전용';
+  String get collectionPackOnly => '팩 전용';
 
   @override
-  String get collectionSupporterDecoration => '후원자의 별';
+  String get collectionPackDecoration => '미치의 별';
 
   @override
-  String get collectionSupporterUnlock => 'Sobra 후원으로 받을 수 있어요. 따로 판매하지 않아요.';
+  String get collectionPackUnlock => '미치와 친구들에 들어 있어요. 따로 판매하지 않아요.';
 
   @override
   String collectionAdProgress(int progress, int target) {

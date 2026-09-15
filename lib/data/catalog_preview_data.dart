@@ -14,13 +14,19 @@ abstract final class CatalogPreviewData {
       visual: CatalogVisual.michi,
       assetPath: 'assets/characters/michi/idle-8.png',
     ),
+    // In the pack and nowhere else, along with 04 and 06. Selling these
+    // individually as well would charge twice for the overlap: a buyer who
+    // takes one and later the pack pays for it in both, because
+    // grantCatalogEntries drops ids already owned and no store refunds the
+    // difference. Characters 07, 09 and 10 are what single purchases are
+    // for, so the pack does not empty that shelf either.
     CatalogEntry(
       id: 'character-02',
       name: 'Personaje 02',
       kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.purchase,
+      unlockMethod: CatalogUnlockMethod.bundle,
       visual: CatalogVisual.characterPlaceholder,
-      storeProductId: 'sobra.character.02',
+      storeProductId: packProductId,
     ),
     CatalogEntry(
       id: 'character-03',
@@ -34,9 +40,9 @@ abstract final class CatalogPreviewData {
       id: 'character-04',
       name: 'Personaje 04',
       kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.purchase,
+      unlockMethod: CatalogUnlockMethod.bundle,
       visual: CatalogVisual.characterPlaceholder,
-      storeProductId: 'sobra.character.04',
+      storeProductId: packProductId,
     ),
     CatalogEntry(
       id: 'character-05',
@@ -50,9 +56,9 @@ abstract final class CatalogPreviewData {
       id: 'character-06',
       name: 'Personaje 06',
       kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.purchase,
+      unlockMethod: CatalogUnlockMethod.bundle,
       visual: CatalogVisual.characterPlaceholder,
-      storeProductId: 'sobra.character.06',
+      storeProductId: packProductId,
     ),
     CatalogEntry(
       id: 'character-07',
@@ -176,18 +182,23 @@ abstract final class CatalogPreviewData {
       requiredLevel: 4,
     ),
     CatalogEntry(
-      id: supporterDecorationId,
+      id: packDecorationId,
       name: 'Estrella',
       kind: CatalogKind.item,
       unlockMethod: CatalogUnlockMethod.bundle,
       visual: CatalogVisual.trophy,
-      storeProductId: supporterBundleProductId,
+      storeProductId: packProductId,
     ),
   ];
 
-  /// The supporter product, and the only entry that arrives exclusively in it.
-  static const supporterBundleProductId = 'sobra.supporter.bundle';
-  static const supporterDecorationId = 'supporter-decoration';
+  /// Michi & Friends: three characters, one decoration, and ad removal.
+  ///
+  /// Both values outlive the name in front of them. The product id is what
+  /// the store console registers and can never be reused once it is live;
+  /// the decoration id is a key already written into saved owned sets.
+  /// Renaming either is a migration, not an edit.
+  static const packProductId = 'sobra.supporter.bundle';
+  static const packDecorationId = 'supporter-decoration';
 
   /// Ad removal, stored beside catalog ids rather than as an entry of its own.
   ///
@@ -204,21 +215,21 @@ abstract final class CatalogPreviewData {
   /// resolved by [entryForProductId] instead, and listing it twice would give
   /// the same purchase two answers.
   static const productEntitlements = <String, Set<String>>{
-    supporterBundleProductId: {
+    packProductId: {
       'character-02',
       'character-04',
       'character-06',
-      supporterDecorationId,
+      packDecorationId,
       noAdsEntitlement,
     },
   };
 
   /// Everything [storeProductId] delivers, or null where it is not a bundle.
   ///
-  /// Callers must consult this *before* [entryForProductId]. A bundle's
-  /// product id also sits on the one entry that is exclusive to it, so the
-  /// single-entry lookup answers for a bundle too — with one item out of
-  /// several, while reporting that the delivery succeeded.
+  /// Callers must consult this *before* [entryForProductId]. Every entry the
+  /// pack delivers exclusively carries its product id, so the single-entry
+  /// lookup answers for the pack too — with whichever one it reaches first,
+  /// while reporting that the delivery succeeded.
   static Set<String>? entitlementsForProductId(String storeProductId) =>
       productEntitlements[storeProductId];
 
@@ -291,9 +302,9 @@ final class PreviewCatalogPriceSource implements CatalogPriceSource {
 
   @override
   String? localizedPriceFor(String storeProductId) => switch (storeProductId) {
-    'sobra.character.02' || 'sobra.character.07' => r'MX$ 79',
-    'sobra.character.04' || 'sobra.character.09' => r'MX$ 99',
-    'sobra.character.06' || 'sobra.character.10' => r'MX$ 129',
+    'sobra.character.07' => r'MX$ 79',
+    'sobra.character.09' => r'MX$ 99',
+    'sobra.character.10' => r'MX$ 129',
     _ => null,
   };
 }

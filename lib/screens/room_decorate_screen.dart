@@ -548,5 +548,5 @@ String _lockedLabel(AppLocalizations l10n, CatalogEntry entry) =>
       CatalogUnlockMethod.rewardedAd => l10n.collectionWatchAd,
       CatalogUnlockMethod.purchase => l10n.collectionBuy,
       CatalogUnlockMethod.included => l10n.collectionOwned,
-      CatalogUnlockMethod.bundle => l10n.collectionSupporterOnly,
+      CatalogUnlockMethod.bundle => l10n.collectionPackOnly,
     };

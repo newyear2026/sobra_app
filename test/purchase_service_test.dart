@@ -29,8 +29,8 @@ void main() {
   late SobraStore store;
   late FakeBackend backend;
 
-  const soldProductId = 'sobra.character.02';
-  const soldEntryId = 'character-02';
+  const soldProductId = 'sobra.character.07';
+  const soldEntryId = 'character-07';
 
   CatalogEntry entryById(String id) =>
       CatalogPreviewData.all.firstWhere((entry) => entry.id == id);
@@ -41,7 +41,7 @@ void main() {
     backend = FakeBackend()
       ..catalogue = [
         productFor(soldProductId, r'MX$ 79'),
-        productFor('sobra.character.04', r'MX$ 99'),
+        productFor('sobra.character.09', r'MX$ 99'),
       ];
   });
 
@@ -70,7 +70,7 @@ void main() {
       expect(purchases.readiness, StoreReadiness.ready);
       expect(purchases.localizedPriceFor(soldProductId), r'MX$ 79');
       // Listed in the catalog but absent from this store response.
-      expect(purchases.localizedPriceFor('sobra.character.06'), isNull);
+      expect(purchases.localizedPriceFor('sobra.character.10'), isNull);
     },
   );
 
@@ -349,8 +349,8 @@ void main() {
   // exclusively inside it: the store took the money, the save succeeded, the
   // delivery reported true, and the user received a single room object instead
   // of three characters, a decoration and ad removal.
-  test('buying the supporter bundle delivers all of it', () async {
-    const bundleId = CatalogPreviewData.supporterBundleProductId;
+  test('buying the pack delivers all of it', () async {
+    const bundleId = CatalogPreviewData.packProductId;
     backend.catalogue = [...backend.catalogue, productFor(bundleId, r'MX$ 199')];
     await started(restoreOnStart: false);
 
@@ -366,7 +366,7 @@ void main() {
     expect(store.ownsCatalogEntry(entryById('character-06')), isTrue);
     expect(
       store.ownsCatalogEntry(
-        entryById(CatalogPreviewData.supporterDecorationId),
+        entryById(CatalogPreviewData.packDecorationId),
       ),
       isTrue,
     );
@@ -378,8 +378,8 @@ void main() {
     expect(backend.completed, [bundleId]);
   });
 
-  test('restoring the supporter bundle delivers all of it', () async {
-    const bundleId = CatalogPreviewData.supporterBundleProductId;
+  test('restoring the pack delivers all of it', () async {
+    const bundleId = CatalogPreviewData.packProductId;
     backend
       ..catalogue = [...backend.catalogue, productFor(bundleId, r'MX$ 199')]
       ..ownedProductIds = [bundleId];
@@ -399,11 +399,11 @@ void main() {
   // bundle. Its card must not turn that into a checkout: one room object would
   // charge for the whole bundle.
   test('a bundle entry cannot be bought from its own card', () async {
-    const bundleId = CatalogPreviewData.supporterBundleProductId;
+    const bundleId = CatalogPreviewData.packProductId;
     backend.catalogue = [...backend.catalogue, productFor(bundleId, r'MX$ 199')];
     final purchases = await started(restoreOnStart: false);
 
-    await purchases.buy(entryById(CatalogPreviewData.supporterDecorationId));
+    await purchases.buy(entryById(CatalogPreviewData.packDecorationId));
 
     expect(backend.bought, isEmpty);
   });

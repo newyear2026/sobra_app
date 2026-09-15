@@ -889,7 +889,7 @@ String _cardActionLabel(AppLocalizations l10n, CatalogEntryState state) {
       state.entry.requiredLevel!,
     ),
     CatalogUnlockMethod.included => l10n.collectionOwned,
-    CatalogUnlockMethod.bundle => l10n.collectionSupporterOnly,
+    CatalogUnlockMethod.bundle => l10n.collectionPackOnly,
   };
 }
 
@@ -906,7 +906,7 @@ String _dialogActionLabel(AppLocalizations l10n, CatalogEntryState state) {
       state.entry.requiredLevel!,
     ),
     CatalogUnlockMethod.included => l10n.collectionOwned,
-    CatalogUnlockMethod.bundle => l10n.collectionSupporterOnly,
+    CatalogUnlockMethod.bundle => l10n.collectionPackOnly,
   };
 }
 
@@ -931,6 +931,6 @@ String _unlockDescription(AppLocalizations l10n, CatalogEntryState state) {
     CatalogUnlockMethod.level => l10n.collectionLevelUnlock(
       state.entry.requiredLevel!,
     ),
-    CatalogUnlockMethod.bundle => l10n.collectionSupporterUnlock,
+    CatalogUnlockMethod.bundle => l10n.collectionPackUnlock,
   };
 }

@@ -85,7 +85,7 @@ void main() {
     final store = await loadStore();
     await pump(tester, store);
 
-    await tester.tap(find.text('Personaje 2'));
+    await tester.tap(find.text('Personaje 7'));
     await tester.pumpAndSettle();
 
     expect(inDialog('COMPRAR'), findsOneWidget);
@@ -140,11 +140,10 @@ void main() {
     expect((await loadStore()).equippedIdFor(CatalogKind.item), 'item-01');
   });
 
-  // The decoration carries the supporter bundle's product id so the store can
-  // price the bundle. If the card followed that id instead of the unlock
-  // method it would offer COMPRAR, and one room object would charge for the
-  // whole bundle.
-  testWidgets('the supporter decoration is shown locked, with no price', (
+  // The decoration carries the pack's product id so the store can price the
+  // pack. If the card followed that id instead of the unlock method it would
+  // offer COMPRAR, and one room object would charge for the whole pack.
+  testWidgets('the pack decoration is shown locked, with no price', (
     tester,
   ) async {
     final store = await loadStore();
@@ -153,22 +152,22 @@ void main() {
     await tester.tap(find.text('OBJETOS'));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
-      find.text('Estrella de mecenas'),
+      find.text('Estrella de Michi'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
 
-    expect(find.text('MECENAS'), findsOneWidget);
+    expect(find.text('PAQUETE'), findsOneWidget);
     expect(find.text('COMPRAR'), findsNothing);
 
-    await tester.ensureVisible(find.text('Estrella de mecenas'));
+    await tester.ensureVisible(find.text('Estrella de Michi'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Estrella de mecenas'));
+    await tester.tap(find.text('Estrella de Michi'));
     await tester.pumpAndSettle();
 
     // Says where it comes from, and offers nothing to tap.
     expect(
-      inDialog('Llega con Apoya a Sobra. No se vende por separado.'),
+      inDialog('Llega con Michi y sus amigos. No se vende por separado.'),
       findsOneWidget,
     );
     expect(inDialog('COMPRAR'), findsNothing);

@@ -483,14 +483,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Watch the whole ad for it to count.';
 
   @override
-  String get collectionSupporterOnly => 'SUPPORTER';
+  String get collectionPackOnly => 'PACK';
 
   @override
-  String get collectionSupporterDecoration => 'Supporter star';
+  String get collectionPackDecoration => 'Michi\'s star';
 
   @override
-  String get collectionSupporterUnlock =>
-      'Arrives with Sobra Support. It is not sold separately.';
+  String get collectionPackUnlock =>
+      'Arrives with Michi & Friends. It is not sold separately.';
 
   @override
   String collectionAdProgress(int progress, int target) {

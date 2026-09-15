@@ -225,7 +225,7 @@ void main() {
   test('granting a bundle delivers every id in one write', () async {
     final store = await loadStore();
     final delivered = CatalogPreviewData
-        .productEntitlements[CatalogPreviewData.supporterBundleProductId]!;
+        .productEntitlements[CatalogPreviewData.packProductId]!;
 
     await store.grantCatalogEntries(delivered);
 
@@ -237,7 +237,7 @@ void main() {
     expect(store.ownsCatalogEntry(entryById('character-06')), isTrue);
     expect(
       store.ownsCatalogEntry(
-        entryById(CatalogPreviewData.supporterDecorationId),
+        entryById(CatalogPreviewData.packDecorationId),
       ),
       isTrue,
     );
@@ -252,7 +252,7 @@ void main() {
 
     await store.grantCatalogEntries(
       CatalogPreviewData
-          .productEntitlements[CatalogPreviewData.supporterBundleProductId]!,
+          .productEntitlements[CatalogPreviewData.packProductId]!,
     );
 
     expect(store.ownsCatalogEntry(entryById('character-02')), isTrue);
@@ -284,30 +284,46 @@ void main() {
     expect(store.rewardedAdProgressFor(started.id), 0);
   });
 
-  // The collision the grant path has to resolve in the right order. The
-  // decoration carries the bundle's product id, so the single-entry lookup
-  // answers for the bundle too — with one item out of five.
-  test('the bundle product id also resolves to one entry', () {
+  // The collision the grant path has to resolve in the right order. Every
+  // entry the pack delivers exclusively carries its product id, so the
+  // single-entry lookup answers for the pack too — with one of five, and it
+  // is a character now rather than the decoration it used to be. Which one it
+  // reaches first is an accident of catalog order and is deliberately not
+  // pinned here; that it is never the whole delivery is the point.
+  test('the pack product id also resolves to a single entry', () {
     final single = CatalogPreviewData.entryForProductId(
-      CatalogPreviewData.supporterBundleProductId,
+      CatalogPreviewData.packProductId,
     );
+    final everything = CatalogPreviewData
+        .productEntitlements[CatalogPreviewData.packProductId]!;
 
     expect(single, isNotNull);
-    expect(single!.id, CatalogPreviewData.supporterDecorationId);
-    expect(
-      CatalogPreviewData
-          .productEntitlements[CatalogPreviewData.supporterBundleProductId]!
-          .length,
-      greaterThan(1),
-    );
+    expect(everything, contains(single!.id));
+    expect(everything.length, greaterThan(1));
   });
 
-  test('the supporter decoration is locked and not sold on its own', () async {
+  // What stops the overlap the pack name no longer papers over: a character
+  // in the pack cannot also be bought on its own, so nobody pays twice for
+  // the same cat and then finds grantCatalogEntries dropping the duplicate.
+  test('no entry is sold both inside the pack and on its own', () {
+    final inPack =
+        CatalogPreviewData.productEntitlements[CatalogPreviewData
+            .packProductId]!;
+
+    for (final entry in CatalogPreviewData.all.where(
+      (entry) => inPack.contains(entry.id),
+    )) {
+      expect(entry.unlockMethod, CatalogUnlockMethod.bundle, reason: entry.id);
+      expect(entry.storeProductId, CatalogPreviewData.packProductId);
+    }
+  });
+
+  test('the pack decoration is locked and not sold on its own', () async {
     final store = await loadStore();
-    final decoration = entryById(CatalogPreviewData.supporterDecorationId);
+    final decoration = entryById(CatalogPreviewData.packDecorationId);
 
     expect(decoration.unlockMethod, CatalogUnlockMethod.bundle);
-    expect(decoration.storeProductId, CatalogPreviewData.supporterBundleProductId);
+    expect(decoration.storeProductId, CatalogPreviewData.packProductId);
     expect(store.ownsCatalogEntry(decoration), isFalse);
   });
 }

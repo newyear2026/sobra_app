@@ -10,8 +10,8 @@ String catalogEntryDisplayName(AppLocalizations l10n, CatalogEntry entry) {
   if (entry.id == 'michi') return entry.name;
   // Named rather than numbered, like Michi. Parsing a number out of this id
   // would answer zero and put "Item 0" on the card.
-  if (entry.id == CatalogPreviewData.supporterDecorationId) {
-    return l10n.collectionSupporterDecoration;
+  if (entry.id == CatalogPreviewData.packDecorationId) {
+    return l10n.collectionPackDecoration;
   }
   final number = int.tryParse(entry.id.split('-').last) ?? 0;
   return entry.kind == CatalogKind.character
