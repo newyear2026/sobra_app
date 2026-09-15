@@ -183,7 +183,7 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
       child: SobraScope(
         store: widget.store,
         child: MaterialApp(
-          title: 'Sobra',
+          title: 'Sobrita',
           debugShowCheckedModeBanner: false,
           theme: buildSobraTheme(),
           // A null locale hands the choice back to the phone. The list comes

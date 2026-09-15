@@ -38,7 +38,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 700));
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.text('Sobra'), findsOneWidget);
+    expect(find.text('Sobrita'), findsOneWidget);
     expect(find.text('나가 본다'), findsOneWidget);
   });
 
@@ -89,15 +89,15 @@ void main() {
     await tester.pumpWidget(SobraApp(store: store));
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.text('Sobra'), findsOneWidget);
+    expect(find.text('Sobrita'), findsOneWidget);
     expect(find.text('Inicio'), findsOneWidget);
     expect(find.text('Movim.'), findsOneWidget);
     expect(find.text('Presup.'), findsOneWidget);
-    expect(find.text('Mi Sobra'), findsOneWidget);
+    expect(find.text('Mi Sobrita'), findsOneWidget);
     // The centre tile carries the add glyph instead of a text label.
     expect(find.byIcon(Icons.add), findsOneWidget);
 
-    await tester.tap(find.text('Mi Sobra'));
+    await tester.tap(find.text('Mi Sobrita'));
     // The room cat now animates above the fold, so the home tree never fully
     // settles. A bounded pump is enough for the tab switch.
     await tester.pump(const Duration(milliseconds: 500));
@@ -117,7 +117,7 @@ void main() {
     await store.completeOnboarding();
 
     await tester.pumpWidget(SobraApp(store: store));
-    await tester.tap(find.text('Mi Sobra'));
+    await tester.tap(find.text('Mi Sobrita'));
     await tester.pump(const Duration(milliseconds: 500));
     await tester.ensureVisible(find.text('Colección'));
     await tester.pump();
@@ -160,7 +160,7 @@ void main() {
     await store.completeOnboarding();
 
     await tester.pumpWidget(SobraApp(store: store));
-    await tester.tap(find.text('Mi Sobra'));
+    await tester.tap(find.text('Mi Sobrita'));
     await tester.pump(const Duration(milliseconds: 500));
     await tester.ensureVisible(find.text('Colección'));
     await tester.pump();

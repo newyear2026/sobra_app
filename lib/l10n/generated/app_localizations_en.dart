@@ -409,7 +409,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabBudget => 'Budget';
 
   @override
-  String get tabSettings => 'My Sobra';
+  String get tabSettings => 'My Sobrita';
 
   @override
   String get collectionTitle => 'Collection';
@@ -725,7 +725,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recoveryExported => 'Original file copied.';
 
   @override
-  String get settingsTitle => 'My Sobra';
+  String get settingsTitle => 'My Sobrita';
 
   @override
   String get settingsLanguage => 'Language';
@@ -768,7 +768,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quickEntryDenied =>
-      'Allow Sobra notifications to turn on quick entry.';
+      'Allow Sobrita notifications to turn on quick entry.';
 
   @override
   String get settingsBackup => 'Data backup';
@@ -804,7 +804,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get purchaseFailureDeliveryNotSaved =>
-      'Your purchase arrived but could not be saved. It will be applied the next time you open Sobra.';
+      'Your purchase arrived but could not be saved. It will be applied the next time you open Sobrita.';
 
   @override
   String get purchaseFailureNothingToRestore =>
@@ -821,7 +821,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsStorageNote =>
-      'Your data is kept on this device. You don\'t need an account to use Sobra.';
+      'Your data is kept on this device. You don\'t need an account to use Sobrita.';
 
   @override
   String get settingsSectionBudget => 'Budget';
@@ -846,8 +846,8 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp1 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: '$days days with Sobra',
-      one: '1 day with Sobra',
+      other: '$days days with Sobrita',
+      one: '1 day with Sobrita',
     );
     return '$_temp0 · $_temp1';
   }
@@ -968,7 +968,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spent => 'Spent';
 
   @override
-  String get appName => 'Sobra';
+  String get appName => 'Sobrita';
 
   @override
   String get homeCycleBalance => 'Cycle balance';
@@ -1673,5 +1673,5 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get releaseNote100Launch => 'The first version of Sobra.';
+  String get releaseNote100Launch => 'The first version of Sobrita.';
 }

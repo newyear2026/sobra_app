@@ -68,7 +68,7 @@ void main() {
     // and a dash where the version goes teaches the wrong thing — so answer
     // the way a phone would, through the same call the app makes.
     PackageInfo.setMockInitialValues(
-      appName: 'Sobra',
+      appName: 'Sobrita',
       packageName: 'com.sobra.app.sobra_app',
       version: '1.0.0',
       buildNumber: '1',
@@ -79,7 +79,7 @@ void main() {
     await tester.pumpWidget(SobraApp(store: store));
     await tester.pump();
 
-    await tester.tap(find.text('Mi Sobra'));
+    await tester.tap(find.text('Mi Sobrita'));
     await tester.pump(const Duration(milliseconds: 100));
     await tester.runAsync(
       () => precacheImage(
@@ -92,7 +92,7 @@ void main() {
     // The card carries the level, the light history line, and the sections
     // sit under their headers.
     expect(find.text('Michi curioso'), findsOneWidget);
-    expect(find.text('2 movimientos · 11 días con Sobra'), findsOneWidget);
+    expect(find.text('2 movimientos · 11 días con Sobrita'), findsOneWidget);
     expect(find.text('PRESUPUESTO'), findsOneWidget);
     expect(find.text('PANTALLA'), findsOneWidget);
     expect(find.text('Acceso rápido'), findsOneWidget);
@@ -141,7 +141,7 @@ void main() {
     await tester.pumpWidget(SobraApp(store: store));
     await tester.pump();
 
-    await tester.tap(find.text('Mi Sobra'));
+    await tester.tap(find.text('Mi Sobrita'));
     await tester.pump(const Duration(milliseconds: 100));
 
     await tester.tap(find.text('Michi curioso'));

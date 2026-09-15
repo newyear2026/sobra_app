@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Sobra App</string>
+	<string>Sobrita</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Sobra</string>
+	<string>Sobrita</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -54,9 +54,9 @@
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Sobra uses the camera so you can photograph a receipt and remember what an expense was.</string>
+	<string>Sobrita uses the camera so you can photograph a receipt and remember what an expense was.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Sobra opens your photos so you can attach a receipt you already took.</string>
+	<string>Sobrita opens your photos so you can attach a receipt you already took.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

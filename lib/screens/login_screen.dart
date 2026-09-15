@@ -324,7 +324,7 @@ class _LoginCopy {
   static _LoginCopy forLocale(Locale locale) => switch (locale.languageCode) {
     'ko' => const _LoginCopy(
       title: '내 기록,\n어디서든 그대로',
-      body: '구글 계정에 연결하면 휴대폰이 바뀌어도\n지금의 Sobra를 이어갈 수 있어요.',
+      body: '구글 계정에 연결하면 휴대폰이 바뀌어도\n지금의 Sobrita를 이어갈 수 있어요.',
       googleButton: 'Google로 계속하기',
       connecting: 'Google에 연결하는 중…',
       privacyNote: '로그인 정보와 지출 기록은 따로 안전하게 보관돼요.',
@@ -335,7 +335,7 @@ class _LoginCopy {
     'es' => const _LoginCopy(
       title: 'Tus registros,\nsiempre contigo',
       body:
-          'Conecta tu cuenta de Google para retomar Sobra aunque cambies de teléfono.',
+          'Conecta tu cuenta de Google para retomar Sobrita aunque cambies de teléfono.',
       googleButton: 'Continuar con Google',
       connecting: 'Conectando con Google…',
       privacyNote: 'Tus datos de acceso y tus gastos se guardan por separado.',
@@ -345,7 +345,7 @@ class _LoginCopy {
     ),
     _ => const _LoginCopy(
       title: 'Your records,\nright where you left them',
-      body: 'Connect your Google account to pick up Sobra on a new phone.',
+      body: 'Connect your Google account to pick up Sobrita on a new phone.',
       googleButton: 'Continue with Google',
       connecting: 'Connecting to Google…',
       privacyNote: 'Your sign-in and spending records are stored separately.',

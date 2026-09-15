@@ -277,7 +277,7 @@
   "settingsQuickEntry": "빠른 기록",
   "settingsQuickEntryHint": "잠금화면에 수입과 지출 버튼을 표시해요.",
   "quickEntryQuestion": "무엇을 기록할까요?",
-  "quickEntryDenied": "빠른 기록을 사용하려면 Sobra 알림을 허용해 주세요.",
+  "quickEntryDenied": "빠른 기록을 사용하려면 Sobrita 알림을 허용해 주세요.",
   "settingsBackup": "데이터 백업",
   "settingsCopy": "복사",
   "settingsBackupCopied": "백업을 클립보드에 복사했어요.",
@@ -293,12 +293,12 @@
   "collectionPurchasing": "구매 중…",
   "settingsXpPreview": "XP 미리보기",
   "settingsDesign": "디자인",
-  "settingsStorageNote": "데이터는 이 기기에만 저장돼요. Sobra를 쓰는 데 계정은 필요 없어요.",
+  "settingsStorageNote": "데이터는 이 기기에만 저장돼요. Sobrita를 쓰는 데 계정은 필요 없어요.",
   "settingsSectionBudget": "예산",
   "settingsSectionScreen": "화면",
   "settingsSectionData": "데이터",
   "settingsSectionDesign": "디자인",
-  "settingsProfileStats": "{movements, plural, other{기록 {movements}건}} · {days, plural, other{Sobra와 함께한 {days}일}}",
+  "settingsProfileStats": "{movements, plural, other{기록 {movements}건}} · {days, plural, other{Sobrita와 함께한 {days}일}}",
 
   "languageAutomatic": "자동",
   "languageAutomaticHint": "휴대폰 설정을 따라요",
@@ -337,7 +337,7 @@
   "budget": "예산",
   "spent": "지출",
 
-  "appName": "Sobra",
+  "appName": "Sobrita",
   "homeCycleBalance": "주기 잔액",
   "homeTodayLeft": "오늘 남은 돈",
   "homeOverBudget": "이번 주기 예산 {budget}을(를) 넘었어요",
@@ -554,5 +554,5 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
-  "releaseNote100Launch": "Sobra의 첫 번째 버전이에요."
+  "releaseNote100Launch": "Sobrita의 첫 번째 버전이에요."
 }

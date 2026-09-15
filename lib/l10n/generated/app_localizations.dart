@@ -804,7 +804,7 @@ abstract class AppLocalizations {
   /// No description provided for @tabSettings.
   ///
   /// In es, this message translates to:
-  /// **'Mi Sobra'**
+  /// **'Mi Sobrita'**
   String get tabSettings;
 
   /// No description provided for @collectionTitle.
@@ -1332,7 +1332,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsTitle.
   ///
   /// In es, this message translates to:
-  /// **'Mi Sobra'**
+  /// **'Mi Sobrita'**
   String get settingsTitle;
 
   /// No description provided for @settingsLanguage.
@@ -1404,7 +1404,7 @@ abstract class AppLocalizations {
   /// No description provided for @quickEntryDenied.
   ///
   /// In es, this message translates to:
-  /// **'Permite las notificaciones de Sobra para activar el acceso rápido.'**
+  /// **'Permite las notificaciones de Sobrita para activar el acceso rápido.'**
   String get quickEntryDenied;
 
   /// No description provided for @settingsBackup.
@@ -1470,7 +1470,7 @@ abstract class AppLocalizations {
   /// No description provided for @purchaseFailureDeliveryNotSaved.
   ///
   /// In es, this message translates to:
-  /// **'Tu compra llegó, pero no se pudo guardar. Se aplicará la próxima vez que abras Sobra.'**
+  /// **'Tu compra llegó, pero no se pudo guardar. Se aplicará la próxima vez que abras Sobrita.'**
   String get purchaseFailureDeliveryNotSaved;
 
   /// No description provided for @purchaseFailureNothingToRestore.
@@ -1500,7 +1500,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsStorageNote.
   ///
   /// In es, this message translates to:
-  /// **'Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobra.'**
+  /// **'Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobrita.'**
   String get settingsStorageNote;
 
   /// No description provided for @settingsSectionBudget.
@@ -1530,7 +1530,7 @@ abstract class AppLocalizations {
   /// The light history line under the profile card's name: how much the ledger has accumulated, without repeating the money figures the home screen already carries.
   ///
   /// In es, this message translates to:
-  /// **'{movements, plural, =1{1 movimiento} other{{movements} movimientos}} · {days, plural, =1{1 día con Sobra} other{{days} días con Sobra}}'**
+  /// **'{movements, plural, =1{1 movimiento} other{{movements} movimientos}} · {days, plural, =1{1 día con Sobrita} other{{days} días con Sobrita}}'**
   String settingsProfileStats(int movements, int days);
 
   /// The language setting that follows the phone. The names of the languages themselves are not translated — a reader looks for their own language written in it.
@@ -1740,7 +1740,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In es, this message translates to:
-  /// **'Sobra'**
+  /// **'Sobrita'**
   String get appName;
 
   /// No description provided for @homeCycleBalance.
@@ -2958,7 +2958,7 @@ abstract class AppLocalizations {
   /// No description provided for @releaseNote100Launch.
   ///
   /// In es, this message translates to:
-  /// **'Primera versión de Sobra.'**
+  /// **'Primera versión de Sobrita.'**
   String get releaseNote100Launch;
 }
 

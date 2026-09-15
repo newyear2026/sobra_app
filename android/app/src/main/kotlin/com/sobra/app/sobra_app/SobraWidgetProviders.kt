@@ -103,7 +103,7 @@ object SobraWidgetUpdater {
             )
             setTextViewText(
                 R.id.days_remaining,
-                if (hasData) days(preferences.getInt("daysRemaining", 0)) else "Abre Sobra",
+                if (hasData) days(preferences.getInt("daysRemaining", 0)) else "Abre Sobrita",
             )
             applyProgress(
                 this,
@@ -134,7 +134,7 @@ object SobraWidgetUpdater {
             )
             setTextViewText(
                 R.id.days_remaining,
-                if (hasData) days(preferences.getInt("daysRemaining", 0)) else "Abre Sobra",
+                if (hasData) days(preferences.getInt("daysRemaining", 0)) else "Abre Sobrita",
             )
             applyProgress(
                 this,

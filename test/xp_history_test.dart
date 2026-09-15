@@ -79,7 +79,7 @@ void main() {
     await tester.tap(find.byTooltip('Volver'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
-    await tester.tap(find.text('Mi Sobra'));
+    await tester.tap(find.text('Mi Sobrita'));
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Niveles y XP'), findsNothing);

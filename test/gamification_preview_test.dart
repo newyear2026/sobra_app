@@ -78,7 +78,7 @@ void main() {
     await store.completeOnboarding();
 
     await tester.pumpWidget(SobraApp(store: store));
-    await tester.tap(find.text('Mi Sobra'));
+    await tester.tap(find.text('Mi Sobrita'));
     await tester.pump(const Duration(milliseconds: 100));
     await tester.tap(find.text('Vista previa XP'));
     await tester.pump();

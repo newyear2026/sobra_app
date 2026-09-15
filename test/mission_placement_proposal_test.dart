@@ -98,7 +98,7 @@ class _HomeMock extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text('Sobra', style: pixelText(size: 19, bold: true)),
+                  child: Text('Sobrita', style: pixelText(size: 19, bold: true)),
                 ),
                 const Icon(Icons.settings, size: 28, color: AppColors.ink),
               ],

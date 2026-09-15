@@ -168,7 +168,7 @@
   "tabMovements": "Activity",
   "tabRegister": "Add",
   "tabBudget": "Budget",
-  "tabSettings": "My Sobra",
+  "tabSettings": "My Sobrita",
 
   "collectionTitle": "Collection",
   "collectionSettingsValue": "View",
@@ -261,7 +261,7 @@
   "recoveryExport": "Export file",
   "recoveryExported": "Original file copied.",
 
-  "settingsTitle": "My Sobra",
+  "settingsTitle": "My Sobrita",
   "settingsLanguage": "Language",
   "currencyChangeTitle": "Switch to {code}?",
   "currencyChangeBody": "Your amounts aren't converted: {example} stays {converted}. Only the label changes.",
@@ -273,7 +273,7 @@
   "settingsQuickEntry": "Quick entry",
   "settingsQuickEntryHint": "Shows Income and Expense on the lock screen.",
   "quickEntryQuestion": "What do you want to add?",
-  "quickEntryDenied": "Allow Sobra notifications to turn on quick entry.",
+  "quickEntryDenied": "Allow Sobrita notifications to turn on quick entry.",
   "settingsBackup": "Data backup",
   "settingsCopy": "Copy",
   "settingsBackupCopied": "Backup copied to the clipboard.",
@@ -284,17 +284,17 @@
   "purchaseRestored": "Done. Your purchases are back.",
   "purchaseFailureStoreUnavailable": "The store is unavailable right now. Try again later.",
   "purchaseFailureRejected": "The purchase could not be completed. You were not charged.",
-  "purchaseFailureDeliveryNotSaved": "Your purchase arrived but could not be saved. It will be applied the next time you open Sobra.",
+  "purchaseFailureDeliveryNotSaved": "Your purchase arrived but could not be saved. It will be applied the next time you open Sobrita.",
   "purchaseFailureNothingToRestore": "We found no purchases on this account.",
   "collectionPurchasing": "BUYING…",
   "settingsXpPreview": "XP preview",
   "settingsDesign": "Design",
-  "settingsStorageNote": "Your data is kept on this device. You don't need an account to use Sobra.",
+  "settingsStorageNote": "Your data is kept on this device. You don't need an account to use Sobrita.",
   "settingsSectionBudget": "Budget",
   "settingsSectionScreen": "Display",
   "settingsSectionData": "Data",
   "settingsSectionDesign": "Design",
-  "settingsProfileStats": "{movements, plural, =1{1 movement} other{{movements} movements}} · {days, plural, =1{1 day with Sobra} other{{days} days with Sobra}}",
+  "settingsProfileStats": "{movements, plural, =1{1 movement} other{{movements} movements}} · {days, plural, =1{1 day with Sobrita} other{{days} days with Sobrita}}",
 
   "languageAutomatic": "Automatic",
   "languageAutomaticHint": "Follows your phone",
@@ -333,7 +333,7 @@
   "budget": "Budget",
   "spent": "Spent",
 
-  "appName": "Sobra",
+  "appName": "Sobrita",
   "homeCycleBalance": "Cycle balance",
   "homeTodayLeft": "You have left today",
   "homeOverBudget": "You went over this cycle's {budget} budget",
@@ -552,5 +552,5 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
-  "releaseNote100Launch": "The first version of Sobra."
+  "releaseNote100Launch": "The first version of Sobrita."
 }

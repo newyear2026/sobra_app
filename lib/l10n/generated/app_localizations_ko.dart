@@ -740,7 +740,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get quickEntryQuestion => '무엇을 기록할까요?';
 
   @override
-  String get quickEntryDenied => '빠른 기록을 사용하려면 Sobra 알림을 허용해 주세요.';
+  String get quickEntryDenied => '빠른 기록을 사용하려면 Sobrita 알림을 허용해 주세요.';
 
   @override
   String get settingsBackup => '데이터 백업';
@@ -790,7 +790,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsDesign => '디자인';
 
   @override
-  String get settingsStorageNote => '데이터는 이 기기에만 저장돼요. Sobra를 쓰는 데 계정은 필요 없어요.';
+  String get settingsStorageNote =>
+      '데이터는 이 기기에만 저장돼요. Sobrita를 쓰는 데 계정은 필요 없어요.';
 
   @override
   String get settingsSectionBudget => '예산';
@@ -814,7 +815,7 @@ class AppLocalizationsKo extends AppLocalizations {
     String _temp1 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: 'Sobra와 함께한 $days일',
+      other: 'Sobrita와 함께한 $days일',
     );
     return '$_temp0 · $_temp1';
   }
@@ -930,7 +931,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get spent => '지출';
 
   @override
-  String get appName => 'Sobra';
+  String get appName => 'Sobrita';
 
   @override
   String get homeCycleBalance => '주기 잔액';
@@ -1608,5 +1609,5 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get releaseNote100Launch => 'Sobra의 첫 번째 버전이에요.';
+  String get releaseNote100Launch => 'Sobrita의 첫 번째 버전이에요.';
 }

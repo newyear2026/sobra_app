@@ -186,7 +186,7 @@
   "tabMovements": "Movim.",
   "tabRegister": "Registrar",
   "tabBudget": "Presup.",
-  "tabSettings": "Mi Sobra",
+  "tabSettings": "Mi Sobrita",
 
   "collectionTitle": "Colección",
   "collectionSettingsValue": "Ver",
@@ -319,7 +319,7 @@
   "recoveryExport": "Exportar archivo",
   "recoveryExported": "Archivo original copiado.",
 
-  "settingsTitle": "Mi Sobra",
+  "settingsTitle": "Mi Sobrita",
   "settingsLanguage": "Idioma",
   "currencyChangeTitle": "¿Cambiar a {code}?",
   "@currencyChangeTitle": {
@@ -341,7 +341,7 @@
   "settingsQuickEntry": "Acceso rápido",
   "settingsQuickEntryHint": "Muestra Ingreso y Gasto en la pantalla bloqueada.",
   "quickEntryQuestion": "¿Qué quieres registrar?",
-  "quickEntryDenied": "Permite las notificaciones de Sobra para activar el acceso rápido.",
+  "quickEntryDenied": "Permite las notificaciones de Sobrita para activar el acceso rápido.",
   "settingsBackup": "Respaldo de datos",
   "settingsCopy": "Copiar",
   "settingsBackupCopied": "Respaldo copiado al portapapeles.",
@@ -352,12 +352,12 @@
   "purchaseRestored": "Listo. Tus compras volvieron.",
   "purchaseFailureStoreUnavailable": "La tienda no está disponible ahora. Inténtalo más tarde.",
   "purchaseFailureRejected": "No se pudo completar la compra. No se te cobró nada.",
-  "purchaseFailureDeliveryNotSaved": "Tu compra llegó, pero no se pudo guardar. Se aplicará la próxima vez que abras Sobra.",
+  "purchaseFailureDeliveryNotSaved": "Tu compra llegó, pero no se pudo guardar. Se aplicará la próxima vez que abras Sobrita.",
   "purchaseFailureNothingToRestore": "No encontramos compras en esta cuenta.",
   "collectionPurchasing": "COMPRANDO…",
   "settingsXpPreview": "Vista previa XP",
   "settingsDesign": "Diseño",
-  "settingsStorageNote": "Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobra.",
+  "settingsStorageNote": "Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobrita.",
   "settingsSectionBudget": "Presupuesto",
   "settingsSectionScreen": "Pantalla",
   "settingsSectionData": "Datos",
@@ -365,7 +365,7 @@
   "@settingsSectionDesign": {
     "description": "Groups the debug design gallery, which is not data and does not belong beside the backup row."
   },
-  "settingsProfileStats": "{movements, plural, =1{1 movimiento} other{{movements} movimientos}} · {days, plural, =1{1 día con Sobra} other{{days} días con Sobra}}",
+  "settingsProfileStats": "{movements, plural, =1{1 movimiento} other{{movements} movimientos}} · {days, plural, =1{1 día con Sobrita} other{{days} días con Sobrita}}",
   "@settingsProfileStats": {
     "description": "The light history line under the profile card's name: how much the ledger has accumulated, without repeating the money figures the home screen already carries.",
     "placeholders": {
@@ -426,7 +426,7 @@
   "budget": "Presupuesto",
   "spent": "Gastado",
 
-  "appName": "Sobra",
+  "appName": "Sobrita",
   "homeCycleBalance": "Saldo del ciclo",
   "homeTodayLeft": "Hoy te queda",
   "homeOverBudget": "Te pasaste del presupuesto de {budget} de este ciclo",
@@ -736,5 +736,5 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
-  "releaseNote100Launch": "Primera versión de Sobra."
+  "releaseNote100Launch": "Primera versión de Sobrita."
 }
