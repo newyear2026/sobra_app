@@ -130,7 +130,7 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final store = SobraScope.of(context);
-    final choices = _choicesFor(_category, l10n, store);
+    final choices = _choicesFor(_category, l10n, store, _draftCharacterId);
     return Scaffold(
       backgroundColor: AppColors.surface,
       body: SafeArea(
@@ -547,6 +547,7 @@ List<_RoomChoice> _choicesFor(
   RoomDecorCategory category,
   AppLocalizations l10n,
   SobraStore store,
+  String? chosenCharacterId,
 ) {
   final choices = <_RoomChoice>[];
 
@@ -575,7 +576,9 @@ List<_RoomChoice> _choicesFor(
           id: entry.id,
           characterId: entry.id,
           label: catalogEntryDisplayName(l10n, entry),
-          status: l10n.collectionOwned,
+          status: entry.id == chosenCharacterId
+              ? l10n.collectionEquipped
+              : l10n.collectionOwned,
           preview: _characterPreview(entry),
         ),
       );
