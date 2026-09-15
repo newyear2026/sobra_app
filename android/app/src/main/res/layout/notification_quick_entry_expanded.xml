@@ -2,102 +2,97 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/quick_entry_root"
     android:layout_width="match_parent"
-    android:layout_height="96dp"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingLeft="2dp"
-    android:paddingRight="2dp">
-
-    <FrameLayout
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="@drawable/quick_entry_icon_frame"
-        android:padding="5dp">
-
-        <ImageView
-            android:id="@+id/quick_entry_app_icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/quick_entry_app_icon_description"
-            android:scaleType="fitCenter"
-            android:src="@mipmap/ic_launcher" />
-    </FrameLayout>
+    android:layout_height="108dp"
+    android:background="@drawable/quick_entry_option2_surface"
+    android:orientation="vertical"
+    android:paddingLeft="7dp"
+    android:paddingTop="6dp"
+    android:paddingRight="7dp"
+    android:paddingBottom="7dp">
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="96dp"
-        android:layout_marginLeft="2dp"
-        android:layout_weight="1"
-        android:background="@drawable/quick_entry_panel"
-        android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:paddingTop="8dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="4dp">
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="39dp"
+            android:layout_height="39dp"
+            android:background="@drawable/quick_entry_icon_frame"
+            android:padding="3dp">
+
+            <ImageView
+                android:id="@+id/quick_entry_app_icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/quick_entry_app_icon_description"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/ic_launcher" />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/quick_entry_question"
-            android:layout_width="match_parent"
-            android:layout_height="38dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:paddingLeft="4dp"
             android:text="@string/quick_entry_question"
+            android:textColor="#FFFFF8E8"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_weight="1"
+        android:background="@drawable/quick_entry_panel"
+        android:orientation="horizontal"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
+
+        <TextView
+            android:id="@+id/quick_entry_income"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/quick_entry_action_background"
+            android:contentDescription="@string/quick_entry_income"
+            android:fontFamily="@font/pixelify_sans"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="＋ @string/quick_entry_income"
             android:textColor="#FF202848"
-            android:textSize="14sp" />
+            android:textSize="17sp"
+            android:textStyle="bold" />
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#553E4662"
+            android:layout_width="1dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:background="#665B5A55"
             android:importantForAccessibility="no" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+        <TextView
+            android:id="@+id/quick_entry_expense"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/quick_entry_income"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/quick_entry_action_background"
-                android:contentDescription="@string/quick_entry_income"
-                android:fontFamily="@font/pixelify_sans"
-                android:gravity="center"
-                android:includeFontPadding="false"
-                android:maxLines="1"
-                android:text="＋ @string/quick_entry_income"
-                android:textColor="#FF202848"
-                android:textSize="17sp"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:layout_width="1dp"
-                android:layout_height="28dp"
-                android:layout_gravity="center_vertical"
-                android:background="#553E4662"
-                android:importantForAccessibility="no" />
-
-            <TextView
-                android:id="@+id/quick_entry_expense"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/quick_entry_action_background"
-                android:contentDescription="@string/quick_entry_expense"
-                android:fontFamily="@font/pixelify_sans"
-                android:gravity="center"
-                android:includeFontPadding="false"
-                android:maxLines="1"
-                android:text="＋ @string/quick_entry_expense"
-                android:textColor="#FF202848"
-                android:textSize="17sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:background="@drawable/quick_entry_action_background"
+            android:contentDescription="@string/quick_entry_expense"
+            android:fontFamily="@font/pixelify_sans"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="＋ @string/quick_entry_expense"
+            android:textColor="#FF202848"
+            android:textSize="17sp"
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>
