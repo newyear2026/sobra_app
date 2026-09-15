@@ -465,6 +465,34 @@ class AppLocalizationsEs extends AppLocalizations {
   String get collectionWatchAd => 'VER ANUNCIO';
 
   @override
+  String get collectionAdUnavailable => 'SIN ANUNCIOS';
+
+  @override
+  String get collectionAdDailyCap => 'LÍMITE DE HOY';
+
+  @override
+  String get collectionAdTomorrow => 'SIGUE MAÑANA';
+
+  @override
+  String collectionUnlockedNotice(String name) {
+    return '¡$name es tuyo!';
+  }
+
+  @override
+  String get collectionAdDismissedNotice =>
+      'Mira el anuncio completo para que cuente.';
+
+  @override
+  String get collectionSupporterOnly => 'MECENAS';
+
+  @override
+  String get collectionSupporterDecoration => 'Estrella de mecenas';
+
+  @override
+  String get collectionSupporterUnlock =>
+      'Llega con Apoya a Sobra. No se vende por separado.';
+
+  @override
   String collectionAdProgress(int progress, int target) {
     return 'ANUNCIO $progress/$target';
   }

@@ -218,6 +218,15 @@
   "collectionEquip": "EQUIPAR",
   "collectionBuy": "COMPRAR",
   "collectionWatchAd": "VER ANUNCIO",
+  "collectionAdUnavailable": "SIN ANUNCIOS",
+  "collectionAdDailyCap": "LÍMITE DE HOY",
+  "collectionAdTomorrow": "SIGUE MAÑANA",
+  "collectionUnlockedNotice": "¡{name} es tuyo!",
+  "@collectionUnlockedNotice": {"placeholders": {"name": {"type": "String"}}},
+  "collectionAdDismissedNotice": "Mira el anuncio completo para que cuente.",
+  "collectionSupporterOnly": "MECENAS",
+  "collectionSupporterDecoration": "Estrella de mecenas",
+  "collectionSupporterUnlock": "Llega con Apoya a Sobra. No se vende por separado.",
   "collectionAdProgress": "ANUNCIO {progress}/{target}",
   "@collectionAdProgress": {
     "placeholders": {

@@ -15,6 +15,7 @@ import 'screens/login_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/recovery_screen.dart';
 import 'services/purchase_service.dart';
+import 'services/rewarded_ad_service.dart';
 import 'services/receipt_store.dart';
 import 'services/sobra_quick_entry.dart';
 import 'services/sobra_widget_sync.dart';
@@ -58,7 +59,21 @@ Future<void> main() async {
   // Not awaited. Reaching the store takes a network round trip, and the whole
   // app — a ledger that works offline — must not wait behind it to draw.
   if (purchases != null) unawaited(purchases.start());
-  runApp(SobraApp(store: store, receipts: receipts, purchases: purchases));
+  // No ad unit and no SDK yet, so the port that ships is the one that never
+  // fills. Every ad button says "no ads right now" truthfully, and connecting
+  // a network later replaces this one object.
+  final ads = RewardedAds(
+    port: const UnavailableRewardedAdPort(),
+    store: store,
+  );
+  runApp(
+    SobraApp(
+      store: store,
+      receipts: receipts,
+      purchases: purchases,
+      ads: ads,
+    ),
+  );
 }
 
 /// Resolves the receipts directory and clears what nothing points at.
@@ -87,6 +102,7 @@ class SobraApp extends StatefulWidget {
     required this.store,
     this.receipts = const UnsupportedReceiptStore(),
     this.purchases,
+    this.ads,
   });
 
   final SobraStore store;
@@ -96,6 +112,11 @@ class SobraApp extends StatefulWidget {
   /// its entries without prices and Ajustes drops its restore row, which is
   /// the same screen a phone with no Play services would get.
   final SobraPurchases? purchases;
+
+  /// Null where nothing shows ads — every widget test that pumps the app. The
+  /// collection then locks its ad entries, which is the same screen a phone
+  /// with no fill gets.
+  final RewardedAds? ads;
 
   /// Defaults to the store that can hold nothing, which is what a harness
   /// pumping the app without a documents directory should get: every screen
@@ -188,8 +209,13 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
     // the receipts have to resolve for every screen, while the purchases are
     // optional and only two screens ask.
     final purchases = widget.purchases;
-    if (purchases == null) return app;
-    return PurchaseScope(purchases: purchases, child: app);
+    final ads = widget.ads;
+    Widget wrapped = app;
+    if (ads != null) wrapped = RewardedAdScope(ads: ads, child: wrapped);
+    if (purchases != null) {
+      wrapped = PurchaseScope(purchases: purchases, child: wrapped);
+    }
+    return wrapped;
   }
 }
 

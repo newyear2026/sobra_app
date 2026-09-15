@@ -450,6 +450,32 @@ class AppLocalizationsKo extends AppLocalizations {
   String get collectionWatchAd => '광고 보기';
 
   @override
+  String get collectionAdUnavailable => '현재 광고 없음';
+
+  @override
+  String get collectionAdDailyCap => '오늘 한도 도달';
+
+  @override
+  String get collectionAdTomorrow => '내일 이어서';
+
+  @override
+  String collectionUnlockedNotice(String name) {
+    return '$name을(를) 해금했어요!';
+  }
+
+  @override
+  String get collectionAdDismissedNotice => '광고를 끝까지 봐야 진행돼요.';
+
+  @override
+  String get collectionSupporterOnly => '후원 전용';
+
+  @override
+  String get collectionSupporterDecoration => '후원자의 별';
+
+  @override
+  String get collectionSupporterUnlock => 'Sobra 후원으로 받을 수 있어요. 따로 판매하지 않아요.';
+
+  @override
   String collectionAdProgress(int progress, int target) {
     return '광고 $progress/$target';
   }

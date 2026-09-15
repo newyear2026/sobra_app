@@ -4,7 +4,12 @@ import 'package:flutter/foundation.dart';
 enum CatalogKind { character, item }
 
 /// One, and only one, route by which a catalog entry becomes available.
-enum CatalogUnlockMethod { included, purchase, rewardedAd, level }
+///
+/// [bundle] is a purchase the entry cannot start on its own: it arrives only
+/// as part of a larger product, so its card explains where it comes from
+/// instead of offering a price. Keeping it apart from [purchase] is what stops
+/// a single decoration card from opening the checkout for a whole bundle.
+enum CatalogUnlockMethod { included, purchase, rewardedAd, level, bundle }
 
 /// The visual slot a preview entry occupies until its final art is approved.
 ///
@@ -42,6 +47,7 @@ class CatalogEntry {
     this.assetPath,
     this.requiredLevel,
     this.rewardedAdTarget,
+    this.rewardedAdOncePerDay = false,
     this.storeProductId,
   }) : assert(id != ''),
        assert(name != ''),
@@ -56,7 +62,12 @@ class CatalogEntry {
              : rewardedAdTarget == null,
        ),
        assert(
-         unlockMethod == CatalogUnlockMethod.purchase
+         !rewardedAdOncePerDay ||
+             unlockMethod == CatalogUnlockMethod.rewardedAd,
+       ),
+       assert(
+         unlockMethod == CatalogUnlockMethod.purchase ||
+                 unlockMethod == CatalogUnlockMethod.bundle
              ? storeProductId != null && storeProductId != ''
              : storeProductId == null,
        );
@@ -69,7 +80,30 @@ class CatalogEntry {
   final String? assetPath;
   final int? requiredLevel;
   final int? rewardedAdTarget;
+
+  /// Whether this entry takes at most one rewarded view per local day.
+  ///
+  /// The special tier. It is not a price — three views cost the same whether
+  /// they are spread or not — it is what makes the entry take three days, and
+  /// it is the only reason [SobraStore] remembers a date per entry at all.
+  final bool rewardedAdOncePerDay;
   final String? storeProductId;
+}
+
+/// Why a rewarded view cannot start for an entry right now.
+///
+/// Presentation only: the card needs to say something different for each, and
+/// "no ad loaded" is not the same answer as "you are done for today". The
+/// rules themselves live in [SobraStore].
+enum RewardedAdBlock {
+  /// The network has nothing to show. Ordinary, and usually temporary.
+  noAdAvailable,
+
+  /// The daily limit across every entry is spent.
+  dailyCapReached,
+
+  /// A once-per-day entry already took its view today.
+  alreadyEarnedToday,
 }
 
 /// User-specific state resolved separately from the static catalog.
@@ -78,6 +112,10 @@ class CatalogEntry {
 /// the same shape from [SobraStore] without changing the screen or definitions.
 @immutable
 class CatalogEntryState {
+  /// [localizedStorePrice] and [isPurchasing] are deliberately limited to
+  /// [CatalogUnlockMethod.purchase]. A bundle entry has a store product id
+  /// too, and letting either follow the id rather than the unlock method would
+  /// put a whole bundle's price on one decoration card.
   CatalogEntryState({
     required this.entry,
     required this.isOwned,
@@ -85,7 +123,12 @@ class CatalogEntryState {
     this.rewardedAdProgress = 0,
     this.localizedStorePrice,
     this.isPurchasing = false,
+    this.rewardedAdBlock,
   }) : assert(!isEquipped || isOwned),
+       assert(
+         rewardedAdBlock == null ||
+             entry.unlockMethod == CatalogUnlockMethod.rewardedAd,
+       ),
        assert(rewardedAdProgress >= 0),
        assert(
          localizedStorePrice == null ||
@@ -103,6 +146,12 @@ class CatalogEntryState {
 
   /// Presentation-only price received from a store price source.
   final String? localizedStorePrice;
+
+  /// Why a rewarded view cannot start, or null where one can.
+  ///
+  /// Null for every entry that is not unlocked by ads, and for an owned one:
+  /// a finished run has nothing left to block.
+  final RewardedAdBlock? rewardedAdBlock;
 
   /// Whether the store is working on this entry right now.
   ///

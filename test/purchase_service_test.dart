@@ -343,4 +343,68 @@ void main() {
     // Play can hold one of these for hours. Waiting is the correct answer.
     expect(purchases.isBuying(soldProductId), isTrue);
   });
+
+  // The regression this whole mapping exists for. Before it, the bundle's
+  // product id resolved through entryForProductId to the one decoration sold
+  // exclusively inside it: the store took the money, the save succeeded, the
+  // delivery reported true, and the user received a single room object instead
+  // of three characters, a decoration and ad removal.
+  test('buying the supporter bundle delivers all of it', () async {
+    const bundleId = CatalogPreviewData.supporterBundleProductId;
+    backend.catalogue = [...backend.catalogue, productFor(bundleId, r'MX$ 199')];
+    await started(restoreOnStart: false);
+
+    backend.emit([detailsFor(bundleId, PurchaseStatus.purchased)]);
+    await pumpEventQueue();
+
+    expect(
+      store.ownedCatalogIds,
+      containsAll(CatalogPreviewData.productEntitlements[bundleId]!),
+    );
+    expect(store.ownsCatalogEntry(entryById('character-02')), isTrue);
+    expect(store.ownsCatalogEntry(entryById('character-04')), isTrue);
+    expect(store.ownsCatalogEntry(entryById('character-06')), isTrue);
+    expect(
+      store.ownsCatalogEntry(
+        entryById(CatalogPreviewData.supporterDecorationId),
+      ),
+      isTrue,
+    );
+    expect(
+      store.ownedCatalogIds,
+      contains(CatalogPreviewData.noAdsEntitlement),
+    );
+    // The delivery landed, so the store is told to close the transaction.
+    expect(backend.completed, [bundleId]);
+  });
+
+  test('restoring the supporter bundle delivers all of it', () async {
+    const bundleId = CatalogPreviewData.supporterBundleProductId;
+    backend
+      ..catalogue = [...backend.catalogue, productFor(bundleId, r'MX$ 199')]
+      ..ownedProductIds = [bundleId];
+    final purchases = await started(restoreOnStart: false);
+
+    final failure = await purchases.restore();
+    await pumpEventQueue();
+
+    expect(failure, isNull);
+    expect(
+      store.ownedCatalogIds,
+      containsAll(CatalogPreviewData.productEntitlements[bundleId]!),
+    );
+  });
+
+  // The decoration carries the bundle's product id so the store can price the
+  // bundle. Its card must not turn that into a checkout: one room object would
+  // charge for the whole bundle.
+  test('a bundle entry cannot be bought from its own card', () async {
+    const bundleId = CatalogPreviewData.supporterBundleProductId;
+    backend.catalogue = [...backend.catalogue, productFor(bundleId, r'MX$ 199')];
+    final purchases = await started(restoreOnStart: false);
+
+    await purchases.buy(entryById(CatalogPreviewData.supporterDecorationId));
+
+    expect(backend.bought, isEmpty);
+  });
 }

@@ -28,10 +28,18 @@ void main() {
     );
   });
 
-  test('preview item catalog has seven level slots and three ad slots', () {
+  test('preview item catalog has seven level and three ad slots', () {
     final entries = CatalogPreviewData.items;
 
-    expect(entries, hasLength(10));
+    // Eleven rather than ten: the supporter decoration sits alongside the
+    // numbered lineup and arrives only inside the supporter bundle.
+    expect(entries, hasLength(11));
+    expect(
+      entries.where(
+        (entry) => entry.unlockMethod == CatalogUnlockMethod.bundle,
+      ),
+      hasLength(1),
+    );
     expect(
       entries.where((entry) => entry.unlockMethod == CatalogUnlockMethod.level),
       hasLength(7),

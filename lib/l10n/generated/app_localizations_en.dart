@@ -465,6 +465,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get collectionWatchAd => 'WATCH AD';
 
   @override
+  String get collectionAdUnavailable => 'NO ADS NOW';
+
+  @override
+  String get collectionAdDailyCap => 'TODAY\'S LIMIT';
+
+  @override
+  String get collectionAdTomorrow => 'CONTINUES TOMORROW';
+
+  @override
+  String collectionUnlockedNotice(String name) {
+    return '$name is yours!';
+  }
+
+  @override
+  String get collectionAdDismissedNotice =>
+      'Watch the whole ad for it to count.';
+
+  @override
+  String get collectionSupporterOnly => 'SUPPORTER';
+
+  @override
+  String get collectionSupporterDecoration => 'Supporter star';
+
+  @override
+  String get collectionSupporterUnlock =>
+      'Arrives with Sobra Support. It is not sold separately.';
+
+  @override
   String collectionAdProgress(int progress, int target) {
     return 'AD $progress/$target';
   }

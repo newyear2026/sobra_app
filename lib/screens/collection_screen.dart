@@ -6,6 +6,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/catalog_entry.dart';
 import '../services/purchase_service.dart';
+import '../services/rewarded_ad_service.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
@@ -66,9 +67,15 @@ class _CollectionScreenState extends State<CollectionScreen> {
     SobraStore store,
     CatalogPriceSource prices,
     bool Function(String)? buying,
+    RewardedAds? ads,
   ) {
     final isOwned = store.ownsCatalogEntry(entry);
-    final productId = entry.storeProductId;
+    // Bundle entries carry a product id too. Reading the price from it would
+    // print the whole bundle's price under one decoration, so both of these
+    // follow the unlock method instead.
+    final productId = entry.unlockMethod == CatalogUnlockMethod.purchase
+        ? entry.storeProductId
+        : null;
     return CatalogEntryState(
       entry: entry,
       isOwned: isOwned,
@@ -83,8 +90,29 @@ class _CollectionScreenState extends State<CollectionScreen> {
           : prices.localizedPriceFor(productId),
       isPurchasing:
           !isOwned && productId != null && (buying?.call(productId) ?? false),
+      rewardedAdBlock: entry.unlockMethod == CatalogUnlockMethod.rewardedAd
+          ? _adBlockFor(entry, store, ads)
+          : null,
     );
   }
+
+  /// Why this entry's ad button cannot be used, or null where it can.
+  ///
+  /// Sobra's own limits are asked first. A capped day is the more useful thing
+  /// to tell somebody than "no ad loaded", and it is also the more permanent:
+  /// a fill can arrive a second later, tomorrow cannot.
+  RewardedAdBlock? _adBlockFor(
+    CatalogEntry entry,
+    SobraStore store,
+    RewardedAds? ads,
+  ) => switch (store.rewardedAdAvailabilityFor(entry)) {
+    RewardedAdAvailability.alreadyOwned => null,
+    RewardedAdAvailability.dailyCapReached => RewardedAdBlock.dailyCapReached,
+    RewardedAdAvailability.alreadyEarnedToday =>
+      RewardedAdBlock.alreadyEarnedToday,
+    RewardedAdAvailability.available =>
+      (ads?.isReady ?? false) ? null : RewardedAdBlock.noAdAvailable,
+  };
 
   Future<void> _performPrimaryAction(CatalogEntryState state) async {
     final l10n = AppLocalizations.of(context);
@@ -94,6 +122,8 @@ class _CollectionScreenState extends State<CollectionScreen> {
     final store = SobraScope.of(context);
     final purchases = PurchaseScope.maybeOf(context);
 
+    final ads = RewardedAdScope.maybeOf(context);
+
     if (!state.isOwned) {
       if (state.entry.unlockMethod == CatalogUnlockMethod.purchase &&
           purchases != null) {
@@ -102,8 +132,13 @@ class _CollectionScreenState extends State<CollectionScreen> {
         await purchases.buy(state.entry);
         return;
       }
-      // Rewarded ads have no provider yet, and a purchase with no store above
-      // this screen is the design gallery rather than the app.
+      if (state.entry.unlockMethod == CatalogUnlockMethod.rewardedAd &&
+          ads != null) {
+        await _watchAd(ads, store, state.entry);
+        return;
+      }
+      // A purchase with no store, or an ad with no network, above this screen
+      // is the design gallery rather than the app.
       _showNotice(l10n.collectionPreviewActionNotice);
       return;
     }
@@ -113,6 +148,40 @@ class _CollectionScreenState extends State<CollectionScreen> {
     _showNotice(
       l10n.collectionEquippedNotice(catalogEntryDisplayName(l10n, state.entry)),
     );
+  }
+
+  /// Shows one rewarded ad and says what it did.
+  ///
+  /// Only a completed view says anything celebratory. A dismissed one explains
+  /// why nothing moved, because a progress bar that did not advance otherwise
+  /// reads as a bug rather than as the rule it is.
+  Future<void> _watchAd(
+    RewardedAds ads,
+    SobraStore store,
+    CatalogEntry entry,
+  ) async {
+    final outcome = await ads.watch(entry);
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
+    switch (outcome) {
+      case RewardedAdOutcome.counted:
+        if (store.ownsCatalogEntry(entry)) {
+          _showNotice(
+            l10n.collectionUnlockedNotice(
+              catalogEntryDisplayName(l10n, entry),
+            ),
+          );
+        }
+      case RewardedAdOutcome.dismissed:
+        _showNotice(l10n.collectionAdDismissedNotice);
+      case RewardedAdOutcome.unavailable:
+        _showNotice(l10n.collectionAdUnavailable);
+      case RewardedAdOutcome.notAllowed:
+        // The card already says why, and it said so before the tap. Repeating
+        // it in a snack bar would be scolding somebody for a button the screen
+        // had already disabled.
+        break;
+    }
   }
 
   void _showNotice(String message) {
@@ -142,7 +211,11 @@ class _CollectionScreenState extends State<CollectionScreen> {
     // A second tap during a checkout cannot open a second one, so the control
     // stops looking live rather than accepting a tap and doing nothing.
     if (state.isPurchasing) return false;
-    return state.entry.unlockMethod != CatalogUnlockMethod.level;
+    // Level rewards arrive on their own, and a bundle entry is bought from the
+    // row that sells the bundle. Neither has anything for this card to do.
+    if (state.rewardedAdBlock != null) return false;
+    return state.entry.unlockMethod != CatalogUnlockMethod.level &&
+        state.entry.unlockMethod != CatalogUnlockMethod.bundle;
   }
 
   @override
@@ -150,12 +223,13 @@ class _CollectionScreenState extends State<CollectionScreen> {
     final l10n = AppLocalizations.of(context);
     final store = SobraScope.of(context);
     final purchases = PurchaseScope.maybeOf(context);
+    final ads = RewardedAdScope.maybeOf(context);
     final prices = purchases ?? widget.priceSource;
     final xp = store.xpProgress;
     final entries = CatalogPreviewData.forKind(_selectedKind);
     final states = [
       for (final entry in entries)
-        _stateFor(entry, store, prices, purchases?.isBuying),
+        _stateFor(entry, store, prices, purchases?.isBuying, ads),
     ];
     final ownedCount = states.where((state) => state.isOwned).length;
 
@@ -543,7 +617,9 @@ class _CatalogCard extends StatelessWidget {
                         ),
                       )
                     else if (!state.isOwned &&
-                        state.entry.unlockMethod == CatalogUnlockMethod.level)
+                        (state.entry.unlockMethod == CatalogUnlockMethod.level ||
+                            state.entry.unlockMethod ==
+                                CatalogUnlockMethod.bundle))
                       const Positioned(
                         right: 0,
                         top: 0,
@@ -781,6 +857,11 @@ class _CatalogTones {
         AppColors.tealSoft,
         AppColors.tealInk,
       ),
+      CatalogUnlockMethod.bundle => const _CatalogTones(
+        AppColors.blueSoft,
+        AppColors.blue,
+        Icons.lock,
+      ),
     };
   }
 }
@@ -793,6 +874,8 @@ String _cardActionLabel(AppLocalizations l10n, CatalogEntryState state) {
         ? l10n.collectionOwned
         : l10n.collectionEquip;
   }
+  final blocked = state.rewardedAdBlock;
+  if (blocked != null) return _adBlockLabel(l10n, blocked);
   return switch (state.entry.unlockMethod) {
     CatalogUnlockMethod.purchase => l10n.collectionBuy,
     CatalogUnlockMethod.rewardedAd =>
@@ -806,6 +889,7 @@ String _cardActionLabel(AppLocalizations l10n, CatalogEntryState state) {
       state.entry.requiredLevel!,
     ),
     CatalogUnlockMethod.included => l10n.collectionOwned,
+    CatalogUnlockMethod.bundle => l10n.collectionSupporterOnly,
   };
 }
 
@@ -813,6 +897,8 @@ String _dialogActionLabel(AppLocalizations l10n, CatalogEntryState state) {
   if (state.isPurchasing) return l10n.collectionPurchasing;
   if (state.isEquipped) return l10n.collectionEquipped;
   if (state.isOwned) return l10n.collectionEquip;
+  final blocked = state.rewardedAdBlock;
+  if (blocked != null) return _adBlockLabel(l10n, blocked);
   return switch (state.entry.unlockMethod) {
     CatalogUnlockMethod.purchase => l10n.collectionBuy,
     CatalogUnlockMethod.rewardedAd => l10n.collectionWatchAd,
@@ -820,8 +906,16 @@ String _dialogActionLabel(AppLocalizations l10n, CatalogEntryState state) {
       state.entry.requiredLevel!,
     ),
     CatalogUnlockMethod.included => l10n.collectionOwned,
+    CatalogUnlockMethod.bundle => l10n.collectionSupporterOnly,
   };
 }
+
+String _adBlockLabel(AppLocalizations l10n, RewardedAdBlock blocked) =>
+    switch (blocked) {
+      RewardedAdBlock.noAdAvailable => l10n.collectionAdUnavailable,
+      RewardedAdBlock.dailyCapReached => l10n.collectionAdDailyCap,
+      RewardedAdBlock.alreadyEarnedToday => l10n.collectionAdTomorrow,
+    };
 
 String _unlockDescription(AppLocalizations l10n, CatalogEntryState state) {
   if (state.isOwned) return l10n.collectionAlreadyOwned;
@@ -837,5 +931,6 @@ String _unlockDescription(AppLocalizations l10n, CatalogEntryState state) {
     CatalogUnlockMethod.level => l10n.collectionLevelUnlock(
       state.entry.requiredLevel!,
     ),
+    CatalogUnlockMethod.bundle => l10n.collectionSupporterUnlock,
   };
 }

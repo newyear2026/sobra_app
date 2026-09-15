@@ -28,7 +28,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.characterPlaceholder,
-      rewardedAdTarget: 3,
+      rewardedAdTarget: 2,
     ),
     CatalogEntry(
       id: 'character-04',
@@ -44,7 +44,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.characterPlaceholder,
-      rewardedAdTarget: 3,
+      rewardedAdTarget: 2,
     ),
     CatalogEntry(
       id: 'character-06',
@@ -69,6 +69,7 @@ abstract final class CatalogPreviewData {
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.characterPlaceholder,
       rewardedAdTarget: 3,
+      rewardedAdOncePerDay: true,
     ),
     CatalogEntry(
       id: 'character-09',
@@ -174,7 +175,52 @@ abstract final class CatalogPreviewData {
       visual: CatalogVisual.cushion,
       requiredLevel: 4,
     ),
+    CatalogEntry(
+      id: supporterDecorationId,
+      name: 'Estrella',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.bundle,
+      visual: CatalogVisual.trophy,
+      storeProductId: supporterBundleProductId,
+    ),
   ];
+
+  /// The supporter product, and the only entry that arrives exclusively in it.
+  static const supporterBundleProductId = 'sobra.supporter.bundle';
+  static const supporterDecorationId = 'supporter-decoration';
+
+  /// Ad removal, stored beside catalog ids rather than as an entry of its own.
+  ///
+  /// Nothing reads it yet — general ads do not exist before the native
+  /// placement ships. It is granted now so that supporters who bought before
+  /// then do not have to be re-granted afterwards, and so the entitlement is
+  /// carried by the same restore that carries their characters.
+  static const noAdsEntitlement = 'entitlement.no_ads';
+
+  /// What one store product delivers, for products that deliver more than one
+  /// thing.
+  ///
+  /// Only bundles belong here. A product that maps to exactly one entry is
+  /// resolved by [entryForProductId] instead, and listing it twice would give
+  /// the same purchase two answers.
+  static const productEntitlements = <String, Set<String>>{
+    supporterBundleProductId: {
+      'character-02',
+      'character-04',
+      'character-06',
+      supporterDecorationId,
+      noAdsEntitlement,
+    },
+  };
+
+  /// Everything [storeProductId] delivers, or null where it is not a bundle.
+  ///
+  /// Callers must consult this *before* [entryForProductId]. A bundle's
+  /// product id also sits on the one entry that is exclusive to it, so the
+  /// single-entry lookup answers for a bundle too — with one item out of
+  /// several, while reporting that the delivery succeeded.
+  static Set<String>? entitlementsForProductId(String storeProductId) =>
+      productEntitlements[storeProductId];
 
   static List<CatalogEntry> forKind(CatalogKind kind) =>
       kind == CatalogKind.character ? characters : items;
@@ -197,9 +243,14 @@ abstract final class CatalogPreviewData {
   }
 
   /// Every product id the store should be asked to price.
+  ///
+  /// Bundle ids are unioned in rather than left to the entries: a bundle that
+  /// contains only characters names no entry of its own, and a product the
+  /// store was never asked about has no price and cannot be bought.
   static Set<String> get storeProductIds => {
     for (final entry in all)
       if (entry.storeProductId != null) entry.storeProductId!,
+    ...productEntitlements.keys,
   };
 
   static bool isUnlockedAtLevel(CatalogEntry entry, int playerLevel) =>

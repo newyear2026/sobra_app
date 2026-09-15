@@ -20,6 +20,33 @@ import '../models/xp_event.dart';
 
 typedef NowProvider = DateTime Function();
 
+/// Why a rewarded-ad entry cannot take another view right now.
+enum RewardedAdAvailability {
+  /// A view would count, if the network has an ad to show.
+  available,
+
+  /// Nothing left to earn.
+  alreadyOwned,
+
+  /// A once-per-day entry already took its view today.
+  alreadyEarnedToday,
+
+  /// The daily limit across every entry is used up.
+  dailyCapReached,
+}
+
+/// The local calendar date of [value], as `YYYY-MM-DD`.
+///
+/// Local rather than UTC, and deliberately not corrected for a device whose
+/// clock or time zone moves. Daily limits reset on the day the user is living
+/// in, and defending against a changed clock would cost more than it saves:
+/// moving it forward does not reduce the ads actually watched, and what the
+/// ads unlock has no cash value.
+String dayKey(DateTime value) =>
+    '${value.year.toString().padLeft(4, '0')}'
+    '-${value.month.toString().padLeft(2, '0')}'
+    '-${value.day.toString().padLeft(2, '0')}';
+
 class SobraStore extends ChangeNotifier {
   SobraStore._(this._preferences, this._now);
 
@@ -60,6 +87,21 @@ class SobraStore extends ChangeNotifier {
   /// means anything while it is short of the target, and keeping a finished
   /// count would grow the saved state for something nothing reads.
   final Map<String, int> _rewardedAdProgress = {};
+
+  /// The local day [_rewardedAdsWatchedOnDay] counts for, as `YYYY-MM-DD`.
+  ///
+  /// Stored rather than derived so the count survives a restart, and compared
+  /// against today on every read so a day that rolled over while the app was
+  /// closed resets the count without anything having to run at midnight.
+  String? _rewardedAdDay;
+  int _rewardedAdsWatchedOnDay = 0;
+
+  /// The local day each once-per-day entry last took a view.
+  ///
+  /// Only entries with [CatalogEntry.rewardedAdOncePerDay] are ever written
+  /// here; for everything else the daily cap is the only limit and a date
+  /// would be state nothing reads.
+  final Map<String, String> _rewardedAdLastEarnedDate = {};
   int _idSequence = 0;
 
   int _baseBudgetCentavos = 600000;
@@ -1209,6 +1251,50 @@ class SobraStore extends ChangeNotifier {
   /// Rewarded ads watched toward [id], or zero once it has been granted.
   int rewardedAdProgressFor(String id) => _rewardedAdProgress[id] ?? 0;
 
+  /// Rewarded ads a user may watch in one local day, across every entry.
+  static const rewardedAdsPerDay = 3;
+
+  /// Today, as the key the daily limits are stored against.
+  String get todayKey => dayKey(_now());
+
+  /// Rewarded ads watched today.
+  ///
+  /// Answers zero for a stored count that belongs to an earlier day, so the
+  /// limit resets by itself rather than needing something to run at midnight.
+  int get rewardedAdsWatchedToday =>
+      _rewardedAdDay == todayKey ? _rewardedAdsWatchedOnDay : 0;
+
+  /// Rewarded ads still allowed today.
+  int get rewardedAdsLeftToday =>
+      (rewardedAdsPerDay - rewardedAdsWatchedToday).clamp(
+        0,
+        rewardedAdsPerDay,
+      );
+
+  /// The local day [id] last took a view, or null for an entry that never has.
+  String? rewardedAdLastEarnedDateFor(String id) =>
+      _rewardedAdLastEarnedDate[id];
+
+  /// Whether a rewarded view would count toward [entry] right now.
+  ///
+  /// Says nothing about whether the network has an ad — that is the ad
+  /// surface's question. This is only about the rules Sobra imposes on itself.
+  ///
+  /// Most specific reason first: an owned entry is reported as owned even on a
+  /// day whose cap is spent, because that is the reason its card will never
+  /// offer an ad again.
+  RewardedAdAvailability rewardedAdAvailabilityFor(CatalogEntry entry) {
+    if (ownsCatalogEntry(entry)) return RewardedAdAvailability.alreadyOwned;
+    if (entry.rewardedAdOncePerDay &&
+        _rewardedAdLastEarnedDate[entry.id] == todayKey) {
+      return RewardedAdAvailability.alreadyEarnedToday;
+    }
+    if (rewardedAdsLeftToday <= 0) {
+      return RewardedAdAvailability.dailyCapReached;
+    }
+    return RewardedAdAvailability.available;
+  }
+
   /// The entry the user is showing for [kind], or null for none.
   String? equippedIdFor(CatalogKind kind) => switch (kind) {
     CatalogKind.character => characterId,
@@ -1251,31 +1337,68 @@ class SobraStore extends ChangeNotifier {
   /// matters most cannot supply one: a store restore hands back product ids
   /// for entries this build may no longer ship, and dropping those would
   /// silently revoke something the user paid for.
-  Future<void> grantCatalogEntry(String id) async {
-    if (id.isEmpty || !_ownedCatalogIds.add(id)) return;
-    _rewardedAdProgress.remove(id);
+  Future<void> grantCatalogEntry(String id) => grantCatalogEntries({id});
+
+  /// Records that every id in [ids] was acquired, in one write.
+  ///
+  /// What a bundle needs: granting its contents one at a time would save once
+  /// per id, and a failure partway through would leave somebody who paid for
+  /// three characters owning one of them. Here the whole delivery either lands
+  /// or is replayed by the store on the next launch.
+  ///
+  /// Ids already owned are skipped rather than refused, so a bundle that
+  /// overlaps something the user bought separately still delivers the rest.
+  /// Nothing is refunded for the overlap; the purchase sheet says so before
+  /// the user pays.
+  Future<void> grantCatalogEntries(Set<String> ids) async {
+    final added = ids.where((id) => id.isNotEmpty).toSet()
+      ..removeAll(_ownedCatalogIds);
+    if (added.isEmpty) return;
+    _ownedCatalogIds.addAll(added);
+    _rewardedAdProgress.removeWhere((id, _) => added.contains(id));
     await _save();
     notifyListeners();
   }
 
   /// Counts one watched ad toward [entry], granting it once the run completes.
   ///
-  /// Called by the ad surface after the network confirms a completed view, so
-  /// that a dismissed ad cannot advance the count.
-  Future<void> recordRewardedAdView(CatalogEntry entry) async {
+  /// Called by the ad surface only after the network confirms a completed
+  /// view, so that a dismissed ad or one that never loaded cannot advance the
+  /// count. Answers whether the view counted: anything [rewardedAdAvailabilityFor]
+  /// rules out is refused here too rather than trusted to have been checked,
+  /// which is what keeps a second confirmation for the same ad from being
+  /// counted twice.
+  ///
+  /// The progress, the daily count and the per-entry date are one write. A
+  /// view that advanced the run but left the daily count behind would hand
+  /// back a free ad on every restart.
+  Future<bool> recordRewardedAdView(CatalogEntry entry) async {
     final target = entry.rewardedAdTarget;
     if (target == null) {
       throw ArgumentError.value(entry.id, 'entry', 'not a rewarded-ad entry');
     }
-    if (_ownedCatalogIds.contains(entry.id)) return;
+    if (rewardedAdAvailabilityFor(entry) != RewardedAdAvailability.available) {
+      return false;
+    }
+    final today = todayKey;
+    // Read before the day is written: reading it afterwards would find a count
+    // from an earlier day sitting under today's key and carry it over.
+    final watchedToday = rewardedAdsWatchedToday;
+    _rewardedAdDay = today;
+    _rewardedAdsWatchedOnDay = watchedToday + 1;
+    if (entry.rewardedAdOncePerDay) {
+      _rewardedAdLastEarnedDate[entry.id] = today;
+    }
     final next = rewardedAdProgressFor(entry.id) + 1;
     if (next >= target) {
-      await grantCatalogEntry(entry.id);
-      return;
+      _rewardedAdProgress.remove(entry.id);
+      _ownedCatalogIds.add(entry.id);
+    } else {
+      _rewardedAdProgress[entry.id] = next;
     }
-    _rewardedAdProgress[entry.id] = next;
     await _save();
     notifyListeners();
+    return true;
   }
 
   /// Shows [entry] in the room.
@@ -1432,6 +1555,9 @@ class SobraStore extends ChangeNotifier {
     _roomPlacementsByRoom.clear();
     _ownedCatalogIds.clear();
     _rewardedAdProgress.clear();
+    _rewardedAdDay = null;
+    _rewardedAdsWatchedOnDay = 0;
+    _rewardedAdLastEarnedDate.clear();
     countedCashCentavos = 0;
     expectedCashCentavos = 0;
     reducedMotion = false;
@@ -1486,6 +1612,11 @@ class SobraStore extends ChangeNotifier {
     _rewardedAdProgress
       ..clear()
       ..addAll(other._rewardedAdProgress);
+    _rewardedAdDay = other._rewardedAdDay;
+    _rewardedAdsWatchedOnDay = other._rewardedAdsWatchedOnDay;
+    _rewardedAdLastEarnedDate
+      ..clear()
+      ..addAll(other._rewardedAdLastEarnedDate);
     _baseBudgetCentavos = other._baseBudgetCentavos;
     _hasBudget = other._hasBudget;
     characterId = other.characterId;
@@ -1605,6 +1736,19 @@ class SobraStore extends ChangeNotifier {
         for (final entry in adProgress.entries)
           entry.key: (entry.value as num).toInt(),
       });
+    // Absent from every state written before the daily limit existed. A
+    // missing day reads as "no ads watched yet", which is what those users
+    // had.
+    _rewardedAdDay = json['rewardedAdDay'] as String?;
+    _rewardedAdsWatchedOnDay =
+        (json['rewardedAdsWatchedOnDay'] as num?)?.toInt() ?? 0;
+    final lastEarned =
+        json['rewardedAdLastEarnedDate'] as Map<String, dynamic>? ?? {};
+    _rewardedAdLastEarnedDate
+      ..clear()
+      ..addAll({
+        for (final entry in lastEarned.entries) entry.key: entry.value as String,
+      });
     countedCashCentavos = (json['countedCashCentavos'] as num).toInt();
     expectedCashCentavos = (json['expectedCashCentavos'] as num).toInt();
     reducedMotion = json['reducedMotion'] as bool? ?? false;
@@ -1690,6 +1834,9 @@ class SobraStore extends ChangeNotifier {
     // set iteration order alone would make an unchanged state look changed.
     'ownedCatalogIds': _ownedCatalogIds.toList()..sort(),
     'rewardedAdProgress': _rewardedAdProgress,
+    'rewardedAdDay': _rewardedAdDay,
+    'rewardedAdsWatchedOnDay': _rewardedAdsWatchedOnDay,
+    'rewardedAdLastEarnedDate': _rewardedAdLastEarnedDate,
     'cycleBudgetExtras': _cycleBudgetExtras,
     'countedCashCentavos': countedCashCentavos,
     'expectedCashCentavos': expectedCashCentavos,

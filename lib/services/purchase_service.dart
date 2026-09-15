@@ -236,8 +236,14 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   /// Returns without doing anything for an entry that is not sold, already
   /// owned, or already being bought — a second tap on a slow store must not
   /// open a second checkout.
+  ///
+  /// A bundle entry is not sold, whatever product id it carries. The id names
+  /// the bundle it arrives in rather than a price for this one item, and
+  /// buying from its card would charge for the whole bundle from a single
+  /// decoration. The bundle is sold by the row that describes it.
   Future<void> buy(CatalogEntry entry) async {
     final productId = entry.storeProductId;
+    if (entry.unlockMethod != CatalogUnlockMethod.purchase) return;
     if (productId == null || _store.ownsCatalogEntry(entry)) return;
     if (isBuying(productId)) return;
     final product = _products[productId];
@@ -342,7 +348,14 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
     notifyListeners();
   }
 
-  /// Writes the entitlement, under the catalog id where one is known.
+  /// Writes the entitlement, under the catalog ids where they are known.
+  ///
+  /// Bundles are resolved first, and that order is load-bearing. A bundle's
+  /// product id also sits on the one entry sold exclusively inside it, so
+  /// [CatalogPreviewData.entryForProductId] answers for a bundle as well — with
+  /// a single decoration, while returning true. Somebody who paid for the
+  /// supporter bundle would have been told the delivery worked and received one
+  /// item out of five.
   ///
   /// Falls back to the raw product id so a purchase from a lineup this build
   /// no longer ships survives in the saved state. [SobraStore.ownsCatalogEntry]
@@ -357,9 +370,11 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   /// completing while a restore happens to be waiting cannot make an account
   /// with nothing in it report that something came back.
   Future<bool> _grant(String productId, {required bool fromRestore}) async {
-    final entry = CatalogPreviewData.entryForProductId(productId);
+    final ids =
+        CatalogPreviewData.entitlementsForProductId(productId) ??
+        {CatalogPreviewData.entryForProductId(productId)?.id ?? productId};
     try {
-      await _store.grantCatalogEntry(entry?.id ?? productId);
+      await _store.grantCatalogEntries(ids);
     } on Object catch (error) {
       debugPrint('Sobra: could not save the purchase of $productId: $error');
       return false;

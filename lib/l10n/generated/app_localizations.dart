@@ -897,6 +897,54 @@ abstract class AppLocalizations {
   /// **'VER ANUNCIO'**
   String get collectionWatchAd;
 
+  /// No description provided for @collectionAdUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'SIN ANUNCIOS'**
+  String get collectionAdUnavailable;
+
+  /// No description provided for @collectionAdDailyCap.
+  ///
+  /// In es, this message translates to:
+  /// **'LÍMITE DE HOY'**
+  String get collectionAdDailyCap;
+
+  /// No description provided for @collectionAdTomorrow.
+  ///
+  /// In es, this message translates to:
+  /// **'SIGUE MAÑANA'**
+  String get collectionAdTomorrow;
+
+  /// No description provided for @collectionUnlockedNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'¡{name} es tuyo!'**
+  String collectionUnlockedNotice(String name);
+
+  /// No description provided for @collectionAdDismissedNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'Mira el anuncio completo para que cuente.'**
+  String get collectionAdDismissedNotice;
+
+  /// No description provided for @collectionSupporterOnly.
+  ///
+  /// In es, this message translates to:
+  /// **'MECENAS'**
+  String get collectionSupporterOnly;
+
+  /// No description provided for @collectionSupporterDecoration.
+  ///
+  /// In es, this message translates to:
+  /// **'Estrella de mecenas'**
+  String get collectionSupporterDecoration;
+
+  /// No description provided for @collectionSupporterUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'Llega con Apoya a Sobra. No se vende por separado.'**
+  String get collectionSupporterUnlock;
+
   /// No description provided for @collectionAdProgress.
   ///
   /// In es, this message translates to:

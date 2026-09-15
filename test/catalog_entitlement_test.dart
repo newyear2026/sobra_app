@@ -42,7 +42,7 @@ void main() {
     'rewarded-ad progress survives a reload and grants at the target',
     () async {
       final entry = entryById('character-03');
-      expect(entry.rewardedAdTarget, 3);
+      expect(entry.rewardedAdTarget, 2);
       final store = await loadStore();
 
       await store.recordRewardedAdView(entry);
@@ -172,4 +172,142 @@ void main() {
       expect(reopened.ownsCatalogEntry(entryById('item-01')), isTrue);
     },
   );
+
+  // The mapping is the only thing standing between a bundle purchase and a
+  // silent partial delivery, and nothing about a missing entry is visible at
+  // runtime: the grant path would fall back to a single entry, write it, and
+  // report success. This test is what fails instead.
+  test('every bundle entry names a product the mapping covers', () {
+    final bundled = CatalogPreviewData.all
+        .where((entry) => entry.unlockMethod == CatalogUnlockMethod.bundle)
+        .toList();
+    expect(bundled, isNotEmpty);
+
+    for (final entry in bundled) {
+      final delivered =
+          CatalogPreviewData.productEntitlements[entry.storeProductId];
+      expect(
+        delivered,
+        isNotNull,
+        reason: '${entry.id} is sold in ${entry.storeProductId}, which no '
+            'productEntitlements key covers',
+      );
+      expect(
+        delivered,
+        contains(entry.id),
+        reason: '${entry.storeProductId} does not deliver ${entry.id}',
+      );
+    }
+  });
+
+  // A typo inside a bundle is the same silent failure by another route: the id
+  // is written, owns nothing, and the character never appears.
+  test('a bundle only delivers ids the catalog knows', () {
+    const notCatalogEntries = {CatalogPreviewData.noAdsEntitlement};
+    final catalogIds = CatalogPreviewData.all.map((entry) => entry.id).toSet();
+
+    for (final delivered in CatalogPreviewData.productEntitlements.values) {
+      for (final id in delivered.difference(notCatalogEntries)) {
+        expect(catalogIds, contains(id), reason: '$id is not a catalog entry');
+      }
+    }
+  });
+
+  // A product the store is never asked about comes back without a price, and
+  // an entry with no price cannot be bought.
+  test('bundle products are priced with the rest', () {
+    expect(
+      CatalogPreviewData.storeProductIds,
+      containsAll(CatalogPreviewData.productEntitlements.keys),
+    );
+  });
+
+  test('granting a bundle delivers every id in one write', () async {
+    final store = await loadStore();
+    final delivered = CatalogPreviewData
+        .productEntitlements[CatalogPreviewData.supporterBundleProductId]!;
+
+    await store.grantCatalogEntries(delivered);
+
+    for (final id in delivered) {
+      expect(store.ownedCatalogIds, contains(id));
+    }
+    expect(store.ownsCatalogEntry(entryById('character-02')), isTrue);
+    expect(store.ownsCatalogEntry(entryById('character-04')), isTrue);
+    expect(store.ownsCatalogEntry(entryById('character-06')), isTrue);
+    expect(
+      store.ownsCatalogEntry(
+        entryById(CatalogPreviewData.supporterDecorationId),
+      ),
+      isTrue,
+    );
+    expect((await loadStore()).ownedCatalogIds, containsAll(delivered));
+  });
+
+  // Somebody who already bought one of the characters separately still gets
+  // the rest. The overlap is not refunded, and the purchase sheet says so.
+  test('a bundle skips what is already owned and delivers the rest', () async {
+    final store = await loadStore();
+    await store.grantCatalogEntry('character-04');
+
+    await store.grantCatalogEntries(
+      CatalogPreviewData
+          .productEntitlements[CatalogPreviewData.supporterBundleProductId]!,
+    );
+
+    expect(store.ownsCatalogEntry(entryById('character-02')), isTrue);
+    expect(store.ownsCatalogEntry(entryById('character-04')), isTrue);
+    expect(store.ownsCatalogEntry(entryById('character-06')), isTrue);
+  });
+
+  test('granting nothing new writes nothing', () async {
+    final store = await loadStore();
+    await store.grantCatalogEntry('character-02');
+
+    await store.grantCatalogEntries({'character-02', ''});
+
+    expect(store.ownedCatalogIds, {'character-02'});
+  });
+
+  // Rewarded progress is dropped for granted ids, the same way a single grant
+  // drops it. A bundle that happens to contain an entry somebody was part-way
+  // through must not leave a stale count behind.
+  test('a bundle clears rewarded progress for what it grants', () async {
+    final store = await loadStore();
+    final started = entryById('character-03');
+    await store.recordRewardedAdView(started);
+    expect(store.rewardedAdProgressFor(started.id), 1);
+
+    await store.grantCatalogEntries({started.id, 'character-02'});
+
+    expect(store.ownsCatalogEntry(started), isTrue);
+    expect(store.rewardedAdProgressFor(started.id), 0);
+  });
+
+  // The collision the grant path has to resolve in the right order. The
+  // decoration carries the bundle's product id, so the single-entry lookup
+  // answers for the bundle too — with one item out of five.
+  test('the bundle product id also resolves to one entry', () {
+    final single = CatalogPreviewData.entryForProductId(
+      CatalogPreviewData.supporterBundleProductId,
+    );
+
+    expect(single, isNotNull);
+    expect(single!.id, CatalogPreviewData.supporterDecorationId);
+    expect(
+      CatalogPreviewData
+          .productEntitlements[CatalogPreviewData.supporterBundleProductId]!
+          .length,
+      greaterThan(1),
+    );
+  });
+
+  test('the supporter decoration is locked and not sold on its own', () async {
+    final store = await loadStore();
+    final decoration = entryById(CatalogPreviewData.supporterDecorationId);
+
+    expect(decoration.unlockMethod, CatalogUnlockMethod.bundle);
+    expect(decoration.storeProductId, CatalogPreviewData.supporterBundleProductId);
+    expect(store.ownsCatalogEntry(decoration), isFalse);
+  });
 }
