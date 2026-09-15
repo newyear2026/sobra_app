@@ -1018,6 +1018,14 @@ class AppLocalizationsKo extends AppLocalizations {
   String get cycleHistoryEmpty => '아직 마감된 주기가 없어요.';
 
   @override
+  String cycleHistoryAverage(String amount) {
+    return '일평균 $amount';
+  }
+
+  @override
+  String get cycleHistoryAveragePending => '일평균 · 데이터를 모으는 중이에요';
+
+  @override
   String get budgetChangedTitle => '예산이 바뀌었어요';
 
   @override

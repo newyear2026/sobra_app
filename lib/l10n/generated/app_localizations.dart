@@ -1857,6 +1857,18 @@ abstract class AppLocalizations {
   /// **'Aún no se ha cerrado ningún ciclo.'**
   String get cycleHistoryEmpty;
 
+  /// No description provided for @cycleHistoryAverage.
+  ///
+  /// In es, this message translates to:
+  /// **'Promedio diario {amount}'**
+  String cycleHistoryAverage(String amount);
+
+  /// No description provided for @cycleHistoryAveragePending.
+  ///
+  /// In es, this message translates to:
+  /// **'Promedio diario · reuniendo datos'**
+  String get cycleHistoryAveragePending;
+
   /// No description provided for @budgetChangedTitle.
   ///
   /// In es, this message translates to:

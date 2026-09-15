@@ -1,5 +1,28 @@
 import 'pay_schedule.dart';
 
+/// Elapsed days a cycle needs before a daily average says anything.
+///
+/// On day one the divisor is one, so the "average" is simply today's
+/// spending — a figure that reads on screen as a forecast the user never
+/// made. Two days is barely better. Three is where it starts describing a
+/// habit rather than a morning.
+const minimumDaysForAverage = 3;
+
+/// [spentCentavos] spread over [days], rounded to whole units of currency.
+///
+/// Null under [minimumDaysForAverage], which callers show as "still gathering"
+/// rather than as a number nobody should act on.
+///
+/// Rounded here rather than in `formatMoney`: the formatter prints centavos
+/// whenever an amount has them, and every real transaction should keep them.
+/// Only derived figures are rounded, so a daily average reads $394 while a
+/// $45.50 coffee still reads $45.50.
+int? averagePerDayCentavos(int spentCentavos, int days) {
+  if (days < minimumDaysForAverage) return null;
+  final perDay = spentCentavos / days;
+  return (perDay / 100).round() * 100;
+}
+
 /// What one closed cycle came to, written down when it closed.
 ///
 /// This exists because the past cannot be recomputed. Cycle boundaries come
@@ -34,6 +57,14 @@ class CycleRecord {
   final PayCycleType cycleType;
 
   int get lengthInDays => end.difference(start).inDays + 1;
+
+  /// What this cycle spent per day, over every day it covered.
+  ///
+  /// Days with nothing recorded count. A cycle is a stretch of time the user
+  /// lived through, and dividing by only the days they happened to file
+  /// something would report a habit nobody has.
+  int? get averageSpentPerDayCentavos =>
+      averagePerDayCentavos(spentCentavos, lengthInDays);
 
   /// What was left over, or how far past the budget the cycle went.
   int get resultCentavos => budgetCentavos - spentCentavos;

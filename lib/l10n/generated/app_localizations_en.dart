@@ -1058,6 +1058,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cycleHistoryEmpty => 'No cycle has closed yet.';
 
   @override
+  String cycleHistoryAverage(String amount) {
+    return 'Daily average $amount';
+  }
+
+  @override
+  String get cycleHistoryAveragePending => 'Daily average · still gathering';
+
+  @override
   String get budgetChangedTitle => 'You changed your budget';
 
   @override

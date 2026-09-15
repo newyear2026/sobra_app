@@ -480,6 +480,9 @@
     }
   },
   "cycleHistoryEmpty": "Aún no se ha cerrado ningún ciclo.",
+  "cycleHistoryAverage": "Promedio diario {amount}",
+  "@cycleHistoryAverage": {"placeholders": {"amount": {"type": "String"}}},
+  "cycleHistoryAveragePending": "Promedio diario · reuniendo datos",
   "budgetChangedTitle": "Cambiaste tu presupuesto",
   "budgetChangedBody": "¿Qué hacemos con los límites por categoría? Al ajustarlos, cada uno cambia en la misma proporción y conservas tu reparto.",
   "budgetKeepLimits": "Conservarlos",

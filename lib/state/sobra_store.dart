@@ -314,6 +314,17 @@ class SobraStore extends ChangeNotifier {
 
   int get totalSpentCentavos =>
       cycleTransactions.fold(0, (total, entry) => total + entry.amountCentavos);
+  /// Days of the current cycle lived so far, today included.
+  ///
+  /// Counts from the cycle's start rather than from the first thing recorded,
+  /// so a quiet opening week lowers the average instead of vanishing from it.
+  int get cycleElapsedDays => today.difference(cycleStart).inDays + 1;
+
+  /// What the current cycle is spending per day, or null while it is too early
+  /// for that to mean anything.
+  int? get cycleAveragePerDayCentavos =>
+      averagePerDayCentavos(totalSpentCentavos, cycleElapsedDays);
+
   int get spentTodayCentavos => cycleTransactions
       .where((entry) => _isSameDay(entry.occurredAt, today))
       .fold(0, (total, entry) => total + entry.amountCentavos);

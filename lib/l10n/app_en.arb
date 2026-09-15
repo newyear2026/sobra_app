@@ -354,6 +354,8 @@
   "cycleHistorySummary": "{total, plural, =1{{green} of {total} cycle in the green} other{{green} of {total} cycles in the green}}",
   "cycleHistoryAmounts": "Budget {budget} · Spent {spent}",
   "cycleHistoryEmpty": "No cycle has closed yet.",
+  "cycleHistoryAverage": "Daily average {amount}",
+  "cycleHistoryAveragePending": "Daily average · still gathering",
   "budgetChangedTitle": "You changed your budget",
   "budgetChangedBody": "What should we do with the category limits? Scaling them moves each one by the same proportion, so your split stays yours.",
   "budgetKeepLimits": "Keep them",

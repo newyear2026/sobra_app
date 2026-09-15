@@ -358,6 +358,8 @@
   "cycleHistorySummary": "{total, plural, other{주기 {total}개 중 {green}개 흑자}}",
   "cycleHistoryAmounts": "예산 {budget} · 지출 {spent}",
   "cycleHistoryEmpty": "아직 마감된 주기가 없어요.",
+  "cycleHistoryAverage": "일평균 {amount}",
+  "cycleHistoryAveragePending": "일평균 · 데이터를 모으는 중이에요",
   "budgetChangedTitle": "예산이 바뀌었어요",
   "budgetChangedBody": "분류별 한도는 어떻게 할까요? 비례로 조정하면 각 한도가 같은 비율로 바뀌어서 지금 배분이 그대로 유지돼요.",
   "budgetKeepLimits": "그대로 두기",
