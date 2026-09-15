@@ -6,7 +6,7 @@
     <string name="quick_entry_question">¿Qué quieres registrar?</string>
     <string name="quick_entry_income">Ingreso</string>
     <string name="quick_entry_expense">Gasto</string>
-    <string name="quick_entry_cat_description">Michi de Sobra</string>
+    <string name="quick_entry_app_icon_description">Icono de Sobra</string>
     <string name="widget_today_remaining">Hoy te queda</string>
     <string name="widget_cycle_balance">Saldo del ciclo</string>
     <string name="widget_cycle_progress">Avance del ciclo</string>

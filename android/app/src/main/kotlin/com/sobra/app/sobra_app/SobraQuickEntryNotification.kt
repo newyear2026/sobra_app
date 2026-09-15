@@ -98,8 +98,8 @@ object SobraQuickEntryNotification {
         }
 
         builder
-            // Android masks notification icons to a single colour. This reuses
-            // the cat silhouette already drawn for Sobra's widget.
+            // Android owns this small, monochrome status/header mark. The
+            // full-colour launcher icon is rendered once in our content view.
             .setSmallIcon(R.drawable.cat_peek_open)
             .setContentTitle(context.getString(R.string.app_name))
             .setContentText(question)
@@ -118,7 +118,7 @@ object SobraQuickEntryNotification {
             builder
                 .setStyle(Notification.DecoratedCustomViewStyle())
                 .setCustomContentView(
-                    collapsedView(context, question),
+                    collapsedView(context, income, expense),
                 )
                 .setCustomBigContentView(
                     expandedView(context, question, income, expense),
@@ -130,7 +130,7 @@ object SobraQuickEntryNotification {
                 .setLargeIcon(
                     BitmapFactory.decodeResource(
                         context.resources,
-                        R.drawable.cat_saving_original_done,
+                        R.mipmap.ic_launcher,
                     ),
                 )
                 .setStyle(Notification.BigTextStyle().bigText(question))
@@ -141,12 +141,28 @@ object SobraQuickEntryNotification {
         manager(context).notify(NOTIFICATION_ID, builder.build())
     }
 
-    private fun collapsedView(context: Context, question: String): RemoteViews =
+    private fun collapsedView(
+        context: Context,
+        income: String,
+        expense: String,
+    ): RemoteViews =
         RemoteViews(context.packageName, R.layout.notification_quick_entry_collapsed).apply {
-            setTextViewText(R.id.quick_entry_question, question)
+            setImageViewResource(R.id.quick_entry_app_icon, R.mipmap.ic_launcher)
+            setTextViewText(R.id.quick_entry_income, actionLabel(income))
+            setTextViewText(R.id.quick_entry_expense, actionLabel(expense))
+            setContentDescription(R.id.quick_entry_income, income)
+            setContentDescription(R.id.quick_entry_expense, expense)
             setOnClickPendingIntent(
                 R.id.quick_entry_root,
                 destination(context, "home", 303),
+            )
+            setOnClickPendingIntent(
+                R.id.quick_entry_income,
+                destination(context, "register_income", 307),
+            )
+            setOnClickPendingIntent(
+                R.id.quick_entry_expense,
+                destination(context, "register_expense", 308),
             )
         }
 
@@ -157,6 +173,7 @@ object SobraQuickEntryNotification {
         expense: String,
     ): RemoteViews =
         RemoteViews(context.packageName, R.layout.notification_quick_entry_expanded).apply {
+            setImageViewResource(R.id.quick_entry_app_icon, R.mipmap.ic_launcher)
             setTextViewText(R.id.quick_entry_question, question)
             setTextViewText(R.id.quick_entry_income, actionLabel(income))
             setTextViewText(R.id.quick_entry_expense, actionLabel(expense))

@@ -73,68 +73,66 @@ final result: blocked
 
 ---
 
-# Quick Entry Notification Design QA
+# Quick Entry Notification — Option 3 Design QA
 
 **Findings**
 
 - No actionable P0, P1, or P2 mismatches remain in the app-owned notification surface.
-- Android 16 owns the outer notification card, lock-screen wallpaper, header, expansion affordance, and default collapsed/expanded behavior. Those expected system differences are not implementation defects.
+- The actual installed Sobra launcher icon is now docked to the left of the quick actions. The separate navy cat artwork from the generated concept is no longer used as a second icon.
+- The collapsed lock-screen notification now exposes Income and Expense immediately, which matches the user's structural reference and removes the need to expand before entry.
+- Android 16 owns the outer notification card, monochrome header icon, lock-screen wallpaper, header, and expansion affordance. Those expected system differences are not implementation defects.
 
 **Evidence**
 
-- Selected source visual: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-lockscreen-retro-source.png`
-- Secure lock-screen capture: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-lockscreen-retro-implementation-final.png`
-- Expanded secure-notification capture: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-notification-retro-expanded-final.png`
-- Full three-state comparison: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-retro-comparison.png`
-- Focused source-to-implementation comparison: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-retro-focused-comparison.png`
-- Source pixels: 852 × 1846.
-- Implementation pixels: 1080 × 2160 on the Android 16 emulator.
+- Selected option 3 visual: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-quick-entry-option-3-app-icon-target.png`
+- User's app-icon-plus-actions reference: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-quick-entry-app-icon-actions-reference.png`
+- Final collapsed secure lock screen: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-quick-entry-option-3-lockscreen.png`
+- Final expanded notification: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-quick-entry-option-3-expanded.png`
+- Full target/collapsed/expanded comparison: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-quick-entry-option-3-full-comparison.png`
+- Focused expanded comparison: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-quick-entry-option-3-focused-comparison.png`
+- Focused collapsed comparison: `/Users/jaewook/dev_app/sobra_app/design/quick-entry/sobra-quick-entry-collapsed-comparison.png`
+- Source pixels: 853 × 1844; structural reference: 1051 × 1357.
+- Implementation pixels: 1080 × 2160 on an Android 16 Pixel 3 emulator, captured 2026-09-14.
 
 **Required Fidelity Surfaces**
 
-- Composition: the app-owned panel preserves the source's cat-first question row, horizontal divider, and balanced Income/Expense action row.
-- Colors and visual language: cream paper, navy outline and copy, teal inner border, teal plus signs, and the selected pixel cat all match the chosen direction.
-- Typography: the app uses Pixelify Sans where Android RemoteViews permits it. Android 16 renders notification text with its host typography for consistency and accessibility.
-- Copy: Spanish and English labels are supplied by the app localization currently selected by the user.
-- Accessibility: the cat has a content description; Income and Expense expose individual accessible names and full-width clickable targets.
-
-**Full-view Comparison**
-
-- The combined comparison places the selected source, the secure lock-screen result, and the expanded secure notification together at normalized height.
-- The implemented notification is intentionally nested inside Android's native card. Its internal palette, content order, scale, border contrast, and action balance retain the source hierarchy.
-
-**Focused Region Comparison**
-
-- The focused comparison confirms the cream panel, double navy/teal outline, pixel-cat framing, divider, teal plus signs, navy labels, and 50/50 action split.
-- The source's decorative notched corners and pixel action font are simplified by Android RemoteViews/SystemUI constraints; the resulting square retro panel remains visually coherent and has no readability or interaction regression.
+- Composition: the actual Sobra app icon is a sibling of the actions, not a container for another mascot image. The expanded layout preserves option 3's left icon dock and right question/action panel.
+- Immediate entry: the collapsed layout presents the app icon, Income, and Expense in one row, following the user's original Samsung reference.
+- Colors and visual language: cream paper, navy outline and copy, teal inner border, and teal plus signs preserve the selected retro direction.
+- Typography: Android SystemUI may substitute its host font, especially for Korean glyphs, while retaining the intended hierarchy and weight.
+- Accessibility: Income and Expense expose individual accessible names and full-width clickable targets; the app icon has a descriptive label.
 
 **Comparison History**
 
-1. The first custom layout used generic `View` separators, which Android 16 rejected during RemoteViews inflation. They were replaced with supported `ImageView` separators; the notification then rendered normally.
-2. The first successful render duplicated Sobra's title and large icon inside Android's native header, narrowing and truncating the question. The duplicate title/large icon were removed and the internal spacing compacted.
-3. The first retro action pass colored the entire label teal. The final pass uses teal only for the plus signs and navy for the action names, matching the selected source.
-4. Final Android logs contain no notification inflation or RemoteViews rendering errors.
+1. The previous version placed a separate navy cat image inside the custom notification. It was replaced with `@mipmap/ic_launcher`, so the notification now shows the same icon installed with the app.
+2. The first option 3 collapsed render showed only the question and required expansion. It was revised to show the app icon and both entry actions immediately.
+3. The final focused comparisons confirm the icon/action relationship, 50/50 action split, borders, contrast, and readable tap targets.
 
 **Primary Interactions Tested**
 
-- Secure lock screen shows the notification's public copy and does not open Sobra without unlock.
-- Income action survives the lock/login gate and opens the income registration mode with the amount keyboard focused.
-- Expense action opens the expense registration mode with the amount keyboard focused.
-- Expanding the notification reveals both full-width actions without clipping.
+- Income opens the registration screen in income mode.
+- Expense opens the registration screen in expense mode.
+- Both collapsed action views are individually clickable and expose the correct accessibility labels.
+- The expanded notification shows the question and both actions without clipping.
+- Secure lock-screen behavior was checked with a temporary emulator PIN, which was removed after testing.
 
 **Implementation Checklist**
 
-- [x] Selected option 2 translated into Android RemoteViews.
-- [x] Existing Sobra pixel cat and Pixelify Sans resource reused.
-- [x] Spanish and English copy supported.
-- [x] Income and Expense actions wired and manually verified.
-- [x] Secure lock-screen behavior verified with a temporary emulator PIN; the PIN was removed after testing.
-- [x] Source and implementation compared together at full view and focused notification view.
-- [x] Debug APK builds successfully and notification logs are clean.
+- [x] Selected option 3 translated into Android RemoteViews.
+- [x] Actual Sobra launcher icon used in collapsed and expanded app-owned content.
+- [x] Income and Expense available directly from the collapsed lock-screen notification.
+- [x] Expanded question and actions preserve the selected retro design hierarchy.
+- [x] Income and Expense destinations manually verified.
+- [x] Full-view and focused comparison images generated and inspected.
+- [x] Debug APK built successfully; static analysis, XML validation, and targeted tests passed.
+
+**Verification Environment Note**
+
+- The targeted test passed with this implementation on 2026-09-14. Static analysis passed again on 2026-09-15; a same-day test rerun was stopped before execution by the host Mac's pending Xcode license agreement, not by an application assertion or build error.
 
 **Follow-up Polish**
 
-- [P3] Device makers can render custom notifications differently. A final spot-check on the target Samsung device is worthwhile before release, especially for expanded-by-default behavior and font substitution.
+- [P3] Notification spacing varies by device maker. Spot-check the final APK on the target Samsung device before release.
 
 final result: passed
 
