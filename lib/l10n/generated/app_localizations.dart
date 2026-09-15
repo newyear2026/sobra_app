@@ -1026,7 +1026,7 @@ abstract class AppLocalizations {
   /// No description provided for @roomDecorateTitle.
   ///
   /// In es, this message translates to:
-  /// **'Decorar casa'**
+  /// **'Decorar'**
   String get roomDecorateTitle;
 
   /// No description provided for @roomDone.
@@ -1077,11 +1077,23 @@ abstract class AppLocalizations {
   /// **'Adornos'**
   String get roomCategoryProps;
 
-  /// No description provided for @roomCategoryCats.
+  /// No description provided for @roomCategoryCharacters.
   ///
   /// In es, this message translates to:
-  /// **'Gatos'**
-  String get roomCategoryCats;
+  /// **'Personajes'**
+  String get roomCategoryCharacters;
+
+  /// No description provided for @roomCharacterInstruction.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige quién te acompaña.'**
+  String get roomCharacterInstruction;
+
+  /// No description provided for @roomMoreInCollection.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver más en la colección'**
+  String get roomMoreInCollection;
 
   /// No description provided for @roomDefaultRug.
   ///

@@ -525,7 +525,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get roomDecorate => '꾸미기';
 
   @override
-  String get roomDecorateTitle => '방 꾸미기';
+  String get roomDecorateTitle => '꾸미기';
 
   @override
   String get roomDone => '완료';
@@ -552,7 +552,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get roomCategoryProps => '소품';
 
   @override
-  String get roomCategoryCats => '고양이';
+  String get roomCategoryCharacters => '캐릭터';
+
+  @override
+  String get roomCharacterInstruction => '함께 지낼 캐릭터를 골라요.';
+
+  @override
+  String get roomMoreInCollection => '컬렉션에서 더 보기';
 
   @override
   String get roomDefaultRug => '라벤더 러그';
@@ -567,7 +573,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get roomWallFrame => '벽 액자';
 
   @override
-  String get roomSaved => '방 꾸미기를 저장했어요.';
+  String get roomSaved => '꾸미기를 저장했어요.';
 
   @override
   String get xpHistoryTitle => '내 진행 상황';

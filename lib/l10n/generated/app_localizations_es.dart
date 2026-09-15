@@ -543,7 +543,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get roomDecorate => 'Decorar';
 
   @override
-  String get roomDecorateTitle => 'Decorar casa';
+  String get roomDecorateTitle => 'Decorar';
 
   @override
   String get roomDone => 'Listo';
@@ -570,7 +570,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get roomCategoryProps => 'Adornos';
 
   @override
-  String get roomCategoryCats => 'Gatos';
+  String get roomCategoryCharacters => 'Personajes';
+
+  @override
+  String get roomCharacterInstruction => 'Elige quién te acompaña.';
+
+  @override
+  String get roomMoreInCollection => 'Ver más en la colección';
 
   @override
   String get roomDefaultRug => 'Tapete lavanda';

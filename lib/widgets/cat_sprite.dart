@@ -428,6 +428,7 @@ class CatSprite extends StatelessWidget {
   const CatSprite({
     super.key,
     required this.motion,
+    this.characterId,
     this.width = 112,
     this.animate = true,
     this.loop,
@@ -436,6 +437,13 @@ class CatSprite extends StatelessWidget {
   });
 
   final CatMotion motion;
+
+  /// Draws this character instead of the one the scope names.
+  ///
+  /// For a screen showing a choice the user has made but not saved: the store
+  /// still holds the old character, and the preview has to show the new one
+  /// or the choice looks like it did not register.
+  final String? characterId;
   final double width;
   final bool animate;
   final bool? loop;
@@ -446,7 +454,7 @@ class CatSprite extends StatelessWidget {
   Widget build(BuildContext context) {
     // Whichever character the user is living with. Rendered outside the app
     // — a preview, a test — it still draws Michi rather than throwing.
-    final chosen = SobraScope.maybeOf(context)?.characterId;
+    final chosen = characterId ?? SobraScope.maybeOf(context)?.characterId;
     return CharacterSprite(
       characterId: CharacterCatalog.resolve(
         chosen ?? CharacterCatalog.defaultId,

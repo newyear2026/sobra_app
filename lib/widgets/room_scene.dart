@@ -28,6 +28,7 @@ class RoomScene extends StatelessWidget {
     this.reacting = false,
     this.catMotion,
     this.catLoop,
+    this.characterId,
   });
 
   final RoomSceneVariant variant;
@@ -41,6 +42,9 @@ class RoomScene extends StatelessWidget {
   final bool reacting;
   final CatMotion? catMotion;
   final bool? catLoop;
+
+  /// Overrides the character the scope names; see [CatSprite.characterId].
+  final String? characterId;
 
   String get _asset =>
       backgroundAsset ??
@@ -110,6 +114,7 @@ class RoomScene extends StatelessWidget {
                       motion: reacting
                           ? CatMotion.celebrate
                           : catMotion ?? CatMotion.idle,
+                      characterId: characterId,
                       width: catWidth,
                       animate: !reducedMotionOf(context),
                       loop: reacting ? false : catLoop,

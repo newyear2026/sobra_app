@@ -7,7 +7,12 @@ import 'catalog_entry.dart';
 /// semantic means a future room can move them without changing saved data.
 enum RoomSlot { rug, floorRight, wallCenter, tabletop }
 
-enum RoomDecorCategory { rooms, furniture, wallAndFloor, props, cats }
+/// The shelves the decorate drawer is divided into.
+///
+/// These name what a thing *is*, never what species it is. A per-animal
+/// shelf would add a tab for every character pack and leave most of them
+/// holding one entry.
+enum RoomDecorCategory { rooms, furniture, wallAndFloor, props, characters }
 
 abstract final class RoomThemes {
   static const casaClaraId = 'casa-clara';

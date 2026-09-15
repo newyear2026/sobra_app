@@ -6,6 +6,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/catalog_entry.dart';
 import '../models/room_design.dart';
 import '../state/sobra_store.dart';
+import 'collection_screen.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
 import '../widgets/pixel_ui.dart';
@@ -22,14 +23,32 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
   RoomDecorCategory _category = RoomDecorCategory.furniture;
   String? _selectedItemId = 'item-01';
   Map<RoomSlot, String>? _draft;
-  final List<Map<RoomSlot, String>> _history = [];
+
+  /// The character the room will keep, once Done is pressed.
+  ///
+  /// Staged like the placements rather than written on the tap. This screen
+  /// promises Undo and Done, and a choice that took effect immediately would
+  /// sit outside both — the user would press Undo, watch the lamp go back and
+  /// the cat stay, and be right to call that broken.
+  String? _draftCharacterId;
+
+  final List<_DecorSnapshot> _history = [];
   bool _saving = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _draft ??= Map.of(SobraScope.of(context).roomDecorationsFor());
+    final store = SobraScope.of(context);
+    _draft ??= Map.of(store.roomDecorationsFor());
+    _draftCharacterId ??= store.characterId;
   }
+
+  void _pushHistory() => _history.add(
+    _DecorSnapshot(
+      placements: Map.of(_draft!),
+      characterId: _draftCharacterId!,
+    ),
+  );
 
   Future<void> _finish() async {
     if (_saving) return;
@@ -37,11 +56,13 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
     final l10n = AppLocalizations.of(context);
-    final saved = await guardStoreWrite(
-      messenger,
-      l10n,
-      () => SobraScope.of(context).saveRoomDecorations(_draft!),
-    );
+    final store = SobraScope.of(context);
+    final saved = await guardStoreWrite(messenger, l10n, () async {
+      await store.saveRoomDecorations(_draft!);
+      if (_draftCharacterId != store.characterId) {
+        await store.chooseCharacter(_draftCharacterId!);
+      }
+    });
     if (!mounted) return;
     setState(() => _saving = false);
     if (!saved) return;
@@ -53,16 +74,27 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
 
   void _undo() {
     if (_history.isEmpty) return;
+    final previous = _history.removeLast();
     setState(() {
-      _draft = _history.removeLast();
+      _draft = previous.placements;
+      _draftCharacterId = previous.characterId;
     });
   }
 
   void _selectChoice(_RoomChoice choice) {
-    if (!choice.owned) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(choice.status)));
+    if (choice.isLink) {
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => const CollectionScreen()),
+      );
+      return;
+    }
+    final characterId = choice.characterId;
+    if (characterId != null) {
+      if (characterId == _draftCharacterId) return;
+      setState(() {
+        _pushHistory();
+        _draftCharacterId = characterId;
+      });
       return;
     }
     if (choice.slot == null) return;
@@ -83,7 +115,7 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
     }
     if (_draft![slot] == itemId) return;
     setState(() {
-      _history.add(Map.of(_draft!));
+      _pushHistory();
       _draft![slot] = itemId;
     });
   }
@@ -125,6 +157,7 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
                         message: l10n.homeGoingWell,
                         showSlots: true,
                         selectedItemId: _selectedItemId,
+                        characterId: _draftCharacterId,
                         onSlotTap: _place,
                       ),
                     ),
@@ -146,7 +179,9 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
                           const SizedBox(width: 8),
                           Flexible(
                             child: Text(
-                              l10n.roomInstruction,
+                              _category == RoomDecorCategory.characters
+                                  ? l10n.roomCharacterInstruction
+                                  : l10n.roomInstruction,
                               textAlign: TextAlign.center,
                               style: pixelText(
                                 size: 13,
@@ -164,6 +199,7 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
                         category: _category,
                         choices: choices,
                         selectedItemId: _selectedItemId,
+                        selectedCharacterId: _draftCharacterId,
                         onCategoryChanged: (category) {
                           setState(() {
                             _category = category;
@@ -247,6 +283,7 @@ class _DecorDrawer extends StatelessWidget {
     required this.category,
     required this.choices,
     required this.selectedItemId,
+    required this.selectedCharacterId,
     required this.onCategoryChanged,
     required this.onChoiceTap,
   });
@@ -254,6 +291,7 @@ class _DecorDrawer extends StatelessWidget {
   final RoomDecorCategory category;
   final List<_RoomChoice> choices;
   final String? selectedItemId;
+  final String? selectedCharacterId;
   final ValueChanged<RoomDecorCategory> onCategoryChanged;
   final ValueChanged<_RoomChoice> onChoiceTap;
 
@@ -299,7 +337,9 @@ class _DecorDrawer extends StatelessWidget {
                 final choice = choices[index];
                 return _RoomChoiceTile(
                   choice: choice,
-                  selected: selectedItemId == choice.id,
+                  selected: choice.characterId == null
+                      ? selectedItemId == choice.id
+                      : choice.characterId == selectedCharacterId,
                   onTap: () => onChoiceTap(choice),
                 );
               },
@@ -363,11 +403,12 @@ class _RoomChoiceTile extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    button: true,
-    selected: selected,
-    enabled: choice.owned,
-    label: '${choice.label}, ${choice.status}',
+  Widget build(BuildContext context) {
+    if (choice.isLink) return _link(context);
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: '${choice.label}, ${choice.status}',
     child: GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
@@ -399,8 +440,39 @@ class _RoomChoiceTile extends StatelessWidget {
               style: pixelText(
                 size: 12,
                 bold: true,
-                color: choice.owned ? AppColors.tealInk : AppColors.muted,
+                color: AppColors.tealInk,
               ),
+            ),
+          ],
+        ),
+        ),
+      ),
+    );
+  }
+
+  Widget _link(BuildContext context) => Semantics(
+    button: true,
+    label: choice.label,
+    child: GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(7),
+        decoration: BoxDecoration(
+          color: AppColors.paperLight,
+          border: Border.all(color: AppColors.line, width: 2),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            choice.preview,
+            const SizedBox(height: 6),
+            Text(
+              choice.label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: pixelText(size: 11, bold: true, color: AppColors.muted),
             ),
           ],
         ),
@@ -409,36 +481,77 @@ class _RoomChoiceTile extends StatelessWidget {
   );
 }
 
+/// One step of the decorate screen's Undo stack.
+///
+/// Carries the character as well as the placements: both are staged until
+/// Done, so both have to travel together or Undo would put the room back
+/// while leaving the cat changed.
+class _DecorSnapshot {
+  const _DecorSnapshot({required this.placements, required this.characterId});
+
+  final Map<RoomSlot, String> placements;
+  final String characterId;
+}
+
 class _RoomChoice {
   const _RoomChoice({
     required this.id,
     required this.label,
     required this.status,
-    required this.owned,
     required this.preview,
     this.slot,
-  });
+    this.characterId,
+  }) : isLink = false;
+
+  /// The tile that leaves for the collection.
+  ///
+  /// The drawer shows only what the user already owns, so nothing in it can be
+  /// bought or unlocked. This is the one door out, sitting last in the
+  /// category rather than appearing as a price on something they cannot have.
+  const _RoomChoice.link({required this.label})
+    : id = linkId,
+      status = '',
+      preview = const Icon(Icons.add, size: 26, color: AppColors.muted),
+      slot = null,
+      characterId = null,
+      isLink = true;
+
+  static const linkId = '__collection__';
 
   final String id;
   final String label;
   final String status;
-  final bool owned;
   final Widget preview;
   final RoomSlot? slot;
+
+  /// Set on character tiles, which are equipped rather than put in a slot.
+  final String? characterId;
+
+  final bool isLink;
 }
 
+/// What the drawer offers for [category]: owned things, and a way to get more.
+///
+/// Nothing locked appears here. The drawer used to list what the user did not
+/// have under a label reading "buy" or "watch an ad" — neither of which this
+/// screen can do. Tapping one repeated the label in a snackbar and stopped, so
+/// it read as a broken button. Acquiring belongs to the collection, and the
+/// last tile goes there.
 List<_RoomChoice> _choicesFor(
   RoomDecorCategory category,
   AppLocalizations l10n,
   SobraStore store,
 ) {
+  final choices = <_RoomChoice>[];
+
   if (category == RoomDecorCategory.rooms) {
+    // No link tile: the collection sells no themes yet, so it would lead
+    // somewhere with nothing to answer for it.
     return [
       _RoomChoice(
         id: RoomThemes.casaClaraId,
         label: l10n.roomThemeCasaClara,
         status: l10n.collectionEquipped,
-        owned: true,
         preview: Image.asset(
           RoomThemes.casaClaraPreviewAsset,
           fit: BoxFit.cover,
@@ -447,21 +560,23 @@ List<_RoomChoice> _choicesFor(
       ),
     ];
   }
-  if (category == RoomDecorCategory.cats) {
-    return [
-      _RoomChoice(
-        id: 'michi',
-        label: 'Michi',
-        status: l10n.collectionEquipped,
-        owned: true,
-        preview: const Center(
-          child: CatSprite(motion: CatMotion.idle, width: 72, animate: false),
+
+  if (category == RoomDecorCategory.characters) {
+    for (final entry in CatalogPreviewData.characters) {
+      if (!store.ownsCatalogEntry(entry)) continue;
+      choices.add(
+        _RoomChoice(
+          id: entry.id,
+          characterId: entry.id,
+          label: catalogEntryDisplayName(l10n, entry),
+          status: l10n.collectionOwned,
+          preview: _characterPreview(entry),
         ),
-      ),
-    ];
+      );
+    }
+    return choices..add(_RoomChoice.link(label: l10n.roomMoreInCollection));
   }
 
-  final choices = <_RoomChoice>[];
   if (category == RoomDecorCategory.wallAndFloor) {
     choices.add(
       _assetChoice(
@@ -487,23 +602,32 @@ List<_RoomChoice> _choicesFor(
 
   for (final entry in CatalogPreviewData.items) {
     if (RoomDecorAssets.assetFor(entry.id) == null ||
-        RoomDecorAssets.categoryForItemId(entry.id) != category) {
+        RoomDecorAssets.categoryForItemId(entry.id) != category ||
+        !store.ownsCatalogEntry(entry)) {
       continue;
     }
-    final owned = store.ownsCatalogEntry(entry);
     choices.add(
       _assetChoice(
         id: entry.id,
         label: _itemLabel(l10n, entry),
         asset: RoomDecorAssets.assetFor(entry.id)!,
         slot: RoomDecorAssets.slotForCatalogEntry(entry)!,
-        status: owned ? l10n.collectionOwned : _lockedLabel(l10n, entry),
-        owned: owned,
+        status: l10n.collectionOwned,
       ),
     );
   }
-  return choices;
+  return choices..add(_RoomChoice.link(label: l10n.roomMoreInCollection));
 }
+
+/// Michi has art; the rest of the lineup is still a placeholder.
+///
+/// Keyed on the visual rather than on the id, so a character gaining its own
+/// sprite is a change to the catalog entry and not to this screen.
+Widget _characterPreview(CatalogEntry entry) => Center(
+  child: entry.visual == CatalogVisual.michi
+      ? const CatSprite(motion: CatMotion.idle, width: 72, animate: false)
+      : const Icon(Icons.pets_outlined, size: 34, color: AppColors.muted),
+);
 
 _RoomChoice _assetChoice({
   required String id,
@@ -511,12 +635,10 @@ _RoomChoice _assetChoice({
   required String asset,
   required RoomSlot slot,
   required String status,
-  bool owned = true,
 }) => _RoomChoice(
   id: id,
   label: label,
   status: status,
-  owned: owned,
   slot: slot,
   preview: Padding(
     padding: const EdgeInsets.all(4),
@@ -530,7 +652,7 @@ String _categoryLabel(AppLocalizations l10n, RoomDecorCategory category) =>
       RoomDecorCategory.furniture => l10n.roomCategoryFurniture,
       RoomDecorCategory.wallAndFloor => l10n.roomCategoryWallFloor,
       RoomDecorCategory.props => l10n.roomCategoryProps,
-      RoomDecorCategory.cats => l10n.roomCategoryCats,
+      RoomDecorCategory.characters => l10n.roomCategoryCharacters,
     };
 
 String _itemLabel(AppLocalizations l10n, CatalogEntry entry) =>
@@ -540,13 +662,4 @@ String _itemLabel(AppLocalizations l10n, CatalogEntry entry) =>
       'item-04' => l10n.roomDefaultRug,
       'item-05' => l10n.roomWallFrame,
       _ => catalogEntryDisplayName(l10n, entry),
-    };
-
-String _lockedLabel(AppLocalizations l10n, CatalogEntry entry) =>
-    switch (entry.unlockMethod) {
-      CatalogUnlockMethod.level => l10n.collectionLevel(entry.requiredLevel!),
-      CatalogUnlockMethod.rewardedAd => l10n.collectionWatchAd,
-      CatalogUnlockMethod.purchase => l10n.collectionBuy,
-      CatalogUnlockMethod.included => l10n.collectionOwned,
-      CatalogUnlockMethod.bundle => l10n.collectionPackOnly,
     };
