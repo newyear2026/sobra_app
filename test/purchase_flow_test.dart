@@ -102,7 +102,7 @@ void main() {
     // second trip through the screen.
     await tester.tap(find.text('Personaje 7'));
     await tester.pumpAndSettle();
-    expect(inDialog('EQUIPAR'), findsOneWidget);
+    expect(inDialog('OBTENIDO'), findsOneWidget);
     expect(inDialog('COMPRAR'), findsNothing);
   });
 

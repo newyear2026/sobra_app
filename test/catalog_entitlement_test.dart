@@ -112,29 +112,37 @@ void main() {
     expect(store.ownedCatalogIds, isEmpty);
   });
 
-  test('an equipped character and item are both remembered', () async {
+  test('an equipped character is remembered', () async {
     final store = await loadStore();
-    final item = entryById('item-01');
     final character = entryById('character-04');
     await store.grantCatalogEntry(character.id);
 
-    await store.equipCatalogEntry(item);
-    await store.equipCatalogEntry(character);
+    await store.equipCharacter(character);
 
     final reopened = await loadStore();
-    expect(reopened.equippedIdFor(CatalogKind.item), item.id);
     expect(reopened.equippedIdFor(CatalogKind.character), character.id);
     expect(reopened.characterId, character.id);
   });
 
-  test('equipping something the user does not own is refused', () async {
+  test('equipping a character the user does not own is refused', () async {
     final store = await loadStore();
 
     expect(
-      () => store.equipCatalogEntry(entryById('character-02')),
+      () => store.equipCharacter(entryById('character-02')),
       throwsArgumentError,
     );
     expect(store.equippedIdFor(CatalogKind.character), 'michi');
+  });
+
+  // An item is placed, not worn. Sending one through here used to write a
+  // room placement chosen by nobody, from a screen with no room on it.
+  test('equipping an item is refused', () async {
+    final store = await loadStore();
+
+    expect(
+      () => store.equipCharacter(entryById('item-01')),
+      throwsArgumentError,
+    );
   });
 
   // A restore hands back product ids, not catalog entries, so an id this build

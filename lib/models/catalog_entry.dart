@@ -119,13 +119,11 @@ class CatalogEntryState {
   CatalogEntryState({
     required this.entry,
     required this.isOwned,
-    required this.isEquipped,
     this.rewardedAdProgress = 0,
     this.localizedStorePrice,
     this.isPurchasing = false,
     this.rewardedAdBlock,
-  }) : assert(!isEquipped || isOwned),
-       assert(
+  }) : assert(
          rewardedAdBlock == null ||
              entry.unlockMethod == CatalogUnlockMethod.rewardedAd,
        ),
@@ -141,7 +139,6 @@ class CatalogEntryState {
 
   final CatalogEntry entry;
   final bool isOwned;
-  final bool isEquipped;
   final int rewardedAdProgress;
 
   /// Presentation-only price received from a store price source.

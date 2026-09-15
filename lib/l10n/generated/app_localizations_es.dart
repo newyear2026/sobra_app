@@ -434,10 +434,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get collectionCharactersHint => 'Elige quién te acompaña';
+  String get collectionCharactersHint => 'Reúne a quien te acompaña';
 
   @override
-  String get collectionItemsHint => 'Decora tu espacio';
+  String get collectionItemsHint => 'Reúne lo que va en tu espacio';
 
   @override
   String collectionCharacterPlaceholder(int number) {
@@ -456,7 +456,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get collectionOwned => 'OBTENIDO';
 
   @override
-  String get collectionEquip => 'EQUIPAR';
+  String get collectionPlaceIt => 'Colocarlo';
 
   @override
   String get collectionBuy => 'COMPRAR';
@@ -527,11 +527,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get collectionPreviewActionNotice =>
       'La compra y los anuncios se conectarán en una etapa posterior.';
-
-  @override
-  String collectionEquippedNotice(String name) {
-    return '$name quedó seleccionado.';
-  }
 
   @override
   String get roomTitle => 'Mi casa';

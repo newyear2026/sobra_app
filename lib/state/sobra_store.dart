@@ -1307,9 +1307,6 @@ class SobraStore extends ChangeNotifier {
         ...?_roomPlacementsByRoom[roomId ?? equippedRoomId],
       });
 
-  bool isRoomItemEquipped(String id) =>
-      roomDecorationsFor().values.contains(id);
-
   Future<void> saveRoomDecorations(Map<RoomSlot, String> placements) async {
     for (final itemId in placements.values) {
       if (RoomDecorAssets.assetFor(itemId) == null) {
@@ -1406,30 +1403,25 @@ class SobraStore extends ChangeNotifier {
   /// Refuses an entry the user does not own rather than storing it and letting
   /// the room fall back to placeholder art, which would read as a bug the user
   /// cannot undo.
-  Future<void> equipCatalogEntry(CatalogEntry entry) async {
+  /// Shows [entry]'s character wherever the app draws one.
+  ///
+  /// Characters only. Items came through here too once, writing a room
+  /// placement on the user's behalf from a screen that could not show them
+  /// where it landed — and, for an item belonging to no slot, setting a mark
+  /// nothing ever read back. Placing is the decorate screen's work now.
+  ///
+  /// The ownership check is why this exists rather than a bare
+  /// [chooseCharacter]: the chosen character is drawn on the register screen
+  /// and in every celebration, so an unowned one here would give away what
+  /// the catalog is still selling.
+  Future<void> equipCharacter(CatalogEntry entry) async {
+    if (entry.kind != CatalogKind.character) {
+      throw ArgumentError.value(entry.id, 'entry', 'not a character');
+    }
     if (!ownsCatalogEntry(entry)) {
       throw ArgumentError.value(entry.id, 'entry', 'not owned');
     }
-    switch (entry.kind) {
-      case CatalogKind.character:
-        await chooseCharacter(entry.id);
-      case CatalogKind.item:
-        final slot = RoomDecorAssets.slotForCatalogEntry(entry);
-        if (slot == null) {
-          if (entry.id == equippedItemId) return;
-          equippedItemId = entry.id;
-        } else {
-          final placements = Map<RoomSlot, String>.of(
-            roomDecorationsFor(equippedRoomId),
-          );
-          if (placements[slot] == entry.id) return;
-          placements[slot] = entry.id;
-          _roomPlacementsByRoom[equippedRoomId] = placements;
-          equippedItemId = entry.id;
-        }
-        await _save();
-        notifyListeners();
-    }
+    await chooseCharacter(entry.id);
   }
 
   /// Records that the account offer has been answered, whichever way.

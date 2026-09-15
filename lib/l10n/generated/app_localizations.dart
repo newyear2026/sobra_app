@@ -846,13 +846,13 @@ abstract class AppLocalizations {
   /// No description provided for @collectionCharactersHint.
   ///
   /// In es, this message translates to:
-  /// **'Elige quién te acompaña'**
+  /// **'Reúne a quien te acompaña'**
   String get collectionCharactersHint;
 
   /// No description provided for @collectionItemsHint.
   ///
   /// In es, this message translates to:
-  /// **'Decora tu espacio'**
+  /// **'Reúne lo que va en tu espacio'**
   String get collectionItemsHint;
 
   /// No description provided for @collectionCharacterPlaceholder.
@@ -879,11 +879,11 @@ abstract class AppLocalizations {
   /// **'OBTENIDO'**
   String get collectionOwned;
 
-  /// No description provided for @collectionEquip.
+  /// No description provided for @collectionPlaceIt.
   ///
   /// In es, this message translates to:
-  /// **'EQUIPAR'**
-  String get collectionEquip;
+  /// **'Colocarlo'**
+  String get collectionPlaceIt;
 
   /// No description provided for @collectionBuy.
   ///
@@ -998,12 +998,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'La compra y los anuncios se conectarán en una etapa posterior.'**
   String get collectionPreviewActionNotice;
-
-  /// No description provided for @collectionEquippedNotice.
-  ///
-  /// In es, this message translates to:
-  /// **'{name} quedó seleccionado.'**
-  String collectionEquippedNotice(String name);
 
   /// No description provided for @roomTitle.
   ///

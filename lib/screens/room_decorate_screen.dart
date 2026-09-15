@@ -60,7 +60,11 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
     final saved = await guardStoreWrite(messenger, l10n, () async {
       await store.saveRoomDecorations(_draft!);
       if (_draftCharacterId != store.characterId) {
-        await store.chooseCharacter(_draftCharacterId!);
+        await store.equipCharacter(
+          CatalogPreviewData.characters.firstWhere(
+            (entry) => entry.id == _draftCharacterId,
+          ),
+        );
       }
     });
     if (!mounted) return;
@@ -84,7 +88,9 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
   void _selectChoice(_RoomChoice choice) {
     if (choice.isLink) {
       Navigator.of(context).push(
-        MaterialPageRoute<void>(builder: (_) => const CollectionScreen()),
+        MaterialPageRoute<void>(
+          builder: (_) => const CollectionScreen(openedFromDecorate: true),
+        ),
       );
       return;
     }

@@ -419,10 +419,10 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get collectionCharactersHint => '함께할 캐릭터를 골라요';
+  String get collectionCharactersHint => '함께할 캐릭터를 모아요';
 
   @override
-  String get collectionItemsHint => '내 공간을 꾸며요';
+  String get collectionItemsHint => '내 공간에 둘 물건을 모아요';
 
   @override
   String collectionCharacterPlaceholder(int number) {
@@ -441,7 +441,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get collectionOwned => '보유 중';
 
   @override
-  String get collectionEquip => '선택하기';
+  String get collectionPlaceIt => '꾸미기에서 놓기';
 
   @override
   String get collectionBuy => '구매하기';
@@ -509,11 +509,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get collectionPreviewActionNotice => '구매와 광고는 다음 단계에서 연결할 예정이에요.';
-
-  @override
-  String collectionEquippedNotice(String name) {
-    return '$name을(를) 선택했어요.';
-  }
 
   @override
   String get roomTitle => '내 방';

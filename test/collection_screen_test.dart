@@ -43,6 +43,7 @@ void main() {
     WidgetTester tester,
     SobraStore store, {
     RewardedAds? ads,
+    bool openedFromDecorate = false,
   }) async {
     tester.view.physicalSize = const Size(520, 1400);
     tester.view.devicePixelRatio = 1;
@@ -55,7 +56,7 @@ void main() {
         localizationsDelegates: sobraLocalizationsDelegates,
         supportedLocales: sobraSupportedLocales,
         theme: buildSobraTheme(),
-        home: const CollectionScreen(),
+        home: CollectionScreen(openedFromDecorate: openedFromDecorate),
       ),
     );
     if (ads != null) app = RewardedAdScope(ads: ads, child: app);
@@ -65,7 +66,10 @@ void main() {
 
   // The screen used to hold ownership in its own State, so what it offered was
   // the same two ids for everybody regardless of what the user had done.
-  testWidgets('a granted character is offered for equipping, not for sale', (
+  // Owning it ends the collection's business with it: not for sale any more,
+  // and not for wearing either. Wearing belongs to the decorate screen, which
+  // is the one that can show the choice landing.
+  testWidgets('a granted character is neither for sale nor for equipping', (
     tester,
   ) async {
     final store = await loadStore();
@@ -75,8 +79,10 @@ void main() {
     await tester.tap(find.text('Personaje 2'));
     await tester.pumpAndSettle();
 
-    expect(inDialog('EQUIPAR'), findsOneWidget);
+    expect(inDialog('OBTENIDO'), findsOneWidget);
     expect(inDialog('COMPRAR'), findsNothing);
+    expect(inDialog('EQUIPAR'), findsNothing);
+    expect(store.characterId, 'michi');
   });
 
   testWidgets('an unowned character still offers only its purchase', (
@@ -92,26 +98,6 @@ void main() {
     expect(inDialog('EQUIPAR'), findsNothing);
   });
 
-  testWidgets('equipping from the dialog is written through to the store', (
-    tester,
-  ) async {
-    final store = await loadStore();
-    await store.grantCatalogEntry('character-02');
-    await pump(tester, store);
-    expect(store.characterId, 'michi');
-
-    await tester.tap(find.text('Personaje 2'));
-    await tester.pumpAndSettle();
-    await tester.tap(inDialog('EQUIPAR'));
-    await tester.pumpAndSettle();
-
-    expect(store.characterId, 'character-02');
-    expect(find.text('Personaje 2 quedó seleccionado.'), findsOneWidget);
-    // The reason the write matters: a reinstall aside, this used to be gone as
-    // soon as the route rebuilt.
-    expect((await loadStore()).characterId, 'character-02');
-  });
-
   testWidgets('a stored ad count is what the card counts from', (tester) async {
     final store = await loadStore();
     await store.recordRewardedAdView(entryById('character-03'));
@@ -125,7 +111,7 @@ void main() {
     expect(find.text('ANUNCIO 0/3'), findsOneWidget);
   });
 
-  testWidgets('an equipped item is remembered across a reload', (tester) async {
+  testWidgets('an owned item offers nothing to place', (tester) async {
     final store = await loadStore();
     await pump(tester, store);
 
@@ -133,11 +119,9 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Objeto 1'));
     await tester.pumpAndSettle();
-    await tester.tap(inDialog('EQUIPAR'));
-    await tester.pumpAndSettle();
 
-    expect(store.equippedIdFor(CatalogKind.item), 'item-01');
-    expect((await loadStore()).equippedIdFor(CatalogKind.item), 'item-01');
+    expect(inDialog('OBTENIDO'), findsOneWidget);
+    expect(inDialog('EQUIPAR'), findsNothing);
   });
 
   // The decoration carries the pack's product id so the store can price the
@@ -243,6 +227,51 @@ void main() {
     expect(store.ownsCatalogEntry(item), isTrue);
     expect(store.rewardedAdsWatchedToday, 1);
     expect(find.text('¡Objeto 3 es tuyo!'), findsOneWidget);
+  });
+
+  // Acquiring is this screen's work and placing is not, so the unlock hands
+  // the user back to the screen that can put the thing somewhere — but only
+  // when that screen is the one underneath. Reached from settings there is
+  // nothing to go back to, and pushing a decorate screen from inside the
+  // collection would stack the two surfaces in the order this split undoes.
+  testWidgets('an unlock offers the way back to decorate', (tester) async {
+    final store = await loadStore();
+
+    await pump(
+      tester,
+      store,
+      ads: await readyAds(store),
+      openedFromDecorate: true,
+    );
+    await tester.tap(find.text('OBJETOS'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Objeto 3'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Objeto 3'));
+    await tester.pumpAndSettle();
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Colocarlo'), findsOneWidget);
+  });
+
+  testWidgets('reached from anywhere else the unlock offers no way back', (
+    tester,
+  ) async {
+    final store = await loadStore();
+
+    await pump(tester, store, ads: await readyAds(store));
+    await tester.tap(find.text('OBJETOS'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Objeto 3'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Objeto 3'));
+    await tester.pumpAndSettle();
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('¡Objeto 3 es tuyo!'), findsOneWidget);
+    expect(find.text('Colocarlo'), findsNothing);
   });
 
   testWidgets('closing an ad early explains why nothing moved', (tester) async {

@@ -17,7 +17,16 @@ class CollectionScreen extends StatefulWidget {
   const CollectionScreen({
     super.key,
     this.priceSource = const PreviewCatalogPriceSource(),
+    this.openedFromDecorate = false,
   });
+
+  /// Whether the decorate screen is the route directly underneath.
+  ///
+  /// Decides what the "place it" action after an unlock does: going back is
+  /// right when they came from there, and stacking a second decorate screen
+  /// on top of the first is not. Opened from anywhere else there is nothing
+  /// to return to, so the action is not offered.
+  final bool openedFromDecorate;
 
   /// Used only where no [PurchaseScope] sits above this screen — a test, or
   /// the debug design gallery. The running app puts the live store there, and
@@ -79,11 +88,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
     return CatalogEntryState(
       entry: entry,
       isOwned: isOwned,
-      isEquipped:
-          isOwned &&
-          (entry.kind == CatalogKind.item
-              ? store.isRoomItemEquipped(entry.id)
-              : store.equippedIdFor(entry.kind) == entry.id),
       rewardedAdProgress: store.rewardedAdProgressFor(entry.id),
       localizedStorePrice: productId == null
           ? null
@@ -124,30 +128,24 @@ class _CollectionScreenState extends State<CollectionScreen> {
 
     final ads = RewardedAdScope.maybeOf(context);
 
-    if (!state.isOwned) {
-      if (state.entry.unlockMethod == CatalogUnlockMethod.purchase &&
-          purchases != null) {
-        // Nothing to report here. What comes back from the store arrives on
-        // the stream, and [_onPurchasesChanged] is what says so.
-        await purchases.buy(state.entry);
-        return;
-      }
-      if (state.entry.unlockMethod == CatalogUnlockMethod.rewardedAd &&
-          ads != null) {
-        await _watchAd(ads, store, state.entry);
-        return;
-      }
-      // A purchase with no store, or an ad with no network, above this screen
-      // is the design gallery rather than the app.
-      _showNotice(l10n.collectionPreviewActionNotice);
+    // Only ever reached for something the user does not own: _canAct closes
+    // the card once they do, because everything left to do with it belongs to
+    // the decorate screen.
+    if (state.entry.unlockMethod == CatalogUnlockMethod.purchase &&
+        purchases != null) {
+      // Nothing to report here. What comes back from the store arrives on
+      // the stream, and [_onPurchasesChanged] is what says so.
+      await purchases.buy(state.entry);
       return;
     }
-
-    await store.equipCatalogEntry(state.entry);
-    if (!mounted) return;
-    _showNotice(
-      l10n.collectionEquippedNotice(catalogEntryDisplayName(l10n, state.entry)),
-    );
+    if (state.entry.unlockMethod == CatalogUnlockMethod.rewardedAd &&
+        ads != null) {
+      await _watchAd(ads, store, state.entry);
+      return;
+    }
+    // A purchase with no store, or an ad with no network, above this screen
+    // is the design gallery rather than the app.
+    _showNotice(l10n.collectionPreviewActionNotice);
   }
 
   /// Shows one rewarded ad and says what it did.
@@ -170,6 +168,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
             l10n.collectionUnlockedNotice(
               catalogEntryDisplayName(l10n, entry),
             ),
+            action: _placeItAction(l10n),
           );
         }
       case RewardedAdOutcome.dismissed:
@@ -184,11 +183,25 @@ class _CollectionScreenState extends State<CollectionScreen> {
     }
   }
 
-  void _showNotice(String message) {
+  void _showNotice(String message, {SnackBarAction? action}) {
     final messenger = ScaffoldMessenger.of(context);
     messenger
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+      ..showSnackBar(SnackBar(content: Text(message), action: action));
+  }
+
+  /// The way back to the screen that can put a new thing somewhere.
+  ///
+  /// Offered only when the decorate screen is underneath this one. From
+  /// settings there is nothing below to return to, and pushing a decorate
+  /// screen from inside the collection would put the two surfaces in the
+  /// order this split exists to undo.
+  SnackBarAction? _placeItAction(AppLocalizations l10n) {
+    if (!widget.openedFromDecorate) return null;
+    return SnackBarAction(
+      label: l10n.collectionPlaceIt,
+      onPressed: () => Navigator.of(context).pop(),
+    );
   }
 
   Future<void> _openDetails(CatalogEntryState state) async {
@@ -207,7 +220,10 @@ class _CollectionScreenState extends State<CollectionScreen> {
   }
 
   bool _canAct(CatalogEntryState state) {
-    if (state.isOwned) return !state.isEquipped;
+    // Owning it ends this screen's business with it. Wearing it, placing it
+    // in the room, moving it between slots — all of that is the decorate
+    // screen, which is the one that can show where the thing went.
+    if (state.isOwned) return false;
     // A second tap during a checkout cannot open a second one, so the control
     // stops looking live rather than accepting a tap and doing nothing.
     if (state.isPurchasing) return false;
@@ -597,8 +613,8 @@ class _CatalogCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.surface,
             border: Border.all(
-              color: state.isEquipped ? AppColors.teal : AppColors.line,
-              width: state.isEquipped ? 3 : 2.5,
+              color: AppColors.line,
+              width: 2.5,
             ),
           ),
           child: Column(
@@ -607,16 +623,7 @@ class _CatalogCard extends StatelessWidget {
                 child: Stack(
                   children: [
                     Positioned.fill(child: _CatalogPreview(entry: state.entry)),
-                    if (state.isEquipped)
-                      const Positioned(
-                        right: 0,
-                        top: 0,
-                        child: _CornerBadge(
-                          icon: Icons.check,
-                          color: AppColors.teal,
-                        ),
-                      )
-                    else if (!state.isOwned &&
+                    if (!state.isOwned &&
                         (state.entry.unlockMethod == CatalogUnlockMethod.level ||
                             state.entry.unlockMethod ==
                                 CatalogUnlockMethod.bundle))
@@ -828,13 +835,6 @@ class _CatalogTones {
   final IconData? icon;
 
   factory _CatalogTones.forState(CatalogEntryState state) {
-    if (state.isEquipped) {
-      return const _CatalogTones(
-        AppColors.tealSoft,
-        AppColors.tealInk,
-        Icons.check,
-      );
-    }
     if (state.isOwned) {
       return const _CatalogTones(AppColors.tealSoft, AppColors.tealInk);
     }
@@ -868,12 +868,7 @@ class _CatalogTones {
 
 String _cardActionLabel(AppLocalizations l10n, CatalogEntryState state) {
   if (state.isPurchasing) return l10n.collectionPurchasing;
-  if (state.isEquipped) return l10n.collectionEquipped;
-  if (state.isOwned) {
-    return state.entry.kind == CatalogKind.item
-        ? l10n.collectionOwned
-        : l10n.collectionEquip;
-  }
+  if (state.isOwned) return l10n.collectionOwned;
   final blocked = state.rewardedAdBlock;
   if (blocked != null) return _adBlockLabel(l10n, blocked);
   return switch (state.entry.unlockMethod) {
@@ -895,8 +890,7 @@ String _cardActionLabel(AppLocalizations l10n, CatalogEntryState state) {
 
 String _dialogActionLabel(AppLocalizations l10n, CatalogEntryState state) {
   if (state.isPurchasing) return l10n.collectionPurchasing;
-  if (state.isEquipped) return l10n.collectionEquipped;
-  if (state.isOwned) return l10n.collectionEquip;
+  if (state.isOwned) return l10n.collectionOwned;
   final blocked = state.rewardedAdBlock;
   if (blocked != null) return _adBlockLabel(l10n, blocked);
   return switch (state.entry.unlockMethod) {

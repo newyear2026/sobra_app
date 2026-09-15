@@ -203,8 +203,8 @@
       "total": { "type": "int" }
     }
   },
-  "collectionCharactersHint": "Elige quién te acompaña",
-  "collectionItemsHint": "Decora tu espacio",
+  "collectionCharactersHint": "Reúne a quien te acompaña",
+  "collectionItemsHint": "Reúne lo que va en tu espacio",
   "collectionCharacterPlaceholder": "Personaje {number}",
   "@collectionCharacterPlaceholder": {
     "placeholders": { "number": { "type": "int" } }
@@ -215,7 +215,7 @@
   },
   "collectionEquipped": "EQUIPADO",
   "collectionOwned": "OBTENIDO",
-  "collectionEquip": "EQUIPAR",
+  "collectionPlaceIt": "Colocarlo",
   "collectionBuy": "COMPRAR",
   "collectionWatchAd": "VER ANUNCIO",
   "collectionAdUnavailable": "SIN ANUNCIOS",
@@ -254,7 +254,6 @@
   },
   "collectionStorePricePending": "precio de la tienda",
   "collectionPreviewActionNotice": "La compra y los anuncios se conectarán en una etapa posterior.",
-  "collectionEquippedNotice": "{name} quedó seleccionado.",
   "roomTitle": "Mi casa",
   "roomOpen": "Abrir mi casa",
   "roomDecorate": "Decorar",
@@ -275,9 +274,6 @@
   "roomTablePlant": "Planta de mesa",
   "roomWallFrame": "Cuadro",
   "roomSaved": "Tu casa quedó guardada.",
-  "@collectionEquippedNotice": {
-    "placeholders": { "name": { "type": "String" } }
-  },
 
   "xpHistoryTitle": "Tu progreso",
   "xpTotal": "{count} XP totales",

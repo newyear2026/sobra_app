@@ -128,7 +128,9 @@ void main() {
     expect(find.text('Colección'), findsOneWidget);
     expect(find.text('PERSONAJES'), findsOneWidget);
     expect(find.text('Personaje 2'), findsOneWidget);
-    expect(find.text('EQUIPADO'), findsOneWidget);
+    // Michi, the only character owned here. The card says what it is, not
+    // what could be done with it.
+    expect(find.text('OBTENIDO'), findsOneWidget);
 
     await tester.tap(find.text('OBJETOS'));
     await tester.pump();
@@ -140,10 +142,8 @@ void main() {
     await tester.pump();
     expect(find.text('CÓMO OBTENERLO'), findsOneWidget);
     expect(find.text('Ya forma parte de tu colección.'), findsOneWidget);
-
-    await tester.tap(find.text('EQUIPAR'));
-    await tester.pump();
-    expect(find.text('EQUIPADO'), findsOneWidget);
+    // Placing it is the decorate screen's work, so the dialog offers nothing.
+    expect(find.text('EQUIPAR'), findsNothing);
   });
 
   testWidgets('collection fits a compact phone width', (tester) async {
