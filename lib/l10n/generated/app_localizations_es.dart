@@ -465,6 +465,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get collectionWatchAd => 'VER ANUNCIO';
 
   @override
+  String get collectionAdLoading => 'PREPARANDO';
+
+  @override
+  String collectionAdProgressLine(int progress, int target) {
+    return '$progress/$target anuncios';
+  }
+
+  @override
+  String collectionAdUnlockDaily(int progress, int target) {
+    return 'Mira anuncios · $progress/$target · uno por día';
+  }
+
+  @override
   String get collectionAdUnavailable => 'SIN ANUNCIOS';
 
   @override

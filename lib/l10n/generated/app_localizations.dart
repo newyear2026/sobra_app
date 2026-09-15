@@ -897,6 +897,24 @@ abstract class AppLocalizations {
   /// **'VER ANUNCIO'**
   String get collectionWatchAd;
 
+  /// No description provided for @collectionAdLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'PREPARANDO'**
+  String get collectionAdLoading;
+
+  /// No description provided for @collectionAdProgressLine.
+  ///
+  /// In es, this message translates to:
+  /// **'{progress}/{target} anuncios'**
+  String collectionAdProgressLine(int progress, int target);
+
+  /// No description provided for @collectionAdUnlockDaily.
+  ///
+  /// In es, this message translates to:
+  /// **'Mira anuncios · {progress}/{target} · uno por día'**
+  String collectionAdUnlockDaily(int progress, int target);
+
   /// No description provided for @collectionAdUnavailable.
   ///
   /// In es, this message translates to:

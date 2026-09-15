@@ -19,6 +19,16 @@ void main() {
   Future<SobraStore> loadStore() =>
       SobraStore.load(now: () => DateTime(2026, 9, 14, 11));
 
+  /// A store with the daily limit switched on.
+  ///
+  /// The app ships without one, so this is the only way the "limit reached"
+  /// card is reachable. It stays tested because the limit is still a supported
+  /// setting, and a card nothing can render is a card that breaks unnoticed.
+  Future<SobraStore> loadCappedStore() => SobraStore.load(
+    now: () => DateTime(2026, 9, 14, 11),
+    rewardedAdsPerDay: 3,
+  );
+
   CatalogEntry entryById(String id) => [
     ...CatalogPreviewData.characters,
     ...CatalogPreviewData.items,
@@ -186,7 +196,7 @@ void main() {
   });
 
   testWidgets('a spent daily cap is what every ad card says', (tester) async {
-    final store = await loadStore();
+    final store = await loadCappedStore();
     await store.recordRewardedAdView(entryById('item-03'));
     await store.recordRewardedAdView(entryById('item-05'));
     await store.recordRewardedAdView(entryById('item-08'));

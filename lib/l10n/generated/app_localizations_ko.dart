@@ -450,6 +450,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get collectionWatchAd => '광고 보기';
 
   @override
+  String get collectionAdLoading => '광고 준비 중';
+
+  @override
+  String collectionAdProgressLine(int progress, int target) {
+    return '광고 $progress/$target';
+  }
+
+  @override
+  String collectionAdUnlockDaily(int progress, int target) {
+    return '보상형 광고 보기 · $progress/$target · 하루 1편씩';
+  }
+
+  @override
   String get collectionAdUnavailable => '현재 광고 없음';
 
   @override

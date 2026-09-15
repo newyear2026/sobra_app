@@ -80,17 +80,25 @@ class RewardedAds extends ChangeNotifier {
 
   final RewardedAdPort _port;
   final SobraStore _store;
-  bool _showing = false;
+  String? _busyEntryId;
 
   /// Whether an ad is loaded and waiting.
   bool get isReady => _port.isReady;
 
-  /// Whether an ad is on screen right now.
-  bool get isShowing => _showing;
+  /// The entry a run is working on, or null when nothing is running.
+  ///
+  /// Covers the fetch in front of the ad as well as the ad itself. That window
+  /// is a network round trip on a card that otherwise looks untouched, which
+  /// is long enough for somebody to tap again — and before this covered it,
+  /// the second tap passed the guard and reached the network too.
+  String? get busyEntryId => _busyEntryId;
+
+  /// Whether a run is working right now.
+  bool get isBusy => _busyEntryId != null;
 
   /// Preloads, so the first tap does not wait on the network.
   Future<void> prepare() async {
-    if (_port.isReady || _showing) return;
+    if (_port.isReady || isBusy) return;
     await _port.load();
     notifyListeners();
   }
@@ -108,25 +116,27 @@ class RewardedAds extends ChangeNotifier {
   /// slot of the daily cap each while the user watched a single ad, and a
   /// double tap on a slow network is enough to cause it.
   Future<RewardedAdOutcome> watch(CatalogEntry entry) async {
-    if (_showing) return RewardedAdOutcome.notAllowed;
+    if (isBusy) return RewardedAdOutcome.notAllowed;
     if (availabilityFor(entry) != RewardedAdAvailability.available) {
       return RewardedAdOutcome.notAllowed;
     }
-    if (!_port.isReady) {
-      await _port.load();
-      if (!_port.isReady) {
-        notifyListeners();
-        return RewardedAdOutcome.unavailable;
-      }
-    }
 
-    _showing = true;
+    // Claimed before the fetch, not after it. The fetch is the slow half, and
+    // leaving it unguarded let a second tap start its own run.
+    _busyEntryId = entry.id;
     notifyListeners();
     final RewardedAdResult result;
     try {
+      if (!_port.isReady) {
+        await _port.load();
+        if (!_port.isReady) {
+          return RewardedAdOutcome.unavailable;
+        }
+      }
       result = await _port.show();
     } finally {
-      _showing = false;
+      _busyEntryId = null;
+      notifyListeners();
     }
 
     switch (result) {
@@ -137,16 +147,13 @@ class RewardedAds extends ChangeNotifier {
         final counted = await _store.recordRewardedAdView(entry);
         // Load the next one now, so the following tap opens immediately.
         unawaited(prepare());
-        notifyListeners();
         return counted
             ? RewardedAdOutcome.counted
             : RewardedAdOutcome.notAllowed;
       case RewardedAdResult.dismissed:
         unawaited(prepare());
-        notifyListeners();
         return RewardedAdOutcome.dismissed;
       case RewardedAdResult.failed:
-        notifyListeners();
         return RewardedAdOutcome.unavailable;
     }
   }

@@ -32,6 +32,10 @@ enum RewardedAdAvailability {
   alreadyEarnedToday,
 
   /// The daily limit across every entry is used up.
+  ///
+  /// Unreachable while [SobraStore.rewardedAdsPerDay] is null, which is how
+  /// this build ships. Kept so that setting a number is all it takes to bring
+  /// the limit back.
   dailyCapReached,
 }
 
@@ -48,7 +52,7 @@ String dayKey(DateTime value) =>
     '-${value.day.toString().padLeft(2, '0')}';
 
 class SobraStore extends ChangeNotifier {
-  SobraStore._(this._preferences, this._now);
+  SobraStore._(this._preferences, this._now, this.rewardedAdsPerDay);
 
   /// The schedule every path falls back to: paid on the 15th and on the last
   /// day of the month, the ordinary Mexican quincena.
@@ -185,9 +189,16 @@ class SobraStore extends ChangeNotifier {
 
   Map<ExpenseCategory, int> categoryLimits = _categoryLimitsForBudget(600000);
 
-  static Future<SobraStore> load({NowProvider? now}) async {
+  static Future<SobraStore> load({
+    NowProvider? now,
+    int? rewardedAdsPerDay,
+  }) async {
     final preferences = await SharedPreferences.getInstance();
-    final store = SobraStore._(preferences, now ?? DateTime.now);
+    final store = SobraStore._(
+      preferences,
+      now ?? DateTime.now,
+      rewardedAdsPerDay,
+    );
     final saved = preferences.getString(_storageKey);
     if (saved == null) {
       store._initializeNewUser();
@@ -1251,25 +1262,46 @@ class SobraStore extends ChangeNotifier {
   /// Rewarded ads watched toward [id], or zero once it has been granted.
   int rewardedAdProgressFor(String id) => _rewardedAdProgress[id] ?? 0;
 
-  /// Rewarded ads a user may watch in one local day, across every entry.
-  static const rewardedAdsPerDay = 3;
+  /// Rewarded ads a user may watch in one local day, across every entry, or
+  /// null for no limit.
+  ///
+  /// Null is what the app ships. A rewarded ad is started by the user, every
+  /// time, and a cap is the one place Sobra would tell somebody who wants to
+  /// watch one that they may not — the opposite of what the rest of this
+  /// design promises. It also bought very little: the whole rewarded lineup is
+  /// ten views, the special tier already forces its three onto three separate
+  /// days, and a cap of three only stretched a three-day run into a four-day
+  /// one. The finite lineup is the real limit.
+  ///
+  /// Settable rather than deleted, because the reason it might come back is
+  /// real: a lineup that grows through updates would want pacing again. Kept
+  /// injectable rather than as a constant so the limit's own behaviour stays
+  /// covered by tests while the app runs without one — a path nothing can
+  /// reach is a path that stops working quietly.
+  final int? rewardedAdsPerDay;
 
   /// Today, as the key the daily limits are stored against.
   String get todayKey => dayKey(_now());
 
   /// Rewarded ads watched today.
   ///
-  /// Answers zero for a stored count that belongs to an earlier day, so the
-  /// limit resets by itself rather than needing something to run at midnight.
+  /// Answers zero for a stored count that belongs to an earlier day, so a
+  /// limit would reset by itself rather than needing something to run at
+  /// midnight.
+  ///
+  /// Kept counted while [rewardedAdsPerDay] is null. The day it carries is the
+  /// same one the once-per-day tier already needs, so counting costs nothing,
+  /// and a cap introduced later starts from a real number instead of from a
+  /// gap in everybody's history.
   int get rewardedAdsWatchedToday =>
       _rewardedAdDay == todayKey ? _rewardedAdsWatchedOnDay : 0;
 
-  /// Rewarded ads still allowed today.
-  int get rewardedAdsLeftToday =>
-      (rewardedAdsPerDay - rewardedAdsWatchedToday).clamp(
-        0,
-        rewardedAdsPerDay,
-      );
+  /// Rewarded ads still allowed today, or null where there is no limit.
+  int? get rewardedAdsLeftToday {
+    final perDay = rewardedAdsPerDay;
+    if (perDay == null) return null;
+    return (perDay - rewardedAdsWatchedToday).clamp(0, perDay);
+  }
 
   /// The local day [id] last took a view, or null for an entry that never has.
   String? rewardedAdLastEarnedDateFor(String id) =>
@@ -1289,7 +1321,7 @@ class SobraStore extends ChangeNotifier {
         _rewardedAdLastEarnedDate[entry.id] == todayKey) {
       return RewardedAdAvailability.alreadyEarnedToday;
     }
-    if (rewardedAdsLeftToday <= 0) {
+    if ((rewardedAdsLeftToday ?? 1) <= 0) {
       return RewardedAdAvailability.dailyCapReached;
     }
     return RewardedAdAvailability.available;
@@ -1570,7 +1602,11 @@ class SobraStore extends ChangeNotifier {
 
   bool _tryRestore(String raw) {
     try {
-      final candidate = SobraStore._(_preferences, _now);
+      final candidate = SobraStore._(
+        _preferences,
+        _now,
+        rewardedAdsPerDay,
+      );
       candidate._restore(jsonDecode(raw) as Map<String, dynamic>);
       _copyFrom(candidate);
       return true;

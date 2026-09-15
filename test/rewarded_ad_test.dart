@@ -20,6 +20,13 @@ void main() {
 
   Future<SobraStore> loadStore() => SobraStore.load(now: () => now);
 
+  /// A store with the daily limit switched on.
+  ///
+  /// The app ships without one. The limit is still a supported setting, so its
+  /// behaviour is tested here rather than left to a path nothing can reach.
+  Future<SobraStore> loadCappedStore([int perDay = 3]) =>
+      SobraStore.load(now: () => now, rewardedAdsPerDay: perDay);
+
   CatalogEntry entryById(String id) =>
       CatalogPreviewData.all.firstWhere((entry) => entry.id == id);
 
@@ -51,18 +58,17 @@ void main() {
       expect(special.rewardedAdOncePerDay, isTrue);
     });
 
-    // The cap has to leave room to combine, or a character unlock is the only
-    // thing a day can hold.
-    test('no entry costs a whole day of the cap at once', () {
-      final perDay = SobraStore.rewardedAdsPerDay;
+    // Only meaningful if a limit is ever switched back on: a cap has to leave
+    // room to combine, or a character unlock is the only thing a day can hold.
+    test('no entry would cost a whole day of a cap of three', () {
       for (final entry in CatalogPreviewData.all) {
         final target = entry.rewardedAdTarget;
         if (target == null || entry.rewardedAdOncePerDay) continue;
         expect(
           target,
-          lessThan(perDay),
-          reason: '${entry.id} costs $target of a $perDay daily cap, which '
-              'leaves nothing to pair it with',
+          lessThan(3),
+          reason: '${entry.id} costs $target of a cap of three, which would '
+              'leave nothing to pair it with',
         );
       }
     });
@@ -91,7 +97,6 @@ void main() {
       await ads.watch(character);
 
       expect(store.rewardedAdsWatchedToday, 1);
-      expect(store.rewardedAdsLeftToday, 2);
       // One write, not two. A progress that survived a restart without its
       // daily count would hand back a free ad on every launch.
       expect((await loadStore()).rewardedAdsWatchedToday, 1);
@@ -136,8 +141,10 @@ void main() {
     });
   });
 
-  group('the daily cap', () {
-    test('stops the fourth view of the day', () async {
+  group('the app ships with no daily limit', () {
+    // A rewarded ad is started by the user every time, and the lineup is only
+    // ten views deep. The lineup is the limit.
+    test('a fourth view in one day is allowed', () async {
       final store = await loadStore();
       final ads = adsFor(store);
 
@@ -146,6 +153,48 @@ void main() {
       await ads.watch(entryById('item-08'));
 
       expect(store.rewardedAdsWatchedToday, 3);
+      expect(store.rewardedAdsLeftToday, isNull);
+      expect(
+        ads.availabilityFor(character),
+        RewardedAdAvailability.available,
+      );
+      expect(await ads.watch(character), RewardedAdOutcome.counted);
+      expect(store.rewardedAdsWatchedToday, 4);
+    });
+
+    // Counted even with nothing reading it for a limit: the day it carries is
+    // the one the special tier needs anyway, and a limit added later starts
+    // from a real number.
+    test('the day is still counted, and still resets', () async {
+      final store = await loadStore();
+      final ads = adsFor(store);
+      await ads.watch(entryById('item-03'));
+      expect(store.rewardedAdsWatchedToday, 1);
+
+      now = DateTime(2026, 9, 15, 0, 1);
+
+      expect(store.rewardedAdsWatchedToday, 0);
+    });
+
+    test('the count survives a restart within the same day', () async {
+      final store = await loadStore();
+      await adsFor(store).watch(entryById('item-03'));
+
+      final reopened = await loadStore();
+
+      expect(reopened.rewardedAdsWatchedToday, 1);
+    });
+  });
+
+  group('a daily limit still works when one is set', () {
+    test('it stops the view after the limit', () async {
+      final store = await loadCappedStore();
+      final ads = adsFor(store);
+
+      await ads.watch(entryById('item-03'));
+      await ads.watch(entryById('item-05'));
+      await ads.watch(entryById('item-08'));
+
       expect(store.rewardedAdsLeftToday, 0);
       expect(
         ads.availabilityFor(character),
@@ -159,8 +208,8 @@ void main() {
 
     // Nothing runs at midnight. The count carries a day, and a day that is no
     // longer today reads as zero.
-    test('resets when the local day turns over', () async {
-      final store = await loadStore();
+    test('it resets when the local day turns over', () async {
+      final store = await loadCappedStore();
       final ads = adsFor(store);
       await ads.watch(entryById('item-03'));
       await ads.watch(entryById('item-05'));
@@ -169,20 +218,8 @@ void main() {
 
       now = DateTime(2026, 9, 15, 0, 1);
 
-      expect(store.rewardedAdsWatchedToday, 0);
       expect(store.rewardedAdsLeftToday, 3);
       expect(await ads.watch(character), RewardedAdOutcome.counted);
-      expect(store.rewardedAdsWatchedToday, 1);
-    });
-
-    test('survives a restart within the same day', () async {
-      final store = await loadStore();
-      await adsFor(store).watch(entryById('item-03'));
-
-      final reopened = await loadStore();
-
-      expect(reopened.rewardedAdsWatchedToday, 1);
-      expect(reopened.rewardedAdsLeftToday, 2);
     });
   });
 
@@ -196,8 +233,8 @@ void main() {
       expect(await ads.watch(special), RewardedAdOutcome.counted);
       expect(store.rewardedAdProgressFor(special.id), 1);
 
-      // Same day, cap untouched, and still refused.
-      expect(store.rewardedAdsLeftToday, 2);
+      // Same day, and still refused — this limit is the entry's own, not a
+      // limit on the day.
       expect(
         ads.availabilityFor(special),
         RewardedAdAvailability.alreadyEarnedToday,
