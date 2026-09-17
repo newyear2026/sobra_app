@@ -454,7 +454,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String collectionAdProgressLine(int progress, int target) {
-    return '광고 $progress/$target';
+    return '$progress/$target';
   }
 
   @override
@@ -801,6 +801,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsSectionData => '데이터';
+
+  @override
+  String get settingsSectionPrivacy => '개인정보';
+
+  @override
+  String get settingsAdPrivacy => '광고 개인정보 설정';
+
+  @override
+  String get settingsAdPrivacyValue => '관리';
+
+  @override
+  String get settingsAdPrivacyFailed => '광고 개인정보 설정을 열지 못했어요. 다시 시도해 주세요.';
 
   @override
   String get settingsSectionDesign => '디자인';

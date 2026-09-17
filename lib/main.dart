@@ -15,6 +15,10 @@ import 'screens/login_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/recovery_screen.dart';
 import 'services/purchase_service.dart';
+import 'services/admob_config.dart';
+import 'services/admob_consent_service.dart';
+import 'services/admob_rewarded_ad_port.dart';
+import 'services/native_ad_service.dart';
 import 'services/rewarded_ad_service.dart';
 import 'services/receipt_store.dart';
 import 'services/sobra_quick_entry.dart';
@@ -59,21 +63,39 @@ Future<void> main() async {
   // Not awaited. Reaching the store takes a network round trip, and the whole
   // app — a ledger that works offline — must not wait behind it to draw.
   if (purchases != null) unawaited(purchases.start());
-  // No ad unit and no SDK yet, so the port that ships is the one that never
-  // fills. Every ad button says "no ads right now" truthfully, and connecting
-  // a network later replaces this one object.
+  final adConsent = AdMobConfig.isSupported ? AdMobConsentController() : null;
+  final nativeAds = adConsent == null
+      ? null
+      : NativeAds(store: store, graceDays: AdMobConfig.nativeGraceDays);
   final ads = RewardedAds(
-    port: const UnavailableRewardedAdPort(),
+    port: adConsent == null
+        ? const UnavailableRewardedAdPort()
+        : AdMobRewardedAdPort(canRequestAds: () => adConsent.canRequestAds),
     store: store,
   );
+  if (adConsent != null) {
+    adConsent.addListener(() {
+      nativeAds!.setSdkReady(adConsent.canRequestAds);
+      if (adConsent.canRequestAds) unawaited(ads.prepare());
+    });
+  }
   runApp(
     SobraApp(
       store: store,
       receipts: receipts,
       purchases: purchases,
       ads: ads,
+      adConsent: adConsent,
+      nativeAds: nativeAds,
     ),
   );
+  // UMP can need an Activity to display its form. Waiting until the first
+  // frame keeps startup responsive and guarantees Android has attached one.
+  if (adConsent != null) {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => unawaited(adConsent.initialize()),
+    );
+  }
 }
 
 /// Resolves the receipts directory and clears what nothing points at.
@@ -103,6 +125,8 @@ class SobraApp extends StatefulWidget {
     this.receipts = const UnsupportedReceiptStore(),
     this.purchases,
     this.ads,
+    this.adConsent,
+    this.nativeAds,
   });
 
   final SobraStore store;
@@ -117,6 +141,8 @@ class SobraApp extends StatefulWidget {
   /// collection then locks its ad entries, which is the same screen a phone
   /// with no fill gets.
   final RewardedAds? ads;
+  final AdMobConsentController? adConsent;
+  final NativeAds? nativeAds;
 
   /// Defaults to the store that can hold nothing, which is what a harness
   /// pumping the app without a documents directory should get: every screen
@@ -210,8 +236,16 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
     // optional and only two screens ask.
     final purchases = widget.purchases;
     final ads = widget.ads;
+    final adConsent = widget.adConsent;
+    final nativeAds = widget.nativeAds;
     Widget wrapped = app;
     if (ads != null) wrapped = RewardedAdScope(ads: ads, child: wrapped);
+    if (nativeAds != null) {
+      wrapped = NativeAdScope(ads: nativeAds, child: wrapped);
+    }
+    if (adConsent != null) {
+      wrapped = AdMobConsentScope(consent: adConsent, child: wrapped);
+    }
     if (purchases != null) {
       wrapped = PurchaseScope(purchases: purchases, child: wrapped);
     }

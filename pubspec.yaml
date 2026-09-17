@@ -57,6 +57,10 @@ dependencies:
   # the entitlement against the user's store account and replays it on request.
   in_app_purchase: ^3.3.0
 
+  # AdMob rewarded and native ads. Debug builds use Google's dedicated test
+  # ad units; release builds switch to Sobra's Android ad unit IDs.
+  google_mobile_ads: ^9.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

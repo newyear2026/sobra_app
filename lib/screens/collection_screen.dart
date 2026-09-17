@@ -97,6 +97,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
       rewardedAdBlock: entry.unlockMethod == CatalogUnlockMethod.rewardedAd
           ? _adBlockFor(entry, store, ads)
           : null,
+      isWatchingAd: !isOwned && ads?.busyEntryId == entry.id,
     );
   }
 
@@ -220,6 +221,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
   }
 
   bool _canAct(CatalogEntryState state) {
+    if (state.isWatchingAd) return false;
     // Owning it ends this screen's business with it. Wearing it, placing it
     // in the room, moving it between slots — all of that is the decorate
     // screen, which is the one that can show where the thing went.
@@ -655,6 +657,9 @@ class _CatalogCard extends StatelessWidget {
                     color: AppColors.cashInk,
                   ),
                 ),
+              ] else if (_AdProgressLine.fits(state)) ...[
+                const SizedBox(height: 4),
+                _AdProgressLine(state: state),
               ] else
                 const SizedBox(height: 20),
               const SizedBox(height: 5),
@@ -770,6 +775,67 @@ class _CornerBadge extends StatelessWidget {
   );
 }
 
+/// How far a rewarded run has come, in the line a purchase card gives its
+/// price.
+///
+/// The slot was already reserved — every card that shows no price holds the
+/// same twenty pixels empty — so the count costs no height and the button
+/// above is free to say what it does rather than how far along it is. Which
+/// matters because the button spends a good part of its life saying something
+/// else entirely: there is no ad right now, or this one continues tomorrow.
+/// Those are exactly the moments somebody needs to see they are one view from
+/// the end.
+class _AdProgressLine extends StatelessWidget {
+  const _AdProgressLine({required this.state});
+
+  final CatalogEntryState state;
+
+  /// Whether this entry has a run worth drawing.
+  ///
+  /// A one-view entry has no middle to be in: it is either not started or
+  /// already owned, and "0/1" would be a bar that never moves.
+  static bool fits(CatalogEntryState state) =>
+      !state.isOwned &&
+      state.entry.unlockMethod == CatalogUnlockMethod.rewardedAd &&
+      (state.entry.rewardedAdTarget ?? 0) > 1;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final target = state.entry.rewardedAdTarget!;
+    final done = state.rewardedAdProgress.clamp(0, target);
+    return SizedBox(
+      height: 16,
+      child: Row(
+        children: [
+          for (var step = 0; step < target; step++) ...[
+            if (step > 0) const SizedBox(width: 3),
+            Expanded(
+              child: Container(
+                height: 7,
+                decoration: BoxDecoration(
+                  color: step < done ? AppColors.violet : AppColors.line,
+                  border: Border.all(color: AppColors.ink, width: 1.5),
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(width: 6),
+          // Scaled down rather than clipped: the count is the point of the
+          // line, and a narrow card must not be where it goes missing.
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              l10n.collectionAdProgressLine(done, target),
+              style: pixelText(size: 11, bold: true, color: AppColors.muted),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _CatalogDetailDialog extends StatelessWidget {
   const _CatalogDetailDialog({required this.state, required this.onPrimary});
 
@@ -867,19 +933,17 @@ class _CatalogTones {
 }
 
 String _cardActionLabel(AppLocalizations l10n, CatalogEntryState state) {
+  if (state.isWatchingAd) return l10n.collectionAdLoading;
   if (state.isPurchasing) return l10n.collectionPurchasing;
   if (state.isOwned) return l10n.collectionOwned;
   final blocked = state.rewardedAdBlock;
   if (blocked != null) return _adBlockLabel(l10n, blocked);
   return switch (state.entry.unlockMethod) {
     CatalogUnlockMethod.purchase => l10n.collectionBuy,
-    CatalogUnlockMethod.rewardedAd =>
-      state.entry.kind == CatalogKind.character
-          ? l10n.collectionAdProgress(
-              state.rewardedAdProgress,
-              state.entry.rewardedAdTarget!,
-            )
-          : l10n.collectionWatchAd,
+    // The same label the dialog uses, and the same one for both kinds. The
+    // count used to sit here for characters and nowhere for items, which made
+    // one button say what it does and the other say how far along it is.
+    CatalogUnlockMethod.rewardedAd => l10n.collectionWatchAd,
     CatalogUnlockMethod.level => l10n.collectionLevel(
       state.entry.requiredLevel!,
     ),
@@ -889,6 +953,7 @@ String _cardActionLabel(AppLocalizations l10n, CatalogEntryState state) {
 }
 
 String _dialogActionLabel(AppLocalizations l10n, CatalogEntryState state) {
+  if (state.isWatchingAd) return l10n.collectionAdLoading;
   if (state.isPurchasing) return l10n.collectionPurchasing;
   if (state.isOwned) return l10n.collectionOwned;
   final blocked = state.rewardedAdBlock;
@@ -918,10 +983,17 @@ String _unlockDescription(AppLocalizations l10n, CatalogEntryState state) {
     CatalogUnlockMethod.purchase => l10n.collectionPurchaseUnlock(
       state.localizedStorePrice ?? l10n.collectionStorePricePending,
     ),
-    CatalogUnlockMethod.rewardedAd => l10n.collectionAdUnlock(
-      state.rewardedAdProgress,
-      state.entry.rewardedAdTarget!,
-    ),
+    // The card can only fit "내일 이어서", which says the entry is waiting
+    // without ever saying why. This is the one place the rule is written out.
+    CatalogUnlockMethod.rewardedAd => state.entry.rewardedAdOncePerDay
+        ? l10n.collectionAdUnlockDaily(
+            state.rewardedAdProgress,
+            state.entry.rewardedAdTarget!,
+          )
+        : l10n.collectionAdUnlock(
+            state.rewardedAdProgress,
+            state.entry.rewardedAdTarget!,
+          ),
     CatalogUnlockMethod.level => l10n.collectionLevelUnlock(
       state.entry.requiredLevel!,
     ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -114,11 +116,12 @@ void main() {
 
     await pump(tester, store, ads: await readyAds(store));
 
-    // Three tiers on one screen: an ordinary character at two views, the
-    // special one at three.
-    expect(find.text('ANUNCIO 1/2'), findsOneWidget);
-    expect(find.text('ANUNCIO 0/2'), findsOneWidget);
-    expect(find.text('ANUNCIO 0/3'), findsOneWidget);
+    // The count is its own line now, so the button says what it does and the
+    // line says how far along the run is.
+    expect(find.text('VER ANUNCIO'), findsNWidgets(3));
+    expect(find.text('1/2'), findsOneWidget);
+    expect(find.text('0/2'), findsOneWidget);
+    expect(find.text('0/3'), findsOneWidget);
   });
 
   testWidgets('an owned item offers nothing to place', (tester) async {
@@ -180,7 +183,8 @@ void main() {
     await pump(tester, store, ads: ads);
 
     expect(find.text('SIN ANUNCIOS'), findsNWidgets(3));
-    expect(find.text('ANUNCIO 0/2'), findsNothing);
+    // Blocked, but the run is still legible.
+    expect(find.text('0/2'), findsNWidgets(2));
   });
 
   // No ad system above the screen at all — the design gallery, and every
@@ -215,8 +219,11 @@ void main() {
     await pump(tester, store, ads: await readyAds(store));
 
     expect(find.text('SIGUE MAÑANA'), findsOneWidget);
+    // The count stays on screen through the wait. Seeing 1/3 is the reason to
+    // come back tomorrow; a card that only says "later" is a locked card.
+    expect(find.text('1/3'), findsOneWidget);
     // The others are untouched: one entry's day does not spend anybody else's.
-    expect(find.text('ANUNCIO 0/2'), findsNWidgets(2));
+    expect(find.text('0/2'), findsNWidgets(2));
   });
 
   testWidgets('watching an ad through counts and unlocks', (tester) async {
@@ -307,4 +314,88 @@ void main() {
       findsOneWidget,
     );
   });
+
+  // "SIGUE MAÑANA" says an entry is waiting without ever saying why. The card
+  // has no room for the rule, so the dialog is where it is written out.
+  testWidgets('the dialog explains the once-a-day rule', (tester) async {
+    final store = await loadStore();
+    final special = entryById('character-08');
+    expect(special.rewardedAdOncePerDay, isTrue);
+    await store.recordRewardedAdView(special);
+
+    await pump(tester, store, ads: await readyAds(store));
+    await tester.tap(find.text('Personaje 8'));
+    await tester.pumpAndSettle();
+
+    expect(
+      inDialog('Mira anuncios de recompensa · 1/3 · uno por día'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('an ordinary entry is not told it is once a day', (tester) async {
+    final store = await loadStore();
+
+    await pump(tester, store, ads: await readyAds(store));
+    await tester.tap(find.text('Personaje 3'));
+    await tester.pumpAndSettle();
+
+    expect(
+      inDialog('Mira anuncios de recompensa · 0/2'),
+      findsOneWidget,
+    );
+    expect(
+      inDialog('Mira anuncios de recompensa · 0/2 · uno por día'),
+      findsNothing,
+    );
+  });
+
+  // The fetch in front of the ad is a network round trip. Before the card said
+  // so, the only feedback for a tap was an unchanged button.
+  testWidgets('the card says it is preparing while an ad is fetched', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    final port = _SlowRewardedAdPort();
+    final ads = RewardedAds(port: port, store: store);
+    await pump(tester, store, ads: ads);
+
+    // Not awaited: the assertion below is about what the screen shows while
+    // the run is still in flight.
+    final run = ads.watch(entryById('character-03'));
+    await tester.pump();
+
+    expect(find.text('PREPARANDO'), findsOneWidget);
+
+    port.finishLoad();
+    await run;
+    await tester.pumpAndSettle();
+
+    expect(find.text('PREPARANDO'), findsNothing);
+    expect(store.rewardedAdProgressFor('character-03'), 1);
+  });
+}
+
+/// A network whose fetch can be held open, so a test can look at the screen
+/// while the run is still working.
+class _SlowRewardedAdPort implements RewardedAdPort {
+  final _loaded = Completer<void>();
+  bool _ready = false;
+
+  void finishLoad() {
+    _ready = true;
+    _loaded.complete();
+  }
+
+  @override
+  bool get isReady => _ready;
+
+  @override
+  Future<void> load() => _loaded.future;
+
+  @override
+  Future<RewardedAdResult> show() async {
+    _ready = false;
+    return RewardedAdResult.earned;
+  }
 }

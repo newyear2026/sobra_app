@@ -469,7 +469,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String collectionAdProgressLine(int progress, int target) {
-    return '$progress/$target ads';
+    return '$progress/$target';
   }
 
   @override
@@ -831,6 +831,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsSectionData => 'Data';
+
+  @override
+  String get settingsSectionPrivacy => 'Privacy';
+
+  @override
+  String get settingsAdPrivacy => 'Ad privacy choices';
+
+  @override
+  String get settingsAdPrivacyValue => 'Manage';
+
+  @override
+  String get settingsAdPrivacyFailed =>
+      'Couldn\'t open ad privacy choices. Please try again.';
 
   @override
   String get settingsSectionDesign => 'Design';

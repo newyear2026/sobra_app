@@ -7,6 +7,7 @@ import '../models/language.dart';
 import '../models/currency.dart';
 import '../l10n/labels.dart';
 import '../services/app_version_service.dart';
+import '../services/admob_consent_service.dart';
 import '../services/purchase_service.dart';
 import '../services/sobra_quick_entry.dart';
 import '../state/sobra_store.dart';
@@ -101,6 +102,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // Null in a test or the design gallery, where there is no store to ask.
     // The row is then absent rather than present and dead.
     final purchases = PurchaseScope.maybeOf(context);
+    final adConsent = AdMobConsentScope.maybeOf(context);
 
     return SafeArea(
       bottom: false,
@@ -291,6 +293,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
               value: l10n.settingsRestore,
               onTap: _restoring ? null : () => _restorePurchases(purchases),
             ),
+          if (adConsent?.privacyOptionsRequired == true) ...[
+            const SizedBox(height: 10),
+            _SectionHeader(l10n.settingsSectionPrivacy),
+            _SettingsRow(
+              icon: Icons.privacy_tip_outlined,
+              iconColor: AppColors.teal,
+              label: l10n.settingsAdPrivacy,
+              value: l10n.settingsAdPrivacyValue,
+              onTap: () async {
+                final succeeded = await adConsent!.showPrivacyOptions();
+                if (!context.mounted || succeeded) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l10n.settingsAdPrivacyFailed)),
+                );
+              },
+            ),
+          ],
           const SizedBox(height: 10),
           _SectionHeader(l10n.settingsSectionAbout),
           _SettingsRow(

@@ -469,12 +469,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String collectionAdProgressLine(int progress, int target) {
-    return '$progress/$target anuncios';
+    return '$progress/$target';
   }
 
   @override
   String collectionAdUnlockDaily(int progress, int target) {
-    return 'Mira anuncios · $progress/$target · uno por día';
+    return 'Mira anuncios de recompensa · $progress/$target · uno por día';
   }
 
   @override
@@ -831,6 +831,19 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsSectionData => 'Datos';
+
+  @override
+  String get settingsSectionPrivacy => 'Privacidad';
+
+  @override
+  String get settingsAdPrivacy => 'Privacidad de anuncios';
+
+  @override
+  String get settingsAdPrivacyValue => 'Administrar';
+
+  @override
+  String get settingsAdPrivacyFailed =>
+      'No se pudieron abrir las opciones de privacidad. Inténtalo de nuevo.';
 
   @override
   String get settingsSectionDesign => 'Diseño';

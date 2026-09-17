@@ -24,7 +24,8 @@ android {
         applicationId = "com.sobra.app.sobra_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        // google_mobile_ads 9.x requires Android API 24 or newer.
+        minSdk = 24
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

@@ -6,10 +6,12 @@ import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/expense_entry.dart';
 import '../models/money_movement.dart';
+import '../services/native_ad_service.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/receipt_field.dart';
+import '../widgets/sobra_native_ad.dart';
 import '../widgets/transaction_row.dart';
 
 enum _LedgerKind { expense, income }
@@ -165,6 +167,44 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       final label = _groupLabel(l10n, entry.occurredAt, store.today);
       grouped.putIfAbsent(label, () => []).add(entry);
     }
+    final nativeAds = NativeAdScope.maybeOf(context);
+    final ledger = <Widget>[];
+    var movementIndex = 0;
+    for (final group in grouped.entries) {
+      ledger.add(
+        Padding(
+          padding: const EdgeInsets.only(top: 12, bottom: 5),
+          child: Text(
+            group.key,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ),
+      );
+      ledger.add(const Divider(height: 1));
+      for (final movement in group.value) {
+        ledger.add(
+          MovementRow(
+            movement: movement,
+            onTap: movement.expense == null
+                ? null
+                : () => _editExpense(context, movement.expense!),
+            trailing: _rowMenu(context, store, movement),
+          ),
+        );
+        movementIndex++;
+        // Date headings are deliberately not counted. Exactly eight real
+        // transaction rows are above the ad, even when the eighth ends a date
+        // group or is the final row in the list.
+        if (movementIndex == 8 && nativeAds?.shouldPlace == true) {
+          ledger.add(
+            SobraNativeAd(
+              key: ValueKey('native-ad-${nativeAds!.visitId}'),
+              controller: nativeAds,
+            ),
+          );
+        }
+      }
+    }
     return SafeArea(
       bottom: false,
       child: ListView(
@@ -202,24 +242,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                   ? l10n.transactionsEmptyIncomesMessage
                   : l10n.transactionsEmptyExpensesMessage,
             ),
-          for (final group in grouped.entries) ...[
-            Padding(
-              padding: const EdgeInsets.only(top: 12, bottom: 5),
-              child: Text(
-                group.key,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
-            const Divider(height: 1),
-            for (final movement in group.value)
-              MovementRow(
-                movement: movement,
-                onTap: movement.expense == null
-                    ? null
-                    : () => _editExpense(context, movement.expense!),
-                trailing: _rowMenu(context, store, movement),
-              ),
-          ],
+          ...ledger,
         ],
       ),
     );

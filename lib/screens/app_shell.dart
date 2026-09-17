@@ -6,6 +6,7 @@ import '../data/catalog_preview_data.dart';
 import '../l10n/catalog_labels.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/room_design.dart';
+import '../services/native_ad_service.dart';
 import '../services/sobra_widget_sync.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
@@ -120,15 +121,17 @@ class _AppShellState extends State<AppShell> {
     if (!mounted || destination == null) return;
     switch (destination) {
       case SobraWidgetDestination.home:
-        if (_selected != AppTab.home) setState(() => _selected = AppTab.home);
+        _changeSelection(AppTab.home);
       case SobraWidgetDestination.register:
       case SobraWidgetDestination.registerExpense:
+        _noteTabTransition(AppTab.register);
         setState(() {
           _selected = AppTab.register;
           _registerMode = RegisterMode.expense;
           _registerSession++;
         });
       case SobraWidgetDestination.registerIncome:
+        _noteTabTransition(AppTab.register);
         setState(() {
           _selected = AppTab.register;
           _registerMode = RegisterMode.income;
@@ -177,9 +180,28 @@ class _AppShellState extends State<AppShell> {
   }
 
   void _select(AppTab tab) {
-    setState(() => _selected = tab);
+    // Re-tapping the selected tab is not another visit. This distinction is
+    // what makes "one native impression per transactions visit" deterministic.
+    if (tab == _selected) return;
+    _changeSelection(tab);
     if (tab == AppTab.budget) {
       unawaited(_store?.noteBudgetReviewed() ?? Future<void>.value());
+    }
+  }
+
+  void _changeSelection(AppTab tab) {
+    if (tab == _selected) return;
+    _noteTabTransition(tab);
+    setState(() => _selected = tab);
+  }
+
+  void _noteTabTransition(AppTab next) {
+    final nativeAds = NativeAdScope.maybeOf(context);
+    if (_selected == AppTab.movements && next != AppTab.movements) {
+      nativeAds?.endVisit();
+    }
+    if (_selected != AppTab.movements && next == AppTab.movements) {
+      nativeAds?.startVisit();
     }
   }
 

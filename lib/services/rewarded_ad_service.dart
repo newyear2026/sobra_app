@@ -74,9 +74,25 @@ enum RewardedAdOutcome {
 /// have a single owner. A second surface that showed its own ads would have to
 /// re-implement all three and would eventually disagree with this one.
 class RewardedAds extends ChangeNotifier {
-  RewardedAds({required RewardedAdPort port, required SobraStore store})
-    : _port = port,
-      _store = store;
+  RewardedAds({
+    required RewardedAdPort port,
+    required SobraStore store,
+    this.loadTimeout = const Duration(seconds: 45),
+    this.showTimeout = const Duration(minutes: 6),
+  }) : _port = port,
+       _store = store;
+
+  /// The backstop under [RewardedAdPort.load].
+  ///
+  /// A port is contracted to answer, and the one that talks to AdMob now
+  /// enforces its own, shorter deadline. This is the guarantee that holds
+  /// whatever is plugged in, because what hangs is not the port: it is
+  /// [busyEntryId], and a run that never ends leaves every card on the
+  /// collection reading "preparing" until the process is killed.
+  final Duration loadTimeout;
+
+  /// The backstop under [RewardedAdPort.show]. See [loadTimeout].
+  final Duration showTimeout;
 
   final RewardedAdPort _port;
   final SobraStore _store;
@@ -99,7 +115,7 @@ class RewardedAds extends ChangeNotifier {
   /// Preloads, so the first tap does not wait on the network.
   Future<void> prepare() async {
     if (_port.isReady || isBusy) return;
-    await _port.load();
+    await _port.load().timeout(loadTimeout, onTimeout: () {});
     notifyListeners();
   }
 
@@ -128,12 +144,18 @@ class RewardedAds extends ChangeNotifier {
     final RewardedAdResult result;
     try {
       if (!_port.isReady) {
-        await _port.load();
+        await _port.load().timeout(loadTimeout, onTimeout: () {});
         if (!_port.isReady) {
           return RewardedAdOutcome.unavailable;
         }
       }
-      result = await _port.show();
+      // A run abandoned on the deadline reports nothing earned. The reward is
+      // lost if a late confirmation was on its way, which is the right trade
+      // against a collection screen that can never offer an ad again.
+      result = await _port.show().timeout(
+        showTimeout,
+        onTimeout: () => RewardedAdResult.failed,
+      );
     } finally {
       _busyEntryId = null;
       notifyListeners();

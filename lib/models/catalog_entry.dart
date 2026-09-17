@@ -123,7 +123,13 @@ class CatalogEntryState {
     this.localizedStorePrice,
     this.isPurchasing = false,
     this.rewardedAdBlock,
+    this.isWatchingAd = false,
   }) : assert(
+         !isWatchingAd ||
+             (!isOwned &&
+                 entry.unlockMethod == CatalogUnlockMethod.rewardedAd),
+       ),
+       assert(
          rewardedAdBlock == null ||
              entry.unlockMethod == CatalogUnlockMethod.rewardedAd,
        ),
@@ -149,6 +155,13 @@ class CatalogEntryState {
   /// Null for every entry that is not unlocked by ads, and for an owned one:
   /// a finished run has nothing left to block.
   final RewardedAdBlock? rewardedAdBlock;
+
+  /// Whether an ad run is working on this entry right now.
+  ///
+  /// Covers the fetch as well as the ad itself. That window is a network round
+  /// trip spent on a card that would otherwise look untouched, and the
+  /// purchase flow already learned what an unchanged control reads as.
+  final bool isWatchingAd;
 
   /// Whether the store is working on this entry right now.
   ///

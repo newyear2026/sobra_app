@@ -106,6 +106,15 @@ class SobraStore extends ChangeNotifier {
   /// here; for everything else the daily cap is the only limit and a date
   /// would be state nothing reads.
   final Map<String, String> _rewardedAdLastEarnedDate = {};
+
+  /// Native ads begin only after a quiet install/update grace period. Existing
+  /// saved states receive this field on their first launch with ads, so they
+  /// get the same grace as a new install rather than seeing an ad immediately.
+  String? _nativeAdInstallDay;
+
+  /// The local day [_nativeAdImpressionsOnDay] belongs to.
+  String? _nativeAdDay;
+  int _nativeAdImpressionsOnDay = 0;
   int _idSequence = 0;
 
   int _baseBudgetCentavos = 600000;
@@ -209,6 +218,10 @@ class SobraStore extends ChangeNotifier {
         ..hasStorageError = true
         ..corruptedStorage = saved;
     }
+    // One-time migration for states written before native ads existed. Saving
+    // now matters: if the missing value were only filled in memory, every
+    // restart would begin a fresh seven-day grace period forever.
+    await store._ensureNativeAdInstallDay();
     await store.settleCycles();
     store._lastObservedDate = store.today;
     return store;
@@ -1307,6 +1320,41 @@ class SobraStore extends ChangeNotifier {
   String? rewardedAdLastEarnedDateFor(String id) =>
       _rewardedAdLastEarnedDate[id];
 
+  /// Native impressions counted today. A stale stored day reads as zero.
+  int get nativeAdImpressionsToday =>
+      _nativeAdDay == todayKey ? _nativeAdImpressionsOnDay : 0;
+
+  /// Whether the install/update grace period has elapsed.
+  ///
+  /// Asked from inside a build — [NativeAds.canOffer] runs while the ledger
+  /// lays itself out — so this must not be able to throw. A stored day that
+  /// will not parse is treated as no day at all: the grace holds, and
+  /// [_ensureNativeAdInstallDay] writes a usable one on the next launch.
+  /// Every other corrupt-state path in this store degrades the same way
+  /// rather than taking a screen down with it.
+  bool nativeAdGraceComplete(int days) {
+    if (days <= 0) return true;
+    final installed = _nativeAdInstallDay;
+    if (installed == null) return false;
+    final start = DateTime.tryParse(installed);
+    if (start == null) return false;
+    return today.difference(start).inDays >= days;
+  }
+
+  /// Records a native ad only after the SDK reports a real impression.
+  ///
+  /// The day and cap are checked again here so two callbacks racing one
+  /// another cannot both spend the last slot.
+  Future<bool> recordNativeAdImpression({int maxPerDay = 2}) async {
+    if (maxPerDay <= 0 || nativeAdImpressionsToday >= maxPerDay) return false;
+    final count = nativeAdImpressionsToday;
+    _nativeAdDay = todayKey;
+    _nativeAdImpressionsOnDay = count + 1;
+    await _save();
+    notifyListeners();
+    return true;
+  }
+
   /// Whether a rewarded view would count toward [entry] right now.
   ///
   /// Says nothing about whether the network has an ad — that is the ad
@@ -1486,6 +1534,7 @@ class SobraStore extends ChangeNotifier {
     if (raw == null || !_tryRestore(raw)) return false;
     hasStorageError = false;
     corruptedStorage = null;
+    await _ensureNativeAdInstallDay();
     await settleCycles();
     notifyListeners();
     return true;
@@ -1498,6 +1547,7 @@ class SobraStore extends ChangeNotifier {
     corruptedStorage = null;
     final saved = await _preferences.setString(_storageKey, raw);
     if (!saved) throw const SobraStoreException(StoreFailure.restoreFailed);
+    await _ensureNativeAdInstallDay();
     await settleCycles();
     notifyListeners();
     return true;
@@ -1582,6 +1632,9 @@ class SobraStore extends ChangeNotifier {
     _rewardedAdDay = null;
     _rewardedAdsWatchedOnDay = 0;
     _rewardedAdLastEarnedDate.clear();
+    _nativeAdInstallDay = todayKey;
+    _nativeAdDay = null;
+    _nativeAdImpressionsOnDay = 0;
     countedCashCentavos = 0;
     expectedCashCentavos = 0;
     reducedMotion = false;
@@ -1598,6 +1651,22 @@ class SobraStore extends ChangeNotifier {
     lastSettledCycleEnd = null;
     _pendingXpNotice = null;
     categoryLimits = _categoryLimitsForBudget(_baseBudgetCentavos);
+  }
+
+  Future<void> _ensureNativeAdInstallDay() async {
+    if (_nativeAdInstallDay != null) return;
+    _nativeAdInstallDay = todayKey;
+    try {
+      await _save();
+    } on Object catch (error) {
+      // Awaited from [load], so an escaping throw is an app that does not
+      // start — and this runs for every existing install on its first launch
+      // after ads shipped, which is the worst possible population to lock out
+      // over a failed write. The day stays set for this session and the next
+      // launch writes it; a disk that keeps refusing only restarts the grace
+      // period, which delays ads rather than breaking the ledger.
+      debugPrint('Sobra: could not save the native ad install day: $error');
+    }
   }
 
   bool _tryRestore(String raw) {
@@ -1645,6 +1714,9 @@ class SobraStore extends ChangeNotifier {
     _rewardedAdLastEarnedDate
       ..clear()
       ..addAll(other._rewardedAdLastEarnedDate);
+    _nativeAdInstallDay = other._nativeAdInstallDay;
+    _nativeAdDay = other._nativeAdDay;
+    _nativeAdImpressionsOnDay = other._nativeAdImpressionsOnDay;
     _baseBudgetCentavos = other._baseBudgetCentavos;
     _hasBudget = other._hasBudget;
     characterId = other.characterId;
@@ -1777,6 +1849,17 @@ class SobraStore extends ChangeNotifier {
       ..addAll({
         for (final entry in lastEarned.entries) entry.key: entry.value as String,
       });
+    // Dropped rather than carried when it will not parse, so the field holds
+    // either a usable day or nothing. _ensureNativeAdInstallDay then fills it
+    // the way it fills a state written before native ads existed.
+    final installDay = json['nativeAdInstallDay'] as String?;
+    _nativeAdInstallDay =
+        installDay != null && DateTime.tryParse(installDay) != null
+        ? installDay
+        : null;
+    _nativeAdDay = json['nativeAdDay'] as String?;
+    _nativeAdImpressionsOnDay =
+        (json['nativeAdImpressionsOnDay'] as num?)?.toInt() ?? 0;
     countedCashCentavos = (json['countedCashCentavos'] as num).toInt();
     expectedCashCentavos = (json['expectedCashCentavos'] as num).toInt();
     reducedMotion = json['reducedMotion'] as bool? ?? false;
@@ -1836,7 +1919,7 @@ class SobraStore extends ChangeNotifier {
   }
 
   Map<String, Object?> _toJson() => {
-    'schemaVersion': 7,
+    'schemaVersion': 8,
     'transactions': _transactions.map((entry) => entry.toJson()).toList(),
     'incomes': _incomes.map((entry) => entry.toJson()).toList(),
     'cashReconciliations': _cashReconciliations
@@ -1865,6 +1948,9 @@ class SobraStore extends ChangeNotifier {
     'rewardedAdDay': _rewardedAdDay,
     'rewardedAdsWatchedOnDay': _rewardedAdsWatchedOnDay,
     'rewardedAdLastEarnedDate': _rewardedAdLastEarnedDate,
+    'nativeAdInstallDay': _nativeAdInstallDay,
+    'nativeAdDay': _nativeAdDay,
+    'nativeAdImpressionsOnDay': _nativeAdImpressionsOnDay,
     'cycleBudgetExtras': _cycleBudgetExtras,
     'countedCashCentavos': countedCashCentavos,
     'expectedCashCentavos': expectedCashCentavos,

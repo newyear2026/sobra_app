@@ -330,4 +330,61 @@ void main() {
       throwsArgumentError,
     );
   });
+
+  // A port that answers is a contract, not a guarantee. What hangs when it is
+  // broken is not the port: it is busyEntryId, and with it every card on the
+  // collection, until the process is killed.
+  group('a silent network still ends the run', () {
+    test('a request that never answers gives up and frees the screen',
+        () async {
+      final store = await loadStore();
+      final ads = RewardedAds(
+        port: port,
+        store: store,
+        loadTimeout: const Duration(milliseconds: 40),
+      );
+      port.answers = false;
+
+      final outcome = await ads.watch(character);
+
+      expect(outcome, RewardedAdOutcome.unavailable);
+      expect(ads.isBusy, isFalse);
+      expect(ads.busyEntryId, isNull);
+      expect(store.rewardedAdProgressFor(character.id), 0);
+    });
+
+    test('an ad that never reports back gives up and frees the screen',
+        () async {
+      final store = await loadStore();
+      final ads = RewardedAds(
+        port: port,
+        store: store,
+        showTimeout: const Duration(milliseconds: 40),
+      );
+      await ads.prepare();
+      port.answers = false;
+
+      final outcome = await ads.watch(character);
+
+      expect(outcome, RewardedAdOutcome.unavailable);
+      expect(ads.isBusy, isFalse);
+      // Nothing was confirmed, so nothing is credited.
+      expect(store.rewardedAdProgressFor(character.id), 0);
+    });
+
+    test('the next run works after one was abandoned', () async {
+      final store = await loadStore();
+      final ads = RewardedAds(
+        port: port,
+        store: store,
+        loadTimeout: const Duration(milliseconds: 40),
+      );
+      port.answers = false;
+      await ads.watch(character);
+
+      port.answers = true;
+      expect(await ads.watch(character), RewardedAdOutcome.counted);
+      expect(store.rewardedAdProgressFor(character.id), 1);
+    });
+  });
 }

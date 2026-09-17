@@ -906,13 +906,13 @@ abstract class AppLocalizations {
   /// No description provided for @collectionAdProgressLine.
   ///
   /// In es, this message translates to:
-  /// **'{progress}/{target} anuncios'**
+  /// **'{progress}/{target}'**
   String collectionAdProgressLine(int progress, int target);
 
   /// No description provided for @collectionAdUnlockDaily.
   ///
   /// In es, this message translates to:
-  /// **'Mira anuncios · {progress}/{target} · uno por día'**
+  /// **'Mira anuncios de recompensa · {progress}/{target} · uno por día'**
   String collectionAdUnlockDaily(int progress, int target);
 
   /// No description provided for @collectionAdUnavailable.
@@ -1520,6 +1520,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Datos'**
   String get settingsSectionData;
+
+  /// No description provided for @settingsSectionPrivacy.
+  ///
+  /// In es, this message translates to:
+  /// **'Privacidad'**
+  String get settingsSectionPrivacy;
+
+  /// No description provided for @settingsAdPrivacy.
+  ///
+  /// In es, this message translates to:
+  /// **'Privacidad de anuncios'**
+  String get settingsAdPrivacy;
+
+  /// No description provided for @settingsAdPrivacyValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Administrar'**
+  String get settingsAdPrivacyValue;
+
+  /// No description provided for @settingsAdPrivacyFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron abrir las opciones de privacidad. Inténtalo de nuevo.'**
+  String get settingsAdPrivacyFailed;
 
   /// Groups the debug design gallery, which is not data and does not belong beside the backup row.
   ///
