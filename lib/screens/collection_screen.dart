@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../data/catalog_preview_data.dart';
@@ -48,9 +50,25 @@ class _CollectionScreenState extends State<CollectionScreen> {
   /// for the one case that matters: the user who tried to pay and could not.
   SobraPurchases? _purchases;
 
+  /// Whether this visit has already asked the network for an ad.
+  ///
+  /// Once per screen, not once per notification. [RewardedAds] notifies its
+  /// listeners when a request finishes, and this screen is one of them, so an
+  /// unguarded request here answers its own notification and asks again —
+  /// forever, whenever the answer is empty.
+  bool _askedForAd = false;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // Asked for on the way in. The app otherwise requests one ad at launch and
+    // never again, so a single empty answer — a phone that was offline for
+    // that second — left every card reading "no ads" until the process was
+    // restarted.
+    if (!_askedForAd) {
+      _askedForAd = true;
+      unawaited(RewardedAdScope.maybeOf(context)?.prepare() ?? Future.value());
+    }
     final purchases = PurchaseScope.maybeOf(context);
     if (identical(purchases, _purchases)) return;
     _purchases?.removeListener(_onPurchasesChanged);
@@ -231,7 +249,14 @@ class _CollectionScreenState extends State<CollectionScreen> {
     if (state.isPurchasing) return false;
     // Level rewards arrive on their own, and a bundle entry is bought from the
     // row that sells the bundle. Neither has anything for this card to do.
-    if (state.rewardedAdBlock != null) return false;
+    // Only the rules disable the button. "No ad right now" is a network
+    // condition that can end a second later, and treating it like a rule is
+    // what made it permanent: the card stopped accepting the tap that is the
+    // only thing that would have asked for another ad.
+    if (state.rewardedAdBlock != null &&
+        state.rewardedAdBlock != RewardedAdBlock.noAdAvailable) {
+      return false;
+    }
     return state.entry.unlockMethod != CatalogUnlockMethod.level &&
         state.entry.unlockMethod != CatalogUnlockMethod.bundle;
   }

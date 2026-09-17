@@ -374,6 +374,70 @@ void main() {
     expect(find.text('PREPARANDO'), findsNothing);
     expect(store.rewardedAdProgressFor('character-03'), 1);
   });
+
+  // The dead end found on a device: one empty answer at launch left every
+  // rewarded card reading "no ads" for the rest of the process, because the
+  // card that would have asked for another ad had stopped accepting taps.
+  testWidgets('a no-fill at launch does not disable ads for the session', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    final port = FakeRewardedAdPort()..fills = false;
+    final ads = RewardedAds(port: port, store: store);
+    // The one request the app makes at launch, and it comes back empty.
+    await ads.prepare();
+    expect(ads.isReady, isFalse);
+
+    await pump(tester, store, ads: ads);
+    await tester.tap(find.text('OBJETOS'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Objeto 3'));
+    await tester.pumpAndSettle();
+
+    // The network recovers while the user is looking at the screen.
+    port.fills = true;
+    await tester.tap(find.text('Objeto 3'));
+    await tester.pumpAndSettle();
+    await tester.tap(inDialog('SIN ANUNCIOS'));
+    await tester.pumpAndSettle();
+
+    expect(store.ownsCatalogEntry(entryById('item-03')), isTrue);
+  });
+
+  // Opening the screen asks for one, so the common case never reaches the tap.
+  testWidgets('opening the collection asks for an ad', (tester) async {
+    final store = await loadStore();
+    final port = FakeRewardedAdPort();
+    final ads = RewardedAds(port: port, store: store);
+    expect(port.loads, 0);
+
+    await pump(tester, store, ads: ads);
+
+    expect(port.loads, greaterThan(0));
+    expect(ads.isReady, isTrue);
+  });
+
+  // The real rules still close the button. Only an empty network stays open.
+  testWidgets('a rule-blocked card still refuses the tap', (tester) async {
+    final store = await loadCappedStore();
+    await store.recordRewardedAdView(entryById('item-03'));
+    await store.recordRewardedAdView(entryById('item-05'));
+    await store.recordRewardedAdView(entryById('item-08'));
+    expect(store.rewardedAdsLeftToday, 0);
+
+    await pump(tester, store, ads: await readyAds(store));
+    await tester.tap(find.text('Personaje 3'));
+    await tester.pumpAndSettle();
+
+    // Asserted by behaviour rather than by widget type: pressing it must not
+    // start a run, whatever the button happens to be made of.
+    expect(inDialog('LÍMITE DE HOY'), findsOneWidget);
+    await tester.tap(inDialog('LÍMITE DE HOY'), warnIfMissed: false);
+    await tester.pumpAndSettle();
+
+    expect(store.rewardedAdProgressFor('character-03'), 0);
+    expect(store.rewardedAdsLeftToday, 0);
+  });
 }
 
 /// A network whose fetch can be held open, so a test can look at the screen
