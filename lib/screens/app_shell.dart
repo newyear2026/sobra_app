@@ -86,6 +86,7 @@ class _AppShellState extends State<AppShell> {
   bool _updatePromptScheduled = false;
   bool _announcementScheduled = false;
   String? _runningVersion;
+  Future<void>? _versionReady;
   RegisterMode _registerMode = RegisterMode.expense;
   int _registerSession = 0;
 
@@ -94,7 +95,7 @@ class _AppShellState extends State<AppShell> {
     super.initState();
     SobraWidgetSync.destination.addListener(_onWidgetDestination);
     WidgetsBinding.instance.addPostFrameCallback((_) => _onWidgetDestination());
-    unawaited(_loadRunningVersion());
+    _versionReady = _loadRunningVersion();
   }
 
   /// Only for the dialog's "your version" row, so a failure to read it is a
@@ -228,6 +229,12 @@ class _AppShellState extends State<AppShell> {
     _updatePromptScheduled = true;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _updatePromptScheduled = false;
+      // The version row is worth a moment's wait. Play's round trip is far
+      // slower than reading the package info, so this normally costs nothing
+      // — but without it the row appears or not depending on which future
+      // won, and a dialog that is one line taller on some launches than on
+      // others looks like a bug to the person reading it.
+      await _versionReady;
       if (!mounted || !updates.shouldPrompt) return;
       await showUpdatePrompt(
         context,

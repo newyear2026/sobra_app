@@ -103,6 +103,7 @@ class AppUpdates extends ChangeNotifier {
   String? _checkedDay;
   int? _dismissedVersionCode;
   bool _promptShown = false;
+  bool _promptVisible = false;
   bool _bannerHidden = false;
   bool _checking = false;
 
@@ -119,9 +120,13 @@ class AppUpdates extends ChangeNotifier {
 
   /// Whether the quiet line belongs at the top of Inicio.
   ///
-  /// Never at the same time as the dialog: until the dialog has had its turn
-  /// the banner would be a second copy of the same news.
-  bool get showBanner => _pending != null && !_bannerHidden && !shouldPrompt;
+  /// Never at the same time as the dialog. [_promptShown] alone is not enough
+  /// to decide that: it is set before the dialog opens, so between that and
+  /// the dialog closing the banner would be drawing behind the scrim — two
+  /// copies of the same news, one of them legible over the dim. Hence the
+  /// second flag, which is true for exactly as long as the dialog is up.
+  bool get showBanner =>
+      _pending != null && !_bannerHidden && !shouldPrompt && !_promptVisible;
 
   String _dayKey(DateTime moment) =>
       '${moment.year.toString().padLeft(4, '0')}-'
@@ -188,10 +193,18 @@ class AppUpdates extends ChangeNotifier {
     return found;
   }
 
-  /// The dialog has had its turn this launch — banner from here on.
+  /// The dialog is opening: it has had its turn, and it is on screen.
   void markPromptShown() {
-    if (_promptShown) return;
+    if (_promptShown && _promptVisible) return;
     _promptShown = true;
+    _promptVisible = true;
+    notifyListeners();
+  }
+
+  /// The dialog has closed, whichever way. The banner may take over now.
+  void markPromptClosed() {
+    if (!_promptVisible) return;
+    _promptVisible = false;
     notifyListeners();
   }
 

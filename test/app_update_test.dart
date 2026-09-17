@@ -144,6 +144,35 @@ void main() {
 
       updates.markPromptShown();
       expect(updates.shouldPrompt, isFalse);
+      expect(
+        updates.showBanner,
+        isFalse,
+        reason: 'the dialog is open — the banner would draw behind the scrim',
+      );
+
+      updates.markPromptClosed();
+      expect(updates.showBanner, isTrue);
+    });
+
+    test('the banner waits for the dialog to close, not to open', () async {
+      // Caught on a device: the banner was legible over the dim behind an
+      // open dialog, because "has been offered" was doing double duty as
+      // "is on screen".
+      final updates = AppUpdates(
+        port: _FakePort(available: v7),
+        preferences: await _preferences(),
+      );
+      await updates.refresh();
+
+      updates.markPromptShown();
+      expect(updates.showBanner, isFalse);
+      await updates.dismiss();
+      expect(
+        updates.showBanner,
+        isFalse,
+        reason: 'dismiss runs while the dialog is still on screen',
+      );
+      updates.markPromptClosed();
       expect(updates.showBanner, isTrue);
     });
 

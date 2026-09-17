@@ -29,6 +29,7 @@ Future<void> showUpdatePrompt(
     barrierColor: const Color(0x99242B4A),
     builder: (context) => _UpdatePromptDialog(currentVersion: currentVersion),
   );
+  updates.markPromptClosed();
 
   if (choice == _UpdateChoice.later) {
     await updates.dismiss();
