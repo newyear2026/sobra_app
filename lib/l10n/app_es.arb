@@ -765,5 +765,16 @@
   "updateStoreFailed": "No se pudo abrir Google Play.",
   "settingsCheckUpdate": "Buscar actualización",
   "settingsCheckUpdateBusy": "Buscando…",
-  "settingsCheckUpdateUpToDate": "Ya estás al día."
+  "settingsCheckUpdateUpToDate": "Ya estás al día.",
+
+  "releaseAnnouncementViewAll": "Ver todo",
+  "@releaseAnnouncementViewAll": {
+    "description": "Opens the full Novedades screen from the card shown after an update."
+  },
+  "releaseAnnouncementDone": "Listo",
+
+  "settingsReleaseNotesUnread": "Novedades sin leer",
+  "@settingsReleaseNotesUnread": {
+    "description": "Screen-reader label for the dot on the Novedades row. The dot is the only thing that carries this meaning visually."
+  }
 }

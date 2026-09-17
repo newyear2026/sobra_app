@@ -17,6 +17,7 @@ import 'screens/onboarding_screen.dart';
 import 'screens/recovery_screen.dart';
 import 'services/app_update_service.dart';
 import 'services/play_update_port.dart';
+import 'services/release_announcement_service.dart';
 import 'services/purchase_service.dart';
 import 'services/admob_config.dart';
 import 'services/admob_consent_service.dart';
@@ -75,6 +76,11 @@ Future<void> main() async {
         : const UnavailableUpdatePort(),
     preferences: await SharedPreferences.getInstance(),
   );
+  // Every platform, unlike the update prompt: this compares two version names
+  // the app already knows and never asks a store anything.
+  final announcements = ReleaseAnnouncements(
+    preferences: await SharedPreferences.getInstance(),
+  );
   final adConsent = AdMobConfig.isSupported ? AdMobConsentController() : null;
   final nativeAds = adConsent == null
       ? null
@@ -100,6 +106,7 @@ Future<void> main() async {
       adConsent: adConsent,
       nativeAds: nativeAds,
       updates: updates,
+      announcements: announcements,
     ),
   );
   // UMP can need an Activity to display its form. Waiting until the first
@@ -141,6 +148,7 @@ class SobraApp extends StatefulWidget {
     this.adConsent,
     this.nativeAds,
     this.updates,
+    this.announcements,
   });
 
   final SobraStore store;
@@ -162,6 +170,10 @@ class SobraApp extends StatefulWidget {
   /// offers an update and never draws the banner, which is the same app a
   /// phone with no Play services gets.
   final AppUpdates? updates;
+
+  /// Null in a harness that pumps the app without one. Nothing then announces
+  /// a release, and the Novedades row never wears its dot.
+  final ReleaseAnnouncements? announcements;
 
   /// Defaults to the store that can hold nothing, which is what a harness
   /// pumping the app without a documents directory should get: every screen
@@ -258,7 +270,14 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
     final adConsent = widget.adConsent;
     final nativeAds = widget.nativeAds;
     final updates = widget.updates;
+    final announcements = widget.announcements;
     Widget wrapped = app;
+    if (announcements != null) {
+      wrapped = ReleaseAnnouncementScope(
+        announcements: announcements,
+        child: wrapped,
+      );
+    }
     if (updates != null) {
       wrapped = AppUpdateScope(updates: updates, child: wrapped);
     }

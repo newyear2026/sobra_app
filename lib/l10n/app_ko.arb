@@ -573,5 +573,10 @@
   "updateStoreFailed": "구글 플레이를 열 수 없어요.",
   "settingsCheckUpdate": "업데이트 확인",
   "settingsCheckUpdateBusy": "확인 중…",
-  "settingsCheckUpdateUpToDate": "최신 버전이에요."
+  "settingsCheckUpdateUpToDate": "최신 버전이에요.",
+
+  "releaseAnnouncementViewAll": "전체 보기",
+  "releaseAnnouncementDone": "확인",
+
+  "settingsReleaseNotesUnread": "읽지 않은 새로운 소식"
 }

@@ -1657,4 +1657,13 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsCheckUpdateUpToDate => '최신 버전이에요.';
+
+  @override
+  String get releaseAnnouncementViewAll => '전체 보기';
+
+  @override
+  String get releaseAnnouncementDone => '확인';
+
+  @override
+  String get settingsReleaseNotesUnread => '읽지 않은 새로운 소식';
 }

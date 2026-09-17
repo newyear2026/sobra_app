@@ -9,11 +9,13 @@ import '../models/room_design.dart';
 import '../services/app_update_service.dart';
 import '../services/app_version_service.dart';
 import '../services/native_ad_service.dart';
+import '../services/release_announcement_service.dart';
 import '../services/sobra_widget_sync.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/gamification_ui.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/release_announcement.dart';
 import '../widgets/update_prompt.dart';
 import 'budget_screen.dart';
 import 'home_screen.dart';
@@ -79,8 +81,10 @@ class _AppShellState extends State<AppShell> {
   AppTab _selected = AppTab.home;
   SobraStore? _store;
   AppUpdates? _updates;
+  ReleaseAnnouncements? _announcements;
   bool _xpNoticeScheduled = false;
   bool _updatePromptScheduled = false;
+  bool _announcementScheduled = false;
   String? _runningVersion;
   RegisterMode _registerMode = RegisterMode.expense;
   int _registerSession = 0;
@@ -118,6 +122,12 @@ class _AppShellState extends State<AppShell> {
       // drops a second check on the same day.
       unawaited(nextUpdates?.refresh() ?? Future<void>.value());
     }
+    final nextAnnouncements = ReleaseAnnouncementScope.maybeOf(context);
+    if (!identical(_announcements, nextAnnouncements)) {
+      _announcements?.removeListener(_onAnnouncementsChanged);
+      _announcements = nextAnnouncements?..addListener(_onAnnouncementsChanged);
+      unawaited(nextAnnouncements?.start() ?? Future<void>.value());
+    }
     // The room is now above the fold, so its fixed layer and included decor
     // are warmed before Inicio asks for them.
     unawaited(
@@ -138,6 +148,7 @@ class _AppShellState extends State<AppShell> {
     SobraWidgetSync.destination.removeListener(_onWidgetDestination);
     _store?.removeListener(_onStoreChanged);
     _updates?.removeListener(_onUpdatesChanged);
+    _announcements?.removeListener(_onAnnouncementsChanged);
     super.dispose();
   }
 
@@ -173,17 +184,45 @@ class _AppShellState extends State<AppShell> {
     _scheduleUpdatePrompt();
   }
 
+  void _onAnnouncementsChanged() {
+    if (!mounted) return;
+    setState(() {});
+    _scheduleAnnouncement();
+  }
+
+  /// Says what the update they already installed changed.
+  ///
+  /// Ahead of the update prompt in the queue below, because it is about the
+  /// build in their hand rather than one that can wait for tomorrow.
+  void _scheduleAnnouncement() {
+    final announcements = _announcements;
+    if (_announcementScheduled ||
+        announcements == null ||
+        !announcements.shouldAnnounce ||
+        _store?.pendingXpNotice != null) {
+      return;
+    }
+    _announcementScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _announcementScheduled = false;
+      if (!mounted || !announcements.shouldAnnounce) return;
+      await showReleaseAnnouncement(context, announcements: announcements);
+    });
+  }
+
   /// Offers the update once the frame is done and nothing louder is queued.
   ///
-  /// A level-up is the one thing allowed to win this race: it celebrates
-  /// something the user just did, while the update will still be there on the
-  /// next launch. Stacking the two dialogs would bury whichever went first.
+  /// Last in the queue of things that may interrupt a launch, behind a
+  /// level-up and behind the release card. Both of those are about something
+  /// that already happened; the update will still be there tomorrow, and
+  /// stacking dialogs buries whichever goes first.
   void _scheduleUpdatePrompt() {
     final updates = _updates;
     if (_updatePromptScheduled ||
         updates == null ||
         !updates.shouldPrompt ||
-        _store?.pendingXpNotice != null) {
+        _store?.pendingXpNotice != null ||
+        (_announcements?.shouldAnnounce ?? false)) {
       return;
     }
     _updatePromptScheduled = true;

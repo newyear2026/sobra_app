@@ -571,5 +571,10 @@
   "updateStoreFailed": "Couldn't open Google Play.",
   "settingsCheckUpdate": "Check for updates",
   "settingsCheckUpdateBusy": "Checking…",
-  "settingsCheckUpdateUpToDate": "You're up to date."
+  "settingsCheckUpdateUpToDate": "You're up to date.",
+
+  "releaseAnnouncementViewAll": "See all",
+  "releaseAnnouncementDone": "Done",
+
+  "settingsReleaseNotesUnread": "Unread release notes"
 }

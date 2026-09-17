@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +10,7 @@ import '../models/currency.dart';
 import '../l10n/labels.dart';
 import '../services/app_update_service.dart';
 import '../services/app_version_service.dart';
+import '../services/release_announcement_service.dart';
 import '../services/admob_consent_service.dart';
 import '../services/purchase_service.dart';
 import '../services/sobra_quick_entry.dart';
@@ -140,6 +143,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final purchases = PurchaseScope.maybeOf(context);
     final adConsent = AdMobConsentScope.maybeOf(context);
     final updates = AppUpdateScope.maybeOf(context);
+    final announcements = ReleaseAnnouncementScope.maybeOf(context);
 
     return SafeArea(
       bottom: false,
@@ -367,11 +371,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
             value: _version == null
                 ? l10n.settingsVersionUnknown
                 : 'v${_version!.version}',
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => ReleaseNotesScreen(currentVersion: _version),
-              ),
-            ),
+            // Survives dismissing the card that announced this release, so
+            // somebody who waved it away still has somewhere to go back to.
+            unread: announcements?.hasUnreadNotes ?? false,
+            onTap: () {
+              unawaited(announcements?.markRead() ?? Future<void>.value());
+              unawaited(
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) =>
+                        ReleaseNotesScreen(currentVersion: _version),
+                  ),
+                ),
+              );
+            },
           ),
           // No destination, so no chevron: this row is the answer, not a way
           // to one. It exists so a support question has a number to quote.
@@ -697,12 +710,16 @@ class _SettingsRow extends StatelessWidget {
     required this.label,
     required this.value,
     this.onTap,
+    this.unread = false,
   });
 
   final IconData icon;
   final Color iconColor;
   final String label;
   final String value;
+
+  /// Marks the row as carrying something the user has not opened yet.
+  final bool unread;
 
   /// Null for a row that only reports something. It then loses its chevron
   /// and its press-down, because a surface that moves under a finger and
@@ -723,6 +740,10 @@ class _SettingsRow extends StatelessWidget {
             Expanded(
               child: Text(label, style: pixelText(size: 15, bold: true)),
             ),
+            if (unread) ...[
+              const _UnreadDot(),
+              const SizedBox(width: 9),
+            ],
             Text(
               value,
               style: pixelText(size: 14, bold: true, color: AppColors.muted),
@@ -754,6 +775,27 @@ class _IconTile extends StatelessWidget {
         border: Border.all(color: AppColors.ink, width: 2.5),
       ),
       child: Icon(icon, color: color),
+    );
+  }
+}
+
+/// A square, not a circle: nothing else on these screens is round, and a
+/// circle at this size reads as a Material affordance that wandered in.
+class _UnreadDot extends StatelessWidget {
+  const _UnreadDot();
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: AppLocalizations.of(context).settingsReleaseNotesUnread,
+      child: Container(
+        width: 11,
+        height: 11,
+        decoration: BoxDecoration(
+          color: AppColors.danger,
+          border: Border.all(color: AppColors.ink, width: 2),
+        ),
+      ),
     );
   }
 }

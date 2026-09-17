@@ -3050,6 +3050,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ya estás al día.'**
   String get settingsCheckUpdateUpToDate;
+
+  /// Opens the full Novedades screen from the card shown after an update.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver todo'**
+  String get releaseAnnouncementViewAll;
+
+  /// No description provided for @releaseAnnouncementDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get releaseAnnouncementDone;
+
+  /// Screen-reader label for the dot on the Novedades row. The dot is the only thing that carries this meaning visually.
+  ///
+  /// In es, this message translates to:
+  /// **'Novedades sin leer'**
+  String get settingsReleaseNotesUnread;
 }
 
 class _AppLocalizationsDelegate

@@ -1724,4 +1724,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsCheckUpdateUpToDate => 'Ya estás al día.';
+
+  @override
+  String get releaseAnnouncementViewAll => 'Ver todo';
+
+  @override
+  String get releaseAnnouncementDone => 'Listo';
+
+  @override
+  String get settingsReleaseNotesUnread => 'Novedades sin leer';
 }
