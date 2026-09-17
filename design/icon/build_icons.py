@@ -13,6 +13,10 @@ navy rather than to mud.
 Two masters come out, because the platforms crop differently:
 
   * iOS and legacy Android get the full square: grid field plus character.
+  * Play Console wants that same square at exactly 512, so it is drawn at 512
+    rather than downscaled from the 1024: the grid pitch is a function of the
+    canvas, so drawing it gives a clean one-pixel line where halving the master
+    would smear each two-pixel line across two.
   * Android adaptive splits into two layers. The background is the grid field,
     which can be cropped anywhere without losing anything because the pattern
     is uniform. The foreground is the character alone.
@@ -36,6 +40,7 @@ NAVY = (0x20, 0x28, 0x48)   # AppPalette.ink — the field
 GRID = (0x3A, 0x46, 0x78)   # one step up from the field, not a new hue
 
 SIZE = 1024
+STORE_SIZE = 512   # Play Console accepts this size and no other
 GRID_CELLS = 32      # matches the pixel pitch of the character art
 GRID_ALPHA = 84
 CAT_SPAN = 0.70      # character height as a fraction of the visible icon
@@ -83,6 +88,9 @@ def main() -> None:
     master = place_character(grid_field(SIZE), CAT_SPAN)
     master.convert("RGB").save(HERE / "sobra-icon-grid-master-1024.png")
 
+    store = place_character(grid_field(STORE_SIZE), CAT_SPAN)
+    store.convert("RGB").save(HERE / "sobra-icon-grid-store-512.png")
+
     grid_field(SIZE).convert("RGB").save(HERE / "sobra-icon-grid-background-1024.png")
 
     foreground = place_character(
@@ -92,6 +100,7 @@ def main() -> None:
 
     for name in ("master", "background", "foreground"):
         print(f"wrote sobra-icon-grid-{name}-1024.png")
+    print("wrote sobra-icon-grid-store-512.png")
 
 
 if __name__ == "__main__":
