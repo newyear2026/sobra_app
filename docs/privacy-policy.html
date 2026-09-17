@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- RELEASE: replace all {{...}} values, remove this robots tag and the draft banner. -->
+  <meta name="robots" content="noindex, nofollow">
+  <title>Sobrita · Aviso de Privacidad</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #fffdf6;
+      --canvas: #eee8d9;
+      --ink: #17213f;
+      --muted: #5e6882;
+      --line: #d9cfb9;
+      --teal: #0c887e;
+      --warning-bg: #fff0d5;
+      --warning-ink: #6e4100;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font: 16px/1.7 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      width: min(920px, calc(100% - 32px));
+      margin: 32px auto 64px;
+      padding: clamp(24px, 5vw, 64px);
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      box-shadow: 8px 8px 0 rgba(23, 33, 63, .14);
+    }
+    h1, h2, h3 { line-height: 1.25; }
+    h1 { margin: 0 0 8px; font-size: clamp(2rem, 5vw, 3.25rem); }
+    h2 { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+    h3 { margin-top: 1.8rem; }
+    a { color: #076b65; text-underline-offset: 3px; }
+    nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 32px; }
+    nav a {
+      padding: 7px 12px;
+      border: 1px solid var(--ink);
+      background: #fff;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .meta { color: var(--muted); }
+    .draft {
+      margin: 22px 0;
+      padding: 14px 16px;
+      border: 2px solid #9a6100;
+      background: var(--warning-bg);
+      color: var(--warning-ink);
+      font-weight: 700;
+    }
+    .identity {
+      padding: 16px 20px;
+      border-left: 5px solid var(--teal);
+      background: #edf8f5;
+    }
+    li + li { margin-top: .35rem; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted); }
+    :target { scroll-margin-top: 16px; }
+    @media (max-width: 520px) {
+      main { width: 100%; margin: 0; border-left: 0; border-right: 0; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="meta">SOBRITA · PRIVACIDAD</p>
+    <h1>Aviso de Privacidad</h1>
+    <p class="meta">Vigente y actualizado: 15 de septiembre de 2026 · App: Sobrita · <code>com.sobra.app.sobra_app</code></p>
+    <div class="draft">BORRADOR — Si no existe una empresa, usa el nombre legal de la persona desarrolladora en {{LEGAL_NAME}} y un domicilio real donde pueda recibir notificaciones en {{POSTAL_ADDRESS}}. Reemplaza también {{PRIVACY_EMAIL}}; después elimina este aviso y la etiqueta “noindex”.</div>
+    <nav aria-label="Idiomas">
+      <a href="#es">Español</a>
+      <a href="#ko">한국어</a>
+      <a href="#en">English</a>
+    </nav>
+  </header>
+
+  <article id="es" lang="es">
+    <h2>Español</h2>
+    <h3>1. Alcance y responsable</h3>
+    <p>Este Aviso de Privacidad se aplica a la aplicación móvil <strong>Sobrita</strong> (la “Aplicación”).</p>
+    <div class="identity"><strong>Responsable:</strong> {{LEGAL_NAME}}<br><strong>Domicilio:</strong> {{POSTAL_ADDRESS}}<br><strong>Contacto de privacidad:</strong> {{PRIVACY_EMAIL}}</div>
+    <p>Sobrita es una aplicación de presupuesto que puede utilizarse sin crear una cuenta. Los datos principales de presupuesto se guardan en el dispositivo y no se envían automáticamente a un servidor operado por el responsable. Sin embargo, el proveedor de respaldo del sistema operativo, la tienda de aplicaciones y los servicios publicitarios pueden tratar datos según se describe a continuación.</p>
+
+    <h3>2. Información tratada por la Aplicación</h3>
+    <p><strong>Información presupuestaria.</strong> La persona usuaria puede introducir o generar presupuestos, ingresos y gastos, importes, fechas, categorías, notas, conteos de efectivo, moneda e idioma, preferencias, misiones, XP y progreso de colección. Esta información se guarda en el almacenamiento local de la Aplicación y no se transmite automáticamente al servidor del responsable.</p>
+    <p><strong>Fotografías de recibos.</strong> Solo cuando la persona usuaria lo decide, la Aplicación permite tomar o elegir una fotografía de un recibo. La imagen se reduce y se guarda en el espacio privado de la Aplicación; no se envía al responsable. Al quitar un recibo de un movimiento se elimina su archivo, y la Aplicación también limpia fotografías que ya no estén asociadas a un movimiento. Las fotografías no forman parte de la copia de seguridad JSON y se excluyen del respaldo en la nube de Android, aunque podrían incluirse en una transferencia directa entre dispositivos.</p>
+    <p><strong>Notificaciones locales y widgets.</strong> Si la persona usuaria habilita el acceso rápido, la Aplicación usa el permiso de notificaciones de Android y la señal de reinicio para restaurar una notificación persistente. Los widgets y la notificación pueden mostrar resúmenes guardados en la Aplicación. No se utiliza un servidor de notificaciones push remotas.</p>
+    <p><strong>Copia exportada.</strong> Cuando la persona usuaria crea una copia de seguridad desde Ajustes, los datos se copian como texto JSON al portapapeles. La persona usuaria decide dónde pegarlos o compartirlos. Una vez en el portapapeles, el sistema operativo u otras aplicaciones elegidas pueden tratar esos datos.</p>
+    <p><strong>Respaldo del sistema operativo.</strong> Si el respaldo del dispositivo está habilitado, los registros y preferencias pueden respaldarse con un proveedor como Google o Apple o transferirse a un dispositivo nuevo. Este tratamiento depende de la configuración de la cuenta y del dispositivo y de las políticas del proveedor. El respaldo en la nube de Android excluye las fotografías de recibos.</p>
+
+    <h3>3. Publicidad y Google AdMob</h3>
+    <p>La versión para Android utiliza Google Mobile Ads SDK (AdMob) y Google User Messaging Platform (UMP) para mostrar anuncios recompensados elegidos por la persona usuaria y anuncios nativos en el historial de movimientos.</p>
+    <p>De acuerdo con la documentación de Google, Mobile Ads SDK puede recopilar automáticamente o compartir con Google:</p>
+    <ul><li>dirección IP, que puede utilizarse para estimar una ubicación general;</li><li>interacciones con la Aplicación o los anuncios, como aperturas, toques, impresiones y visualizaciones de video;</li><li>información de diagnóstico, como registros de fallos, tiempo de inicio y uso de batería; e</li><li>identificadores, como el ID de publicidad de Android y el ID del conjunto de aplicaciones.</li></ul>
+    <p>Google puede tratar esta información para ofrecer, medir y —cuando esté permitido— personalizar publicidad, realizar análisis, prevenir fraude y mantener la seguridad. Google indica que los datos del SDK se cifran en tránsito mediante TLS. El responsable no proporciona a AdMob importes de movimientos, presupuestos, notas ni fotografías de recibos para segmentar publicidad.</p>
+    <p>Cuando sea aplicable, UMP solicita las decisiones de consentimiento necesarias. Si la normativa lo requiere, la persona usuaria puede revisar o cambiar sus decisiones desde <strong>Opciones de privacidad</strong> en Ajustes.</p>
+    <p>Más información: <a href="https://policies.google.com/privacy">Política de Privacidad de Google</a>, <a href="https://policies.google.com/technologies/partner-sites">cómo usa Google la información de aplicaciones asociadas</a> y <a href="https://developers.google.com/admob/android/privacy/play-data-disclosure">divulgación de datos de Google Mobile Ads SDK</a>.</p>
+
+    <h3>4. Compras dentro de la Aplicación</h3>
+    <p>Google Play o Apple App Store procesan el pago y la restauración de artículos de pago. Sobrita no recibe directamente números de tarjeta ni datos bancarios. Para entregar o restaurar una compra, la Aplicación puede recibir el ID del producto, el estado de compra, un identificador de compra o información de verificación. El tratamiento de la tienda se rige por la política de su proveedor.</p>
+
+    <h3>5. Permisos</h3>
+    <ul><li><strong>Cámara y fotos:</strong> solo cuando la persona usuaria toma o selecciona una foto de un recibo.</li><li><strong>Notificaciones:</strong> si la persona usuaria habilita el acceso rápido; pueden deshabilitarse en el dispositivo.</li><li><strong>Inicio del dispositivo:</strong> para restaurar la notificación que la persona usuaria dejó habilitada.</li><li><strong>Internet:</strong> para publicidad, mensajes de consentimiento y compras de la tienda.</li></ul>
+
+    <h3>6. Terceros, venta y transferencias internacionales</h3>
+    <p>El responsable no vende el contenido de los registros financieros ni las fotografías de recibos. Google puede tratar información para AdMob, UMP, Google Play y respaldo de Android. Apple puede tratar información para App Store y respaldo, cuando corresponda. Estas empresas pueden tratar información fuera del país de residencia; las ubicaciones y salvaguardas se rigen por sus políticas. También podrán comunicarse datos cuando la ley o la protección de derechos y seguridad lo exijan.</p>
+
+    <h3>7. Conservación y eliminación</h3>
+    <p>Los datos locales permanecen hasta que la persona usuaria borra registros, elimina los datos de la Aplicación o la desinstala. Las copias del sistema operativo pueden conservarse por más tiempo o restaurarse después, según la configuración y política del proveedor.</p>
+    <p>Como el responsable no conserva los registros principales en un servidor, no puede acceder ni borrarlos de forma remota. La persona usuaria puede borrar movimientos dentro de la Aplicación, borrar sus datos desde el sistema operativo o desinstalarla. Los respaldos deben administrarse en la cuenta de Google o Apple. La conservación de datos publicitarios o de compras se rige por las políticas de cada proveedor.</p>
+
+    <h3>8. Seguridad</h3>
+    <p>Los registros y fotografías se guardan en el espacio privado que el sistema operativo asigna a la Aplicación. Las comunicaciones con terceros utilizan las medidas de transporte ofrecidas por esos servicios. Aplicamos medidas razonables, pero ningún método puede garantizar seguridad absoluta.</p>
+
+    <h3>9. Derechos ARCO y otros derechos</h3>
+    <p>Según la ley aplicable, la persona titular puede solicitar acceso, rectificación, cancelación o eliminación, oposición al tratamiento o revocación del consentimiento. En México, estos derechos se conocen como derechos ARCO.</p>
+    <p>Para ejercerlos, envía a {{PRIVACY_EMAIL}} tu nombre y un medio de respuesta, una descripción clara del derecho que deseas ejercer y la información razonablemente necesaria para verificar tu identidad. Los datos que solo existen en el dispositivo deben gestionarse con los controles de la sección 7. Para datos tratados de forma independiente por Google o Apple, la solicitud debe dirigirse al proveedor.</p>
+
+    <h3>10. Privacidad de menores</h3>
+    <p>Sobrita no está diseñada para menores. Si una madre, padre o tutor considera que información de un menor fue enviada al responsable fuera de la Aplicación, puede escribir a {{PRIVACY_EMAIL}}. Tras verificarlo, se actuará conforme a la ley aplicable.</p>
+
+    <h3>11. Cambios y contacto</h3>
+    <p>Este Aviso puede actualizarse cuando cambien las funciones, los terceros utilizados o las obligaciones legales. Los cambios importantes se comunicarán en la Aplicación, en la ficha de la tienda o en esta página. Contacto: {{PRIVACY_EMAIL}}</p>
+  </article>
+
+  <article id="ko" lang="ko">
+    <h2>한국어</h2>
+    <h3>1. 적용 범위 및 개인정보처리자</h3>
+    <p>이 개인정보처리방침은 <strong>Sobrita</strong> 모바일 애플리케이션(이하 “앱”)에 적용됩니다.</p>
+    <div class="identity"><strong>개인정보처리자:</strong> {{LEGAL_NAME}}<br><strong>주소:</strong> {{POSTAL_ADDRESS}}<br><strong>개인정보 문의:</strong> {{PRIVACY_EMAIL}}</div>
+    <p>Sobrita는 별도의 회원가입 없이 기기에서 사용할 수 있는 가계부 앱입니다. 핵심 가계부 데이터는 개발자가 운영하는 서버로 자동 전송되지 않습니다. 다만 운영체제 백업, 앱 마켓 결제 및 광고 기능을 사용할 때는 아래 제3자가 정보를 처리할 수 있습니다.</p>
+
+    <h3>2. 앱이 처리하는 정보</h3>
+    <p><strong>가계부 정보.</strong> 사용자가 입력하거나 생성한 예산, 수입·지출 금액, 날짜, 카테고리, 메모, 현금 계산 결과, 통화·언어·화면 설정, 미션·XP 및 컬렉션 진행도는 앱의 로컬 저장공간에 저장되며 개발자의 서버로 자동 전송되지 않습니다.</p>
+    <p><strong>영수증 사진.</strong> 사용자가 선택한 경우에만 카메라 또는 사진 보관함에서 영수증 이미지를 가져옵니다. 이미지는 크기를 줄여 앱 전용 로컬 저장공간에 보관하며 개발자에게 전송하지 않습니다. 거래에서 영수증을 제거하면 파일을 삭제하고, 앱이 참조하지 않는 파일도 정리합니다. JSON 백업과 Android 클라우드 백업에는 영수증 이미지가 포함되지 않지만 기기 간 직접 전송에는 포함될 수 있습니다.</p>
+    <p><strong>로컬 알림과 위젯.</strong> 빠른 입력 알림을 켜면 Android 알림 권한과 부팅 완료 신호를 사용하여 기기에서 알림을 복원합니다. 위젯과 알림에는 로컬 요약 정보가 표시될 수 있습니다. 원격 푸시 서버는 사용하지 않습니다.</p>
+    <p><strong>사용자 백업.</strong> 설정에서 백업을 실행하면 가계부 데이터가 JSON 텍스트로 클립보드에 복사됩니다. 사용자가 붙여넣거나 공유할 곳을 결정하며, 이후 운영체제 또는 선택한 앱이 해당 데이터를 처리할 수 있습니다.</p>
+    <p><strong>운영체제 백업.</strong> 기기 백업이 켜져 있으면 앱 설정과 기록이 Google 또는 Apple 같은 운영체제 백업 제공자에게 백업되거나 새 기기로 전송될 수 있습니다. 이는 사용자의 기기·계정 설정과 제공자 정책을 따릅니다.</p>
+
+    <h3>3. 광고와 Google AdMob</h3>
+    <p>Android 버전은 사용자가 선택하여 보는 보상형 광고와 거래 내역의 네이티브 광고를 제공하기 위해 Google Mobile Ads SDK(AdMob) 및 Google User Messaging Platform(UMP)을 사용합니다.</p>
+    <p>Google의 안내에 따르면 SDK는 IP 주소(일반 위치 추정 가능), 앱 실행·탭·광고 노출·동영상 조회 같은 상호작용, 비정상 종료·실행 시간·배터리 사용량 같은 진단 정보, Android 광고 ID·앱 세트 ID 같은 식별자를 자동 수집하거나 Google과 공유할 수 있습니다.</p>
+    <p>Google은 광고 제공·측정·개인화(허용된 경우), 분석, 사기 방지와 보안을 위해 이를 처리할 수 있으며 SDK 네트워크 전송에 TLS를 사용합니다. 개발자는 거래 금액, 예산, 메모 또는 영수증 사진을 광고 타기팅 정보로 AdMob에 제공하지 않습니다.</p>
+    <p>관련 지역에서는 UMP로 필요한 동의를 요청하며, 필요한 경우 설정의 <strong>개인정보 선택</strong>에서 결정을 다시 확인하거나 변경할 수 있습니다. 자세한 내용은 <a href="https://policies.google.com/privacy">Google 개인정보처리방침</a>, <a href="https://policies.google.com/technologies/partner-sites">Google 파트너 앱 정보 사용 방식</a>, <a href="https://developers.google.com/admob/android/privacy/play-data-disclosure">Mobile Ads SDK 데이터 공개 안내</a>를 확인하세요.</p>
+
+    <h3>4. 앱 내 구매</h3>
+    <p>유료 아이템의 결제와 복원은 Google Play 또는 Apple App Store가 처리합니다. Sobrita는 카드번호나 은행계좌 정보를 직접 받지 않습니다. 상품 제공과 복원을 위해 상품 ID, 구매 상태, 구매 식별자 또는 검증 정보를 앱 마켓에서 받을 수 있습니다.</p>
+
+    <h3>5. 권한</h3>
+    <ul><li><strong>카메라 및 사진:</strong> 영수증 사진을 촬영하거나 선택할 때만 사용합니다.</li><li><strong>알림:</strong> 사용자가 빠른 입력 알림을 켰을 때 사용하며 기기 설정에서 끌 수 있습니다.</li><li><strong>부팅 완료:</strong> 켜 둔 빠른 입력 알림을 재부팅 후 복원합니다.</li><li><strong>인터넷:</strong> 광고·동의 메시지 및 앱 마켓 구매에 사용합니다.</li></ul>
+
+    <h3>6. 제3자 제공, 판매 및 국외 처리</h3>
+    <p>개발자는 가계부 원문이나 영수증 사진을 판매하지 않습니다. Google은 AdMob, UMP, Google Play 및 Android 백업을 위해, Apple은 해당되는 경우 App Store 및 기기 백업을 위해 정보를 처리할 수 있습니다. 이들은 이용자의 거주 국가 밖에서 정보를 처리할 수 있으며 구체적인 장소와 보호조치는 각 회사 정책을 따릅니다. 법적 의무나 권리·안전 보호에 필요한 경우 법이 허용하는 범위에서 정보가 공개될 수도 있습니다.</p>
+
+    <h3>7. 보관 및 삭제</h3>
+    <p>로컬 데이터는 사용자가 앱에서 기록을 삭제하거나 앱 데이터를 지우거나 앱을 제거할 때까지 남습니다. 운영체제 백업 사본은 제공자 정책에 따라 더 오래 남거나 재설치 시 복원될 수 있습니다.</p>
+    <p>개발자는 핵심 가계부 정보를 서버에 보관하지 않으므로 기기 기록을 원격으로 열람하거나 삭제할 수 없습니다. 앱에서 개별 기록을 삭제하거나 운영체제 설정에서 앱 데이터를 삭제하거나 앱을 제거할 수 있습니다. 백업은 Google 또는 Apple 계정에서 관리해야 하며, 광고·결제 정보의 보관은 각 제공자 정책을 따릅니다.</p>
+
+    <h3>8. 보안</h3>
+    <p>가계부 기록과 사진은 운영체제가 보호하는 앱 전용 저장공간에 보관합니다. 제3자 통신에는 해당 서비스의 전송 보호가 적용됩니다. 합리적인 조치를 사용하지만 절대적인 안전을 보장할 수는 없습니다.</p>
+
+    <h3>9. 이용자의 권리</h3>
+    <p>적용 법률에 따라 접근, 정정, 삭제·취소, 처리 반대 또는 동의 철회를 요청할 수 있습니다. 멕시코 이용자는 ARCO 권리를 행사할 수 있습니다. {{PRIVACY_EMAIL}}로 이름과 회신 수단, 원하는 조치, 본인 확인에 합리적으로 필요한 정보를 보내 주세요. 기기에만 있는 데이터는 7절의 방법으로 직접 관리하고, Google 또는 Apple이 독립적으로 처리하는 정보는 해당 제공자에게 요청해야 합니다.</p>
+
+    <h3>10. 아동의 개인정보</h3>
+    <p>Sobrita는 아동을 대상으로 설계된 서비스가 아닙니다. 법정대리인이 아동의 정보가 앱 외부에서 개발자에게 전달되었다고 판단하면 {{PRIVACY_EMAIL}}로 연락할 수 있습니다.</p>
+
+    <h3>11. 변경 및 문의</h3>
+    <p>기능, 제3자 서비스 또는 법적 요구사항이 변경되면 이 방침을 수정할 수 있습니다. 중요한 변경은 앱, 스토어 설명 또는 이 페이지를 통해 알리고 업데이트 날짜를 변경합니다. 문의: {{PRIVACY_EMAIL}}</p>
+  </article>
+
+  <article id="en" lang="en">
+    <h2>English</h2>
+    <h3>1. Scope and data controller</h3>
+    <p>This Privacy Policy applies to the <strong>Sobrita</strong> mobile application (the “App”).</p>
+    <div class="identity"><strong>Data controller:</strong> {{LEGAL_NAME}}<br><strong>Address:</strong> {{POSTAL_ADDRESS}}<br><strong>Privacy contact:</strong> {{PRIVACY_EMAIL}}</div>
+    <p>Sobrita is an on-device budget app that can be used without creating an account. Core budget records are not automatically sent to a server operated by the controller. The operating-system backup provider, app store, and advertising services may nevertheless process data as explained below.</p>
+
+    <h3>2. Information handled by the App</h3>
+    <p><strong>Budget information.</strong> Budgets, income and expenses, amounts, dates, categories, notes, cash-count results, currency and language preferences, settings, missions, XP, and collection progress are stored locally and are not automatically sent to the controller's server.</p>
+    <p><strong>Receipt photos.</strong> Only when the user chooses, the App can take or select a receipt photo. It is resized and stored in private local storage and is not sent to the controller. Removing a receipt deletes its file, and unreferenced files are cleaned up. Receipt images are not included in the JSON backup or Android cloud backup, although they may be included in a direct device transfer.</p>
+    <p><strong>Local notifications and widgets.</strong> If quick entry is enabled, the App uses Android notification permission and the boot-completed signal to restore an ongoing notification. Widgets and the notification may display local summaries. The App does not use a remote push server.</p>
+    <p><strong>User-exported backup.</strong> A Settings backup copies budget data as JSON text to the clipboard. The user decides where to paste or share it, after which the operating system or selected apps may process it.</p>
+    <p><strong>Operating-system backup.</strong> If device backup is enabled, records and preferences may be backed up with Google, Apple, or another operating-system provider or transferred to a new device, subject to the user's settings and provider policy.</p>
+
+    <h3>3. Advertising and Google AdMob</h3>
+    <p>The Android version uses Google Mobile Ads SDK (AdMob) and Google User Messaging Platform (UMP) for user-initiated rewarded ads and native ads in transaction history.</p>
+    <p>Google states that the SDK may automatically collect or share IP address (which can estimate general location), App and ad interactions such as launches, taps, impressions and video views, diagnostic information such as crash logs, launch time and battery use, and identifiers such as the Android advertising ID and app set ID.</p>
+    <p>Google may process this information to provide, measure, and—where permitted—personalize advertising, perform analytics, prevent fraud, and maintain security. Google states that SDK data is encrypted in transit using TLS. The controller does not provide transaction amounts, budgets, notes, or receipt photos to AdMob as advertising-targeting data.</p>
+    <p>Where applicable, UMP requests consent choices. When required, users can review or change them through <strong>Privacy choices</strong> in Settings. See the <a href="https://policies.google.com/privacy">Google Privacy Policy</a>, <a href="https://policies.google.com/technologies/partner-sites">how Google uses information from partner apps</a>, and <a href="https://developers.google.com/admob/android/privacy/play-data-disclosure">Mobile Ads SDK data-disclosure guidance</a>.</p>
+
+    <h3>4. In-app purchases</h3>
+    <p>Google Play or the Apple App Store processes payments and restoration. Sobrita does not directly receive card numbers or bank details. To deliver or restore an item, the App may receive a product ID, purchase status, purchase identifier, or verification information from the store.</p>
+
+    <h3>5. Permissions</h3>
+    <ul><li><strong>Camera and photos:</strong> only when the user takes or selects a receipt photo.</li><li><strong>Notifications:</strong> if quick entry is enabled; it can be disabled in device settings.</li><li><strong>Boot completed:</strong> to restore the quick-entry notification left enabled.</li><li><strong>Internet:</strong> for ads, consent messages, and store purchases.</li></ul>
+
+    <h3>6. Third parties, sale, and international processing</h3>
+    <p>The controller does not sell users' financial-record contents or receipt photos. Google may process information for AdMob, UMP, Google Play, and Android backup. Apple may process information for App Store and device backup where applicable. They may process information outside the user's country; locations and safeguards are governed by their policies. Information may also be disclosed as required by law or to protect rights and safety.</p>
+
+    <h3>7. Retention and deletion</h3>
+    <p>Local data remains until the user deletes records, clears App data, or uninstalls the App. Operating-system backups may remain longer or be restored after reinstallation under the provider's policy.</p>
+    <p>Because core budget records are not stored on the controller's server, the controller cannot remotely access or delete them. Users can delete records in the App, clear App data in operating-system settings, or uninstall. Backups must be managed in the relevant Google or Apple account. Advertising and purchase retention is governed by each provider.</p>
+
+    <h3>8. Security</h3>
+    <p>Records and photos are kept in operating-system-protected App storage. Communications with third parties use the protections offered by those services. Reasonable safeguards are used, but absolute security cannot be guaranteed.</p>
+
+    <h3>9. User rights</h3>
+    <p>Depending on applicable law, users may request access, correction, cancellation or deletion, object to processing, or withdraw consent. Users in Mexico may exercise ARCO rights. Email {{PRIVACY_EMAIL}} with your name and reply contact, the requested action, and information reasonably needed to verify identity. Device-only data must be managed using section 7. Requests about data independently processed by Google or Apple should be sent to that provider.</p>
+
+    <h3>10. Children's privacy</h3>
+    <p>Sobrita is not designed for children. A parent or guardian who believes a child's information was sent to the controller outside the App may contact {{PRIVACY_EMAIL}}.</p>
+
+    <h3>11. Changes and contact</h3>
+    <p>This Policy may be updated when features, third parties, or legal requirements change. Material changes will be communicated in the App, store listing, or this page, and the update date will be revised. Contact: {{PRIVACY_EMAIL}}</p>
+  </article>
+
+  <footer>© 2026 {{LEGAL_NAME}} · Sobrita</footer>
+</main>
+</body>
+</html>
