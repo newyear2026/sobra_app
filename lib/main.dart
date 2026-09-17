@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'l10n/generated/app_localizations.dart';
 import 'l10n/labels.dart';
@@ -14,6 +15,8 @@ import 'screens/app_shell.dart';
 import 'screens/login_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/recovery_screen.dart';
+import 'services/app_update_service.dart';
+import 'services/play_update_port.dart';
 import 'services/purchase_service.dart';
 import 'services/admob_config.dart';
 import 'services/admob_consent_service.dart';
@@ -63,6 +66,15 @@ Future<void> main() async {
   // Not awaited. Reaching the store takes a network round trip, and the whole
   // app — a ledger that works offline — must not wait behind it to draw.
   if (purchases != null) unawaited(purchases.start());
+  // Play only. There is no iOS build to update, and the In-App Update API
+  // exists nowhere else, so every other platform gets the port that knows
+  // there is no store to ask.
+  final updates = AppUpdates(
+    port: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+        ? const PlayUpdatePort()
+        : const UnavailableUpdatePort(),
+    preferences: await SharedPreferences.getInstance(),
+  );
   final adConsent = AdMobConfig.isSupported ? AdMobConsentController() : null;
   final nativeAds = adConsent == null
       ? null
@@ -87,6 +99,7 @@ Future<void> main() async {
       ads: ads,
       adConsent: adConsent,
       nativeAds: nativeAds,
+      updates: updates,
     ),
   );
   // UMP can need an Activity to display its form. Waiting until the first
@@ -127,6 +140,7 @@ class SobraApp extends StatefulWidget {
     this.ads,
     this.adConsent,
     this.nativeAds,
+    this.updates,
   });
 
   final SobraStore store;
@@ -143,6 +157,11 @@ class SobraApp extends StatefulWidget {
   final RewardedAds? ads;
   final AdMobConsentController? adConsent;
   final NativeAds? nativeAds;
+
+  /// Null in a harness that pumps the app without one. The shell then never
+  /// offers an update and never draws the banner, which is the same app a
+  /// phone with no Play services gets.
+  final AppUpdates? updates;
 
   /// Defaults to the store that can hold nothing, which is what a harness
   /// pumping the app without a documents directory should get: every screen
@@ -238,7 +257,11 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
     final ads = widget.ads;
     final adConsent = widget.adConsent;
     final nativeAds = widget.nativeAds;
+    final updates = widget.updates;
     Widget wrapped = app;
+    if (updates != null) {
+      wrapped = AppUpdateScope(updates: updates, child: wrapped);
+    }
     if (ads != null) wrapped = RewardedAdScope(ads: ads, child: wrapped);
     if (nativeAds != null) {
       wrapped = NativeAdScope(ads: nativeAds, child: wrapped);

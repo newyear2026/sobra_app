@@ -740,5 +740,30 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
-  "releaseNote100Launch": "Primera versión de Sobrita."
+  "releaseNote100Launch": "Primera versión de Sobrita.",
+
+  "updateAvailableTitle": "Hay una versión nueva",
+  "@updateAvailableTitle": {
+    "description": "Heading of the dialog shown on launch when Google Play has a newer build waiting."
+  },
+  "updateAvailableBody": "Actualiza para tener lo último de Sobrita.",
+  "updateCurrentVersion": "Tu versión: v{version}",
+  "@updateCurrentVersion": {
+    "description": "Names the build in hand inside the update dialog. Only the running version is shown: Play reports the waiting build as a version code, which means nothing to a reader.",
+    "placeholders": { "version": { "type": "String" } }
+  },
+  "updateAction": "Actualizar",
+  "@updateAction": {
+    "description": "Opens the Sobrita listing on Google Play. It does not install anything itself."
+  },
+  "updateLater": "Ahora no",
+  "updateBannerMessage": "Versión nueva disponible",
+  "updateBannerDismiss": "Cerrar el aviso",
+  "@updateBannerDismiss": {
+    "description": "Screen-reader label for the banner's close button."
+  },
+  "updateStoreFailed": "No se pudo abrir Google Play.",
+  "settingsCheckUpdate": "Buscar actualización",
+  "settingsCheckUpdateBusy": "Buscando…",
+  "settingsCheckUpdateUpToDate": "Ya estás al día."
 }

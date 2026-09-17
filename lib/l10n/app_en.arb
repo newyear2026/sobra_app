@@ -556,5 +556,20 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
-  "releaseNote100Launch": "The first version of Sobrita."
+  "releaseNote100Launch": "The first version of Sobrita.",
+
+  "updateAvailableTitle": "There's a new version",
+  "updateAvailableBody": "Update to get the latest Sobrita.",
+  "updateCurrentVersion": "Your version: v{version}",
+  "@updateCurrentVersion": {
+    "placeholders": { "version": { "type": "String" } }
+  },
+  "updateAction": "Update",
+  "updateLater": "Not now",
+  "updateBannerMessage": "New version available",
+  "updateBannerDismiss": "Dismiss the notice",
+  "updateStoreFailed": "Couldn't open Google Play.",
+  "settingsCheckUpdate": "Check for updates",
+  "settingsCheckUpdateBusy": "Checking…",
+  "settingsCheckUpdateUpToDate": "You're up to date."
 }

@@ -2984,6 +2984,72 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Primera versión de Sobrita.'**
   String get releaseNote100Launch;
+
+  /// Heading of the dialog shown on launch when Google Play has a newer build waiting.
+  ///
+  /// In es, this message translates to:
+  /// **'Hay una versión nueva'**
+  String get updateAvailableTitle;
+
+  /// No description provided for @updateAvailableBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualiza para tener lo último de Sobrita.'**
+  String get updateAvailableBody;
+
+  /// Names the build in hand inside the update dialog. Only the running version is shown: Play reports the waiting build as a version code, which means nothing to a reader.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu versión: v{version}'**
+  String updateCurrentVersion(String version);
+
+  /// Opens the Sobrita listing on Google Play. It does not install anything itself.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get updateAction;
+
+  /// No description provided for @updateLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora no'**
+  String get updateLater;
+
+  /// No description provided for @updateBannerMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Versión nueva disponible'**
+  String get updateBannerMessage;
+
+  /// Screen-reader label for the banner's close button.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar el aviso'**
+  String get updateBannerDismiss;
+
+  /// No description provided for @updateStoreFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abrir Google Play.'**
+  String get updateStoreFailed;
+
+  /// No description provided for @settingsCheckUpdate.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar actualización'**
+  String get settingsCheckUpdate;
+
+  /// No description provided for @settingsCheckUpdateBusy.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando…'**
+  String get settingsCheckUpdateBusy;
+
+  /// No description provided for @settingsCheckUpdateUpToDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya estás al día.'**
+  String get settingsCheckUpdateUpToDate;
 }
 
 class _AppLocalizationsDelegate

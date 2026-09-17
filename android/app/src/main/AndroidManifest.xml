@@ -76,5 +76,17 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <!-- The update prompt hands the user to the Play listing. Without
+             these, package visibility on Android 11+ hides both the Play app
+             and every browser from url_launcher, and the Actualizar button
+             silently does nothing on exactly the phones it is meant for. -->
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="market"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="https"/>
+        </intent>
     </queries>
 </manifest>

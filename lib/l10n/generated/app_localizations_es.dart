@@ -1688,4 +1688,40 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get releaseNote100Launch => 'Primera versión de Sobrita.';
+
+  @override
+  String get updateAvailableTitle => 'Hay una versión nueva';
+
+  @override
+  String get updateAvailableBody =>
+      'Actualiza para tener lo último de Sobrita.';
+
+  @override
+  String updateCurrentVersion(String version) {
+    return 'Tu versión: v$version';
+  }
+
+  @override
+  String get updateAction => 'Actualizar';
+
+  @override
+  String get updateLater => 'Ahora no';
+
+  @override
+  String get updateBannerMessage => 'Versión nueva disponible';
+
+  @override
+  String get updateBannerDismiss => 'Cerrar el aviso';
+
+  @override
+  String get updateStoreFailed => 'No se pudo abrir Google Play.';
+
+  @override
+  String get settingsCheckUpdate => 'Buscar actualización';
+
+  @override
+  String get settingsCheckUpdateBusy => 'Buscando…';
+
+  @override
+  String get settingsCheckUpdateUpToDate => 'Ya estás al día.';
 }

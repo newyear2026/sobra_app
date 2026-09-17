@@ -6,12 +6,15 @@ import '../data/catalog_preview_data.dart';
 import '../l10n/catalog_labels.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/room_design.dart';
+import '../services/app_update_service.dart';
+import '../services/app_version_service.dart';
 import '../services/native_ad_service.dart';
 import '../services/sobra_widget_sync.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/gamification_ui.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/update_prompt.dart';
 import 'budget_screen.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
@@ -75,7 +78,10 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   AppTab _selected = AppTab.home;
   SobraStore? _store;
+  AppUpdates? _updates;
   bool _xpNoticeScheduled = false;
+  bool _updatePromptScheduled = false;
+  String? _runningVersion;
   RegisterMode _registerMode = RegisterMode.expense;
   int _registerSession = 0;
 
@@ -84,6 +90,15 @@ class _AppShellState extends State<AppShell> {
     super.initState();
     SobraWidgetSync.destination.addListener(_onWidgetDestination);
     WidgetsBinding.instance.addPostFrameCallback((_) => _onWidgetDestination());
+    unawaited(_loadRunningVersion());
+  }
+
+  /// Only for the dialog's "your version" row, so a failure to read it is a
+  /// row that does not appear rather than a prompt that does not.
+  Future<void> _loadRunningVersion() async {
+    final version = await loadAppVersion();
+    if (!mounted || version == null) return;
+    setState(() => _runningVersion = version.version);
   }
 
   @override
@@ -93,6 +108,15 @@ class _AppShellState extends State<AppShell> {
     if (!identical(_store, nextStore)) {
       _store?.removeListener(_onStoreChanged);
       _store = nextStore..addListener(_onStoreChanged);
+    }
+    final nextUpdates = AppUpdateScope.maybeOf(context);
+    if (!identical(_updates, nextUpdates)) {
+      _updates?.removeListener(_onUpdatesChanged);
+      _updates = nextUpdates?..addListener(_onUpdatesChanged);
+      // Here rather than in [initState]: the scope is only reachable once
+      // dependencies resolve, and asking twice costs nothing — the service
+      // drops a second check on the same day.
+      unawaited(nextUpdates?.refresh() ?? Future<void>.value());
     }
     // The room is now above the fold, so its fixed layer and included decor
     // are warmed before Inicio asks for them.
@@ -113,6 +137,7 @@ class _AppShellState extends State<AppShell> {
   void dispose() {
     SobraWidgetSync.destination.removeListener(_onWidgetDestination);
     _store?.removeListener(_onStoreChanged);
+    _updates?.removeListener(_onUpdatesChanged);
     super.dispose();
   }
 
@@ -142,6 +167,49 @@ class _AppShellState extends State<AppShell> {
   }
 
   void _onStoreChanged() => _scheduleXpNotice();
+
+  void _onUpdatesChanged() {
+    setState(() {});
+    _scheduleUpdatePrompt();
+  }
+
+  /// Offers the update once the frame is done and nothing louder is queued.
+  ///
+  /// A level-up is the one thing allowed to win this race: it celebrates
+  /// something the user just did, while the update will still be there on the
+  /// next launch. Stacking the two dialogs would bury whichever went first.
+  void _scheduleUpdatePrompt() {
+    final updates = _updates;
+    if (_updatePromptScheduled ||
+        updates == null ||
+        !updates.shouldPrompt ||
+        _store?.pendingXpNotice != null) {
+      return;
+    }
+    _updatePromptScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _updatePromptScheduled = false;
+      if (!mounted || !updates.shouldPrompt) return;
+      await showUpdatePrompt(
+        context,
+        updates: updates,
+        currentVersion: _runningVersion,
+      );
+    });
+  }
+
+  Future<void> _openStoreFromBanner() async {
+    final updates = _updates;
+    if (updates == null) return;
+    final messenger = ScaffoldMessenger.of(context);
+    if (await updates.openStore()) return;
+    if (!mounted) return;
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).updateStoreFailed)),
+      );
+  }
 
   void _scheduleXpNotice() {
     if (_xpNoticeScheduled || _store?.pendingXpNotice == null) return;
@@ -232,6 +300,15 @@ class _AppShellState extends State<AppShell> {
               decoration: const BoxDecoration(color: AppColors.surface),
               child: Column(
                 children: [
+                  // Inicio only. The line is a small interruption on the
+                  // screen the app opens on, and would be a running one if it
+                  // sat above every tab.
+                  if (_selected == AppTab.home &&
+                      (_updates?.showBanner ?? false))
+                    UpdateBanner(
+                      onUpdate: () => unawaited(_openStoreFromBanner()),
+                      onDismiss: () => _updates?.hideBanner(),
+                    ),
                   Expanded(
                     child: IndexedStack(
                       index: _selected.index,

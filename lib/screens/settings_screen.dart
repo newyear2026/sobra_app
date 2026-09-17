@@ -6,6 +6,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/language.dart';
 import '../models/currency.dart';
 import '../l10n/labels.dart';
+import '../services/app_update_service.dart';
 import '../services/app_version_service.dart';
 import '../services/admob_consent_service.dart';
 import '../services/purchase_service.dart';
@@ -14,6 +15,7 @@ import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/update_prompt.dart';
 import 'collection_screen.dart';
 import 'login_screen.dart';
 import 'cycle_settings_screen.dart';
@@ -39,6 +41,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// happens here once instead of inside a FutureBuilder that would re-fire.
   AppVersion? _version;
   bool _quickEntrySaving = false;
+  bool _checkingUpdate = false;
 
   /// Guards the restore row while the store is being asked.
   ///
@@ -57,6 +60,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final version = await widget.versionLoader();
     if (!mounted) return;
     setState(() => _version = version);
+  }
+
+  /// The manual check, for somebody who closed the banner and came looking.
+  ///
+  /// Forced, so it ignores both the once-a-day budget and an earlier
+  /// "Ahora no": tapping this row is a clearer statement of intent than either
+  /// of the rules those enforce. An answer is always given — the dialog when
+  /// there is something to install, and a line saying so when there is not,
+  /// because a row that does nothing visible reads as a row that failed.
+  Future<void> _checkForUpdate(AppUpdates updates) async {
+    if (_checkingUpdate) return;
+    setState(() => _checkingUpdate = true);
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context);
+    final found = await updates.refresh(force: true);
+    if (!mounted) return;
+    setState(() => _checkingUpdate = false);
+    if (found == null) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text(l10n.settingsCheckUpdateUpToDate)),
+        );
+      return;
+    }
+    // The shell is listening to the same service and schedules its own prompt
+    // for the next frame. Showing it here first is what makes that one a
+    // no-op: [showUpdatePrompt] spends the interruption before it awaits.
+    await showUpdatePrompt(
+      context,
+      updates: updates,
+      currentVersion: _version?.version,
+    );
   }
 
   Future<void> _openAccountOffer() async {
@@ -103,6 +139,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // The row is then absent rather than present and dead.
     final purchases = PurchaseScope.maybeOf(context);
     final adConsent = AdMobConsentScope.maybeOf(context);
+    final updates = AppUpdateScope.maybeOf(context);
 
     return SafeArea(
       bottom: false,
@@ -312,6 +349,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ],
           const SizedBox(height: 10),
           _SectionHeader(l10n.settingsSectionAbout),
+          // Absent where there is no store to ask — iOS, web, and any harness
+          // that pumps this screen without the service.
+          if (updates != null)
+            _SettingsRow(
+              icon: Icons.refresh,
+              iconColor: AppColors.teal,
+              label: l10n.settingsCheckUpdate,
+              value: _checkingUpdate ? l10n.settingsCheckUpdateBusy : '',
+              onTap: _checkingUpdate ? null : () => _checkForUpdate(updates),
+            ),
           _SettingsRow(
             // A document, not the sparkle the debug gallery row already uses.
             icon: Icons.article_outlined,

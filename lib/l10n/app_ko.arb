@@ -558,5 +558,20 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
-  "releaseNote100Launch": "Sobrita의 첫 번째 버전이에요."
+  "releaseNote100Launch": "Sobrita의 첫 번째 버전이에요.",
+
+  "updateAvailableTitle": "새 버전이 있어요",
+  "updateAvailableBody": "업데이트하면 최신 Sobrita를 쓸 수 있어요.",
+  "updateCurrentVersion": "현재 버전: v{version}",
+  "@updateCurrentVersion": {
+    "placeholders": { "version": { "type": "String" } }
+  },
+  "updateAction": "업데이트하기",
+  "updateLater": "나중에하기",
+  "updateBannerMessage": "새 버전이 나왔어요",
+  "updateBannerDismiss": "알림 닫기",
+  "updateStoreFailed": "구글 플레이를 열 수 없어요.",
+  "settingsCheckUpdate": "업데이트 확인",
+  "settingsCheckUpdateBusy": "확인 중…",
+  "settingsCheckUpdateUpToDate": "최신 버전이에요."
 }

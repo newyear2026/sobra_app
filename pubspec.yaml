@@ -60,6 +60,8 @@ dependencies:
   # AdMob rewarded and native ads. Debug builds use Google's dedicated test
   # ad units; release builds switch to Sobra's Android ad unit IDs.
   google_mobile_ads: ^9.1.0
+  in_app_update: ^4.2.5
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

@@ -1622,4 +1622,39 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get releaseNote100Launch => 'Sobrita의 첫 번째 버전이에요.';
+
+  @override
+  String get updateAvailableTitle => '새 버전이 있어요';
+
+  @override
+  String get updateAvailableBody => '업데이트하면 최신 Sobrita를 쓸 수 있어요.';
+
+  @override
+  String updateCurrentVersion(String version) {
+    return '현재 버전: v$version';
+  }
+
+  @override
+  String get updateAction => '업데이트하기';
+
+  @override
+  String get updateLater => '나중에하기';
+
+  @override
+  String get updateBannerMessage => '새 버전이 나왔어요';
+
+  @override
+  String get updateBannerDismiss => '알림 닫기';
+
+  @override
+  String get updateStoreFailed => '구글 플레이를 열 수 없어요.';
+
+  @override
+  String get settingsCheckUpdate => '업데이트 확인';
+
+  @override
+  String get settingsCheckUpdateBusy => '확인 중…';
+
+  @override
+  String get settingsCheckUpdateUpToDate => '최신 버전이에요.';
 }
