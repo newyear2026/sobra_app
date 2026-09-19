@@ -8,6 +8,7 @@ import 'generated/app_localizations.dart';
 /// the character and room-item lineup is approved.
 String catalogEntryDisplayName(AppLocalizations l10n, CatalogEntry entry) {
   if (entry.id == 'michi') return entry.name;
+  if (entry.id == 'poodle') return l10n.prologuePoodleName;
   // Named rather than numbered, like Michi. Parsing a number out of this id
   // would answer zero and put "Item 0" on the card.
   if (entry.id == CatalogPreviewData.packDecorationId) {

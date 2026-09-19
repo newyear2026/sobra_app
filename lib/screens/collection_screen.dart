@@ -773,14 +773,17 @@ class _CatalogPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (entry.visual == CatalogVisual.michi) {
-      return const Center(
+    if (CharacterCatalog.all.containsKey(entry.id)) {
+      return Center(
         child: CharacterSprite(
-          characterId: 'michi',
+          characterId: entry.id,
           role: CharacterMotionRole.idle,
           width: 104,
           animate: false,
-          semanticLabel: 'Michi',
+          semanticLabel: catalogEntryDisplayName(
+            AppLocalizations.of(context),
+            entry,
+          ),
         ),
       );
     }
@@ -797,6 +800,7 @@ class _CatalogPreview extends StatelessWidget {
       CatalogVisual.trophy => Icons.emoji_events_outlined,
       CatalogVisual.cushion => Icons.weekend_outlined,
       CatalogVisual.michi => Icons.pets,
+      CatalogVisual.poodle => Icons.pets,
     };
     final tint = entry.kind == CatalogKind.character
         ? AppColors.violetSoft

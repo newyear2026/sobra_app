@@ -1493,6 +1493,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get prologueMichiTrait => '조용하다.\n셈이 빠르다.';
 
   @override
+  String get prologuePoodleName => '푸들';
+
+  @override
+  String get prologuePoodleTrait => '기운이 넘친다.\n잘 챙긴다.';
+
+  @override
   String get prologueLockedName => '???';
 
   @override
@@ -1502,14 +1508,14 @@ class AppLocalizationsKo extends AppLocalizations {
   String get prologueLockedSoon => '아트 준비 중';
 
   @override
-  String get prologueOtherStays => '다른 한 쪽도 집에 남아요. 아직 낯을 가릴 뿐이에요.';
+  String get prologueOtherStays => '다른 한 쪽도 함께 지내요. 나중에 언제든 바꿀 수 있어요.';
 
   @override
   String get prologueLiveTogether => '같이 지내자';
 
   @override
   String prologueGreeting(String name) {
-    return '미치야. 문 열어줘서 고마워.';
+    return '나는 $name. 문 열어줘서 고마워.';
   }
 
   @override

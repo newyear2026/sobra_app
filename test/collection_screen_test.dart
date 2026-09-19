@@ -328,6 +328,8 @@ void main() {
     await store.recordRewardedAdView(special);
 
     await pump(tester, store, ads: await readyAds(store));
+    await tester.ensureVisible(find.text('Personaje 8'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Personaje 8'));
     await tester.pumpAndSettle();
 

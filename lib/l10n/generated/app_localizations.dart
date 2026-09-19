@@ -2757,6 +2757,18 @@ abstract class AppLocalizations {
   /// **'Callado.\nBueno con los números.'**
   String get prologueMichiTrait;
 
+  /// No description provided for @prologuePoodleName.
+  ///
+  /// In es, this message translates to:
+  /// **'Poodle'**
+  String get prologuePoodleName;
+
+  /// No description provided for @prologuePoodleTrait.
+  ///
+  /// In es, this message translates to:
+  /// **'Puro ánimo.\nMuy atento.'**
+  String get prologuePoodleTrait;
+
   /// No description provided for @prologueLockedName.
   ///
   /// In es, this message translates to:
@@ -2778,7 +2790,7 @@ abstract class AppLocalizations {
   /// No description provided for @prologueOtherStays.
   ///
   /// In es, this message translates to:
-  /// **'El otro también se queda. Solo es más tímido.'**
+  /// **'El otro también se queda. Puedes cambiar de compañero más adelante.'**
   String get prologueOtherStays;
 
   /// No description provided for @prologueLiveTogether.

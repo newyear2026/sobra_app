@@ -2,8 +2,9 @@ import '../models/catalog_entry.dart';
 
 /// Replaceable data used while the character and item lineup is still open.
 ///
-/// Only Michi is final. Numbered entries intentionally avoid deciding the
-/// future cats or room objects before their art and commercial plan are ready.
+/// Michi and Poodle are final. Numbered entries intentionally avoid deciding
+/// the future characters or room objects before their art and commercial plan
+/// are ready.
 abstract final class CatalogPreviewData {
   static const characters = <CatalogEntry>[
     CatalogEntry(
@@ -13,6 +14,14 @@ abstract final class CatalogPreviewData {
       unlockMethod: CatalogUnlockMethod.included,
       visual: CatalogVisual.michi,
       assetPath: 'assets/characters/michi/idle-8.png',
+    ),
+    CatalogEntry(
+      id: 'poodle',
+      name: 'Poodle',
+      kind: CatalogKind.character,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.poodle,
+      assetPath: 'assets/characters/poodle/idle-8.png',
     ),
     // In the pack and nowhere else, along with 04 and 06. Selling these
     // individually as well would charge twice for the overlap: a buyer who

@@ -13,6 +13,7 @@ import 'package:sobra_app/screens/transactions_screen.dart';
 import 'package:sobra_app/services/sobra_widget_sync.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
+import 'package:sobra_app/widgets/cat_sprite.dart';
 import 'package:sobra_app/widgets/pixel_ui.dart';
 
 import 'support/localizations.dart';
@@ -257,6 +258,32 @@ void main() {
 
       expect(find.text('Primera misión'), findsOneWidget);
       expect(find.text('Definir presupuesto'), findsOneWidget);
+    });
+
+    testWidgets('Poodle can be chosen and stays active on the next page', (
+      tester,
+    ) async {
+      final store = await start(tester);
+      final tap = walker(tester);
+
+      await tap('Ir a ver');
+      expect(
+        find.byWidgetPredicate(
+          (widget) => widget is Opacity && widget.opacity == 0.24,
+        ),
+        findsNothing,
+      );
+      await tap('¿Acabas de hablar?');
+      await tap('Poodle');
+      await tap('Que se queden');
+
+      expect(store.characterId, 'poodle');
+      expect(
+        tester
+            .widgetList<CharacterSprite>(find.byType(CharacterSprite))
+            .map((sprite) => sprite.characterId),
+        contains('poodle'),
+      );
     });
 
     testWidgets('answering it carries the figure through to Inicio', (

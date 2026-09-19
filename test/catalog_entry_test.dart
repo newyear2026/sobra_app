@@ -4,15 +4,15 @@ import 'package:sobra_app/models/catalog_entry.dart';
 import 'package:sobra_app/models/xp_event.dart';
 
 void main() {
-  test('preview character catalog keeps the undecided 1 + 3 + 3 + 3 shape', () {
+  test('preview character catalog keeps two included final characters', () {
     final entries = CatalogPreviewData.characters;
 
-    expect(entries, hasLength(10));
+    expect(entries, hasLength(11));
     expect(
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.included,
       ),
-      hasLength(1),
+      hasLength(2),
     );
     expect(
       entries.where(

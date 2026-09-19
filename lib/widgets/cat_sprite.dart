@@ -81,7 +81,9 @@ class CharacterMotionSpec {
     required this.defaultLoop,
     required this.playbackSpec,
     this.frameOffsets = const [],
-  }) : assert(frameCount > 0);
+    this.displayScale = 1,
+  }) : assert(frameCount > 0),
+       assert(displayScale > 0);
 
   final String assetFileName;
   final int frameCount;
@@ -91,6 +93,14 @@ class CharacterMotionSpec {
 
   /// Vertical registration correction in source pixels; preserves the art.
   final List<double> frameOffsets;
+
+  /// Character-specific visual scale applied around the grounded feet.
+  ///
+  /// Generated sheets can follow the same 320×360 frame contract while the
+  /// painted character occupies a different fraction of that frame. Keeping
+  /// this in the motion definition prevents an action from visibly changing
+  /// the companion's body size when two roles are swapped in one scene.
+  final double displayScale;
 }
 
 @immutable
@@ -192,7 +202,79 @@ abstract final class CharacterCatalog {
     },
   );
 
-  static const Map<String, CharacterDefinition> all = {'michi': michi};
+  static const poodle = CharacterDefinition(
+    id: 'poodle',
+    displayName: 'Poodle',
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.png',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 7,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 8,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        displayScale: 1.35,
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+          holdFrame: 11,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.png',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 7,
+        ),
+      ),
+    },
+  );
+
+  static const Map<String, CharacterDefinition> all = {
+    'michi': michi,
+    'poodle': poodle,
+  };
 
   /// The pack for [characterId], or Michi when there is no such pack.
   ///
@@ -384,7 +466,7 @@ class _CharacterSpriteState extends State<CharacterSprite>
                   !widget.effectiveLoop &&
                   _controller.status == AnimationStatus.completed,
             );
-            return CustomPaint(
+            final paintedFrame = CustomPaint(
               painter: _SpritePainter(
                 image: _image,
                 frame: frame,
@@ -393,6 +475,13 @@ class _CharacterSpriteState extends State<CharacterSprite>
                     ? 0
                     : widget.motionSpec.frameOffsets[frame],
               ),
+            );
+            if (widget.motionSpec.displayScale == 1) return paintedFrame;
+            return Transform.scale(
+              scale: widget.motionSpec.displayScale,
+              alignment: Alignment.bottomCenter,
+              filterQuality: FilterQuality.none,
+              child: paintedFrame,
             );
           },
         ),

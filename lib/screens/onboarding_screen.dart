@@ -28,10 +28,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _monthlyPayDay = 30;
   int _weeklyPayDay = DateTime.friday;
   int _planningHorizon = 7;
+  String _selectedCharacterId = CharacterCatalog.defaultId;
+  bool _loadedCharacterChoice = false;
 
   /// The day the user says they were last paid, which anchors a fortnight.
   DateTime? _lastPayday;
   bool _saving = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_loadedCharacterChoice) return;
+    _loadedCharacterChoice = true;
+    _selectedCharacterId = CharacterCatalog.resolve(
+      SobraScope.of(context).characterId,
+    ).id;
+  }
 
   @override
   void dispose() {
@@ -79,12 +91,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   /// Confirms the companion and moves on.
-  ///
-  /// Only Michi is drawable today, so this is a confirmation rather than a
-  /// fork — but it is written through the store so the second pack is art
-  /// alone when it lands.
   Future<void> _chooseCharacter(SobraStore store) async {
-    await store.chooseCharacter(CharacterCatalog.michi.id);
+    await store.chooseCharacter(_selectedCharacterId);
     await _goTo(3);
   }
 
@@ -162,6 +170,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                   _CharacterPickPage(
                     reducedMotion: reducedMotionOf(context),
+                    selectedCharacterId: _selectedCharacterId,
+                    onCharacterChanged: (characterId) =>
+                        setState(() => _selectedCharacterId = characterId),
                     onBack: () => _goTo(1),
                     onContinue: () => _chooseCharacter(store),
                   ),
@@ -225,18 +236,6 @@ Widget _rained(Widget child) => ColorFiltered(
   child: child,
 );
 
-/// The character whose art has not been drawn yet.
-///
-/// A flat silhouette rather than a guess at what it will look like: the shape
-/// promises a second animal without inventing one.
-Widget _silhouette(Widget child) => Opacity(
-  opacity: 0.24,
-  child: ColorFiltered(
-    colorFilter: const ColorFilter.mode(AppColors.ink, BlendMode.srcIn),
-    child: child,
-  ),
-);
-
 /// A line of the prologue's prose.
 class _Prose extends StatelessWidget {
   const _Prose(this.text, {this.centered = false});
@@ -286,9 +285,10 @@ class _Says extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = CharacterCatalog.resolve(
+    final name = _localizedCharacterName(
+      AppLocalizations.of(context),
       SobraScope.of(context).characterId,
-    ).displayName;
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -383,9 +383,13 @@ class _MeetingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    Widget arriving({required bool silhouette, required double delay}) {
+    Widget arriving({
+      required String characterId,
+      required double delay,
+    }) {
       Widget pose(CatMotion motion, {required bool animate}) => CatSprite(
         motion: motion,
+        characterId: characterId,
         width: 96,
         animate: animate,
         loop: motion == CatMotion.walk ? true : false,
@@ -396,8 +400,8 @@ class _MeetingPage extends StatelessWidget {
       return PrologueArrival(
         animate: !reducedMotion,
         delayFraction: delay,
-        moving: silhouette ? _silhouette(moving) : moving,
-        arrived: silhouette ? _silhouette(arrived) : arrived,
+        moving: moving,
+        arrived: arrived,
       );
     }
 
@@ -426,8 +430,14 @@ class _MeetingPage extends StatelessWidget {
             height: 176,
             raining: true,
             actors: [
-              arriving(silhouette: false, delay: 0),
-              arriving(silhouette: true, delay: 0.16),
+              arriving(
+                characterId: CharacterCatalog.michi.id,
+                delay: 0,
+              ),
+              arriving(
+                characterId: CharacterCatalog.poodle.id,
+                delay: 0.16,
+              ),
             ],
           ),
           const SizedBox(height: 14),
@@ -459,21 +469,21 @@ class _MeetingPage extends StatelessWidget {
 class _CharacterPickPage extends StatelessWidget {
   const _CharacterPickPage({
     required this.reducedMotion,
+    required this.selectedCharacterId,
+    required this.onCharacterChanged,
     required this.onBack,
     required this.onContinue,
   });
   final bool reducedMotion;
+  final String selectedCharacterId;
+  final ValueChanged<String> onCharacterChanged;
   final VoidCallback onBack;
   final VoidCallback onContinue;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final resting = CatSprite(
-      motion: CatMotion.idle,
-      width: 92,
-      animate: !reducedMotion,
-    );
+    final selectedName = _localizedCharacterName(l10n, selectedCharacterId);
     return _OnboardingFrame(
       bottom: PixelButton(
         label: l10n.prologueLiveTogether,
@@ -492,7 +502,23 @@ class _CharacterPickPage extends StatelessWidget {
               ),
             ),
           ),
-          PrologueScene(height: 164, actors: [resting, _silhouette(resting)]),
+          PrologueScene(
+            height: 164,
+            actors: [
+              CharacterSprite(
+                characterId: CharacterCatalog.michi.id,
+                role: CharacterMotionRole.idle,
+                width: 92,
+                animate: !reducedMotion,
+              ),
+              CharacterSprite(
+                characterId: CharacterCatalog.poodle.id,
+                role: CharacterMotionRole.idle,
+                width: 92,
+                animate: !reducedMotion,
+              ),
+            ],
+          ),
           const SizedBox(height: 14),
           _Prose(l10n.prologueDriedOff),
           Text(
@@ -508,9 +534,11 @@ class _CharacterPickPage extends StatelessWidget {
                 child: _PickCard(
                   name: CharacterCatalog.michi.displayName,
                   trait: l10n.prologueMichiTrait,
-                  selected: true,
-                  child: CatSprite(
-                    motion: CatMotion.idle,
+                  selected: selectedCharacterId == CharacterCatalog.michi.id,
+                  onTap: () => onCharacterChanged(CharacterCatalog.michi.id),
+                  child: CharacterSprite(
+                    characterId: CharacterCatalog.michi.id,
+                    role: CharacterMotionRole.idle,
                     width: 86,
                     animate: !reducedMotion,
                   ),
@@ -519,16 +547,15 @@ class _CharacterPickPage extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: _PickCard(
-                  name: l10n.prologueLockedName,
-                  trait: l10n.prologueLockedTrait,
-                  selected: false,
-                  locked: l10n.prologueLockedSoon,
-                  child: _silhouette(
-                    CatSprite(
-                      motion: CatMotion.walk,
-                      width: 86,
-                      animate: false,
-                    ),
+                  name: l10n.prologuePoodleName,
+                  trait: l10n.prologuePoodleTrait,
+                  selected: selectedCharacterId == CharacterCatalog.poodle.id,
+                  onTap: () => onCharacterChanged(CharacterCatalog.poodle.id),
+                  child: CharacterSprite(
+                    characterId: CharacterCatalog.poodle.id,
+                    role: CharacterMotionRole.idle,
+                    width: 86,
+                    animate: !reducedMotion,
                   ),
                 ),
               ),
@@ -540,7 +567,7 @@ class _CharacterPickPage extends StatelessWidget {
             borderColor: AppColors.cashInk,
             elevation: PixelElevation.none,
             child: Text(
-              l10n.prologueGreeting(CharacterCatalog.michi.displayName),
+              l10n.prologueGreeting(selectedName),
               style: pixelText(size: 14, bold: true),
             ),
           ),
@@ -559,51 +586,50 @@ class _PickCard extends StatelessWidget {
     required this.trait,
     required this.selected,
     required this.child,
-    this.locked,
+    required this.onTap,
   });
   final String name;
   final String trait;
   final bool selected;
   final Widget child;
-  final String? locked;
+  final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => PixelCard(
-    color: selected ? AppColors.tealSoft : AppColors.surface,
-    borderColor: selected ? AppColors.tealInk : AppColors.ink,
-    padding: const EdgeInsets.fromLTRB(9, 9, 9, 10),
-    child: Column(
-      children: [
-        DecoratedBox(
-          decoration: BoxDecoration(
-            color: AppColors.beige,
-            border: Border.all(color: AppColors.ink, width: 2.5),
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    selected: selected,
+    label: name,
+    child: PixelCard(
+      onTap: onTap,
+      color: selected ? AppColors.tealSoft : AppColors.surface,
+      borderColor: selected ? AppColors.tealInk : AppColors.ink,
+      padding: const EdgeInsets.fromLTRB(9, 9, 9, 10),
+      child: Column(
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: AppColors.beige,
+              border: Border.all(color: AppColors.ink, width: 2.5),
+            ),
+            child: SizedBox(
+              height: 104,
+              width: double.infinity,
+              child: Align(alignment: Alignment.bottomCenter, child: child),
+            ),
           ),
-          child: SizedBox(
-            height: 104,
-            width: double.infinity,
-            child: Align(alignment: Alignment.bottomCenter, child: child),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(name, style: pixelText(size: 15, bold: true)),
-        const SizedBox(height: 3),
-        Text(
-          trait,
-          textAlign: TextAlign.center,
-          style: pixelText(
-            size: 11,
-            color: selected ? AppColors.tealInk : AppColors.inkSoft,
-          ),
-        ),
-        if (locked != null) ...[
-          const SizedBox(height: 7),
+          const SizedBox(height: 8),
+          Text(name, style: pixelText(size: 15, bold: true)),
+          const SizedBox(height: 3),
           Text(
-            locked!,
-            style: pixelText(size: 11, bold: true, color: AppColors.muted),
+            trait,
+            textAlign: TextAlign.center,
+            style: pixelText(
+              size: 11,
+              color: selected ? AppColors.tealInk : AppColors.inkSoft,
+            ),
           ),
         ],
-      ],
+      ),
     ),
   );
 }
@@ -981,7 +1007,7 @@ class _ReadyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final store = SobraScope.of(context);
-    final name = CharacterCatalog.resolve(store.characterId).displayName;
+    final name = _localizedCharacterName(l10n, store.characterId);
     return _OnboardingFrame(
       bottom: PixelButton(label: l10n.onboardingGoHome, onPressed: onFinish),
       scrollContent: true,
@@ -1068,6 +1094,13 @@ class _ReadyPage extends StatelessWidget {
       ),
     );
   }
+}
+
+String _localizedCharacterName(AppLocalizations l10n, String characterId) {
+  if (characterId == CharacterCatalog.poodle.id) {
+    return l10n.prologuePoodleName;
+  }
+  return CharacterCatalog.resolve(characterId).displayName;
 }
 
 class _LevelBadge extends StatelessWidget {

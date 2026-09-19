@@ -10,55 +10,59 @@ import 'support/localizations.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  test('all Michi roles follow the normalized sprite contract', () async {
+  test('all character roles follow the normalized sprite contract', () async {
     expect(CharacterMotionRole.values, hasLength(6));
 
-    for (final role in CharacterMotionRole.values) {
-      final asset = CharacterCatalog.michi.assetFor(role);
-      final motion = CharacterCatalog.michi.motionFor(role);
-      final bytes = await rootBundle.load(asset);
-      final codec = await ui.instantiateImageCodec(
-        bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
-      );
-      final frame = await codec.getNextFrame();
+    for (final character in CharacterCatalog.all.values) {
+      for (final role in CharacterMotionRole.values) {
+        final asset = character.assetFor(role);
+        final motion = character.motionFor(role);
+        final bytes = await rootBundle.load(asset);
+        final codec = await ui.instantiateImageCodec(
+          bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
+        );
+        final frame = await codec.getNextFrame();
 
-      expect(
-        frame.image.width,
-        CharacterAnimationStandard.frameWidth.toInt() * motion.frameCount,
-        reason: asset,
-      );
-      expect(
-        frame.image.height,
-        CharacterAnimationStandard.frameHeight.toInt(),
-        reason: asset,
-      );
+        expect(
+          frame.image.width,
+          CharacterAnimationStandard.frameWidth.toInt() * motion.frameCount,
+          reason: asset,
+        );
+        expect(
+          frame.image.height,
+          CharacterAnimationStandard.frameHeight.toInt(),
+          reason: asset,
+        );
 
-      if (role == CharacterMotionRole.activity ||
-          role == CharacterMotionRole.processing ||
-          role == CharacterMotionRole.positive) {
-        final pixels = (await frame.image.toByteData(
-          format: ui.ImageByteFormat.rawRgba,
-        ))!;
-        for (var index = 0; index < motion.frameCount; index++) {
-          var bottom = 0;
-          for (var y = 0; y < 360; y++) {
-            var opaque = 0;
-            for (var x = 0; x < 320; x++) {
-              final offset = (y * frame.image.width + index * 320 + x) * 4;
-              if (pixels.getUint8(offset + 3) > 192) opaque++;
+        if ((role == CharacterMotionRole.activity ||
+                role == CharacterMotionRole.processing ||
+                role == CharacterMotionRole.positive) &&
+            motion.frameOffsets.isNotEmpty) {
+          expect(motion.frameOffsets, hasLength(motion.frameCount));
+          final pixels = (await frame.image.toByteData(
+            format: ui.ImageByteFormat.rawRgba,
+          ))!;
+          for (var index = 0; index < motion.frameCount; index++) {
+            var bottom = 0;
+            for (var y = 0; y < 360; y++) {
+              var opaque = 0;
+              for (var x = 0; x < 320; x++) {
+                final offset = (y * frame.image.width + index * 320 + x) * 4;
+                if (pixels.getUint8(offset + 3) > 192) opaque++;
+              }
+              if (opaque >= 8) bottom = y + 1;
             }
-            if (opaque >= 8) bottom = y + 1;
+            expect(
+              bottom + motion.frameOffsets[index],
+              344,
+              reason: '$asset frame $index must remain grounded',
+            );
           }
-          expect(
-            bottom + motion.frameOffsets[index],
-            344,
-            reason: '$asset frame $index must remain grounded',
-          );
         }
-      }
 
-      frame.image.dispose();
-      codec.dispose();
+        frame.image.dispose();
+        codec.dispose();
+      }
     }
   });
 
@@ -97,6 +101,60 @@ void main() {
     );
   });
 
+  test('Poodle owns the same six-role motion definition', () {
+    expect(
+      CharacterCatalog.all,
+      containsPair('poodle', CharacterCatalog.poodle),
+    );
+    expect(
+      CharacterCatalog.poodle.motions.keys.toSet(),
+      CharacterMotionRole.values.toSet(),
+    );
+    expect(
+      CharacterCatalog.poodle
+          .motionFor(CharacterMotionRole.success)
+          .defaultLoop,
+      isFalse,
+    );
+    expect(
+      CharacterCatalog.poodle
+          .motionFor(CharacterMotionRole.success)
+          .displayScale,
+      1.35,
+    );
+    expect(
+      CharacterCatalog.poodle
+          .motionFor(CharacterMotionRole.activity)
+          .displayScale,
+      1,
+    );
+  });
+
+  testWidgets('Poodle success art scales from the grounded feet', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        localizationsDelegates: sobraLocalizationsDelegates,
+        supportedLocales: sobraSupportedLocales,
+        home: CharacterSprite(
+          characterId: 'poodle',
+          role: CharacterMotionRole.success,
+          animate: false,
+        ),
+      ),
+    );
+
+    final transform = tester.widget<Transform>(
+      find.descendant(
+        of: find.byType(CharacterSprite),
+        matching: find.byType(Transform),
+      ),
+    );
+    expect(transform.alignment, Alignment.bottomCenter);
+    expect(transform.transform.getMaxScaleOnAxis(), closeTo(1.35, 0.001));
+  });
+
   test('CharacterSprite resolves assets and playback from its character', () {
     const sprite = CharacterSprite(
       characterId: 'michi',
@@ -114,12 +172,12 @@ void main() {
 
   test('unregistered character ids fail with a clear error', () {
     expect(
-      () => CharacterCatalog.require('poodle'),
+      () => CharacterCatalog.require('unknown-character'),
       throwsA(
         isA<FlutterError>().having(
           (error) => error.message,
           'message',
-          contains('poodle'),
+          contains('unknown-character'),
         ),
       ),
     );

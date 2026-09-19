@@ -652,10 +652,12 @@
   "prologueDriedOff": "Secos, los dos se calmaron. Afuera seguía lloviendo.",
   "prologueWhoSits": "¿Quién se sienta contigo?",
   "prologueMichiTrait": "Callado.\nBueno con los números.",
+  "prologuePoodleName": "Poodle",
+  "prologuePoodleTrait": "Puro ánimo.\nMuy atento.",
   "prologueLockedName": "???",
   "prologueLockedTrait": "Puro ánimo.\nMuy atento.",
   "prologueLockedSoon": "Arte en camino",
-  "prologueOtherStays": "El otro también se queda. Solo es más tímido.",
+  "prologueOtherStays": "El otro también se queda. Puedes cambiar de compañero más adelante.",
   "prologueLiveTogether": "Que se queden",
   "prologueGreeting": "Me llamo {name}. Gracias por abrir.",
   "@prologueGreeting": {

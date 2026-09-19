@@ -1552,6 +1552,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get prologueMichiTrait => 'Callado.\nBueno con los números.';
 
   @override
+  String get prologuePoodleName => 'Poodle';
+
+  @override
+  String get prologuePoodleTrait => 'Puro ánimo.\nMuy atento.';
+
+  @override
   String get prologueLockedName => '???';
 
   @override
@@ -1562,7 +1568,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get prologueOtherStays =>
-      'El otro también se queda. Solo es más tímido.';
+      'El otro también se queda. Puedes cambiar de compañero más adelante.';
 
   @override
   String get prologueLiveTogether => 'Que se queden';

@@ -18,6 +18,7 @@ enum CatalogUnlockMethod { included, purchase, rewardedAd, level, bundle }
 /// renderer without changing any unlock or store data.
 enum CatalogVisual {
   michi,
+  poodle,
   characterPlaceholder,
   lamp,
   savings,

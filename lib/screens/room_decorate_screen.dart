@@ -628,13 +628,19 @@ List<_RoomChoice> _choicesFor(
   return choices..add(_RoomChoice.link(label: l10n.roomMoreInCollection));
 }
 
-/// Michi has art; the rest of the lineup is still a placeholder.
+/// Final character packs render their own art; the rest stay placeholders.
 ///
-/// Keyed on the visual rather than on the id, so a character gaining its own
-/// sprite is a change to the catalog entry and not to this screen.
+/// The character registry is the source of truth for whether final sprite art
+/// exists, so placeholder catalog entries remain cheap icons.
 Widget _characterPreview(CatalogEntry entry) => Center(
-  child: entry.visual == CatalogVisual.michi
-      ? const CatSprite(motion: CatMotion.idle, width: 72, animate: false)
+  child: CharacterCatalog.all.containsKey(entry.id)
+      ? CharacterSprite(
+          characterId: entry.id,
+          role: CharacterMotionRole.idle,
+          width: 72,
+          animate: false,
+          semanticLabel: entry.name,
+        )
       : const Icon(Icons.pets_outlined, size: 34, color: AppColors.muted),
 );
 
