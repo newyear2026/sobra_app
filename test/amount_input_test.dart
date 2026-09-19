@@ -43,6 +43,7 @@ void main() {
     test('only digits and one separator survive being typed', () {
       expect(_typing('9abc').text, '9');
       expect(_typing(r'$9').text, '9');
+      expect(_typing('€9').text, '9');
       expect(_typing('1e3').text, '13');
     });
 
@@ -73,6 +74,7 @@ void main() {
 
     test('a pasted figure keeps its value and loses its decoration', () {
       expect(_pasting(r'$1,200.50 MXN'), '1,200.50');
+      expect(_pasting('€1,200.50 EUR'), '1,200.50');
       expect(_pasting('1,000,000'), '1,000,000');
       expect(_pasting('1,200'), '1,200');
       expect(_pasting('1.234,56'), '1,234.56');

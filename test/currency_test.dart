@@ -24,14 +24,16 @@ Future<SobraStore> _onboardedStore() async {
 
 void main() {
   group('formatting an amount', () {
-    test('puts the code beside the symbol, since all three share it', () {
+    test('puts the code beside the figure', () {
       expect(formatMoney(Currency.mxn, 123456), r'$1,234.56 MXN');
       expect(formatMoney(Currency.usd, 123456), r'$1,234.56 USD');
       expect(formatMoney(Currency.cad, 123456), r'$1,234.56 CAD');
+      expect(formatMoney(Currency.eur, 123456), '€1,234.56 EUR');
     });
 
     test('drops the code when asked, for figures shown in pairs', () {
       expect(formatMoney(Currency.usd, 123456, showCode: false), r'$1,234.56');
+      expect(formatMoney(Currency.eur, 123456, showCode: false), '€1,234.56');
     });
 
     test('keeps whole amounts whole and groups thousands', () {
@@ -52,6 +54,7 @@ void main() {
       expect(Currency.fromCode(null), Currency.mxn);
       expect(Currency.fromCode('KRW'), Currency.mxn);
       expect(Currency.fromCode('USD'), Currency.usd);
+      expect(Currency.fromCode('EUR'), Currency.eur);
     });
 
     test('survives a reload and rides along in the backup', () async {
@@ -96,7 +99,10 @@ void main() {
           contains('1'),
           reason: '${currency.code} must read one whole unit as 1',
         );
-        expect(formatMoney(currency, 100, showCode: false), r'$1');
+        expect(
+          formatMoney(currency, 100, showCode: false),
+          '${currency.symbol}1',
+        );
       }
     });
   });
@@ -118,6 +124,12 @@ void main() {
 
       expect(find.textContaining('USD'), findsWidgets);
       expect(find.textContaining('MXN'), findsNothing);
+
+      await store.setCurrency(Currency.eur);
+      await tester.pump();
+
+      expect(find.textContaining('EUR'), findsWidgets);
+      expect(find.textContaining('USD'), findsNothing);
     });
   });
 }

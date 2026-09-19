@@ -5,23 +5,22 @@
 /// in their own pocket, and there is no honest exchange rate to apply to a
 /// cash count from three weeks ago.
 ///
-/// All three prefix the same `$`, so the code beside the figure is doing real
-/// work here rather than decorating it — `$1,200` is three very different
-/// amounts of money across this list.
+/// The dollar currencies share `$`, so the code beside those figures is doing
+/// real work — `$1,200` is three different amounts of money. The euro carries
+/// its own sign, and still prints its code so a figure always names the unit.
 enum Currency {
-  mxn('MXN'),
-  usd('USD'),
-  cad('CAD');
+  mxn('MXN', r'$'),
+  usd('USD', r'$'),
+  cad('CAD', r'$'),
+  eur('EUR', '€');
 
-  const Currency(this.code);
+  const Currency(this.code, this.symbol);
 
   /// The ISO code shown next to an amount, and what gets saved.
   final String code;
 
-  /// The symbol before the digits. The same for all three today; it is a field
-  /// rather than a constant because that is a fact about these currencies, not
-  /// about currencies.
-  String get symbol => r'$';
+  /// The symbol before the digits.
+  final String symbol;
 
   /// Every currency on this list splits into 100.
   ///
