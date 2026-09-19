@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/cash_reconciliation.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/screens/settlement_screen.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 
 import 'support/localizations.dart';
@@ -107,10 +108,11 @@ void main() {
     await tester.tap(find.text('Seguir'));
     await tester.pumpAndSettle();
     expect(find.text('¡NIVEL $level!'), findsNothing);
+    expect(find.byType(SettlementScreen), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('ordinary XP still arrives as the quiet snackbar', (
+  testWidgets('a closed cycle opens the settlement screen, not a snackbar', (
     tester,
   ) async {
     useSpanishDevice(tester);
@@ -131,14 +133,10 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    expect(find.byType(SnackBar), findsOneWidget);
+    expect(find.byType(SettlementScreen), findsOneWidget);
+    expect(find.text('Cierre de este ciclo'), findsOneWidget);
+    expect(find.byType(SnackBar), findsNothing);
     expect(find.text('Seguir'), findsNothing);
-    final bar = tester.widget<SnackBar>(find.byType(SnackBar));
-    expect(
-      (bar.margin as EdgeInsets).bottom,
-      greaterThanOrEqualTo(84),
-      reason: 'toast must sit above the 72px tab bar',
-    );
     expect(tester.takeException(), isNull);
   });
 

@@ -1266,6 +1266,52 @@ class SobraStore extends ChangeNotifier {
         (productId != null && _ownedCatalogIds.contains(productId));
   }
 
+  /// Whether general (native) ads should stay off.
+  ///
+  /// Granted by the pack or by the standalone remove-ads product. Rewarded
+  /// ads are not covered: those stay a choice in the collection.
+  bool get ownsNoAds =>
+      _ownedCatalogIds.contains(CatalogPreviewData.noAdsEntitlement);
+
+  /// Whether the Michi & Friends pack has been delivered.
+  ///
+  /// The decoration is pack-only, so it is a cheaper signal than asking for
+  /// every character the bundle lists.
+  bool get ownsPack =>
+      _ownedCatalogIds.contains(CatalogPreviewData.packDecorationId);
+
+  /// The rewarded-ad entry a settlement card should open, or null when the
+  /// card must be hidden.
+  ///
+  /// Hidden when the daily cap is spent or nothing unlockable remains. Order:
+  /// an entry already in progress, then the fewest remaining views, then
+  /// catalog order.
+  CatalogEntry? get recommendedRewardedAdEntry {
+    if ((rewardedAdsLeftToday ?? 1) <= 0) return null;
+    final catalog = CatalogPreviewData.all;
+    final candidates = [
+      for (final entry in catalog)
+        if (entry.unlockMethod == CatalogUnlockMethod.rewardedAd &&
+            rewardedAdAvailabilityFor(entry) ==
+                RewardedAdAvailability.available)
+          entry,
+    ];
+    if (candidates.isEmpty) return null;
+    candidates.sort((a, b) {
+      final progressA = rewardedAdProgressFor(a.id);
+      final progressB = rewardedAdProgressFor(b.id);
+      final startedA = progressA > 0;
+      final startedB = progressB > 0;
+      if (startedA != startedB) return startedA ? -1 : 1;
+      final remainingA = (a.rewardedAdTarget ?? 1) - progressA;
+      final remainingB = (b.rewardedAdTarget ?? 1) - progressB;
+      final byRemaining = remainingA.compareTo(remainingB);
+      if (byRemaining != 0) return byRemaining;
+      return catalog.indexOf(a).compareTo(catalog.indexOf(b));
+    });
+    return candidates.first;
+  }
+
   /// Ids acquired by purchase or by finishing a rewarded-ad run.
   ///
   /// Level rewards are not in here by design — read [ownsCatalogEntry] rather

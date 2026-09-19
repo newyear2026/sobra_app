@@ -16,8 +16,10 @@ abstract final class AdMobConfig {
   static const _androidNativeTest = 'ca-app-pub-3940256099942544/2247696110';
   static const _androidRewardedTest = 'ca-app-pub-3940256099942544/5224354917';
 
-  /// This set of identifiers is Android-only. iOS remains ad-free until its
-  /// own AdMob app and units are created.
+  /// This set of identifiers is Android-only. iOS stays ad-free until its
+  /// own AdMob app, units, and ATT copy exist. Mediation and AdSense are
+  /// out of scope: AdSense is a website product, and a second network is
+  /// not worth the fill until impressions are in the thousands per day.
   static bool get isSupported =>
       !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
 

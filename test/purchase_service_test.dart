@@ -407,4 +407,38 @@ void main() {
 
     expect(backend.bought, isEmpty);
   });
+
+  test('buying remove-ads grants only the entitlement', () async {
+    const productId = CatalogPreviewData.removeAdsProductId;
+    backend.catalogue = [...backend.catalogue, productFor(productId, r'MX$ 89')];
+    final purchases = await started(restoreOnStart: false);
+
+    await purchases.buyProduct(productId);
+    backend.emit([detailsFor(productId, PurchaseStatus.purchased)]);
+    await pumpEventQueue();
+
+    expect(store.ownsNoAds, isTrue);
+    expect(store.ownsPack, isFalse);
+    expect(backend.completed, [productId]);
+  });
+
+  test('buying remove-ads is a no-op once the pack already granted it',
+      () async {
+    const packId = CatalogPreviewData.packProductId;
+    const removeId = CatalogPreviewData.removeAdsProductId;
+    backend.catalogue = [
+      ...backend.catalogue,
+      productFor(packId, r'MX$ 199'),
+      productFor(removeId, r'MX$ 89'),
+    ];
+    final purchases = await started(restoreOnStart: false);
+    await store.grantCatalogEntries(
+      CatalogPreviewData.productEntitlements[packId]!,
+    );
+
+    await purchases.buyProduct(removeId);
+
+    expect(backend.bought, isEmpty);
+    expect(store.ownsNoAds, isTrue);
+  });
 }

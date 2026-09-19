@@ -20,6 +20,7 @@ class CollectionScreen extends StatefulWidget {
     super.key,
     this.priceSource = const PreviewCatalogPriceSource(),
     this.openedFromDecorate = false,
+    this.initialEntryId,
   });
 
   /// Whether the decorate screen is the route directly underneath.
@@ -29,6 +30,10 @@ class CollectionScreen extends StatefulWidget {
   /// on top of the first is not. Opened from anywhere else there is nothing
   /// to return to, so the action is not offered.
   final bool openedFromDecorate;
+
+  /// Opens this entry's detail on arrival. Used by the settlement card so
+  /// the ad still plays here, not on the celebration screen.
+  final String? initialEntryId;
 
   /// Used only where no [PurchaseScope] sits above this screen — a test, or
   /// the debug design gallery. The running app puts the live store there, and
@@ -57,6 +62,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
   /// unguarded request here answers its own notification and asks again —
   /// forever, whenever the answer is empty.
   bool _askedForAd = false;
+  bool _openedInitial = false;
 
   @override
   void didChangeDependencies() {
@@ -70,10 +76,12 @@ class _CollectionScreenState extends State<CollectionScreen> {
       unawaited(RewardedAdScope.maybeOf(context)?.prepare() ?? Future.value());
     }
     final purchases = PurchaseScope.maybeOf(context);
-    if (identical(purchases, _purchases)) return;
-    _purchases?.removeListener(_onPurchasesChanged);
-    _purchases = purchases;
-    _purchases?.addListener(_onPurchasesChanged);
+    if (!identical(purchases, _purchases)) {
+      _purchases?.removeListener(_onPurchasesChanged);
+      _purchases = purchases;
+      _purchases?.addListener(_onPurchasesChanged);
+    }
+    _openInitialEntryIfNeeded();
   }
 
   @override
@@ -87,6 +95,36 @@ class _CollectionScreenState extends State<CollectionScreen> {
     final failure = _purchases?.takeFailure();
     if (failure == null) return;
     _showNotice(describePurchaseFailure(AppLocalizations.of(context), failure));
+  }
+
+  /// Opens the entry the settlement card named, once, after the first layout.
+  ///
+  /// The kind tab has to match first or the card the dialog was opened from
+  /// is on the other page. The dialog itself still plays the ad — that is
+  /// the whole reason this screen is the only rewarded-ad entry point.
+  void _openInitialEntryIfNeeded() {
+    final id = widget.initialEntryId;
+    if (id == null || _openedInitial) return;
+    final entry = CatalogPreviewData.all
+        .where((candidate) => candidate.id == id)
+        .firstOrNull;
+    if (entry == null) return;
+    _openedInitial = true;
+    if (_selectedKind != entry.kind) {
+      setState(() => _selectedKind = entry.kind);
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final store = SobraScope.of(context);
+      final purchases = PurchaseScope.maybeOf(context);
+      final ads = RewardedAdScope.maybeOf(context);
+      final prices = purchases ?? widget.priceSource;
+      unawaited(
+        _openDetails(
+          _stateFor(entry, store, prices, purchases?.isBuying, ads),
+        ),
+      );
+    });
   }
 
   CatalogEntryState _stateFor(

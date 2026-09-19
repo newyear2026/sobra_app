@@ -334,4 +334,59 @@ void main() {
     expect(decoration.storeProductId, CatalogPreviewData.packProductId);
     expect(store.ownsCatalogEntry(decoration), isFalse);
   });
+
+  test('the remove-ads product delivers only ad removal', () {
+    expect(
+      CatalogPreviewData.productEntitlements[CatalogPreviewData
+          .removeAdsProductId],
+      {CatalogPreviewData.noAdsEntitlement},
+    );
+    expect(
+      CatalogPreviewData.storeProductIds,
+      contains(CatalogPreviewData.removeAdsProductId),
+    );
+    expect(
+      CatalogPreviewData.entryForProductId(
+        CatalogPreviewData.removeAdsProductId,
+      ),
+      isNull,
+    );
+  });
+
+  test('buying remove-ads leaves the pack locked', () async {
+    final store = await loadStore();
+    await store.grantCatalogEntries({CatalogPreviewData.noAdsEntitlement});
+
+    expect(store.ownsNoAds, isTrue);
+    expect(store.ownsPack, isFalse);
+    expect(store.ownsCatalogEntry(entryById('character-02')), isFalse);
+  });
+
+  test('recommended rewarded entry prefers progress, then fewer views',
+      () async {
+    final store = await loadStore();
+    final started = entryById('character-03');
+    await store.recordRewardedAdView(started);
+
+    expect(store.recommendedRewardedAdEntry?.id, started.id);
+  });
+
+  test('recommended rewarded entry is hidden when the day is capped', () async {
+    now = DateTime(2026, 9, 14, 11);
+    final store = await SobraStore.load(now: () => now, rewardedAdsPerDay: 1);
+    await store.recordRewardedAdView(entryById('item-03'));
+
+    expect(store.recommendedRewardedAdEntry, isNull);
+  });
+
+  test('recommended rewarded entry is hidden when nothing is left', () async {
+    final store = await loadStore();
+    for (final entry in CatalogPreviewData.all.where(
+      (entry) => entry.unlockMethod == CatalogUnlockMethod.rewardedAd,
+    )) {
+      await store.grantCatalogEntry(entry.id);
+    }
+
+    expect(store.recommendedRewardedAdEntry, isNull);
+  });
 }

@@ -1503,6 +1503,96 @@ abstract class AppLocalizations {
   /// **'Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobrita.'**
   String get settingsStorageNote;
 
+  /// No description provided for @settingsSectionShop.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienda'**
+  String get settingsSectionShop;
+
+  /// No description provided for @settingsRemoveAds.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar anuncios generales'**
+  String get settingsRemoveAds;
+
+  /// No description provided for @settingsRemoveAdsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Quita los anuncios del historial. Los de recompensa siguen disponibles.'**
+  String get settingsRemoveAdsHint;
+
+  /// No description provided for @settingsPackName.
+  ///
+  /// In es, this message translates to:
+  /// **'Michi y sus amigos'**
+  String get settingsPackName;
+
+  /// No description provided for @settingsPackHint.
+  ///
+  /// In es, this message translates to:
+  /// **'3 personajes + la estrella de Michi. También quita los anuncios generales.'**
+  String get settingsPackHint;
+
+  /// No description provided for @settingsOwned.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya lo tienes'**
+  String get settingsOwned;
+
+  /// No description provided for @settingsShopRestoreNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Las compras se guardan en tu cuenta de la tienda. Puedes recuperarlas al reinstalar.'**
+  String get settingsShopRestoreNote;
+
+  /// No description provided for @settlementTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cierre de este ciclo'**
+  String get settlementTitle;
+
+  /// No description provided for @settlementSpent.
+  ///
+  /// In es, this message translates to:
+  /// **'Gastado'**
+  String get settlementSpent;
+
+  /// No description provided for @settlementLeft.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobrante'**
+  String get settlementLeft;
+
+  /// No description provided for @settlementOver.
+  ///
+  /// In es, this message translates to:
+  /// **'Pasaste'**
+  String get settlementOver;
+
+  /// No description provided for @settlementAverage.
+  ///
+  /// In es, this message translates to:
+  /// **'Promedio diario'**
+  String get settlementAverage;
+
+  /// No description provided for @settlementContinue.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get settlementContinue;
+
+  /// No description provided for @settlementCtaTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir por un adorno especial'**
+  String get settlementCtaTitle;
+
+  /// No description provided for @settlementCtaAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver colección'**
+  String get settlementCtaAction;
+
   /// No description provided for @settingsSectionBudget.
   ///
   /// In es, this message translates to:

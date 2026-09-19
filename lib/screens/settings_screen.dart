@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../data/catalog_preview_data.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/language.dart';
 import '../models/currency.dart';
@@ -53,10 +54,61 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// the first and answer twice.
   bool _restoring = false;
 
+  /// Watched rather than polled, same reason the collection listens: [buy]
+  /// returns when the sheet opens, and a rejection arrives later on the
+  /// stream.
+  SobraPurchases? _purchases;
+
+  /// True only after this screen started a shop checkout.
+  ///
+  /// Ajustes stays mounted inside the shell's IndexedStack. Without this
+  /// gate it would consume [SobraPurchases.takeFailure] for a collection
+  /// purchase the user cannot see from here.
+  bool _awaitingShopPurchase = false;
+
   @override
   void initState() {
     super.initState();
     _loadVersion();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final purchases = PurchaseScope.maybeOf(context);
+    if (identical(purchases, _purchases)) return;
+    _purchases?.removeListener(_onPurchasesChanged);
+    _purchases = purchases;
+    _purchases?.addListener(_onPurchasesChanged);
+  }
+
+  @override
+  void dispose() {
+    _purchases?.removeListener(_onPurchasesChanged);
+    super.dispose();
+  }
+
+  void _onPurchasesChanged() {
+    if (!mounted || !_awaitingShopPurchase) return;
+    if (_purchases?.isBusy == true) return;
+    _awaitingShopPurchase = false;
+    final failure = _purchases?.takeFailure();
+    if (failure == null) return;
+    final messenger = ScaffoldMessenger.of(context);
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            describePurchaseFailure(AppLocalizations.of(context), failure),
+          ),
+        ),
+      );
+  }
+
+  void _buyShopProduct(SobraPurchases purchases, String productId) {
+    _awaitingShopPurchase = true;
+    unawaited(purchases.buyProduct(productId));
   }
 
   Future<void> _loadVersion() async {
@@ -164,6 +216,60 @@ class _SettingsScreenState extends State<SettingsScreen> {
               MaterialPageRoute<void>(builder: (_) => const CollectionScreen()),
             ),
           ),
+          if (purchases != null) ...[
+            const SizedBox(height: 24),
+            _SectionHeader(l10n.settingsSectionShop),
+            _ShopProductRow(
+              icon: Icons.block,
+              iconColor: AppColors.teal,
+              label: l10n.settingsRemoveAds,
+              hint: l10n.settingsRemoveAdsHint,
+              owned: store.ownsNoAds,
+              price: purchases.localizedPriceFor(
+                CatalogPreviewData.removeAdsProductId,
+              ),
+              buying: purchases.isBuying(CatalogPreviewData.removeAdsProductId),
+              pendingPrice: l10n.collectionStorePricePending,
+              ownedLabel: l10n.settingsOwned,
+              buyingLabel: l10n.collectionPurchasing,
+              onBuy: () => _buyShopProduct(
+                purchases,
+                CatalogPreviewData.removeAdsProductId,
+              ),
+            ),
+            _ShopProductRow(
+              icon: Icons.favorite,
+              iconColor: AppColors.cash,
+              label: l10n.settingsPackName,
+              hint: l10n.settingsPackHint,
+              owned: store.ownsPack,
+              price: purchases.localizedPriceFor(
+                CatalogPreviewData.packProductId,
+              ),
+              buying: purchases.isBuying(CatalogPreviewData.packProductId),
+              pendingPrice: l10n.collectionStorePricePending,
+              ownedLabel: l10n.settingsOwned,
+              buyingLabel: l10n.collectionPurchasing,
+              onBuy: () => _buyShopProduct(
+                purchases,
+                CatalogPreviewData.packProductId,
+              ),
+            ),
+            _SettingsRow(
+              icon: Icons.restore,
+              iconColor: AppColors.teal,
+              label: l10n.settingsRestorePurchases,
+              value: l10n.settingsRestore,
+              onTap: _restoring ? null : () => _restorePurchases(purchases),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+              child: Text(
+                l10n.settingsShopRestoreNote,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ],
           const SizedBox(height: 24),
           _SectionHeader(l10n.settingsSectionBudget),
           _SettingsRow(
@@ -323,17 +429,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             value: l10n.settingsAccountConnect,
             onTap: _openAccountOffer,
           ),
-          // Required by the App Store the moment Sobra ships on iOS, and
-          // worth having on Android too: a user whose purchases did not come
-          // back needs somewhere to press before they ask for a refund.
-          if (purchases != null)
-            _SettingsRow(
-              icon: Icons.restore,
-              iconColor: AppColors.teal,
-              label: l10n.settingsRestorePurchases,
-              value: l10n.settingsRestore,
-              onTap: _restoring ? null : () => _restorePurchases(purchases),
-            ),
           if (adConsent?.privacyOptionsRequired == true) ...[
             const SizedBox(height: 10),
             _SectionHeader(l10n.settingsSectionPrivacy),
@@ -698,6 +793,77 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         label.toUpperCase(),
         style: pixelText(size: 12, bold: true, color: AppColors.muted),
+      ),
+    );
+  }
+}
+
+/// A store product that can already be owned, so the row must stop looking
+/// like a button once it is.
+class _ShopProductRow extends StatelessWidget {
+  const _ShopProductRow({
+    required this.icon,
+    required this.iconColor,
+    required this.label,
+    required this.hint,
+    required this.owned,
+    required this.price,
+    required this.buying,
+    required this.pendingPrice,
+    required this.ownedLabel,
+    required this.buyingLabel,
+    required this.onBuy,
+  });
+
+  final IconData icon;
+  final Color iconColor;
+  final String label;
+  final String hint;
+  final bool owned;
+  final String? price;
+  final bool buying;
+  final String pendingPrice;
+  final String ownedLabel;
+  final String buyingLabel;
+  final VoidCallback onBuy;
+
+  @override
+  Widget build(BuildContext context) {
+    final value = owned
+        ? ownedLabel
+        : buying
+        ? buyingLabel
+        : (price ?? pendingPrice);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: PixelCard(
+        elevation: PixelElevation.none,
+        onTap: owned || buying ? null : onBuy,
+        child: Row(
+          children: [
+            _IconTile(icon: icon, color: iconColor),
+            const SizedBox(width: 13),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: pixelText(size: 15, bold: true)),
+                  const SizedBox(height: 2),
+                  Text(hint, style: Theme.of(context).textTheme.bodySmall),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              value,
+              style: pixelText(size: 14, bold: true, color: AppColors.muted),
+            ),
+            if (!owned && !buying) ...[
+              const SizedBox(width: 4),
+              const Icon(Icons.chevron_right, color: AppColors.ink),
+            ],
+          ],
+        ),
       ),
     );
   }

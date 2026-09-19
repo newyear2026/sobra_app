@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -7,21 +8,57 @@ import '../theme/app_theme.dart';
 
 /// A small Google native template styled to sit between ledger rows.
 class SobraNativeAd extends StatefulWidget {
-  const SobraNativeAd({super.key, required this.controller});
+  const SobraNativeAd({
+    super.key,
+    required this.controller,
+    this.preview,
+  });
 
   final NativeAds controller;
+
+  /// Test-only body. Skips the SDK and shows the same chrome a loaded ad uses,
+  /// so a harness can photograph the slot without a network fill.
+  @visibleForTesting
+  final Widget? preview;
 
   @override
   State<SobraNativeAd> createState() => _SobraNativeAdState();
 }
 
-class _SobraNativeAdState extends State<SobraNativeAd> {
-  NativeAd? _ad;
-  bool _loaded = false;
+class NativeAdPreviewScope extends InheritedWidget {
+  const NativeAdPreviewScope({
+    super.key,
+    required this.preview,
+    required super.child,
+  });
+
+  final Widget preview;
+
+  static Widget? maybeOf(BuildContext context) => context
+      .dependOnInheritedWidgetOfExactType<NativeAdPreviewScope>()
+      ?.preview;
 
   @override
-  void initState() {
-    super.initState();
+  bool updateShouldNotify(NativeAdPreviewScope oldWidget) =>
+      oldWidget.preview != preview;
+}
+
+class _SobraNativeAdState extends State<SobraNativeAd> {
+  NativeAd? _ad;
+  Widget? _preview;
+  bool _loaded = false;
+  bool _started = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) return;
+    _started = true;
+    _preview = widget.preview ?? NativeAdPreviewScope.maybeOf(context);
+    if (_preview != null) {
+      _loaded = true;
+      return;
+    }
     _load();
   }
 
@@ -79,8 +116,23 @@ class _SobraNativeAdState extends State<SobraNativeAd> {
 
   @override
   Widget build(BuildContext context) {
+    final preview = _preview ?? widget.preview;
     final ad = _ad;
-    if (!_loaded || ad == null) return const SizedBox.shrink();
+    if (!_loaded || (preview == null && ad == null)) {
+      return const SizedBox.shrink();
+    }
+    return NativeAdFrame(child: preview ?? AdWidget(ad: ad!));
+  }
+}
+
+/// The painted card around a native ad, shared by the live SDK view and tests.
+class NativeAdFrame extends StatelessWidget {
+  const NativeAdFrame({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Center(
@@ -93,7 +145,7 @@ class _SobraNativeAdState extends State<SobraNativeAd> {
               color: AppColors.paperLight,
               border: Border.all(color: AppColors.ink, width: 2.5),
             ),
-            child: AdWidget(ad: ad),
+            child: child,
           ),
         ),
       ),

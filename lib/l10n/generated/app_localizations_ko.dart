@@ -794,6 +794,52 @@ class AppLocalizationsKo extends AppLocalizations {
       '데이터는 이 기기에만 저장돼요. Sobrita를 쓰는 데 계정은 필요 없어요.';
 
   @override
+  String get settingsSectionShop => '상점';
+
+  @override
+  String get settingsRemoveAds => '일반 광고 제거';
+
+  @override
+  String get settingsRemoveAdsHint =>
+      '거래 내역의 일반 광고가 사라져요. 보상형 광고는 그대로 볼 수 있어요.';
+
+  @override
+  String get settingsPackName => '미치와 친구들';
+
+  @override
+  String get settingsPackHint => '캐릭터 3종 + 미치의 별. 일반 광고도 함께 제거돼요.';
+
+  @override
+  String get settingsOwned => '보유 중';
+
+  @override
+  String get settingsShopRestoreNote => '구매 항목은 스토어 계정으로 언제든 복원할 수 있어요.';
+
+  @override
+  String get settlementTitle => '이번 주기 결산';
+
+  @override
+  String get settlementSpent => '지출';
+
+  @override
+  String get settlementLeft => '남음';
+
+  @override
+  String get settlementOver => '초과';
+
+  @override
+  String get settlementAverage => '일평균';
+
+  @override
+  String get settlementContinue => '확인';
+
+  @override
+  String get settlementCtaTitle => '특별 꾸미기 받으러 가기';
+
+  @override
+  String get settlementCtaAction => '컬렉션 보기';
+
+  @override
   String get settingsSectionBudget => '예산';
 
   @override

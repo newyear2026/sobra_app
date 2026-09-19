@@ -58,12 +58,6 @@ class _RoomScreenState extends State<RoomScreen> {
                   child: PixelTopBar(
                     title: l10n.roomTitle,
                     onBack: () => Navigator.of(context).pop(),
-                    trailing: PixelButton(
-                      label: l10n.roomDecorate,
-                      icon: Icons.brush,
-                      expand: false,
-                      onPressed: _openDecorator,
-                    ),
                   ),
                 ),
                 Expanded(

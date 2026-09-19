@@ -824,6 +824,54 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your data is kept on this device. You don\'t need an account to use Sobrita.';
 
   @override
+  String get settingsSectionShop => 'Store';
+
+  @override
+  String get settingsRemoveAds => 'Remove general ads';
+
+  @override
+  String get settingsRemoveAdsHint =>
+      'Removes ads from the activity list. Rewarded ads stay available.';
+
+  @override
+  String get settingsPackName => 'Michi & Friends';
+
+  @override
+  String get settingsPackHint =>
+      '3 characters + Michi\'s star. Also removes general ads.';
+
+  @override
+  String get settingsOwned => 'Owned';
+
+  @override
+  String get settingsShopRestoreNote =>
+      'Purchases stay with your store account. You can restore them after reinstalling.';
+
+  @override
+  String get settlementTitle => 'This cycle\'s close';
+
+  @override
+  String get settlementSpent => 'Spent';
+
+  @override
+  String get settlementLeft => 'Left over';
+
+  @override
+  String get settlementOver => 'Over';
+
+  @override
+  String get settlementAverage => 'Daily average';
+
+  @override
+  String get settlementContinue => 'Done';
+
+  @override
+  String get settlementCtaTitle => 'Go get a special decoration';
+
+  @override
+  String get settlementCtaAction => 'Open collection';
+
+  @override
   String get settingsSectionBudget => 'Budget';
 
   @override

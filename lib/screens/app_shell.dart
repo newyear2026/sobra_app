@@ -6,6 +6,7 @@ import '../data/catalog_preview_data.dart';
 import '../l10n/catalog_labels.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/room_design.dart';
+import '../models/xp_event.dart';
 import '../services/app_update_service.dart';
 import '../services/app_version_service.dart';
 import '../services/native_ad_service.dart';
@@ -21,6 +22,7 @@ import 'budget_screen.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
 import 'settings_screen.dart';
+import 'settlement_screen.dart';
 import 'transactions_screen.dart';
 
 enum AppTab {
@@ -263,34 +265,50 @@ class _AppShellState extends State<AppShell> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _xpNoticeScheduled = false;
       if (!mounted) return;
-      final notice = _store?.takePendingXpNotice();
-      if (notice == null) return;
-      final newLevel = notice.newLevel;
-      if (newLevel != null) {
-        // A level-up is rare enough to interrupt for; everyday XP is not.
-        final previousLevel = notice.previousLevel ?? newLevel - 1;
-        final l10n = AppLocalizations.of(context);
-        final unlockedItemNames =
-            CatalogPreviewData.levelItemsUnlockedBetween(
-                  previousLevel: previousLevel,
-                  currentLevel: newLevel,
-                )
-                .map((entry) => catalogEntryDisplayName(l10n, entry))
-                .toList(growable: false);
-        unawaited(
-          showLevelUpCelebration(
-            context,
-            newLevel,
-            newlyUnlockedItemNames: unlockedItemNames,
-          ),
-        );
-        return;
-      }
-      final messenger = ScaffoldMessenger.of(context);
-      messenger
-        ..hideCurrentSnackBar()
-        ..showSnackBar(xpSnackBar(context, notice));
+      unawaited(_presentXpNotice());
     });
+  }
+
+  Future<void> _presentXpNotice() async {
+    final notice = _store?.takePendingXpNotice();
+    if (notice == null || !mounted) return;
+    final newLevel = notice.newLevel;
+    if (newLevel != null) {
+      // A level-up is rare enough to interrupt for; everyday XP is not.
+      final previousLevel = notice.previousLevel ?? newLevel - 1;
+      final l10n = AppLocalizations.of(context);
+      final unlockedItemNames =
+          CatalogPreviewData.levelItemsUnlockedBetween(
+                previousLevel: previousLevel,
+                currentLevel: newLevel,
+              )
+              .map((entry) => catalogEntryDisplayName(l10n, entry))
+              .toList(growable: false);
+      await showLevelUpCelebration(
+        context,
+        newLevel,
+        newlyUnlockedItemNames: unlockedItemNames,
+      );
+      if (!mounted) return;
+    }
+    if (notice.kind == XpNoticeKind.cyclesClosed) {
+      // The celebration of a closed cycle is a screen, not a snack bar.
+      // Ads are not played here; the card only opens the collection.
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => SettlementScreen(
+            notice: notice,
+            record: _store?.cycleRecords.firstOrNull,
+          ),
+        ),
+      );
+      return;
+    }
+    if (newLevel != null) return;
+    final messenger = ScaffoldMessenger.of(context);
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(xpSnackBar(context, notice));
   }
 
   void _select(AppTab tab) {

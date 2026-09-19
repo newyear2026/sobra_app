@@ -824,6 +824,54 @@ class AppLocalizationsEs extends AppLocalizations {
       'Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobrita.';
 
   @override
+  String get settingsSectionShop => 'Tienda';
+
+  @override
+  String get settingsRemoveAds => 'Quitar anuncios generales';
+
+  @override
+  String get settingsRemoveAdsHint =>
+      'Quita los anuncios del historial. Los de recompensa siguen disponibles.';
+
+  @override
+  String get settingsPackName => 'Michi y sus amigos';
+
+  @override
+  String get settingsPackHint =>
+      '3 personajes + la estrella de Michi. También quita los anuncios generales.';
+
+  @override
+  String get settingsOwned => 'Ya lo tienes';
+
+  @override
+  String get settingsShopRestoreNote =>
+      'Las compras se guardan en tu cuenta de la tienda. Puedes recuperarlas al reinstalar.';
+
+  @override
+  String get settlementTitle => 'Cierre de este ciclo';
+
+  @override
+  String get settlementSpent => 'Gastado';
+
+  @override
+  String get settlementLeft => 'Sobrante';
+
+  @override
+  String get settlementOver => 'Pasaste';
+
+  @override
+  String get settlementAverage => 'Promedio diario';
+
+  @override
+  String get settlementContinue => 'Listo';
+
+  @override
+  String get settlementCtaTitle => 'Ir por un adorno especial';
+
+  @override
+  String get settlementCtaAction => 'Ver colección';
+
+  @override
   String get settingsSectionBudget => 'Presupuesto';
 
   @override

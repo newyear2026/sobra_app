@@ -56,6 +56,7 @@ void main() {
     SobraStore store, {
     RewardedAds? ads,
     bool openedFromDecorate = false,
+    String? initialEntryId,
   }) async {
     tester.view.physicalSize = const Size(520, 1400);
     tester.view.devicePixelRatio = 1;
@@ -68,7 +69,10 @@ void main() {
         localizationsDelegates: sobraLocalizationsDelegates,
         supportedLocales: sobraSupportedLocales,
         theme: buildSobraTheme(),
-        home: CollectionScreen(openedFromDecorate: openedFromDecorate),
+        home: CollectionScreen(
+          openedFromDecorate: openedFromDecorate,
+          initialEntryId: initialEntryId,
+        ),
       ),
     );
     if (ads != null) app = RewardedAdScope(ads: ads, child: app);
@@ -437,6 +441,17 @@ void main() {
 
     expect(store.rewardedAdProgressFor('character-03'), 0);
     expect(store.rewardedAdsLeftToday, 0);
+  });
+
+  testWidgets('an initial entry opens its detail without playing an ad', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store, initialEntryId: 'item-03');
+
+    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(inDialog('Objeto 3'), findsOneWidget);
+    expect(store.rewardedAdProgressFor('item-03'), 0);
   });
 }
 

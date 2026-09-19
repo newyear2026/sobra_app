@@ -245,7 +245,19 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
     final productId = entry.storeProductId;
     if (entry.unlockMethod != CatalogUnlockMethod.purchase) return;
     if (productId == null || _store.ownsCatalogEntry(entry)) return;
-    if (isBuying(productId)) return;
+    await buyProduct(productId);
+  }
+
+  /// Starts the purchase of a store product that is not a catalog card.
+  ///
+  /// The pack and the standalone ad-removal product live here. Their cards
+  /// are settings rows, not collection entries, and [buy] would refuse them
+  /// for not being [CatalogUnlockMethod.purchase].
+  ///
+  /// Returns without doing anything when every entitlement is already owned
+  /// or a checkout for the same id is already open.
+  Future<void> buyProduct(String productId) async {
+    if (_alreadyOwnsProduct(productId) || isBuying(productId)) return;
     final product = _products[productId];
     if (product == null) {
       _report(PurchaseFailure.storeUnavailable);
@@ -262,6 +274,15 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
       _endCheckout(productId);
       _report(PurchaseFailure.purchaseRejected);
     }
+  }
+
+  bool _alreadyOwnsProduct(String productId) {
+    final entitlements = CatalogPreviewData.entitlementsForProductId(productId);
+    if (entitlements != null) {
+      return entitlements.every(_store.ownedCatalogIds.contains);
+    }
+    final entry = CatalogPreviewData.entryForProductId(productId);
+    return entry != null && _store.ownsCatalogEntry(entry);
   }
 
   void _endCheckout(String productId) =>

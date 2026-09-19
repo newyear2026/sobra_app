@@ -202,18 +202,20 @@ abstract final class CatalogPreviewData {
 
   /// Ad removal, stored beside catalog ids rather than as an entry of its own.
   ///
-  /// Nothing reads it yet — general ads do not exist before the native
-  /// placement ships. It is granted now so that supporters who bought before
-  /// then do not have to be re-granted afterwards, and so the entitlement is
-  /// carried by the same restore that carries their characters.
+  /// Native ads read it so a pack buyer who arrived before the placement
+  /// shipped does not have to be re-granted. The standalone product grants
+  /// the same id; owning it once is enough for both.
   static const noAdsEntitlement = 'entitlement.no_ads';
 
+  /// Standalone removal of general (native) ads. Rewarded ads stay optional.
+  static const removeAdsProductId = 'sobra.ads.remove';
+
   /// What one store product delivers, for products that deliver more than one
-  /// thing.
+  /// thing — or one entitlement that is not a catalog entry.
   ///
-  /// Only bundles belong here. A product that maps to exactly one entry is
-  /// resolved by [entryForProductId] instead, and listing it twice would give
-  /// the same purchase two answers.
+  /// Only those products belong here. A product that maps to exactly one
+  /// catalog entry is resolved by [entryForProductId] instead, and listing it
+  /// twice would give the same purchase two answers.
   static const productEntitlements = <String, Set<String>>{
     packProductId: {
       'character-02',
@@ -222,6 +224,7 @@ abstract final class CatalogPreviewData {
       packDecorationId,
       noAdsEntitlement,
     },
+    removeAdsProductId: {noAdsEntitlement},
   };
 
   /// Everything [storeProductId] delivers, or null where it is not a bundle.
@@ -305,6 +308,8 @@ final class PreviewCatalogPriceSource implements CatalogPriceSource {
     'sobra.character.07' => r'MX$ 79',
     'sobra.character.09' => r'MX$ 99',
     'sobra.character.10' => r'MX$ 129',
+    CatalogPreviewData.packProductId => r'MX$ 149',
+    CatalogPreviewData.removeAdsProductId => r'MX$ 89',
     _ => null,
   };
 }

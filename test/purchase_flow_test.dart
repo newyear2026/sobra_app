@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sobra_app/data/catalog_preview_data.dart';
 import 'package:sobra_app/screens/collection_screen.dart';
 import 'package:sobra_app/screens/settings_screen.dart';
 import 'package:sobra_app/services/purchase_service.dart';
@@ -216,5 +217,43 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('No encontramos compras en esta cuenta.'), findsOneWidget);
+  });
+
+  testWidgets('Ajustes sells remove-ads and shows owned after the pack', (
+    tester,
+  ) async {
+    backend.catalogue = [
+      ...backend.catalogue,
+      productFor(CatalogPreviewData.removeAdsProductId, r'MX$ 89'),
+      productFor(CatalogPreviewData.packProductId, r'MX$ 149'),
+    ];
+    await purchases.start();
+    await pump(tester, const SettingsScreen(), inScaffold: true);
+
+    expect(find.text('Quitar anuncios generales'), findsOneWidget);
+    expect(find.text('Michi y sus amigos'), findsOneWidget);
+    expect(find.text(r'MX$ 89'), findsOneWidget);
+
+    await tester.tap(find.text('Quitar anuncios generales'));
+    await tester.pumpAndSettle();
+    expect(backend.bought, [CatalogPreviewData.removeAdsProductId]);
+
+    backend.emit([
+      detailsFor(
+        CatalogPreviewData.removeAdsProductId,
+        PurchaseStatus.purchased,
+      ),
+    ]);
+    await tester.pumpAndSettle();
+
+    expect(store.ownsNoAds, isTrue);
+    expect(find.text('Ya lo tienes'), findsOneWidget);
+
+    await store.grantCatalogEntries(
+      CatalogPreviewData.productEntitlements[CatalogPreviewData.packProductId]!,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ya lo tienes'), findsNWidgets(2));
   });
 }

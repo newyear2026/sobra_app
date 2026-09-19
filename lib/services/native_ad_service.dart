@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
-import '../data/catalog_preview_data.dart';
 import '../state/sobra_store.dart';
 
 /// Applies Sobra's placement rules independently of the ad SDK widget.
@@ -24,8 +23,7 @@ class NativeAds extends ChangeNotifier {
 
   int get visitId => _visitId;
 
-  bool get _ownsNoAds =>
-      _store.ownedCatalogIds.contains(CatalogPreviewData.noAdsEntitlement);
+  bool get _ownsNoAds => _store.ownsNoAds;
 
   bool get canOffer =>
       _sdkReady &&
