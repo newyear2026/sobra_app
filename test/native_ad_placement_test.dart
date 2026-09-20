@@ -8,7 +8,6 @@ import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/services/native_ad_service.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
-import 'package:sobra_app/widgets/pixel_ui.dart';
 import 'package:sobra_app/widgets/sobra_native_ad.dart';
 
 import 'support/localizations.dart';
@@ -107,14 +106,14 @@ Future<SobraStore> _storeWithExpenses(int count) async {
 }
 
 void main() {
-  testWidgets('seven expense rows do not reserve a native slot', (tester) async {
+  testWidgets('two expense rows do not reserve a native slot', (tester) async {
     useSpanishDevice(tester);
     tester.view.physicalSize = const Size(520, 1600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    final store = await _storeWithExpenses(7);
+    final store = await _storeWithExpenses(2);
     final ads = NativeAds(store: store, graceDays: 0)..setSdkReady(true);
 
     await tester.pumpWidget(SobraApp(store: store, nativeAds: ads));
@@ -126,7 +125,7 @@ void main() {
     expect(find.byType(SobraNativeAd), findsNothing);
   });
 
-  testWidgets('the eighth expense row is followed by the native slot', (
+  testWidgets('the third expense row is followed by the native slot', (
     tester,
   ) async {
     useSpanishDevice(tester);
@@ -136,7 +135,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     await _loadFonts();
 
-    final store = await _storeWithExpenses(10);
+    final store = await _storeWithExpenses(5);
     final ads = NativeAds(store: store, graceDays: 0)..setSdkReady(true);
 
     await tester.pumpWidget(

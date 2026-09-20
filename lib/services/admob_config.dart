@@ -29,7 +29,6 @@ abstract final class AdMobConfig {
   static String get rewardedAdUnitId =>
       kReleaseMode ? _androidRewardedProduction : _androidRewardedTest;
 
-  /// New installs get a calm first week. Debug builds skip it so the test
-  /// creative can be checked immediately on a device.
-  static int get nativeGraceDays => kReleaseMode ? 7 : 0;
+  /// Native ads are eligible immediately for new users in every build mode.
+  static int get nativeGraceDays => 0;
 }

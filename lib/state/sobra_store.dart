@@ -107,9 +107,9 @@ class SobraStore extends ChangeNotifier {
   /// would be state nothing reads.
   final Map<String, String> _rewardedAdLastEarnedDate = {};
 
-  /// Native ads begin only after a quiet install/update grace period. Existing
-  /// saved states receive this field on their first launch with ads, so they
-  /// get the same grace as a new install rather than seeing an ad immediately.
+  /// The local day native-ad eligibility began. The current policy has no
+  /// waiting period, but the date stays persisted so a future configured
+  /// grace period can be introduced without another state migration.
   String? _nativeAdInstallDay;
 
   /// The local day [_nativeAdImpressionsOnDay] belongs to.
@@ -220,7 +220,7 @@ class SobraStore extends ChangeNotifier {
     }
     // One-time migration for states written before native ads existed. Saving
     // now matters: if the missing value were only filled in memory, every
-    // restart would begin a fresh seven-day grace period forever.
+    // restart would begin a fresh configured grace period forever.
     await store._ensureNativeAdInstallDay();
     await store.settleCycles();
     store._lastObservedDate = store.today;

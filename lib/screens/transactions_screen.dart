@@ -192,10 +192,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           ),
         );
         movementIndex++;
-        // Date headings are deliberately not counted. Exactly eight real
-        // transaction rows are above the ad, even when the eighth ends a date
+        // Date headings are deliberately not counted. Exactly three real
+        // transaction rows are above the ad, even when the third ends a date
         // group or is the final row in the list.
-        if (movementIndex == 8 && nativeAds?.shouldPlace == true) {
+        if (movementIndex == 3 && nativeAds?.shouldPlace == true) {
           ledger.add(
             SobraNativeAd(
               key: ValueKey('native-ad-${nativeAds!.visitId}'),
