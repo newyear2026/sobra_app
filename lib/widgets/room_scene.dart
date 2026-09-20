@@ -25,6 +25,7 @@ class RoomScene extends StatelessWidget {
     this.selectedItemId,
     this.onSlotTap,
     this.onCatTap,
+    this.onReactionComplete,
     this.reacting = false,
     this.catMotion,
     this.catLoop,
@@ -39,6 +40,7 @@ class RoomScene extends StatelessWidget {
   final String? selectedItemId;
   final ValueChanged<RoomSlot>? onSlotTap;
   final VoidCallback? onCatTap;
+  final VoidCallback? onReactionComplete;
   final bool reacting;
   final CatMotion? catMotion;
   final bool? catLoop;
@@ -118,6 +120,7 @@ class RoomScene extends StatelessWidget {
                       width: catWidth,
                       animate: !reducedMotionOf(context),
                       loop: reacting ? false : catLoop,
+                      onComplete: reacting ? onReactionComplete : null,
                     ),
                   ),
                 ),

@@ -58,7 +58,7 @@ roles:
     frameCount: 12
     sheetWidth: 3840
     durationMs: 2200
-    displayScale: 1.35
+    displayScale: 1.45
     playback: once-hold
     playRange: [0, 11]
     posterFrame: 5

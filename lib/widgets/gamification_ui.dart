@@ -456,10 +456,14 @@ class LevelUpCelebration extends StatelessWidget {
             // A still frame of the celebration pose. The sprite's loop never
             // settles, which stalls `pumpAndSettle` in any test that meets
             // this dialog — and a portrait reads just as well here.
-            const CatSprite(
-              motion: CatMotion.celebrate,
-              width: 130,
-              animate: false,
+            const FittedBox(
+              fit: BoxFit.scaleDown,
+              child: CatSprite(
+                motion: CatMotion.celebrate,
+                width: 130,
+                animate: false,
+                reserveMotionSpace: true,
+              ),
             ),
             if (newlyUnlockedItemNames.isNotEmpty) ...[
               const SizedBox(height: 14),

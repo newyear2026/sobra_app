@@ -182,6 +182,8 @@ abstract final class CharacterCatalog {
         duration: Duration(milliseconds: 2200),
         // Grounded frames share a baseline; the middle frames retain a jump.
         frameOffsets: [14, 15, 14, -5, -15, -8, 8, 12, 64, 67, 64, 64],
+        // Settled pose: 205 source pixels tall versus idle's 298.
+        displayScale: 1.45,
         defaultLoop: false,
         playbackSpec: CharacterPlaybackSpec(
           playRange: CharacterFrameRange(0, 11),
@@ -250,7 +252,8 @@ abstract final class CharacterCatalog {
         assetFileName: 'success-12.png',
         frameCount: 12,
         duration: Duration(milliseconds: 2200),
-        displayScale: 1.35,
+        // Settled pose: 223 source pixels tall versus idle's 323.
+        displayScale: 1.45,
         defaultLoop: false,
         playbackSpec: CharacterPlaybackSpec(
           playRange: CharacterFrameRange(0, 11),
@@ -479,7 +482,8 @@ class _CharacterSpriteState extends State<CharacterSprite>
             if (widget.motionSpec.displayScale == 1) return paintedFrame;
             return Transform.scale(
               scale: widget.motionSpec.displayScale,
-              alignment: Alignment.bottomCenter,
+              // The feet rest at source y=344, above the transparent margin.
+              alignment: const Alignment(0, 2 * 344 / 360 - 1),
               filterQuality: FilterQuality.none,
               child: paintedFrame,
             );
@@ -523,9 +527,13 @@ class CatSprite extends StatelessWidget {
     this.loop,
     this.playToken = 0,
     this.onComplete,
+    this.reserveMotionSpace = false,
   });
 
   final CatMotion motion;
+
+  /// Reserves the transformed sheet's full bounds in compact cards/dialogs.
+  final bool reserveMotionSpace;
 
   /// Draws this character instead of the one the scope names.
   ///
@@ -544,10 +552,11 @@ class CatSprite extends StatelessWidget {
     // Whichever character the user is living with. Rendered outside the app
     // — a preview, a test — it still draws Michi rather than throwing.
     final chosen = characterId ?? SobraScope.maybeOf(context)?.characterId;
-    return CharacterSprite(
-      characterId: CharacterCatalog.resolve(
-        chosen ?? CharacterCatalog.defaultId,
-      ).id,
+    final definition = CharacterCatalog.resolve(
+      chosen ?? CharacterCatalog.defaultId,
+    );
+    final sprite = CharacterSprite(
+      characterId: definition.id,
       role: motion.role,
       width: width,
       animate: animate,
@@ -555,6 +564,33 @@ class CatSprite extends StatelessWidget {
       playToken: playToken,
       semanticLabel: motion.semanticLabel(AppLocalizations.of(context)),
       onComplete: onComplete,
+    );
+    if (!reserveMotionSpace) return sprite;
+    final spec = definition.motionFor(motion.role);
+    final scale = spec.displayScale;
+    final pixelsToLogical = width / CharacterAnimationStandard.frameWidth;
+    final minOffset = spec.frameOffsets.fold<double>(
+      0,
+      (a, b) => a < b ? a : b,
+    );
+    final maxOffset = spec.frameOffsets.fold<double>(
+      0,
+      (a, b) => a > b ? a : b,
+    );
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        ((scale - 1) * width / 2).clamp(0, double.infinity),
+        ((344 * (scale - 1) - minOffset * scale) * pixelsToLogical).clamp(
+          0,
+          double.infinity,
+        ),
+        ((scale - 1) * width / 2).clamp(0, double.infinity),
+        ((16 * (scale - 1) + maxOffset * scale) * pixelsToLogical).clamp(
+          0,
+          double.infinity,
+        ),
+      ),
+      child: sprite,
     );
   }
 }

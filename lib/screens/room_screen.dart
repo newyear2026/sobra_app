@@ -28,11 +28,20 @@ class _RoomScreenState extends State<RoomScreen> {
   }
 
   void _react() {
+    if (_reacting) return;
     _reactionTimer?.cancel();
     setState(() => _reacting = true);
-    _reactionTimer = Timer(const Duration(milliseconds: 1400), () {
-      if (mounted) setState(() => _reacting = false);
-    });
+    // A still poster has no animation completion callback.
+    if (reducedMotionOf(context)) {
+      _reactionTimer = Timer(
+        const Duration(milliseconds: 1400),
+        _finishReaction,
+      );
+    }
+  }
+
+  void _finishReaction() {
+    if (mounted && _reacting) setState(() => _reacting = false);
   }
 
   void _openDecorator() {
@@ -71,6 +80,7 @@ class _RoomScreenState extends State<RoomScreen> {
                           : l10n.homeGoingWell,
                       onCatTap: _react,
                       reacting: _reacting,
+                      onReactionComplete: _finishReaction,
                     ),
                   ),
                 ),

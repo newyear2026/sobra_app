@@ -8,6 +8,8 @@ import 'package:sobra_app/screens/room_decorate_screen.dart';
 import 'package:sobra_app/screens/room_screen.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
+import 'package:sobra_app/widgets/cat_sprite.dart';
+import 'package:sobra_app/widgets/room_scene.dart';
 
 import 'support/localizations.dart';
 
@@ -25,6 +27,39 @@ Future<SobraStore> _store() async {
 }
 
 void main() {
+  for (final characterId in ['michi', 'poodle']) {
+    testWidgets('$characterId finishes celebrating before returning to idle', (
+      tester,
+    ) async {
+      final store = await _store();
+      await store.chooseCharacter(characterId);
+      await store.setReducedMotion(false);
+      await tester.pumpWidget(
+        SobraScope(
+          store: store,
+          child: MaterialApp(
+            localizationsDelegates: sobraLocalizationsDelegates,
+            supportedLocales: sobraSupportedLocales,
+            home: const RoomScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+      final sprite = find.descendant(
+        of: find.byType(RoomScene),
+        matching: find.byType(CatSprite),
+      );
+      await tester.tap(sprite);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1500));
+      expect(tester.widget<CatSprite>(sprite).motion, CatMotion.celebrate);
+      await tester.pump(const Duration(milliseconds: 800));
+      await tester.pump();
+      expect(tester.widget<CatSprite>(sprite).motion, CatMotion.idle);
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+  }
+
   testWidgets('the home room opens the immersive room and decorator', (
     tester,
   ) async {

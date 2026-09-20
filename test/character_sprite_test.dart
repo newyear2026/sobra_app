@@ -10,6 +10,95 @@ import 'support/localizations.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  for (final id in ['michi', 'poodle']) {
+    testWidgets('$id dialog reserves the full enlarged motion bounds', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: sobraLocalizationsDelegates,
+          supportedLocales: sobraSupportedLocales,
+          home: Center(
+            child: CatSprite(
+              characterId: id,
+              motion: CatMotion.celebrate,
+              width: 142,
+              animate: false,
+              reserveMotionSpace: true,
+            ),
+          ),
+        ),
+      );
+      final wrapper = tester.renderObject<RenderBox>(find.byType(CatSprite));
+      final painterFinder = find.descendant(
+        of: find.byType(CharacterSprite),
+        matching: find.byType(CustomPaint),
+      );
+      final painter = tester.renderObject<RenderBox>(painterFinder);
+      final motion = CharacterCatalog.require(
+        id,
+      ).motionFor(CharacterMotionRole.success);
+      for (var i = 0; i < motion.frameCount; i++) {
+        final offset = motion.frameOffsets.isEmpty
+            ? 0.0
+            : motion.frameOffsets[i];
+        final bounds = MatrixUtils.transformRect(
+          painter.getTransformTo(wrapper),
+          Rect.fromLTWH(
+            0,
+            offset * 142 / 320,
+            painter.size.width,
+            painter.size.height,
+          ),
+        );
+        expect(bounds.left, greaterThanOrEqualTo(-0.001));
+        expect(bounds.top, greaterThanOrEqualTo(-0.001));
+        expect(bounds.right, lessThanOrEqualTo(wrapper.size.width + 0.001));
+        expect(bounds.bottom, lessThanOrEqualTo(wrapper.size.height + 0.001));
+      }
+    });
+  }
+
+  test('settled celebration matches idle height for both companions', () async {
+    for (final character in CharacterCatalog.all.values) {
+      final heights = <double>[];
+      for (final role in [
+        CharacterMotionRole.idle,
+        CharacterMotionRole.success,
+      ]) {
+        final motion = character.motionFor(role);
+        final index = role == CharacterMotionRole.idle
+            ? motion.playbackSpec.posterFrame
+            : motion.playbackSpec.completionFrame;
+        final bytes = await rootBundle.load(character.assetFor(role));
+        final codec = await ui.instantiateImageCodec(
+          bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
+        );
+        final frame = await codec.getNextFrame();
+        final pixels = (await frame.image.toByteData(
+          format: ui.ImageByteFormat.rawRgba,
+        ))!;
+        var top = 360;
+        var bottom = 0;
+        for (var y = 0; y < 360; y++) {
+          for (var x = 0; x < 320; x++) {
+            if (pixels.getUint8(
+                  (y * frame.image.width + index * 320 + x) * 4 + 3,
+                ) <
+                96)
+              continue;
+            if (y < top) top = y;
+            bottom = y + 1;
+          }
+        }
+        heights.add((bottom - top) * motion.displayScale);
+        frame.image.dispose();
+        codec.dispose();
+      }
+      expect(heights[1] / heights[0], closeTo(1, 0.02), reason: character.id);
+    }
+  });
+
   test('all character roles follow the normalized sprite contract', () async {
     expect(CharacterMotionRole.values, hasLength(6));
 
@@ -120,7 +209,7 @@ void main() {
       CharacterCatalog.poodle
           .motionFor(CharacterMotionRole.success)
           .displayScale,
-      1.35,
+      1.45,
     );
     expect(
       CharacterCatalog.poodle
@@ -151,8 +240,8 @@ void main() {
         matching: find.byType(Transform),
       ),
     );
-    expect(transform.alignment, Alignment.bottomCenter);
-    expect(transform.transform.getMaxScaleOnAxis(), closeTo(1.35, 0.001));
+    expect(transform.alignment, const Alignment(0, 2 * 344 / 360 - 1));
+    expect(transform.transform.getMaxScaleOnAxis(), closeTo(1.45, 0.001));
   });
 
   test('CharacterSprite resolves assets and playback from its character', () {

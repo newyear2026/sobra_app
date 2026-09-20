@@ -62,6 +62,7 @@ roles:
     sheetWidth: 3840
     durationMs: 2200
     frameOffsetsY: [14, 15, 14, -5, -15, -8, 8, 12, 64, 67, 64, 64]
+    displayScale: 1.45
     playback: once-hold
     playRange: [0, 11]
     posterFrame: 5

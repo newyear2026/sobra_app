@@ -618,11 +618,15 @@ class _SavedDialogState extends State<_SavedDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CatSprite(
-              motion: widget.motion,
-              width: 142,
-              loop: false,
-              animate: widget.animate,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: CatSprite(
+                motion: widget.motion,
+                width: 142,
+                loop: false,
+                animate: widget.animate,
+                reserveMotionSpace: true,
+              ),
             ),
             const SizedBox(height: 12),
             Text(widget.message, style: pixelText(size: 18, bold: true)),
