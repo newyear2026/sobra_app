@@ -250,10 +250,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               pendingPrice: l10n.collectionStorePricePending,
               ownedLabel: l10n.settingsOwned,
               buyingLabel: l10n.collectionPurchasing,
-              onBuy: () => _buyShopProduct(
-                purchases,
-                CatalogPreviewData.packProductId,
-              ),
+              onBuy: () =>
+                  _buyShopProduct(purchases, CatalogPreviewData.packProductId),
             ),
             _SettingsRow(
               icon: Icons.restore,
@@ -550,12 +548,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: SimpleDialog(
           title: Text(l10n.settingsCurrency),
           children: [
-            for (final currency in Currency.values)
-              RadioListTile<Currency>(
-                value: currency,
-                title: Text(currency.code),
-                subtitle: Text(formatMoney(currency, sample)),
+            // Grouped rather than listed: a column of thirteen codes is a
+            // scroll to the end and back, and the one a user wants is the one
+            // they already know the continent of.
+            for (final region in CurrencyRegion.values) ...[
+              Padding(
+                // Two less on the left than the rows, because _SectionHeader
+                // carries the other two and the heading has to start where
+                // the codes under it do.
+                padding: const EdgeInsets.fromLTRB(14, 14, 16, 0),
+                child: _SectionHeader(region.label(l10n)),
               ),
+              for (final currency in Currency.values.where(
+                (currency) => currency.region == region,
+              ))
+                RadioListTile<Currency>(
+                  value: currency,
+                  title: Text(currency.code),
+                  subtitle: Text(formatMoney(currency, sample)),
+                ),
+            ],
           ],
         ),
       ),
@@ -906,10 +918,7 @@ class _SettingsRow extends StatelessWidget {
             Expanded(
               child: Text(label, style: pixelText(size: 15, bold: true)),
             ),
-            if (unread) ...[
-              const _UnreadDot(),
-              const SizedBox(width: 9),
-            ],
+            if (unread) ...[const _UnreadDot(), const SizedBox(width: 9)],
             Text(
               value,
               style: pixelText(size: 14, bold: true, color: AppColors.muted),

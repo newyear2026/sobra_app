@@ -334,6 +334,9 @@
     }
   },
   "currencyChangeConfirm": "Cambiar etiqueta",
+  "currencyRegionAmericas": "América",
+  "currencyRegionEurope": "Europa",
+  "currencyRegionAsiaPacific": "Asia y Oceanía",
   "settingsCurrency": "Moneda",
   "settingsBudgetCycle": "Ciclo de presupuesto",
   "settingsCountDay": "Día de conteo",

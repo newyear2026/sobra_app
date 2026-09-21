@@ -1359,6 +1359,24 @@ abstract class AppLocalizations {
   /// **'Cambiar etiqueta'**
   String get currencyChangeConfirm;
 
+  /// No description provided for @currencyRegionAmericas.
+  ///
+  /// In es, this message translates to:
+  /// **'América'**
+  String get currencyRegionAmericas;
+
+  /// No description provided for @currencyRegionEurope.
+  ///
+  /// In es, this message translates to:
+  /// **'Europa'**
+  String get currencyRegionEurope;
+
+  /// No description provided for @currencyRegionAsiaPacific.
+  ///
+  /// In es, this message translates to:
+  /// **'Asia y Oceanía'**
+  String get currencyRegionAsiaPacific;
+
   /// No description provided for @settingsCurrency.
   ///
   /// In es, this message translates to:

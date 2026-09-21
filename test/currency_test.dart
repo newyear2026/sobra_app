@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/main.dart';
+import 'package:sobra_app/l10n/generated/app_localizations.dart';
+import 'package:sobra_app/l10n/labels.dart';
 import 'package:sobra_app/models/currency.dart';
 import 'package:sobra_app/models/expense_entry.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +36,8 @@ void main() {
       expect(formatMoney(Currency.eur, 123456), '€1,234.56 EUR');
       expect(formatMoney(Currency.gbp, 123456), '£1,234.56 GBP');
       expect(formatMoney(Currency.pen, 123456), 'S/1,234.56 PEN');
+      expect(formatMoney(Currency.brl, 123456), r'R$1,234.56 BRL');
+      expect(formatMoney(Currency.aud, 123456), r'$1,234.56 AUD');
     });
 
     // The whole dollar family, which is the reason the code is printed at all.
@@ -46,6 +50,7 @@ void main() {
         'COP',
         'ARS',
         'CLP',
+        'AUD',
       ]);
       expect(
         dollars.map((c) => formatMoney(c, 120000)).toSet(),
@@ -57,6 +62,8 @@ void main() {
     test('writes a currency with no subdivision in whole units', () {
       expect(formatMoney(Currency.clp, 123400), r'$1,234 CLP');
       expect(formatMoney(Currency.jpy, 123400), '¥1,234 JPY');
+      expect(formatMoney(Currency.krw, 123400), '₩1,234 KRW');
+      expect(formatMoney(Currency.krw, 100000000), '₩1,000,000 KRW');
       expect(formatMoney(Currency.jpy, 100000000), '¥1,000,000 JPY');
       expect(formatMoney(Currency.jpy, 100), '¥1 JPY');
       expect(formatMoney(Currency.jpy, -123400), '$minusSign¥1,234 JPY');
@@ -76,6 +83,7 @@ void main() {
       expect(formatMoney(Currency.usd, 123456, showCode: false), r'$1,234.56');
       expect(formatMoney(Currency.eur, 123456, showCode: false), '€1,234.56');
       expect(formatMoney(Currency.jpy, 123400, showCode: false), '¥1,234');
+      expect(formatMoney(Currency.krw, 123400, showCode: false), '₩1,234');
     });
 
     test('keeps whole amounts whole and groups thousands', () {
@@ -94,7 +102,11 @@ void main() {
       final store = await _onboardedStore();
       expect(store.currency, Currency.mxn);
       expect(Currency.fromCode(null), Currency.mxn);
-      expect(Currency.fromCode('KRW'), Currency.mxn);
+      // A code Sobra does not offer, which is what a backup from a fork or a
+      // future version could carry. XXX is ISO 4217's own "no currency", so
+      // unlike the KRW and BRL that used to stand here it cannot become real.
+      expect(Currency.fromCode('XXX'), Currency.mxn);
+      expect(Currency.fromCode('not a code'), Currency.mxn);
       expect(Currency.fromCode('USD'), Currency.usd);
       expect(Currency.fromCode('EUR'), Currency.eur);
       expect(Currency.fromCode('JPY'), Currency.jpy);
@@ -197,12 +209,44 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(SettingsScreen)),
+      );
       final samples = <String>{};
       for (final currency in Currency.values) {
         final row = find.widgetWithText(RadioListTile<Currency>, currency.code);
         expect(row, findsOneWidget, reason: '${currency.code} has no row');
         samples.add(formatMoney(currency, store.totalBudgetCentavos));
       }
+
+      // Every heading is drawn, and each one stands above its own rows rather
+      // than all of them piling up at the top.
+      for (final region in CurrencyRegion.values) {
+        final heading = find.text(region.label(l10n).toUpperCase());
+        expect(heading, findsOneWidget, reason: 'no heading for $region');
+        final top = tester.getTopLeft(heading).dy;
+        for (final currency in Currency.values) {
+          final row = tester
+              .getTopLeft(
+                find.widgetWithText(RadioListTile<Currency>, currency.code),
+              )
+              .dy;
+          if (currency.region == region) {
+            expect(
+              row,
+              greaterThan(top),
+              reason:
+                  '${currency.code} sits above '
+                  'the heading it belongs under',
+            );
+          }
+        }
+      }
+      // A heading is not a row: tapping one must not pick anything.
+      expect(
+        find.byType(RadioListTile<Currency>),
+        findsNWidgets(Currency.values.length),
+      );
       // A sample that reads the same in two currencies would make the picker
       // look like it were offering the same thing twice.
       expect(samples, hasLength(Currency.values.length));

@@ -140,6 +140,13 @@ void main() {
       expect(parseAmount(Currency.jpy, '1200.50'), isNull);
     });
 
+    test('the won behaves the same way, being the other one', () {
+      expect(_typing('9.5', Currency.krw).text, '95');
+      expect(parseAmount(Currency.krw, '6,000'), 600000);
+      expect(parseAmount(Currency.krw, '6000.50'), isNull);
+      expect(amountFieldText(Currency.krw, 600000), '6,000');
+    });
+
     test('a field opens on whole units, rounding what it cannot show', () {
       expect(amountFieldText(Currency.jpy, 120000), '1,200');
       // Only a figure relabelled out of a currency with decimals has any, and

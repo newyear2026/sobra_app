@@ -744,6 +744,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get currencyChangeConfirm => 'Cambiar etiqueta';
 
   @override
+  String get currencyRegionAmericas => 'América';
+
+  @override
+  String get currencyRegionEurope => 'Europa';
+
+  @override
+  String get currencyRegionAsiaPacific => 'Asia y Oceanía';
+
+  @override
   String get settingsCurrency => 'Moneda';
 
   @override

@@ -719,6 +719,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get currencyChangeConfirm => '표기 바꾸기';
 
   @override
+  String get currencyRegionAmericas => '아메리카';
+
+  @override
+  String get currencyRegionEurope => '유럽';
+
+  @override
+  String get currencyRegionAsiaPacific => '아시아·오세아니아';
+
+  @override
   String get settingsCurrency => '통화';
 
   @override

@@ -5,32 +5,36 @@
 /// in their own pocket, and there is no honest exchange rate to apply to a
 /// cash count from three weeks ago.
 ///
-/// Six of these share `$`, so the code beside those figures is doing real
-/// work — `$1,200` is six different amounts of money, and two of them are not
-/// within an order of magnitude of each other. The pound, the sol, the euro
-/// and the yen carry their own sign, and still print their code so a figure
-/// always names the unit.
+/// Seven of these share `$`, so the code beside those figures is doing real
+/// work — `$1,200` is seven different amounts of money, and two of them are
+/// not within an order of magnitude of each other. The real, the pound, the
+/// sol, the euro, the yen and the won carry their own sign, and still print
+/// their code so a figure always names the unit.
 ///
-/// Grouped by where they are spent rather than added as they arrived: the
-/// picker lists them in this order, and the pesos are worth reading next to
-/// each other. Nothing is stored by position — the code is what gets saved —
-/// so this list can be reordered freely.
+/// A sign is only worth having if the font can draw it. Pixelify Sans ships
+/// no ₩, so `tool/patch_pixelify_won.py` puts one there; `font_coverage_test`
+/// fails if a currency on this list ever loses its glyph.
+///
+/// Ordered and grouped by where they are spent rather than by when they were
+/// added: the picker reads [region] and lists them in this order, and the
+/// pesos are worth reading next to each other. Nothing is stored by position —
+/// the code is what gets saved — so this list can be reordered freely.
 enum Currency {
-  // The Americas.
-  mxn('MXN', r'$'),
-  usd('USD', r'$'),
-  cad('CAD', r'$'),
-  cop('COP', r'$'),
-  ars('ARS', r'$'),
-  clp('CLP', r'$', decimalDigits: 0),
-  pen('PEN', 'S/'),
-  // Europe.
-  eur('EUR', '€'),
-  gbp('GBP', '£'),
-  // Asia.
-  jpy('JPY', '¥', decimalDigits: 0);
+  mxn('MXN', r'$', CurrencyRegion.americas),
+  usd('USD', r'$', CurrencyRegion.americas),
+  cad('CAD', r'$', CurrencyRegion.americas),
+  cop('COP', r'$', CurrencyRegion.americas),
+  ars('ARS', r'$', CurrencyRegion.americas),
+  clp('CLP', r'$', CurrencyRegion.americas, decimalDigits: 0),
+  pen('PEN', 'S/', CurrencyRegion.americas),
+  brl('BRL', r'R$', CurrencyRegion.americas),
+  eur('EUR', '€', CurrencyRegion.europe),
+  gbp('GBP', '£', CurrencyRegion.europe),
+  jpy('JPY', '¥', CurrencyRegion.asiaPacific, decimalDigits: 0),
+  krw('KRW', '₩', CurrencyRegion.asiaPacific, decimalDigits: 0),
+  aud('AUD', r'$', CurrencyRegion.asiaPacific);
 
-  const Currency(this.code, this.symbol, {this.decimalDigits = 2});
+  const Currency(this.code, this.symbol, this.region, {this.decimalDigits = 2});
 
   /// The ISO code shown next to an amount, and what gets saved.
   final String code;
@@ -38,12 +42,15 @@ enum Currency {
   /// The symbol before the digits.
   final String symbol;
 
+  /// Which heading the picker files this one under. Presentation only.
+  final CurrencyRegion region;
+
   /// How many digits this currency writes behind the decimal point.
   ///
-  /// Zero for the yen and the Chilean peso, which have no subdivision anybody
-  /// spends: ¥100 is a hundred yen, not one. This governs what gets printed
-  /// and what an amount field will accept — never what gets stored. See
-  /// [minorUnitsPerUnit].
+  /// Zero for the yen, the won and the Chilean peso, which have no
+  /// subdivision anybody spends: ¥100 is a hundred yen, not one. This governs
+  /// what gets printed and what an amount field will accept — never what gets
+  /// stored. See [minorUnitsPerUnit].
   ///
   /// Two rather than zero for the Colombian and Argentine pesos, whose
   /// centavos are gone from circulation but not from the standard. Costing
@@ -74,3 +81,12 @@ enum Currency {
     orElse: () => Currency.mxn,
   );
 }
+
+/// The headings the currency picker groups its rows under.
+///
+/// Thirteen rows in one column is a list nobody reads to the end; under three
+/// headings it is three short ones, and somebody hunting for their own money
+/// knows which to look in. Nothing is stored by region — it decides where a
+/// row is drawn and nothing else — so a currency can be moved between them
+/// without touching a single saved figure.
+enum CurrencyRegion { americas, europe, asiaPacific }

@@ -1,4 +1,5 @@
 import '../models/cash_reconciliation.dart';
+import '../models/currency.dart';
 import '../models/daily_mission.dart';
 import '../models/expense_entry.dart';
 import '../models/income_entry.dart';
@@ -347,5 +348,13 @@ extension SobraLanguageL10n on SobraLanguage {
     SobraLanguage.spanish => 'Español',
     SobraLanguage.english => 'English',
     SobraLanguage.korean => '한국어',
+  };
+}
+
+extension CurrencyRegionL10n on CurrencyRegion {
+  String label(AppLocalizations l10n) => switch (this) {
+    CurrencyRegion.americas => l10n.currencyRegionAmericas,
+    CurrencyRegion.europe => l10n.currencyRegionEurope,
+    CurrencyRegion.asiaPacific => l10n.currencyRegionAsiaPacific,
   };
 }
