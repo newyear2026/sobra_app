@@ -128,9 +128,9 @@ void main() {
     expect(find.text('Colección'), findsOneWidget);
     expect(find.text('PERSONAJES'), findsOneWidget);
     expect(find.text('Personaje 2'), findsOneWidget);
-    // Michi, the only character owned here. The card says what it is, not
-    // what could be done with it.
-    expect(find.text('OBTENIDO'), findsOneWidget);
+    // Michi and Poodle, the two characters that ship owned. The card says
+    // what it is, not what could be done with it.
+    expect(find.text('OBTENIDO'), findsNWidgets(2));
 
     await tester.tap(find.text('OBJETOS'));
     await tester.pump();
