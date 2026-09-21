@@ -120,6 +120,11 @@ flutter:
     - family: PixelifySans
       fonts:
         - asset: assets/fonts/PixelifySans.ttf
+    - family: SobraHangul
+      fonts:
+        - asset: assets/fonts/SobraHangul.ttf
+        - asset: assets/fonts/SobraHangul-Bold.ttf
+          weight: 700
 
   # To add assets to your application, add an assets section, like this:
   # assets:

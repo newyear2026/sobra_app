@@ -64,6 +64,27 @@ abstract final class AppColors {
 /// it if the font is ever updated from upstream.
 abstract final class AppType {
   static const family = 'PixelifySans';
+
+  /// Hangul, which [family] does not draw.
+  ///
+  /// A fallback rather than a family of its own because a Korean sentence is
+  /// mostly Hangul but never only Hangul — a figure, a percent sign and a
+  /// date all come from [family] in the middle of it — and the engine picks
+  /// per character. `tool/build_hangul_fallback.py` sizes this face so a
+  /// syllable stands exactly as tall as a capital of [family]. Its pixels are
+  /// finer than [family]'s on purpose: a syllable holds two or three jamo
+  /// where a letter holds one, and matching the grid instead of the height
+  /// makes Hangul that cannot be read.
+  ///
+  /// It has to be on every style that names [family]: a fallback is part of
+  /// a `TextStyle`, not of the font, so a style that sets the family and
+  /// forgets this one renders Hangul in whatever face the phone supplies.
+  ///
+  /// Two files, not one: Pixelify carries weight on a variable axis and a
+  /// static face cannot, and Flutter synthesises no bold for a fallback — so
+  /// without a bold file a Korean heading renders at the weight of the
+  /// sentence under it.
+  static const fallback = <String>['SobraHangul'];
   static const minFontSize = 12.0;
 
   static const regular = <FontVariation>[FontVariation('wght', 400)];
@@ -81,7 +102,13 @@ TextStyle pixelText({
   double? height,
 }) => TextStyle(
   fontFamily: AppType.family,
+  fontFamilyFallback: AppType.fallback,
   fontSize: size < AppType.minFontSize ? AppType.minFontSize : size,
+  // Both, and they do different jobs. [family] is variable and takes its
+  // weight off the axis; the Hangul fallback is two static files and takes
+  // its own off [fontWeight], which the axis ignores. Setting only one of
+  // them leaves half of a Korean heading unbolded.
+  fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
   fontVariations: bold ? AppType.bold : AppType.regular,
   color: color,
   height: height,
@@ -129,6 +156,7 @@ ThemeData buildSobraTheme() {
       outline: AppColors.ink,
     ),
     fontFamily: AppType.family,
+    fontFamilyFallback: AppType.fallback,
     textTheme: textTheme,
 
     // The pixel language has no ripple: a press moves the surface down onto

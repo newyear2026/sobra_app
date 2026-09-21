@@ -4,7 +4,14 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
 
+/// This screen sets [fontFamilyFallback] by hand, so it has to name Sobra's
+/// own Hangul face first or it would drop it: a style's fallback list
+/// replaces the one it inherits rather than adding to it, and Korean here
+/// would come back in a system face while the rest of the app has a pixel
+/// one. What follows is the tail for anything neither of Sobra's two faces
+/// draws.
 const _loginFontFallback = <String>[
+  ...AppType.fallback,
   'Noto Sans KR',
   'Noto Sans CJK KR',
   'Apple SD Gothic Neo',

@@ -72,7 +72,10 @@ void main() {
       for (final language in SobraLanguage.available) {
         expect(SobraLanguage.fromCode(language.code), language);
       }
-      expect(SobraLanguage.korean.shipped, isFalse);
+      // Korean ships now: it was held back for want of a Hangul pixel face,
+      // never for want of a translation, and `AppType.fallback` carries one.
+      expect(SobraLanguage.korean.shipped, isTrue);
+      expect(SobraLanguage.supportedLocales, contains(const Locale('ko')));
     });
 
     test('drops a stored code this build cannot show', () async {
