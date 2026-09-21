@@ -573,6 +573,8 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
+  "releaseNote101Currencies": "Money can now be labelled in Colombian, Argentine and Chilean pesos, soles, pounds or yen.",
+  "releaseNote101Celebration": "The celebration now fills its card and finishes its jump.",
   "releaseNote100Launch": "The first version of Sobrita.",
 
   "updateAvailableTitle": "There's a new version",

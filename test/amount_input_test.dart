@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sobra_app/models/currency.dart';
 import 'package:sobra_app/widgets/pixel_ui.dart';
-
-const _formatter = AmountInputFormatter();
 
 TextEditingValue _at(String text, [int? caret]) => TextEditingValue(
   text: text,
@@ -10,13 +9,14 @@ TextEditingValue _at(String text, [int? caret]) => TextEditingValue(
 );
 
 /// What the field holds after [keys] are pressed one at a time.
-TextEditingValue _typing(String keys) {
+TextEditingValue _typing(String keys, [Currency currency = Currency.mxn]) {
+  final formatter = AmountInputFormatter(currency);
   var value = const TextEditingValue();
   for (final key in keys.split('')) {
     final caret = value.selection.end < 0
         ? value.text.length
         : value.selection.end;
-    value = _formatter.formatEditUpdate(
+    value = formatter.formatEditUpdate(
       value,
       _at(
         value.text.substring(0, caret) + key + value.text.substring(caret),
@@ -28,8 +28,10 @@ TextEditingValue _typing(String keys) {
 }
 
 /// What the field holds after [text] arrives whole, as a paste does.
-String _pasting(String text) =>
-    _formatter.formatEditUpdate(const TextEditingValue(), _at(text)).text;
+String _pasting(String text, [Currency currency = Currency.mxn]) =>
+    AmountInputFormatter(
+      currency,
+    ).formatEditUpdate(const TextEditingValue(), _at(text)).text;
 
 void main() {
   group('amount field', () {
@@ -37,7 +39,7 @@ void main() {
       // 9,,,, used to reach the store as nine pesos with nobody the wiser.
       expect(_typing('9,,,,').text, '9.');
       expect(_typing('9..5').text, '9.5');
-      expect(parseAmount(_typing('9,,,,').text), 900);
+      expect(parseAmount(Currency.mxn, _typing('9,,,,').text), 900);
     });
 
     test('only digits and one separator survive being typed', () {
@@ -85,7 +87,7 @@ void main() {
       for (final keys in ['9,,,,', '1234567', '9.999', '.5', '12345']) {
         final shown = _typing(keys).text;
         expect(
-          parseAmount(shown),
+          parseAmount(Currency.mxn, shown),
           isNotNull,
           reason: '$keys shows $shown, which must read back',
         );
@@ -93,10 +95,57 @@ void main() {
     });
 
     test('a field opens on the figure it holds, centavos and all', () {
-      expect(amountFieldText(120050), '1,200.50');
-      expect(amountFieldText(600000), '6,000');
-      expect(amountFieldText(5), '0.05');
-      expect(parseAmount(amountFieldText(120050)), 120050);
+      expect(amountFieldText(Currency.mxn, 120050), '1,200.50');
+      expect(amountFieldText(Currency.mxn, 600000), '6,000');
+      expect(amountFieldText(Currency.mxn, 5), '0.05');
+      expect(
+        parseAmount(Currency.mxn, amountFieldText(Currency.mxn, 120050)),
+        120050,
+      );
+    });
+  });
+
+  // The yen has no subdivision anybody spends, so the field has no decimals
+  // to offer and the store keeps counting hundredths behind it.
+  group('amount field in a currency with no decimals', () {
+    test('a separator never becomes a decimal point', () {
+      expect(_typing('9.5', Currency.jpy).text, '95');
+      expect(_typing('9,5', Currency.jpy).text, '95');
+      expect(_typing('9,,,,', Currency.jpy).text, '9');
+      expect(_typing('.5', Currency.jpy).text, '5');
+    });
+
+    test('the caret stays behind the digits a separator did not add', () {
+      final typed = _typing('9.', Currency.jpy);
+      expect(typed.text, '9');
+      expect(typed.selection.end, 1);
+    });
+
+    test(
+      'grouping is still placed, and a paste still loses its decoration',
+      () {
+        expect(_typing('1234567', Currency.jpy).text, '1,234,567');
+        expect(_pasting('¥1,200 JPY', Currency.jpy), '1,200');
+        expect(_pasting('1,200.50', Currency.jpy), '1,200');
+      },
+    );
+
+    test('what the field shows registers as whole units of hundredths', () {
+      expect(parseAmount(Currency.jpy, '1,200'), 120000);
+      expect(
+        parseAmount(Currency.jpy, _typing('9.5', Currency.jpy).text),
+        9500,
+      );
+      // Nothing finer than a yen, for a figure that arrived past the field.
+      expect(parseAmount(Currency.jpy, '1200.50'), isNull);
+    });
+
+    test('a field opens on whole units, rounding what it cannot show', () {
+      expect(amountFieldText(Currency.jpy, 120000), '1,200');
+      // Only a figure relabelled out of a currency with decimals has any, and
+      // the field rounds rather than dropping them.
+      expect(amountFieldText(Currency.jpy, 120050), '1,201');
+      expect(amountFieldText(Currency.jpy, 5), '0');
     });
   });
 }

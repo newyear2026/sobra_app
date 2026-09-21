@@ -139,10 +139,17 @@ void main() {
       addTearDown(tester.view.resetDevicePixelRatio);
       await _loadGoldenFonts();
 
+      // The shipping release rather than a literal, so the reference keeps
+      // showing what a user on the current build sees. Pinned to '1.0.0' it
+      // drifted the moment a newer note landed: the "Actual" tag slid down
+      // the list and the golden stopped being a picture of the normal case.
       await tester.pumpWidget(
         await _screen(
-          const ReleaseNotesScreen(
-            currentVersion: AppVersion(version: '1.0.0', buildNumber: '1'),
+          ReleaseNotesScreen(
+            currentVersion: AppVersion(
+              version: releaseNotes.first.version,
+              buildNumber: '1',
+            ),
           ),
         ),
       );

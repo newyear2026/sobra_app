@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
+import '../models/currency.dart';
 import '../models/expense_entry.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
@@ -40,8 +41,11 @@ class BudgetScreen extends StatelessWidget {
     required int currentCentavos,
   }) => showDialog<int>(
     context: context,
-    builder: (_) =>
-        _AmountDialog(title: title, currentCentavos: currentCentavos),
+    builder: (_) => _AmountDialog(
+      title: title,
+      currentCentavos: currentCentavos,
+      currency: SobraScope.of(context).currency,
+    ),
   );
 
   Widget _budgetPrompt(
@@ -365,10 +369,19 @@ class BudgetScreen extends StatelessWidget {
 /// disposed the moment `showDialog` returns would be read after disposal and
 /// take the frame — and the app — down with it.
 class _AmountDialog extends StatefulWidget {
-  const _AmountDialog({required this.title, required this.currentCentavos});
+  const _AmountDialog({
+    required this.title,
+    required this.currentCentavos,
+    required this.currency,
+  });
 
   final String title;
   final int currentCentavos;
+
+  /// Handed in rather than read from the scope, because the figure the field
+  /// opens on is spelled in [initState], where an inherited widget is out of
+  /// reach.
+  final Currency currency;
 
   @override
   State<_AmountDialog> createState() => _AmountDialogState();
@@ -381,7 +394,7 @@ class _AmountDialogState extends State<_AmountDialog> {
   void initState() {
     super.initState();
     _controller = TextEditingController(
-      text: amountFieldText(widget.currentCentavos),
+      text: amountFieldText(widget.currency, widget.currentCentavos),
     );
   }
 
@@ -399,11 +412,9 @@ class _AmountDialogState extends State<_AmountDialog> {
       content: TextField(
         controller: _controller,
         autofocus: true,
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        inputFormatters: amountInputFormatters,
-        decoration: InputDecoration(
-          suffixText: SobraScope.of(context).currency.code,
-        ),
+        keyboardType: amountKeyboardType(widget.currency),
+        inputFormatters: amountInputFormattersFor(widget.currency),
+        decoration: InputDecoration(suffixText: widget.currency.code),
       ),
       actions: [
         TextButton(
@@ -411,8 +422,10 @@ class _AmountDialogState extends State<_AmountDialog> {
           child: Text(l10n.cancel),
         ),
         FilledButton(
-          onPressed: () =>
-              Navigator.pop(context, parseAmount(_controller.text)),
+          onPressed: () => Navigator.pop(
+            context,
+            parseAmount(widget.currency, _controller.text),
+          ),
           child: Text(l10n.save),
         ),
       ],

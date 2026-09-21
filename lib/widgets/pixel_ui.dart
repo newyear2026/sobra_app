@@ -37,16 +37,9 @@ const kPixelBottomBarHeight = 72.0;
 /// [showCode] drops the currency code for figures that sit beside another one
 /// already carrying it, such as the two halves of a category limit.
 String formatMoney(Currency currency, int minorUnits, {bool showCode = true}) {
-  final negative = minorUnits < 0;
   final absolute = minorUnits.abs();
-  final whole = _groupDigits(
-    (absolute ~/ Currency.minorUnitsPerUnit).toString(),
-  );
-  final decimals = absolute % Currency.minorUnitsPerUnit;
-  final decimalPart = decimals == 0
-      ? ''
-      : '.${decimals.toString().padLeft(2, '0')}';
-  return '${negative ? minusSign : ''}${currency.symbol}$whole$decimalPart'
+  return '${minorUnits < 0 ? minusSign : ''}${currency.symbol}'
+      '${_wholePart(currency, absolute)}${_decimalPart(currency, absolute)}'
       '${showCode ? ' ${currency.code}' : ''}';
 }
 
@@ -58,15 +51,38 @@ String formatMoney(Currency currency, int minorUnits, {bool showCode = true}) {
 /// existing figure, so what it shows first is already the shape typing
 /// produces — and so a field opened on $1,200.50 and saved untouched does not
 /// hand back $1,201.
-String amountFieldText(int minorUnits) {
+///
+/// In a currency with no decimals it does hand back the rounded figure, and
+/// has to: the field cannot hold half a yen, so leaving the hidden half in
+/// place would make the amount saved disagree with the one on screen. Only
+/// figures relabelled out of a currency that had decimals carry one.
+String amountFieldText(Currency currency, int minorUnits) {
   final absolute = minorUnits.abs();
-  final whole = _groupDigits(
-    (absolute ~/ Currency.minorUnitsPerUnit).toString(),
-  );
+  return '${_wholePart(currency, absolute)}${_decimalPart(currency, absolute)}';
+}
+
+/// The grouped digits ahead of the decimal point.
+///
+/// Where a currency prints no decimals the hundredths round into the unit
+/// rather than falling off it: the only amounts carrying any are ones
+/// relabelled out of a currency that had them, and ¥88.50 shown as ¥88 would
+/// be losing the user's money rather than rounding it. Integer arithmetic on
+/// purpose — a figure of money has no business passing through a double on
+/// its way to the screen.
+String _wholePart(Currency currency, int absolute) => _groupDigits(
+  (currency.decimalDigits == 0
+          ? (absolute + Currency.minorUnitsPerUnit ~/ 2) ~/
+                Currency.minorUnitsPerUnit
+          : absolute ~/ Currency.minorUnitsPerUnit)
+      .toString(),
+);
+
+/// The decimal point and what stands behind it, or nothing when a currency
+/// writes no decimals and nothing when there are none to write.
+String _decimalPart(Currency currency, int absolute) {
+  if (currency.decimalDigits == 0) return '';
   final decimals = absolute % Currency.minorUnitsPerUnit;
-  return decimals == 0
-      ? whole
-      : '$whole.${decimals.toString().padLeft(2, '0')}';
+  return decimals == 0 ? '' : '.${decimals.toString().padLeft(2, '0')}';
 }
 
 /// Puts a comma every three digits, counting from the right.
@@ -89,16 +105,22 @@ const _maxAmountDigits = 12;
 /// only mean the decimal point and there is only ever one of it. What the
 /// field shows is what gets registered.
 class AmountInputFormatter extends TextInputFormatter {
-  const AmountInputFormatter();
+  const AmountInputFormatter(this.currency);
+
+  /// The currency the field is labelled in, which decides whether a decimal
+  /// separator means anything here. In the yen it does not, and one typed is
+  /// dropped rather than accepted and later refused by [parseAmount].
+  final Currency currency;
 
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
+    final decimal = currency.decimalDigits > 0;
     var text = newValue.text;
     final insertedAt = _insertedAt(oldValue.text, text);
-    if (insertedAt >= 0 && text[insertedAt] == ',') {
+    if (decimal && insertedAt >= 0 && text[insertedAt] == ',') {
       // A keyboard that offers a comma where the point should be is offering
       // the decimal key, not a grouping separator: those this formatter
       // places itself.
@@ -134,7 +156,10 @@ class AmountInputFormatter extends TextInputFormatter {
         : cleaned.substring(point + 1).replaceAll(RegExp(r'[^0-9]'), '');
     final fraction = rest.substring(0, math.min(rest.length, 2));
     final whole = _groupDigits(trimmed.isEmpty ? '0' : trimmed);
-    final formatted = point < 0 ? whole : '$whole.$fraction';
+    // Where a currency writes no decimals the point is still found, only so
+    // that what follows it can be left behind: a pasted ¥1,200.50 is twelve
+    // hundred yen and fifty of nothing, not a hundred and twenty thousand.
+    final formatted = point < 0 || !decimal ? whole : '$whole.$fraction';
 
     return TextEditingValue(
       text: formatted,
@@ -164,7 +189,8 @@ class AmountInputFormatter extends TextInputFormatter {
   ) {
     // The decimal key puts the caret past the point it just made, so the next
     // digit typed is a centavo.
-    if (insertedAt >= 0 &&
+    if (currency.decimalDigits > 0 &&
+        insertedAt >= 0 &&
         text[insertedAt] == '.' &&
         !oldValue.text.contains('.')) {
       return formatted.indexOf('.') + 1;
@@ -243,7 +269,15 @@ class AmountInputFormatter extends TextInputFormatter {
 }
 
 /// What every amount field runs its input through. See [AmountInputFormatter].
-const amountInputFormatters = <TextInputFormatter>[AmountInputFormatter()];
+List<TextInputFormatter> amountInputFormattersFor(Currency currency) =>
+    <TextInputFormatter>[AmountInputFormatter(currency)];
+
+/// The keyboard an amount field asks for.
+///
+/// A currency with no decimals has no use for the decimal key, and offering
+/// one would be offering a key the field refuses.
+TextInputType amountKeyboardType(Currency currency) =>
+    TextInputType.numberWithOptions(decimal: currency.decimalDigits > 0);
 
 String? _normalizeAmount(String input) {
   var value = input
@@ -309,7 +343,7 @@ String? _normalizeAmount(String input) {
 ///
 /// Counts the centavos out of the digits rather than multiplying a double by
 /// a hundred, which is how 0.001 used to come back as an amount of nothing.
-int? _parseMinorUnits(String input) {
+int? _parseMinorUnits(Currency currency, String input) {
   final normalized = _normalizeAmount(input);
   if (normalized == null) return null;
   final negative = normalized.startsWith('-');
@@ -323,6 +357,10 @@ int? _parseMinorUnits(String input) {
   if (fractionPart.length > 2 || integerPart.length > _maxAmountDigits) {
     return null;
   }
+  // Finer than a yen is not a sum of money either. The field never lets one
+  // be typed, so this catches a figure that arrived some other way rather
+  // than rounding it into something the user did not write.
+  if (currency.decimalDigits == 0 && fractionPart.isNotEmpty) return null;
   final units = int.tryParse(integerPart);
   if (units == null) return null;
   final minorUnits =
@@ -331,13 +369,13 @@ int? _parseMinorUnits(String input) {
   return negative ? -minorUnits : minorUnits;
 }
 
-int? parseAmount(String input) {
-  final value = _parseMinorUnits(input);
+int? parseAmount(Currency currency, String input) {
+  final value = _parseMinorUnits(currency, input);
   return value == null || value <= 0 ? null : value;
 }
 
-int? parseNonNegativeAmount(String input) {
-  final value = _parseMinorUnits(input);
+int? parseNonNegativeAmount(Currency currency, String input) {
+  final value = _parseMinorUnits(currency, input);
   return value == null || value < 0 ? null : value;
 }
 

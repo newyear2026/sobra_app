@@ -3081,6 +3081,18 @@ abstract class AppLocalizations {
   /// **'Guardamos las últimas {count} versiones.'**
   String releaseNotesRetention(int count);
 
+  /// No description provided for @releaseNote101Currencies.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora puedes etiquetar tu dinero en pesos colombianos, argentinos y chilenos, soles, libras o yenes.'**
+  String get releaseNote101Currencies;
+
+  /// No description provided for @releaseNote101Celebration.
+  ///
+  /// In es, this message translates to:
+  /// **'La celebración ahora llena la tarjeta y termina su salto.'**
+  String get releaseNote101Celebration;
+
   /// No description provided for @releaseNote100Launch.
   ///
   /// In es, this message translates to:

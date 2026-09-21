@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'support/localizations.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/cash_reconciliation.dart';
+import 'package:sobra_app/models/currency.dart';
 import 'package:sobra_app/models/expense_entry.dart';
 import 'package:sobra_app/models/income_entry.dart';
 import 'package:sobra_app/models/money_movement.dart';
@@ -26,25 +27,25 @@ Future<SobraStore> _seeded(DateTime Function() now, {int? cash}) async {
 
 void main() {
   test('money parser treats display commas as grouping separators', () {
-    expect(parseAmount('1,200'), 120000);
-    expect(parseAmount(r'$1,200.50 MXN'), 120050);
-    expect(parseAmount('1200,50'), 120050);
-    expect(parseAmount('1,000,000'), 100000000);
-    expect(parseNonNegativeAmount('0'), 0);
-    expect(parseAmount('1,20,0'), isNull);
-    expect(parseNonNegativeAmount('.'), isNull);
+    expect(parseAmount(Currency.mxn, '1,200'), 120000);
+    expect(parseAmount(Currency.mxn, r'$1,200.50 MXN'), 120050);
+    expect(parseAmount(Currency.mxn, '1200,50'), 120050);
+    expect(parseAmount(Currency.mxn, '1,000,000'), 100000000);
+    expect(parseNonNegativeAmount(Currency.mxn, '0'), 0);
+    expect(parseAmount(Currency.mxn, '1,20,0'), isNull);
+    expect(parseNonNegativeAmount(Currency.mxn, '.'), isNull);
   });
 
   test('money parser turns down what it cannot register faithfully', () {
     // Finer than a centavo used to round: 0.001 registered as nothing at all
     // and 9.999 as ten pesos.
-    expect(parseAmount('0.001'), isNull);
-    expect(parseAmount('9.999'), isNull);
-    expect(parseNonNegativeAmount('0.001'), isNull);
+    expect(parseAmount(Currency.mxn, '0.001'), isNull);
+    expect(parseAmount(Currency.mxn, '9.999'), isNull);
+    expect(parseNonNegativeAmount(Currency.mxn, '0.001'), isNull);
     // And a pasted wall of digits used to land at the far end of int64.
-    expect(parseAmount('99999999999999999999'), isNull);
-    expect(parseAmount('9.99'), 999);
-    expect(parseAmount('999999999999'), 99999999999900);
+    expect(parseAmount(Currency.mxn, '99999999999999999999'), isNull);
+    expect(parseAmount(Currency.mxn, '9.99'), 999);
+    expect(parseAmount(Currency.mxn, '999999999999'), 99999999999900);
   });
 
   testWidgets('Inicio relabels its headline when the cycle goes over', (

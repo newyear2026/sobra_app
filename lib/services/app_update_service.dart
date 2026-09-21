@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'app_version_service.dart';
+
 /// An update waiting in the store, identified by the build behind it.
 ///
 /// A `versionCode` rather than a version name because that is all Play hands
@@ -81,14 +83,17 @@ class AppUpdates extends ChangeNotifier {
     required AppUpdatePort port,
     SharedPreferences? preferences,
     DateTime Function()? now,
+    AppVersionLoader versionLoader = loadAppVersion,
   }) : _port = port,
        _preferences = preferences,
-       _now = now ?? DateTime.now {
+       _now = now ?? DateTime.now,
+       _versionLoader = versionLoader {
     _restore();
   }
 
   static const _checkedDayKey = 'sobra_update_checked_day';
   static const _dismissedCodeKey = 'sobra_update_dismissed_version_code';
+  static const _pendingCodeKey = 'sobra_update_pending_version_code';
 
   final AppUpdatePort _port;
 
@@ -99,6 +104,10 @@ class AppUpdates extends ChangeNotifier {
   final SharedPreferences? _preferences;
   final DateTime Function() _now;
 
+  /// Only ever asked what build is running, and only to throw away an offer
+  /// that has already been installed. See [_restorePending].
+  final AppVersionLoader _versionLoader;
+
   PendingUpdate? _pending;
   String? _checkedDay;
   int? _dismissedVersionCode;
@@ -106,6 +115,7 @@ class AppUpdates extends ChangeNotifier {
   bool _promptVisible = false;
   bool _bannerHidden = false;
   bool _checking = false;
+  bool _pendingRestored = false;
 
   PendingUpdate? get pending => _pending;
 
@@ -157,6 +167,12 @@ class AppUpdates extends ChangeNotifier {
       } else {
         await preferences.setInt(_dismissedCodeKey, dismissed);
       }
+      final pending = _pending;
+      if (pending == null) {
+        await preferences.remove(_pendingCodeKey);
+      } else {
+        await preferences.setInt(_pendingCodeKey, pending.versionCode);
+      }
     } on Object catch (error) {
       debugPrint('Sobra: could not save the update check state: $error');
     }
@@ -170,8 +186,12 @@ class AppUpdates extends ChangeNotifier {
   Future<PendingUpdate?> refresh({bool force = false}) async {
     if (_checking) return _pending;
     final today = _dayKey(_now());
-    if (!force && _checkedDay == today) return _pending;
+    if (!force && _checkedDay == today) {
+      await _restorePending();
+      return _pending;
+    }
 
+    _pendingRestored = true;
     _checking = true;
     if (force) notifyListeners();
     PendingUpdate? found;
@@ -191,6 +211,42 @@ class AppUpdates extends ChangeNotifier {
     await _persist();
     notifyListeners();
     return found;
+  }
+
+  /// Brings back the offer an earlier launch today already paid for.
+  ///
+  /// [_pending] is the one part of this state a new process does not inherit,
+  /// and the daily budget above means that process will not re-ask. Without
+  /// this the whole feature would live exactly one cold start: the second
+  /// launch of the day would skip the check, find nothing in hand, and show
+  /// neither the dialog nor the banner — so the banner this class promises
+  /// "on the next launch" could not return until the day turned.
+  ///
+  /// Only the version code is kept. [PendingUpdate.stalenessDays] is Play's
+  /// answer to a question asked at one moment, and replaying yesterday's count
+  /// as though it were fresh is the one dishonest thing this could store.
+  Future<void> _restorePending() async {
+    if (_pendingRestored) return;
+    _pendingRestored = true;
+    final code = _preferences?.getInt(_pendingCodeKey);
+    if (code == null) return;
+
+    // A stored offer outlives the update it names: install it and the app
+    // comes straight back, the same day, with the budget already spent and
+    // the code of the build now running still sitting in preferences. Left
+    // alone, Sobra would advertise the very version the banner is drawn on.
+    final installed = int.tryParse((await _versionLoader())?.buildNumber ?? '');
+    if (installed != null && installed >= code) {
+      await _persist();
+      return;
+    }
+
+    _pending = PendingUpdate(versionCode: code);
+    // The dialog has already had its turn — some earlier launch today opened
+    // it. What survives a restart is the banner, which is the quiet half of
+    // the policy and the only half allowed to come back on its own.
+    _promptShown = true;
+    notifyListeners();
   }
 
   /// The dialog is opening: it has had its turn, and it is on screen.

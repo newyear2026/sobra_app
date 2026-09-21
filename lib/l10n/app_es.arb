@@ -757,6 +757,8 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
+  "releaseNote101Currencies": "Ahora puedes etiquetar tu dinero en pesos colombianos, argentinos y chilenos, soles, libras o yenes.",
+  "releaseNote101Celebration": "La celebración ahora llena la tarjeta y termina su salto.",
   "releaseNote100Launch": "Primera versión de Sobrita.",
 
   "updateAvailableTitle": "Hay una versión nueva",

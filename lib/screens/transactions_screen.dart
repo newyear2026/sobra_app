@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
+import '../models/currency.dart';
 import '../models/expense_entry.dart';
 import '../models/money_movement.dart';
 import '../services/native_ad_service.dart';
@@ -154,7 +155,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           borderRadius: BorderRadius.zero,
           side: BorderSide(color: AppColors.ink, width: 3),
         ),
-        builder: (_) => _EditExpenseSheet(entry: entry),
+        builder: (_) => _EditExpenseSheet(
+          entry: entry,
+          currency: SobraScope.of(context).currency,
+        ),
       );
 
   @override
@@ -250,8 +254,12 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 }
 
 class _EditExpenseSheet extends StatefulWidget {
-  const _EditExpenseSheet({required this.entry});
+  const _EditExpenseSheet({required this.entry, required this.currency});
   final ExpenseEntry entry;
+
+  /// Handed in rather than read from the scope: the figure the sheet opens on
+  /// is spelled in [initState], out of reach of an inherited widget.
+  final Currency currency;
   @override
   State<_EditExpenseSheet> createState() => _EditExpenseSheetState();
 }
@@ -266,7 +274,7 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
   void initState() {
     super.initState();
     _amountController = TextEditingController(
-      text: amountFieldText(widget.entry.amountCentavos),
+      text: amountFieldText(widget.currency, widget.entry.amountCentavos),
     );
     _noteController = TextEditingController(
       text: widget.entry.isPendingCashAdjustment ? '' : widget.entry.note,
@@ -283,7 +291,7 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
   }
 
   Future<void> _save() async {
-    final amount = parseAmount(_amountController.text);
+    final amount = parseAmount(widget.currency, _amountController.text);
     if (amount == null && !widget.entry.isLinkedToCashCount) return;
     final store = SobraScope.of(context);
     final messenger = ScaffoldMessenger.of(context);
@@ -337,13 +345,11 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
             TextField(
               controller: _amountController,
               enabled: !widget.entry.isLinkedToCashCount,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              inputFormatters: amountInputFormatters,
+              keyboardType: amountKeyboardType(widget.currency),
+              inputFormatters: amountInputFormattersFor(widget.currency),
               decoration: InputDecoration(
                 labelText: l10n.amount,
-                suffixText: SobraScope.of(context).currency.code,
+                suffixText: widget.currency.code,
               ),
             ),
             if (widget.entry.isLinkedToCashCount) ...[
@@ -458,8 +464,11 @@ class _DailyChartCard extends StatelessWidget {
           )
         // No limit to name, so the caption reports what did happen instead.
         : l10n.dailySpendCycleTotal(
-            formatMoney(store.currency, store.totalSpentCentavos,
-                showCode: false),
+            formatMoney(
+              store.currency,
+              store.totalSpentCentavos,
+              showCode: false,
+            ),
           );
 
     return Column(

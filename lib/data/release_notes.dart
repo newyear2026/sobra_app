@@ -31,10 +31,19 @@ class ReleaseNote {
 
 /// What changed in each shipped version, newest first.
 ///
-/// Only versions that actually reached users belong here. Development that
-/// happened before the first release is not a release: it shipped as 1.0.0
-/// and that is the one line this list can honestly carry today.
+/// Only versions that actually reached users belong here, and only changes a
+/// reader would notice. A release whose whole diff is internal — ad
+/// eligibility, build plumbing — ships without an entry and announces
+/// nothing, which is what [ReleaseAnnouncements] reads a missing note as.
 final releaseNotes = <ReleaseNote>[
+  ReleaseNote(
+    version: '1.0.1',
+    releasedOn: DateTime(2026, 9, 21),
+    lines: [
+      (l10n) => l10n.releaseNote101Currencies,
+      (l10n) => l10n.releaseNote101Celebration,
+    ],
+  ),
   ReleaseNote(
     version: '1.0.0',
     releasedOn: DateTime(2026, 9, 11),

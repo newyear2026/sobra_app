@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/l10n/generated/app_localizations.dart';
 import 'package:sobra_app/services/app_update_service.dart';
+import 'package:sobra_app/services/app_version_service.dart';
 import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/update_prompt.dart';
 
@@ -31,6 +32,10 @@ class _FakePort implements AppUpdatePort {
     return storeOpens;
   }
 }
+
+/// Stands in for the platform, which will not name the build in a test.
+AppVersionLoader _installed(String buildNumber) =>
+    () async => AppVersion(version: '1.0.1', buildNumber: buildNumber);
 
 Future<SharedPreferences> _preferences([
   Map<String, Object> initial = const {},
@@ -87,6 +92,98 @@ void main() {
       ).refresh();
 
       expect(port.checks, 1);
+    });
+
+    test('the offer outlives the launch that found it', () async {
+      final port = _FakePort(available: v7);
+      final preferences = await _preferences();
+      final now = DateTime(2026, 9, 17);
+
+      final first = AppUpdates(
+        port: port,
+        preferences: preferences,
+        now: () => now,
+      );
+      await first.refresh();
+      await first.dismiss();
+
+      // A second cold start on the same day. The budget forbids another
+      // question, so the answer either comes back from storage or the update
+      // goes unmentioned until tomorrow — which is the bug this guards.
+      final second = AppUpdates(
+        port: port,
+        preferences: preferences,
+        now: () => now,
+        versionLoader: _installed('6'),
+      );
+      await second.refresh();
+
+      expect(port.checks, 1, reason: 'still only one question today');
+      expect(second.pending, v7);
+      expect(second.showBanner, isTrue);
+    });
+
+    test('but comes back as the banner, never as the dialog again', () async {
+      final port = _FakePort(available: v7);
+      final preferences = await _preferences();
+      final now = DateTime(2026, 9, 17);
+
+      // The first launch opened the dialog and the user left through the back
+      // button, which is not a decision and so is not remembered anywhere.
+      final first = AppUpdates(
+        port: port,
+        preferences: preferences,
+        now: () => now,
+      );
+      await first.refresh();
+      first.markPromptShown();
+      first.markPromptClosed();
+
+      final second = AppUpdates(
+        port: port,
+        preferences: preferences,
+        now: () => now,
+        versionLoader: _installed('6'),
+      );
+      await second.refresh();
+
+      expect(
+        second.shouldPrompt,
+        isFalse,
+        reason: 'today\'s one interruption has already been spent',
+      );
+      expect(second.showBanner, isTrue);
+    });
+
+    test('an offer the phone has already taken is dropped', () async {
+      final port = _FakePort(available: v7);
+      final preferences = await _preferences();
+      final now = DateTime(2026, 9, 17);
+
+      await AppUpdates(
+        port: port,
+        preferences: preferences,
+        now: () => now,
+      ).refresh();
+
+      // The user took the offer. Play installed build 7 and the app came
+      // straight back the same day, budget spent, with 7 still in storage —
+      // where, left alone, it would advertise the build now running.
+      final after = AppUpdates(
+        port: port,
+        preferences: preferences,
+        now: () => now,
+        versionLoader: _installed('7'),
+      );
+      await after.refresh();
+
+      expect(after.pending, isNull);
+      expect(after.showBanner, isFalse);
+      expect(
+        preferences.getInt('sobra_update_pending_version_code'),
+        isNull,
+        reason: 'and it is not left behind for tomorrow either',
+      );
     });
 
     test('a forced check ignores the budget', () async {

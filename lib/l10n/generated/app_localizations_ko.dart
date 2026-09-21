@@ -1673,6 +1673,13 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get releaseNote101Currencies =>
+      '이제 콜롬비아·아르헨티나·칠레 페소, 솔, 파운드, 엔으로도 금액을 표시할 수 있어요.';
+
+  @override
+  String get releaseNote101Celebration => '축하 연출이 카드에 꽉 차게 나오고, 중간에 끊기지 않아요.';
+
+  @override
   String get releaseNote100Launch => 'Sobrita의 첫 번째 버전이에요.';
 
   @override

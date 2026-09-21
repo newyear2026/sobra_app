@@ -1741,6 +1741,14 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get releaseNote101Currencies =>
+      'Ahora puedes etiquetar tu dinero en pesos colombianos, argentinos y chilenos, soles, libras o yenes.';
+
+  @override
+  String get releaseNote101Celebration =>
+      'La celebración ahora llena la tarjeta y termina su salto.';
+
+  @override
   String get releaseNote100Launch => 'Primera versión de Sobrita.';
 
   @override

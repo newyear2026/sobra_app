@@ -122,9 +122,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _save() async {
     if (_saving || !_formKey.currentState!.validate()) return;
-    final amount = parseAmount(_amountController.text);
-    if (amount == null) return;
     final store = SobraScope.of(context);
+    final amount = parseAmount(store.currency, _amountController.text);
+    if (amount == null) return;
     final messenger = ScaffoldMessenger.of(context);
     final l10n = AppLocalizations.of(context);
     final reducedMotion = reducedMotionOf(context);
@@ -239,10 +239,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               TextFormField(
                 controller: _amountController,
                 focusNode: _amountFocusNode,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                inputFormatters: amountInputFormatters,
+                keyboardType: amountKeyboardType(store.currency),
+                inputFormatters: amountInputFormattersFor(store.currency),
                 style: pixelText(size: 34, bold: true),
                 decoration: InputDecoration(
                   hintText: '${store.currency.symbol}0',
@@ -255,7 +253,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   suffixText: store.currency.code,
                 ),
-                validator: (value) => parseAmount(value ?? '') == null
+                validator: (value) =>
+                    parseAmount(store.currency, value ?? '') == null
                     ? l10n.registerAmountAboveZero
                     : null,
               ),

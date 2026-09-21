@@ -5,7 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/currency.dart';
 import 'package:sobra_app/models/expense_entry.dart';
+import 'package:flutter/material.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/screens/settings_screen.dart';
+import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/widgets/pixel_ui.dart';
 
@@ -29,11 +32,50 @@ void main() {
       expect(formatMoney(Currency.usd, 123456), r'$1,234.56 USD');
       expect(formatMoney(Currency.cad, 123456), r'$1,234.56 CAD');
       expect(formatMoney(Currency.eur, 123456), '€1,234.56 EUR');
+      expect(formatMoney(Currency.gbp, 123456), '£1,234.56 GBP');
+      expect(formatMoney(Currency.pen, 123456), 'S/1,234.56 PEN');
+    });
+
+    // The whole dollar family, which is the reason the code is printed at all.
+    test('tells the currencies sharing a sign apart by their code', () {
+      final dollars = Currency.values.where((c) => c.symbol == r'$');
+      expect(dollars.map((c) => c.code), [
+        'MXN',
+        'USD',
+        'CAD',
+        'COP',
+        'ARS',
+        'CLP',
+      ]);
+      expect(
+        dollars.map((c) => formatMoney(c, 120000)).toSet(),
+        hasLength(dollars.length),
+        reason: 'a figure must not read the same in two currencies',
+      );
+    });
+
+    test('writes a currency with no subdivision in whole units', () {
+      expect(formatMoney(Currency.clp, 123400), r'$1,234 CLP');
+      expect(formatMoney(Currency.jpy, 123400), '¥1,234 JPY');
+      expect(formatMoney(Currency.jpy, 100000000), '¥1,000,000 JPY');
+      expect(formatMoney(Currency.jpy, 100), '¥1 JPY');
+      expect(formatMoney(Currency.jpy, -123400), '$minusSign¥1,234 JPY');
+    });
+
+    // Hundredths only ever reach the yen by being relabelled out of a
+    // currency that had them. Rounding them into the unit is the reading that
+    // does not quietly shave money off a figure the user already wrote down.
+    test('rounds the hundredths a relabelled figure brought with it', () {
+      expect(formatMoney(Currency.jpy, 8850), '¥89 JPY');
+      expect(formatMoney(Currency.jpy, 8849), '¥88 JPY');
+      expect(formatMoney(Currency.jpy, 49), '¥0 JPY');
+      expect(formatMoney(Currency.jpy, 50), '¥1 JPY');
     });
 
     test('drops the code when asked, for figures shown in pairs', () {
       expect(formatMoney(Currency.usd, 123456, showCode: false), r'$1,234.56');
       expect(formatMoney(Currency.eur, 123456, showCode: false), '€1,234.56');
+      expect(formatMoney(Currency.jpy, 123400, showCode: false), '¥1,234');
     });
 
     test('keeps whole amounts whole and groups thousands', () {
@@ -55,6 +97,14 @@ void main() {
       expect(Currency.fromCode('KRW'), Currency.mxn);
       expect(Currency.fromCode('USD'), Currency.usd);
       expect(Currency.fromCode('EUR'), Currency.eur);
+      expect(Currency.fromCode('JPY'), Currency.jpy);
+      for (final currency in Currency.values) {
+        expect(
+          Currency.fromCode(currency.code),
+          currency,
+          reason: '${currency.code} must read back as itself',
+        );
+      }
     });
 
     test('survives a reload and rides along in the backup', () async {
@@ -89,21 +139,75 @@ void main() {
       expect(store.transactions.single.amountCentavos, 8850);
     });
 
-    // Every currency Sobra offers splits into 100, which is what lets the
-    // stored integer mean the same thing across all of them.
-    test('only offers currencies that split into a hundred', () {
+    // Every currency Sobra offers stores one whole unit as 100, whatever it
+    // prints, which is what lets the stored integer mean the same thing
+    // across all of them — and what lets relabelling leave the ledger alone.
+    test('stores one whole unit as a hundred, in every currency', () {
       expect(Currency.minorUnitsPerUnit, 100);
       for (final currency in Currency.values) {
         expect(
-          formatMoney(currency, 100),
-          contains('1'),
-          reason: '${currency.code} must read one whole unit as 1',
-        );
-        expect(
           formatMoney(currency, 100, showCode: false),
           '${currency.symbol}1',
+          reason: '${currency.code} must read one whole unit as 1',
         );
       }
+    });
+  });
+
+  // The picker is a SimpleDialog listing every value of the enum, so it is
+  // the one place where adding a currency can quietly break something.
+  group('the currency picker', () {
+    testWidgets('gives every currency a row and a sample of its own', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      useSpanishDevice(tester);
+
+      final store = await _onboardedStore();
+      await tester.pumpWidget(
+        SobraScope(
+          store: store,
+          child: MaterialApp(
+            localizationsDelegates: sobraLocalizationsDelegates,
+            supportedLocales: sobraSupportedLocales,
+            theme: buildSobraTheme(),
+            home: const Scaffold(
+              backgroundColor: AppColors.surface,
+              body: SettingsScreen(),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.scrollUntilVisible(
+        find.text('Moneda'),
+        120,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      // The row is a PixelCard, not a ListTile, and only the card takes a tap.
+      await tester.tap(
+        find
+            .ancestor(of: find.text('Moneda'), matching: find.byType(PixelCard))
+            .first,
+      );
+      await tester.pumpAndSettle();
+
+      final samples = <String>{};
+      for (final currency in Currency.values) {
+        final row = find.widgetWithText(RadioListTile<Currency>, currency.code);
+        expect(row, findsOneWidget, reason: '${currency.code} has no row');
+        samples.add(formatMoney(currency, store.totalBudgetCentavos));
+      }
+      // A sample that reads the same in two currencies would make the picker
+      // look like it were offering the same thing twice.
+      expect(samples, hasLength(Currency.values.length));
+      // The dialog scrolls rather than overflowing, however long the list is.
+      expect(tester.takeException(), isNull);
     });
   });
 
@@ -130,6 +234,12 @@ void main() {
 
       expect(find.textContaining('EUR'), findsWidgets);
       expect(find.textContaining('USD'), findsNothing);
+
+      await store.setCurrency(Currency.jpy);
+      await tester.pump();
+
+      expect(find.textContaining('JPY'), findsWidgets);
+      expect(find.textContaining('EUR'), findsNothing);
     });
   });
 }

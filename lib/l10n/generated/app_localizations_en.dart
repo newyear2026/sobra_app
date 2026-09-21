@@ -1740,6 +1740,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get releaseNote101Currencies =>
+      'Money can now be labelled in Colombian, Argentine and Chilean pesos, soles, pounds or yen.';
+
+  @override
+  String get releaseNote101Celebration =>
+      'The celebration now fills its card and finishes its jump.';
+
+  @override
   String get releaseNote100Launch => 'The first version of Sobrita.';
 
   @override

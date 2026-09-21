@@ -18,11 +18,17 @@ class OnboardingScreen extends StatefulWidget {
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
+/// The figure the budget field opens on, for the user to write over.
+///
+/// A count of hundredths like every other amount, so it reads as $6,000 in the
+/// peso and ¥6,000 in the yen — a starting point in both, and nobody's real
+/// budget in either.
+const _suggestedBudgetCentavos = 600000;
+
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final _pageController = PageController();
-  final _budgetController = TextEditingController(
-    text: amountFieldText(600000),
-  );
+  final _budgetController = TextEditingController();
+  bool _seededBudget = false;
   PayCycleType _type = PayCycleType.semiMonthly;
   int _firstPayDay = 15;
   int _monthlyPayDay = 30;
@@ -38,6 +44,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (!_seededBudget) {
+      _seededBudget = true;
+      // The suggested figure is spelled here rather than where the controller
+      // is made, because how it is spelled depends on the currency and no
+      // initialiser can reach the scope holding it. Once only: a later rebuild
+      // must not write over what the user has typed since.
+      _budgetController.text = amountFieldText(
+        SobraScope.of(context).currency,
+        _suggestedBudgetCentavos,
+      );
+    }
     if (_loadedCharacterChoice) return;
     _loadedCharacterChoice = true;
     _selectedCharacterId = CharacterCatalog.resolve(
@@ -97,7 +114,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Future<void> _continueFromBudget() async {
-    if (parseAmount(_budgetController.text) == null) {
+    if (parseAmount(SobraScope.of(context).currency, _budgetController.text) ==
+        null) {
       _showError(AppLocalizations.of(context).onboardingBudgetAboveZero);
       return;
     }
@@ -112,7 +130,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   /// count is worth more once the user is home.
   Future<void> _prepareSummary({required bool skipBudget}) async {
     if (_saving) return;
-    final budget = skipBudget ? null : parseAmount(_budgetController.text);
+    final budget = skipBudget
+        ? null
+        : parseAmount(SobraScope.of(context).currency, _budgetController.text);
     if (!skipBudget && budget == null) {
       _showError(AppLocalizations.of(context).onboardingBudgetAboveZero);
       return;
@@ -383,10 +403,7 @@ class _MeetingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    Widget arriving({
-      required String characterId,
-      required double delay,
-    }) {
+    Widget arriving({required String characterId, required double delay}) {
       Widget pose(CatMotion motion, {required bool animate}) => CatSprite(
         motion: motion,
         characterId: characterId,
@@ -430,14 +447,8 @@ class _MeetingPage extends StatelessWidget {
             height: 176,
             raining: true,
             actors: [
-              arriving(
-                characterId: CharacterCatalog.michi.id,
-                delay: 0,
-              ),
-              arriving(
-                characterId: CharacterCatalog.poodle.id,
-                delay: 0.16,
-              ),
+              arriving(characterId: CharacterCatalog.michi.id, delay: 0),
+              arriving(characterId: CharacterCatalog.poodle.id, delay: 0.16),
             ],
           ),
           const SizedBox(height: 14),
@@ -938,8 +949,10 @@ class _BudgetSetupPage extends StatelessWidget {
         const SizedBox(height: 18),
         TextField(
           controller: controller,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          inputFormatters: amountInputFormatters,
+          keyboardType: amountKeyboardType(SobraScope.of(context).currency),
+          inputFormatters: amountInputFormattersFor(
+            SobraScope.of(context).currency,
+          ),
           textAlign: TextAlign.center,
           style: const TextStyle(
             color: AppColors.teal,
