@@ -1795,6 +1795,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsCheckUpdateUpToDate => 'You\'re up to date.';
 
   @override
+  String get settingsRateApp => 'Rate Sobrita';
+
+  @override
   String get releaseAnnouncementViewAll => 'See all';
 
   @override

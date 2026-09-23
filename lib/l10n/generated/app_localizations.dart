@@ -3183,6 +3183,12 @@ abstract class AppLocalizations {
   /// **'Ya estás al día.'**
   String get settingsCheckUpdateUpToDate;
 
+  /// Ajustes row that opens the app's Google Play listing so the user can leave a rating.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificar Sobrita'**
+  String get settingsRateApp;
+
   /// Opens the full Novedades screen from the card shown after an update.
   ///
   /// In es, this message translates to:

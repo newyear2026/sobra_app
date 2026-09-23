@@ -15,7 +15,9 @@ import 'screens/app_shell.dart';
 import 'screens/login_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/recovery_screen.dart';
+import 'services/app_review_service.dart';
 import 'services/app_update_service.dart';
+import 'services/play_review_port.dart';
 import 'services/play_update_port.dart';
 import 'services/release_announcement_service.dart';
 import 'services/purchase_service.dart';
@@ -76,6 +78,14 @@ Future<void> main() async {
         : const UnavailableUpdatePort(),
     preferences: await SharedPreferences.getInstance(),
   );
+  // Play only, and absent rather than inert elsewhere: a "rate" row with no
+  // store behind it would be a button that does nothing.
+  final reviews = !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+      ? AppReviews(
+          port: const PlayReviewPort(),
+          preferences: await SharedPreferences.getInstance(),
+        )
+      : null;
   // Every platform, unlike the update prompt: this compares two version names
   // the app already knows and never asks a store anything.
   final announcements = ReleaseAnnouncements(
@@ -106,6 +116,7 @@ Future<void> main() async {
       adConsent: adConsent,
       nativeAds: nativeAds,
       updates: updates,
+      reviews: reviews,
       announcements: announcements,
     ),
   );
@@ -148,6 +159,7 @@ class SobraApp extends StatefulWidget {
     this.adConsent,
     this.nativeAds,
     this.updates,
+    this.reviews,
     this.announcements,
   });
 
@@ -170,6 +182,10 @@ class SobraApp extends StatefulWidget {
   /// offers an update and never draws the banner, which is the same app a
   /// phone with no Play services gets.
   final AppUpdates? updates;
+
+  /// Null everywhere but Android, and in a harness that pumps the app without
+  /// one. Ajustes then has no "rate" row and a closed cycle asks nothing.
+  final AppReviews? reviews;
 
   /// Null in a harness that pumps the app without one. Nothing then announces
   /// a release, and the Novedades row never wears its dot.
@@ -270,6 +286,7 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
     final adConsent = widget.adConsent;
     final nativeAds = widget.nativeAds;
     final updates = widget.updates;
+    final reviews = widget.reviews;
     final announcements = widget.announcements;
     Widget wrapped = app;
     if (announcements != null) {
@@ -280,6 +297,9 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
     }
     if (updates != null) {
       wrapped = AppUpdateScope(updates: updates, child: wrapped);
+    }
+    if (reviews != null) {
+      wrapped = AppReviewScope(reviews: reviews, child: wrapped);
     }
     if (ads != null) wrapped = RewardedAdScope(ads: ads, child: wrapped);
     if (nativeAds != null) {

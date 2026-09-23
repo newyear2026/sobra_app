@@ -7,6 +7,7 @@ import '../l10n/catalog_labels.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/room_design.dart';
 import '../models/xp_event.dart';
+import '../services/app_review_service.dart';
 import '../services/app_update_service.dart';
 import '../services/app_version_service.dart';
 import '../services/native_ad_service.dart';
@@ -294,14 +295,16 @@ class _AppShellState extends State<AppShell> {
     if (notice.kind == XpNoticeKind.cyclesClosed) {
       // The celebration of a closed cycle is a screen, not a snack bar.
       // Ads are not played here; the card only opens the collection.
+      final record = _store?.cycleRecords.firstOrNull;
+      final reviews = AppReviewScope.maybeOf(context);
       await Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (_) => SettlementScreen(
-            notice: notice,
-            record: _store?.cycleRecords.firstOrNull,
-          ),
+          builder: (_) => SettlementScreen(notice: notice, record: record),
         ),
       );
+      // After the screen, not on it: Play's sheet over the result would cover
+      // the very number that made this a good moment to ask.
+      if (mounted) await reviews?.afterSettlement(record);
       return;
     }
     if (newLevel != null) return;

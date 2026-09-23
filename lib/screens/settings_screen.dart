@@ -9,6 +9,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/language.dart';
 import '../models/currency.dart';
 import '../l10n/labels.dart';
+import '../services/app_review_service.dart';
 import '../services/app_update_service.dart';
 import '../services/app_version_service.dart';
 import '../services/release_announcement_service.dart';
@@ -150,6 +151,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  /// The store page, not Play's review sheet: Play may decline to show the
+  /// sheet without saying so, and a row somebody tapped has to open something.
+  Future<void> _rateApp(AppReviews reviews) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context);
+    if (await reviews.openStore() || !mounted) return;
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(l10n.updateStoreFailed)));
+  }
+
   Future<void> _openAccountOffer() async {
     final navigator = Navigator.of(context);
     await navigator.push(
@@ -195,6 +207,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final purchases = PurchaseScope.maybeOf(context);
     final adConsent = AdMobConsentScope.maybeOf(context);
     final updates = AppUpdateScope.maybeOf(context);
+    final reviews = AppReviewScope.maybeOf(context);
     final announcements = ReleaseAnnouncementScope.maybeOf(context);
 
     return SafeArea(
@@ -479,6 +492,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               );
             },
           ),
+          if (reviews != null)
+            _SettingsRow(
+              icon: Icons.star_outline,
+              iconColor: AppColors.cash,
+              label: l10n.settingsRateApp,
+              value: '',
+              onTap: () => _rateApp(reviews),
+            ),
           // No destination, so no chevron: this row is the answer, not a way
           // to one. It exists so a support question has a number to quote.
           _SettingsRow(

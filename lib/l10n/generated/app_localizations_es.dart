@@ -1797,6 +1797,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsCheckUpdateUpToDate => 'Ya estás al día.';
 
   @override
+  String get settingsRateApp => 'Calificar Sobrita';
+
+  @override
   String get releaseAnnouncementViewAll => 'Ver todo';
 
   @override

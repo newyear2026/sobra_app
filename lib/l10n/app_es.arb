@@ -788,6 +788,10 @@
   "settingsCheckUpdate": "Buscar actualización",
   "settingsCheckUpdateBusy": "Buscando…",
   "settingsCheckUpdateUpToDate": "Ya estás al día.",
+  "settingsRateApp": "Calificar Sobrita",
+  "@settingsRateApp": {
+    "description": "Ajustes row that opens the app's Google Play listing so the user can leave a rating."
+  },
 
   "releaseAnnouncementViewAll": "Ver todo",
   "@releaseAnnouncementViewAll": {
