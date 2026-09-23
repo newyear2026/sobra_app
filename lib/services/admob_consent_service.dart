@@ -83,6 +83,9 @@ class AdMobConsentController extends ChangeNotifier {
           requirement == PrivacyOptionsRequirementStatus.required;
       _canRequestAds = allowed;
       if (allowed && !_sdkInitialized) {
+        await MobileAds.instance.updateRequestConfiguration(
+          RequestConfiguration(testDeviceIds: AdMobConfig.androidTestDeviceIds),
+        );
         await MobileAds.instance.initialize();
         _sdkInitialized = true;
       }

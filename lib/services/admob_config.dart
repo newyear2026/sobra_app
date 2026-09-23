@@ -16,6 +16,18 @@ abstract final class AdMobConfig {
   static const _androidNativeTest = 'ca-app-pub-3940256099942544/2247696110';
   static const _androidRewardedTest = 'ca-app-pub-3940256099942544/5224354917';
 
+  /// Devices that keep receiving test ads even from a release build.
+  ///
+  /// Emulators are test devices already, so this list stays empty until the
+  /// app runs on real hardware. A closed testing build is a release build and
+  /// asks for the production units above, which would turn our own taps into
+  /// real impressions on the account. Identifiers are device scoped: listing
+  /// one here leaves every other tester and user untouched.
+  ///
+  /// To add a phone, run the app on it once and read the identifier the SDK
+  /// prints: `adb logcat -d | grep -i setTestDeviceIds`.
+  static const androidTestDeviceIds = <String>[];
+
   /// This set of identifiers is Android-only. iOS stays ad-free until its
   /// own AdMob app, units, and ATT copy exist. Mediation and AdSense are
   /// out of scope: AdSense is a website product, and a second network is
