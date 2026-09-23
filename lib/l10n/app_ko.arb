@@ -84,7 +84,7 @@
   "xpLevelUpItemsUnlocked": "새 아이템 {count}개가 해금됐어요!",
 
   "dailyMissionTitle": "오늘의 미션",
-  "dailyMissionResetHint": "자정에 새로 시작되고, 밀린 미션은 쌓이지 않아요.",
+  "dailyMissionResetHint": "매일 자정에 새 미션으로 바뀌고, 밀린 미션은 쌓이지 않아요.",
   "dailyMissionProgress": "{done} / {total} 완료",
   "@dailyMissionProgress": {
     "placeholders": {
@@ -99,6 +99,12 @@
   "dailyMissionSameDayHint": "발생한 날과 기록한 날이 같아야 해요",
   "dailyMissionBudgetTitle": "예산 확인하기",
   "dailyMissionBudgetHint": "예산 탭을 한 번 열기",
+  "dailyMissionNoteTitle": "메모 남기기",
+  "dailyMissionNoteHint": "메모를 적은 기록 한 건",
+  "dailyMissionReceiptTitle": "영수증 남기기",
+  "dailyMissionReceiptHint": "지출에 영수증 사진 붙이기",
+  "dailyMissionThreeTodayTitle": "오늘 세 건 기록하기",
+  "dailyMissionThreeTodayHint": "오늘 날짜의 기록 {count}건",
   "dailyMissionDone": "완료",
   "dailyMissionPending": "남음",
   "dailyMissionReadyAt": "완료 · {time}",

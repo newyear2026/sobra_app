@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
-import '../models/daily_mission.dart';
 import '../models/xp_event.dart';
 import '../models/pay_schedule.dart';
 import '../state/sobra_store.dart';
@@ -1097,8 +1096,8 @@ class _ReadyPage extends StatelessWidget {
             style: pixelText(size: 12, bold: true, color: AppColors.teal),
           ),
           const SizedBox(height: 8),
-          for (final kind in DailyMissionKind.values)
-            _QuestRow(label: kind.title(l10n), xp: kind.xp),
+          for (final mission in store.dailyMissions.missions)
+            _QuestRow(label: mission.kind.title(l10n), xp: mission.xp),
           const SizedBox(height: 4),
           // The biggest single reward in the app, and it is deliberately not
           // collectable here: the award is gated on onboarding being over.

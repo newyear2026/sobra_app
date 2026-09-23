@@ -213,7 +213,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dailyMissionResetHint =>
-      'Se renuevan a medianoche. No se acumulan.';
+      'Cambian cada medianoche. No se acumulan.';
 
   @override
   String dailyMissionProgress(int done, int total) {
@@ -240,6 +240,26 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dailyMissionBudgetHint => 'Abre la pestaña Presupuesto';
+
+  @override
+  String get dailyMissionNoteTitle => 'Agrega una nota';
+
+  @override
+  String get dailyMissionNoteHint => 'Un movimiento con nota';
+
+  @override
+  String get dailyMissionReceiptTitle => 'Guarda un recibo';
+
+  @override
+  String get dailyMissionReceiptHint => 'Adjunta la foto a un gasto';
+
+  @override
+  String get dailyMissionThreeTodayTitle => 'Registra tres hoy';
+
+  @override
+  String dailyMissionThreeTodayHint(int count) {
+    return '$count movimientos con fecha de hoy';
+  }
 
   @override
   String get dailyMissionDone => 'Completada';

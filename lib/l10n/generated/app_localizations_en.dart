@@ -214,7 +214,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dailyMissionResetHint =>
-      'They reset at midnight. They don\'t pile up.';
+      'They change at midnight. They don\'t pile up.';
 
   @override
   String dailyMissionProgress(int done, int total) {
@@ -242,6 +242,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dailyMissionBudgetHint => 'Open the Budget tab';
+
+  @override
+  String get dailyMissionNoteTitle => 'Add a note';
+
+  @override
+  String get dailyMissionNoteHint => 'One movement with a note';
+
+  @override
+  String get dailyMissionReceiptTitle => 'Keep a receipt';
+
+  @override
+  String get dailyMissionReceiptHint => 'Attach the photo to an expense';
+
+  @override
+  String get dailyMissionThreeTodayTitle => 'Record three today';
+
+  @override
+  String dailyMissionThreeTodayHint(int count) {
+    return '$count movements dated today';
+  }
 
   @override
   String get dailyMissionDone => 'Done';

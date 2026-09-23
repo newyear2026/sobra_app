@@ -80,7 +80,7 @@
   "xpLevelUpItemsUnlocked": "{count, plural, =1{New item unlocked!} other{{count} new items unlocked!}}",
 
   "dailyMissionTitle": "Today's mission",
-  "dailyMissionResetHint": "They reset at midnight. They don't pile up.",
+  "dailyMissionResetHint": "They change at midnight. They don't pile up.",
   "dailyMissionProgress": "{done} of {total} done",
   "@dailyMissionProgress": {
     "placeholders": {
@@ -95,6 +95,12 @@
   "dailyMissionSameDayHint": "The day it happened, and the day you write it",
   "dailyMissionBudgetTitle": "Check your budget",
   "dailyMissionBudgetHint": "Open the Budget tab",
+  "dailyMissionNoteTitle": "Add a note",
+  "dailyMissionNoteHint": "One movement with a note",
+  "dailyMissionReceiptTitle": "Keep a receipt",
+  "dailyMissionReceiptHint": "Attach the photo to an expense",
+  "dailyMissionThreeTodayTitle": "Record three today",
+  "dailyMissionThreeTodayHint": "{count} movements dated today",
   "dailyMissionDone": "Done",
   "dailyMissionPending": "To do",
   "dailyMissionReadyAt": "Done · {time}",

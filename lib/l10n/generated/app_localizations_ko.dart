@@ -204,7 +204,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get dailyMissionTitle => '오늘의 미션';
 
   @override
-  String get dailyMissionResetHint => '자정에 새로 시작되고, 밀린 미션은 쌓이지 않아요.';
+  String get dailyMissionResetHint => '매일 자정에 새 미션으로 바뀌고, 밀린 미션은 쌓이지 않아요.';
 
   @override
   String dailyMissionProgress(int done, int total) {
@@ -231,6 +231,26 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get dailyMissionBudgetHint => '예산 탭을 한 번 열기';
+
+  @override
+  String get dailyMissionNoteTitle => '메모 남기기';
+
+  @override
+  String get dailyMissionNoteHint => '메모를 적은 기록 한 건';
+
+  @override
+  String get dailyMissionReceiptTitle => '영수증 남기기';
+
+  @override
+  String get dailyMissionReceiptHint => '지출에 영수증 사진 붙이기';
+
+  @override
+  String get dailyMissionThreeTodayTitle => '오늘 세 건 기록하기';
+
+  @override
+  String dailyMissionThreeTodayHint(int count) {
+    return '오늘 날짜의 기록 $count건';
+  }
 
   @override
   String get dailyMissionDone => '완료';

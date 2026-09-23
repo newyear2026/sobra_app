@@ -457,7 +457,7 @@ abstract class AppLocalizations {
   /// No description provided for @dailyMissionResetHint.
   ///
   /// In es, this message translates to:
-  /// **'Se renuevan a medianoche. No se acumulan.'**
+  /// **'Cambian cada medianoche. No se acumulan.'**
   String get dailyMissionResetHint;
 
   /// No description provided for @dailyMissionProgress.
@@ -507,6 +507,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Abre la pestaña Presupuesto'**
   String get dailyMissionBudgetHint;
+
+  /// No description provided for @dailyMissionNoteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrega una nota'**
+  String get dailyMissionNoteTitle;
+
+  /// No description provided for @dailyMissionNoteHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Un movimiento con nota'**
+  String get dailyMissionNoteHint;
+
+  /// No description provided for @dailyMissionReceiptTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Guarda un recibo'**
+  String get dailyMissionReceiptTitle;
+
+  /// No description provided for @dailyMissionReceiptHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Adjunta la foto a un gasto'**
+  String get dailyMissionReceiptHint;
+
+  /// No description provided for @dailyMissionThreeTodayTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Registra tres hoy'**
+  String get dailyMissionThreeTodayTitle;
+
+  /// No description provided for @dailyMissionThreeTodayHint.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} movimientos con fecha de hoy'**
+  String dailyMissionThreeTodayHint(int count);
 
   /// No description provided for @dailyMissionDone.
   ///

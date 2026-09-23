@@ -98,7 +98,7 @@
   },
 
   "dailyMissionTitle": "Misión de hoy",
-  "dailyMissionResetHint": "Se renuevan a medianoche. No se acumulan.",
+  "dailyMissionResetHint": "Cambian cada medianoche. No se acumulan.",
   "dailyMissionProgress": "{done} de {total} listas",
   "@dailyMissionProgress": {
     "placeholders": {
@@ -113,6 +113,19 @@
   "dailyMissionSameDayHint": "El gasto y el registro, hoy",
   "dailyMissionBudgetTitle": "Revisa tu presupuesto",
   "dailyMissionBudgetHint": "Abre la pestaña Presupuesto",
+  "dailyMissionNoteTitle": "Agrega una nota",
+  "dailyMissionNoteHint": "Un movimiento con nota",
+  "dailyMissionReceiptTitle": "Guarda un recibo",
+  "dailyMissionReceiptHint": "Adjunta la foto a un gasto",
+  "dailyMissionThreeTodayTitle": "Registra tres hoy",
+  "dailyMissionThreeTodayHint": "{count} movimientos con fecha de hoy",
+  "@dailyMissionThreeTodayHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dailyMissionDone": "Completada",
   "dailyMissionPending": "Pendiente",
   "dailyMissionReadyAt": "Listo · {time}",

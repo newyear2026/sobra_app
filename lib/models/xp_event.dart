@@ -8,6 +8,9 @@ enum XpEventKind {
   dailyMissionRecord,
   dailyMissionSameDay,
   dailyMissionBudget,
+  dailyMissionNote,
+  dailyMissionReceipt,
+  dailyMissionThreeToday,
 }
 
 class XpEvent {

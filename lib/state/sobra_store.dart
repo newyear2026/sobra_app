@@ -312,7 +312,7 @@ class SobraStore extends ChangeNotifier {
     final dateKey = _cycleKey(today);
     return DailyMissionBoard(
       missions: [
-        for (final kind in DailyMissionKind.values)
+        for (final kind in DailyMissionKind.forDay(today))
           DailyMission(
             kind: kind,
             completedAt: _xpEventForSource(kind.sourceKey(dateKey))?.occurredAt,
@@ -380,6 +380,7 @@ class SobraStore extends ChangeNotifier {
 
   int get totalSpentCentavos =>
       cycleTransactions.fold(0, (total, entry) => total + entry.amountCentavos);
+
   /// Days of the current cycle lived so far, today included.
   ///
   /// Counts from the cycle's start rather than from the first thing recorded,
@@ -735,10 +736,15 @@ class SobraStore extends ChangeNotifier {
     DailyMissionKind.recordMovement => XpEventKind.dailyMissionRecord,
     DailyMissionKind.sameDay => XpEventKind.dailyMissionSameDay,
     DailyMissionKind.reviewBudget => XpEventKind.dailyMissionBudget,
+    DailyMissionKind.addNote => XpEventKind.dailyMissionNote,
+    DailyMissionKind.attachReceipt => XpEventKind.dailyMissionReceipt,
+    DailyMissionKind.threeToday => XpEventKind.dailyMissionThreeToday,
   };
 
+  /// Awards [kind] for today, if today's board asks for it.
   int _awardDailyMission(DailyMissionKind kind, DateTime moment) {
     if (!hasCompletedOnboarding) return 0;
+    if (!DailyMissionKind.forDay(today).contains(kind)) return 0;
     return _awardXp(
       kind: _xpKindFor(kind),
       xp: kind.xp,
@@ -763,30 +769,36 @@ class SobraStore extends ChangeNotifier {
     );
   }
 
-  /// Completes the record / same-day missions for a user-typed movement.
+  /// Completes whichever of today's missions a user-typed movement meets.
   ///
-  /// Cash-count rows skip this on purpose: that path already has its own
-  /// weekly XP, and stuffing a count through the ledger should not also
-  /// clear today's recording habit.
-  void _awardDailyMissionsForMovement(DateTime occurredAt) {
+  /// Call it after the movement is in the ledger, so the count of today's
+  /// records includes it. Cash-count rows skip this on purpose: that path
+  /// already has its own weekly XP, and stuffing a count through the ledger
+  /// should not also clear today's recording habit.
+  void _awardDailyMissionsForMovement(
+    DateTime occurredAt, {
+    required String note,
+    String? receiptFileName,
+  }) {
     final moment = currentMoment;
     final levelBefore = xpProgress.level;
     var awarded = 0;
     var completed = 0;
-    final recordXp = _awardDailyMission(
-      DailyMissionKind.recordMovement,
-      moment,
-    );
-    if (recordXp > 0) {
-      awarded += recordXp;
+    void award(DailyMissionKind kind) {
+      final xp = _awardDailyMission(kind, moment);
+      if (xp <= 0) return;
+      awarded += xp;
       completed++;
     }
+
+    award(DailyMissionKind.recordMovement);
     if (_isSameDay(dateOnly(occurredAt), today)) {
-      final sameDayXp = _awardDailyMission(DailyMissionKind.sameDay, moment);
-      if (sameDayXp > 0) {
-        awarded += sameDayXp;
-        completed++;
-      }
+      award(DailyMissionKind.sameDay);
+    }
+    if (note.trim().isNotEmpty) award(DailyMissionKind.addNote);
+    if (receiptFileName != null) award(DailyMissionKind.attachReceipt);
+    if (_userMovementsDatedToday >= DailyMissionKind.threeTodayTarget) {
+      award(DailyMissionKind.threeToday);
     }
     _postMissionNotice(
       awarded: awarded,
@@ -794,6 +806,22 @@ class SobraStore extends ChangeNotifier {
       levelBefore: levelBefore,
     );
   }
+
+  /// Expenses and incomes the user typed that are dated today.
+  ///
+  /// Cash-count rows are measured, not typed, so they do not count toward
+  /// [DailyMissionKind.threeToday].
+  int get _userMovementsDatedToday =>
+      _transactions
+          .where(
+            (entry) =>
+                !entry.isLinkedToCashCount &&
+                _isSameDay(dateOnly(entry.occurredAt), today),
+          )
+          .length +
+      _incomes
+          .where((entry) => _isSameDay(dateOnly(entry.occurredAt), today))
+          .length;
 
   /// Marks the budget tab as seen for today.
   ///
@@ -840,7 +868,11 @@ class SobraStore extends ChangeNotifier {
     );
     _transactions.add(entry);
     if (_affectsCurrentCash(entry)) expectedCashCentavos -= amountCentavos;
-    _awardDailyMissionsForMovement(occurredAt);
+    _awardDailyMissionsForMovement(
+      occurredAt,
+      note: entry.note,
+      receiptFileName: receiptFileName,
+    );
     await _save();
     notifyListeners();
     return entry;
@@ -866,7 +898,7 @@ class SobraStore extends ChangeNotifier {
     );
     _incomes.add(entry);
     _applyIncome(entry, 1);
-    _awardDailyMissionsForMovement(occurredAt);
+    _awardDailyMissionsForMovement(occurredAt, note: entry.note);
     await _save();
     notifyListeners();
     return entry;
@@ -898,11 +930,15 @@ class SobraStore extends ChangeNotifier {
     }
     if (_affectsCurrentCash(next)) expectedCashCentavos -= next.amountCentavos;
     _transactions[index] = next;
-    // Dated today: the same two habits a new save would complete. Cash-count
+    // Dated today: the same habits a new save would complete. Cash-count
     // rows keep their own weekly XP and must not also fill today's missions.
     if (!next.isLinkedToCashCount &&
         _isSameDay(dateOnly(next.occurredAt), today)) {
-      _awardDailyMissionsForMovement(next.occurredAt);
+      _awardDailyMissionsForMovement(
+        next.occurredAt,
+        note: next.note,
+        receiptFileName: next.receiptFileName,
+      );
     }
     await _save();
     notifyListeners();
@@ -1717,11 +1753,7 @@ class SobraStore extends ChangeNotifier {
 
   bool _tryRestore(String raw) {
     try {
-      final candidate = SobraStore._(
-        _preferences,
-        _now,
-        rewardedAdsPerDay,
-      );
+      final candidate = SobraStore._(_preferences, _now, rewardedAdsPerDay);
       candidate._restore(jsonDecode(raw) as Map<String, dynamic>);
       _copyFrom(candidate);
       return true;
@@ -1893,7 +1925,8 @@ class SobraStore extends ChangeNotifier {
     _rewardedAdLastEarnedDate
       ..clear()
       ..addAll({
-        for (final entry in lastEarned.entries) entry.key: entry.value as String,
+        for (final entry in lastEarned.entries)
+          entry.key: entry.value as String,
       });
     // Dropped rather than carried when it will not parse, so the field holds
     // either a usable day or nothing. _ensureNativeAdInstallDay then fills it

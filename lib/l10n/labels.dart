@@ -166,6 +166,9 @@ extension XpEventKindL10n on XpEventKind {
     XpEventKind.dailyMissionRecord => l10n.dailyMissionRecordTitle,
     XpEventKind.dailyMissionSameDay => l10n.dailyMissionSameDayTitle,
     XpEventKind.dailyMissionBudget => l10n.dailyMissionBudgetTitle,
+    XpEventKind.dailyMissionNote => l10n.dailyMissionNoteTitle,
+    XpEventKind.dailyMissionReceipt => l10n.dailyMissionReceiptTitle,
+    XpEventKind.dailyMissionThreeToday => l10n.dailyMissionThreeTodayTitle,
   };
 
   String shortDetail(AppLocalizations l10n) => switch (this) {
@@ -175,7 +178,10 @@ extension XpEventKindL10n on XpEventKind {
     XpEventKind.firstSuccessfulCycle => l10n.xpFirstSuccessfulCycleDetail,
     XpEventKind.dailyMissionRecord ||
     XpEventKind.dailyMissionSameDay ||
-    XpEventKind.dailyMissionBudget => l10n.dailyMissionXpDetail,
+    XpEventKind.dailyMissionBudget ||
+    XpEventKind.dailyMissionNote ||
+    XpEventKind.dailyMissionReceipt ||
+    XpEventKind.dailyMissionThreeToday => l10n.dailyMissionXpDetail,
   };
 }
 
@@ -189,12 +195,20 @@ extension DailyMissionKindL10n on DailyMissionKind {
     DailyMissionKind.recordMovement => l10n.dailyMissionRecordTitle,
     DailyMissionKind.sameDay => l10n.dailyMissionSameDayTitle,
     DailyMissionKind.reviewBudget => l10n.dailyMissionBudgetTitle,
+    DailyMissionKind.addNote => l10n.dailyMissionNoteTitle,
+    DailyMissionKind.attachReceipt => l10n.dailyMissionReceiptTitle,
+    DailyMissionKind.threeToday => l10n.dailyMissionThreeTodayTitle,
   };
 
   String hint(AppLocalizations l10n) => switch (this) {
     DailyMissionKind.recordMovement => l10n.dailyMissionRecordHint,
     DailyMissionKind.sameDay => l10n.dailyMissionSameDayHint,
     DailyMissionKind.reviewBudget => l10n.dailyMissionBudgetHint,
+    DailyMissionKind.addNote => l10n.dailyMissionNoteHint,
+    DailyMissionKind.attachReceipt => l10n.dailyMissionReceiptHint,
+    DailyMissionKind.threeToday => l10n.dailyMissionThreeTodayHint(
+      DailyMissionKind.threeTodayTarget,
+    ),
   };
 }
 

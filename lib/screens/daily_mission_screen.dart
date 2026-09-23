@@ -97,11 +97,20 @@ class _MissionTile extends StatelessWidget {
     DailyMissionKind.recordMovement => Icons.edit_outlined,
     DailyMissionKind.sameDay => Icons.today_outlined,
     DailyMissionKind.reviewBudget => Icons.bar_chart_outlined,
+    DailyMissionKind.addNote => Icons.sticky_note_2_outlined,
+    DailyMissionKind.attachReceipt => Icons.receipt_long_outlined,
+    DailyMissionKind.threeToday => Icons.playlist_add_check,
   };
 
   static (Color, Color) _colorsFor(DailyMissionKind kind) => switch (kind) {
     DailyMissionKind.recordMovement => (AppColors.tealSoft, AppColors.tealInk),
     DailyMissionKind.sameDay => (AppColors.violetSoft, AppColors.violet),
     DailyMissionKind.reviewBudget => (AppColors.blueSoft, AppColors.blue),
+    DailyMissionKind.addNote => (AppColors.cashSoft, AppColors.cashInk),
+    DailyMissionKind.attachReceipt => (
+      AppColors.dangerSoft,
+      AppColors.dangerInk,
+    ),
+    DailyMissionKind.threeToday => (AppColors.tealSoft, AppColors.tealInk),
   };
 }
