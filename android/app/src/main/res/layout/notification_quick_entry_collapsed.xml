@@ -1,78 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Two separate pixel buttons and no artwork of our own: Android already
+     shows the launcher icon beside this view, so a second one read as a
+     duplicate on the lock screen. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/quick_entry_root"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:background="@drawable/quick_entry_option2_surface"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingLeft="5dp"
-    android:paddingTop="3dp"
-    android:paddingRight="5dp"
-    android:paddingBottom="3dp">
-
-    <FrameLayout
-        android:layout_width="38dp"
-        android:layout_height="38dp"
-        android:background="@drawable/quick_entry_icon_frame"
-        android:padding="3dp">
-
-        <ImageView
-            android:id="@+id/quick_entry_app_icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/quick_entry_app_icon_description"
-            android:scaleType="fitCenter"
-            android:src="@mipmap/ic_launcher" />
-    </FrameLayout>
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp">
 
     <LinearLayout
+        android:id="@+id/quick_entry_income"
         android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="5dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@drawable/quick_entry_panel"
+        android:background="@drawable/quick_entry_button_income"
+        android:contentDescription="@string/quick_entry_income"
+        android:gravity="center"
         android:orientation="horizontal"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp">
-
-        <TextView
-            android:id="@+id/quick_entry_income"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/quick_entry_action_background"
-            android:contentDescription="@string/quick_entry_income"
-            android:fontFamily="@font/pixelify_sans"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:maxLines="1"
-            android:text="＋ @string/quick_entry_income"
-            android:textColor="#FF202848"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="3dp">
 
         <ImageView
-            android:layout_width="1dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center_vertical"
-            android:background="#553E4662"
-            android:importantForAccessibility="no" />
+            android:layout_width="9dp"
+            android:layout_height="9dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/quick_entry_glyph_plus" />
 
-        <TextView
-            android:id="@+id/quick_entry_expense"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/quick_entry_action_background"
-            android:contentDescription="@string/quick_entry_expense"
-            android:fontFamily="@font/pixelify_sans"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:maxLines="1"
-            android:text="＋ @string/quick_entry_expense"
-            android:textColor="#FF202848"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/quick_entry_income_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:importantForAccessibility="no"
+            android:scaleType="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/quick_entry_expense"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginLeft="8dp"
+        android:background="@drawable/quick_entry_button_expense"
+        android:contentDescription="@string/quick_entry_expense"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="3dp">
+
+        <ImageView
+            android:layout_width="9dp"
+            android:layout_height="9dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/quick_entry_glyph_minus" />
+
+        <ImageView
+            android:id="@+id/quick_entry_expense_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:importantForAccessibility="no"
+            android:scaleType="center" />
     </LinearLayout>
 </LinearLayout>

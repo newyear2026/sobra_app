@@ -9,12 +9,17 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.Typeface
 import android.os.Build
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
+import android.util.TypedValue
 import android.widget.RemoteViews
+import kotlin.math.ceil
+import kotlin.math.roundToInt
 
 /** The opt-in notification that keeps Income and Expense one tap away. */
 object SobraQuickEntryNotification {
@@ -25,6 +30,10 @@ object SobraQuickEntryNotification {
     private const val KEY_QUESTION = "question"
     private const val KEY_INCOME = "income"
     private const val KEY_EXPENSE = "expense"
+    private const val LABEL_COLOR = 0xFFFFF8E8.toInt()
+    private const val INCOME_INK = 0xFF0B6660.toInt()
+    private const val EXPENSE_INK = 0xFFA63A25.toInt()
+    private const val HANGUL_FONT_ASSET = "flutter_assets/assets/fonts/SobraHangul-Bold.ttf"
 
     fun needsRuntimePermission(context: Context): Boolean =
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
@@ -98,8 +107,9 @@ object SobraQuickEntryNotification {
         }
 
         builder
-            // Android owns this small, monochrome status/header mark. The
-            // full-colour launcher icon is rendered once in our content view.
+            // Android owns this small, monochrome status/header mark, and the
+            // lock screen adds the launcher icon itself, so our content view
+            // carries no artwork of its own.
             .setSmallIcon(R.drawable.cat_peek_open)
             .setContentTitle(context.getString(R.string.app_name))
             .setContentText(question)
@@ -135,7 +145,7 @@ object SobraQuickEntryNotification {
                 )
                 .setStyle(Notification.BigTextStyle().bigText(question))
                 .addAction(action(context, "＋ $income", "register_income", 301))
-                .addAction(action(context, "＋ $expense", "register_expense", 302))
+                .addAction(action(context, "－ $expense", "register_expense", 302))
         }
 
         manager(context).notify(NOTIFICATION_ID, builder.build())
@@ -147,9 +157,14 @@ object SobraQuickEntryNotification {
         expense: String,
     ): RemoteViews =
         RemoteViews(context.packageName, R.layout.notification_quick_entry_collapsed).apply {
-            setImageViewResource(R.id.quick_entry_app_icon, R.mipmap.ic_launcher)
-            setTextViewText(R.id.quick_entry_income, actionLabel(income))
-            setTextViewText(R.id.quick_entry_expense, actionLabel(expense))
+            setImageViewBitmap(
+                R.id.quick_entry_income_label,
+                pixelLabel(context, income, 16f, INCOME_INK),
+            )
+            setImageViewBitmap(
+                R.id.quick_entry_expense_label,
+                pixelLabel(context, expense, 16f, EXPENSE_INK),
+            )
             setContentDescription(R.id.quick_entry_income, income)
             setContentDescription(R.id.quick_entry_expense, expense)
             setOnClickPendingIntent(
@@ -173,10 +188,15 @@ object SobraQuickEntryNotification {
         expense: String,
     ): RemoteViews =
         RemoteViews(context.packageName, R.layout.notification_quick_entry_expanded).apply {
-            setImageViewResource(R.id.quick_entry_app_icon, R.mipmap.ic_launcher)
             setTextViewText(R.id.quick_entry_question, question)
-            setTextViewText(R.id.quick_entry_income, actionLabel(income))
-            setTextViewText(R.id.quick_entry_expense, actionLabel(expense))
+            setImageViewBitmap(
+                R.id.quick_entry_income_label,
+                pixelLabel(context, income, 18f, INCOME_INK),
+            )
+            setImageViewBitmap(
+                R.id.quick_entry_expense_label,
+                pixelLabel(context, expense, 18f, EXPENSE_INK),
+            )
             setContentDescription(R.id.quick_entry_income, income)
             setContentDescription(R.id.quick_entry_expense, expense)
             setOnClickPendingIntent(
@@ -193,22 +213,60 @@ object SobraQuickEntryNotification {
             )
         }
 
-    /** Keeps the pixel-teal plus while matching the mockup's navy action copy. */
-    private fun actionLabel(label: String): CharSequence =
-        SpannableString("＋ $label").apply {
-            setSpan(
-                ForegroundColorSpan(0xFF0E7A72.toInt()),
-                0,
-                1,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
-            )
-            setSpan(
-                ForegroundColorSpan(0xFF202848.toInt()),
-                2,
-                length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
-            )
+    /**
+     * SystemUI inflates our layout with its own fonts, so an app font set on a
+     * TextView is ignored. Drawing the label here keeps the pixel face; the
+     * button's content description still carries the text for TalkBack.
+     */
+    private fun pixelLabel(
+        context: Context,
+        label: String,
+        sizeSp: Float,
+        shadowColor: Int,
+    ): Bitmap {
+        val metrics = context.resources.displayMetrics
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sizeSp, metrics)
+            typeface = labelTypeface(context, label)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && typeface != Typeface.DEFAULT_BOLD) {
+                fontVariationSettings = "'wght' 700"
+            }
         }
+        // Centre the cap height rather than the ink, so "Expense" (with its
+        // descender) sits on the same line as "Income" beside the glyph.
+        fun bounds(text: String) = Rect().also { paint.getTextBounds(text, 0, text.length, it) }
+        val cap = -bounds(if (hangul(label)) "가" else "H").top
+        val descent = bounds("gjpqy").bottom.coerceAtLeast(0)
+        val shadow = metrics.density.roundToInt().coerceAtLeast(1)
+        val bitmap = Bitmap.createBitmap(
+            (ceil(paint.measureText(label)).toInt() + shadow).coerceAtLeast(1),
+            (cap + 2 * descent + shadow).coerceAtLeast(1),
+            Bitmap.Config.ARGB_8888,
+        )
+        bitmap.density = metrics.densityDpi
+        val baseline = (descent + cap).toFloat()
+        Canvas(bitmap).apply {
+            paint.color = shadowColor
+            drawText(label, shadow.toFloat(), baseline + shadow, paint)
+            paint.color = LABEL_COLOR
+            drawText(label, 0f, baseline, paint)
+        }
+        return bitmap
+    }
+
+    /** Pixelify has no Hangul, so Korean copy borrows the app's own pixel face. */
+    private fun labelTypeface(context: Context, label: String): Typeface =
+        runCatching {
+            if (hangul(label)) {
+                Typeface.createFromAsset(context.assets, HANGUL_FONT_ASSET)
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.resources.getFont(R.font.pixelify_sans)
+            } else {
+                null
+            }
+        }.getOrNull() ?: Typeface.DEFAULT_BOLD
+
+    private fun hangul(text: String): Boolean = text.any { it in '\uAC00'..'\uD7A3' }
 
     private fun action(
         context: Context,

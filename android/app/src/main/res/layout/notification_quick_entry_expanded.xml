@@ -2,97 +2,81 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/quick_entry_root"
     android:layout_width="match_parent"
-    android:layout_height="108dp"
-    android:background="@drawable/quick_entry_option2_surface"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="7dp"
-    android:paddingTop="6dp"
-    android:paddingRight="7dp"
-    android:paddingBottom="7dp">
+    android:paddingTop="2dp"
+    android:paddingBottom="6dp">
+
+    <TextView
+        android:id="@+id/quick_entry_question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/quick_entry_question"
+        android:textAppearance="@android:style/TextAppearance.Material.Notification" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="43dp"
-        android:gravity="center_vertical"
+        android:layout_height="56dp"
+        android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
-        <FrameLayout
-            android:layout_width="39dp"
-            android:layout_height="39dp"
-            android:background="@drawable/quick_entry_icon_frame"
-            android:padding="3dp">
-
-            <ImageView
-                android:id="@+id/quick_entry_app_icon"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/quick_entry_app_icon_description"
-                android:scaleType="fitCenter"
-                android:src="@mipmap/ic_launcher" />
-        </FrameLayout>
-
-        <TextView
-            android:id="@+id/quick_entry_question"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:includeFontPadding="false"
-            android:maxLines="1"
-            android:text="@string/quick_entry_question"
-            android:textColor="#FFFFF8E8"
-            android:textSize="15sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="4dp"
-        android:layout_weight="1"
-        android:background="@drawable/quick_entry_panel"
-        android:orientation="horizontal"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp">
-
-        <TextView
+        <LinearLayout
             android:id="@+id/quick_entry_income"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/quick_entry_action_background"
+            android:background="@drawable/quick_entry_button_income"
             android:contentDescription="@string/quick_entry_income"
-            android:fontFamily="@font/pixelify_sans"
             android:gravity="center"
-            android:includeFontPadding="false"
-            android:maxLines="1"
-            android:text="＋ @string/quick_entry_income"
-            android:textColor="#FF202848"
-            android:textSize="17sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="3dp">
 
-        <ImageView
-            android:layout_width="1dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:background="#665B5A55"
-            android:importantForAccessibility="no" />
+            <ImageView
+                android:layout_width="9dp"
+                android:layout_height="9dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/quick_entry_glyph_plus" />
 
-        <TextView
+            <ImageView
+                android:id="@+id/quick_entry_income_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:importantForAccessibility="no"
+                android:scaleType="center" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/quick_entry_expense"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/quick_entry_action_background"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/quick_entry_button_expense"
             android:contentDescription="@string/quick_entry_expense"
-            android:fontFamily="@font/pixelify_sans"
             android:gravity="center"
-            android:includeFontPadding="false"
-            android:maxLines="1"
-            android:text="＋ @string/quick_entry_expense"
-            android:textColor="#FF202848"
-            android:textSize="17sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="3dp">
+
+            <ImageView
+                android:layout_width="9dp"
+                android:layout_height="9dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/quick_entry_glyph_minus" />
+
+            <ImageView
+                android:id="@+id/quick_entry_expense_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:importantForAccessibility="no"
+                android:scaleType="center" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
