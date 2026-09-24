@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../data/catalog_preview_data.dart';
 import '../l10n/catalog_labels.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../l10n/room_labels.dart';
 import '../models/catalog_entry.dart';
 import '../models/room_design.dart';
 import '../state/sobra_store.dart';
@@ -21,8 +22,13 @@ class RoomDecorateScreen extends StatefulWidget {
 
 class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
   RoomDecorCategory _category = RoomDecorCategory.furniture;
-  String? _selectedItemId = 'item-01';
-  Map<RoomSlot, String>? _draft;
+
+  /// Nothing to begin with: a preselected item lit its places before the
+  /// user had chosen anything, and the room opened looking mid-edit.
+  String? _selectedItemId;
+  final Map<String, Map<RoomSlot, String>> _draftRooms = {};
+  String? _draftRoomId;
+  Map<RoomSlot, String> get _draft => _draftRooms[_draftRoomId]!;
 
   /// The character the room will keep, once Done is pressed.
   ///
@@ -39,13 +45,20 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final store = SobraScope.of(context);
-    _draft ??= Map.of(store.roomDecorationsFor());
+    _draftRoomId ??= store.equippedRoomId;
+    _draftRooms.putIfAbsent(
+      _draftRoomId!,
+      () => Map.of(store.roomDecorationsFor(_draftRoomId!)),
+    );
     _draftCharacterId ??= store.characterId;
   }
 
   void _pushHistory() => _history.add(
     _DecorSnapshot(
-      placements: Map.of(_draft!),
+      placementsByRoom: {
+        for (final room in _draftRooms.entries) room.key: Map.of(room.value),
+      },
+      roomId: _draftRoomId!,
       characterId: _draftCharacterId!,
     ),
   );
@@ -58,7 +71,10 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
     final l10n = AppLocalizations.of(context);
     final store = SobraScope.of(context);
     final saved = await guardStoreWrite(messenger, l10n, () async {
-      await store.saveRoomDecorations(_draft!);
+      await store.saveRoomSelection(
+        roomId: _draftRoomId!,
+        placementsByRoom: _draftRooms,
+      );
       if (_draftCharacterId != store.characterId) {
         await store.equipCharacter(
           CatalogPreviewData.characters.firstWhere(
@@ -80,8 +96,15 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
     if (_history.isEmpty) return;
     final previous = _history.removeLast();
     setState(() {
-      _draft = previous.placements;
+      _draftRooms
+        ..clear()
+        ..addAll({
+          for (final room in previous.placementsByRoom.entries)
+            room.key: Map.of(room.value),
+        });
+      _draftRoomId = previous.roomId;
       _draftCharacterId = previous.characterId;
+      _selectedItemId = null;
     });
   }
 
@@ -94,6 +117,21 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
       );
       return;
     }
+    final roomId = choice.roomId;
+    if (roomId != null) {
+      if (roomId == _draftRoomId) return;
+      final store = SobraScope.of(context);
+      setState(() {
+        _pushHistory();
+        _draftRoomId = roomId;
+        _draftRooms.putIfAbsent(
+          roomId,
+          () => Map.of(store.roomDecorationsFor(roomId)),
+        );
+        _selectedItemId = null;
+      });
+      return;
+    }
     final characterId = choice.characterId;
     if (characterId != null) {
       if (characterId == _draftCharacterId) return;
@@ -103,34 +141,68 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
       });
       return;
     }
-    if (choice.slot == null) return;
+    if (choice.surfaces.isEmpty) return;
     setState(() => _selectedItemId = choice.id);
   }
 
+  /// Puts the selected item in [slot], or takes it out if it is already there.
+  ///
+  /// An item is in one place at a time, so placing it somewhere new moves it.
+  /// Whatever [slot] held goes back to the drawer. The scene only offers
+  /// slots of the item's surfaces; the check here is for a stale tap.
   void _place(RoomSlot slot) {
     final itemId = _selectedItemId;
-    final itemSlot = itemId == null
-        ? null
-        : RoomDecorAssets.slotForItemId(itemId);
-    if (itemId == null || itemSlot != slot) {
-      final l10n = AppLocalizations.of(context);
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(l10n.roomInstruction)));
+    if (itemId == null ||
+        !RoomDecorAssets.surfacesFor(itemId).contains(slot.surface)) {
       return;
     }
-    if (_draft![slot] == itemId) return;
     setState(() {
       _pushHistory();
-      _draft![slot] = itemId;
+      if (_draft[slot] == itemId) {
+        _draft.remove(slot);
+        return;
+      }
+      _draft.removeWhere((_, placed) => placed == itemId);
+      _draft[slot] = itemId;
     });
+  }
+
+  String _hint(AppLocalizations l10n, RoomTheme room) {
+    if (_category == RoomDecorCategory.rooms) return l10n.roomChooseTheme;
+    if (_category == RoomDecorCategory.characters) {
+      return l10n.roomCharacterInstruction;
+    }
+    final itemId = _selectedItemId;
+    final surfaces = itemId == null
+        ? const <RoomSurface>[]
+        : RoomDecorAssets.surfacesFor(itemId);
+    if (surfaces.isEmpty) return l10n.roomInstruction;
+    final count = room.slotsForItem(itemId!).length;
+    if (_draft.containsValue(itemId)) {
+      return count > 1 ? l10n.roomMoveOrRemove : l10n.roomTapToRemove;
+    }
+    if (surfaces.length > 1) return l10n.roomPickAny(count);
+    return switch (surfaces.single) {
+      RoomSurface.wall => l10n.roomPickWall(count),
+      RoomSurface.floor => l10n.roomPickFloor(count),
+      RoomSurface.tabletop => l10n.roomPickTabletop(count),
+      RoomSurface.rug => l10n.roomPickRug(count),
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final store = SobraScope.of(context);
-    final choices = _choicesFor(_category, l10n, store, _draftCharacterId);
+    final room = RoomThemes.byId(_draftRoomId!);
+    final choices = _choicesFor(
+      _category,
+      l10n,
+      store,
+      _draftRoomId!,
+      _draftCharacterId,
+      _draft,
+    );
     return Scaffold(
       backgroundColor: AppColors.surface,
       body: SafeArea(
@@ -159,7 +231,8 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
                     Expanded(
                       child: RoomScene(
                         variant: RoomSceneVariant.immersive,
-                        placements: _draft!,
+                        roomId: room.id,
+                        placements: _draft,
                         message: l10n.homeGoingWell,
                         showSlots: true,
                         selectedItemId: _selectedItemId,
@@ -185,9 +258,7 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
                           const SizedBox(width: 8),
                           Flexible(
                             child: Text(
-                              _category == RoomDecorCategory.characters
-                                  ? l10n.roomCharacterInstruction
-                                  : l10n.roomInstruction,
+                              _hint(l10n, room),
                               textAlign: TextAlign.center,
                               style: pixelText(
                                 size: 13,
@@ -205,6 +276,7 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
                         category: _category,
                         choices: choices,
                         selectedItemId: _selectedItemId,
+                        selectedRoomId: _draftRoomId!,
                         selectedCharacterId: _draftCharacterId,
                         onCategoryChanged: (category) {
                           setState(() {
@@ -289,6 +361,7 @@ class _DecorDrawer extends StatelessWidget {
     required this.category,
     required this.choices,
     required this.selectedItemId,
+    required this.selectedRoomId,
     required this.selectedCharacterId,
     required this.onCategoryChanged,
     required this.onChoiceTap,
@@ -297,6 +370,7 @@ class _DecorDrawer extends StatelessWidget {
   final RoomDecorCategory category;
   final List<_RoomChoice> choices;
   final String? selectedItemId;
+  final String selectedRoomId;
   final String? selectedCharacterId;
   final ValueChanged<RoomDecorCategory> onCategoryChanged;
   final ValueChanged<_RoomChoice> onChoiceTap;
@@ -343,9 +417,11 @@ class _DecorDrawer extends StatelessWidget {
                 final choice = choices[index];
                 return _RoomChoiceTile(
                   choice: choice,
-                  selected: choice.characterId == null
-                      ? selectedItemId == choice.id
-                      : choice.characterId == selectedCharacterId,
+                  selected: choice.roomId != null
+                      ? choice.roomId == selectedRoomId
+                      : choice.characterId != null
+                      ? choice.characterId == selectedCharacterId
+                      : selectedItemId == choice.id,
                   onTap: () => onChoiceTap(choice),
                 );
               },
@@ -415,42 +491,42 @@ class _RoomChoiceTile extends StatelessWidget {
       button: true,
       selected: selected,
       label: '${choice.label}, ${choice.status}',
-    child: GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(7),
-        decoration: BoxDecoration(
-          color: selected ? AppColors.tealSoft : AppColors.surface,
-          border: Border.all(
-            color: selected ? AppColors.teal : AppColors.line,
-            width: selected ? 3 : 2,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(7),
+          decoration: BoxDecoration(
+            color: selected ? AppColors.tealSoft : AppColors.surface,
+            border: Border.all(
+              color: selected ? AppColors.teal : AppColors.line,
+              width: selected ? 3 : 2,
+            ),
           ),
-        ),
-        child: Column(
-          children: [
-            Expanded(child: choice.preview),
-            const SizedBox(height: 4),
-            Text(
-              choice.label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: pixelText(size: 12, bold: true),
-            ),
-            const SizedBox(height: 3),
-            Text(
-              choice.status,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: pixelText(
-                size: 12,
-                bold: true,
-                color: AppColors.tealInk,
+          child: Column(
+            children: [
+              Expanded(child: choice.preview),
+              const SizedBox(height: 4),
+              Text(
+                choice.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: pixelText(size: 12, bold: true),
               ),
-            ),
-          ],
-        ),
+              const SizedBox(height: 3),
+              Text(
+                choice.status,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: pixelText(
+                  size: 12,
+                  bold: true,
+                  color: AppColors.tealInk,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -489,13 +565,16 @@ class _RoomChoiceTile extends StatelessWidget {
 
 /// One step of the decorate screen's Undo stack.
 ///
-/// Carries the character as well as the placements: both are staged until
-/// Done, so both have to travel together or Undo would put the room back
-/// while leaving the cat changed.
+/// Room, character and placements are staged together until Done.
 class _DecorSnapshot {
-  const _DecorSnapshot({required this.placements, required this.characterId});
+  const _DecorSnapshot({
+    required this.placementsByRoom,
+    required this.roomId,
+    required this.characterId,
+  });
 
-  final Map<RoomSlot, String> placements;
+  final Map<String, Map<RoomSlot, String>> placementsByRoom;
+  final String roomId;
   final String characterId;
 }
 
@@ -505,7 +584,8 @@ class _RoomChoice {
     required this.label,
     required this.status,
     required this.preview,
-    this.slot,
+    this.surfaces = const [],
+    this.roomId,
     this.characterId,
   }) : isLink = false;
 
@@ -518,7 +598,8 @@ class _RoomChoice {
     : id = linkId,
       status = '',
       preview = const Icon(Icons.add, size: 26, color: AppColors.muted),
-      slot = null,
+      surfaces = const [],
+      roomId = null,
       characterId = null,
       isLink = true;
 
@@ -528,7 +609,12 @@ class _RoomChoice {
   final String label;
   final String status;
   final Widget preview;
-  final RoomSlot? slot;
+
+  /// Where a decoration can go; empty for rooms, characters and the link.
+  final List<RoomSurface> surfaces;
+
+  /// Set on a theme tile; themes are staged rather than placed in a slot.
+  final String? roomId;
 
   /// Set on character tiles, which are equipped rather than put in a slot.
   final String? characterId;
@@ -547,24 +633,33 @@ List<_RoomChoice> _choicesFor(
   RoomDecorCategory category,
   AppLocalizations l10n,
   SobraStore store,
+  String chosenRoomId,
   String? chosenCharacterId,
+  Map<RoomSlot, String> placements,
 ) {
   final choices = <_RoomChoice>[];
+  final room = RoomThemes.byId(chosenRoomId);
+  String decorStatus(String id) =>
+      placements.containsValue(id) ? l10n.roomPlaced : l10n.collectionOwned;
 
   if (category == RoomDecorCategory.rooms) {
-    // No link tile: the collection sells no themes yet, so it would lead
-    // somewhere with nothing to answer for it.
+    // All three themes are available from the start. Each has its own saved
+    // arrangement, so switching the draft room does not move its furniture.
     return [
-      _RoomChoice(
-        id: RoomThemes.casaClaraId,
-        label: l10n.roomThemeCasaClara,
-        status: l10n.collectionEquipped,
-        preview: Image.asset(
-          RoomThemes.casaClaraPreviewAsset,
-          fit: BoxFit.cover,
-          excludeFromSemantics: true,
+      for (final room in RoomThemes.all)
+        _RoomChoice(
+          id: room.id,
+          roomId: room.id,
+          label: roomThemeDisplayName(l10n, room.id),
+          status: room.id == chosenRoomId
+              ? l10n.collectionEquipped
+              : l10n.collectionOwned,
+          preview: Image.asset(
+            room.previewAsset,
+            fit: BoxFit.cover,
+            excludeFromSemantics: true,
+          ),
         ),
-      ),
     ];
   }
 
@@ -592,8 +687,7 @@ List<_RoomChoice> _choicesFor(
         id: RoomDecorAssets.defaultRugId,
         label: l10n.roomDefaultRug,
         asset: RoomDecorAssets.rug,
-        slot: RoomSlot.rug,
-        status: l10n.collectionOwned,
+        status: decorStatus(RoomDecorAssets.defaultRugId),
       ),
     );
   }
@@ -603,8 +697,7 @@ List<_RoomChoice> _choicesFor(
         id: RoomDecorAssets.defaultTablePlantId,
         label: l10n.roomTablePlant,
         asset: RoomDecorAssets.tablePlant,
-        slot: RoomSlot.tabletop,
-        status: l10n.collectionOwned,
+        status: decorStatus(RoomDecorAssets.defaultTablePlantId),
       ),
     );
   }
@@ -612,6 +705,7 @@ List<_RoomChoice> _choicesFor(
   for (final entry in CatalogPreviewData.items) {
     if (RoomDecorAssets.assetFor(entry.id) == null ||
         RoomDecorAssets.categoryForItemId(entry.id) != category ||
+        room.slotsForItem(entry.id).isEmpty ||
         !store.ownsCatalogEntry(entry)) {
       continue;
     }
@@ -620,8 +714,7 @@ List<_RoomChoice> _choicesFor(
         id: entry.id,
         label: _itemLabel(l10n, entry),
         asset: RoomDecorAssets.assetFor(entry.id)!,
-        slot: RoomDecorAssets.slotForCatalogEntry(entry)!,
-        status: l10n.collectionOwned,
+        status: decorStatus(entry.id),
       ),
     );
   }
@@ -648,13 +741,12 @@ _RoomChoice _assetChoice({
   required String id,
   required String label,
   required String asset,
-  required RoomSlot slot,
   required String status,
 }) => _RoomChoice(
   id: id,
   label: label,
   status: status,
-  slot: slot,
+  surfaces: RoomDecorAssets.surfacesFor(id),
   preview: Padding(
     padding: const EdgeInsets.all(4),
     child: Image.asset(asset, fit: BoxFit.contain, excludeFromSemantics: true),

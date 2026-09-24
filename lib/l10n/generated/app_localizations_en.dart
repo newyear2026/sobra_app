@@ -580,6 +580,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roomThemeCasaClara => 'Casa clara';
 
   @override
+  String get roomThemeCasaJardin => 'Garden house';
+
+  @override
+  String get roomThemeCasaDePlaya => 'Beach house';
+
+  @override
+  String get roomChooseTheme => 'Choose your room theme.';
+
+  @override
   String get roomCatReaction => 'You did great today!';
 
   @override
@@ -619,7 +628,98 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roomWallFrame => 'Wall picture';
 
   @override
+  String get roomRattanChair => 'Rattan chair';
+
+  @override
+  String get roomStandingLamp => 'Floor lamp';
+
+  @override
+  String get roomWallClock => 'Wall clock';
+
+  @override
   String get roomSaved => 'Your room was saved.';
+
+  @override
+  String get roomPlaced => 'Placed';
+
+  @override
+  String get roomSurfaceWall => 'Wall';
+
+  @override
+  String get roomSurfaceFloor => 'Floor';
+
+  @override
+  String get roomSurfaceTabletop => 'Table';
+
+  @override
+  String get roomSurfaceRug => 'Rug';
+
+  @override
+  String roomSlotLabel(String surface, int number) {
+    return '$surface, spot $number';
+  }
+
+  @override
+  String roomPickWall(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'There are $count spots on the wall. Tap where it goes.',
+      one: 'There is one spot on the wall. Tap it to hang this.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickFloor(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'There are $count spots on the floor. Tap where it goes.',
+      one: 'There is one spot on the floor. Tap it to put this there.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickTabletop(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'There are $count spots on the table. Tap where it goes.',
+      one: 'There is one spot on the table. Tap it to put this there.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickRug(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'There are $count spots for a rug. Tap where it goes.',
+      one: 'There is one spot for a rug. Tap it to lay this there.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickAny(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'There are $count spots it can go. Tap where it goes.',
+      one: 'There is one spot it can go. Tap it to put this there.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get roomMoveOrRemove =>
+      'Tap another spot to move it, or its own spot to take it out.';
+
+  @override
+  String get roomTapToRemove => 'Tap its spot again to take it out.';
 
   @override
   String get xpHistoryTitle => 'Your progress';

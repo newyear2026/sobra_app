@@ -35,12 +35,17 @@ void main() {
     );
   });
 
-  test('preview item catalog has seven level and three ad slots', () {
+  test('item catalog keeps its rewards and includes three starter items', () {
     final entries = CatalogPreviewData.items;
 
-    // Eleven rather than ten: the pack decoration sits alongside the
-    // numbered lineup and arrives only inside Michi & Friends.
-    expect(entries, hasLength(11));
+    // The numbered lineup and pack decoration keep their unlock routes.
+    expect(entries, hasLength(14));
+    expect(
+      entries.where(
+        (entry) => entry.unlockMethod == CatalogUnlockMethod.included,
+      ),
+      hasLength(3),
+    );
     expect(
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.bundle,

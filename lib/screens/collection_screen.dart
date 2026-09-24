@@ -787,6 +787,19 @@ class _CatalogPreview extends StatelessWidget {
         ),
       );
     }
+    if (entry.assetPath case final asset?) {
+      return Center(
+        child: SizedBox(
+          width: 100,
+          height: 100,
+          child: Image.asset(
+            asset,
+            fit: BoxFit.contain,
+            excludeFromSemantics: true,
+          ),
+        ),
+      );
+    }
     final icon = switch (entry.visual) {
       CatalogVisual.characterPlaceholder => Icons.pets_outlined,
       CatalogVisual.lamp => Icons.lightbulb_outline,

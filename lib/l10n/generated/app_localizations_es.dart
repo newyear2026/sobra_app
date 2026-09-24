@@ -580,6 +580,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get roomThemeCasaClara => 'Casa clara';
 
   @override
+  String get roomThemeCasaJardin => 'Casa jardín';
+
+  @override
+  String get roomThemeCasaDePlaya => 'Casa de playa';
+
+  @override
+  String get roomChooseTheme => 'Elige el ambiente de tu casa.';
+
+  @override
   String get roomCatReaction => '¡Hoy lo hiciste muy bien!';
 
   @override
@@ -619,7 +628,98 @@ class AppLocalizationsEs extends AppLocalizations {
   String get roomWallFrame => 'Cuadro';
 
   @override
+  String get roomRattanChair => 'Sillón de ratán';
+
+  @override
+  String get roomStandingLamp => 'Lámpara de pie';
+
+  @override
+  String get roomWallClock => 'Reloj de pared';
+
+  @override
   String get roomSaved => 'Tu casa quedó guardada.';
+
+  @override
+  String get roomPlaced => 'Colocado';
+
+  @override
+  String get roomSurfaceWall => 'Pared';
+
+  @override
+  String get roomSurfaceFloor => 'Piso';
+
+  @override
+  String get roomSurfaceTabletop => 'Mesa';
+
+  @override
+  String get roomSurfaceRug => 'Tapete';
+
+  @override
+  String roomSlotLabel(String surface, int number) {
+    return '$surface, lugar $number';
+  }
+
+  @override
+  String roomPickWall(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Hay $count lugares en la pared. Toca dónde va.',
+      one: 'Hay un lugar en la pared. Tócalo para colgarlo.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickFloor(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Hay $count lugares en el piso. Toca dónde va.',
+      one: 'Hay un lugar en el piso. Tócalo para ponerlo.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickTabletop(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Hay $count lugares en la mesa. Toca dónde va.',
+      one: 'Hay un lugar en la mesa. Tócalo para ponerlo.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickRug(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Hay $count lugares para el tapete. Toca dónde va.',
+      one: 'Hay un lugar para el tapete. Tócalo para ponerlo.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickAny(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Hay $count lugares donde puede ir. Toca dónde va.',
+      one: 'Hay un lugar donde puede ir. Tócalo para ponerlo.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get roomMoveOrRemove =>
+      'Toca otro lugar para moverlo, o el suyo para quitarlo.';
+
+  @override
+  String get roomTapToRemove => 'Toca su lugar otra vez para quitarlo.';
 
   @override
   String get xpHistoryTitle => 'Tu progreso';

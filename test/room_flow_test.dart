@@ -114,16 +114,19 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.bySemanticsLabel('Lámpara verde'));
+    // A desk lamp's one place is the side table.
+    await tester.tap(find.text('Lámpara verde'));
+    await tester.pump();
+    await tester.tap(find.bySemanticsLabel('Mesa, lugar 1'));
     await tester.pump();
     await tester.tap(find.text('Listo'));
     await tester.pumpAndSettle();
 
-    expect(store.roomDecorationsFor()[RoomSlot.floorRight], 'item-01');
+    expect(store.roomDecorationsFor()[RoomSlot.tabletop], 'item-01');
     expect(
       (await SobraStore.load(
         now: () => DateTime(2026, 9, 14, 10),
-      )).roomDecorationsFor()[RoomSlot.floorRight],
+      )).roomDecorationsFor()[RoomSlot.tabletop],
       'item-01',
     );
   });

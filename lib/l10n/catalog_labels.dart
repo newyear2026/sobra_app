@@ -1,5 +1,6 @@
 import '../data/catalog_preview_data.dart';
 import '../models/catalog_entry.dart';
+import '../models/room_design.dart';
 import 'generated/app_localizations.dart';
 
 /// Localized display name for provisional catalog slots.
@@ -9,6 +10,9 @@ import 'generated/app_localizations.dart';
 String catalogEntryDisplayName(AppLocalizations l10n, CatalogEntry entry) {
   if (entry.id == 'michi') return entry.name;
   if (entry.id == 'poodle') return l10n.prologuePoodleName;
+  if (entry.id == RoomDecorAssets.rattanChairId) return l10n.roomRattanChair;
+  if (entry.id == RoomDecorAssets.floorLampId) return l10n.roomStandingLamp;
+  if (entry.id == RoomDecorAssets.wallClockId) return l10n.roomWallClock;
   // Named rather than numbered, like Michi. Parsing a number out of this id
   // would answer zero and put "Item 0" on the card.
   if (entry.id == CatalogPreviewData.packDecorationId) {

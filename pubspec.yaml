@@ -119,6 +119,9 @@ flutter:
     - assets/login/
     - assets/rooms/casa_clara/
     - assets/rooms/casa_clara/items/
+    - assets/rooms/casa_jardin/
+    - assets/rooms/casa_de_playa/
+    - assets/rooms/shared_items/
 
   fonts:
     - family: PixelifySans

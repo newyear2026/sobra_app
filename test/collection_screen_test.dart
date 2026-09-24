@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/data/catalog_preview_data.dart';
 import 'package:sobra_app/models/catalog_entry.dart';
+import 'package:sobra_app/models/room_design.dart';
 import 'package:sobra_app/screens/collection_screen.dart';
 import 'package:sobra_app/services/rewarded_ad_service.dart';
 import 'package:sobra_app/state/sobra_store.dart';
@@ -454,6 +455,34 @@ void main() {
     expect(find.byType(AlertDialog), findsOneWidget);
     expect(inDialog('Objeto 3'), findsOneWidget);
     expect(store.rewardedAdProgressFor('item-03'), 0);
+  });
+
+  testWidgets('new room items appear in Items with their own art', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store, initialEntryId: RoomDecorAssets.rattanChairId);
+
+    expect(inDialog('Sillón de ratán'), findsOneWidget);
+    expect(inDialog('OBTENIDO'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Image &&
+            widget.image is AssetImage &&
+            (widget.image as AssetImage).assetName ==
+                RoomDecorAssets.rattanChair,
+      ),
+      findsWidgets,
+    );
+    expect(
+      CatalogPreviewData.items.map((entry) => entry.id),
+      containsAll([
+        RoomDecorAssets.rattanChairId,
+        RoomDecorAssets.floorLampId,
+        RoomDecorAssets.wallClockId,
+      ]),
+    );
   });
 }
 

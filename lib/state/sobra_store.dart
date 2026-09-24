@@ -145,7 +145,8 @@ class SobraStore extends ChangeNotifier {
   ///
   /// Placements are keyed by room so changing themes never destroys a room
   /// the user already arranged. A missing slot falls back to that theme's
-  /// included decoration (the Casa clara rug and tabletop plant today).
+  /// included decoration (the Casa clara rug and tabletop plant today); one
+  /// the user emptied holds [RoomDecorAssets.clearedId] instead.
   String equippedRoomId = RoomThemes.casaClaraId;
   final Map<String, Map<RoomSlot, String>> _roomPlacementsByRoom = {};
 
@@ -1463,14 +1464,88 @@ class SobraStore extends ChangeNotifier {
     CatalogKind.item => equippedItemId,
   };
 
-  Map<RoomSlot, String> roomDecorationsFor([String? roomId]) =>
-      Map.unmodifiable({
-        ...RoomThemes.defaultPlacementsFor(roomId ?? equippedRoomId),
-        ...?_roomPlacementsByRoom[roomId ?? equippedRoomId],
-      });
+  /// What the room shows: its defaults, overlaid by what the user placed.
+  ///
+  /// A slot the user emptied is absent here, even where the room has a
+  /// default for it.
+  Map<RoomSlot, String> roomDecorationsFor([String? roomId]) {
+    final merged = {
+      ...RoomThemes.defaultPlacementsFor(roomId ?? equippedRoomId),
+      ...?_roomPlacementsByRoom[roomId ?? equippedRoomId],
+    }..removeWhere((_, itemId) => itemId == RoomDecorAssets.clearedId);
+    return Map.unmodifiable(merged);
+  }
 
+  /// Saves [placements] as the whole arrangement of the equipped room.
+  ///
+  /// Takes what the room should show, the same shape [roomDecorationsFor]
+  /// returns. A default slot left out of it was emptied on purpose, so it is
+  /// written down as cleared rather than let the default come back.
   Future<void> saveRoomDecorations(Map<RoomSlot, String> placements) async {
-    for (final itemId in placements.values) {
+    final room = RoomThemes.byId(equippedRoomId);
+    _validateRoomDecorations(room, placements);
+    _roomPlacementsByRoom[equippedRoomId] = _storedRoomDecorations(
+      room,
+      placements,
+    );
+    _updateEquippedItem(placements);
+    await _save();
+    notifyListeners();
+  }
+
+  /// Commits a staged room switch and any rooms edited in the same session.
+  /// Each room keeps its own arrangement when the user switches themes.
+  Future<void> saveRoomSelection({
+    required String roomId,
+    required Map<String, Map<RoomSlot, String>> placementsByRoom,
+  }) async {
+    if (!RoomThemes.contains(roomId)) {
+      throw ArgumentError.value(roomId, 'roomId', 'unknown room');
+    }
+    for (final entry in placementsByRoom.entries) {
+      if (!RoomThemes.contains(entry.key)) {
+        throw ArgumentError.value(
+          entry.key,
+          'placementsByRoom',
+          'unknown room',
+        );
+      }
+      _validateRoomDecorations(RoomThemes.byId(entry.key), entry.value);
+    }
+    for (final entry in placementsByRoom.entries) {
+      _roomPlacementsByRoom[entry.key] = _storedRoomDecorations(
+        RoomThemes.byId(entry.key),
+        entry.value,
+      );
+    }
+    equippedRoomId = roomId;
+    _updateEquippedItem(roomDecorationsFor(roomId));
+    await _save();
+    notifyListeners();
+  }
+
+  Map<RoomSlot, String> _storedRoomDecorations(
+    RoomTheme room,
+    Map<RoomSlot, String> placements,
+  ) => {
+    for (final slot in room.defaultPlacements.keys)
+      if (!placements.containsKey(slot)) slot: RoomDecorAssets.clearedId,
+    ...placements,
+  };
+
+  void _updateEquippedItem(Map<RoomSlot, String> placements) {
+    final catalogItems = placements.values.where(
+      (id) => CatalogPreviewData.items.any((entry) => entry.id == id),
+    );
+    equippedItemId = catalogItems.isEmpty ? null : catalogItems.last;
+  }
+
+  void _validateRoomDecorations(
+    RoomTheme room,
+    Map<RoomSlot, String> placements,
+  ) {
+    final seen = <String>{};
+    for (final MapEntry(key: slot, value: itemId) in placements.entries) {
       if (RoomDecorAssets.assetFor(itemId) == null) {
         throw ArgumentError.value(itemId, 'placements', 'unknown room item');
       }
@@ -1480,14 +1555,14 @@ class SobraStore extends ChangeNotifier {
       if (entry != null && !ownsCatalogEntry(entry)) {
         throw ArgumentError.value(itemId, 'placements', 'item not owned');
       }
+      if (!room.slots.contains(slot) ||
+          !RoomDecorAssets.surfacesFor(itemId).contains(slot.surface)) {
+        throw ArgumentError.value(itemId, 'placements', 'wrong place: $slot');
+      }
+      if (!seen.add(itemId)) {
+        throw ArgumentError.value(itemId, 'placements', 'placed twice');
+      }
     }
-    _roomPlacementsByRoom[equippedRoomId] = Map.of(placements);
-    final catalogItems = placements.values.where(
-      (id) => CatalogPreviewData.items.any((entry) => entry.id == id),
-    );
-    equippedItemId = catalogItems.isEmpty ? null : catalogItems.last;
-    await _save();
-    notifyListeners();
   }
 
   /// Records that [entry] was acquired.
@@ -1882,20 +1957,24 @@ class SobraStore extends ChangeNotifier {
       ..clear()
       ..addAll({
         for (final room in savedRoomPlacements.entries)
-          room.key: {
+          room.key: fitPlacementsToRoom(RoomThemes.byId(room.key), {
             for (final placement
                 in (room.value as Map<String, dynamic>).entries)
               if (RoomSlot.values.any((slot) => slot.name == placement.key))
                 RoomSlot.values.firstWhere(
                   (slot) => slot.name == placement.key,
                 ): placement.value as String,
-          },
+          }),
       });
     if (_roomPlacementsByRoom[equippedRoomId] == null &&
         equippedItemId != null) {
-      final legacySlot = RoomDecorAssets.slotForItemId(equippedItemId!);
-      if (legacySlot != null) {
-        _roomPlacementsByRoom[equippedRoomId] = {legacySlot: equippedItemId!};
+      final legacySlots = RoomThemes.byId(
+        equippedRoomId,
+      ).slotsForItem(equippedItemId!);
+      if (legacySlots.isNotEmpty) {
+        _roomPlacementsByRoom[equippedRoomId] = {
+          legacySlots.first: equippedItemId!,
+        };
       }
     }
     // Absent from every state written before the collection was persisted.

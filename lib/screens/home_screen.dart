@@ -164,6 +164,7 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 18),
                 _HomeRoomCard(
                   message: onTrack ? l10n.homeGoingWell : l10n.homeAdjustCalmly,
+                  roomId: store.equippedRoomId,
                   placements: store.roomDecorationsFor(),
                   catMotion: onTrack ? CatMotion.idle : CatMotion.concern,
                   catLoop: onTrack,
@@ -371,6 +372,7 @@ class HomeScreen extends StatelessWidget {
 class _HomeRoomCard extends StatelessWidget {
   const _HomeRoomCard({
     required this.message,
+    required this.roomId,
     required this.placements,
     required this.catMotion,
     required this.catLoop,
@@ -378,6 +380,7 @@ class _HomeRoomCard extends StatelessWidget {
   });
 
   final String message;
+  final String roomId;
   final Map<RoomSlot, String> placements;
   final CatMotion catMotion;
   final bool catLoop;
@@ -425,6 +428,7 @@ class _HomeRoomCard extends StatelessWidget {
               aspectRatio: 2,
               child: RoomScene(
                 variant: RoomSceneVariant.preview,
+                roomId: roomId,
                 placements: placements,
                 message: message,
                 catMotion: catMotion,

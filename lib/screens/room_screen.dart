@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
+import '../l10n/room_labels.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
@@ -71,9 +72,10 @@ class _RoomScreenState extends State<RoomScreen> {
                 ),
                 Expanded(
                   child: Semantics(
-                    label: l10n.roomThemeCasaClara,
+                    label: roomThemeDisplayName(l10n, store.equippedRoomId),
                     child: RoomScene(
                       variant: RoomSceneVariant.immersive,
+                      roomId: store.equippedRoomId,
                       placements: store.roomDecorationsFor(),
                       message: _reacting
                           ? l10n.roomCatReaction
@@ -112,7 +114,7 @@ class _RoomScreenState extends State<RoomScreen> {
                               style: pixelText(size: 16, bold: true),
                             ),
                             Text(
-                              l10n.roomThemeCasaClara,
+                              roomThemeDisplayName(l10n, store.equippedRoomId),
                               style: pixelText(
                                 size: 12,
                                 color: AppColors.inkSoft,

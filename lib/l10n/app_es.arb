@@ -278,6 +278,9 @@
   "roomDecorateTitle": "Decorar",
   "roomDone": "Listo",
   "roomThemeCasaClara": "Casa clara",
+  "roomThemeCasaJardin": "Casa jardín",
+  "roomThemeCasaDePlaya": "Casa de playa",
+  "roomChooseTheme": "Elige el ambiente de tu casa.",
   "roomCatReaction": "¡Hoy lo hiciste muy bien!",
   "roomInstruction": "Elige un objeto y toca el lugar donde va.",
   "roomCategoryRooms": "Casa",
@@ -291,7 +294,38 @@
   "roomFloorLamp": "Lámpara verde",
   "roomTablePlant": "Planta de mesa",
   "roomWallFrame": "Cuadro",
+  "roomRattanChair": "Sillón de ratán",
+  "roomStandingLamp": "Lámpara de pie",
+  "roomWallClock": "Reloj de pared",
   "roomSaved": "Tu casa quedó guardada.",
+  "roomPlaced": "Colocado",
+  "roomSurfaceWall": "Pared",
+  "roomSurfaceFloor": "Piso",
+  "roomSurfaceTabletop": "Mesa",
+  "roomSurfaceRug": "Tapete",
+  "roomSlotLabel": "{surface}, lugar {number}",
+  "@roomSlotLabel": {
+    "description": "Screen-reader name of one place in the room while an item is being placed. The surface is one of roomSurfaceWall, roomSurfaceFloor, roomSurfaceTabletop or roomSurfaceRug.",
+    "placeholders": { "surface": { "type": "String" }, "number": { "type": "int" } }
+  },
+  "roomPickWall": "{count, plural, =1{Hay un lugar en la pared. Tócalo para colgarlo.} other{Hay {count} lugares en la pared. Toca dónde va.}}",
+  "@roomPickWall": {
+    "description": "Hint while an item that hangs on the wall is chosen; only the matching places are lit.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "roomPickFloor": "{count, plural, =1{Hay un lugar en el piso. Tócalo para ponerlo.} other{Hay {count} lugares en el piso. Toca dónde va.}}",
+  "@roomPickFloor": { "placeholders": { "count": { "type": "int" } } },
+  "roomPickTabletop": "{count, plural, =1{Hay un lugar en la mesa. Tócalo para ponerlo.} other{Hay {count} lugares en la mesa. Toca dónde va.}}",
+  "@roomPickTabletop": { "placeholders": { "count": { "type": "int" } } },
+  "roomPickRug": "{count, plural, =1{Hay un lugar para el tapete. Tócalo para ponerlo.} other{Hay {count} lugares para el tapete. Toca dónde va.}}",
+  "@roomPickRug": { "placeholders": { "count": { "type": "int" } } },
+  "roomPickAny": "{count, plural, =1{Hay un lugar donde puede ir. Tócalo para ponerlo.} other{Hay {count} lugares donde puede ir. Toca dónde va.}}",
+  "@roomPickAny": {
+    "description": "Hint while an item that fits more than one surface is chosen, such as a small plant that goes on a table or the floor.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "roomMoveOrRemove": "Toca otro lugar para moverlo, o el suyo para quitarlo.",
+  "roomTapToRemove": "Toca su lugar otra vez para quitarlo.",
 
   "xpHistoryTitle": "Tu progreso",
   "xpTotal": "{count} XP totales",

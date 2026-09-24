@@ -1089,6 +1089,24 @@ abstract class AppLocalizations {
   /// **'Casa clara'**
   String get roomThemeCasaClara;
 
+  /// No description provided for @roomThemeCasaJardin.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa jardín'**
+  String get roomThemeCasaJardin;
+
+  /// No description provided for @roomThemeCasaDePlaya.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa de playa'**
+  String get roomThemeCasaDePlaya;
+
+  /// No description provided for @roomChooseTheme.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige el ambiente de tu casa.'**
+  String get roomChooseTheme;
+
   /// No description provided for @roomCatReaction.
   ///
   /// In es, this message translates to:
@@ -1167,11 +1185,107 @@ abstract class AppLocalizations {
   /// **'Cuadro'**
   String get roomWallFrame;
 
+  /// No description provided for @roomRattanChair.
+  ///
+  /// In es, this message translates to:
+  /// **'Sillón de ratán'**
+  String get roomRattanChair;
+
+  /// No description provided for @roomStandingLamp.
+  ///
+  /// In es, this message translates to:
+  /// **'Lámpara de pie'**
+  String get roomStandingLamp;
+
+  /// No description provided for @roomWallClock.
+  ///
+  /// In es, this message translates to:
+  /// **'Reloj de pared'**
+  String get roomWallClock;
+
   /// No description provided for @roomSaved.
   ///
   /// In es, this message translates to:
   /// **'Tu casa quedó guardada.'**
   String get roomSaved;
+
+  /// No description provided for @roomPlaced.
+  ///
+  /// In es, this message translates to:
+  /// **'Colocado'**
+  String get roomPlaced;
+
+  /// No description provided for @roomSurfaceWall.
+  ///
+  /// In es, this message translates to:
+  /// **'Pared'**
+  String get roomSurfaceWall;
+
+  /// No description provided for @roomSurfaceFloor.
+  ///
+  /// In es, this message translates to:
+  /// **'Piso'**
+  String get roomSurfaceFloor;
+
+  /// No description provided for @roomSurfaceTabletop.
+  ///
+  /// In es, this message translates to:
+  /// **'Mesa'**
+  String get roomSurfaceTabletop;
+
+  /// No description provided for @roomSurfaceRug.
+  ///
+  /// In es, this message translates to:
+  /// **'Tapete'**
+  String get roomSurfaceRug;
+
+  /// Screen-reader name of one place in the room while an item is being placed. The surface is one of roomSurfaceWall, roomSurfaceFloor, roomSurfaceTabletop or roomSurfaceRug.
+  ///
+  /// In es, this message translates to:
+  /// **'{surface}, lugar {number}'**
+  String roomSlotLabel(String surface, int number);
+
+  /// Hint while an item that hangs on the wall is chosen; only the matching places are lit.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Hay un lugar en la pared. Tócalo para colgarlo.} other{Hay {count} lugares en la pared. Toca dónde va.}}'**
+  String roomPickWall(int count);
+
+  /// No description provided for @roomPickFloor.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Hay un lugar en el piso. Tócalo para ponerlo.} other{Hay {count} lugares en el piso. Toca dónde va.}}'**
+  String roomPickFloor(int count);
+
+  /// No description provided for @roomPickTabletop.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Hay un lugar en la mesa. Tócalo para ponerlo.} other{Hay {count} lugares en la mesa. Toca dónde va.}}'**
+  String roomPickTabletop(int count);
+
+  /// No description provided for @roomPickRug.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Hay un lugar para el tapete. Tócalo para ponerlo.} other{Hay {count} lugares para el tapete. Toca dónde va.}}'**
+  String roomPickRug(int count);
+
+  /// Hint while an item that fits more than one surface is chosen, such as a small plant that goes on a table or the floor.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Hay un lugar donde puede ir. Tócalo para ponerlo.} other{Hay {count} lugares donde puede ir. Toca dónde va.}}'**
+  String roomPickAny(int count);
+
+  /// No description provided for @roomMoveOrRemove.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca otro lugar para moverlo, o el suyo para quitarlo.'**
+  String get roomMoveOrRemove;
+
+  /// No description provided for @roomTapToRemove.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca su lugar otra vez para quitarlo.'**
+  String get roomTapToRemove;
 
   /// No description provided for @xpHistoryTitle.
   ///

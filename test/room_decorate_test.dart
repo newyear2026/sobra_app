@@ -3,8 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/screens/collection_screen.dart';
 import 'package:sobra_app/screens/room_decorate_screen.dart';
+import 'package:sobra_app/models/room_design.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
+import 'package:sobra_app/widgets/room_scene.dart';
 
 import 'support/localizations.dart';
 
@@ -84,10 +86,78 @@ void main() {
     final store = await loadStore();
     await pump(tester, store);
 
+    await tester.ensureVisible(find.text('Ver más en la colección'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Ver más en la colección'));
     await tester.pumpAndSettle();
 
     expect(find.byType(CollectionScreen), findsOneWidget);
+  });
+
+  testWidgets('room themes preview, undo, and persist after Done', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store);
+    await openCategory(tester, 'Casa');
+
+    expect(find.text('Casa jardín'), findsOneWidget);
+    expect(find.text('Casa de playa'), findsOneWidget);
+
+    await tester.tap(find.text('Casa jardín'));
+    await tester.pumpAndSettle();
+    expect(store.equippedRoomId, RoomThemes.casaClaraId);
+    expect(
+      tester.widget<RoomScene>(find.byType(RoomScene)).roomId,
+      RoomThemes.casaJardinId,
+    );
+
+    await tester.tap(find.byTooltip('Deshacer'));
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<RoomScene>(find.byType(RoomScene)).roomId,
+      RoomThemes.casaClaraId,
+    );
+
+    await tester.tap(find.text('Casa de playa'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Listo'));
+    await tester.pumpAndSettle();
+
+    expect(store.equippedRoomId, RoomThemes.casaDePlayaId);
+    expect((await loadStore()).equippedRoomId, RoomThemes.casaDePlayaId);
+    expect(
+      store.roomDecorationsFor()[RoomSlot.floorLeft],
+      RoomDecorAssets.defaultTablePlantId,
+    );
+  });
+
+  testWidgets('three starter items can be placed and saved', (tester) async {
+    final store = await loadStore();
+    await pump(tester, store);
+
+    await tester.tap(find.text('Sillón de ratán'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Piso, lugar 1'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Lámpara de pie'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Piso, lugar 2'));
+    await tester.pumpAndSettle();
+
+    await openCategory(tester, 'Pared y piso');
+    await tester.tap(find.text('Reloj de pared'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Pared, lugar 1'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Listo'));
+    await tester.pumpAndSettle();
+
+    final saved = (await loadStore()).roomDecorationsFor();
+    expect(saved[RoomSlot.floorLeft], RoomDecorAssets.rattanChairId);
+    expect(saved[RoomSlot.floorRight], RoomDecorAssets.floorLampId);
+    expect(saved[RoomSlot.wallLeft], RoomDecorAssets.wallClockId);
   });
 
   group('characters', () {
@@ -114,6 +184,8 @@ void main() {
       await pump(tester, store);
 
       await openCategory(tester, 'Personajes');
+      await tester.drag(find.byType(GridView), const Offset(0, -180));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Personaje 7'));
       await tester.pumpAndSettle();
 
@@ -132,6 +204,8 @@ void main() {
       await pump(tester, store);
 
       await openCategory(tester, 'Personajes');
+      await tester.drag(find.byType(GridView), const Offset(0, -180));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Personaje 7'));
       await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('Deshacer'));

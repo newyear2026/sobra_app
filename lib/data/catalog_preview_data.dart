@@ -1,4 +1,5 @@
 import '../models/catalog_entry.dart';
+import '../models/room_design.dart';
 
 /// Replaceable data used while the character and item lineup is still open.
 ///
@@ -104,12 +105,36 @@ abstract final class CatalogPreviewData {
     ),
   ];
 
-  /// Seven level rewards and three rewarded-ad slots.
+  /// Seven level rewards, three rewarded-ad slots and three included room items.
   ///
   /// The lamp is available from level 1. The level 5 and 8 positions mirror
   /// the selected collection mockup, while the remaining rewards spread the
   /// path through the level-10 progression.
   static const items = <CatalogEntry>[
+    CatalogEntry(
+      id: RoomDecorAssets.rattanChairId,
+      name: 'Sillón de ratán',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.chair,
+      assetPath: RoomDecorAssets.rattanChair,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.floorLampId,
+      name: 'Lámpara de pie',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.lamp,
+      assetPath: RoomDecorAssets.floorLamp,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.wallClockId,
+      name: 'Reloj de pared',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.clock,
+      assetPath: RoomDecorAssets.wallClock,
+    ),
     CatalogEntry(
       id: 'item-01',
       name: 'Objeto 01',

@@ -562,6 +562,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get roomThemeCasaClara => 'Casa clara';
 
   @override
+  String get roomThemeCasaJardin => '정원 방';
+
+  @override
+  String get roomThemeCasaDePlaya => '해변 방';
+
+  @override
+  String get roomChooseTheme => '방 테마를 골라주세요.';
+
+  @override
   String get roomCatReaction => '오늘도 잘했어!';
 
   @override
@@ -601,7 +610,97 @@ class AppLocalizationsKo extends AppLocalizations {
   String get roomWallFrame => '벽 액자';
 
   @override
+  String get roomRattanChair => '라탄 의자';
+
+  @override
+  String get roomStandingLamp => '스탠드 조명';
+
+  @override
+  String get roomWallClock => '벽시계';
+
+  @override
   String get roomSaved => '꾸미기를 저장했어요.';
+
+  @override
+  String get roomPlaced => '배치됨';
+
+  @override
+  String get roomSurfaceWall => '벽';
+
+  @override
+  String get roomSurfaceFloor => '바닥';
+
+  @override
+  String get roomSurfaceTabletop => '탁자 위';
+
+  @override
+  String get roomSurfaceRug => '러그';
+
+  @override
+  String roomSlotLabel(String surface, int number) {
+    return '$surface 자리 $number';
+  }
+
+  @override
+  String roomPickWall(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '벽 자리 $count곳 · 걸 곳을 눌러주세요.',
+      one: '벽 자리 1곳 · 누르면 걸려요.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickFloor(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '바닥 자리 $count곳 · 놓을 곳을 눌러주세요.',
+      one: '바닥 자리 1곳 · 누르면 놓여요.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickTabletop(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '탁자 위 $count곳 · 놓을 곳을 눌러주세요.',
+      one: '탁자 위 1곳 · 누르면 놓여요.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickRug(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '러그 자리 $count곳 · 깔 곳을 눌러주세요.',
+      one: '러그 자리 1곳 · 누르면 깔려요.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickAny(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '놓을 수 있는 자리 $count곳 · 놓을 곳을 눌러주세요.',
+      one: '놓을 수 있는 자리 1곳 · 누르면 놓여요.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get roomMoveOrRemove => '다른 자리를 누르면 옮기고, 지금 자리를 누르면 빼요.';
+
+  @override
+  String get roomTapToRemove => '놓인 자리를 다시 누르면 빼요.';
 
   @override
   String get xpHistoryTitle => '내 진행 상황';
