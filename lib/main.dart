@@ -338,8 +338,19 @@ class _WidgetSyncLabelsState extends State<_WidgetSyncLabels> {
     final l10n = AppLocalizations.of(context);
     if (identical(_installed, l10n)) return;
     _installed = l10n;
-    SobraWidgetSync.movementLabeler = (MoneyMovement movement) =>
-        movementTitle(l10n, movement);
+    SobraWidgetSync.localize(
+      (MoneyMovement movement) => movementTitle(l10n, movement),
+      SobraWidgetCopy(
+        todayLeft: l10n.homeTodayLeft,
+        todayLeftShort: l10n.widgetTodayLeft,
+        cycleBalance: l10n.homeCycleBalance,
+        cycleBalanceShort: l10n.widgetCycleBalance,
+        cycleProgress: l10n.homeCycleProgress,
+        openApp: l10n.widgetOpenApp,
+        registerExpense: l10n.widgetRegisterExpense,
+        days: l10n.daysCount,
+      ),
+    );
     SobraQuickEntry.copy = SobraQuickEntryCopy(
       question: l10n.quickEntryQuestion,
       income: l10n.registerIncome,

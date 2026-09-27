@@ -1581,6 +1581,30 @@ abstract class AppLocalizations {
   /// **'Permite las notificaciones de Sobrita para activar el acceso rápido.'**
   String get quickEntryDenied;
 
+  /// No description provided for @widgetTodayLeft.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy te queda'**
+  String get widgetTodayLeft;
+
+  /// No description provided for @widgetCycleBalance.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldo'**
+  String get widgetCycleBalance;
+
+  /// No description provided for @widgetOpenApp.
+  ///
+  /// In es, this message translates to:
+  /// **'Abre Sobrita'**
+  String get widgetOpenApp;
+
+  /// No description provided for @widgetRegisterExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrar gasto'**
+  String get widgetRegisterExpense;
+
   /// No description provided for @settingsBackup.
   ///
   /// In es, this message translates to:

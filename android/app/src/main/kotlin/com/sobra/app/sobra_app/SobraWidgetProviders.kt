@@ -96,8 +96,8 @@ object SobraWidgetUpdater {
         return RemoteViews(context.packageName, R.layout.sobra_widget_compact).apply {
             setTextViewText(
                 R.id.today_label,
-                if (hasData && hasBudget) todayLabel(context, preferences)
-                else context.getString(R.string.widget_open_app),
+                if (hasData && hasBudget) todayLabel(context, preferences, short = true)
+                else openApp(context, preferences),
             )
             setTextViewText(
                 R.id.today_amount,
@@ -131,8 +131,13 @@ object SobraWidgetUpdater {
             setTextViewText(R.id.currency_code, currencyCode(preferences))
             setViewVisibility(R.id.currency_code, if (showsMoney) View.VISIBLE else View.GONE)
             setTextViewText(
+                R.id.cycle_progress_label,
+                copy(preferences, "cycleProgressText")
+                    ?: context.getString(R.string.widget_cycle_progress),
+            )
+            setTextViewText(
                 R.id.days_remaining,
-                if (hasData) days(preferences.getInt("daysRemaining", 0)) else "Abre Sobrita",
+                if (hasData) days(context, preferences) else openApp(context, preferences),
             )
             applyProgress(
                 this,
@@ -141,6 +146,10 @@ object SobraWidgetUpdater {
             )
             applyCharacter(context, this, preferences.getString("characterId", null), summary = true)
             applyMotionPreference(this, preferences.getBoolean("reducedMotion", false))
+            val register = copy(preferences, "registerExpenseText")
+                ?: context.getString(R.string.widget_register_expense)
+            setTextViewText(R.id.register_button, "+  $register")
+            setContentDescription(R.id.register_button, register)
             setOnClickPendingIntent(R.id.widget_root, launch(context, "home", 200))
             setOnClickPendingIntent(R.id.register_button, launch(context, "register", 201))
         }
@@ -257,17 +266,46 @@ object SobraWidgetUpdater {
         )
     }
 
+    /**
+     * A word the app wrote in the language chosen in Ajustes, or null before
+     * the app has run once, when the caller falls back to the resource string,
+     * which follows the phone instead.
+     */
+    private fun copy(preferences: SharedPreferences, key: String): String? =
+        preferences.getString(key, null)?.takeIf { it.isNotEmpty() }
+
     // Over budget the figure is the cycle's deficit, not the day's room.
-    private fun todayLabel(context: Context, preferences: SharedPreferences): String {
+    private fun todayLabel(
+        context: Context,
+        preferences: SharedPreferences,
+        short: Boolean = false,
+    ): String {
         val overCycleBudget = preferences.getBoolean("hasData", false) &&
             preferences.getBoolean("hasBudget", true) &&
             preferences.getBoolean("overCycleBudget", false)
-        return context.getString(
-            if (overCycleBudget) R.string.widget_cycle_balance else R.string.widget_today_remaining,
-        )
+        return if (overCycleBudget && short) {
+            copy(preferences, "cycleBalanceShortText")
+                ?: context.getString(R.string.widget_cycle_balance_short)
+        } else if (overCycleBudget) {
+            copy(preferences, "cycleBalanceText")
+                ?: context.getString(R.string.widget_cycle_balance)
+        } else if (short) {
+            copy(preferences, "todayLeftShortText")
+                ?: context.getString(R.string.widget_today_remaining_short)
+        } else {
+            copy(preferences, "todayLeftText")
+                ?: context.getString(R.string.widget_today_remaining)
+        }
     }
 
-    private fun days(value: Int): String = if (value == 1) "1 día" else "$value días"
+    private fun openApp(context: Context, preferences: SharedPreferences): String =
+        copy(preferences, "openAppText") ?: context.getString(R.string.widget_open_app)
+
+    private fun days(context: Context, preferences: SharedPreferences): String {
+        val count = preferences.getInt("daysRemaining", 0)
+        return copy(preferences, "daysRemainingText")
+            ?: context.resources.getQuantityString(R.plurals.widget_days, count, count)
+    }
 
     // The app writes the figure in the user's currency, sign and separators
     // included. Only a payload saved before it did falls back to the old

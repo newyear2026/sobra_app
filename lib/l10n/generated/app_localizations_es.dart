@@ -903,6 +903,18 @@ class AppLocalizationsEs extends AppLocalizations {
       'Permite las notificaciones de Sobrita para activar el acceso rápido.';
 
   @override
+  String get widgetTodayLeft => 'Hoy te queda';
+
+  @override
+  String get widgetCycleBalance => 'Saldo';
+
+  @override
+  String get widgetOpenApp => 'Abre Sobrita';
+
+  @override
+  String get widgetRegisterExpense => 'Registrar gasto';
+
+  @override
   String get settingsBackup => 'Respaldo de datos';
 
   @override

@@ -903,6 +903,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'Allow Sobrita notifications to turn on quick entry.';
 
   @override
+  String get widgetTodayLeft => 'Left today';
+
+  @override
+  String get widgetCycleBalance => 'Balance';
+
+  @override
+  String get widgetOpenApp => 'Open Sobrita';
+
+  @override
+  String get widgetRegisterExpense => 'Add expense';
+
+  @override
   String get settingsBackup => 'Data backup';
 
   @override

@@ -1,21 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- The widgets show the app's own words once it has run; these cover the
+         picker, a fresh install and the notification channel. -->
+    <!-- English is the default for the same reason it heads the app's
+         supportedLocales: a phone in none of the shipped languages reads English
+         likelier than Spanish. -->
     <string name="app_name">Sobrita</string>
-    <string name="quick_entry_channel_name">Registro rápido</string>
-    <string name="quick_entry_channel_description">Accesos para registrar ingresos y gastos</string>
-    <string name="quick_entry_question">¿Qué quieres registrar?</string>
-    <string name="quick_entry_income">Ingreso</string>
-    <string name="quick_entry_expense">Gasto</string>
-    <string name="widget_today_remaining">Hoy te queda</string>
-    <string name="widget_open_app">Abre Sobrita</string>
-    <string name="widget_cycle_balance">Saldo del ciclo</string>
-    <string name="widget_cycle_progress">Avance del ciclo</string>
-    <string name="widget_recent_movements">Movimientos recientes</string>
-    <string name="widget_register_expense">Registrar gasto</string>
-    <string name="widget_compact_description">Sobrita: dinero disponible hoy</string>
-    <string name="widget_summary_description">Sobrita: dinero disponible y avance del ciclo</string>
-    <string name="widget_cat_description">Gato de Sobrita</string>
-    <string name="widget_poodle_description">Caniche de Sobrita</string>
-    <string name="widget_schnauzer_description">Schnauzer de Sobrita</string>
-    <string name="widget_guinea_pig_description">Cuyo de Sobrita</string>
+    <string name="quick_entry_channel_name">Quick entry</string>
+    <string name="quick_entry_channel_description">Shortcuts to add income and expenses</string>
+    <string name="quick_entry_question">What do you want to add?</string>
+    <string name="quick_entry_income">Income</string>
+    <string name="quick_entry_expense">Expense</string>
+    <string name="widget_today_remaining">You have left today</string>
+    <string name="widget_today_remaining_short">Left today</string>
+    <string name="widget_open_app">Open Sobrita</string>
+    <string name="widget_cycle_balance">Cycle balance</string>
+    <string name="widget_cycle_balance_short">Balance</string>
+    <string name="widget_cycle_progress">Cycle progress</string>
+    <string name="widget_recent_movements">Recent activity</string>
+    <string name="widget_register_expense">Add expense</string>
+    <string name="widget_compact_description">Sobrita: money left today</string>
+    <string name="widget_summary_description">Sobrita: money left and cycle progress</string>
+    <string name="widget_cat_description">Sobrita cat</string>
+    <string name="widget_poodle_description">Sobrita poodle</string>
+    <string name="widget_schnauzer_description">Sobrita schnauzer</string>
+    <string name="widget_guinea_pig_description">Sobrita guinea pig</string>
+    <!-- Sample text for the widget picker's preview only. -->
+    <string name="widget_preview_days">8 days</string>
+    <string name="widget_preview_register">+  Add expense</string>
+    <plurals name="widget_days">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
 </resources>

@@ -105,8 +105,72 @@ void main() {
         'movement1Title',
         'movement1AmountCentavos',
         'movement1Kind',
+        'todayLeftText',
+        'todayLeftShortText',
+        'cycleBalanceText',
+        'cycleBalanceShortText',
+        'cycleProgressText',
+        'openAppText',
+        'registerExpenseText',
+        'daysRemainingText',
       },
     );
+  });
+
+  // Android resources follow the phone, not Ajustes, so the widget stayed
+  // Spanish beside an English app. The app now writes the words itself.
+  test('the widget words are the ones the app is set to', () async {
+    SharedPreferences.setMockInitialValues({});
+    final now = DateTime(2026, 9, 5, 12);
+    final store = await SobraStore.load(now: () => now);
+    await store.configureOnboarding(
+      budgetCentavos: 600000,
+      schedule: PaySchedule.irregular(
+        planningHorizonDays: 15,
+        irregularCycleStart: DateTime(2026, 9, 1),
+      ),
+    );
+    await store.completeOnboarding();
+
+    for (final (locale, today, short, days, register) in const [
+      ('en', 'You have left today', 'Left today', '11 days', 'Add expense'),
+      ('es', 'Hoy te queda', 'Hoy te queda', '11 días', 'Registrar gasto'),
+      ('ko', '오늘 남은 돈', '오늘 남은 돈', '11일', '지출 기록'),
+    ]) {
+      final l10n = lookupAppLocalizations(Locale(locale));
+      final payload = SobraWidgetSnapshot.fromStore(
+        store,
+        _label,
+        copy: SobraWidgetCopy(
+          todayLeft: l10n.homeTodayLeft,
+          todayLeftShort: l10n.widgetTodayLeft,
+          cycleBalance: l10n.homeCycleBalance,
+          cycleBalanceShort: l10n.widgetCycleBalance,
+          cycleProgress: l10n.homeCycleProgress,
+          openApp: l10n.widgetOpenApp,
+          registerExpense: l10n.widgetRegisterExpense,
+          days: l10n.daysCount,
+        ),
+      ).toPlatformMap();
+      expect(payload['todayLeftText'], today, reason: locale);
+      expect(payload['todayLeftShortText'], short, reason: locale);
+      expect(payload['daysRemainingText'], days, reason: locale);
+      expect(payload['registerExpenseText'], register, reason: locale);
+    }
+  });
+
+  test("without the app's words the widget keeps its own", () async {
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load(now: () => DateTime(2026, 9, 5, 12));
+    final payload = SobraWidgetSnapshot.fromStore(
+      store,
+      _label,
+    ).toPlatformMap();
+
+    // Empty, not missing: Android reads "" as "use the resource string".
+    for (final key in ['todayLeftText', 'openAppText', 'daysRemainingText']) {
+      expect(payload[key], '', reason: key);
+    }
   });
 
   test('a fresh install reports no data rather than zeroes', () async {
@@ -126,7 +190,10 @@ void main() {
     final store = await SobraStore.load(now: () => DateTime(2026, 9, 5, 12));
     await store.chooseCharacter('poodle');
     expect(
-      SobraWidgetSnapshot.fromStore(store, _label).toPlatformMap()['characterId'],
+      SobraWidgetSnapshot.fromStore(
+        store,
+        _label,
+      ).toPlatformMap()['characterId'],
       'poodle',
     );
   });

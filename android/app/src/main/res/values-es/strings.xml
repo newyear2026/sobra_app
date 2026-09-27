@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quick_entry_channel_name">Registro rápido</string>
+    <string name="quick_entry_channel_description">Accesos para registrar ingresos y gastos</string>
+    <string name="quick_entry_question">¿Qué quieres registrar?</string>
+    <string name="quick_entry_income">Ingreso</string>
+    <string name="quick_entry_expense">Gasto</string>
+    <string name="widget_today_remaining">Hoy te queda</string>
+    <string name="widget_today_remaining_short">Hoy te queda</string>
+    <string name="widget_open_app">Abre Sobrita</string>
+    <string name="widget_cycle_balance">Saldo del ciclo</string>
+    <string name="widget_cycle_balance_short">Saldo</string>
+    <string name="widget_cycle_progress">Avance del ciclo</string>
+    <string name="widget_recent_movements">Movimientos recientes</string>
+    <string name="widget_register_expense">Registrar gasto</string>
+    <string name="widget_compact_description">Sobrita: dinero disponible hoy</string>
+    <string name="widget_summary_description">Sobrita: dinero disponible y avance del ciclo</string>
+    <string name="widget_cat_description">Gato de Sobrita</string>
+    <string name="widget_poodle_description">Caniche de Sobrita</string>
+    <string name="widget_schnauzer_description">Schnauzer de Sobrita</string>
+    <string name="widget_guinea_pig_description">Cuyo de Sobrita</string>
+    <!-- Sample text for the widget picker's preview only. -->
+    <string name="widget_preview_days">8 días</string>
+    <string name="widget_preview_register">+  Registrar gasto</string>
+    <plurals name="widget_days">
+        <item quantity="one">%d día</item>
+        <item quantity="other">%d días</item>
+    </plurals>
+</resources>

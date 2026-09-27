@@ -874,6 +874,18 @@ class AppLocalizationsKo extends AppLocalizations {
   String get quickEntryDenied => '빠른 기록을 사용하려면 Sobrita 알림을 허용해 주세요.';
 
   @override
+  String get widgetTodayLeft => '오늘 남은 돈';
+
+  @override
+  String get widgetCycleBalance => '잔액';
+
+  @override
+  String get widgetOpenApp => 'Sobrita 열기';
+
+  @override
+  String get widgetRegisterExpense => '지출 기록';
+
+  @override
   String get settingsBackup => '데이터 백업';
 
   @override

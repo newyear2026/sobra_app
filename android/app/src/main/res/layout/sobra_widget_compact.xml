@@ -57,54 +57,37 @@
         android:paddingLeft="7dp"
         android:paddingRight="5dp">
 
-        <TextView
-            android:id="@+id/today_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:autoSizeMaxTextSize="11sp"
-            android:autoSizeMinTextSize="8sp"
-            android:autoSizeStepGranularity="1sp"
-            android:autoSizeTextType="uniform"
-            android:ellipsize="end"
-            android:fontFamily="@font/pixelify_sans"
-            android:includeFontPadding="false"
-            android:maxLines="1"
-            android:text="@string/widget_today_remaining"
-            android:textColor="#FF202848"
-            android:textSize="11sp"
-            android:textStyle="bold" />
-
+        <!-- The currency code rides on the label line: beside the amount it
+             took the width a six-figure amount needed and cut it to "$2,033…". -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:gravity="bottom"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/today_amount"
+                android:id="@+id/today_label"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="14dp"
                 android:layout_weight="1"
-                android:autoSizeMaxTextSize="20sp"
-                android:autoSizeMinTextSize="11sp"
+                android:autoSizeMaxTextSize="11sp"
+                android:autoSizeMinTextSize="8sp"
                 android:autoSizeStepGranularity="1sp"
                 android:autoSizeTextType="uniform"
                 android:ellipsize="end"
                 android:fontFamily="@font/pixelify_sans"
                 android:includeFontPadding="false"
                 android:maxLines="1"
-                android:text="$9,000"
-                android:textColor="#FF0E7A72"
-                android:textSize="20sp"
+                android:text="@string/widget_today_remaining_short"
+                android:textColor="#FF202848"
+                android:textSize="11sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/currency_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="3dp"
                 android:fontFamily="@font/pixelify_sans"
                 android:includeFontPadding="false"
                 android:maxLines="1"
@@ -113,5 +96,25 @@
                 android:textSize="8sp"
                 android:textStyle="bold" />
         </LinearLayout>
+
+        <!-- A fixed height, not wrap_content: Android does not support autosize
+             on a wrap_content TextView, and this one ellipsized instead. -->
+        <TextView
+            android:id="@+id/today_amount"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_marginTop="2dp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeMinTextSize="9sp"
+            android:autoSizeStepGranularity="1sp"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/pixelify_sans"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="$9,000"
+            android:textColor="#FF0E7A72"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

@@ -13,8 +13,45 @@ enum SobraWidgetDestination { home, register, registerExpense, registerIncome }
 ///
 /// The widget is the one surface with no element tree of its own, so the words
 /// cannot be built where every other row builds them. The app root hands this
-/// in once localizations resolve; see `SobraWidgetSync.movementLabeler`.
+/// in once localizations resolve; see `SobraWidgetSync.localize`.
 typedef MovementLabeler = String Function(MoneyMovement movement);
+
+/// The words the home screen widgets show, in the language the app is set to.
+///
+/// Android resources follow the phone's language, not the one chosen in
+/// Ajustes, so a Spanish widget sat next to an English app. The app root hands
+/// this in with the movement labeler; see `SobraWidgetSync.localize`.
+@immutable
+class SobraWidgetCopy {
+  const SobraWidgetCopy({
+    required this.todayLeft,
+    required this.todayLeftShort,
+    required this.cycleBalanceShort,
+    required this.cycleBalance,
+    required this.cycleProgress,
+    required this.openApp,
+    required this.registerExpense,
+    required this.days,
+  });
+
+  final String todayLeft;
+
+  /// [todayLeft] and [cycleBalance] for the 2×1 widget, which has room for
+  /// about a dozen letters.
+  final String todayLeftShort;
+  final String cycleBalanceShort;
+
+  /// Replaces [todayLeft] once the cycle is over budget.
+  final String cycleBalance;
+  final String cycleProgress;
+
+  /// Stands in for the figure before onboarding or without a budget.
+  final String openApp;
+  final String registerExpense;
+
+  /// "3 days", with the language's own plural.
+  final String Function(int count) days;
+}
 
 @immutable
 class SobraWidgetMovement {
@@ -66,6 +103,7 @@ class SobraWidgetSnapshot {
     required this.reducedMotion,
     required this.characterId,
     required this.movements,
+    required this.copy,
   });
 
   final bool hasCompletedOnboarding;
@@ -98,10 +136,15 @@ class SobraWidgetSnapshot {
   final String characterId;
   final List<SobraWidgetMovement> movements;
 
+  /// Null until the app root resolves localizations. The widget then keeps
+  /// its own resource strings, which follow the phone's language.
+  final SobraWidgetCopy? copy;
+
   factory SobraWidgetSnapshot.fromStore(
     SobraStore store,
-    MovementLabeler label,
-  ) {
+    MovementLabeler label, {
+    SobraWidgetCopy? copy,
+  }) {
     final progress = store.budgetProgress.clamp(0.0, 1.0);
     return SobraWidgetSnapshot(
       hasCompletedOnboarding: store.hasCompletedOnboarding,
@@ -125,6 +168,7 @@ class SobraWidgetSnapshot {
           .take(2)
           .map((movement) => SobraWidgetMovement.fromMovement(movement, label))
           .toList(growable: false),
+      copy: copy,
     );
   }
 
@@ -144,6 +188,16 @@ class SobraWidgetSnapshot {
       'reducedMotion': reducedMotion,
       'characterId': characterId,
       'movementCount': movements.length,
+      // Empty until the app is localized; Android falls back to its own
+      // resource strings for an empty one.
+      'todayLeftText': copy?.todayLeft ?? '',
+      'todayLeftShortText': copy?.todayLeftShort ?? '',
+      'cycleBalanceText': copy?.cycleBalance ?? '',
+      'cycleBalanceShortText': copy?.cycleBalanceShort ?? '',
+      'cycleProgressText': copy?.cycleProgress ?? '',
+      'openAppText': copy?.openApp ?? '',
+      'registerExpenseText': copy?.registerExpense ?? '',
+      'daysRemainingText': copy?.days(daysRemaining) ?? '',
     };
     for (var index = 0; index < movements.length; index++) {
       final movement = movements[index];
@@ -168,6 +222,7 @@ abstract final class SobraWidgetSync {
   static SobraStore? _store;
   static bool _initialized = false;
   static MovementLabeler _label = _untitled;
+  static SobraWidgetCopy? _copy;
 
   /// Until the app root resolves localizations there is nothing to call a
   /// movement, and a widget row without its title still shows the amount.
@@ -175,9 +230,10 @@ abstract final class SobraWidgetSync {
 
   /// Set once the app can name a movement, and again whenever the locale
   /// changes, which re-pushes the payload so the widget follows the app.
-  static set movementLabeler(MovementLabeler value) {
-    if (identical(_label, value)) return;
-    _label = value;
+  static void localize(MovementLabeler label, SobraWidgetCopy copy) {
+    if (identical(_label, label) && identical(_copy, copy)) return;
+    _label = label;
+    _copy = copy;
     unawaited(_sync());
   }
 
@@ -214,7 +270,11 @@ abstract final class SobraWidgetSync {
     try {
       await _channel.invokeMethod<void>(
         'updateWidgets',
-        SobraWidgetSnapshot.fromStore(store, _label).toPlatformMap(),
+        SobraWidgetSnapshot.fromStore(
+          store,
+          _label,
+          copy: _copy,
+        ).toPlatformMap(),
       );
     } on Object {
       // Widget sync must never prevent the budget itself from being saved.

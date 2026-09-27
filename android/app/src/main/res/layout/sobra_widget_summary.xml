@@ -48,13 +48,18 @@
                     android:gravity="bottom"
                     android:orientation="horizontal">
 
+                    <!-- Autosize needs a fixed height; see the 2×1 widget. -->
                     <TextView
                         android:id="@+id/today_amount"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="32dp"
                         android:layout_weight="1"
-                        android:ellipsize="end"
+                        android:autoSizeMaxTextSize="26sp"
+                        android:autoSizeMinTextSize="12sp"
+                        android:autoSizeStepGranularity="1sp"
+                        android:autoSizeTextType="uniform"
                         android:fontFamily="@font/pixelify_sans"
+                        android:gravity="center_vertical"
                         android:includeFontPadding="false"
                         android:maxLines="1"
                         android:text="−$2,000"
@@ -114,9 +119,11 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/cycle_progress_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:ellipsize="end"
                 android:fontFamily="@font/pixelify_sans"
                 android:includeFontPadding="false"
                 android:maxLines="1"
@@ -133,7 +140,7 @@
                 android:fontFamily="@font/pixelify_sans"
                 android:includeFontPadding="false"
                 android:maxLines="1"
-                android:text="8 días"
+                android:text="@string/widget_preview_days"
                 android:textColor="#FF0E7A72"
                 android:textSize="8sp"
                 android:textStyle="bold" />
@@ -171,7 +178,7 @@
             android:gravity="center"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:text="+  Registrar gasto"
+            android:text="@string/widget_preview_register"
             android:textColor="#FFFFFFFF"
             android:textSize="12sp"
             android:textStyle="bold" />

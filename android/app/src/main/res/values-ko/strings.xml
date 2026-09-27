@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quick_entry_channel_name">빠른 기록</string>
+    <string name="quick_entry_channel_description">수입과 지출을 기록하는 바로가기</string>
+    <string name="quick_entry_question">무엇을 기록할까요?</string>
+    <string name="quick_entry_income">수입</string>
+    <string name="quick_entry_expense">지출</string>
+    <string name="widget_today_remaining">오늘 남은 돈</string>
+    <string name="widget_today_remaining_short">오늘 남은 돈</string>
+    <string name="widget_open_app">Sobrita 열기</string>
+    <string name="widget_cycle_balance">주기 잔액</string>
+    <string name="widget_cycle_balance_short">잔액</string>
+    <string name="widget_cycle_progress">주기 진행</string>
+    <string name="widget_recent_movements">최근 내역</string>
+    <string name="widget_register_expense">지출 기록</string>
+    <string name="widget_compact_description">Sobrita: 오늘 남은 돈</string>
+    <string name="widget_summary_description">Sobrita: 남은 돈과 주기 진행</string>
+    <string name="widget_cat_description">Sobrita 고양이</string>
+    <string name="widget_poodle_description">Sobrita 푸들</string>
+    <string name="widget_schnauzer_description">Sobrita 슈나우저</string>
+    <string name="widget_guinea_pig_description">Sobrita 기니피그</string>
+    <!-- Sample text for the widget picker's preview only. -->
+    <string name="widget_preview_days">8일</string>
+    <string name="widget_preview_register">+  지출 기록</string>
+    <plurals name="widget_days">
+        <item quantity="other">%d일</item>
+    </plurals>
+</resources>

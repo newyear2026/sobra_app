@@ -132,6 +132,14 @@ class MainActivity : FlutterActivity() {
             .putString("movement2Title", text("movement2Title"))
             .putLong("movement2AmountCentavos", number("movement2AmountCentavos"))
             .putString("movement2Kind", text("movement2Kind"))
+            .putString("todayLeftText", text("todayLeftText"))
+            .putString("todayLeftShortText", text("todayLeftShortText"))
+            .putString("cycleBalanceText", text("cycleBalanceText"))
+            .putString("cycleBalanceShortText", text("cycleBalanceShortText"))
+            .putString("cycleProgressText", text("cycleProgressText"))
+            .putString("openAppText", text("openAppText"))
+            .putString("registerExpenseText", text("registerExpenseText"))
+            .putString("daysRemainingText", text("daysRemainingText"))
             .apply()
     }
 
