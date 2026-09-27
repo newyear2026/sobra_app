@@ -33,10 +33,10 @@ void main() {
       expect(formatMoney(Currency.mxn, 123456), r'$1,234.56 MXN');
       expect(formatMoney(Currency.usd, 123456), r'$1,234.56 USD');
       expect(formatMoney(Currency.cad, 123456), r'$1,234.56 CAD');
-      expect(formatMoney(Currency.eur, 123456), '€1,234.56 EUR');
+      expect(formatMoney(Currency.eur, 123456), '€1.234,56 EUR');
       expect(formatMoney(Currency.gbp, 123456), '£1,234.56 GBP');
       expect(formatMoney(Currency.pen, 123456), 'S/1,234.56 PEN');
-      expect(formatMoney(Currency.brl, 123456), r'R$1,234.56 BRL');
+      expect(formatMoney(Currency.brl, 123456), r'R$1.234,56 BRL');
       expect(formatMoney(Currency.aud, 123456), r'$1,234.56 AUD');
     });
 
@@ -60,7 +60,7 @@ void main() {
     });
 
     test('writes a currency with no subdivision in whole units', () {
-      expect(formatMoney(Currency.clp, 123400), r'$1,234 CLP');
+      expect(formatMoney(Currency.clp, 123400), r'$1.234 CLP');
       expect(formatMoney(Currency.jpy, 123400), '¥1,234 JPY');
       expect(formatMoney(Currency.krw, 123400), '₩1,234 KRW');
       expect(formatMoney(Currency.krw, 100000000), '₩1,000,000 KRW');
@@ -81,7 +81,7 @@ void main() {
 
     test('drops the code when asked, for figures shown in pairs', () {
       expect(formatMoney(Currency.usd, 123456, showCode: false), r'$1,234.56');
-      expect(formatMoney(Currency.eur, 123456, showCode: false), '€1,234.56');
+      expect(formatMoney(Currency.eur, 123456, showCode: false), '€1.234,56');
       expect(formatMoney(Currency.jpy, 123400, showCode: false), '¥1,234');
       expect(formatMoney(Currency.krw, 123400, showCode: false), '₩1,234');
     });
@@ -90,6 +90,27 @@ void main() {
       expect(formatMoney(Currency.mxn, 600000), r'$6,000 MXN');
       expect(formatMoney(Currency.mxn, 100000000), r'$1,000,000 MXN');
       expect(formatMoney(Currency.mxn, 5), r'$0.05 MXN');
+    });
+
+    // $15,000 reads as fifteen pesos in Santiago or Bogotá, where the comma
+    // is the decimal mark. Each currency is written the way the country that
+    // spends it writes it, whatever language the screen is in.
+    test('writes each currency with its own country\'s separators', () {
+      expect(formatMoney(Currency.clp, 1500000), r'$15.000 CLP');
+      expect(formatMoney(Currency.cop, 150000000), r'$1.500.000 COP');
+      expect(formatMoney(Currency.ars, 123456), r'$1.234,56 ARS');
+      expect(formatMoney(Currency.ars, 5), r'$0,05 ARS');
+      expect(formatMoney(Currency.eur, -8850), '$minusSign€88,50 EUR');
+      // The ones that write it as Mexico does are left as they were.
+      expect(formatMoney(Currency.pen, 1500000), 'S/15,000 PEN');
+      expect(formatMoney(Currency.gbp, 123456), '£1,234.56 GBP');
+      expect(formatMoney(Currency.krw, 1500000), '₩15,000 KRW');
+    });
+
+    test('opens a field on the figure in its own separators', () {
+      expect(amountFieldText(Currency.ars, 120050), '1.200,50');
+      expect(amountFieldText(Currency.clp, 1500000), '15.000');
+      expect(amountFieldText(Currency.mxn, 120050), '1,200.50');
     });
 
     test('writes a negative with a typographic minus', () {

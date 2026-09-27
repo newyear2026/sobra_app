@@ -39,12 +39,15 @@ enum SobraLanguage {
       if (language.shipped || kDebugMode) language,
   ];
 
-  /// The locales this build supports, Spanish first.
+  /// The locales this build supports, English first.
   ///
-  /// Order is load-bearing: Flutter falls back to the head of the list, and a
-  /// phone set to none of these should land on Sobra's own language.
+  /// Order is load-bearing: Flutter falls back to the head of the list when a
+  /// phone is set to none of these. That phone belongs to somebody spending
+  /// euros, reais or yen, who is likelier to read English than Spanish. A
+  /// Spanish phone of any country still matches `es` on its own, so Mexico
+  /// loses nothing to the order.
   static List<Locale> get supportedLocales => [
-    for (final language in available)
+    for (final language in [english, ...available.where((l) => l != english)])
       if (language.code != null) Locale(language.code!),
   ];
 

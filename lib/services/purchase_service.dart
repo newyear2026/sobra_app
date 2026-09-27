@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/billing_client_wrappers.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 
 import '../data/catalog_preview_data.dart';
 import '../models/catalog_entry.dart';
@@ -48,6 +51,14 @@ abstract interface class PurchaseBackend {
   Future<void> buyNonConsumable(ProductDetails product);
   Future<void> restorePurchases();
   Future<void> completePurchase(PurchaseDetails purchase);
+
+  /// The products this store account holds as paid right now, or null when
+  /// the store cannot say so with certainty.
+  ///
+  /// Null is what every failure and every platform without such a query must
+  /// answer. An empty set is a claim that the account owns nothing, and it is
+  /// acted on by taking purchases back.
+  Future<Set<String>?> queryPaidProductIds();
 }
 
 /// The real store, reached through the plugin singleton.
@@ -57,8 +68,25 @@ final class PluginPurchaseBackend implements PurchaseBackend {
 
   final InAppPurchase _plugin;
 
+  /// The plugin's stream, with Play's pending purchases called pending.
+  ///
+  /// The Android plugin marks everything a restore returns as restored,
+  /// including a cash payment still waiting at the shop. Passed on as is, that
+  /// unpaid purchase would be granted on the next launch.
   @override
-  Stream<List<PurchaseDetails>> get purchaseStream => _plugin.purchaseStream;
+  Stream<List<PurchaseDetails>> get purchaseStream =>
+      _plugin.purchaseStream.map(
+        (purchases) => [
+          for (final purchase in purchases)
+            if (purchase is GooglePlayPurchaseDetails &&
+                purchase.status == PurchaseStatus.restored &&
+                purchase.billingClientPurchase.purchaseState ==
+                    PurchaseStateWrapper.pending)
+              purchase..status = PurchaseStatus.pending
+            else
+              purchase,
+        ],
+      );
 
   @override
   Future<bool> isAvailable() => _plugin.isAvailable();
@@ -77,6 +105,22 @@ final class PluginPurchaseBackend implements PurchaseBackend {
   @override
   Future<void> completePurchase(PurchaseDetails purchase) =>
       _plugin.completePurchase(purchase);
+
+  /// Asks Play Billing directly, which answers with each purchase's real
+  /// state. Android only: StoreKit has no query that answers without the
+  /// chance of a sign-in prompt, and there is no iOS build to ask it for.
+  @override
+  Future<Set<String>?> queryPaidProductIds() async {
+    if (defaultTargetPlatform != TargetPlatform.android) return null;
+    final response = await _plugin
+        .getPlatformAddition<InAppPurchaseAndroidPlatformAddition>()
+        .queryPastPurchases();
+    if (response.error != null) return null;
+    return {
+      for (final purchase in response.pastPurchases)
+        if (purchase.status == PurchaseStatus.purchased) purchase.productID,
+    };
+  }
 }
 
 /// Sobra's side of the store: prices to show, purchases to start, and
@@ -143,6 +187,13 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   StoreReadiness _readiness = StoreReadiness.checking;
   PurchaseFailure? _pendingFailure;
   bool _restoreGrantedSomething = false;
+
+  /// Ids the store delivered since launch, which a revocation must not touch.
+  ///
+  /// Play's list of paid products is read once, and a checkout can finish
+  /// while that answer is on its way. Without this, a purchase completing in
+  /// the same seconds would be granted and then taken straight back.
+  final Set<String> _deliveredThisRun = {};
   Completer<void>? _awaitingRestore;
 
   StoreReadiness get readiness => _readiness;
@@ -204,8 +255,78 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
         // A launch restore that fails changes nothing the user can see. The
         // Ajustes row is where a restore reports on itself.
       }
+      await _takeBackWhatIsNoLongerPaid();
     }
     notifyListeners();
+  }
+
+  /// Revokes purchases the store account no longer holds as paid.
+  ///
+  /// A refund, a chargeback, or a cash payment that expired unpaid all look
+  /// the same from here: the product is gone from Play's list. Nothing about
+  /// it reaches the purchase stream, so without asking, the entry would stay
+  /// unlocked on this phone for good.
+  ///
+  /// Reversible by design. Play's list is per account, so a phone signed into
+  /// a different Play account loses the entries here too — and the launch
+  /// restore gives them back the moment the paying account is back.
+  ///
+  /// Silent on purpose. The user who asked for the refund knows why, and a
+  /// message would be the app arguing with them.
+  Future<void> _takeBackWhatIsNoLongerPaid() async {
+    Set<String>? paid;
+    try {
+      paid = await _backend.queryPaidProductIds();
+    } on Object {
+      paid = null;
+    }
+    // No answer is not an empty answer. Taking purchases back on a failed
+    // query would strip a paying user every time they launched offline.
+    if (paid == null) return;
+    final stillPaidFor = {
+      for (final productId in paid) ..._deliveredBy(productId),
+    };
+    final revoked =
+        {
+            for (final productId in CatalogPreviewData.storeProductIds)
+              if (!paid.contains(productId)) ..._deliveredBy(productId),
+          }
+          ..removeAll(stillPaidFor)
+          ..removeAll(_deliveredThisRun);
+    revoked.retainWhere(_onlyEverSold);
+    if (revoked.isEmpty) return;
+    try {
+      await _store.revokeCatalogEntries(revoked);
+    } on Object catch (error) {
+      // Left for the next launch, which asks again and finds the same answer.
+      debugPrint('Sobra: could not save the revocation of $revoked: $error');
+    }
+  }
+
+  /// Every id [productId] can have been recorded under in the owned set.
+  ///
+  /// The raw product id is included because [_grant] falls back to it for a
+  /// product a build could not map, and [SobraStore.ownsCatalogEntry] still
+  /// reads that id as owning the entry.
+  static Set<String> _deliveredBy(String productId) => {
+    ...?CatalogPreviewData.entitlementsForProductId(productId),
+    CatalogPreviewData.entryForProductId(productId)?.id ?? productId,
+    productId,
+  };
+
+  /// Whether [id] can only ever have come from the store.
+  ///
+  /// An entry that can also be earned with ads must not be taken back on the
+  /// strength of a refund for something else: the user may have watched for
+  /// it. Ids outside the catalog — ad removal, raw product ids — are sold
+  /// only.
+  static bool _onlyEverSold(String id) {
+    final entry = CatalogPreviewData.all
+        .where((candidate) => candidate.id == id)
+        .firstOrNull;
+    return entry == null ||
+        entry.unlockMethod == CatalogUnlockMethod.purchase ||
+        entry.unlockMethod == CatalogUnlockMethod.bundle;
   }
 
   Future<void> _loadPrices() async {
@@ -394,6 +515,7 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
     final ids =
         CatalogPreviewData.entitlementsForProductId(productId) ??
         {CatalogPreviewData.entryForProductId(productId)?.id ?? productId};
+    _deliveredThisRun.addAll(ids);
     try {
       await _store.grantCatalogEntries(ids);
     } on Object catch (error) {

@@ -120,9 +120,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
       final ads = RewardedAdScope.maybeOf(context);
       final prices = purchases ?? widget.priceSource;
       unawaited(
-        _openDetails(
-          _stateFor(entry, store, prices, purchases?.isBuying, ads),
-        ),
+        _openDetails(_stateFor(entry, store, prices, purchases?.isBuying, ads)),
       );
     });
   }
@@ -222,9 +220,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
       case RewardedAdOutcome.counted:
         if (store.ownsCatalogEntry(entry)) {
           _showNotice(
-            l10n.collectionUnlockedNotice(
-              catalogEntryDisplayName(l10n, entry),
-            ),
+            l10n.collectionUnlockedNotice(catalogEntryDisplayName(l10n, entry)),
             action: _placeItAction(l10n),
           );
         }
@@ -677,10 +673,7 @@ class _CatalogCard extends StatelessWidget {
           padding: const EdgeInsets.all(9),
           decoration: BoxDecoration(
             color: AppColors.surface,
-            border: Border.all(
-              color: AppColors.line,
-              width: 2.5,
-            ),
+            border: Border.all(color: AppColors.line, width: 2.5),
           ),
           child: Column(
             children: [
@@ -689,7 +682,8 @@ class _CatalogCard extends StatelessWidget {
                   children: [
                     Positioned.fill(child: _CatalogPreview(entry: state.entry)),
                     if (!state.isOwned &&
-                        (state.entry.unlockMethod == CatalogUnlockMethod.level ||
+                        (state.entry.unlockMethod ==
+                                CatalogUnlockMethod.level ||
                             state.entry.unlockMethod ==
                                 CatalogUnlockMethod.bundle))
                       const Positioned(
@@ -814,6 +808,8 @@ class _CatalogPreview extends StatelessWidget {
       CatalogVisual.cushion => Icons.weekend_outlined,
       CatalogVisual.michi => Icons.pets,
       CatalogVisual.poodle => Icons.pets,
+      CatalogVisual.schnauzer => Icons.pets,
+      CatalogVisual.guineaPig => Icons.pets,
     };
     final tint = entry.kind == CatalogKind.character
         ? AppColors.violetSoft
@@ -1065,15 +1061,16 @@ String _unlockDescription(AppLocalizations l10n, CatalogEntryState state) {
     ),
     // The card can only fit "내일 이어서", which says the entry is waiting
     // without ever saying why. This is the one place the rule is written out.
-    CatalogUnlockMethod.rewardedAd => state.entry.rewardedAdOncePerDay
-        ? l10n.collectionAdUnlockDaily(
-            state.rewardedAdProgress,
-            state.entry.rewardedAdTarget!,
-          )
-        : l10n.collectionAdUnlock(
-            state.rewardedAdProgress,
-            state.entry.rewardedAdTarget!,
-          ),
+    CatalogUnlockMethod.rewardedAd =>
+      state.entry.rewardedAdOncePerDay
+          ? l10n.collectionAdUnlockDaily(
+              state.rewardedAdProgress,
+              state.entry.rewardedAdTarget!,
+            )
+          : l10n.collectionAdUnlock(
+              state.rewardedAdProgress,
+              state.entry.rewardedAdTarget!,
+            ),
     CatalogUnlockMethod.level => l10n.collectionLevelUnlock(
       state.entry.requiredLevel!,
     ),

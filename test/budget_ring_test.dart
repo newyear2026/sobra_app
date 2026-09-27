@@ -6,6 +6,7 @@ import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/screens/budget_screen.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
+import 'package:sobra_app/widgets/cat_sprite.dart';
 import 'package:sobra_app/widgets/pixel_ui.dart';
 
 import 'support/localizations.dart';
@@ -140,7 +141,11 @@ void main() {
       return store;
     }
 
-    Future<void> pump(WidgetTester tester, SobraStore store) async {
+    Future<void> pump(
+      WidgetTester tester,
+      SobraStore store, {
+      bool active = true,
+    }) async {
       await tester.pumpWidget(
         SobraScope(
           store: store,
@@ -148,7 +153,7 @@ void main() {
             localizationsDelegates: sobraLocalizationsDelegates,
             supportedLocales: sobraSupportedLocales,
             theme: buildSobraTheme(),
-            home: const Scaffold(body: BudgetScreen()),
+            home: Scaffold(body: BudgetScreen(active: active)),
           ),
         ),
       );
@@ -166,6 +171,57 @@ void main() {
       expect(find.text('60% del presupuesto'), findsOneWidget);
       expect(find.text('Gastado \$3,600 MXN'), findsOneWidget);
       expect(find.text('Queda \$2,400 MXN'), findsOneWidget);
+    });
+
+    testWidgets('companion saves once, idles, then reacts to a budget edit', (
+      tester,
+    ) async {
+      final store = await seeded({});
+      await store.setReducedMotion(false);
+      await pump(tester, store);
+
+      CatSprite companion() => tester.widget<CatSprite>(find.byType(CatSprite));
+      expect(companion().motion, CatMotion.saving);
+      expect(companion().animate, isTrue);
+      expect(companion().loop, isFalse);
+
+      await tester.pump(const Duration(milliseconds: 4100));
+      await tester.pump();
+      expect(companion().motion, CatMotion.idle);
+      expect(companion().loop, isTrue);
+
+      await store.setCategoryLimit(ExpenseCategory.food, 123000);
+      await tester.pump();
+      expect(companion().motion, CatMotion.saving);
+    });
+
+    testWidgets('companion pauses off-tab and replays on return', (
+      tester,
+    ) async {
+      final store = await seeded({});
+      await store.setReducedMotion(false);
+      await pump(tester, store, active: false);
+
+      CatSprite companion() => tester.widget<CatSprite>(find.byType(CatSprite));
+      expect(companion().motion, CatMotion.idle);
+      expect(companion().animate, isFalse);
+
+      await pump(tester, store);
+      expect(companion().motion, CatMotion.saving);
+      expect(companion().animate, isTrue);
+
+      await pump(tester, store, active: false);
+      expect(companion().motion, CatMotion.idle);
+      expect(companion().animate, isFalse);
+    });
+
+    testWidgets('reduced motion keeps the companion still', (tester) async {
+      final store = await seeded({});
+      await pump(tester, store);
+
+      final companion = tester.widget<CatSprite>(find.byType(CatSprite));
+      expect(companion.motion, CatMotion.idle);
+      expect(companion.animate, isFalse);
     });
 
     testWidgets('labels each category with its share of the spending', (

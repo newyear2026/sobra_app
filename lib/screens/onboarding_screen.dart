@@ -56,9 +56,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
     if (_loadedCharacterChoice) return;
     _loadedCharacterChoice = true;
-    _selectedCharacterId = CharacterCatalog.resolve(
+    final restoredCharacterId = CharacterCatalog.resolve(
       SobraScope.of(context).characterId,
     ).id;
+    _selectedCharacterId = restoredCharacterId == CharacterCatalog.poodle.id
+        ? restoredCharacterId
+        : CharacterCatalog.michi.id;
   }
 
   @override
@@ -1111,6 +1114,9 @@ class _ReadyPage extends StatelessWidget {
 String _localizedCharacterName(AppLocalizations l10n, String characterId) {
   if (characterId == CharacterCatalog.poodle.id) {
     return l10n.prologuePoodleName;
+  }
+  if (characterId == CharacterCatalog.schnauzer.id) {
+    return l10n.prologueSchnauzerName;
   }
   return CharacterCatalog.resolve(characterId).displayName;
 }

@@ -426,6 +426,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get collectionCharacters => '캐릭터';
 
   @override
+  String get collectionGuineaPigName => '기니피그';
+
+  @override
   String get collectionItems => '아이템';
 
   @override
@@ -1627,6 +1630,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get prologuePoodleTrait => '기운이 넘친다.\n잘 챙긴다.';
 
   @override
+  String get prologueSchnauzerName => '슈나우저';
+
+  @override
+  String get prologueSchnauzerTrait => '차분하다.\n꼼꼼히 살핀다.';
+
+  @override
   String get prologueLockedName => '???';
 
   @override
@@ -1636,7 +1645,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get prologueLockedSoon => '아트 준비 중';
 
   @override
-  String get prologueOtherStays => '다른 한 쪽도 함께 지내요. 나중에 언제든 바꿀 수 있어요.';
+  String get prologueOtherStays => '다른 친구도 함께 지내요. 나중에 언제든 바꿀 수 있어요.';
 
   @override
   String get prologueLiveTogether => '같이 지내자';
@@ -1799,6 +1808,21 @@ class AppLocalizationsKo extends AppLocalizations {
   String releaseNotesRetention(int count) {
     return '최근 $count개 버전까지 보관해요.';
   }
+
+  @override
+  String get releaseNote102Schnauzer => '슈나우저가 컬렉션에 들어왔어요. 짧은 광고 두 번이면 함께 지내요.';
+
+  @override
+  String get releaseNote102Rooms =>
+      '집을 정원이나 해변으로 바꿀 수 있고, 의자·스탠드·벽시계를 바로 둘 수 있어요.';
+
+  @override
+  String get releaseNote102Missions =>
+      '오늘 미션 세 개 중 두 개는 날마다 바뀌고, 한 단계 더 하는 미션은 XP도 더 받아요.';
+
+  @override
+  String get releaseNote102Amounts =>
+      '콜롬비아·아르헨티나·칠레 페소, 헤알, 유로는 이제 1.234,56처럼 쉼표로 적혀요.';
 
   @override
   String get releaseNote101Currencies =>

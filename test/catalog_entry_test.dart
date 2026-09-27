@@ -4,10 +4,10 @@ import 'package:sobra_app/models/catalog_entry.dart';
 import 'package:sobra_app/models/xp_event.dart';
 
 void main() {
-  test('preview character catalog keeps two included final characters', () {
+  test('Michi and Poodle are included; new companions use ads', () {
     final entries = CatalogPreviewData.characters;
 
-    expect(entries, hasLength(11));
+    expect(entries, hasLength(13));
     expect(
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.included,
@@ -24,8 +24,20 @@ void main() {
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.rewardedAd,
       ),
-      hasLength(3),
+      hasLength(5),
     );
+    // The ordinary character tier: two views, back to back if wanted.
+    final schnauzer = entries.firstWhere((entry) => entry.id == 'schnauzer');
+    expect(schnauzer.unlockMethod, CatalogUnlockMethod.rewardedAd);
+    expect(schnauzer.rewardedAdTarget, 2);
+    expect(schnauzer.rewardedAdOncePerDay, isFalse);
+    expect(schnauzer.storeProductId, isNull);
+    final guineaPig = entries.firstWhere((entry) => entry.id == 'guinea-pig');
+    expect(guineaPig.unlockMethod, CatalogUnlockMethod.rewardedAd);
+    expect(guineaPig.rewardedAdTarget, 2);
+    expect(guineaPig.rewardedAdOncePerDay, isFalse);
+    expect(guineaPig.storeProductId, isNull);
+    expect(guineaPig.assetPath, 'assets/characters/guinea-pig/idle-8.png');
     // The three the pack delivers, which are sold no other way.
     expect(
       entries.where(
@@ -103,7 +115,7 @@ void main() {
   test('localized price is resolved outside the static catalog entry', () {
     const source = PreviewCatalogPriceSource();
     final paid = CatalogPreviewData.characters.firstWhere(
-      (entry) => entry.unlockMethod == CatalogUnlockMethod.purchase,
+      (entry) => entry.id == 'character-07',
     );
 
     expect(paid.storeProductId, isNotEmpty);

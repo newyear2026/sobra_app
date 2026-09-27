@@ -114,7 +114,9 @@ void main() {
       await tester.pumpAndSettle();
 
       for (final note in releaseNotes) {
-        expect(find.text('v${note.version}'), findsOneWidget);
+        final version = find.text('v${note.version}');
+        await tester.scrollUntilVisible(version, 200);
+        expect(version, findsOneWidget);
       }
       // Exactly one card claims to be the build in hand.
       expect(find.text('Actual'), findsOneWidget);

@@ -72,6 +72,13 @@ void main() {
   Finder inDialog(String text) =>
       find.descendant(of: find.byType(AlertDialog), matching: find.text(text));
 
+  Future<void> openPersonaje7(WidgetTester tester) async {
+    await tester.ensureVisible(find.text('Personaje 7'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Personaje 7'));
+    await tester.pumpAndSettle();
+  }
+
   testWidgets('the card shows the price the store quoted', (tester) async {
     await purchases.start();
 
@@ -89,8 +96,7 @@ void main() {
     await purchases.start();
     await pump(tester, const CollectionScreen());
 
-    await tester.tap(find.text('Personaje 7'));
-    await tester.pumpAndSettle();
+    await openPersonaje7(tester);
     await tester.tap(inDialog('COMPRAR'));
     await tester.pumpAndSettle();
 
@@ -101,8 +107,7 @@ void main() {
 
     // The catalog answers for itself once the store confirms — no reload, no
     // second trip through the screen.
-    await tester.tap(find.text('Personaje 7'));
-    await tester.pumpAndSettle();
+    await openPersonaje7(tester);
     expect(inDialog('OBTENIDO'), findsOneWidget);
     expect(inDialog('COMPRAR'), findsNothing);
   });
@@ -120,8 +125,7 @@ void main() {
 
     expect(find.text('COMPRANDO…'), findsOneWidget);
     // Still locked: the money has not moved yet.
-    await tester.tap(find.text('Personaje 7'));
-    await tester.pumpAndSettle();
+    await openPersonaje7(tester);
     expect(inDialog('EQUIPAR'), findsNothing);
   });
 
@@ -133,8 +137,7 @@ void main() {
     await purchases.start();
     await pump(tester, const CollectionScreen());
 
-    await tester.tap(find.text('Personaje 7'));
-    await tester.pumpAndSettle();
+    await openPersonaje7(tester);
     await tester.tap(inDialog('COMPRAR'));
     await tester.pumpAndSettle();
     expect(
@@ -159,8 +162,7 @@ void main() {
     await purchases.start();
     await pump(tester, const CollectionScreen());
 
-    await tester.tap(find.text('Personaje 7'));
-    await tester.pumpAndSettle();
+    await openPersonaje7(tester);
     await tester.tap(inDialog('COMPRAR'));
     await tester.pumpAndSettle();
     expect(find.text('COMPRANDO…'), findsOneWidget);

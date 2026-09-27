@@ -88,7 +88,10 @@ void main() {
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), '4500');
     await tester.tap(find.text('Guardar'));
-    await tester.pumpAndSettle();
+    // The budget companion keeps a quiet idle loop after its saving reaction,
+    // so this screen intentionally never reaches pumpAndSettle's idle state.
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump();
 
     expect(store.hasBudget, isTrue);
     expect(store.totalBudgetCentavos, 450000);
@@ -283,6 +286,25 @@ void main() {
             .widgetList<CharacterSprite>(find.byType(CharacterSprite))
             .map((sprite) => sprite.characterId),
         contains('poodle'),
+      );
+    });
+
+    testWidgets('onboarding offers only Michi and Poodle', (tester) async {
+      final store = await start(tester);
+      final tap = walker(tester);
+
+      await tap('Ir a ver');
+      await tap('¿Acabas de hablar?');
+      expect(find.text('Schnauzer'), findsNothing);
+      expect(find.text('Poodle'), findsOneWidget);
+      await tap('Que se queden');
+
+      expect(store.characterId, 'michi');
+      expect(
+        tester
+            .widgetList<CharacterSprite>(find.byType(CharacterSprite))
+            .map((sprite) => sprite.characterId),
+        isNot(contains('schnauzer')),
       );
     });
 

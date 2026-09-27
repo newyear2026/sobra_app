@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../models/money_movement.dart';
 import '../state/sobra_store.dart';
+import '../widgets/pixel_ui.dart';
 
 enum SobraWidgetDestination { home, register, registerExpense, registerIncome }
 
@@ -54,12 +55,16 @@ class SobraWidgetSnapshot {
     required this.hasCompletedOnboarding,
     required this.hasBudget,
     required this.todayRemainingCentavos,
+    required this.todayRemainingText,
+    required this.noAmountText,
+    required this.currencyCode,
     required this.overCycleBudget,
     required this.daysRemaining,
     required this.totalBudgetCentavos,
     required this.totalSpentCentavos,
     required this.progressSegments,
     required this.reducedMotion,
+    required this.characterId,
     required this.movements,
   });
 
@@ -73,6 +78,15 @@ class SobraWidgetSnapshot {
 
   final int todayRemainingCentavos;
 
+  /// [todayRemainingCentavos] as the app writes it: the currency's own sign
+  /// and separators. Written here so the widget cannot drift from the app —
+  /// it used to print every currency as dollars in the Mexican style.
+  final String todayRemainingText;
+
+  /// What stands in for the figure when there is no budget to slice.
+  final String noAmountText;
+  final String currencyCode;
+
   /// Over budget, [todayRemainingCentavos] carries the cycle's deficit rather
   /// than the day's room, so the widget has to relabel the figure too.
   final bool overCycleBudget;
@@ -81,6 +95,7 @@ class SobraWidgetSnapshot {
   final int totalSpentCentavos;
   final int progressSegments;
   final bool reducedMotion;
+  final String characterId;
   final List<SobraWidgetMovement> movements;
 
   factory SobraWidgetSnapshot.fromStore(
@@ -92,12 +107,20 @@ class SobraWidgetSnapshot {
       hasCompletedOnboarding: store.hasCompletedOnboarding,
       hasBudget: store.hasBudget,
       todayRemainingCentavos: store.todayRemainingCentavos,
+      todayRemainingText: formatMoney(
+        store.currency,
+        store.todayRemainingCentavos,
+        showCode: false,
+      ),
+      noAmountText: '${store.currency.symbol}$emDash',
+      currencyCode: store.currency.code,
       overCycleBudget: store.remainingBudgetCentavos < 0,
       daysRemaining: store.daysRemaining,
       totalBudgetCentavos: store.totalBudgetCentavos,
       totalSpentCentavos: store.totalSpentCentavos,
       progressSegments: (progress * 10).ceil(),
       reducedMotion: store.reducedMotion,
+      characterId: store.characterId,
       movements: store.movements
           .take(2)
           .map((movement) => SobraWidgetMovement.fromMovement(movement, label))
@@ -110,12 +133,16 @@ class SobraWidgetSnapshot {
       'hasData': hasCompletedOnboarding,
       'hasBudget': hasBudget,
       'todayRemainingCentavos': todayRemainingCentavos,
+      'todayRemainingText': todayRemainingText,
+      'noAmountText': noAmountText,
+      'currencyCode': currencyCode,
       'overCycleBudget': overCycleBudget,
       'daysRemaining': daysRemaining,
       'totalBudgetCentavos': totalBudgetCentavos,
       'totalSpentCentavos': totalSpentCentavos,
       'progressSegments': progressSegments,
       'reducedMotion': reducedMotion,
+      'characterId': characterId,
       'movementCount': movements.length,
     };
     for (var index = 0; index < movements.length; index++) {

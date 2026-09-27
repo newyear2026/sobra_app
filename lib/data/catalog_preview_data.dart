@@ -3,7 +3,7 @@ import '../models/room_design.dart';
 
 /// Replaceable data used while the character and item lineup is still open.
 ///
-/// Michi and Poodle are final. Numbered entries intentionally avoid deciding
+/// Named companions are final. Numbered entries intentionally avoid deciding
 /// the future characters or room objects before their art and commercial plan
 /// are ready.
 abstract final class CatalogPreviewData {
@@ -23,6 +23,28 @@ abstract final class CatalogPreviewData {
       unlockMethod: CatalogUnlockMethod.included,
       visual: CatalogVisual.poodle,
       assetPath: 'assets/characters/poodle/idle-8.png',
+    ),
+    // Earned with ads, and for good. Turning it into a purchase later would
+    // make the launch revocation take it back from everyone who watched for
+    // it, since that check reads the entry's current unlock method and finds
+    // no payment on the account.
+    CatalogEntry(
+      id: 'schnauzer',
+      name: 'Schnauzer',
+      kind: CatalogKind.character,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
+      visual: CatalogVisual.schnauzer,
+      assetPath: 'assets/characters/schnauzer/idle-8.png',
+      rewardedAdTarget: 2,
+    ),
+    CatalogEntry(
+      id: 'guinea-pig',
+      name: 'Guinea Pig',
+      kind: CatalogKind.character,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
+      visual: CatalogVisual.guineaPig,
+      assetPath: 'assets/characters/guinea-pig/idle-8.png',
+      rewardedAdTarget: 2,
     ),
     // In the pack and nowhere else, along with 04 and 06. Selling these
     // individually as well would charge twice for the overlap: a buyer who

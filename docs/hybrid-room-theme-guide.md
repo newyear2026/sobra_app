@@ -1,60 +1,153 @@
 # Sobra hybrid room theme guide
 
-Every room is a finished pixel-art space, but it must leave the same small set
-of places open for personalisation. A room theme is therefore delivered as a
-fixed background plus transparent decoration layers, never as one flattened
-image containing the cat or every replaceable item.
+A room is an empty, finished pixel-art stage — walls, floor, window, light —
+that the user furnishes with items they earn. Every room shares the same
+stage geometry, so one item sprite fits every room, and the room itself never
+contains the character or anything the user can place.
+
+Status: surfaces, slots, and three selectable themes are live. Casa jardín
+and Casa de playa use empty backgrounds with a separate default rug and floor
+plant. Host furniture, the empty Casa clara background, and furniture as
+items remain planned below.
+
+## The shared stage
+
+Every room is drawn on the same stage. Only materials, the view outside the
+window and the room's own identity pieces change between rooms.
+
+| Stage line | Portrait (1024×1536) | Notes |
+| --- | --- | --- |
+| Top of baseboard | y = 750 | Wall ends here |
+| Floor starts | y = 782 | Floor items stand below this line |
+| Window with curtains | x 352–748, y 108–530 | Same opening in every room |
+| Character | x 358–666, y 815–1161 | Keep the floor clear here |
+| Light | from the upper left | Diagonal beams across wall and floor |
+
+`design/rooms/generation/room-stage-guide.png` draws these lines over the
+empty Casa clara reference. Check every new background against it; a few
+pixels of drift are fine.
+
+The phone crops the portrait image to roughly y 371–1164, depending on screen
+shape; keep what matters inside that band.
 
 ## Fixed in the background
 
-- Wall, floor, windows and curtains
-- Architecture and lighting that define the room
-- A small number of identity-defining furnishings
-- Background plants or shelves that are not offered as replaceable items
+- Wall, floor, baseboard, window, curtains and their rod
+- Lighting that defines the room
+- Identity pieces that are not furniture: a garland, a tiled wall band
 
-The fixed layer must not contain the cat, speech bubbles, reactions, the rug,
-the floor-right item, the wall-centre item or the tabletop item.
+Not in the background: the character, speech, reactions, and anything that is
+furniture — chairs, tables, plants, pictures, shelves, rugs. *(Planned: Casa
+clara's armchair, side table, plants, picture and shelf are still painted in
+and become items when its empty background lands.)*
 
-## Replaceable slots
+## Surfaces and slots
 
-Every theme supports these semantic slots, even when their coordinates differ:
+An item names the surfaces it can go on. A room names its places (slots), each
+on one surface. In Decorate, choosing an item lights only the slots of its
+surfaces, each with a faint preview of the item.
 
-| Slot | Intended content | Casa clara default |
+| Surface | Holds | Anchored at |
 | --- | --- | --- |
-| `rug` | Rugs and floor textiles | Lavender rug |
-| `floorRight` | Lamps, beds and freestanding objects | Empty |
-| `wallCenter` | Pictures and small wall objects | Empty |
-| `tabletop` | Plants and small tabletop objects | Potted plant |
+| `wall` | Pictures, clocks, wall objects | Slot centre |
+| `floor` | Freestanding furniture, floor plants | Slot bottom centre |
+| `tabletop` | Lamps, small plants, ornaments | Slot bottom centre |
+| `rug` | Rugs and floor textiles | Fills its slot, under the character |
 
-An item belongs to exactly one slot. Room-specific coordinates live in the
-scene layout; saved user data stores only the room id, slot and item id.
+- An item may allow several surfaces. The small plant goes on the floor or on
+  a table; the desk lamp only on a table, because a desk lamp on the floor is
+  what started this.
+- The included rattan chair and floor lamp use floor slots; the included wall
+  clock uses a wall slot. Their shared transparent sprites work in all themes.
+- Within one room an item is in one place at a time; placing it elsewhere
+  moves it, and tapping its own place takes it out.
+- Across rooms an item is independent: the same picture can hang in every
+  room the user owns.
+- Items are drawn at their own size on the stage, not stretched to the slot,
+  so a small plant stays small on a floor slot sized for an armchair.
 
-## Required assets for a new theme
+Saved data stores only the room id, slot name and item id. Slot names never
+change once shipped (`rug`, `floorRight`, `wallCenter` and `tabletop` predate
+surfaces). A slot the user emptied is stored as cleared so the room's default
+does not come back.
 
-1. A 2:1 landscape preview used on Home.
-2. A 2:3 portrait background used in My Room and Decorate.
-3. Transparent PNGs for every included replaceable decoration.
-4. A small room thumbnail for the room picker when more themes are added.
+Slot positions are fractions of the background image, so an item stays on its
+patch of wall however the screen crops the room. The rug is the exception: it
+is the character's mat and follows the character.
 
-Both backgrounds must show the same fixed furniture and palette. Keep the
-centre floor clear for the character, preserve quiet wall space for speech,
-and avoid placing fixed art inside the four replaceable slots.
+## Host furniture *(planned)*
+
+A table or shelf is an item that brings its own places.
+
+- A tabletop place exists only while a table stands in the room, and sits on
+  the table's top edge wherever the table stands.
+- Moving the table carries what is on it.
+- Removing the table sends what was on it back to the drawer. Undo restores
+  both.
+- With no table, a tabletop-only item lights no place and the hint asks for a
+  table first.
+- Saving refuses, and loading repairs, anything on a table that is not there.
+- Start with one table per room; shelves reuse the same rule later.
+
+## Rooms and unlocking
+
+- Casa clara, Casa jardín and Casa de playa are selectable in Decorate → Room.
+  Switching keeps each room's saved arrangement. All three are currently
+  included; they are not catalog purchases or level rewards.
+- Planned: rooms become catalog entries, owned and unlocked like characters
+  and items. Casa jardín would unlock at level 3 and Casa de playa at level 5.
+  Each would share its level with the item reward already there.
+- Level rewards are derived from the current level, never stored. Moving an
+  existing reward to a *higher* level takes it away from people already past
+  the old one, so rewards only move down or are added alongside.
+
+## Starting out *(planned)*
+
+- New users: an empty Casa clara with a rug and a small plant on the floor.
+- Existing users: a one-time migration grants the furniture that used to be
+  painted into Casa clara and places it where it was drawn, so the room looks
+  the same after the update. A lamp saved on the floor already moves to the
+  table on load.
+
+## Required assets for a new room
+
+1. A 2:3 portrait background, 1024×1536, empty, on the shared stage.
+2. A landscape preview for Home, the same room, empty. The Home card is 2:1;
+   a 3:2 source is center-cropped by the app.
+3. A small thumbnail for the room picker.
+4. Transparent PNGs for any furniture the room introduces, with a transparent
+   edge, no baked-in floor, and their own soft shadow.
+
+Generating with ChatGPT: attach the empty reference
+(`design/rooms/generation/casa-clara-empty-reference.png`) and ask for an
+edit that keeps the window, baseboard, floor line and light identical and
+changes only materials and the view. Never attach the stage guide itself; the
+lines get painted in.
+
+## Adding a room in code
+
+1. Add a `RoomTheme` in `lib/models/room_design.dart`: id, both assets and
+   their pixel sizes, the slots it offers, and default placements.
+2. Add its layout in `lib/widgets/room_scene.dart`. On the shared stage the
+   Casa clara slot rects apply as they are.
+3. Add its name to the three ARB files.
 
 ## Layer order
 
-1. Fixed room background
+1. Room background
 2. Rug
-3. Wall, tabletop and floor-right decorations
+3. Wall, tabletop and floor decorations, lower on screen drawn in front
 4. Character
 5. Speech bubble and reaction effects
-6. Editing targets, shown only in Decorate mode
+6. Placement targets, shown only in Decorate while an item is chosen
 
 ## Acceptance checklist
 
+- The stage lines match the guide within a few pixels.
 - The preview and portrait views unmistakably depict the same room.
-- Removing every replaceable layer still leaves a complete-looking room.
-- No fixed object overlaps a replaceable slot.
+- The empty room still looks finished, just unfurnished.
 - The character remains readable over every rug and floor treatment.
 - Every item has a transparent edge with no baked-in room background.
-- Changing themes preserves each theme's last saved arrangement.
+- Every item looks right on every surface it allows, in every room.
+- Changing rooms preserves each room's last saved arrangement.
 - Text, UI controls and reactions are never painted into room artwork.

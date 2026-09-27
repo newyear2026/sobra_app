@@ -861,6 +861,12 @@ abstract class AppLocalizations {
   /// **'Personajes'**
   String get collectionCharacters;
 
+  /// No description provided for @collectionGuineaPigName.
+  ///
+  /// In es, this message translates to:
+  /// **'Cobaya'**
+  String get collectionGuineaPigName;
+
   /// No description provided for @collectionItems.
   ///
   /// In es, this message translates to:
@@ -2937,6 +2943,18 @@ abstract class AppLocalizations {
   /// **'Puro ánimo.\nMuy atento.'**
   String get prologuePoodleTrait;
 
+  /// No description provided for @prologueSchnauzerName.
+  ///
+  /// In es, this message translates to:
+  /// **'Schnauzer'**
+  String get prologueSchnauzerName;
+
+  /// No description provided for @prologueSchnauzerTrait.
+  ///
+  /// In es, this message translates to:
+  /// **'Observador.\nSiempre atento.'**
+  String get prologueSchnauzerTrait;
+
   /// No description provided for @prologueLockedName.
   ///
   /// In es, this message translates to:
@@ -3248,6 +3266,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Guardamos las últimas {count} versiones.'**
   String releaseNotesRetention(int count);
+
+  /// No description provided for @releaseNote102Schnauzer.
+  ///
+  /// In es, this message translates to:
+  /// **'Schnauzer ya está en la colección. Dos anuncios cortos y se queda contigo.'**
+  String get releaseNote102Schnauzer;
+
+  /// No description provided for @releaseNote102Rooms.
+  ///
+  /// In es, this message translates to:
+  /// **'La casa puede ser un jardín o la playa, y ya puedes colocar un sillón, una lámpara y un reloj.'**
+  String get releaseNote102Rooms;
+
+  /// No description provided for @releaseNote102Missions.
+  ///
+  /// In es, this message translates to:
+  /// **'Dos de las tres misiones del día cambian cada día, y las que piden un paso más dan más XP.'**
+  String get releaseNote102Missions;
+
+  /// No description provided for @releaseNote102Amounts.
+  ///
+  /// In es, this message translates to:
+  /// **'Los pesos colombianos, argentinos y chilenos, los reales y el euro ahora se escriben con coma, como 1.234,56.'**
+  String get releaseNote102Amounts;
 
   /// No description provided for @releaseNote101Currencies.
   ///

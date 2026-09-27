@@ -441,6 +441,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get collectionCharacters => 'Personajes';
 
   @override
+  String get collectionGuineaPigName => 'Cobaya';
+
+  @override
   String get collectionItems => 'Objetos';
 
   @override
@@ -1687,6 +1690,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get prologuePoodleTrait => 'Puro ánimo.\nMuy atento.';
 
   @override
+  String get prologueSchnauzerName => 'Schnauzer';
+
+  @override
+  String get prologueSchnauzerTrait => 'Observador.\nSiempre atento.';
+
+  @override
   String get prologueLockedName => '???';
 
   @override
@@ -1868,6 +1877,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String releaseNotesRetention(int count) {
     return 'Guardamos las últimas $count versiones.';
   }
+
+  @override
+  String get releaseNote102Schnauzer =>
+      'Schnauzer ya está en la colección. Dos anuncios cortos y se queda contigo.';
+
+  @override
+  String get releaseNote102Rooms =>
+      'La casa puede ser un jardín o la playa, y ya puedes colocar un sillón, una lámpara y un reloj.';
+
+  @override
+  String get releaseNote102Missions =>
+      'Dos de las tres misiones del día cambian cada día, y las que piden un paso más dan más XP.';
+
+  @override
+  String get releaseNote102Amounts =>
+      'Los pesos colombianos, argentinos y chilenos, los reales y el euro ahora se escriben con coma, como 1.234,56.';
 
   @override
   String get releaseNote101Currencies =>

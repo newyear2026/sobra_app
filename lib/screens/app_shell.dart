@@ -351,7 +351,7 @@ class _AppShellState extends State<AppShell> {
         initialMode: _registerMode,
         focusAmountOnOpen: _registerSession > 0,
       ),
-      const BudgetScreen(),
+      BudgetScreen(active: _selected == AppTab.budget),
       const SettingsScreen(),
     ];
 

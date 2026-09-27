@@ -27,11 +27,14 @@ Future<SobraStore> _store() async {
 }
 
 void main() {
-  for (final characterId in ['michi', 'poodle']) {
+  for (final characterId in ['michi', 'poodle', 'schnauzer']) {
     testWidgets('$characterId finishes celebrating before returning to idle', (
       tester,
     ) async {
       final store = await _store();
+      if (characterId == 'schnauzer') {
+        await store.grantCatalogEntry(characterId);
+      }
       await store.chooseCharacter(characterId);
       await store.setReducedMotion(false);
       await tester.pumpWidget(

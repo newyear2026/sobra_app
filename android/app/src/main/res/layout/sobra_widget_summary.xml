@@ -66,6 +66,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="3dp"
+                        android:id="@+id/currency_code"
                         android:layout_marginBottom="3dp"
                         android:fontFamily="@font/pixelify_sans"
                         android:includeFontPadding="false"
@@ -88,11 +89,11 @@
                     android:autoStart="true"
                     android:flipInterval="600">
 
-                    <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_high" />
-                    <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_mid" />
-                    <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_drop" />
-                    <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_done" />
-                    <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_done" />
+                    <ImageView android:id="@+id/character_frame_1" style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_high" />
+                    <ImageView android:id="@+id/character_frame_2" style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_mid" />
+                    <ImageView android:id="@+id/character_frame_3" style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_drop" />
+                    <ImageView android:id="@+id/character_frame_4" style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_done" />
+                    <ImageView android:id="@+id/character_frame_5" style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_done" />
                 </ViewFlipper>
 
                 <ImageView

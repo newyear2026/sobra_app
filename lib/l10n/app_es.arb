@@ -204,6 +204,7 @@
   "collectionTitle": "Colección",
   "collectionSettingsValue": "Ver",
   "collectionCharacters": "Personajes",
+  "collectionGuineaPigName": "Cobaya",
   "collectionItems": "Objetos",
   "collectionLevel": "NIVEL {level}",
   "@collectionLevel": {
@@ -704,6 +705,8 @@
   "prologueMichiTrait": "Callado.\nBueno con los números.",
   "prologuePoodleName": "Poodle",
   "prologuePoodleTrait": "Puro ánimo.\nMuy atento.",
+  "prologueSchnauzerName": "Schnauzer",
+  "prologueSchnauzerTrait": "Observador.\nSiempre atento.",
   "prologueLockedName": "???",
   "prologueLockedTrait": "Puro ánimo.\nMuy atento.",
   "prologueLockedSoon": "Arte en camino",
@@ -807,6 +810,10 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
+  "releaseNote102Schnauzer": "Schnauzer ya está en la colección. Dos anuncios cortos y se queda contigo.",
+  "releaseNote102Rooms": "La casa puede ser un jardín o la playa, y ya puedes colocar un sillón, una lámpara y un reloj.",
+  "releaseNote102Missions": "Dos de las tres misiones del día cambian cada día, y las que piden un paso más dan más XP.",
+  "releaseNote102Amounts": "Los pesos colombianos, argentinos y chilenos, los reales y el euro ahora se escriben con coma, como 1.234,56.",
   "releaseNote101Currencies": "Ahora puedes etiquetar tu dinero en pesos colombianos, argentinos y chilenos, soles, libras o yenes.",
   "releaseNote101Celebration": "La celebración ahora llena la tarjeta y termina su salto.",
   "releaseNote100Launch": "Primera versión de Sobrita.",

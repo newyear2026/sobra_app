@@ -170,6 +170,7 @@ void main() {
 
       expect(find.text('Michi'), findsOneWidget);
       expect(find.text('Poodle'), findsOneWidget);
+      expect(find.text('Schnauzer'), findsNothing);
       expect(find.text('Personaje 7'), findsOneWidget);
       // Owned by nobody in this store, and so not a choice to make here.
       expect(find.text('Personaje 9'), findsNothing);

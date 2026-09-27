@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/l10n/generated/app_localizations.dart';
 import 'package:sobra_app/l10n/labels.dart';
+import 'package:sobra_app/models/currency.dart';
 import 'package:sobra_app/models/money_movement.dart';
 import 'package:sobra_app/models/expense_entry.dart';
 import 'package:sobra_app/models/income_entry.dart';
@@ -59,6 +60,8 @@ void main() {
       expect(payload['movement1Kind'], 'income');
       expect(payload['movement2Title'], 'Metro');
       expect(payload['movement2Kind'], 'transport');
+      expect(payload['characterId'], 'michi');
+      expect(payload['currencyCode'], 'MXN');
     },
   );
 
@@ -88,12 +91,16 @@ void main() {
         'hasData',
         'hasBudget',
         'todayRemainingCentavos',
+        'todayRemainingText',
+        'noAmountText',
+        'currencyCode',
         'overCycleBudget',
         'daysRemaining',
         'totalBudgetCentavos',
         'totalSpentCentavos',
         'progressSegments',
         'reducedMotion',
+        'characterId',
         'movementCount',
         'movement1Title',
         'movement1AmountCentavos',
@@ -112,6 +119,16 @@ void main() {
 
     expect(payload['hasData'], isFalse);
     expect(payload['movementCount'], 0);
+  });
+
+  test('widget snapshot follows the saved character choice', () async {
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load(now: () => DateTime(2026, 9, 5, 12));
+    await store.chooseCharacter('poodle');
+    expect(
+      SobraWidgetSnapshot.fromStore(store, _label).toPlatformMap()['characterId'],
+      'poodle',
+    );
   });
 
   test('an overspent cycle reports a full bar and a negative day', () async {
@@ -139,6 +156,7 @@ void main() {
     // −1,000, not the day's slice minus a cycle-sized expense, and flips the
     // label with it.
     expect(payload['todayRemainingCentavos'], -100000);
+    expect(payload['todayRemainingText'], '−\$1,000');
     expect(payload['overCycleBudget'], isTrue);
     // The bar saturates: 116% and 100% both send 10. The negative amount is
     // the only thing left that says the cycle went over.
@@ -169,5 +187,32 @@ void main() {
     ).toPlatformMap();
     expect(payload['movementCount'], 2);
     expect(payload, isNot(contains('movement3Title')));
+  });
+
+  // The widget used to format the figure itself, as dollars in the Mexican
+  // style, whatever the app was set to. It now shows what the app wrote.
+  test('the widget figure is written in the chosen currency', () async {
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load(now: () => DateTime(2026, 9, 5, 12));
+    await store.configureOnboarding(
+      budgetCentavos: 60000000,
+      schedule: const PaySchedule.semiMonthly(),
+    );
+    await store.completeOnboarding();
+
+    for (final (currency, text, empty) in const [
+      (Currency.clp, r'$60.000', r'$—'),
+      (Currency.krw, '₩60,000', '₩—'),
+      (Currency.eur, '€60.000', '€—'),
+    ]) {
+      await store.setCurrency(currency);
+      final payload = SobraWidgetSnapshot.fromStore(
+        store,
+        _label,
+      ).toPlatformMap();
+      expect(payload['todayRemainingText'], text, reason: currency.code);
+      expect(payload['noAmountText'], empty, reason: currency.code);
+      expect(payload['currencyCode'], currency.code);
+    }
   });
 }

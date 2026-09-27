@@ -112,6 +112,61 @@ void main() {
     expect(store.ownedCatalogIds, isEmpty);
   });
 
+  test('Schnauzer takes two rewarded views in one sitting', () async {
+    final store = await loadStore();
+    final schnauzer = entryById('schnauzer');
+
+    expect(store.ownsCatalogEntry(schnauzer), isFalse);
+    expect(() => store.chooseCharacter('schnauzer'), throwsArgumentError);
+    expect(() => store.equipCharacter(schnauzer), throwsArgumentError);
+
+    expect(await store.recordRewardedAdView(schnauzer), isTrue);
+    expect(store.ownsCatalogEntry(schnauzer), isFalse);
+    // Same day, straight after: no waiting until tomorrow.
+    expect(await store.recordRewardedAdView(schnauzer), isTrue);
+    expect(store.ownsCatalogEntry(schnauzer), isTrue);
+
+    await store.equipCharacter(schnauzer);
+    expect((await loadStore()).characterId, 'schnauzer');
+  });
+
+  test(
+    'Guinea Pig takes two rewarded views and can then be equipped',
+    () async {
+      final store = await loadStore();
+      final guineaPig = entryById('guinea-pig');
+
+      expect(store.ownsCatalogEntry(guineaPig), isFalse);
+      expect(() => store.chooseCharacter('guinea-pig'), throwsArgumentError);
+      expect(await store.recordRewardedAdView(guineaPig), isTrue);
+      expect(store.rewardedAdProgressFor(guineaPig.id), 1);
+      expect(store.ownsCatalogEntry(guineaPig), isFalse);
+
+      expect(await store.recordRewardedAdView(guineaPig), isTrue);
+      expect(store.ownsCatalogEntry(guineaPig), isTrue);
+      expect(store.rewardedAdProgressFor(guineaPig.id), 0);
+
+      await store.equipCharacter(guineaPig);
+      final reopened = await loadStore();
+      expect(reopened.characterId, 'guinea-pig');
+      expect(reopened.ownsCatalogEntry(guineaPig), isTrue);
+    },
+  );
+
+  test('an old free Schnauzer choice reverts until it is earned', () async {
+    await loadStore();
+    final preferences = await SharedPreferences.getInstance();
+    final saved =
+        jsonDecode(preferences.getString('sobra_state_v2')!)
+            as Map<String, dynamic>;
+    saved['characterId'] = 'schnauzer';
+    await preferences.setString('sobra_state_v2', jsonEncode(saved));
+
+    final reopened = await loadStore();
+    expect(reopened.characterId, 'michi');
+    expect(reopened.ownsCatalogEntry(entryById('schnauzer')), isFalse);
+  });
+
   test('an equipped character is remembered', () async {
     final store = await loadStore();
     final character = entryById('character-04');
@@ -197,7 +252,8 @@ void main() {
       expect(
         delivered,
         isNotNull,
-        reason: '${entry.id} is sold in ${entry.storeProductId}, which no '
+        reason:
+            '${entry.id} is sold in ${entry.storeProductId}, which no '
             'productEntitlements key covers',
       );
       expect(
@@ -244,9 +300,7 @@ void main() {
     expect(store.ownsCatalogEntry(entryById('character-04')), isTrue);
     expect(store.ownsCatalogEntry(entryById('character-06')), isTrue);
     expect(
-      store.ownsCatalogEntry(
-        entryById(CatalogPreviewData.packDecorationId),
-      ),
+      store.ownsCatalogEntry(entryById(CatalogPreviewData.packDecorationId)),
       isTrue,
     );
     expect((await loadStore()).ownedCatalogIds, containsAll(delivered));
@@ -259,8 +313,7 @@ void main() {
     await store.grantCatalogEntry('character-04');
 
     await store.grantCatalogEntries(
-      CatalogPreviewData
-          .productEntitlements[CatalogPreviewData.packProductId]!,
+      CatalogPreviewData.productEntitlements[CatalogPreviewData.packProductId]!,
     );
 
     expect(store.ownsCatalogEntry(entryById('character-02')), isTrue);
@@ -314,9 +367,8 @@ void main() {
   // in the pack cannot also be bought on its own, so nobody pays twice for
   // the same cat and then finds grantCatalogEntries dropping the duplicate.
   test('no entry is sold both inside the pack and on its own', () {
-    final inPack =
-        CatalogPreviewData.productEntitlements[CatalogPreviewData
-            .packProductId]!;
+    final inPack = CatalogPreviewData
+        .productEntitlements[CatalogPreviewData.packProductId]!;
 
     for (final entry in CatalogPreviewData.all.where(
       (entry) => inPack.contains(entry.id),
@@ -362,14 +414,16 @@ void main() {
     expect(store.ownsCatalogEntry(entryById('character-02')), isFalse);
   });
 
-  test('recommended rewarded entry prefers progress, then fewer views',
-      () async {
-    final store = await loadStore();
-    final started = entryById('character-03');
-    await store.recordRewardedAdView(started);
+  test(
+    'recommended rewarded entry prefers progress, then fewer views',
+    () async {
+      final store = await loadStore();
+      final started = entryById('character-03');
+      await store.recordRewardedAdView(started);
 
-    expect(store.recommendedRewardedAdEntry?.id, started.id);
-  });
+      expect(store.recommendedRewardedAdEntry?.id, started.id);
+    },
+  );
 
   test('recommended rewarded entry is hidden when the day is capped', () async {
     now = DateTime(2026, 9, 14, 11);

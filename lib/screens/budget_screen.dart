@@ -11,7 +11,10 @@ import '../widgets/pixel_ui.dart';
 import 'cycle_history_screen.dart';
 
 class BudgetScreen extends StatelessWidget {
-  const BudgetScreen({super.key});
+  const BudgetScreen({super.key, this.active = true});
+
+  /// IndexedStack keeps this tab mounted while another tab is visible.
+  final bool active;
 
   Future<bool?> _requestCategoryPolicy(BuildContext context) =>
       showDialog<bool>(
@@ -345,12 +348,11 @@ class BudgetScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  CatSprite(
-                    motion: CatMotion.saving,
-                    width: 128,
-                    loop: false,
-                    playToken: motionToken,
-                    animate: !reducedMotionOf(context),
+                  _BudgetCompanion(
+                    characterId: store.characterId,
+                    motionToken: motionToken,
+                    active: active,
+                    reducedMotion: reducedMotionOf(context),
                   ),
                 ],
               ),
@@ -360,6 +362,58 @@ class BudgetScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Plays the saving reaction once, then keeps the companion quietly alive.
+/// Leaving this tab pauses its ticker; returning is a new budget visit.
+class _BudgetCompanion extends StatefulWidget {
+  const _BudgetCompanion({
+    required this.characterId,
+    required this.motionToken,
+    required this.active,
+    required this.reducedMotion,
+  });
+
+  final String characterId;
+  final int motionToken;
+  final bool active;
+  final bool reducedMotion;
+
+  @override
+  State<_BudgetCompanion> createState() => _BudgetCompanionState();
+}
+
+class _BudgetCompanionState extends State<_BudgetCompanion> {
+  late bool _saving = widget.active && !widget.reducedMotion;
+
+  @override
+  void didUpdateWidget(covariant _BudgetCompanion oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!widget.active || widget.reducedMotion) {
+      _saving = false;
+    } else if (!oldWidget.active ||
+        oldWidget.reducedMotion ||
+        oldWidget.characterId != widget.characterId ||
+        oldWidget.motionToken != widget.motionToken) {
+      _saving = true;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => CatSprite(
+    characterId: widget.characterId,
+    motion: _saving ? CatMotion.saving : CatMotion.idle,
+    width: 128,
+    loop: !_saving,
+    playToken: widget.motionToken,
+    animate: widget.active && !widget.reducedMotion,
+    onComplete: _saving
+        ? () {
+            if (!mounted || !widget.active || widget.reducedMotion) return;
+            setState(() => _saving = false);
+          }
+        : null,
+  );
 }
 
 /// The amount prompt behind every "editar" on this screen.

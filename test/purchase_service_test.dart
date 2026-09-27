@@ -206,6 +206,122 @@ void main() {
     },
   );
 
+  group('a purchase Play no longer holds as paid', () {
+    test('is taken back at launch and stops being shown', () async {
+      await store.grantCatalogEntry(soldEntryId);
+      await store.equipCharacter(entryById(soldEntryId));
+      backend.paidProductIds = {};
+
+      await started();
+
+      expect(store.ownsCatalogEntry(entryById(soldEntryId)), isFalse);
+      expect(store.characterId, 'michi');
+      // The revocation is saved, not only held in memory.
+      final reopened = await SobraStore.load(
+        now: () => DateTime(2026, 9, 14, 12),
+      );
+      expect(reopened.ownsCatalogEntry(entryById(soldEntryId)), isFalse);
+    });
+
+    test('leaves what is still paid for alone', () async {
+      await store.grantCatalogEntries({soldEntryId, 'character-09'});
+      backend.paidProductIds = {soldProductId};
+
+      await started();
+
+      expect(store.ownedCatalogIds, {soldEntryId});
+    });
+
+    test(
+      'keeps ad removal while the standalone product is still paid',
+      () async {
+        const packId = CatalogPreviewData.packProductId;
+        const removeId = CatalogPreviewData.removeAdsProductId;
+        await store.grantCatalogEntries(
+          CatalogPreviewData.productEntitlements[packId]!,
+        );
+        backend.paidProductIds = {removeId};
+
+        await started();
+
+        expect(store.ownsPack, isFalse);
+        expect(store.ownsNoAds, isTrue);
+        expect(store.ownsCatalogEntry(entryById('character-02')), isFalse);
+      },
+    );
+
+    test('is also found under its raw product id', () async {
+      await store.grantCatalogEntry(soldProductId);
+      backend.paidProductIds = {};
+
+      await started();
+
+      expect(store.ownedCatalogIds, isEmpty);
+    });
+
+    test('never touches what was earned with ads', () async {
+      final adEntry = entryById('character-03');
+      for (var view = 0; view < adEntry.rewardedAdTarget!; view++) {
+        await store.recordRewardedAdView(adEntry);
+      }
+      backend.paidProductIds = {};
+
+      await started();
+
+      expect(store.ownsCatalogEntry(adEntry), isTrue);
+    });
+
+    test('is left alone when the store cannot answer', () async {
+      await store.grantCatalogEntry(soldEntryId);
+      backend.failPaidQuery = true;
+
+      await started();
+
+      expect(store.ownsCatalogEntry(entryById(soldEntryId)), isTrue);
+    });
+
+    test('is left alone when the store has no such query', () async {
+      await store.grantCatalogEntry(soldEntryId);
+      backend.paidProductIds = null;
+
+      await started();
+
+      expect(store.ownsCatalogEntry(entryById(soldEntryId)), isTrue);
+    });
+
+    test('is not checked on an iOS-shaped start', () async {
+      await store.grantCatalogEntry(soldEntryId);
+      backend.paidProductIds = {};
+
+      await started(restoreOnStart: false);
+
+      expect(store.ownsCatalogEntry(entryById(soldEntryId)), isTrue);
+    });
+
+    test(
+      'does not include a purchase delivered while Play was asked',
+      () async {
+        final purchases = SobraPurchases(
+          backend: backend,
+          store: store,
+          restoreGrace: const Duration(milliseconds: 40),
+        );
+        addTearDown(purchases.dispose);
+        // Play's answer predates the checkout that finishes during the launch.
+        backend
+          ..paidProductIds = {}
+          ..onRestore = () => backend.emit([
+            detailsFor(soldProductId, PurchaseStatus.purchased),
+          ]);
+
+        await purchases.start();
+        await pumpEventQueue();
+
+        expect(store.ownsCatalogEntry(entryById(soldEntryId)), isTrue);
+      },
+    );
+  });
+
   test('buying something already owned does nothing', () async {
     final purchases = await started();
     await store.grantCatalogEntry(soldEntryId);

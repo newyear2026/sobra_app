@@ -10,7 +10,7 @@ import 'support/localizations.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  for (final id in ['michi', 'poodle']) {
+  for (final id in ['michi', 'poodle', 'schnauzer', 'guinea-pig']) {
     testWidgets('$id dialog reserves the full enlarged motion bounds', (
       tester,
     ) async {
@@ -59,7 +59,7 @@ void main() {
     });
   }
 
-  test('settled celebration matches idle height for both companions', () async {
+  test('settled celebration matches idle height for every companion', () async {
     for (final character in CharacterCatalog.all.values) {
       final heights = <double>[];
       for (final role in [
@@ -85,8 +85,9 @@ void main() {
             if (pixels.getUint8(
                   (y * frame.image.width + index * 320 + x) * 4 + 3,
                 ) <
-                96)
+                96) {
               continue;
+            }
             if (y < top) top = y;
             bottom = y + 1;
           }
@@ -216,6 +217,57 @@ void main() {
           .motionFor(CharacterMotionRole.activity)
           .displayScale,
       1,
+    );
+  });
+
+  test('Schnauzer owns six motions with a stable final celebration pose', () {
+    expect(
+      CharacterCatalog.schnauzer.motions.keys.toSet(),
+      CharacterMotionRole.values.toSet(),
+    );
+    for (final role in CharacterMotionRole.values) {
+      final expectedFrames = switch (role) {
+        CharacterMotionRole.idle || CharacterMotionRole.warning => 8,
+        _ => 12,
+      };
+      expect(
+        CharacterCatalog.schnauzer.motionFor(role).frameCount,
+        expectedFrames,
+        reason: role.name,
+      );
+    }
+    final success = CharacterCatalog.schnauzer.motionFor(
+      CharacterMotionRole.success,
+    );
+    expect(success.defaultLoop, isFalse);
+    expect(success.playbackSpec.completionFrame, 11);
+    expect(success.displayScale, 1);
+  });
+
+  test('Guinea Pig owns all six normalized motions', () {
+    expect(
+      CharacterCatalog.all,
+      containsPair('guinea-pig', CharacterCatalog.guineaPig),
+    );
+    expect(
+      CharacterCatalog.guineaPig.motions.keys.toSet(),
+      CharacterMotionRole.values.toSet(),
+    );
+    for (final role in CharacterMotionRole.values) {
+      expect(
+        CharacterCatalog.guineaPig.motionFor(role).frameCount,
+        role == CharacterMotionRole.idle || role == CharacterMotionRole.warning
+            ? 8
+            : 12,
+        reason: role.name,
+      );
+    }
+    expect(
+      CharacterCatalog.guineaPig
+          .motionFor(CharacterMotionRole.success)
+          .playbackSpec
+          .completionFrame,
+      11,
     );
   });
 

@@ -17,6 +17,10 @@ class FakeBackend implements PurchaseBackend {
   /// What a restore replays.
   List<String> ownedProductIds = [];
 
+  /// What Play reports as paid, or null for a store that cannot say.
+  Set<String>? paidProductIds;
+  bool failPaidQuery = false;
+
   final List<String> bought = [];
   final List<String> completed = [];
 
@@ -64,6 +68,12 @@ class FakeBackend implements PurchaseBackend {
   Future<void> completePurchase(PurchaseDetails purchase) async {
     completed.add(purchase.productID);
     onComplete?.call(purchase);
+  }
+
+  @override
+  Future<Set<String>?> queryPaidProductIds() async {
+    if (failPaidQuery) throw StateError('store unreachable');
+    return paidProductIds;
   }
 
   void emit(List<PurchaseDetails> purchases) => _controller.add(purchases);

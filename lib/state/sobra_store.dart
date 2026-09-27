@@ -223,6 +223,15 @@ class SobraStore extends ChangeNotifier {
     // now matters: if the missing value were only filled in memory, every
     // restart would begin a fresh configured grace period forever.
     await store._ensureNativeAdInstallDay();
+    // A character that was previously bundled for free can become a paid
+    // entry. Keep the saved choice only when its entitlement is still owned.
+    final selectedEntry = CatalogPreviewData.characters
+        .where((entry) => entry.id == store.characterId)
+        .firstOrNull;
+    if (selectedEntry != null && !store.ownsCatalogEntry(selectedEntry)) {
+      store.characterId = 'michi';
+      await store._save();
+    }
     await store.settleCycles();
     store._lastObservedDate = store.today;
     return store;
@@ -1279,7 +1288,14 @@ class SobraStore extends ChangeNotifier {
   }
 
   Future<void> chooseCharacter(String id) async {
-    if (id.isEmpty || id == characterId) return;
+    if (id.isEmpty) return;
+    final entry = CatalogPreviewData.characters
+        .where((candidate) => candidate.id == id)
+        .firstOrNull;
+    if (entry != null && !ownsCatalogEntry(entry)) {
+      throw ArgumentError.value(id, 'id', 'character not owned');
+    }
+    if (id == characterId) return;
     characterId = id;
     await _save();
     notifyListeners();
@@ -1590,6 +1606,38 @@ class SobraStore extends ChangeNotifier {
     if (added.isEmpty) return;
     _ownedCatalogIds.addAll(added);
     _rewardedAdProgress.removeWhere((id, _) => added.contains(id));
+    await _save();
+    notifyListeners();
+  }
+
+  /// Takes back every id in [ids] the user holds, in one write.
+  ///
+  /// The reverse of [grantCatalogEntries], for a purchase the store no longer
+  /// holds as paid: refunded, charged back, or a cash payment that never
+  /// cleared. Whatever was showing a revoked entry falls back to what the user
+  /// still has — the character to Michi, a room slot to its default
+  /// decoration — rather than drawing on what was just taken away.
+  ///
+  /// Checked against [ownsCatalogEntry] afterwards rather than against [ids],
+  /// so an entry that is still owned some other way stays where it was.
+  Future<void> revokeCatalogEntries(Set<String> ids) async {
+    final removed = ids.intersection(_ownedCatalogIds);
+    if (removed.isEmpty) return;
+    _ownedCatalogIds.removeAll(removed);
+    bool stillOwned(String id) {
+      final entry = CatalogPreviewData.all
+          .where((candidate) => candidate.id == id)
+          .firstOrNull;
+      return entry == null || ownsCatalogEntry(entry);
+    }
+
+    if (!stillOwned(characterId)) characterId = 'michi';
+    for (final placements in _roomPlacementsByRoom.values) {
+      placements.removeWhere((_, itemId) => !stillOwned(itemId));
+    }
+    if (equippedItemId != null && !stillOwned(equippedItemId!)) {
+      equippedItemId = null;
+    }
     await _save();
     notifyListeners();
   }

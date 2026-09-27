@@ -107,6 +107,49 @@ void main() {
 
   // The yen has no subdivision anybody spends, so the field has no decimals
   // to offer and the store keeps counting hundredths behind it.
+  // Colombia, Argentina, Chile, Brazil and the euro write 1.234,56. The field
+  // groups with points there, and either key still starts the decimals.
+  group('amount field in a currency written with a decimal comma', () {
+    test('grouping is placed with points', () {
+      expect(_typing('1234567', Currency.ars).text, '1.234.567');
+      expect(_typing('12345', Currency.eur).text, '12.345');
+    });
+
+    test('either separator key starts the decimals', () {
+      expect(_typing('1234,5', Currency.ars).text, '1.234,5');
+      expect(_typing('1234.5', Currency.ars).text, '1.234,5');
+      expect(_typing('9,,,,', Currency.brl).text, '9,');
+    });
+
+    test('what the field shows is what gets registered', () {
+      expect(
+        parseAmount(Currency.ars, _typing('1234,56', Currency.ars).text),
+        123456,
+      );
+      expect(parseAmount(Currency.ars, '1.200'), 120000);
+      expect(parseAmount(Currency.ars, '1.234,56'), 123456);
+      expect(parseAmount(Currency.eur, '9,99'), 999);
+      // Finer than a centavo is still refused, in either shape.
+      expect(parseAmount(Currency.ars, '9,999'), isNull);
+    });
+
+    test('a pasted figure keeps its value in either shape', () {
+      expect(_pasting(r'$1.234,56 ARS', Currency.ars), '1.234,56');
+      expect(_pasting(r'$1,234.56', Currency.ars), '1.234,56');
+      expect(_pasting('15.000', Currency.clp), '15.000');
+    });
+
+    // The one that matters most: $15.000 CLP is fifteen thousand pesos.
+    test('a Chilean or Colombian thousand is a thousand', () {
+      expect(_typing('15000', Currency.clp).text, '15.000');
+      expect(parseAmount(Currency.clp, '15.000'), 1500000);
+      expect(parseAmount(Currency.cop, '1.500.000'), 150000000);
+      // No decimals in the peso: a separator typed is ignored, as in the yen.
+      expect(_typing('150,5', Currency.clp).text, '1.505');
+      expect(_typing('150.5', Currency.clp).text, '1.505');
+    });
+  });
+
   group('amount field in a currency with no decimals', () {
     test('a separator never becomes a decimal point', () {
       expect(_typing('9.5', Currency.jpy).text, '95');

@@ -19,6 +19,8 @@ enum CatalogUnlockMethod { included, purchase, rewardedAd, level, bundle }
 enum CatalogVisual {
   michi,
   poodle,
+  schnauzer,
+  guineaPig,
   characterPlaceholder,
   lamp,
   savings,
@@ -127,8 +129,7 @@ class CatalogEntryState {
     this.isWatchingAd = false,
   }) : assert(
          !isWatchingAd ||
-             (!isOwned &&
-                 entry.unlockMethod == CatalogUnlockMethod.rewardedAd),
+             (!isOwned && entry.unlockMethod == CatalogUnlockMethod.rewardedAd),
        ),
        assert(
          rewardedAdBlock == null ||

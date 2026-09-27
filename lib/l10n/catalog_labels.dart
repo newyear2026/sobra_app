@@ -10,6 +10,8 @@ import 'generated/app_localizations.dart';
 String catalogEntryDisplayName(AppLocalizations l10n, CatalogEntry entry) {
   if (entry.id == 'michi') return entry.name;
   if (entry.id == 'poodle') return l10n.prologuePoodleName;
+  if (entry.id == 'schnauzer') return l10n.prologueSchnauzerName;
+  if (entry.id == 'guinea-pig') return l10n.collectionGuineaPigName;
   if (entry.id == RoomDecorAssets.rattanChairId) return l10n.roomRattanChair;
   if (entry.id == RoomDecorAssets.floorLampId) return l10n.roomStandingLamp;
   if (entry.id == RoomDecorAssets.wallClockId) return l10n.roomWallClock;

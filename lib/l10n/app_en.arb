@@ -179,6 +179,7 @@
   "collectionTitle": "Collection",
   "collectionSettingsValue": "View",
   "collectionCharacters": "Characters",
+  "collectionGuineaPigName": "Guinea Pig",
   "collectionItems": "Items",
   "collectionLevel": "LEVEL {level}",
   "collectionOwnedCount": "{owned} of {total}",
@@ -540,6 +541,8 @@
   "prologueMichiTrait": "Quiet.\nGood with numbers.",
   "prologuePoodleName": "Poodle",
   "prologuePoodleTrait": "All energy.\nLooks after you.",
+  "prologueSchnauzerName": "Schnauzer",
+  "prologueSchnauzerTrait": "Thoughtful.\nKeeps watch.",
   "prologueLockedName": "???",
   "prologueLockedTrait": "All energy.\nLooks after you.",
   "prologueLockedSoon": "Art on the way",
@@ -601,6 +604,10 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
+  "releaseNote102Schnauzer": "Schnauzer is in the collection. Two short ads, and they stay.",
+  "releaseNote102Rooms": "The house can be a garden or a beach, and a chair, a lamp and a clock are ready to place.",
+  "releaseNote102Missions": "Two of the three daily missions change every day, and the ones that take an extra step pay more XP.",
+  "releaseNote102Amounts": "Colombian, Argentine and Chilean pesos, Brazilian reais and euros now use a comma, as in 1.234,56.",
   "releaseNote101Currencies": "Money can now be labelled in Colombian, Argentine and Chilean pesos, soles, pounds or yen.",
   "releaseNote101Celebration": "The celebration now fills its card and finishes its jump.",
   "releaseNote100Launch": "The first version of Sobrita.",

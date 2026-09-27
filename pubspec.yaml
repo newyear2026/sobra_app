@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.1+4
+version: 1.0.2+6
 
 environment:
   sdk: ^3.11.1
@@ -56,6 +56,9 @@ dependencies:
   # reinstall recoverable without an account of Sobra's own: the platform keeps
   # the entitlement against the user's store account and replays it on request.
   in_app_purchase: ^3.3.0
+  # Play Billing's own purchase query, which reports each purchase's real
+  # state. The shared API cannot tell a refunded purchase from one never made.
+  in_app_purchase_android: ^0.5.0
 
   # AdMob rewarded and native ads. Debug builds use Google's dedicated test
   # ad units; release builds switch to Sobra's Android ad unit IDs.
@@ -116,6 +119,8 @@ flutter:
     - assets/cats/
     - assets/characters/michi/
     - assets/characters/poodle/
+    - assets/characters/schnauzer/
+    - assets/characters/guinea-pig/
     - assets/login/
     - assets/rooms/casa_clara/
     - assets/rooms/casa_clara/items/

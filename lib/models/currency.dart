@@ -23,18 +23,30 @@ enum Currency {
   mxn('MXN', r'$', CurrencyRegion.americas),
   usd('USD', r'$', CurrencyRegion.americas),
   cad('CAD', r'$', CurrencyRegion.americas),
-  cop('COP', r'$', CurrencyRegion.americas),
-  ars('ARS', r'$', CurrencyRegion.americas),
-  clp('CLP', r'$', CurrencyRegion.americas, decimalDigits: 0),
+  cop('COP', r'$', CurrencyRegion.americas, decimalComma: true),
+  ars('ARS', r'$', CurrencyRegion.americas, decimalComma: true),
+  clp(
+    'CLP',
+    r'$',
+    CurrencyRegion.americas,
+    decimalDigits: 0,
+    decimalComma: true,
+  ),
   pen('PEN', 'S/', CurrencyRegion.americas),
-  brl('BRL', r'R$', CurrencyRegion.americas),
-  eur('EUR', '€', CurrencyRegion.europe),
+  brl('BRL', r'R$', CurrencyRegion.americas, decimalComma: true),
+  eur('EUR', '€', CurrencyRegion.europe, decimalComma: true),
   gbp('GBP', '£', CurrencyRegion.europe),
   jpy('JPY', '¥', CurrencyRegion.asiaPacific, decimalDigits: 0),
   krw('KRW', '₩', CurrencyRegion.asiaPacific, decimalDigits: 0),
   aud('AUD', r'$', CurrencyRegion.asiaPacific);
 
-  const Currency(this.code, this.symbol, this.region, {this.decimalDigits = 2});
+  const Currency(
+    this.code,
+    this.symbol,
+    this.region, {
+    this.decimalDigits = 2,
+    this.decimalComma = false,
+  });
 
   /// The ISO code shown next to an amount, and what gets saved.
   final String code;
@@ -58,6 +70,23 @@ enum Currency {
   /// they read as whole pesos in practice while a relabelled amount keeps
   /// what it arrived with.
   final int decimalDigits;
+
+  /// Whether this money is written 1.234,56 rather than 1,234.56.
+  ///
+  /// Follows the country that spends it, not the language on screen: a
+  /// Colombian reading Sobra in English still expects $15.000, and $15,000
+  /// reads to them as fifteen pesos. The euro goes with the larger part of the
+  /// eurozone; Ireland and Malta write it the other way. A currency with no
+  /// decimals still cares, because its grouping mark is the one that differs.
+  ///
+  /// Like [decimalDigits], a display rule only — nothing saved changes.
+  final bool decimalComma;
+
+  /// The mark every three digits, counting from the right.
+  String get groupSeparator => decimalComma ? '.' : ',';
+
+  /// The mark between the whole units and the hundredths.
+  String get decimalSeparator => decimalComma ? ',' : '.';
 
   /// What one whole unit is stored as, for every currency on this list.
   ///

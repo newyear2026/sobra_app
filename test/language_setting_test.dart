@@ -66,8 +66,8 @@ void main() {
       expect(SobraLanguage.available, contains(SobraLanguage.english));
       expect(
         SobraLanguage.supportedLocales.first,
-        const Locale('es'),
-        reason: 'Spanish leads, so it is what an unmatched phone falls back to',
+        const Locale('en'),
+        reason: 'English leads, so it is what an unmatched phone falls back to',
       );
       for (final language in SobraLanguage.available) {
         expect(SobraLanguage.fromCode(language.code), language);
@@ -132,23 +132,53 @@ void main() {
       expect(find.text('Inicio'), findsNothing);
     });
 
-    // Spanish leads the supported list, so a phone set to none of the
-    // languages lands on Sobra's own rather than on English.
-    testWidgets('falls back to Spanish on a phone set to none of them', (
-      tester,
-    ) async {
-      tester.platformDispatcher
-        ..localeTestValue = const Locale('ja', 'JP')
-        ..localesTestValue = const <Locale>[Locale('ja', 'JP')];
-      addTearDown(tester.platformDispatcher.clearLocaleTestValue);
-      addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+    // English leads the supported list, so a phone set to none of the
+    // languages — somebody spending yen, euros or reais — lands on English.
+    for (final phone in const [
+      Locale('ja', 'JP'),
+      Locale('de', 'DE'),
+      Locale('fr', 'FR'),
+      Locale('pt', 'BR'),
+    ]) {
+      testWidgets('falls back to English on a $phone phone', (tester) async {
+        tester.platformDispatcher
+          ..localeTestValue = phone
+          ..localesTestValue = <Locale>[phone];
+        addTearDown(tester.platformDispatcher.clearLocaleTestValue);
+        addTearDown(tester.platformDispatcher.clearLocalesTestValue);
 
-      final store = await _onboardedStore();
-      await tester.pumpWidget(SobraApp(store: store));
-      await tester.pump();
+        final store = await _onboardedStore();
+        await tester.pumpWidget(SobraApp(store: store));
+        await tester.pump();
 
-      expect(find.text('Inicio'), findsWidgets);
-    });
+        expect(find.text('Home'), findsWidgets);
+        expect(find.text('Inicio'), findsNothing);
+      });
+    }
+
+    // The fallback must not cost Latin America its Spanish: any Spanish phone
+    // matches `es`, and so does one that lists Spanish behind a language
+    // Sobra does not have.
+    for (final phones in const [
+      [Locale('es', 'CO')],
+      [Locale('es', 'AR')],
+      [Locale('pt', 'BR'), Locale('es', 'ES')],
+    ]) {
+      testWidgets('stays in Spanish on a $phones phone', (tester) async {
+        tester.platformDispatcher
+          ..localeTestValue = phones.first
+          ..localesTestValue = phones;
+        addTearDown(tester.platformDispatcher.clearLocaleTestValue);
+        addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+
+        final store = await _onboardedStore();
+        await tester.pumpWidget(SobraApp(store: store));
+        await tester.pump();
+
+        expect(find.text('Inicio'), findsWidgets);
+        expect(find.text('Home'), findsNothing);
+      });
+    }
 
     // Korean ships only in debug builds, and tests are one.
     testWidgets('follows a Korean phone in a debug build', (tester) async {

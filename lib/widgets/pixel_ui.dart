@@ -29,10 +29,9 @@ const kPixelBottomBarHeight = 72.0;
 
 /// Writes an amount of minor units the way Sobra shows money.
 ///
-/// Both languages Sobra ships — Mexican Spanish and American English — group
-/// with commas and separate decimals with a dot, so the separators are fixed
-/// here rather than read from the locale. A locale that groups the other way
-/// around would have to make them a setting of their own.
+/// The separators come from the currency rather than the locale: $15.000 COP
+/// and $15,000 MXN are each how that money is written where it is spent,
+/// whichever language the screen is in. See [Currency.decimalComma].
 ///
 /// [showCode] drops the currency code for figures that sit beside another one
 /// already carrying it, such as the two halves of a category limit.
@@ -75,6 +74,7 @@ String _wholePart(Currency currency, int absolute) => _groupDigits(
                 Currency.minorUnitsPerUnit
           : absolute ~/ Currency.minorUnitsPerUnit)
       .toString(),
+  currency.groupSeparator,
 );
 
 /// The decimal point and what stands behind it, or nothing when a currency
@@ -82,12 +82,21 @@ String _wholePart(Currency currency, int absolute) => _groupDigits(
 String _decimalPart(Currency currency, int absolute) {
   if (currency.decimalDigits == 0) return '';
   final decimals = absolute % Currency.minorUnitsPerUnit;
-  return decimals == 0 ? '' : '.${decimals.toString().padLeft(2, '0')}';
+  return decimals == 0
+      ? ''
+      : '${currency.decimalSeparator}${decimals.toString().padLeft(2, '0')}';
 }
 
-/// Puts a comma every three digits, counting from the right.
-String _groupDigits(String digits) =>
-    digits.replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => ',');
+/// Puts [separator] every three digits, counting from the right.
+String _groupDigits(String digits, [String separator = ',']) => digits
+    .replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => separator);
+
+/// Trades every point for a comma and every comma for a point.
+///
+/// How a figure written 1.234,56 gets read by the code that reads 1,234.56,
+/// and put back afterwards. One character for one, so no caret moves.
+String _swapSeparators(String text) =>
+    text.replaceAllMapped(RegExp('[.,]'), (m) => m[0] == '.' ? ',' : '.');
 
 /// The most digits an amount may carry ahead of the decimal point.
 ///
@@ -97,6 +106,11 @@ String _groupDigits(String digits) =>
 const _maxAmountDigits = 12;
 
 /// Keeps an amount field in the shape [formatMoney] prints.
+///
+/// Written for 1,234.56. A currency that writes 1.234,56 has its separators
+/// swapped on the way in and back on the way out, so both shapes run the one
+/// set of rules below — and both the point and the comma key still mean the
+/// decimal, whichever of the two a keyboard offers.
 ///
 /// Without it a field took whatever the keyboard sent and left the reading to
 /// [parseAmount], which drops what it cannot understand: `9,,,,`, `9abc` and
@@ -114,6 +128,17 @@ class AmountInputFormatter extends TextInputFormatter {
 
   @override
   TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (!currency.decimalComma) return _format(oldValue, newValue);
+    TextEditingValue swapped(TextEditingValue value) =>
+        value.copyWith(text: _swapSeparators(value.text));
+    return swapped(_format(swapped(oldValue), swapped(newValue)));
+  }
+
+  /// Formats a field written 1,234.56; see [formatEditUpdate].
+  TextEditingValue _format(
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
@@ -344,7 +369,11 @@ String? _normalizeAmount(String input) {
 /// Counts the centavos out of the digits rather than multiplying a double by
 /// a hundred, which is how 0.001 used to come back as an amount of nothing.
 int? _parseMinorUnits(Currency currency, String input) {
-  final normalized = _normalizeAmount(input);
+  // Read 1.234,56 as 1,234.56, so that $15.000 CLP is fifteen thousand and
+  // not fifteen with three digits of change.
+  final normalized = _normalizeAmount(
+    currency.decimalComma ? _swapSeparators(input) : input,
+  );
   if (normalized == null) return null;
   final negative = normalized.startsWith('-');
   final body = negative ? normalized.substring(1) : normalized;

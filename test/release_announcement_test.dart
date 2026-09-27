@@ -260,5 +260,30 @@ void main() {
       expect(find.byType(ReleaseNotesScreen), findsOneWidget);
       expect(announcements.hasUnreadNotes, isFalse);
     });
+
+    testWidgets('the shipped note fits a small phone', (tester) async {
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final announcements = ReleaseAnnouncements(
+        preferences: await _preferences({
+          'sobra_notes_announced_version': '1.0.1',
+          'sobra_notes_read_version': '1.0.1',
+        }),
+        versionLoader: _reports('1.0.2'),
+      );
+      await announcements.start();
+
+      await tester.pumpWidget(_harness(const SizedBox.shrink()));
+      final context = tester.element(find.byType(SizedBox));
+      unawaited(
+        showReleaseAnnouncement(context, announcements: announcements),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('v1.0.2'), findsOneWidget);
+    });
   });
 }

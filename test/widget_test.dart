@@ -127,17 +127,40 @@ void main() {
 
     expect(find.text('Colección'), findsOneWidget);
     expect(find.text('PERSONAJES'), findsOneWidget);
-    expect(find.text('Personaje 2'), findsOneWidget);
-    // Michi and Poodle, the two characters that ship owned. The card says
-    // what it is, not what could be done with it.
+    // Only Michi and Poodle ship owned; the two new pets need rewarded ads.
     expect(find.text('OBTENIDO'), findsNWidgets(2));
+    expect(find.text('Schnauzer'), findsOneWidget);
+    expect(find.text('Cobaya'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Personaje 2'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Personaje 2'), findsOneWidget);
+
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, 1500));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('OBJETOS'));
     await tester.pump();
     expect(find.text('Objeto 1'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('NIVEL 5'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('NIVEL 5'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('NIVEL 8'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('NIVEL 8'), findsOneWidget);
 
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, 1500));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Objeto 1'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Objeto 1'));
     await tester.pump();
     expect(find.text('CÓMO OBTENERLO'), findsOneWidget);
@@ -169,6 +192,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('Colección'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Personaje 2'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Personaje 2'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

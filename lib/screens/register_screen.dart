@@ -70,7 +70,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       initialDate: _date ?? store.today,
       firstDate: DateTime(store.today.year - 1),
       lastDate: store.today,
-      locale: const Locale('es', 'MX'),
     );
     if (selected != null && mounted) setState(() => _date = selected);
   }

@@ -285,6 +285,7 @@ void main() {
       VoidCallback? onSaved,
       RegisterMode initialMode = RegisterMode.expense,
       bool focusAmountOnOpen = false,
+      Locale locale = const Locale('es', 'MX'),
     }) async {
       tester.view.physicalSize = const Size(520, 1400);
       tester.view.devicePixelRatio = 1;
@@ -296,9 +297,9 @@ void main() {
           child: SobraScope(
             store: store,
             child: MaterialApp(
-              locale: const Locale('es', 'MX'),
+              locale: locale,
               localizationsDelegates: sobraLocalizationsDelegates,
-              supportedLocales: sobraSupportedLocales,
+              supportedLocales: [locale],
               home: Scaffold(
                 body: RegisterScreen(
                   onSaved: onSaved ?? () {},
@@ -338,6 +339,30 @@ void main() {
       );
       expect(amountField.focusNode.hasFocus, isTrue);
     });
+
+    // The calendar used to be pinned to Mexican Spanish from the days when
+    // that was the only language, so an English or Korean user met Spanish
+    // the moment they changed the date.
+    for (final (locale, cancel) in const [
+      (Locale('en'), 'Cancel'),
+      (Locale('ko'), '취소'),
+      (Locale('es', 'MX'), 'Cancelar'),
+    ]) {
+      testWidgets('the date picker speaks $locale', (tester) async {
+        final store = await loadStore();
+        await openRegister(
+          tester,
+          const UnsupportedReceiptStore(),
+          store,
+          locale: locale,
+        );
+
+        await tester.tap(find.byIcon(Icons.calendar_month));
+        await tester.pumpAndSettle();
+
+        expect(find.text(cancel), findsOneWidget);
+      });
+    }
 
     testWidgets('attaching a photo puts it on the saved expense', (
       tester,

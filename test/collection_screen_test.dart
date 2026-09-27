@@ -108,6 +108,8 @@ void main() {
     final store = await loadStore();
     await pump(tester, store);
 
+    await tester.ensureVisible(find.text('Personaje 7'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Personaje 7'));
     await tester.pumpAndSettle();
 
@@ -123,10 +125,11 @@ void main() {
 
     // The count is its own line now, so the button says what it does and the
     // line says how far along the run is.
-    expect(find.text('VER ANUNCIO'), findsNWidgets(3));
+    // The lazy grid builds the visible cards; later entries load on scroll.
+    expect(find.text('VER ANUNCIO'), findsNWidgets(4));
     expect(find.text('1/2'), findsOneWidget);
-    expect(find.text('0/2'), findsOneWidget);
-    expect(find.text('0/3'), findsOneWidget);
+    // Schnauzer, Guinea Pig and Character 05 remain untouched.
+    expect(find.text('0/2'), findsNWidgets(3));
   });
 
   testWidgets('an owned item offers nothing to place', (tester) async {
@@ -187,9 +190,9 @@ void main() {
 
     await pump(tester, store, ads: ads);
 
-    expect(find.text('SIN ANUNCIOS'), findsNWidgets(3));
+    expect(find.text('SIN ANUNCIOS'), findsNWidgets(4));
     // Blocked, but the run is still legible.
-    expect(find.text('0/2'), findsNWidgets(2));
+    expect(find.text('0/2'), findsNWidgets(4));
   });
 
   // No ad system above the screen at all — the design gallery, and every
@@ -201,7 +204,7 @@ void main() {
 
     await pump(tester, store);
 
-    expect(find.text('SIN ANUNCIOS'), findsNWidgets(3));
+    expect(find.text('SIN ANUNCIOS'), findsNWidgets(4));
   });
 
   testWidgets('a spent daily cap is what every ad card says', (tester) async {
@@ -213,7 +216,7 @@ void main() {
 
     await pump(tester, store, ads: await readyAds(store));
 
-    expect(find.text('LÍMITE DE HOY'), findsNWidgets(3));
+    expect(find.text('LÍMITE DE HOY'), findsNWidgets(4));
   });
 
   testWidgets('the special tier says it continues tomorrow', (tester) async {
@@ -223,12 +226,18 @@ void main() {
 
     await pump(tester, store, ads: await readyAds(store));
 
+    await tester.scrollUntilVisible(
+      find.text('Personaje 8'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+
     expect(find.text('SIGUE MAÑANA'), findsOneWidget);
     // The count stays on screen through the wait. Seeing 1/3 is the reason to
     // come back tomorrow; a card that only says "later" is a locked card.
     expect(find.text('1/3'), findsOneWidget);
     // The others are untouched: one entry's day does not spend anybody else's.
-    expect(find.text('0/2'), findsNWidgets(2));
+    expect(find.text('0/2'), findsWidgets);
   });
 
   testWidgets('watching an ad through counts and unlocks', (tester) async {
@@ -298,8 +307,7 @@ void main() {
 
   testWidgets('closing an ad early explains why nothing moved', (tester) async {
     final store = await loadStore();
-    final port = FakeRewardedAdPort()
-      ..script = [RewardedAdResult.dismissed];
+    final port = FakeRewardedAdPort()..script = [RewardedAdResult.dismissed];
     final ads = RewardedAds(port: port, store: store);
     await ads.prepare();
 
@@ -329,7 +337,11 @@ void main() {
     await store.recordRewardedAdView(special);
 
     await pump(tester, store, ads: await readyAds(store));
-    await tester.ensureVisible(find.text('Personaje 8'));
+    await tester.scrollUntilVisible(
+      find.text('Personaje 8'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.text('Personaje 8'));
     await tester.pumpAndSettle();
@@ -347,14 +359,42 @@ void main() {
     await tester.tap(find.text('Personaje 3'));
     await tester.pumpAndSettle();
 
-    expect(
-      inDialog('Mira anuncios de recompensa · 0/2'),
-      findsOneWidget,
-    );
+    expect(inDialog('Mira anuncios de recompensa · 0/2'), findsOneWidget);
     expect(
       inDialog('Mira anuncios de recompensa · 0/2 · uno por día'),
       findsNothing,
     );
+  });
+
+  testWidgets('Guinea Pig unlocks in the collection after two ads', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    final entry = entryById('guinea-pig');
+    await pump(
+      tester,
+      store,
+      ads: await readyAds(store),
+      initialEntryId: 'guinea-pig',
+    );
+
+    expect(find.text('Cobaya'), findsWidgets);
+    expect(inDialog('Mira anuncios de recompensa · 0/2'), findsOneWidget);
+    expect(inDialog('VER ANUNCIO'), findsOneWidget);
+    expect(store.ownsCatalogEntry(entry), isFalse);
+
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+    expect(store.rewardedAdProgressFor(entry.id), 1);
+    expect(store.ownsCatalogEntry(entry), isFalse);
+
+    await tester.tap(find.text('Cobaya'));
+    await tester.pumpAndSettle();
+    expect(inDialog('Mira anuncios de recompensa · 1/2'), findsOneWidget);
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+    expect(store.ownsCatalogEntry(entry), isTrue);
+    expect(find.text('¡Cobaya es tuyo!'), findsOneWidget);
   });
 
   // The fetch in front of the ad is a network round trip. Before the card said
