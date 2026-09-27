@@ -1879,6 +1879,14 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get releaseNote103GuineaPig =>
+      'Cobaya ya está en la colección. Dos anuncios cortos y se queda contigo.';
+
+  @override
+  String get releaseNote103Widget =>
+      'El widget de inicio muestra con quién vives, y el monto se escribe igual que en la app.';
+
+  @override
   String get releaseNote102Schnauzer =>
       'Schnauzer ya está en la colección. Dos anuncios cortos y se queda contigo.';
 

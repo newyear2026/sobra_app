@@ -272,7 +272,7 @@ void main() {
           'sobra_notes_announced_version': '1.0.1',
           'sobra_notes_read_version': '1.0.1',
         }),
-        versionLoader: _reports('1.0.2'),
+        versionLoader: _reports(releaseNotes.first.version),
       );
       await announcements.start();
 
@@ -283,7 +283,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('v1.0.2'), findsOneWidget);
+      expect(find.text('v${releaseNotes.first.version}'), findsOneWidget);
     });
   });
 }

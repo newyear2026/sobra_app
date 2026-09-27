@@ -118,7 +118,9 @@ void main() {
         await tester.scrollUntilVisible(version, 200);
         expect(version, findsOneWidget);
       }
-      // Exactly one card claims to be the build in hand.
+      // Exactly one card claims to be the build in hand. The walk above
+      // leaves the oldest card on screen, so come back up to the current one.
+      await tester.scrollUntilVisible(find.text('Actual'), -200);
       expect(find.text('Actual'), findsOneWidget);
     });
 
@@ -218,6 +220,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(ReleaseNotesScreen), findsOneWidget);
+      // The running build here is the oldest note, below the fold.
+      await tester.scrollUntilVisible(find.text('Actual'), 200);
       expect(find.text('Actual'), findsOneWidget);
     });
   });

@@ -3267,6 +3267,18 @@ abstract class AppLocalizations {
   /// **'Guardamos las últimas {count} versiones.'**
   String releaseNotesRetention(int count);
 
+  /// No description provided for @releaseNote103GuineaPig.
+  ///
+  /// In es, this message translates to:
+  /// **'Cobaya ya está en la colección. Dos anuncios cortos y se queda contigo.'**
+  String get releaseNote103GuineaPig;
+
+  /// No description provided for @releaseNote103Widget.
+  ///
+  /// In es, this message translates to:
+  /// **'El widget de inicio muestra con quién vives, y el monto se escribe igual que en la app.'**
+  String get releaseNote103Widget;
+
   /// No description provided for @releaseNote102Schnauzer.
   ///
   /// In es, this message translates to:

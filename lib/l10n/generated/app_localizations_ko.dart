@@ -1810,6 +1810,13 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get releaseNote103GuineaPig => '기니피그가 컬렉션에 들어왔어요. 짧은 광고 두 번이면 함께 지내요.';
+
+  @override
+  String get releaseNote103Widget =>
+      '홈 위젯에 같이 지내는 친구가 나오고, 금액도 앱과 같은 방식으로 적혀요.';
+
+  @override
   String get releaseNote102Schnauzer => '슈나우저가 컬렉션에 들어왔어요. 짧은 광고 두 번이면 함께 지내요.';
 
   @override

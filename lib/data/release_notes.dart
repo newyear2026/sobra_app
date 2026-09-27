@@ -37,6 +37,14 @@ class ReleaseNote {
 /// nothing, which is what [ReleaseAnnouncements] reads a missing note as.
 final releaseNotes = <ReleaseNote>[
   ReleaseNote(
+    version: '1.0.3',
+    releasedOn: DateTime(2026, 9, 26),
+    lines: [
+      (l10n) => l10n.releaseNote103GuineaPig,
+      (l10n) => l10n.releaseNote103Widget,
+    ],
+  ),
+  ReleaseNote(
     version: '1.0.2',
     releasedOn: DateTime(2026, 9, 23),
     lines: [

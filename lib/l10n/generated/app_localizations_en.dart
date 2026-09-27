@@ -1878,6 +1878,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get releaseNote103GuineaPig =>
+      'Guinea Pig is in the collection. Two short ads, and they stay.';
+
+  @override
+  String get releaseNote103Widget =>
+      'The home widget shows who you live with, and writes the amount the same way the app does.';
+
+  @override
   String get releaseNote102Schnauzer =>
       'Schnauzer is in the collection. Two short ads, and they stay.';
 

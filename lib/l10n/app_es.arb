@@ -810,6 +810,8 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
+  "releaseNote103GuineaPig": "Cobaya ya está en la colección. Dos anuncios cortos y se queda contigo.",
+  "releaseNote103Widget": "El widget de inicio muestra con quién vives, y el monto se escribe igual que en la app.",
   "releaseNote102Schnauzer": "Schnauzer ya está en la colección. Dos anuncios cortos y se queda contigo.",
   "releaseNote102Rooms": "La casa puede ser un jardín o la playa, y ya puedes colocar un sillón, una lámpara y un reloj.",
   "releaseNote102Missions": "Dos de las tres misiones del día cambian cada día, y las que piden un paso más dan más XP.",

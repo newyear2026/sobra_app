@@ -604,6 +604,8 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
+  "releaseNote103GuineaPig": "Guinea Pig is in the collection. Two short ads, and they stay.",
+  "releaseNote103Widget": "The home widget shows who you live with, and writes the amount the same way the app does.",
   "releaseNote102Schnauzer": "Schnauzer is in the collection. Two short ads, and they stay.",
   "releaseNote102Rooms": "The house can be a garden or a beach, and a chair, a lamp and a clock are ready to place.",
   "releaseNote102Missions": "Two of the three daily missions change every day, and the ones that take an extra step pay more XP.",
