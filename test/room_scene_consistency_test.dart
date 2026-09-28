@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/models/room_design.dart';
 import 'package:sobra_app/state/sobra_store.dart';
+import 'package:sobra_app/widgets/cat_sprite.dart';
 import 'package:sobra_app/widgets/room_scene.dart';
 
 import 'support/localizations.dart';
@@ -62,6 +63,7 @@ void main() {
         );
 
         return {
+          'cat': tester.getRect(find.byType(CatSprite)),
           'background': imageRect(
             variant == RoomSceneVariant.preview
                 ? RoomThemes.casaDePlaya.previewAsset
@@ -125,11 +127,13 @@ void main() {
           baseboard: portraitBaseboard,
           wall: wall,
         );
-        expect(
-          (previewDepth - portraitDepth).abs(),
-          lessThan(.04),
-          reason: item,
-        );
+        if (item != 'bed') {
+          expect(
+            (previewDepth - portraitDepth).abs(),
+            lessThan(.04),
+            reason: item,
+          );
+        }
 
         // The edited wide backgrounds now center the window like the
         // portrait art, so objects should keep the same horizontal relation
@@ -142,7 +146,13 @@ void main() {
             (portrait[item]!.center.dx - portrait['background']!.left) /
                 portrait['background']!.width -
             550 / 1024;
-        expect((previewX - portraitX).abs(), lessThan(.025), reason: '$item x');
+        if (item != 'bed') {
+          expect(
+            (previewX - portraitX).abs(),
+            lessThan(.025),
+            reason: '$item x',
+          );
+        }
 
         final previewHeight =
             preview[item]!.height /
@@ -157,6 +167,16 @@ void main() {
           lessThan(.02),
           reason: '$item height',
         );
+      }
+
+      // The short Home card needs a shallower floor position than the room
+      // view. Its pet bed must finish above the character's feet and tuck
+      // partly behind the character, instead of reading as a foreground prop.
+      for (final scene in [preview, portrait]) {
+        final cat = scene['cat']!;
+        final bed = scene['bed']!;
+        expect(bed.bottom, lessThan(cat.bottom - cat.height * .15));
+        expect(cat.center.dx - bed.center.dx, lessThan(cat.width * .65));
       }
     },
   );

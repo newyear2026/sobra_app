@@ -323,7 +323,9 @@ class _RoomSceneLayout {
       RoomSlot.wallCenter: Rect.fromLTWH(.78, .275, .10, .08),
       RoomSlot.floorLeft: Rect.fromLTWH(.11, .55, .16, .17),
       RoomSlot.floorRight: Rect.fromLTWH(.74, .55, .14, .17),
-      RoomSlot.floorCenter: Rect.fromLTWH(.22, .67, .25, .20),
+      // The Home card has much less visible floor than the portrait scene.
+      // Keep the pet bed behind the character's feet in this crop.
+      RoomSlot.floorCenter: Rect.fromLTWH(.255, .57, .25, .20),
       RoomSlot.floorAccent: Rect.fromLTWH(.64, .65, .08, .136),
       RoomSlot.floorCabinet: Rect.fromLTWH(.17, .505, .18, .22),
     },
