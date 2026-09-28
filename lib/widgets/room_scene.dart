@@ -115,7 +115,8 @@ class RoomScene extends StatelessWidget {
                     .45,
                   )
                 : 0.0;
-            final height = stageHeight * stageScale * (1 + depth * .6);
+            final height =
+                stageHeight * stageScale * layout.itemScale * (1 + depth * .6);
             final width = height * 3;
             return switch (slot.surface) {
               RoomSurface.floor || RoomSurface.tabletop => Rect.fromLTWH(
@@ -267,6 +268,7 @@ class _RoomSceneLayout {
     required this.catTop,
     required this.catWidth,
     required this.floorLine,
+    this.itemScale = 1,
     this.floorFocus,
   });
 
@@ -280,6 +282,11 @@ class _RoomSceneLayout {
   final double catTop;
   final double catWidth;
   final double floorLine;
+
+  /// The wide empty-room paintings compress the wall vertically compared
+  /// with their portrait paintings. Keep decor the same size relative to
+  /// the window and baseboard in both views.
+  final double itemScale;
 
   /// See [_coverRect]; null centres the background.
   final double? floorFocus;
@@ -304,27 +311,26 @@ class _RoomSceneLayout {
     floorLine: .72,
   );
 
-  // The new 3:2 preview art is cover-cropped into the same 2:1 Home card.
-  // It is drawn at about the portrait's scale (the window glass is 280 px
-  // wide here, 252 there), so stage heights carry over. As in the portrait,
-  // furniture stands at the wall, whose floor line is near y 690, and the
-  // wall slots hang clear of a floor lamp's shade. The window sits right of
-  // centre in this art, so the right-hand places go beyond it.
+  // The 3:2 preview art is cropped into a 2:1 Home card. Its window and
+  // baseboard are closer together than in the portrait art. Place items by
+  // those landmarks so they retain their height on the wall and their depth
+  // on the floor when the user opens the same room.
   static const _emptyThemePreview = _RoomSceneLayout(
     slotRects: {
       RoomSlot.rug: Rect.fromLTWH(.20, .73, .62, .24),
-      RoomSlot.wallLeft: Rect.fromLTWH(.09, .195, .10, .08),
-      RoomSlot.wallCenter: Rect.fromLTWH(.82, .195, .10, .08),
-      RoomSlot.floorLeft: Rect.fromLTWH(.06, .55, .16, .183),
-      RoomSlot.floorRight: Rect.fromLTWH(.80, .55, .14, .183),
+      RoomSlot.wallLeft: Rect.fromLTWH(.09, .275, .10, .08),
+      RoomSlot.wallCenter: Rect.fromLTWH(.82, .275, .10, .08),
+      RoomSlot.floorLeft: Rect.fromLTWH(.06, .55, .16, .17),
+      RoomSlot.floorRight: Rect.fromLTWH(.80, .55, .14, .17),
       RoomSlot.floorCenter: Rect.fromLTWH(.22, .67, .25, .20),
-      RoomSlot.floorAccent: Rect.fromLTWH(.64, .65, .08, .14),
-      RoomSlot.floorCabinet: Rect.fromLTWH(.17, .55, .18, .22),
+      RoomSlot.floorAccent: Rect.fromLTWH(.64, .65, .08, .136),
+      RoomSlot.floorCabinet: Rect.fromLTWH(.17, .505, .18, .22),
     },
     speechRect: Rect.fromLTWH(.31, .17, .38, .26),
     catTop: .47,
     catWidth: .22,
     floorLine: .675,
+    itemScale: .82,
   );
 
   // The home card is the preview image's own 2:1 shape, so nothing is

@@ -57,8 +57,8 @@ class RoomTheme {
   final String portraitAsset;
 
   /// Each background's size in pixels, which the scene needs before the image
-  /// loads: to know how cover-fitting will crop it, and how large a stage
-  /// pixel is on screen. Both images share one pixel scale.
+  /// loads to cover-fit it. The scene layout aligns decor to the landmarks in
+  /// each illustration.
   final Size previewSize;
   final Size portraitSize;
 
