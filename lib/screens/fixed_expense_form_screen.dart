@@ -5,6 +5,7 @@ import '../l10n/labels.dart';
 import '../models/expense_entry.dart';
 import '../models/pay_schedule.dart';
 import '../models/recurring_expense.dart';
+import '../services/fixed_reminders.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/pixel_ui.dart';
@@ -30,6 +31,11 @@ class _FixedExpenseFormScreenState extends State<FixedExpenseFormScreen> {
   ExpenseCategory _category = ExpenseCategory.home;
   PaymentMethod _method = PaymentMethod.cash;
   bool _variable = false;
+  FixedReminder _reminder = FixedFrequency.monthly.defaultReminder;
+
+  /// Whether the user picked the reminder. Until then it follows the
+  /// frequency's default, so choosing "Cada semana" quietly turns it off.
+  bool _reminderChosen = false;
   DateTime? _nextDue;
   bool _saving = false;
   bool _started = false;
@@ -55,6 +61,8 @@ class _FixedExpenseFormScreenState extends State<FixedExpenseFormScreen> {
     _category = existing.category;
     _method = existing.paymentMethod;
     _variable = existing.isVariable;
+    _reminder = existing.reminder;
+    _reminderChosen = true;
     _nextDue =
         store.nextUnpaidOccurrence(existing)?.date ??
         dateOnly(existing.anchorDate);
@@ -99,6 +107,7 @@ class _FixedExpenseFormScreenState extends State<FixedExpenseFormScreen> {
       interval: _frequency.interval,
       anchorDate: sameSchedule ? base.anchorDate : nextDue,
       isVariable: _variable,
+      reminder: _reminder,
     );
   }
 
@@ -136,12 +145,24 @@ class _FixedExpenseFormScreenState extends State<FixedExpenseFormScreen> {
           frequency: _frequency,
           firstDueDate: _nextDue!,
           isVariable: _variable,
+          reminder: _reminder,
         );
       } else {
         saved = _draft(amount);
         await store.updateRecurringExpense(saved!);
       }
     });
+    if (!mounted) return;
+    // Asked when a reminder is actually wanted, not when the screen opens:
+    // Android shows its prompt once or twice at most, and it should land
+    // where the reason for it is obvious.
+    if (ok &&
+        _reminder != FixedReminder.none &&
+        !await SobraFixedReminders.requestPermission()) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.fixedReminderBlocked)),
+      );
+    }
     if (!mounted) return;
     setState(() => _saving = false);
     if (ok) navigator.pop(saved);
@@ -242,7 +263,10 @@ class _FixedExpenseFormScreenState extends State<FixedExpenseFormScreen> {
                   const SizedBox(height: 8),
                   _FrequencyGrid(
                     selected: _frequency,
-                    onChanged: (value) => setState(() => _frequency = value),
+                    onChanged: (value) => setState(() {
+                      _frequency = value;
+                      if (!_reminderChosen) _reminder = value.defaultReminder;
+                    }),
                   ),
                   const SizedBox(height: 16),
                   Text(l10n.fixedNextDue, style: textTheme.titleMedium),
@@ -341,6 +365,45 @@ class _FixedExpenseFormScreenState extends State<FixedExpenseFormScreen> {
                         onChanged: (value) => setState(() => _variable = value),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 18),
+                  DropdownButtonFormField<FixedReminder>(
+                    // Keyed on the value: the field only reads its initial
+                    // value once, and a frequency change can move it.
+                    key: ValueKey(_reminder),
+                    initialValue: _reminder,
+                    decoration: InputDecoration(
+                      labelText: l10n.fixedReminderLabel,
+                      helperText: _reminder == FixedReminder.none
+                          ? null
+                          : l10n.fixedReminderHint,
+                    ),
+                    items: [
+                      for (final option in FixedReminder.values)
+                        DropdownMenuItem(
+                          value: option,
+                          child: Row(
+                            children: [
+                              Icon(
+                                option == FixedReminder.none
+                                    ? Icons.notifications_off_outlined
+                                    : Icons.notifications_active_outlined,
+                                size: 20,
+                                color: AppColors.inkSoft,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(option.label(l10n)),
+                            ],
+                          ),
+                        ),
+                    ],
+                    onChanged: (value) {
+                      if (value == null) return;
+                      setState(() {
+                        _reminder = value;
+                        _reminderChosen = true;
+                      });
+                    },
                   ),
                   const SizedBox(height: 18),
                   PixelHint(tone: PixelHintTone.teal, text: l10n.fixedFormNote),

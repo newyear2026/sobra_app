@@ -2127,4 +2127,45 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get fixedNothingThisMonth => '이번 달엔 낼 게 없어요.';
+
+  @override
+  String get fixedReminderLabel => '알림';
+
+  @override
+  String get fixedReminderNone => '알림 없음';
+
+  @override
+  String get fixedReminderSameDay => '당일';
+
+  @override
+  String get fixedReminderDayBefore => '하루 전';
+
+  @override
+  String get fixedReminderThreeDaysBefore => '3일 전';
+
+  @override
+  String get fixedReminderHint => '오전 9시에 알려 드려요.';
+
+  @override
+  String get fixedReminderBlocked => 'Sobrita 알림이 꺼져 있어서 알려 드릴 수 없어요.';
+
+  @override
+  String fixedReminderTitleToday(String name) {
+    return '오늘은 $name 내는 날이에요';
+  }
+
+  @override
+  String fixedReminderTitleTomorrow(String name) {
+    return '내일은 $name 내는 날이에요';
+  }
+
+  @override
+  String fixedReminderTitleInDays(String name, int days) {
+    return '$days일 뒤 $name 내는 날이에요';
+  }
+
+  @override
+  String fixedReminderBody(String amount, String method) {
+    return '$amount · $method. 낸 뒤에 Sobrita에 기록해 주세요.';
+  }
 }

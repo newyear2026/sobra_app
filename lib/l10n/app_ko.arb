@@ -704,5 +704,16 @@
   "fixedIntroKeep": "이대로 좋아요",
   "fixedIntroAdjust": "예산 조정하기",
   "fixedBadge": "고정",
-  "fixedNothingThisMonth": "이번 달엔 낼 게 없어요."
+  "fixedNothingThisMonth": "이번 달엔 낼 게 없어요.",
+  "fixedReminderLabel": "알림",
+  "fixedReminderNone": "알림 없음",
+  "fixedReminderSameDay": "당일",
+  "fixedReminderDayBefore": "하루 전",
+  "fixedReminderThreeDaysBefore": "3일 전",
+  "fixedReminderHint": "오전 9시에 알려 드려요.",
+  "fixedReminderBlocked": "Sobrita 알림이 꺼져 있어서 알려 드릴 수 없어요.",
+  "fixedReminderTitleToday": "오늘은 {name} 내는 날이에요",
+  "fixedReminderTitleTomorrow": "내일은 {name} 내는 날이에요",
+  "fixedReminderTitleInDays": "{days}일 뒤 {name} 내는 날이에요",
+  "fixedReminderBody": "{amount} · {method}. 낸 뒤에 Sobrita에 기록해 주세요."
 }

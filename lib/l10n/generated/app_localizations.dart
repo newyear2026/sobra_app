@@ -3818,6 +3818,72 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Nada vence este mes.'**
   String get fixedNothingThisMonth;
+
+  /// No description provided for @fixedReminderLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorio'**
+  String get fixedReminderLabel;
+
+  /// No description provided for @fixedReminderNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin aviso'**
+  String get fixedReminderNone;
+
+  /// No description provided for @fixedReminderSameDay.
+  ///
+  /// In es, this message translates to:
+  /// **'El mismo día'**
+  String get fixedReminderSameDay;
+
+  /// No description provided for @fixedReminderDayBefore.
+  ///
+  /// In es, this message translates to:
+  /// **'1 día antes'**
+  String get fixedReminderDayBefore;
+
+  /// No description provided for @fixedReminderThreeDaysBefore.
+  ///
+  /// In es, this message translates to:
+  /// **'3 días antes'**
+  String get fixedReminderThreeDaysBefore;
+
+  /// No description provided for @fixedReminderHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Te aviso a las 9:00 de la mañana.'**
+  String get fixedReminderHint;
+
+  /// Shown after saving a fixed expense with a reminder when Android refused notification permission.
+  ///
+  /// In es, this message translates to:
+  /// **'Las notificaciones de Sobrita están apagadas, así que no podré avisarte.'**
+  String get fixedReminderBlocked;
+
+  /// Notification title on the due date. {name} is what the user called the fixed expense.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy toca pagar {name}'**
+  String fixedReminderTitleToday(String name);
+
+  /// No description provided for @fixedReminderTitleTomorrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Mañana toca pagar {name}'**
+  String fixedReminderTitleTomorrow(String name);
+
+  /// No description provided for @fixedReminderTitleInDays.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} vence en {days} días'**
+  String fixedReminderTitleInDays(String name, int days);
+
+  /// Notification body. The payment is never recorded automatically.
+  ///
+  /// In es, this message translates to:
+  /// **'{amount} · {method}. Cuando pagues, anótalo en Sobrita.'**
+  String fixedReminderBody(String amount, String method);
 }
 
 class _AppLocalizationsDelegate

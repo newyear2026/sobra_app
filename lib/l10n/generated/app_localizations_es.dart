@@ -2209,4 +2209,46 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get fixedNothingThisMonth => 'Nada vence este mes.';
+
+  @override
+  String get fixedReminderLabel => 'Recordatorio';
+
+  @override
+  String get fixedReminderNone => 'Sin aviso';
+
+  @override
+  String get fixedReminderSameDay => 'El mismo día';
+
+  @override
+  String get fixedReminderDayBefore => '1 día antes';
+
+  @override
+  String get fixedReminderThreeDaysBefore => '3 días antes';
+
+  @override
+  String get fixedReminderHint => 'Te aviso a las 9:00 de la mañana.';
+
+  @override
+  String get fixedReminderBlocked =>
+      'Las notificaciones de Sobrita están apagadas, así que no podré avisarte.';
+
+  @override
+  String fixedReminderTitleToday(String name) {
+    return 'Hoy toca pagar $name';
+  }
+
+  @override
+  String fixedReminderTitleTomorrow(String name) {
+    return 'Mañana toca pagar $name';
+  }
+
+  @override
+  String fixedReminderTitleInDays(String name, int days) {
+    return '$name vence en $days días';
+  }
+
+  @override
+  String fixedReminderBody(String amount, String method) {
+    return '$amount · $method. Cuando pagues, anótalo en Sobrita.';
+  }
 }

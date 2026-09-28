@@ -11,6 +11,7 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
     private var widgetChannel: MethodChannel? = null
     private var pendingQuickEntryResult: MethodChannel.Result? = null
+    private var pendingReminderPermission: MethodChannel.Result? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -83,6 +84,39 @@ class MainActivity : FlutterActivity() {
                 else -> result.notImplemented()
             }
         }
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            FIXED_REMINDERS_CHANNEL,
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "schedule" -> {
+                    val plan = call.arguments as? List<*>
+                    if (plan == null) {
+                        result.error("INVALID_PAYLOAD", "Reminder plan is missing.", null)
+                    } else {
+                        SobraFixedReminders.schedule(this, plan)
+                        result.success(null)
+                    }
+                }
+                "requestPermission" -> when {
+                    !SobraFixedReminders.needsRuntimePermission(this) ->
+                        result.success(SobraFixedReminders.canNotify(this))
+                    pendingReminderPermission != null -> result.error(
+                        "PERMISSION_PENDING",
+                        "Notification permission is already being requested.",
+                        null,
+                    )
+                    else -> {
+                        pendingReminderPermission = result
+                        requestPermissions(
+                            arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                            FIXED_REMINDER_PERMISSION_REQUEST,
+                        )
+                    }
+                }
+                else -> result.notImplemented()
+            }
+        }
         SobraQuickEntryNotification.restore(this)
     }
 
@@ -99,6 +133,11 @@ class MainActivity : FlutterActivity() {
         grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == FIXED_REMINDER_PERMISSION_REQUEST) {
+            pendingReminderPermission?.success(SobraFixedReminders.canNotify(this))
+            pendingReminderPermission = null
+            return
+        }
         if (requestCode != QUICK_ENTRY_PERMISSION_REQUEST) return
         val granted = grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED
         val enabled = granted && SobraQuickEntryNotification.setEnabled(this, true)
@@ -154,5 +193,7 @@ class MainActivity : FlutterActivity() {
         private const val WIDGET_CHANNEL = "com.sobra.app/widgets"
         private const val QUICK_ENTRY_CHANNEL = "com.sobra.app/quick_entry"
         private const val QUICK_ENTRY_PERMISSION_REQUEST = 2609
+        private const val FIXED_REMINDERS_CHANNEL = "com.sobra.app/fixed_reminders"
+        private const val FIXED_REMINDER_PERMISSION_REQUEST = 2610
     }
 }

@@ -948,5 +948,21 @@
   "fixedIntroAdjust": "Ajustar presupuesto",
   "fixedBadge": "Fijo",
   "@fixedBadge": {"description": "Marks a fixed-expense payment in the movements list."},
-  "fixedNothingThisMonth": "Nada vence este mes."
+  "fixedNothingThisMonth": "Nada vence este mes.",
+  "fixedReminderLabel": "Recordatorio",
+  "fixedReminderNone": "Sin aviso",
+  "fixedReminderSameDay": "El mismo día",
+  "fixedReminderDayBefore": "1 día antes",
+  "fixedReminderThreeDaysBefore": "3 días antes",
+  "fixedReminderHint": "Te aviso a las 9:00 de la mañana.",
+  "fixedReminderBlocked": "Las notificaciones de Sobrita están apagadas, así que no podré avisarte.",
+  "@fixedReminderBlocked": {"description": "Shown after saving a fixed expense with a reminder when Android refused notification permission."},
+  "fixedReminderTitleToday": "Hoy toca pagar {name}",
+  "@fixedReminderTitleToday": {"description": "Notification title on the due date. {name} is what the user called the fixed expense.", "placeholders": {"name": {"type": "String"}}},
+  "fixedReminderTitleTomorrow": "Mañana toca pagar {name}",
+  "@fixedReminderTitleTomorrow": {"placeholders": {"name": {"type": "String"}}},
+  "fixedReminderTitleInDays": "{name} vence en {days} días",
+  "@fixedReminderTitleInDays": {"placeholders": {"name": {"type": "String"}, "days": {"type": "int"}}},
+  "fixedReminderBody": "{amount} · {method}. Cuando pagues, anótalo en Sobrita.",
+  "@fixedReminderBody": {"description": "Notification body. The payment is never recorded automatically.", "placeholders": {"amount": {"type": "String"}, "method": {"type": "String"}}}
 }

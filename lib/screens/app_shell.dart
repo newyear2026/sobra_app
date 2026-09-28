@@ -162,6 +162,8 @@ class _AppShellState extends State<AppShell> {
     switch (destination) {
       case SobraWidgetDestination.home:
         _changeSelection(AppTab.home);
+      case SobraWidgetDestination.budget:
+        _changeSelection(AppTab.budget);
       case SobraWidgetDestination.register:
       case SobraWidgetDestination.registerExpense:
         _noteTabTransition(AppTab.register);

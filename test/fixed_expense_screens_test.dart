@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/l10n/generated/app_localizations.dart';
@@ -20,9 +21,17 @@ Future<void> frames(WidgetTester tester, [int count = 40]) async {
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   late DateTime now;
 
   setUp(() {
+    // Android answers the permission prompt; without an answer the save
+    // would wait on it forever.
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+          const MethodChannel('com.sobra.app/fixed_reminders'),
+          (call) async => call.method == 'requestPermission' ? true : null,
+        );
     SharedPreferences.setMockInitialValues({});
     // The last Monday of the Sep 16 – 30 quincena.
     now = DateTime(2026, 9, 28, 9);

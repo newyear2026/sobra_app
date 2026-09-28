@@ -702,5 +702,16 @@
   "fixedIntroKeep": "It's fine as is",
   "fixedIntroAdjust": "Adjust budget",
   "fixedBadge": "Fixed",
-  "fixedNothingThisMonth": "Nothing due this month."
+  "fixedNothingThisMonth": "Nothing due this month.",
+  "fixedReminderLabel": "Reminder",
+  "fixedReminderNone": "No reminder",
+  "fixedReminderSameDay": "On the day",
+  "fixedReminderDayBefore": "1 day before",
+  "fixedReminderThreeDaysBefore": "3 days before",
+  "fixedReminderHint": "I'll remind you at 9:00 in the morning.",
+  "fixedReminderBlocked": "Sobrita's notifications are off, so I can't remind you.",
+  "fixedReminderTitleToday": "{name} is due today",
+  "fixedReminderTitleTomorrow": "{name} is due tomorrow",
+  "fixedReminderTitleInDays": "{name} is due in {days} days",
+  "fixedReminderBody": "{amount} · {method}. Mark it paid in Sobrita once you pay."
 }

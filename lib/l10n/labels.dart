@@ -412,3 +412,12 @@ String fixedDueLine(AppLocalizations l10n, FixedOccurrence occurrence) =>
       ),
       _ => l10n.fixedDueOn(shortCycleDate(l10n, occurrence.date)),
     };
+
+extension FixedReminderL10n on FixedReminder {
+  String label(AppLocalizations l10n) => switch (this) {
+    FixedReminder.none => l10n.fixedReminderNone,
+    FixedReminder.sameDay => l10n.fixedReminderSameDay,
+    FixedReminder.dayBefore => l10n.fixedReminderDayBefore,
+    FixedReminder.threeDaysBefore => l10n.fixedReminderThreeDaysBefore,
+  };
+}
