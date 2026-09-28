@@ -43,6 +43,7 @@ class CycleRecord {
     required this.budgetCentavos,
     required this.spentCentavos,
     required this.cycleType,
+    this.fixedPaidCentavos = 0,
   });
 
   final DateTime start;
@@ -55,6 +56,10 @@ class CycleRecord {
   /// How the cycle was bounded at the time, which a later change to the pay
   /// schedule cannot alter after the fact.
   final PayCycleType cycleType;
+
+  /// Fixed-expense payments made during the cycle, kept beside [spentCentavos]
+  /// rather than inside it: they never count toward [successful].
+  final int fixedPaidCentavos;
 
   int get lengthInDays => end.difference(start).inDays + 1;
 
@@ -77,6 +82,7 @@ class CycleRecord {
     'budgetCentavos': budgetCentavos,
     'spentCentavos': spentCentavos,
     'cycleType': cycleType.name,
+    'fixedPaidCentavos': fixedPaidCentavos,
   };
 
   factory CycleRecord.fromJson(Map<String, dynamic> json) => CycleRecord(
@@ -85,5 +91,6 @@ class CycleRecord {
     budgetCentavos: (json['budgetCentavos'] as num).toInt(),
     spentCentavos: (json['spentCentavos'] as num).toInt(),
     cycleType: PayCycleType.values.byName(json['cycleType'] as String),
+    fixedPaidCentavos: (json['fixedPaidCentavos'] as num?)?.toInt() ?? 0,
   );
 }
