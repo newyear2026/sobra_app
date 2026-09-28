@@ -87,7 +87,7 @@ void main() {
     expect(find.text(r'MX$ 79'), findsOneWidget);
     // The preview source priced six entries. Only the one the fake store
     // actually listed may carry a price now.
-    expect(find.text(r'MX$ 99'), findsNothing);
+    expect(find.text(r'MX$ 39'), findsNothing);
   });
 
   testWidgets('buying from the dialog reaches the store and then unlocks', (

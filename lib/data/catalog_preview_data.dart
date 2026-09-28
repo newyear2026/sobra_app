@@ -406,16 +406,21 @@ abstract interface class CatalogPriceSource {
 }
 
 /// Temporary store response for the visual prototype only.
+///
+/// Mirrors the prices meant for Play Console. Every single character is one
+/// flat price, so none reads as lesser than another. The pack costs a peso more
+/// than ad removal plus one character, which is the whole case for it: the
+/// other two characters and the star come with it.
 final class PreviewCatalogPriceSource implements CatalogPriceSource {
   const PreviewCatalogPriceSource();
 
   @override
   String? localizedPriceFor(String storeProductId) => switch (storeProductId) {
-    'sobra.character.07' => r'MX$ 79',
-    'sobra.character.09' => r'MX$ 99',
-    'sobra.character.10' => r'MX$ 129',
-    CatalogPreviewData.packProductId => r'MX$ 149',
-    CatalogPreviewData.removeAdsProductId => r'MX$ 89',
+    'sobra.character.07' => r'MX$ 39',
+    'sobra.character.09' => r'MX$ 39',
+    'sobra.character.10' => r'MX$ 39',
+    CatalogPreviewData.packProductId => r'MX$ 89',
+    CatalogPreviewData.removeAdsProductId => r'MX$ 49',
     _ => null,
   };
 }

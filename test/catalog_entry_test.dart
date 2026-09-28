@@ -119,6 +119,6 @@ void main() {
     );
 
     expect(paid.storeProductId, isNotEmpty);
-    expect(source.localizedPriceFor(paid.storeProductId!), r'MX$ 79');
+    expect(source.localizedPriceFor(paid.storeProductId!), r'MX$ 39');
   });
 }
