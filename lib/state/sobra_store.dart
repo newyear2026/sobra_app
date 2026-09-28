@@ -117,6 +117,10 @@ class SobraStore extends ChangeNotifier {
   /// The local day [_nativeAdImpressionsOnDay] belongs to.
   String? _nativeAdDay;
   int _nativeAdImpressionsOnDay = 0;
+
+  /// The local day the user answered "Todavía no" on Inicio's fixed-expense
+  /// card, which keeps the card away for the rest of that day only.
+  String? _fixedHomeSnoozedDay;
   int _idSequence = 0;
 
   int _baseBudgetCentavos = 600000;
@@ -1130,6 +1134,16 @@ class SobraStore extends ChangeNotifier {
   /// user around. Reminding is the job; nagging is not.
   static const fixedOverdueDaysOnHome = 2;
 
+  /// Whether Inicio's fixed-expense card was put off for today.
+  bool get isFixedHomeCardSnoozed => _fixedHomeSnoozedDay == todayKey;
+
+  /// Hides Inicio's fixed-expense card until tomorrow.
+  Future<void> snoozeFixedHomeCard() async {
+    _fixedHomeSnoozedDay = todayKey;
+    await _save();
+    notifyListeners();
+  }
+
   /// Unpaid occurrences Inicio should ask about: due today or a little late.
   List<FixedOccurrence> get fixedDueOnHome {
     final from = DateTime(
@@ -2081,6 +2095,7 @@ class SobraStore extends ChangeNotifier {
     _nativeAdInstallDay = todayKey;
     _nativeAdDay = null;
     _nativeAdImpressionsOnDay = 0;
+    _fixedHomeSnoozedDay = null;
     countedCashCentavos = 0;
     expectedCashCentavos = 0;
     reducedMotion = false;
@@ -2162,6 +2177,7 @@ class SobraStore extends ChangeNotifier {
     _nativeAdInstallDay = other._nativeAdInstallDay;
     _nativeAdDay = other._nativeAdDay;
     _nativeAdImpressionsOnDay = other._nativeAdImpressionsOnDay;
+    _fixedHomeSnoozedDay = other._fixedHomeSnoozedDay;
     _baseBudgetCentavos = other._baseBudgetCentavos;
     _hasBudget = other._hasBudget;
     characterId = other.characterId;
@@ -2318,6 +2334,7 @@ class SobraStore extends ChangeNotifier {
     _nativeAdDay = json['nativeAdDay'] as String?;
     _nativeAdImpressionsOnDay =
         (json['nativeAdImpressionsOnDay'] as num?)?.toInt() ?? 0;
+    _fixedHomeSnoozedDay = json['fixedHomeSnoozedDay'] as String?;
     countedCashCentavos = (json['countedCashCentavos'] as num).toInt();
     expectedCashCentavos = (json['expectedCashCentavos'] as num).toInt();
     reducedMotion = json['reducedMotion'] as bool? ?? false;
@@ -2412,6 +2429,7 @@ class SobraStore extends ChangeNotifier {
     'nativeAdInstallDay': _nativeAdInstallDay,
     'nativeAdDay': _nativeAdDay,
     'nativeAdImpressionsOnDay': _nativeAdImpressionsOnDay,
+    'fixedHomeSnoozedDay': _fixedHomeSnoozedDay,
     'cycleBudgetExtras': _cycleBudgetExtras,
     'countedCashCentavos': countedCashCentavos,
     'expectedCashCentavos': expectedCashCentavos,

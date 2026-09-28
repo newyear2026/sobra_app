@@ -3506,6 +3506,318 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Novedades sin leer'**
   String get settingsReleaseNotesUnread;
+
+  /// Budget tab heading for rent, phone plans, bills paid on a schedule.
+  ///
+  /// In es, this message translates to:
+  /// **'Gastos fijos'**
+  String get fixedSectionTitle;
+
+  /// Under the heading: which month the list covers, and that it does not touch the daily amount.
+  ///
+  /// In es, this message translates to:
+  /// **'{month} · aparte de tu gasto diario'**
+  String fixedSectionMonth(String month);
+
+  /// No description provided for @fixedPaidOfTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'Pagado {paid} de {total}'**
+  String fixedPaidOfTotal(String paid, String total);
+
+  /// No description provided for @fixedAdd.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar gasto fijo'**
+  String get fixedAdd;
+
+  /// No description provided for @fixedEmptyBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Renta, celular, luz: anótalos una vez y te recuerdo cuándo toca pagar. No cambian tu gasto diario.'**
+  String get fixedEmptyBody;
+
+  /// No description provided for @fixedFrequencyWeekly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada semana'**
+  String get fixedFrequencyWeekly;
+
+  /// On the 15th and the last day of the month. Korean matches the existing pay-cycle label.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada quincena'**
+  String get fixedFrequencySemiMonthly;
+
+  /// No description provided for @fixedFrequencyMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada mes'**
+  String get fixedFrequencyMonthly;
+
+  /// CFE electricity and water are billed every two months in most of Mexico.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada 2 meses'**
+  String get fixedFrequencyBimonthly;
+
+  /// No description provided for @fixedStatusPaid.
+  ///
+  /// In es, this message translates to:
+  /// **'Pagado'**
+  String get fixedStatusPaid;
+
+  /// No description provided for @fixedStatusTomorrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Mañana'**
+  String get fixedStatusTomorrow;
+
+  /// Unpaid and past its date. Deliberately soft: no 'vencido' or '연체' — Sobra reminds, it does not scold.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha pasada'**
+  String get fixedStatusOverdue;
+
+  /// An estimate for a bill whose amount changes each time.
+  ///
+  /// In es, this message translates to:
+  /// **'aprox. {amount}'**
+  String fixedApprox(String amount);
+
+  /// No description provided for @fixedFormNewTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo gasto fijo'**
+  String get fixedFormNewTitle;
+
+  /// No description provided for @fixedFormEditTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar gasto fijo'**
+  String get fixedFormEditTitle;
+
+  /// No description provided for @fixedName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get fixedName;
+
+  /// No description provided for @fixedNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Renta, celular, luz…'**
+  String get fixedNameHint;
+
+  /// No description provided for @fixedNameRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponle un nombre'**
+  String get fixedNameRequired;
+
+  /// No description provided for @fixedHowOften.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cada cuánto?'**
+  String get fixedHowOften;
+
+  /// No description provided for @fixedNextDue.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximo pago'**
+  String get fixedNextDue;
+
+  /// The next few due dates, so a wrong month shows up before saving.
+  ///
+  /// In es, this message translates to:
+  /// **'Después: {dates}…'**
+  String fixedThenDates(String dates);
+
+  /// No description provided for @fixedVariable.
+  ///
+  /// In es, this message translates to:
+  /// **'El monto cambia cada vez'**
+  String get fixedVariable;
+
+  /// No description provided for @fixedVariableHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Uso lo último que pagaste como estimado.'**
+  String get fixedVariableHint;
+
+  /// No description provided for @fixedFormNote.
+  ///
+  /// In es, this message translates to:
+  /// **'No cambia tu gasto diario: tu presupuesto es lo que te queda después de los fijos.'**
+  String get fixedFormNote;
+
+  /// No description provided for @fixedSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar gasto fijo'**
+  String get fixedSave;
+
+  /// No description provided for @fixedDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar gasto fijo'**
+  String get fixedDelete;
+
+  /// No description provided for @fixedDeleteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar {name}?'**
+  String fixedDeleteTitle(String name);
+
+  /// No description provided for @fixedDeleteBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Los pagos que ya registraste se quedan en tus movimientos.'**
+  String get fixedDeleteBody;
+
+  /// No description provided for @fixedDueToday.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence hoy'**
+  String get fixedDueToday;
+
+  /// No description provided for @fixedDueTomorrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence mañana'**
+  String get fixedDueTomorrow;
+
+  /// No description provided for @fixedDueOn.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence el {date}'**
+  String fixedDueOn(String date);
+
+  /// No description provided for @fixedWasDue.
+  ///
+  /// In es, this message translates to:
+  /// **'Tocaba el {date}'**
+  String fixedWasDue(String date);
+
+  /// No description provided for @fixedHowMuch.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuánto pagaste?'**
+  String get fixedHowMuch;
+
+  /// No description provided for @fixedLastTime.
+  ///
+  /// In es, this message translates to:
+  /// **'La vez pasada: {amount}'**
+  String fixedLastTime(String amount);
+
+  /// No description provided for @fixedTodayUnchanged.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu gasto de hoy sigue en {amount}.'**
+  String fixedTodayUnchanged(String amount);
+
+  /// A cash payment does leave the wallet, so the cash estimate moves even though the budget does not.
+  ///
+  /// In es, this message translates to:
+  /// **'Efectivo estimado: de {from} a {to}'**
+  String fixedCashChange(String from, String to);
+
+  /// No description provided for @fixedPaidWith.
+  ///
+  /// In es, this message translates to:
+  /// **'Pago con {method}'**
+  String fixedPaidWith(String method);
+
+  /// No description provided for @fixedChange.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar'**
+  String get fixedChange;
+
+  /// No description provided for @fixedMarkPaid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya lo pagué'**
+  String get fixedMarkPaid;
+
+  /// No description provided for @fixedNotYet.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no'**
+  String get fixedNotYet;
+
+  /// Updates the expected amount without recording a payment.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo llegó el recibo'**
+  String get fixedBillOnly;
+
+  /// No description provided for @fixedBillSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo, espero {amount}.'**
+  String fixedBillSaved(String amount);
+
+  /// No description provided for @fixedPaymentSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} registrado.'**
+  String fixedPaymentSaved(String name);
+
+  /// No description provided for @fixedHomeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto fijo'**
+  String get fixedHomeLabel;
+
+  /// No description provided for @fixedHomeMany.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 pago fijo por revisar} other{{count} pagos fijos por revisar}}'**
+  String fixedHomeMany(int count);
+
+  /// No description provided for @fixedHomeSee.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver'**
+  String get fixedHomeSee;
+
+  /// No description provided for @fixedIntroTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu presupuesto es para gastar, sin fijos'**
+  String get fixedIntroTitle;
+
+  /// No description provided for @fixedIntroBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Los gastos fijos no bajan tu gasto diario. Si tus {budget} ya contaban «{name}», conviene bajar el presupuesto.'**
+  String fixedIntroBody(String budget, String name);
+
+  /// No description provided for @fixedIntroKeep.
+  ///
+  /// In es, this message translates to:
+  /// **'Está bien así'**
+  String get fixedIntroKeep;
+
+  /// No description provided for @fixedIntroAdjust.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustar presupuesto'**
+  String get fixedIntroAdjust;
+
+  /// Marks a fixed-expense payment in the movements list.
+  ///
+  /// In es, this message translates to:
+  /// **'Fijo'**
+  String get fixedBadge;
+
+  /// No description provided for @fixedNothingThisMonth.
+  ///
+  /// In es, this message translates to:
+  /// **'Nada vence este mes.'**
+  String get fixedNothingThisMonth;
 }
 
 class _AppLocalizationsDelegate

@@ -2012,4 +2012,201 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsReleaseNotesUnread => 'Unread release notes';
+
+  @override
+  String get fixedSectionTitle => 'Fixed expenses';
+
+  @override
+  String fixedSectionMonth(String month) {
+    return '$month · separate from your daily amount';
+  }
+
+  @override
+  String fixedPaidOfTotal(String paid, String total) {
+    return 'Paid $paid of $total';
+  }
+
+  @override
+  String get fixedAdd => 'Add fixed expense';
+
+  @override
+  String get fixedEmptyBody =>
+      'Rent, phone, electricity: add them once and I\'ll remind you when they\'re due. They don\'t change your daily amount.';
+
+  @override
+  String get fixedFrequencyWeekly => 'Every week';
+
+  @override
+  String get fixedFrequencySemiMonthly => 'Twice a month';
+
+  @override
+  String get fixedFrequencyMonthly => 'Every month';
+
+  @override
+  String get fixedFrequencyBimonthly => 'Every 2 months';
+
+  @override
+  String get fixedStatusPaid => 'Paid';
+
+  @override
+  String get fixedStatusTomorrow => 'Tomorrow';
+
+  @override
+  String get fixedStatusOverdue => 'Past due';
+
+  @override
+  String fixedApprox(String amount) {
+    return 'about $amount';
+  }
+
+  @override
+  String get fixedFormNewTitle => 'New fixed expense';
+
+  @override
+  String get fixedFormEditTitle => 'Edit fixed expense';
+
+  @override
+  String get fixedName => 'Name';
+
+  @override
+  String get fixedNameHint => 'Rent, phone, electricity…';
+
+  @override
+  String get fixedNameRequired => 'Give it a name';
+
+  @override
+  String get fixedHowOften => 'How often?';
+
+  @override
+  String get fixedNextDue => 'Next payment';
+
+  @override
+  String fixedThenDates(String dates) {
+    return 'Then: $dates…';
+  }
+
+  @override
+  String get fixedVariable => 'The amount changes each time';
+
+  @override
+  String get fixedVariableHint =>
+      'I\'ll use what you paid last as the estimate.';
+
+  @override
+  String get fixedFormNote =>
+      'It doesn\'t change your daily amount: your budget is what\'s left after fixed expenses.';
+
+  @override
+  String get fixedSave => 'Save fixed expense';
+
+  @override
+  String get fixedDelete => 'Delete fixed expense';
+
+  @override
+  String fixedDeleteTitle(String name) {
+    return 'Delete $name?';
+  }
+
+  @override
+  String get fixedDeleteBody =>
+      'Payments you already recorded stay in your movements.';
+
+  @override
+  String get fixedDueToday => 'Due today';
+
+  @override
+  String get fixedDueTomorrow => 'Due tomorrow';
+
+  @override
+  String fixedDueOn(String date) {
+    return 'Due $date';
+  }
+
+  @override
+  String fixedWasDue(String date) {
+    return 'Was due $date';
+  }
+
+  @override
+  String get fixedHowMuch => 'How much did you pay?';
+
+  @override
+  String fixedLastTime(String amount) {
+    return 'Last time: $amount';
+  }
+
+  @override
+  String fixedTodayUnchanged(String amount) {
+    return 'Today\'s amount stays at $amount.';
+  }
+
+  @override
+  String fixedCashChange(String from, String to) {
+    return 'Estimated cash: $from to $to';
+  }
+
+  @override
+  String fixedPaidWith(String method) {
+    return 'Paid by $method';
+  }
+
+  @override
+  String get fixedChange => 'Change';
+
+  @override
+  String get fixedMarkPaid => 'I paid it';
+
+  @override
+  String get fixedNotYet => 'Not yet';
+
+  @override
+  String get fixedBillOnly => 'I just got the bill';
+
+  @override
+  String fixedBillSaved(String amount) {
+    return 'Got it, expecting $amount.';
+  }
+
+  @override
+  String fixedPaymentSaved(String name) {
+    return '$name recorded.';
+  }
+
+  @override
+  String get fixedHomeLabel => 'Fixed expense';
+
+  @override
+  String fixedHomeMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fixed payments to check',
+      one: '1 fixed payment to check',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fixedHomeSee => 'See';
+
+  @override
+  String get fixedIntroTitle =>
+      'Your budget is for spending, fixed costs aside';
+
+  @override
+  String fixedIntroBody(String budget, String name) {
+    return 'Fixed expenses don\'t lower your daily amount. If your $budget already counted “$name”, lower the budget.';
+  }
+
+  @override
+  String get fixedIntroKeep => 'It\'s fine as is';
+
+  @override
+  String get fixedIntroAdjust => 'Adjust budget';
+
+  @override
+  String get fixedBadge => 'Fixed';
+
+  @override
+  String get fixedNothingThisMonth => 'Nothing due this month.';
 }

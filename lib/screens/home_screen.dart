@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
+import '../models/recurring_expense.dart';
 import '../models/room_design.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
+import '../widgets/fixed_expenses.dart';
 import '../widgets/gamification_ui.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/room_scene.dart';
@@ -78,6 +80,9 @@ class HomeScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final currency = store.currency;
     final textTheme = Theme.of(context).textTheme;
+    final fixedDue = store.isFixedHomeCardSnoozed
+        ? const <FixedOccurrence>[]
+        : store.fixedDueOnHome;
 
     return SafeArea(
       bottom: false,
@@ -159,6 +164,13 @@ class HomeScreen extends StatelessWidget {
                           ? AppColors.dangerInk
                           : AppColors.muted,
                     ),
+                  ),
+                ],
+                if (fixedDue.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  FixedDueCard(
+                    occurrences: fixedDue,
+                    onSeeAll: () => shell.select(AppTab.budget),
                   ),
                 ],
                 const SizedBox(height: 18),

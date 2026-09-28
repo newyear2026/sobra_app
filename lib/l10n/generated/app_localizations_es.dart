@@ -2014,4 +2014,199 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsReleaseNotesUnread => 'Novedades sin leer';
+
+  @override
+  String get fixedSectionTitle => 'Gastos fijos';
+
+  @override
+  String fixedSectionMonth(String month) {
+    return '$month · aparte de tu gasto diario';
+  }
+
+  @override
+  String fixedPaidOfTotal(String paid, String total) {
+    return 'Pagado $paid de $total';
+  }
+
+  @override
+  String get fixedAdd => 'Agregar gasto fijo';
+
+  @override
+  String get fixedEmptyBody =>
+      'Renta, celular, luz: anótalos una vez y te recuerdo cuándo toca pagar. No cambian tu gasto diario.';
+
+  @override
+  String get fixedFrequencyWeekly => 'Cada semana';
+
+  @override
+  String get fixedFrequencySemiMonthly => 'Cada quincena';
+
+  @override
+  String get fixedFrequencyMonthly => 'Cada mes';
+
+  @override
+  String get fixedFrequencyBimonthly => 'Cada 2 meses';
+
+  @override
+  String get fixedStatusPaid => 'Pagado';
+
+  @override
+  String get fixedStatusTomorrow => 'Mañana';
+
+  @override
+  String get fixedStatusOverdue => 'Fecha pasada';
+
+  @override
+  String fixedApprox(String amount) {
+    return 'aprox. $amount';
+  }
+
+  @override
+  String get fixedFormNewTitle => 'Nuevo gasto fijo';
+
+  @override
+  String get fixedFormEditTitle => 'Editar gasto fijo';
+
+  @override
+  String get fixedName => 'Nombre';
+
+  @override
+  String get fixedNameHint => 'Renta, celular, luz…';
+
+  @override
+  String get fixedNameRequired => 'Ponle un nombre';
+
+  @override
+  String get fixedHowOften => '¿Cada cuánto?';
+
+  @override
+  String get fixedNextDue => 'Próximo pago';
+
+  @override
+  String fixedThenDates(String dates) {
+    return 'Después: $dates…';
+  }
+
+  @override
+  String get fixedVariable => 'El monto cambia cada vez';
+
+  @override
+  String get fixedVariableHint => 'Uso lo último que pagaste como estimado.';
+
+  @override
+  String get fixedFormNote =>
+      'No cambia tu gasto diario: tu presupuesto es lo que te queda después de los fijos.';
+
+  @override
+  String get fixedSave => 'Guardar gasto fijo';
+
+  @override
+  String get fixedDelete => 'Eliminar gasto fijo';
+
+  @override
+  String fixedDeleteTitle(String name) {
+    return '¿Eliminar $name?';
+  }
+
+  @override
+  String get fixedDeleteBody =>
+      'Los pagos que ya registraste se quedan en tus movimientos.';
+
+  @override
+  String get fixedDueToday => 'Vence hoy';
+
+  @override
+  String get fixedDueTomorrow => 'Vence mañana';
+
+  @override
+  String fixedDueOn(String date) {
+    return 'Vence el $date';
+  }
+
+  @override
+  String fixedWasDue(String date) {
+    return 'Tocaba el $date';
+  }
+
+  @override
+  String get fixedHowMuch => '¿Cuánto pagaste?';
+
+  @override
+  String fixedLastTime(String amount) {
+    return 'La vez pasada: $amount';
+  }
+
+  @override
+  String fixedTodayUnchanged(String amount) {
+    return 'Tu gasto de hoy sigue en $amount.';
+  }
+
+  @override
+  String fixedCashChange(String from, String to) {
+    return 'Efectivo estimado: de $from a $to';
+  }
+
+  @override
+  String fixedPaidWith(String method) {
+    return 'Pago con $method';
+  }
+
+  @override
+  String get fixedChange => 'Cambiar';
+
+  @override
+  String get fixedMarkPaid => 'Ya lo pagué';
+
+  @override
+  String get fixedNotYet => 'Todavía no';
+
+  @override
+  String get fixedBillOnly => 'Solo llegó el recibo';
+
+  @override
+  String fixedBillSaved(String amount) {
+    return 'Listo, espero $amount.';
+  }
+
+  @override
+  String fixedPaymentSaved(String name) {
+    return '$name registrado.';
+  }
+
+  @override
+  String get fixedHomeLabel => 'Gasto fijo';
+
+  @override
+  String fixedHomeMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pagos fijos por revisar',
+      one: '1 pago fijo por revisar',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fixedHomeSee => 'Ver';
+
+  @override
+  String get fixedIntroTitle => 'Tu presupuesto es para gastar, sin fijos';
+
+  @override
+  String fixedIntroBody(String budget, String name) {
+    return 'Los gastos fijos no bajan tu gasto diario. Si tus $budget ya contaban «$name», conviene bajar el presupuesto.';
+  }
+
+  @override
+  String get fixedIntroKeep => 'Está bien así';
+
+  @override
+  String get fixedIntroAdjust => 'Ajustar presupuesto';
+
+  @override
+  String get fixedBadge => 'Fijo';
+
+  @override
+  String get fixedNothingThisMonth => 'Nada vence este mes.';
 }

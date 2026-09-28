@@ -1935,4 +1935,196 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsReleaseNotesUnread => '읽지 않은 새로운 소식';
+
+  @override
+  String get fixedSectionTitle => '고정지출';
+
+  @override
+  String fixedSectionMonth(String month) {
+    return '$month · 하루 금액과 별개';
+  }
+
+  @override
+  String fixedPaidOfTotal(String paid, String total) {
+    return '$total 중 $paid 납부';
+  }
+
+  @override
+  String get fixedAdd => '고정지출 추가';
+
+  @override
+  String get fixedEmptyBody =>
+      '월세, 휴대폰, 전기: 한 번 등록하면 낼 때를 알려 드려요. 하루 금액은 바뀌지 않아요.';
+
+  @override
+  String get fixedFrequencyWeekly => '매주';
+
+  @override
+  String get fixedFrequencySemiMonthly => '월 2회';
+
+  @override
+  String get fixedFrequencyMonthly => '매월';
+
+  @override
+  String get fixedFrequencyBimonthly => '2개월마다';
+
+  @override
+  String get fixedStatusPaid => '납부';
+
+  @override
+  String get fixedStatusTomorrow => '내일';
+
+  @override
+  String get fixedStatusOverdue => '기한 지남';
+
+  @override
+  String fixedApprox(String amount) {
+    return '약 $amount';
+  }
+
+  @override
+  String get fixedFormNewTitle => '새 고정지출';
+
+  @override
+  String get fixedFormEditTitle => '고정지출 수정';
+
+  @override
+  String get fixedName => '이름';
+
+  @override
+  String get fixedNameHint => '월세, 휴대폰, 전기…';
+
+  @override
+  String get fixedNameRequired => '이름을 적어 주세요';
+
+  @override
+  String get fixedHowOften => '얼마나 자주?';
+
+  @override
+  String get fixedNextDue => '다음 납부일';
+
+  @override
+  String fixedThenDates(String dates) {
+    return '그다음: $dates…';
+  }
+
+  @override
+  String get fixedVariable => '매번 금액이 달라요';
+
+  @override
+  String get fixedVariableHint => '마지막으로 낸 금액을 예상액으로 써요.';
+
+  @override
+  String get fixedFormNote => '하루 금액은 그대로예요. 예산은 고정지출을 낸 뒤 남는 돈이에요.';
+
+  @override
+  String get fixedSave => '고정지출 저장';
+
+  @override
+  String get fixedDelete => '고정지출 삭제';
+
+  @override
+  String fixedDeleteTitle(String name) {
+    return '\'$name\'을(를) 삭제할까요?';
+  }
+
+  @override
+  String get fixedDeleteBody => '이미 기록한 납부는 내역에 그대로 남아요.';
+
+  @override
+  String get fixedDueToday => '오늘 납부일';
+
+  @override
+  String get fixedDueTomorrow => '내일 납부일';
+
+  @override
+  String fixedDueOn(String date) {
+    return '$date 납부일';
+  }
+
+  @override
+  String fixedWasDue(String date) {
+    return '$date 기한 지남';
+  }
+
+  @override
+  String get fixedHowMuch => '얼마 냈나요?';
+
+  @override
+  String fixedLastTime(String amount) {
+    return '지난번: $amount';
+  }
+
+  @override
+  String fixedTodayUnchanged(String amount) {
+    return '오늘 남은 돈은 $amount 그대로예요.';
+  }
+
+  @override
+  String fixedCashChange(String from, String to) {
+    return '예상 현금: $from에서 $to로';
+  }
+
+  @override
+  String fixedPaidWith(String method) {
+    return '결제: $method';
+  }
+
+  @override
+  String get fixedChange => '변경';
+
+  @override
+  String get fixedMarkPaid => '냈어요';
+
+  @override
+  String get fixedNotYet => '아직이요';
+
+  @override
+  String get fixedBillOnly => '고지서만 받았어요';
+
+  @override
+  String fixedBillSaved(String amount) {
+    return '$amount로 예상할게요.';
+  }
+
+  @override
+  String fixedPaymentSaved(String name) {
+    return '\'$name\' 기록했어요.';
+  }
+
+  @override
+  String get fixedHomeLabel => '고정지출';
+
+  @override
+  String fixedHomeMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '확인할 고정지출 $count건',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fixedHomeSee => '보기';
+
+  @override
+  String get fixedIntroTitle => '예산은 고정지출을 뺀 쓸 돈이에요';
+
+  @override
+  String fixedIntroBody(String budget, String name) {
+    return '고정지출은 하루 금액을 줄이지 않아요. $budget 예산에 이미 \'$name\' 몫이 들어 있었다면 예산을 줄이는 게 좋아요.';
+  }
+
+  @override
+  String get fixedIntroKeep => '이대로 좋아요';
+
+  @override
+  String get fixedIntroAdjust => '예산 조정하기';
+
+  @override
+  String get fixedBadge => '고정';
+
+  @override
+  String get fixedNothingThisMonth => '이번 달엔 낼 게 없어요.';
 }

@@ -6,6 +6,7 @@ import '../models/income_entry.dart';
 import '../models/money_movement.dart';
 import '../models/language.dart';
 import '../models/pay_schedule.dart';
+import '../models/recurring_expense.dart';
 import '../models/store_failure.dart';
 import '../services/purchase_service.dart';
 import '../models/xp_event.dart';
@@ -116,6 +117,14 @@ String movementSubtitle(AppLocalizations l10n, MoneyMovement movement) {
     if (expense.isPendingCashAdjustment) {
       return l10n.movementSubtitle(
         l10n.movementPending,
+        expense.paymentMethod.label(l10n),
+      );
+    }
+    // The name is the headline, so the line says what sets the row apart:
+    // this money paid a fixed expense and sits outside the budget.
+    if (expense.isFixedPayment) {
+      return l10n.movementSubtitle(
+        l10n.fixedBadge,
         expense.paymentMethod.label(l10n),
       );
     }
@@ -372,3 +381,34 @@ extension CurrencyRegionL10n on CurrencyRegion {
     CurrencyRegion.asiaPacific => l10n.currencyRegionAsiaPacific,
   };
 }
+
+extension FixedFrequencyL10n on FixedFrequency {
+  String label(AppLocalizations l10n) => switch (this) {
+    FixedFrequency.weekly => l10n.fixedFrequencyWeekly,
+    FixedFrequency.semiMonthly => l10n.fixedFrequencySemiMonthly,
+    FixedFrequency.monthly => l10n.fixedFrequencyMonthly,
+    FixedFrequency.bimonthly => l10n.fixedFrequencyBimonthly,
+  };
+}
+
+/// The short tag beside a fixed-expense row: its state, or its date while it
+/// is simply coming up.
+String fixedStatusTag(AppLocalizations l10n, FixedOccurrence occurrence) =>
+    switch (occurrence.status) {
+      FixedOccurrenceStatus.paid => l10n.fixedStatusPaid,
+      FixedOccurrenceStatus.dueToday => l10n.today,
+      FixedOccurrenceStatus.dueTomorrow => l10n.fixedStatusTomorrow,
+      FixedOccurrenceStatus.overdue => l10n.fixedStatusOverdue,
+      FixedOccurrenceStatus.upcoming => shortCycleDate(l10n, occurrence.date),
+    };
+
+/// When an occurrence is due, as a phrase.
+String fixedDueLine(AppLocalizations l10n, FixedOccurrence occurrence) =>
+    switch (occurrence.status) {
+      FixedOccurrenceStatus.dueToday => l10n.fixedDueToday,
+      FixedOccurrenceStatus.dueTomorrow => l10n.fixedDueTomorrow,
+      FixedOccurrenceStatus.overdue => l10n.fixedWasDue(
+        shortCycleDate(l10n, occurrence.date),
+      ),
+      _ => l10n.fixedDueOn(shortCycleDate(l10n, occurrence.date)),
+    };
