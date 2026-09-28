@@ -127,7 +127,7 @@ abstract final class CatalogPreviewData {
     ),
   ];
 
-  /// Seven level rewards, three rewarded-ad slots and three included room items.
+  /// Seven level rewards, three rewarded-ad slots and included room items.
   ///
   /// The lamp is available from level 1. The level 5 and 8 positions mirror
   /// the selected collection mockup, while the remaining rewards spread the
@@ -244,6 +244,56 @@ abstract final class CatalogPreviewData {
       unlockMethod: CatalogUnlockMethod.bundle,
       visual: CatalogVisual.trophy,
       storeProductId: packProductId,
+    ),
+    // New room art follows the original reward lineup, preserving the order
+    // of existing catalog cards and their established navigation positions.
+    CatalogEntry(
+      id: RoomDecorAssets.lowCabinetId,
+      name: 'Low cabinet',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.shelf,
+      assetPath: RoomDecorAssets.lowCabinet,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.petBedId,
+      name: 'Pet bed',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.cushion,
+      assetPath: RoomDecorAssets.petBed,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.savingsJarId,
+      name: 'Savings jar',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.savings,
+      assetPath: RoomDecorAssets.savingsJar,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.wallShelfId,
+      name: 'Wall shelf',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.shelf,
+      assetPath: RoomDecorAssets.wallShelf,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.terracottaPoufId,
+      name: 'Terracotta pouf',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.cushion,
+      assetPath: RoomDecorAssets.terracottaPouf,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.blueCreamRugId,
+      name: 'Blue and cream rug',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.rug,
+      assetPath: RoomDecorAssets.blueCreamRug,
     ),
   ];
 

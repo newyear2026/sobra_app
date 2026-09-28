@@ -27,8 +27,14 @@ window and the room's own identity pieces change between rooms.
 empty Casa clara reference. Check every new background against it; a few
 pixels of drift are fine.
 
-The phone crops the portrait image to roughly y 371–1164, depending on screen
-shape; keep what matters inside that band.
+Mi casa shows the portrait's full height and crops its sides, to about
+x 63–961 on a common phone. Decorate is wide and short, so it crops top and
+bottom instead, holding the floor line two thirds of the way down: roughly
+y 260–1050. Keep what matters inside both bands.
+
+**Scale.** The stage is about 300 px to the metre at the wall: Casa clara's
+painted armchair, some 85 cm tall, is 250 px. Size items to it — a chair
+about 255 px, a floor lamp about 430 px, a wall clock about 100 px across.
 
 ## Fixed in the background
 
@@ -65,6 +71,10 @@ surfaces, each with a faint preview of the item.
   room the user owns.
 - Items are drawn at their own size on the stage, not stretched to the slot,
   so a small plant stays small on a floor slot sized for an armchair.
+- In the empty rooms, furniture stands at the wall (feet at y 840) and wall
+  slots hang at about 1.5 m (centre y 335), clear of a floor lamp's shade.
+  Casa clara still places furniture mid-floor, in front of what is painted
+  in; its rects move to the wall when its empty background lands.
 
 Saved data stores only the room id, slot name and item id. Slot names never
 change once shipped (`rug`, `floorRight`, `wallCenter` and `tabletop` predate
@@ -115,8 +125,10 @@ A table or shelf is an item that brings its own places.
 2. A landscape preview for Home, the same room, empty. The Home card is 2:1;
    a 3:2 source is center-cropped by the app.
 3. A small thumbnail for the room picker.
-4. Transparent PNGs for any furniture the room introduces, with a transparent
-   edge, no baked-in floor, and their own soft shadow.
+4. Transparent PNGs for any furniture the room introduces, with no baked-in
+   floor and their own soft shadow, cropped to the object with a couple of
+   pixels to spare. A wide transparent margin under an item makes it float
+   above the floor line by that margin.
 
 Generating with ChatGPT: attach the empty reference
 (`design/rooms/generation/casa-clara-empty-reference.png`) and ask for an
@@ -128,8 +140,8 @@ lines get painted in.
 
 1. Add a `RoomTheme` in `lib/models/room_design.dart`: id, both assets and
    their pixel sizes, the slots it offers, and default placements.
-2. Add its layout in `lib/widgets/room_scene.dart`. On the shared stage the
-   Casa clara slot rects apply as they are.
+2. Add its layout in `lib/widgets/room_scene.dart`. On the shared stage an
+   empty room reuses the empty-theme rects as they are.
 3. Add its name to the three ARB files.
 
 ## Layer order

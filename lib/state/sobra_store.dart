@@ -1571,8 +1571,7 @@ class SobraStore extends ChangeNotifier {
       if (entry != null && !ownsCatalogEntry(entry)) {
         throw ArgumentError.value(itemId, 'placements', 'item not owned');
       }
-      if (!room.slots.contains(slot) ||
-          !RoomDecorAssets.surfacesFor(itemId).contains(slot.surface)) {
+      if (!room.slotsForItem(itemId).contains(slot)) {
         throw ArgumentError.value(itemId, 'placements', 'wrong place: $slot');
       }
       if (!seen.add(itemId)) {

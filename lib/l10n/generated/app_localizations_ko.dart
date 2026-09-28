@@ -622,6 +622,42 @@ class AppLocalizationsKo extends AppLocalizations {
   String get roomWallClock => '벽시계';
 
   @override
+  String get roomLowCabinet => '낮은 수납장';
+
+  @override
+  String get roomPetBed => '반려동물 침대';
+
+  @override
+  String get roomSavingsJar => '저금통';
+
+  @override
+  String get roomWallShelf => '벽 선반';
+
+  @override
+  String get roomTerracottaPouf => '테라코타 푸프';
+
+  @override
+  String get roomBlueCreamRug => '블루 크림 러그';
+
+  @override
+  String get roomSuggestCabinet => '벽 가까운 왼쪽 바닥에 두면 안정적이에요. 표시된 자리를 눌러요.';
+
+  @override
+  String get roomSuggestPetBed => '캐릭터 왼쪽의 낮은 바닥 자리에 두세요. 표시된 자리를 눌러요.';
+
+  @override
+  String get roomSuggestSavingsJar => '탁자 위나 작은 바닥 자리에 두세요. 표시된 자리를 눌러요.';
+
+  @override
+  String get roomSuggestWallShelf => '빈 벽에 걸어주세요. 표시된 자리를 눌러요.';
+
+  @override
+  String get roomSuggestPouf => '오른쪽 바닥에 두면 균형이 좋아요. 표시된 자리를 눌러요.';
+
+  @override
+  String get roomSuggestBlueRug => '캐릭터 아래에 깔아주세요. 표시된 자리를 눌러요.';
+
+  @override
   String get roomSaved => '꾸미기를 저장했어요.';
 
   @override

@@ -86,7 +86,11 @@ void main() {
     final store = await loadStore();
     await pump(tester, store);
 
-    await tester.ensureVisible(find.text('Ver más en la colección'));
+    await tester.scrollUntilVisible(
+      find.text('Ver más en la colección'),
+      180,
+      scrollable: find.byType(Scrollable).last,
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.text('Ver más en la colección'));
     await tester.pumpAndSettle();

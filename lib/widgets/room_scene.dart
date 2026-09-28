@@ -81,7 +81,11 @@ class RoomScene extends StatelessWidget {
           final imageSize = variant == RoomSceneVariant.preview
               ? room.previewSize
               : room.portraitSize;
-          final background = _coverRect(size, imageSize.aspectRatio);
+          final background = _coverRect(
+            size,
+            imageSize.aspectRatio,
+            floorFocus: layout.floorFocus,
+          );
           final stageScale = background.height / imageSize.height;
           Rect slotFrame(RoomSlot slot) {
             final rect = layout.slotRects[slot]!;
@@ -103,7 +107,15 @@ class RoomScene extends StatelessWidget {
             final spot = slotFrame(slot);
             final stageHeight = RoomDecorAssets.stageHeightFor(itemId);
             if (stageHeight == null) return spot;
-            final height = stageHeight * stageScale;
+            // The same object grows gently as its floor contact moves toward
+            // the viewer. Wall and tabletop decorations keep a fixed scale.
+            final depth = slot.surface == RoomSurface.floor
+                ? (layout.slotRects[slot]!.bottom - layout.floorLine).clamp(
+                    0.0,
+                    .45,
+                  )
+                : 0.0;
+            final height = stageHeight * stageScale * (1 + depth * .6);
             final width = height * 3;
             return switch (slot.surface) {
               RoomSurface.floor || RoomSurface.tabletop => Rect.fromLTWH(
@@ -148,27 +160,20 @@ class RoomScene extends StatelessWidget {
           return Stack(
             fit: StackFit.expand,
             children: [
-              Image.asset(
-                _asset,
-                fit: BoxFit.cover,
-                excludeFromSemantics: true,
-                errorBuilder: (_, _, _) =>
-                    const ColoredBox(color: AppColors.paperLight),
+              Positioned.fromRect(
+                rect: background,
+                child: Image.asset(
+                  _asset,
+                  fit: BoxFit.fill,
+                  excludeFromSemantics: true,
+                  errorBuilder: (_, _, _) =>
+                      const ColoredBox(color: AppColors.paperLight),
+                ),
               ),
               for (final item in placed)
                 Positioned.fromRect(
                   rect: item.frame,
                   child: _RoomItemImage(asset: item.asset, slot: item.slot),
-                ),
-              for (final slot in targets)
-                _RoomSlotTarget(
-                  slot: slot,
-                  number: room.slotsFor(slot.surface).indexOf(slot) + 1,
-                  frame: slotFrame(slot),
-                  ghostFrame: itemFrame(slot, selected!),
-                  holdsSelection: placements[slot] == selected,
-                  ghostAsset: selectedAsset,
-                  onTap: onSlotTap == null ? null : () => onSlotTap!(slot),
                 ),
               Positioned(
                 left: (size.width - catWidth) / 2,
@@ -201,6 +206,19 @@ class RoomScene extends StatelessWidget {
                   child: _RoomSpeech(message: message),
                 ),
               ),
+              // Last, so a place the character or its speech overlaps can
+              // still be tapped: Decorate's crop keeps more wall, and Casa
+              // clara's table now sits beside the bubble.
+              for (final slot in targets)
+                _RoomSlotTarget(
+                  slot: slot,
+                  number: room.slotsFor(slot.surface).indexOf(slot) + 1,
+                  frame: slotFrame(slot),
+                  ghostFrame: itemFrame(slot, selected!),
+                  holdsSelection: placements[slot] == selected,
+                  ghostAsset: selectedAsset,
+                  onTap: onSlotTap == null ? null : () => onSlotTap!(slot),
+                ),
             ],
           );
         },
@@ -209,18 +227,38 @@ class RoomScene extends StatelessWidget {
   }
 }
 
-/// Where a [BoxFit.cover] image of [aspectRatio] lands in [size], centred.
+/// Where a [BoxFit.cover] image of [aspectRatio] lands in [size].
 ///
 /// Slots are placed on this rather than on the widget, so a decoration stays
 /// on its patch of wall however the screen's shape crops the background.
-Rect _coverRect(Size size, double aspectRatio) {
+///
+/// Centred, unless [floorFocus] names where the stage's floor line should
+/// sit, as a fraction of [size]'s height, when the image is cropped top and
+/// bottom. Decorate is wide and short: centred, it cut the wall off above the
+/// window sill, and a clock hung where Mi casa shows it low on the wall was
+/// pushed against the top edge.
+Rect _coverRect(Size size, double aspectRatio, {double? floorFocus}) {
   if (size.width / size.height > aspectRatio) {
     final height = size.width / aspectRatio;
-    return Rect.fromLTWH(0, (size.height - height) / 2, size.width, height);
+    final top = floorFocus == null
+        ? (size.height - height) / 2
+        : (floorFocus * size.height - _stageFloorLine * height).clamp(
+            size.height - height,
+            0.0,
+          );
+    return Rect.fromLTWH(0, top, size.width, height);
   }
   final width = size.height * aspectRatio;
   return Rect.fromLTWH((size.width - width) / 2, 0, width, size.height);
 }
+
+/// Where the floor meets the wall on the shared stage, as a fraction of the
+/// portrait image's height; see `docs/hybrid-room-theme-guide.md`.
+const _stageFloorLine = 782 / 1536;
+
+/// Decorate keeps the floor line two thirds of the way down: the wall up to
+/// about 1.7 m stays in view, and the character still has floor to sit on.
+const _immersiveFloorFocus = .66;
 
 class _RoomSceneLayout {
   const _RoomSceneLayout({
@@ -228,6 +266,8 @@ class _RoomSceneLayout {
     required this.speechRect,
     required this.catTop,
     required this.catWidth,
+    required this.floorLine,
+    this.floorFocus,
   });
 
   /// Fractions of the background image, not of the widget — except the
@@ -239,6 +279,10 @@ class _RoomSceneLayout {
   final Rect speechRect;
   final double catTop;
   final double catWidth;
+  final double floorLine;
+
+  /// See [_coverRect]; null centres the background.
+  final double? floorFocus;
 
   // Floor and tabletop rects end where the thing stands: the item is drawn
   // on the rect's bottom edge, so moving a rect's bottom moves the floor line.
@@ -250,26 +294,37 @@ class _RoomSceneLayout {
       RoomSlot.tabletop: Rect.fromLTWH(.18, .462, .08, .20),
       RoomSlot.floorLeft: Rect.fromLTWH(.03, .60, .12, .36),
       RoomSlot.floorRight: Rect.fromLTWH(.69, .49, .15, .42),
+      RoomSlot.floorCenter: Rect.fromLTWH(.22, .67, .25, .20),
+      RoomSlot.floorAccent: Rect.fromLTWH(.60, .67, .09, .15),
+      RoomSlot.floorCabinet: Rect.fromLTWH(.23, .60, .16, .28),
     },
     speechRect: Rect.fromLTWH(.31, .17, .38, .26),
     catTop: .47,
     catWidth: .22,
+    floorLine: .72,
   );
 
   // The new 3:2 preview art is cover-cropped into the same 2:1 Home card.
-  // Convert Casa clara's visible slot positions into the taller source image
-  // so the rug and decorations still land on the same part of the stage.
+  // It is drawn at about the portrait's scale (the window glass is 280 px
+  // wide here, 252 there), so stage heights carry over. As in the portrait,
+  // furniture stands at the wall, whose floor line is near y 690, and the
+  // wall slots hang clear of a floor lamp's shade. The window sits right of
+  // centre in this art, so the right-hand places go beyond it.
   static const _emptyThemePreview = _RoomSceneLayout(
     slotRects: {
       RoomSlot.rug: Rect.fromLTWH(.20, .73, .62, .24),
-      RoomSlot.wallLeft: Rect.fromLTWH(.19, .2225, .11, .18),
-      RoomSlot.wallCenter: Rect.fromLTWH(.32, .2075, .13, .21),
-      RoomSlot.floorLeft: Rect.fromLTWH(.03, .575, .12, .27),
-      RoomSlot.floorRight: Rect.fromLTWH(.69, .4925, .15, .315),
+      RoomSlot.wallLeft: Rect.fromLTWH(.09, .195, .10, .08),
+      RoomSlot.wallCenter: Rect.fromLTWH(.82, .195, .10, .08),
+      RoomSlot.floorLeft: Rect.fromLTWH(.06, .55, .16, .183),
+      RoomSlot.floorRight: Rect.fromLTWH(.80, .55, .14, .183),
+      RoomSlot.floorCenter: Rect.fromLTWH(.22, .67, .25, .20),
+      RoomSlot.floorAccent: Rect.fromLTWH(.64, .65, .08, .14),
+      RoomSlot.floorCabinet: Rect.fromLTWH(.17, .55, .18, .22),
     },
     speechRect: Rect.fromLTWH(.31, .17, .38, .26),
     catTop: .47,
     catWidth: .22,
+    floorLine: .675,
   );
 
   // The home card is the preview image's own 2:1 shape, so nothing is
@@ -284,10 +339,39 @@ class _RoomSceneLayout {
       RoomSlot.tabletop: Rect.fromLTWH(.27, .433, .12, .067),
       RoomSlot.floorLeft: Rect.fromLTWH(.05, .536, .18, .119),
       RoomSlot.floorRight: Rect.fromLTWH(.69, .521, .20, .129),
+      RoomSlot.floorCenter: Rect.fromLTWH(.20, .515, .28, .17),
+      RoomSlot.floorAccent: Rect.fromLTWH(.60, .525, .09, .11),
+      RoomSlot.floorCabinet: Rect.fromLTWH(.18, .50, .24, .16),
     },
     speechRect: Rect.fromLTWH(.25, .48, .50, .14),
     catTop: .56,
     catWidth: .30,
+    floorLine: _stageFloorLine,
+    floorFocus: _immersiveFloorFocus,
+  );
+
+  // An empty room has nothing painted in to step around, so furniture stands
+  // back against the wall, where the stage is about 300 px to the metre and
+  // an item drawn at its real size also looks it. On Casa clara's rects it
+  // stood mid-floor, nearer the viewer yet smaller than the painted armchair
+  // behind it. Wall slots hang at about 1.5 m, above a 1.45 m floor lamp, so
+  // nothing on the wall sits on what stands under it.
+  static const _emptyThemeImmersive = _RoomSceneLayout(
+    slotRects: {
+      RoomSlot.rug: Rect.fromLTWH(.05, .67, .90, .14),
+      RoomSlot.wallLeft: Rect.fromLTWH(.15, .185, .14, .066),
+      RoomSlot.wallCenter: Rect.fromLTWH(.76, .185, .14, .066),
+      RoomSlot.floorLeft: Rect.fromLTWH(.07, .40, .24, .147),
+      RoomSlot.floorRight: Rect.fromLTWH(.72, .40, .18, .147),
+      RoomSlot.floorCenter: Rect.fromLTWH(.20, .50, .28, .18),
+      RoomSlot.floorAccent: Rect.fromLTWH(.63, .45, .08, .15),
+      RoomSlot.floorCabinet: Rect.fromLTWH(.14, .40, .24, .15),
+    },
+    speechRect: Rect.fromLTWH(.25, .48, .50, .14),
+    catTop: .56,
+    catWidth: .30,
+    floorLine: _stageFloorLine,
+    floorFocus: _immersiveFloorFocus,
   );
 
   static const _byRoom = {
@@ -297,11 +381,11 @@ class _RoomSceneLayout {
     ),
     RoomThemes.casaJardinId: (
       preview: _emptyThemePreview,
-      immersive: _casaClaraImmersive,
+      immersive: _emptyThemeImmersive,
     ),
     RoomThemes.casaDePlayaId: (
       preview: _emptyThemePreview,
-      immersive: _casaClaraImmersive,
+      immersive: _emptyThemeImmersive,
     ),
   };
 
@@ -328,6 +412,7 @@ class _RoomItemImage extends StatelessWidget {
   Widget build(BuildContext context) => Image.asset(
     asset,
     fit: BoxFit.contain,
+    filterQuality: FilterQuality.none,
     alignment: switch (slot.surface) {
       RoomSurface.floor || RoomSurface.tabletop => Alignment.bottomCenter,
       RoomSurface.wall || RoomSurface.rug => Alignment.center,

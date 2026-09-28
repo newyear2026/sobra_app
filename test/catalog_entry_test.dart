@@ -47,16 +47,16 @@ void main() {
     );
   });
 
-  test('item catalog keeps its rewards and includes three starter items', () {
+  test('item catalog keeps its rewards and includes new room decorations', () {
     final entries = CatalogPreviewData.items;
 
     // The numbered lineup and pack decoration keep their unlock routes.
-    expect(entries, hasLength(14));
+    expect(entries, hasLength(20));
     expect(
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.included,
       ),
-      hasLength(3),
+      hasLength(9),
     );
     expect(
       entries.where(

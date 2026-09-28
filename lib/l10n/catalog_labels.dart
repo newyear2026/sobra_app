@@ -15,6 +15,16 @@ String catalogEntryDisplayName(AppLocalizations l10n, CatalogEntry entry) {
   if (entry.id == RoomDecorAssets.rattanChairId) return l10n.roomRattanChair;
   if (entry.id == RoomDecorAssets.floorLampId) return l10n.roomStandingLamp;
   if (entry.id == RoomDecorAssets.wallClockId) return l10n.roomWallClock;
+  if (entry.id == RoomDecorAssets.lowCabinetId) return l10n.roomLowCabinet;
+  if (entry.id == RoomDecorAssets.petBedId) return l10n.roomPetBed;
+  if (entry.id == RoomDecorAssets.savingsJarId) return l10n.roomSavingsJar;
+  if (entry.id == RoomDecorAssets.wallShelfId) return l10n.roomWallShelf;
+  if (entry.id == RoomDecorAssets.terracottaPoufId) {
+    return l10n.roomTerracottaPouf;
+  }
+  if (entry.id == RoomDecorAssets.blueCreamRugId) {
+    return l10n.roomBlueCreamRug;
+  }
   // Named rather than numbered, like Michi. Parsing a number out of this id
   // would answer zero and put "Item 0" on the card.
   if (entry.id == CatalogPreviewData.packDecorationId) {

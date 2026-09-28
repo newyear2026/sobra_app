@@ -1209,6 +1209,78 @@ abstract class AppLocalizations {
   /// **'Reloj de pared'**
   String get roomWallClock;
 
+  /// No description provided for @roomLowCabinet.
+  ///
+  /// In es, this message translates to:
+  /// **'Aparador bajo'**
+  String get roomLowCabinet;
+
+  /// No description provided for @roomPetBed.
+  ///
+  /// In es, this message translates to:
+  /// **'Cama para mascota'**
+  String get roomPetBed;
+
+  /// No description provided for @roomSavingsJar.
+  ///
+  /// In es, this message translates to:
+  /// **'Frasco de ahorros'**
+  String get roomSavingsJar;
+
+  /// No description provided for @roomWallShelf.
+  ///
+  /// In es, this message translates to:
+  /// **'Repisa de pared'**
+  String get roomWallShelf;
+
+  /// No description provided for @roomTerracottaPouf.
+  ///
+  /// In es, this message translates to:
+  /// **'Puf terracota'**
+  String get roomTerracottaPouf;
+
+  /// No description provided for @roomBlueCreamRug.
+  ///
+  /// In es, this message translates to:
+  /// **'Tapete azul y crema'**
+  String get roomBlueCreamRug;
+
+  /// No description provided for @roomSuggestCabinet.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponlo junto a la pared izquierda. Toca el lugar marcado.'**
+  String get roomSuggestCabinet;
+
+  /// No description provided for @roomSuggestPetBed.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponla a la izquierda de tu compañero. Toca el lugar marcado.'**
+  String get roomSuggestPetBed;
+
+  /// No description provided for @roomSuggestSavingsJar.
+  ///
+  /// In es, this message translates to:
+  /// **'Prueba la mesa o el rincón del piso. Toca un lugar marcado.'**
+  String get roomSuggestSavingsJar;
+
+  /// No description provided for @roomSuggestWallShelf.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuélgala en una pared libre. Toca un lugar marcado.'**
+  String get roomSuggestWallShelf;
+
+  /// No description provided for @roomSuggestPouf.
+  ///
+  /// In es, this message translates to:
+  /// **'Equilibra la sala a la derecha. Toca el lugar marcado.'**
+  String get roomSuggestPouf;
+
+  /// No description provided for @roomSuggestBlueRug.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponlo debajo de tu compañero. Toca el lugar marcado.'**
+  String get roomSuggestBlueRug;
+
   /// No description provided for @roomSaved.
   ///
   /// In es, this message translates to:

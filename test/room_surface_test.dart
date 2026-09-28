@@ -65,6 +65,40 @@ Future<void> _tapAndSettle(WidgetTester tester, Finder finder) async {
 
 void main() {
   group('saved rooms', () {
+    test('six new decorations have distinct places in an empty room', () async {
+      final store = await _store();
+      final garden = RoomThemes.casaJardin;
+      final placements = <RoomSlot, String>{
+        RoomSlot.floorCabinet: RoomDecorAssets.lowCabinetId,
+        RoomSlot.floorCenter: RoomDecorAssets.petBedId,
+        RoomSlot.floorAccent: RoomDecorAssets.savingsJarId,
+        RoomSlot.wallLeft: RoomDecorAssets.wallShelfId,
+        RoomSlot.floorRight: RoomDecorAssets.terracottaPoufId,
+        RoomSlot.rug: RoomDecorAssets.blueCreamRugId,
+      };
+
+      for (final placement in placements.entries) {
+        expect(garden.slotsForItem(placement.value), contains(placement.key));
+        expect(RoomDecorAssets.assetFor(placement.value), isNotNull);
+      }
+      expect(garden.slotsForItem(RoomDecorAssets.savingsJarId), [
+        RoomSlot.floorAccent,
+      ]);
+      expect(RoomThemes.casaClara.slotsForItem(RoomDecorAssets.savingsJarId), [
+        RoomSlot.tabletop,
+        RoomSlot.floorAccent,
+      ]);
+
+      await store.saveRoomSelection(
+        roomId: garden.id,
+        placementsByRoom: {garden.id: placements},
+      );
+      expect(
+        (await SobraStore.load(now: _now)).roomDecorationsFor(),
+        equals(placements),
+      );
+    });
+
     // The lamp is a desk lamp. It used to be saved on the floor by the
     // window, which is exactly what looked wrong; it now belongs on the table.
     test('a lamp saved on the floor moves onto the table', () async {

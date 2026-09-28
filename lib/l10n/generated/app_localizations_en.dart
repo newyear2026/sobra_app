@@ -640,6 +640,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roomWallClock => 'Wall clock';
 
   @override
+  String get roomLowCabinet => 'Low cabinet';
+
+  @override
+  String get roomPetBed => 'Pet bed';
+
+  @override
+  String get roomSavingsJar => 'Savings jar';
+
+  @override
+  String get roomWallShelf => 'Wall shelf';
+
+  @override
+  String get roomTerracottaPouf => 'Terracotta pouf';
+
+  @override
+  String get roomBlueCreamRug => 'Blue and cream rug';
+
+  @override
+  String get roomSuggestCabinet =>
+      'Place it by the left wall. Tap the highlighted spot.';
+
+  @override
+  String get roomSuggestPetBed =>
+      'Place it low to the left of your companion. Tap the highlighted spot.';
+
+  @override
+  String get roomSuggestSavingsJar =>
+      'Try the table or the small floor nook. Tap a highlighted spot.';
+
+  @override
+  String get roomSuggestWallShelf =>
+      'Hang it on an open wall. Tap a highlighted spot.';
+
+  @override
+  String get roomSuggestPouf =>
+      'Balance the room on the right. Tap the highlighted spot.';
+
+  @override
+  String get roomSuggestBlueRug =>
+      'Lay it beneath your companion. Tap the highlighted spot.';
+
+  @override
   String get roomSaved => 'Your room was saved.';
 
   @override

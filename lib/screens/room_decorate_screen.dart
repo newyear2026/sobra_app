@@ -153,7 +153,7 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
   void _place(RoomSlot slot) {
     final itemId = _selectedItemId;
     if (itemId == null ||
-        !RoomDecorAssets.surfacesFor(itemId).contains(slot.surface)) {
+        !RoomThemes.byId(_draftRoomId!).slotsForItem(itemId).contains(slot)) {
       return;
     }
     setState(() {
@@ -181,6 +181,16 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
     if (_draft.containsValue(itemId)) {
       return count > 1 ? l10n.roomMoveOrRemove : l10n.roomTapToRemove;
     }
+    final suggestedHint = switch (itemId) {
+      RoomDecorAssets.lowCabinetId => l10n.roomSuggestCabinet,
+      RoomDecorAssets.petBedId => l10n.roomSuggestPetBed,
+      RoomDecorAssets.savingsJarId => l10n.roomSuggestSavingsJar,
+      RoomDecorAssets.wallShelfId => l10n.roomSuggestWallShelf,
+      RoomDecorAssets.terracottaPoufId => l10n.roomSuggestPouf,
+      RoomDecorAssets.blueCreamRugId => l10n.roomSuggestBlueRug,
+      _ => null,
+    };
+    if (suggestedHint != null) return suggestedHint;
     if (surfaces.length > 1) return l10n.roomPickAny(count);
     return switch (surfaces.single) {
       RoomSurface.wall => l10n.roomPickWall(count),
