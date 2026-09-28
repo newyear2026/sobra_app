@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.3+7
+version: 1.0.3+8
 
 environment:
   sdk: ^3.11.1
@@ -60,8 +60,8 @@ dependencies:
   # state. The shared API cannot tell a refunded purchase from one never made.
   in_app_purchase_android: ^0.5.0
 
-  # AdMob rewarded and native ads. Debug builds use Google's dedicated test
-  # ad units; release builds switch to Sobra's Android ad unit IDs.
+  # AdMob rewarded and native ads. Debug/profile use Google's sample units;
+  # release builds show no ads unless they explicitly enable live ads.
   google_mobile_ads: ^9.1.0
   in_app_update: ^4.2.5
   url_launcher: ^6.3.2
