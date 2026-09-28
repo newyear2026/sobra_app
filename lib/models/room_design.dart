@@ -95,9 +95,9 @@ abstract final class RoomThemes {
   static const casaJardinId = 'casa-jardin';
   static const casaDePlayaId = 'casa-de-playa';
   static const casaClaraPreviewAsset =
-      'assets/rooms/casa_clara/hybrid_background.png';
+      'assets/rooms/casa_clara/background_preview_empty.png';
   static const casaClaraPortraitAsset =
-      'assets/rooms/casa_clara/hybrid_background_portrait.png';
+      'assets/rooms/casa_clara/background_portrait_empty.png';
   static const emptyRoomSlots = <RoomSlot>[
     RoomSlot.rug,
     RoomSlot.wallLeft,
@@ -112,7 +112,7 @@ abstract final class RoomThemes {
   static const casaClara = RoomTheme(
     id: casaClaraId,
     previewAsset: casaClaraPreviewAsset,
-    previewSize: Size(1774, 887),
+    previewSize: Size(1536, 1024),
     portraitAsset: casaClaraPortraitAsset,
     portraitSize: Size(1024, 1536),
     slots: RoomSlot.values,
@@ -247,6 +247,14 @@ abstract final class RoomDecorAssets {
   /// clara also offers its existing table. A pet bed is reserved for the
   /// centre behind the character, rather than replacing a tall lamp.
   static List<RoomSlot>? suggestedSlotsFor(String id) => switch (id) {
+    rattanChairId ||
+    floorLampId => const [RoomSlot.floorLeft, RoomSlot.floorRight],
+    defaultTablePlantId || 'item-03' => const [
+      RoomSlot.tabletop,
+      RoomSlot.floorLeft,
+      RoomSlot.floorRight,
+      RoomSlot.floorAccent,
+    ],
     lowCabinetId => const [RoomSlot.floorCabinet],
     petBedId => const [RoomSlot.floorCenter],
     savingsJarId => const [RoomSlot.tabletop, RoomSlot.floorAccent],

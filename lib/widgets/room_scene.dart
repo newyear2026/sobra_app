@@ -291,43 +291,62 @@ class _RoomSceneLayout {
   /// See [_coverRect]; null centres the background.
   final double? floorFocus;
 
-  // Floor and tabletop rects end where the thing stands: the item is drawn
-  // on the rect's bottom edge, so moving a rect's bottom moves the floor line.
-  static const _casaClaraPreview = _RoomSceneLayout(
-    slotRects: {
-      RoomSlot.rug: Rect.fromLTWH(.20, .73, .62, .24),
-      RoomSlot.wallLeft: Rect.fromLTWH(.19, .13, .11, .24),
-      RoomSlot.wallCenter: Rect.fromLTWH(.32, .11, .13, .28),
-      RoomSlot.tabletop: Rect.fromLTWH(.18, .462, .08, .20),
-      RoomSlot.floorLeft: Rect.fromLTWH(.03, .60, .12, .36),
-      RoomSlot.floorRight: Rect.fromLTWH(.69, .49, .15, .42),
-      RoomSlot.floorCenter: Rect.fromLTWH(.22, .67, .25, .20),
-      RoomSlot.floorAccent: Rect.fromLTWH(.60, .67, .09, .15),
-      RoomSlot.floorCabinet: Rect.fromLTWH(.23, .60, .16, .28),
-    },
-    speechRect: Rect.fromLTWH(.31, .17, .38, .26),
-    catTop: .47,
-    catWidth: .22,
-    floorLine: .72,
-  );
-
   // The 3:2 preview art is cropped into a 2:1 Home card. Its window and
   // baseboard are closer together than in the portrait art. Place items by
   // those landmarks so they retain their height on the wall and their depth
   // on the floor when the user opens the same room. The aligned preview art
   // also puts the window at the portrait's horizontal position.
+  static const _emptyThemePreviewSlots = <RoomSlot, Rect>{
+    RoomSlot.rug: Rect.fromLTWH(.20, .73, .62, .24),
+    RoomSlot.wallLeft: Rect.fromLTWH(.17, .275, .10, .08),
+    RoomSlot.wallCenter: Rect.fromLTWH(.78, .275, .10, .08),
+    RoomSlot.floorLeft: Rect.fromLTWH(.11, .55, .16, .17),
+    RoomSlot.floorRight: Rect.fromLTWH(.74, .55, .14, .17),
+    // The Home card has much less visible floor than the portrait scene.
+    // Keep the pet bed behind the character's feet in this crop.
+    RoomSlot.floorCenter: Rect.fromLTWH(.255, .57, .25, .20),
+    RoomSlot.floorAccent: Rect.fromLTWH(.64, .65, .08, .136),
+    RoomSlot.floorCabinet: Rect.fromLTWH(.17, .505, .18, .22),
+  };
+
   static const _emptyThemePreview = _RoomSceneLayout(
+    slotRects: _emptyThemePreviewSlots,
+    speechRect: Rect.fromLTWH(.21, .27, .38, .26),
+    catTop: .47,
+    catWidth: .22,
+    floorLine: .675,
+    itemScale: .82,
+  );
+
+  // An empty room has nothing painted in to step around, so furniture stands
+  // back against the wall. Wall slots hang clear of a floor lamp's shade.
+  static const _emptyThemeImmersiveSlots = <RoomSlot, Rect>{
+    RoomSlot.rug: Rect.fromLTWH(.05, .67, .90, .14),
+    RoomSlot.wallLeft: Rect.fromLTWH(.15, .185, .14, .066),
+    RoomSlot.wallCenter: Rect.fromLTWH(.76, .185, .14, .066),
+    RoomSlot.floorLeft: Rect.fromLTWH(.07, .40, .24, .147),
+    RoomSlot.floorRight: Rect.fromLTWH(.72, .40, .18, .147),
+    RoomSlot.floorCenter: Rect.fromLTWH(.20, .50, .28, .18),
+    RoomSlot.floorAccent: Rect.fromLTWH(.63, .45, .08, .15),
+    RoomSlot.floorCabinet: Rect.fromLTWH(.14, .40, .24, .15),
+  };
+
+  static const _emptyThemeImmersive = _RoomSceneLayout(
+    slotRects: _emptyThemeImmersiveSlots,
+    speechRect: Rect.fromLTWH(.25, .48, .50, .14),
+    catTop: .56,
+    catWidth: .30,
+    floorLine: _stageFloorLine,
+    floorFocus: _immersiveFloorFocus,
+  );
+
+  // Casa clara now uses the same empty-room anchors. Its legacy tabletop
+  // decoration remains placeable on the architectural window sill, so a saved
+  // desk lamp or plant never floats where the painted side table used to be.
+  static const _casaClaraPreview = _RoomSceneLayout(
     slotRects: {
-      RoomSlot.rug: Rect.fromLTWH(.20, .73, .62, .24),
-      RoomSlot.wallLeft: Rect.fromLTWH(.17, .275, .10, .08),
-      RoomSlot.wallCenter: Rect.fromLTWH(.78, .275, .10, .08),
-      RoomSlot.floorLeft: Rect.fromLTWH(.11, .55, .16, .17),
-      RoomSlot.floorRight: Rect.fromLTWH(.74, .55, .14, .17),
-      // The Home card has much less visible floor than the portrait scene.
-      // Keep the pet bed behind the character's feet in this crop.
-      RoomSlot.floorCenter: Rect.fromLTWH(.255, .57, .25, .20),
-      RoomSlot.floorAccent: Rect.fromLTWH(.64, .65, .08, .136),
-      RoomSlot.floorCabinet: Rect.fromLTWH(.17, .505, .18, .22),
+      ..._emptyThemePreviewSlots,
+      RoomSlot.tabletop: Rect.fromLTWH(.55, .42, .08, .04),
     },
     speechRect: Rect.fromLTWH(.21, .27, .38, .26),
     catTop: .47,
@@ -336,45 +355,10 @@ class _RoomSceneLayout {
     itemScale: .82,
   );
 
-  // The home card is the preview image's own 2:1 shape, so nothing is
-  // cropped and these read the same on the card as on the image. The
-  // portrait image is always cropped; its rects were measured on a phone
-  // whose room area is 1000x775.
   static const _casaClaraImmersive = _RoomSceneLayout(
     slotRects: {
-      RoomSlot.rug: Rect.fromLTWH(.05, .67, .90, .14),
-      RoomSlot.wallLeft: Rect.fromLTWH(.146, .273, .146, .083),
-      RoomSlot.wallCenter: Rect.fromLTWH(.74, .345, .15, .083),
-      RoomSlot.tabletop: Rect.fromLTWH(.27, .433, .12, .067),
-      RoomSlot.floorLeft: Rect.fromLTWH(.05, .536, .18, .119),
-      RoomSlot.floorRight: Rect.fromLTWH(.69, .521, .20, .129),
-      RoomSlot.floorCenter: Rect.fromLTWH(.20, .515, .28, .17),
-      RoomSlot.floorAccent: Rect.fromLTWH(.60, .525, .09, .11),
-      RoomSlot.floorCabinet: Rect.fromLTWH(.18, .50, .24, .16),
-    },
-    speechRect: Rect.fromLTWH(.25, .48, .50, .14),
-    catTop: .56,
-    catWidth: .30,
-    floorLine: _stageFloorLine,
-    floorFocus: _immersiveFloorFocus,
-  );
-
-  // An empty room has nothing painted in to step around, so furniture stands
-  // back against the wall, where the stage is about 300 px to the metre and
-  // an item drawn at its real size also looks it. On Casa clara's rects it
-  // stood mid-floor, nearer the viewer yet smaller than the painted armchair
-  // behind it. Wall slots hang at about 1.5 m, above a 1.45 m floor lamp, so
-  // nothing on the wall sits on what stands under it.
-  static const _emptyThemeImmersive = _RoomSceneLayout(
-    slotRects: {
-      RoomSlot.rug: Rect.fromLTWH(.05, .67, .90, .14),
-      RoomSlot.wallLeft: Rect.fromLTWH(.15, .185, .14, .066),
-      RoomSlot.wallCenter: Rect.fromLTWH(.76, .185, .14, .066),
-      RoomSlot.floorLeft: Rect.fromLTWH(.07, .40, .24, .147),
-      RoomSlot.floorRight: Rect.fromLTWH(.72, .40, .18, .147),
-      RoomSlot.floorCenter: Rect.fromLTWH(.20, .50, .28, .18),
-      RoomSlot.floorAccent: Rect.fromLTWH(.63, .45, .08, .15),
-      RoomSlot.floorCabinet: Rect.fromLTWH(.14, .40, .24, .15),
+      ..._emptyThemeImmersiveSlots,
+      RoomSlot.tabletop: Rect.fromLTWH(.57, .29, .08, .04),
     },
     speechRect: Rect.fromLTWH(.25, .48, .50, .14),
     catTop: .56,

@@ -14,7 +14,7 @@ import 'support/localizations.dart';
 
 /// Decoding the room whole costs this much, and it is what the widget must
 /// never spend: the card paints into 1,440 px at the very widest.
-const int fullDecodeBytes = 1774 * 887 * 4;
+const int fullDecodeBytes = 1536 * 1024 * 4;
 
 Widget _roomHarness({String? asset}) => MaterialApp(
   theme: buildSobraTheme(),
@@ -55,10 +55,10 @@ void main() {
       await tester.pump();
 
       // 360dp screen at 3x, so min(360, 480) * 3 = 1080 px wide, and the art
-      // is exactly 2:1, so 540 tall.
+      // is 3:2, so the 1080 px decode is 720 px tall.
       expect(
         PaintingBinding.instance.imageCache.currentSizeBytes,
-        1080 * 540 * 4,
+        1080 * 720 * 4,
       );
       expect(
         PaintingBinding.instance.imageCache.currentSizeBytes,
@@ -84,7 +84,7 @@ void main() {
 
       expect(
         PaintingBinding.instance.imageCache.currentSizeBytes,
-        1080 * 540 * 4,
+        1080 * 720 * 4,
       );
     });
   });
