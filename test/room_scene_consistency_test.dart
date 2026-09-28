@@ -21,6 +21,8 @@ void main() {
 
       const placements = {
         RoomSlot.wallLeft: RoomDecorAssets.wallClockId,
+        RoomSlot.wallCenter: RoomDecorAssets.wallShelfId,
+        RoomSlot.floorLeft: RoomDecorAssets.rattanChairId,
         RoomSlot.floorCabinet: RoomDecorAssets.lowCabinetId,
         RoomSlot.floorAccent: RoomDecorAssets.floorLampId,
         RoomSlot.floorRight: RoomDecorAssets.terracottaPoufId,
@@ -66,6 +68,8 @@ void main() {
                 : RoomThemes.casaDePlaya.portraitAsset,
           ),
           'clock': imageRect(RoomDecorAssets.wallClock),
+          'shelf': imageRect(RoomDecorAssets.wallShelf),
+          'chair': imageRect(RoomDecorAssets.rattanChair),
           'cabinet': imageRect(RoomDecorAssets.lowCabinet),
           'lamp': imageRect(RoomDecorAssets.floorLamp),
           'pouf': imageRect(RoomDecorAssets.terracottaPouf),
@@ -97,8 +101,16 @@ void main() {
       const portraitWindow = 115 / 1536;
       const portraitBaseboard = 782 / 1536;
 
-      for (final item in ['clock', 'cabinet', 'lamp', 'pouf', 'bed']) {
-        final wall = item == 'clock';
+      for (final item in [
+        'clock',
+        'shelf',
+        'chair',
+        'cabinet',
+        'lamp',
+        'pouf',
+        'bed',
+      ]) {
+        final wall = item == 'clock' || item == 'shelf';
         final previewDepth = relativeY(
           preview,
           item,
@@ -118,6 +130,19 @@ void main() {
           lessThan(.04),
           reason: item,
         );
+
+        // The edited wide backgrounds now center the window like the
+        // portrait art, so objects should keep the same horizontal relation
+        // to it even though the Home card shows more wall on both sides.
+        final previewX =
+            (preview[item]!.center.dx - preview['background']!.left) /
+                preview['background']!.width -
+            810 / 1536;
+        final portraitX =
+            (portrait[item]!.center.dx - portrait['background']!.left) /
+                portrait['background']!.width -
+            550 / 1024;
+        expect((previewX - portraitX).abs(), lessThan(.025), reason: '$item x');
 
         final previewHeight =
             preview[item]!.height /

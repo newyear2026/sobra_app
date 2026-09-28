@@ -314,19 +314,20 @@ class _RoomSceneLayout {
   // The 3:2 preview art is cropped into a 2:1 Home card. Its window and
   // baseboard are closer together than in the portrait art. Place items by
   // those landmarks so they retain their height on the wall and their depth
-  // on the floor when the user opens the same room.
+  // on the floor when the user opens the same room. The aligned preview art
+  // also puts the window at the portrait's horizontal position.
   static const _emptyThemePreview = _RoomSceneLayout(
     slotRects: {
       RoomSlot.rug: Rect.fromLTWH(.20, .73, .62, .24),
-      RoomSlot.wallLeft: Rect.fromLTWH(.09, .275, .10, .08),
-      RoomSlot.wallCenter: Rect.fromLTWH(.82, .275, .10, .08),
-      RoomSlot.floorLeft: Rect.fromLTWH(.06, .55, .16, .17),
-      RoomSlot.floorRight: Rect.fromLTWH(.80, .55, .14, .17),
+      RoomSlot.wallLeft: Rect.fromLTWH(.17, .275, .10, .08),
+      RoomSlot.wallCenter: Rect.fromLTWH(.78, .275, .10, .08),
+      RoomSlot.floorLeft: Rect.fromLTWH(.11, .55, .16, .17),
+      RoomSlot.floorRight: Rect.fromLTWH(.74, .55, .14, .17),
       RoomSlot.floorCenter: Rect.fromLTWH(.22, .67, .25, .20),
       RoomSlot.floorAccent: Rect.fromLTWH(.64, .65, .08, .136),
       RoomSlot.floorCabinet: Rect.fromLTWH(.17, .505, .18, .22),
     },
-    speechRect: Rect.fromLTWH(.31, .17, .38, .26),
+    speechRect: Rect.fromLTWH(.21, .27, .38, .26),
     catTop: .47,
     catWidth: .22,
     floorLine: .675,

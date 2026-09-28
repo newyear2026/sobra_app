@@ -121,7 +121,7 @@ abstract final class RoomThemes {
 
   static const casaJardin = RoomTheme(
     id: casaJardinId,
-    previewAsset: 'assets/rooms/casa_jardin/background_preview.png',
+    previewAsset: 'assets/rooms/casa_jardin/background_preview_aligned.png',
     previewSize: Size(1536, 1024),
     portraitAsset: 'assets/rooms/casa_jardin/background_portrait.png',
     portraitSize: Size(1024, 1536),
@@ -131,7 +131,7 @@ abstract final class RoomThemes {
 
   static const casaDePlaya = RoomTheme(
     id: casaDePlayaId,
-    previewAsset: 'assets/rooms/casa_de_playa/background_preview.png',
+    previewAsset: 'assets/rooms/casa_de_playa/background_preview_aligned.png',
     previewSize: Size(1536, 1024),
     portraitAsset: 'assets/rooms/casa_de_playa/background_portrait.png',
     portraitSize: Size(1024, 1536),
