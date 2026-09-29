@@ -901,6 +901,34 @@
   "@settingsRateApp": {
     "description": "Ajustes row that opens the app's Google Play listing so the user can leave a rating."
   },
+  "settingsOurApps": "Más apps nuestras",
+  "@settingsOurApps": {
+    "description": "Ajustes row, under Acerca de, that opens the list of the team's other apps. Also the title of that screen."
+  },
+  "ourAppsIntro": "Las hacemos las mismas personas que hacemos Sobrita.",
+  "@ourAppsIntro": {
+    "description": "One line under the title of the other-apps screen, saying who made them."
+  },
+  "ourAppsOpen": "Ver en Google Play",
+  "@ourAppsOpen": {
+    "description": "Button on each card of the other-apps screen; opens that app's Google Play listing."
+  },
+  "ourAppsLoopetKind": "Rutinas",
+  "@ourAppsLoopetKind": {
+    "description": "One word under the name LOOPET: what the app is for. Shown in capitals."
+  },
+  "ourAppsLoopetBlurb": "Todo tu día en un círculo. Mira qué toca ahora y qué viene después.",
+  "@ourAppsLoopetBlurb": {
+    "description": "Two-line description of LOOPET, a 24-hour circular routine planner. Adapted from its Play short description."
+  },
+  "ourAppsRandomFocusKind": "Enfoque",
+  "@ourAppsRandomFocusKind": {
+    "description": "One word under the name RandomFocus: what the app is for. Shown in capitals."
+  },
+  "ourAppsRandomFocusBlurb": "Gira la ruleta, elige cuánto tiempo y concéntrate sin pensarlo.",
+  "@ourAppsRandomFocusBlurb": {
+    "description": "Two-line description of RandomFocus, a focus timer whose length is picked by spinning a roulette wheel. Adapted from its Play short description."
+  },
 
   "releaseAnnouncementViewAll": "Ver todo",
   "@releaseAnnouncementViewAll": {

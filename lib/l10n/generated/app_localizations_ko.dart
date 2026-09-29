@@ -1939,6 +1939,28 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsRateApp => '앱 평가하기';
 
   @override
+  String get settingsOurApps => '우리가 만든 다른 앱';
+
+  @override
+  String get ourAppsIntro => 'Sobrita를 만든 사람들이 만든 앱이에요.';
+
+  @override
+  String get ourAppsOpen => 'Google Play에서 보기';
+
+  @override
+  String get ourAppsLoopetKind => '루틴';
+
+  @override
+  String get ourAppsLoopetBlurb => '하루 24시간을 원 하나로. 지금 할 루틴과 다음 루틴이 한눈에 보여요.';
+
+  @override
+  String get ourAppsRandomFocusKind => '집중';
+
+  @override
+  String get ourAppsRandomFocusBlurb =>
+      '룰렛을 돌려 집중할 시간을 정하는 타이머. 고민 없이 바로 시작해요.';
+
+  @override
   String get releaseAnnouncementViewAll => '전체 보기';
 
   @override

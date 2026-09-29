@@ -24,6 +24,7 @@ import '../widgets/update_prompt.dart';
 import 'collection_screen.dart';
 import 'login_screen.dart';
 import 'cycle_settings_screen.dart';
+import 'our_apps_screen.dart';
 import 'gamification_preview_screen.dart';
 import 'release_notes_screen.dart';
 import 'xp_history_screen.dart';
@@ -499,6 +500,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
               label: l10n.settingsRateApp,
               value: '',
               onTap: () => _rateApp(reviews),
+            ),
+          // One doorway for all of them rather than a row per app, so no app
+          // gets billed above the others and a new one adds a card, not a
+          // row. Same gate as the rate row: every button behind it opens Play.
+          if (reviews != null)
+            _SettingsRow(
+              icon: Icons.grid_view,
+              iconColor: AppColors.indigo,
+              label: l10n.settingsOurApps,
+              value: '',
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(builder: (_) => const OurAppsScreen()),
+              ),
             ),
           // No destination, so no chevron: this row is the answer, not a way
           // to one. It exists so a support question has a number to quote.

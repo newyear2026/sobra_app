@@ -2016,6 +2016,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsRateApp => 'Rate Sobrita';
 
   @override
+  String get settingsOurApps => 'More apps from us';
+
+  @override
+  String get ourAppsIntro => 'Made by the same people who make Sobrita.';
+
+  @override
+  String get ourAppsOpen => 'View on Google Play';
+
+  @override
+  String get ourAppsLoopetKind => 'Routines';
+
+  @override
+  String get ourAppsLoopetBlurb =>
+      'Your whole day in one circle. See what to do now and what comes next.';
+
+  @override
+  String get ourAppsRandomFocusKind => 'Focus';
+
+  @override
+  String get ourAppsRandomFocusBlurb =>
+      'Spin the wheel to pick how long, then focus without overthinking it.';
+
+  @override
   String get releaseAnnouncementViewAll => 'See all';
 
   @override

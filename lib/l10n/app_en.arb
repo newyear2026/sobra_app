@@ -642,6 +642,13 @@
   "settingsCheckUpdateBusy": "Checking…",
   "settingsCheckUpdateUpToDate": "You're up to date.",
   "settingsRateApp": "Rate Sobrita",
+  "settingsOurApps": "More apps from us",
+  "ourAppsIntro": "Made by the same people who make Sobrita.",
+  "ourAppsOpen": "View on Google Play",
+  "ourAppsLoopetKind": "Routines",
+  "ourAppsLoopetBlurb": "Your whole day in one circle. See what to do now and what comes next.",
+  "ourAppsRandomFocusKind": "Focus",
+  "ourAppsRandomFocusBlurb": "Spin the wheel to pick how long, then focus without overthinking it.",
 
   "releaseAnnouncementViewAll": "See all",
   "releaseAnnouncementDone": "Done",

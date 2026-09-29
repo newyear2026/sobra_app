@@ -2018,6 +2018,30 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsRateApp => 'Calificar Sobrita';
 
   @override
+  String get settingsOurApps => 'Más apps nuestras';
+
+  @override
+  String get ourAppsIntro =>
+      'Las hacemos las mismas personas que hacemos Sobrita.';
+
+  @override
+  String get ourAppsOpen => 'Ver en Google Play';
+
+  @override
+  String get ourAppsLoopetKind => 'Rutinas';
+
+  @override
+  String get ourAppsLoopetBlurb =>
+      'Todo tu día en un círculo. Mira qué toca ahora y qué viene después.';
+
+  @override
+  String get ourAppsRandomFocusKind => 'Enfoque';
+
+  @override
+  String get ourAppsRandomFocusBlurb =>
+      'Gira la ruleta, elige cuánto tiempo y concéntrate sin pensarlo.';
+
+  @override
   String get releaseAnnouncementViewAll => 'Ver todo';
 
   @override

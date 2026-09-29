@@ -3471,6 +3471,48 @@ abstract class AppLocalizations {
   /// **'Calificar Sobrita'**
   String get settingsRateApp;
 
+  /// Ajustes row, under Acerca de, that opens the list of the team's other apps. Also the title of that screen.
+  ///
+  /// In es, this message translates to:
+  /// **'Más apps nuestras'**
+  String get settingsOurApps;
+
+  /// One line under the title of the other-apps screen, saying who made them.
+  ///
+  /// In es, this message translates to:
+  /// **'Las hacemos las mismas personas que hacemos Sobrita.'**
+  String get ourAppsIntro;
+
+  /// Button on each card of the other-apps screen; opens that app's Google Play listing.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver en Google Play'**
+  String get ourAppsOpen;
+
+  /// One word under the name LOOPET: what the app is for. Shown in capitals.
+  ///
+  /// In es, this message translates to:
+  /// **'Rutinas'**
+  String get ourAppsLoopetKind;
+
+  /// Two-line description of LOOPET, a 24-hour circular routine planner. Adapted from its Play short description.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo tu día en un círculo. Mira qué toca ahora y qué viene después.'**
+  String get ourAppsLoopetBlurb;
+
+  /// One word under the name RandomFocus: what the app is for. Shown in capitals.
+  ///
+  /// In es, this message translates to:
+  /// **'Enfoque'**
+  String get ourAppsRandomFocusKind;
+
+  /// Two-line description of RandomFocus, a focus timer whose length is picked by spinning a roulette wheel. Adapted from its Play short description.
+  ///
+  /// In es, this message translates to:
+  /// **'Gira la ruleta, elige cuánto tiempo y concéntrate sin pensarlo.'**
+  String get ourAppsRandomFocusBlurb;
+
   /// Opens the full Novedades screen from the card shown after an update.
   ///
   /// In es, this message translates to:
