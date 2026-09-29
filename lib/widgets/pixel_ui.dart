@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
@@ -9,36 +10,299 @@ import '../models/currency.dart';
 import '../models/pay_schedule.dart';
 import '../state/sobra_store.dart';
 import '../models/expense_entry.dart';
+import '../models/income_entry.dart';
 import '../theme/app_theme.dart';
 
 /// U+2212. The typographic minus, so a negative amount lines up with the
 /// digits around it. ASCII `-` is a hyphen and renders narrower.
 const minusSign = '−';
 
+/// Stands where a figure would go when there is none to show.
+///
+/// Not a zero: zero is a measurement, and this is the absence of one.
+const emDash = '—';
+
+/// Height of the five-tab bar, not counting the device's bottom safe inset.
+///
+/// XP toasts have to sit above this or they cover the + tile.
+const kPixelBottomBarHeight = 72.0;
+
 /// Writes an amount of minor units the way Sobra shows money.
 ///
-/// Both languages Sobra ships — Mexican Spanish and American English — group
-/// with commas and separate decimals with a dot, so the separators are fixed
-/// here rather than read from the locale. A locale that groups the other way
-/// around would have to make them a setting of their own.
+/// The separators come from the currency rather than the locale: $15.000 COP
+/// and $15,000 MXN are each how that money is written where it is spent,
+/// whichever language the screen is in. See [Currency.decimalComma].
 ///
 /// [showCode] drops the currency code for figures that sit beside another one
 /// already carrying it, such as the two halves of a category limit.
 String formatMoney(Currency currency, int minorUnits, {bool showCode = true}) {
-  final negative = minorUnits < 0;
   final absolute = minorUnits.abs();
-  final units = absolute ~/ Currency.minorUnitsPerUnit;
-  final decimals = absolute % Currency.minorUnitsPerUnit;
-  final whole = units.toString().replaceAllMapped(
-    RegExp(r'\B(?=(\d{3})+(?!\d))'),
-    (match) => ',',
-  );
-  final decimalPart = decimals == 0
-      ? ''
-      : '.${decimals.toString().padLeft(2, '0')}';
-  return '${negative ? minusSign : ''}${currency.symbol}$whole$decimalPart'
+  return '${minorUnits < 0 ? minusSign : ''}${currency.symbol}'
+      '${_wholePart(currency, absolute)}${_decimalPart(currency, absolute)}'
       '${showCode ? ' ${currency.code}' : ''}';
 }
+
+/// Writes [minorUnits] the way an amount field holds it.
+///
+/// The digits [formatMoney] would print, without the symbol or the code: a
+/// field carries those in its prefix and suffix, and [AmountInputFormatter]
+/// strips them out of the text anyway. Use it wherever a field opens on an
+/// existing figure, so what it shows first is already the shape typing
+/// produces — and so a field opened on $1,200.50 and saved untouched does not
+/// hand back $1,201.
+///
+/// In a currency with no decimals it does hand back the rounded figure, and
+/// has to: the field cannot hold half a yen, so leaving the hidden half in
+/// place would make the amount saved disagree with the one on screen. Only
+/// figures relabelled out of a currency that had decimals carry one.
+String amountFieldText(Currency currency, int minorUnits) {
+  final absolute = minorUnits.abs();
+  return '${_wholePart(currency, absolute)}${_decimalPart(currency, absolute)}';
+}
+
+/// The grouped digits ahead of the decimal point.
+///
+/// Where a currency prints no decimals the hundredths round into the unit
+/// rather than falling off it: the only amounts carrying any are ones
+/// relabelled out of a currency that had them, and ¥88.50 shown as ¥88 would
+/// be losing the user's money rather than rounding it. Integer arithmetic on
+/// purpose — a figure of money has no business passing through a double on
+/// its way to the screen.
+String _wholePart(Currency currency, int absolute) => _groupDigits(
+  (currency.decimalDigits == 0
+          ? (absolute + Currency.minorUnitsPerUnit ~/ 2) ~/
+                Currency.minorUnitsPerUnit
+          : absolute ~/ Currency.minorUnitsPerUnit)
+      .toString(),
+  currency.groupSeparator,
+);
+
+/// The decimal point and what stands behind it, or nothing when a currency
+/// writes no decimals and nothing when there are none to write.
+String _decimalPart(Currency currency, int absolute) {
+  if (currency.decimalDigits == 0) return '';
+  final decimals = absolute % Currency.minorUnitsPerUnit;
+  return decimals == 0
+      ? ''
+      : '${currency.decimalSeparator}${decimals.toString().padLeft(2, '0')}';
+}
+
+/// Puts [separator] every three digits, counting from the right.
+String _groupDigits(String digits, [String separator = ',']) => digits
+    .replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => separator);
+
+/// Trades every point for a comma and every comma for a point.
+///
+/// How a figure written 1.234,56 gets read by the code that reads 1,234.56,
+/// and put back afterwards. One character for one, so no caret moves.
+String _swapSeparators(String text) =>
+    text.replaceAllMapped(RegExp('[.,]'), (m) => m[0] == '.' ? ',' : '.');
+
+/// The most digits an amount may carry ahead of the decimal point.
+///
+/// Twelve is past any figure a household budget holds, and it keeps the
+/// centavos — and every sum built on them — clear of the far end of int64,
+/// where a pasted string of twenty digits used to land as 92,233,720,368,547.
+const _maxAmountDigits = 12;
+
+/// Keeps an amount field in the shape [formatMoney] prints.
+///
+/// Written for 1,234.56. A currency that writes 1.234,56 has its separators
+/// swapped on the way in and back on the way out, so both shapes run the one
+/// set of rules below — and both the point and the comma key still mean the
+/// decimal, whichever of the two a keyboard offers.
+///
+/// Without it a field took whatever the keyboard sent and left the reading to
+/// [parseAmount], which drops what it cannot understand: `9,,,,`, `9abc` and
+/// `$9` all registered as nine pesos, and `1e3` as thirteen. Here the grouping
+/// commas are placed rather than typed, so a separator the user enters can
+/// only mean the decimal point and there is only ever one of it. What the
+/// field shows is what gets registered.
+class AmountInputFormatter extends TextInputFormatter {
+  const AmountInputFormatter(this.currency);
+
+  /// The currency the field is labelled in, which decides whether a decimal
+  /// separator means anything here. In the yen it does not, and one typed is
+  /// dropped rather than accepted and later refused by [parseAmount].
+  final Currency currency;
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (!currency.decimalComma) return _format(oldValue, newValue);
+    TextEditingValue swapped(TextEditingValue value) =>
+        value.copyWith(text: _swapSeparators(value.text));
+    return swapped(_format(swapped(oldValue), swapped(newValue)));
+  }
+
+  /// Formats a field written 1,234.56; see [formatEditUpdate].
+  TextEditingValue _format(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final decimal = currency.decimalDigits > 0;
+    var text = newValue.text;
+    final insertedAt = _insertedAt(oldValue.text, text);
+    if (decimal && insertedAt >= 0 && text[insertedAt] == ',') {
+      // A keyboard that offers a comma where the point should be is offering
+      // the decimal key, not a grouping separator: those this formatter
+      // places itself.
+      text = text.replaceRange(insertedAt, insertedAt + 1, '.');
+    }
+    // Nothing but digits and separators reaches the field, so a pasted
+    // "$1,200.50 MXN" keeps its figure and loses the rest of itself.
+    final cleaned = text.replaceAll(RegExp(r'[^0-9.,]'), '');
+    if (cleaned.isEmpty) {
+      return const TextEditingValue(
+        selection: TextSelection.collapsed(offset: 0),
+      );
+    }
+
+    // A figure that arrived whole is read the generous way [parseAmount]
+    // reads it. One being typed is read against what the field already holds,
+    // where every comma is this formatter's own grouping and the first point
+    // is the decimal one — so a fifth digit typed onto 1,234 makes 12,345
+    // rather than being taken for the decimals of one peso.
+    final point = (text.length - oldValue.text.length).abs() > 1
+        ? _wholeDecimalIndex(cleaned)
+        : cleaned.indexOf('.');
+
+    final ahead = point < 0 ? cleaned : cleaned.substring(0, point);
+    final integerDigits = ahead.replaceAll(RegExp(r'[.,]'), '');
+    // A thirteenth digit is refused rather than dropped: keeping twelve of a
+    // pasted figure would register a number nobody typed.
+    if (integerDigits.length > _maxAmountDigits) return oldValue;
+
+    final trimmed = integerDigits.replaceFirst(RegExp(r'^0+(?=\d)'), '');
+    final rest = point < 0
+        ? ''
+        : cleaned.substring(point + 1).replaceAll(RegExp(r'[^0-9]'), '');
+    final fraction = rest.substring(0, math.min(rest.length, 2));
+    final whole = _groupDigits(trimmed.isEmpty ? '0' : trimmed);
+    // Where a currency writes no decimals the point is still found, only so
+    // that what follows it can be left behind: a pasted ¥1,200.50 is twelve
+    // hundred yen and fifty of nothing, not a hundred and twenty thousand.
+    final formatted = point < 0 || !decimal ? whole : '$whole.$fraction';
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(
+        offset: _caretFor(
+          oldValue,
+          newValue,
+          text,
+          formatted,
+          insertedAt,
+          integerDigits,
+          trimmed,
+        ),
+      ),
+    );
+  }
+
+  /// Where to leave the caret once [formatted] has replaced what was typed.
+  int _caretFor(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+    String text,
+    String formatted,
+    int insertedAt,
+    String integerDigits,
+    String trimmed,
+  ) {
+    // The decimal key puts the caret past the point it just made, so the next
+    // digit typed is a centavo.
+    if (currency.decimalDigits > 0 &&
+        insertedAt >= 0 &&
+        text[insertedAt] == '.' &&
+        !oldValue.text.contains('.')) {
+      return formatted.indexOf('.') + 1;
+    }
+    final caret = newValue.selection.end < 0
+        ? text.length
+        : newValue.selection.end;
+    // The zero standing in front of a bare decimal point was not typed
+    // either, so it too belongs behind the caret.
+    final synthesized = trimmed.isEmpty ? 1 : 0;
+    return _caretAfterDigits(
+      formatted,
+      _digitsBefore(text, caret) +
+          synthesized -
+          (integerDigits.length - trimmed.length),
+    );
+  }
+
+  /// Where the decimal point falls in a figure that arrived whole, or -1.
+  ///
+  /// The reading [parseAmount] gives a pasted string: with both separators
+  /// present the last one takes the decimals, a lone point always does, and a
+  /// lone comma only when what it separates cannot be groups of three.
+  int _wholeDecimalIndex(String cleaned) {
+    final dot = cleaned.lastIndexOf('.');
+    final comma = cleaned.lastIndexOf(',');
+    if (dot >= 0) return comma > dot ? comma : dot;
+    if (comma < 0) return -1;
+    final parts = cleaned.split(',');
+    final grouped =
+        parts.first.isNotEmpty &&
+        parts.first.length <= 3 &&
+        parts.skip(1).every((part) => part.length == 3);
+    return grouped ? -1 : comma;
+  }
+
+  /// Where [newText] gained its one new character over [oldText], or -1 when
+  /// the change was anything else — a deletion, a paste, a field filled in.
+  int _insertedAt(String oldText, String newText) {
+    if (newText.length != oldText.length + 1) return -1;
+    var i = 0;
+    while (i < oldText.length &&
+        oldText.codeUnitAt(i) == newText.codeUnitAt(i)) {
+      i++;
+    }
+    return oldText.substring(i) == newText.substring(i + 1) ? i : -1;
+  }
+
+  /// How many digits of [text] sit left of [offset].
+  ///
+  /// The caret is held by its place among the digits rather than by its
+  /// index, which shifts every time a grouping comma appears or leaves.
+  int _digitsBefore(String text, int offset) {
+    if (offset <= 0) return 0;
+    final head = text.substring(0, math.min(offset, text.length));
+    return RegExp(r'\d').allMatches(head).length;
+  }
+
+  /// Where the caret sits in [text] once [digits] of it are behind it.
+  int _caretAfterDigits(String text, int digits) {
+    if (digits <= 0) return 0;
+    var seen = 0;
+    for (var i = 0; i < text.length; i++) {
+      if (!_isDigit(text.codeUnitAt(i))) continue;
+      if (++seen < digits) continue;
+      // Whatever trails the last digit is the decimal point just typed — a
+      // grouping comma cannot end the text — so the caret goes behind it.
+      return RegExp(r'\d').hasMatch(text.substring(i + 1))
+          ? i + 1
+          : text.length;
+    }
+    return text.length;
+  }
+
+  bool _isDigit(int codeUnit) => codeUnit >= 0x30 && codeUnit <= 0x39;
+}
+
+/// What every amount field runs its input through. See [AmountInputFormatter].
+List<TextInputFormatter> amountInputFormattersFor(Currency currency) =>
+    <TextInputFormatter>[AmountInputFormatter(currency)];
+
+/// The keyboard an amount field asks for.
+///
+/// A currency with no decimals has no use for the decimal key, and offering
+/// one would be offering a key the field refuses.
+TextInputType amountKeyboardType(Currency currency) =>
+    TextInputType.numberWithOptions(decimal: currency.decimalDigits > 0);
 
 String? _normalizeAmount(String input) {
   var value = input
@@ -100,18 +364,48 @@ String? _normalizeAmount(String input) {
   return '$sign$integerPart${fractionPart.isEmpty ? '' : '.$fractionPart'}';
 }
 
-int? parseAmount(String input) {
-  final normalized = _normalizeAmount(input);
-  final value = normalized == null ? null : double.tryParse(normalized);
-  if (value == null || !value.isFinite || value <= 0) return null;
-  return (value * 100).round();
+/// Reads [input] as a figure of money, or null when it does not read as one.
+///
+/// Counts the centavos out of the digits rather than multiplying a double by
+/// a hundred, which is how 0.001 used to come back as an amount of nothing.
+int? _parseMinorUnits(Currency currency, String input) {
+  // Read 1.234,56 as 1,234.56, so that $15.000 CLP is fifteen thousand and
+  // not fifteen with three digits of change.
+  final normalized = _normalizeAmount(
+    currency.decimalComma ? _swapSeparators(input) : input,
+  );
+  if (normalized == null) return null;
+  final negative = normalized.startsWith('-');
+  final body = negative ? normalized.substring(1) : normalized;
+  final point = body.indexOf('.');
+  final integerPart = point < 0 ? body : body.substring(0, point);
+  final fractionPart = point < 0 ? '' : body.substring(point + 1);
+  // Finer than a centavo is not a sum of money, and rounding it quietly is
+  // how 9.999 became ten pesos. Too many digits ahead of the point is not one
+  // either: it overflows before anyone reads it.
+  if (fractionPart.length > 2 || integerPart.length > _maxAmountDigits) {
+    return null;
+  }
+  // Finer than a yen is not a sum of money either. The field never lets one
+  // be typed, so this catches a figure that arrived some other way rather
+  // than rounding it into something the user did not write.
+  if (currency.decimalDigits == 0 && fractionPart.isNotEmpty) return null;
+  final units = int.tryParse(integerPart);
+  if (units == null) return null;
+  final minorUnits =
+      units * Currency.minorUnitsPerUnit +
+      int.parse(fractionPart.padRight(2, '0'));
+  return negative ? -minorUnits : minorUnits;
 }
 
-int? parseNonNegativeAmount(String input) {
-  final normalized = _normalizeAmount(input);
-  final value = normalized == null ? null : double.tryParse(normalized);
-  if (value == null || !value.isFinite || value < 0) return null;
-  return (value * 100).round();
+int? parseAmount(Currency currency, String input) {
+  final value = _parseMinorUnits(currency, input);
+  return value == null || value <= 0 ? null : value;
+}
+
+int? parseNonNegativeAmount(Currency currency, String input) {
+  final value = _parseMinorUnits(currency, input);
+  return value == null || value < 0 ? null : value;
 }
 
 /// Runs a store write and shows why it failed if it throws.
@@ -1094,14 +1388,39 @@ List<DailySpend> dailySpend({
   required CycleBounds bounds,
   required Iterable<ExpenseEntry> entries,
   required DateTime today,
+}) => dailyTotals(
+  bounds: bounds,
+  today: today,
+  amounts: [
+    for (final entry in entries) (entry.occurredAt, entry.amountCentavos),
+  ],
+);
+
+/// Every day of [bounds], with what came in on it.
+List<DailySpend> dailyIncome({
+  required CycleBounds bounds,
+  required Iterable<IncomeEntry> entries,
+  required DateTime today,
+}) => dailyTotals(
+  bounds: bounds,
+  today: today,
+  amounts: [
+    for (final entry in entries) (entry.occurredAt, entry.amountCentavos),
+  ],
+);
+
+List<DailySpend> dailyTotals({
+  required CycleBounds bounds,
+  required DateTime today,
+  required Iterable<(DateTime occurredAt, int amountCentavos)> amounts,
 }) {
   final start = dateOnly(bounds.start);
   final now = dateOnly(today);
   final totals = List<int>.filled(bounds.lengthInDays, 0);
-  for (final entry in entries) {
-    final index = dateOnly(entry.occurredAt).difference(start).inDays;
+  for (final amount in amounts) {
+    final index = dateOnly(amount.$1).difference(start).inDays;
     if (index >= 0 && index < totals.length) {
-      totals[index] += entry.amountCentavos;
+      totals[index] += amount.$2;
     }
   }
   return [

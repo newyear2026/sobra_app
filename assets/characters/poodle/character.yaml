@@ -1,0 +1,75 @@
+schemaVersion: 3
+character:
+  id: poodle
+  displayName: Poodle
+
+sprite:
+  frameWidth: 320
+  frameHeight: 360
+  sheetHeight: 360
+  layout: horizontal
+  format: png-rgba
+  interpolation: nearest-neighbor
+  fit: contain-safe-area
+  anchor:
+    x: 160
+    baselineY: 344
+  safeMargin: 16
+
+roles:
+  idle:
+    asset: idle-8.png
+    frameCount: 8
+    sheetWidth: 2560
+    durationMs: 2800
+    playback: loop
+    playRange: [0, 7]
+    posterFrame: 0
+    legacyName: idle
+  activity:
+    asset: activity-12.png
+    frameCount: 12
+    sheetWidth: 3840
+    durationMs: 1800
+    playback: loop
+    playRange: [0, 11]
+    posterFrame: 0
+    legacyName: walk
+  processing:
+    asset: processing-12.png
+    frameCount: 12
+    sheetWidth: 3840
+    durationMs: 3600
+    playback: loop
+    playRange: [0, 11]
+    posterFrame: 7
+    legacyName: calculate
+  positive:
+    asset: positive-12.png
+    frameCount: 12
+    sheetWidth: 3840
+    durationMs: 4000
+    playback: loop
+    playRange: [0, 11]
+    posterFrame: 8
+    legacyName: saving
+  success:
+    asset: success-12.png
+    frameCount: 12
+    sheetWidth: 3840
+    durationMs: 2200
+    displayScale: 1.45
+    playback: once-hold
+    playRange: [0, 11]
+    posterFrame: 5
+    holdFrame: 11
+    legacyName: celebrate
+  warning:
+    asset: warning-8.png
+    frameCount: 8
+    sheetWidth: 2560
+    durationMs: 1600
+    playback: once-hold
+    playRange: [0, 7]
+    posterFrame: 7
+    legacyName: concern

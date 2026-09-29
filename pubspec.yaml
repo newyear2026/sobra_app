@@ -1,5 +1,5 @@
 name: sobra_app
-description: "Sobra, a calm pixel-art budget companion for Mexico."
+description: "Sobrita, a calm pixel-art budget companion for Mexico."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.4+10
 
 environment:
   sdk: ^3.11.1
@@ -41,6 +41,35 @@ dependencies:
   intl: any
   shared_preferences: ^2.5.5
 
+  # Receipt capture. The picker resizes and re-encodes natively, which is the
+  # only reason no separate compression package is here: a 4 MB camera frame
+  # would otherwise land in the documents directory untouched.
+  image_picker: ^1.1.2
+  path_provider: ^2.1.5
+
+  # Reads the running build for the Acerca de rows. Only ever displayed — the
+  # release notes are a list the app ships, not something it computes by
+  # comparing versions, so there is no "is this newer than" logic to get wrong.
+  package_info_plus: ^10.2.1
+
+  # Non-consumable character and item purchases. Restoring them is what makes a
+  # reinstall recoverable without an account of Sobra's own: the platform keeps
+  # the entitlement against the user's store account and replays it on request.
+  in_app_purchase: ^3.3.0
+  # Play Billing's own purchase query, which reports each purchase's real
+  # state. The shared API cannot tell a refunded purchase from one never made.
+  in_app_purchase_android: ^0.5.0
+
+  # AdMob rewarded and native ads. Debug/profile use Google's sample units;
+  # release builds show no ads unless they explicitly enable live ads.
+  google_mobile_ads: ^9.1.0
+  in_app_update: ^4.2.5
+  url_launcher: ^6.3.2
+  # Play's in-app review sheet, asked for once after a cycle that closed well.
+  # The Ajustes row does not use it: Play may decline to show the sheet, and a
+  # row the user tapped has to open something.
+  in_app_review: ^2.0.12
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -56,6 +85,23 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
 
+  # Generates the launcher icons from design/icon. Regenerate the two masters
+  # with `python3 design/icon/build_icons.py` first if the art changes.
+  flutter_launcher_icons: ^0.14.4
+
+# Launcher icons. The adaptive background is an image rather than a colour
+# because the field carries the pixel grid. That is safe to crop where a
+# drawn edge would not be: the pattern is uniform, so whatever mask a launcher
+# applies, what it cuts away looks like what it keeps.
+flutter_launcher_icons:
+  image_path: "design/icon/sobra-icon-grid-master-1024.png"
+  android: "ic_launcher"
+  adaptive_icon_background: "design/icon/sobra-icon-grid-background-1024.png"
+  adaptive_icon_foreground: "design/icon/sobra-icon-grid-foreground-1024.png"
+  min_sdk_android: 21
+  ios: true
+  remove_alpha_ios: true
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -70,14 +116,36 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/apps/
     - assets/cats/
     - assets/characters/michi/
+    - assets/characters/poodle/
+    - assets/characters/schnauzer/
+    - assets/characters/guinea-pig/
+    - assets/characters/capybara/
+    - assets/characters/alpaca/
+    - assets/characters/platypus/
+    - assets/login/
     - assets/rooms/casa_clara/
+    - assets/rooms/casa_clara/items/
+    - assets/rooms/casa_jardin/
+    - assets/rooms/casa_de_playa/
+    - assets/rooms/shared_items/
 
   fonts:
     - family: PixelifySans
       fonts:
         - asset: assets/fonts/PixelifySans.ttf
+    - family: SobraHangul
+      fonts:
+        - asset: assets/fonts/SobraHangul.ttf
+        - asset: assets/fonts/SobraHangul-Bold.ttf
+          weight: 700
+    # Regular only: Galmuri draws no bold kana or kanji. See
+    # tool/build_japanese_fallback.py.
+    - family: SobraJapanese
+      fonts:
+        - asset: assets/fonts/SobraJapanese.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

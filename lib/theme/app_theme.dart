@@ -53,12 +53,54 @@ abstract final class AppColors {
 /// font, so hierarchy comes from size and from the ink scale, not from more
 /// weight steps. Nothing goes below [minFontSize]; the glyphs are a pixel grid
 /// and they fall apart under it.
+///
+/// The copy of the font in `assets/fonts` is not the one upstream ships: its
+/// figures are redrawn. Pixelify's own `5` is an S with a diagonal waist and
+/// shares the closed double-loop frame of `8` cell for cell, so at the sizes
+/// an amount is read here it is read as an 8 — and `0`, `3`, `6` and `9` sat
+/// no further from `8` than that. `tool/patch_pixelify_digits.py` draws the
+/// five that needed it on the font's own lattice, at the font's own stroke
+/// weight, and along the same `wght` axis; every letter is untouched. Re-run
+/// it if the font is ever updated from upstream.
 abstract final class AppType {
   static const family = 'PixelifySans';
+
+  /// Hangul, which [family] does not draw.
+  ///
+  /// A fallback rather than a family of its own because a Korean sentence is
+  /// mostly Hangul but never only Hangul — a figure, a percent sign and a
+  /// date all come from [family] in the middle of it — and the engine picks
+  /// per character. `tool/build_hangul_fallback.py` sizes this face so a
+  /// syllable stands exactly as tall as a capital of [family]. Its pixels are
+  /// finer than [family]'s on purpose: a syllable holds two or three jamo
+  /// where a letter holds one, and matching the grid instead of the height
+  /// makes Hangul that cannot be read.
+  ///
+  /// It has to be on every style that names [family]: a fallback is part of
+  /// a `TextStyle`, not of the font, so a style that sets the family and
+  /// forgets this one renders Hangul in whatever face the phone supplies.
+  ///
+  /// Two files, not one: Pixelify carries weight on a variable axis and a
+  /// static face cannot, and Flutter synthesises no bold for a fallback — so
+  /// without a bold file a Korean heading renders at the weight of the
+  /// sentence under it.
+  ///
+  /// Kana and kanji come from a second face cut from the same Galmuri at the
+  /// same scale (`tool/build_japanese_fallback.py`). It has no bold: Galmuri
+  /// draws none for Japanese, and a mechanical one clogs dense kanji. So a
+  /// Japanese heading is set at regular weight on purpose, and its hierarchy
+  /// comes from size alone.
+  static const fallback = <String>['SobraHangul', 'SobraJapanese'];
   static const minFontSize = 12.0;
 
   static const regular = <FontVariation>[FontVariation('wght', 400)];
   static const bold = <FontVariation>[FontVariation('wght', 700)];
+
+  /// Standard ligatures off. Pixelify's `fi` and `fl` are one pixel cell
+  /// wide and draw as something close to an `A`, so with `liga` on, "fijos"
+  /// read "Ajos" and "Profil" read "ProAl". The letters are fine on their
+  /// own, and a pixel font has no joins that need a ligature.
+  static const features = <FontFeature>[FontFeature.disable('liga')];
 }
 
 /// A [TextStyle] on the Sobra type ramp.
@@ -72,8 +114,15 @@ TextStyle pixelText({
   double? height,
 }) => TextStyle(
   fontFamily: AppType.family,
+  fontFamilyFallback: AppType.fallback,
   fontSize: size < AppType.minFontSize ? AppType.minFontSize : size,
+  // Both, and they do different jobs. [family] is variable and takes its
+  // weight off the axis; the Hangul fallback is two static files and takes
+  // its own off [fontWeight], which the axis ignores. Setting only one of
+  // them leaves half of a Korean heading unbolded.
+  fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
   fontVariations: bold ? AppType.bold : AppType.regular,
+  fontFeatures: AppType.features,
   color: color,
   height: height,
   letterSpacing: 0,
@@ -120,6 +169,7 @@ ThemeData buildSobraTheme() {
       outline: AppColors.ink,
     ),
     fontFamily: AppType.family,
+    fontFamilyFallback: AppType.fallback,
     textTheme: textTheme,
 
     // The pixel language has no ripple: a press moves the surface down onto

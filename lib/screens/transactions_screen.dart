@@ -4,15 +4,28 @@ import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
+import '../models/currency.dart';
 import '../models/expense_entry.dart';
 import '../models/money_movement.dart';
+import '../services/native_ad_service.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/receipt_field.dart';
+import '../widgets/sobra_native_ad.dart';
 import '../widgets/transaction_row.dart';
 
-class TransactionsScreen extends StatelessWidget {
+enum _LedgerKind { expense, income }
+
+class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
+
+  @override
+  State<TransactionsScreen> createState() => _TransactionsScreenState();
+}
+
+class _TransactionsScreenState extends State<TransactionsScreen> {
+  _LedgerKind _kind = _LedgerKind.expense;
 
   String _groupLabel(AppLocalizations l10n, DateTime date, DateTime today) {
     final day = DateTime(date.year, date.month, date.day);
@@ -20,6 +33,12 @@ class TransactionsScreen extends StatelessWidget {
     if (day == today.subtract(const Duration(days: 1))) return l10n.yesterday;
     return shortCycleDate(l10n, day);
   }
+
+  bool _matches(MoneyMovement movement) => switch (_kind) {
+    _LedgerKind.expense =>
+      movement.expense != null || movement.reconciliation != null,
+    _LedgerKind.income => movement.income != null,
+  };
 
   /// Deletes what a row stands for, or says why it has to stay.
   ///
@@ -136,18 +155,59 @@ class TransactionsScreen extends StatelessWidget {
           borderRadius: BorderRadius.zero,
           side: BorderSide(color: AppColors.ink, width: 3),
         ),
-        builder: (_) => _EditExpenseSheet(entry: entry),
+        builder: (_) => _EditExpenseSheet(
+          entry: entry,
+          currency: SobraScope.of(context).currency,
+        ),
       );
 
   @override
   Widget build(BuildContext context) {
     final store = SobraScope.of(context);
     final l10n = AppLocalizations.of(context);
-    final entries = store.movements;
+    final entries = store.movements.where(_matches).toList();
     final grouped = <String, List<MoneyMovement>>{};
     for (final entry in entries) {
       final label = _groupLabel(l10n, entry.occurredAt, store.today);
       grouped.putIfAbsent(label, () => []).add(entry);
+    }
+    final nativeAds = NativeAdScope.maybeOf(context);
+    final ledger = <Widget>[];
+    var movementIndex = 0;
+    for (final group in grouped.entries) {
+      ledger.add(
+        Padding(
+          padding: const EdgeInsets.only(top: 12, bottom: 5),
+          child: Text(
+            group.key,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ),
+      );
+      ledger.add(const Divider(height: 1));
+      for (final movement in group.value) {
+        ledger.add(
+          MovementRow(
+            movement: movement,
+            onTap: movement.expense == null
+                ? null
+                : () => _editExpense(context, movement.expense!),
+            trailing: _rowMenu(context, store, movement),
+          ),
+        );
+        movementIndex++;
+        // Date headings are deliberately not counted. Exactly three real
+        // transaction rows are above the ad, even when the third ends a date
+        // group or is the final row in the list.
+        if (movementIndex == 3 && nativeAds?.shouldPlace == true) {
+          ledger.add(
+            SobraNativeAd(
+              key: ValueKey('native-ad-${nativeAds!.visitId}'),
+              controller: nativeAds,
+            ),
+          );
+        }
+      }
     }
     return SafeArea(
       bottom: false,
@@ -157,34 +217,36 @@ class TransactionsScreen extends StatelessWidget {
         children: [
           PixelTopBar(title: l10n.transactionsTitle),
           const SizedBox(height: 18),
-          if (store.cycleTransactions.isNotEmpty) ...[
-            _DailySpendCard(store: store),
-            const SizedBox(height: 20),
-          ],
+          PixelSegmented<_LedgerKind>(
+            segments: [
+              PixelSegment(
+                value: _LedgerKind.expense,
+                label: l10n.registerExpense,
+              ),
+              PixelSegment(
+                value: _LedgerKind.income,
+                label: l10n.registerIncome,
+              ),
+            ],
+            selected: _kind,
+            onChanged: (value) => setState(() => _kind = value),
+          ),
+          const SizedBox(height: 18),
+          _DailyChartCard(store: store, kind: _kind),
+          const SizedBox(height: 20),
           if (entries.isEmpty)
             PixelEmptyState(
-              icon: Icons.receipt_long_outlined,
-              title: l10n.transactionsEmptyTitle,
-              message: l10n.transactionsEmptyMessage,
+              icon: _kind == _LedgerKind.income
+                  ? Icons.arrow_upward
+                  : Icons.receipt_long_outlined,
+              title: _kind == _LedgerKind.income
+                  ? l10n.transactionsEmptyIncomesTitle
+                  : l10n.transactionsEmptyExpensesTitle,
+              message: _kind == _LedgerKind.income
+                  ? l10n.transactionsEmptyIncomesMessage
+                  : l10n.transactionsEmptyExpensesMessage,
             ),
-          for (final group in grouped.entries) ...[
-            Padding(
-              padding: const EdgeInsets.only(top: 12, bottom: 5),
-              child: Text(
-                group.key,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
-            const Divider(height: 1),
-            for (final movement in group.value)
-              MovementRow(
-                movement: movement,
-                onTap: movement.expense == null
-                    ? null
-                    : () => _editExpense(context, movement.expense!),
-                trailing: _rowMenu(context, store, movement),
-              ),
-          ],
+          ...ledger,
         ],
       ),
     );
@@ -192,8 +254,12 @@ class TransactionsScreen extends StatelessWidget {
 }
 
 class _EditExpenseSheet extends StatefulWidget {
-  const _EditExpenseSheet({required this.entry});
+  const _EditExpenseSheet({required this.entry, required this.currency});
   final ExpenseEntry entry;
+
+  /// Handed in rather than read from the scope: the figure the sheet opens on
+  /// is spelled in [initState], out of reach of an inherited widget.
+  final Currency currency;
   @override
   State<_EditExpenseSheet> createState() => _EditExpenseSheetState();
 }
@@ -202,17 +268,19 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
   late final TextEditingController _amountController;
   late final TextEditingController _noteController;
   late ExpenseCategory _category;
+  late String? _receiptFileName;
 
   @override
   void initState() {
     super.initState();
     _amountController = TextEditingController(
-      text: (widget.entry.amountCentavos / 100).toStringAsFixed(0),
+      text: amountFieldText(widget.currency, widget.entry.amountCentavos),
     );
     _noteController = TextEditingController(
       text: widget.entry.isPendingCashAdjustment ? '' : widget.entry.note,
     );
     _category = widget.entry.category;
+    _receiptFileName = widget.entry.receiptFileName;
   }
 
   @override
@@ -223,7 +291,7 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
   }
 
   Future<void> _save() async {
-    final amount = parseAmount(_amountController.text);
+    final amount = parseAmount(widget.currency, _amountController.text);
     if (amount == null && !widget.entry.isLinkedToCashCount) return;
     final store = SobraScope.of(context);
     final messenger = ScaffoldMessenger.of(context);
@@ -236,6 +304,7 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
           expenseId: widget.entry.id,
           category: _category,
           note: _noteController.text,
+          receiptFileName: _receiptFileName,
         );
       }
       return store.updateExpense(
@@ -243,6 +312,8 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
           amountCentavos: amount ?? widget.entry.amountCentavos,
           category: _category,
           note: _noteController.text.trim(),
+          receiptFileName: _receiptFileName,
+          clearReceipt: _receiptFileName == null,
         ),
       );
     });
@@ -274,12 +345,11 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
             TextField(
               controller: _amountController,
               enabled: !widget.entry.isLinkedToCashCount,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
+              keyboardType: amountKeyboardType(widget.currency),
+              inputFormatters: amountInputFormattersFor(widget.currency),
               decoration: InputDecoration(
                 labelText: l10n.amount,
-                suffixText: SobraScope.of(context).currency.code,
+                suffixText: widget.currency.code,
               ),
             ),
             if (widget.entry.isLinkedToCashCount) ...[
@@ -310,6 +380,11 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
                 hintText: l10n.noteExample,
               ),
             ),
+            const SizedBox(height: 14),
+            ReceiptField(
+              fileName: _receiptFileName,
+              onChanged: (value) => setState(() => _receiptFileName = value),
+            ),
             if (widget.entry.isPendingCashAdjustment) ...[
               const SizedBox(height: 12),
               PixelCard(
@@ -339,27 +414,68 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
 }
 
 /// The cycle's shape, above the list that spells it out.
-class _DailySpendCard extends StatelessWidget {
-  const _DailySpendCard({required this.store});
+class _DailyChartCard extends StatelessWidget {
+  const _DailyChartCard({required this.store, required this.kind});
 
   final SobraStore store;
+  final _LedgerKind kind;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final bounds = store.cycleBounds;
-    // The even share of the budget, not `dailyAllowanceCentavos`: that one
-    // moves as the cycle is spent, so past days would be measured against a
-    // line that did not exist when they happened.
-    final perDay = bounds.lengthInDays <= 0
+    final showingIncome = kind == _LedgerKind.income;
+    // The even share of the *planned* budget. `totalBudgetCentavos` also
+    // carries extra income assigned to this cycle, and using that as the
+    // scale would squash the bars the moment a large inflow lands — the
+    // chart would stop being about spending. Home and Presupuesto still
+    // count that extra as spendable; this line does not.
+    //
+    // `dailyAllowanceCentavos` is also rejected: that one moves as the
+    // cycle is spent, so past days would be measured against a line that
+    // did not exist when they happened. Income has no such line at all.
+    // Zero already means "draw no limit line": that is what the income tab
+    // passes. A cycle with no budget has no daily share to draw either.
+    final perDay = !store.hasBudget || bounds.lengthInDays <= 0
         ? 0
-        : store.totalBudgetCentavos ~/ bounds.lengthInDays;
+        : store.baseBudgetCentavos ~/ bounds.lengthInDays;
+    final cycleIncome = store.cycleIncomes.fold<int>(
+      0,
+      (sum, entry) => sum + entry.amountCentavos,
+    );
+    final days = showingIncome
+        ? dailyIncome(
+            bounds: bounds,
+            entries: store.cycleIncomes,
+            today: store.today,
+          )
+        : dailySpend(
+            bounds: bounds,
+            entries: store.cycleSpending,
+            today: store.today,
+          );
+    final caption = showingIncome
+        ? l10n.dailyIncomeCycleTotal(
+            formatMoney(store.currency, cycleIncome, showCode: false),
+          )
+        : store.hasBudget
+        ? l10n.dailySpendLimit(
+            formatMoney(store.currency, perDay, showCode: false),
+          )
+        // No limit to name, so the caption reports what did happen instead.
+        : l10n.dailySpendCycleTotal(
+            formatMoney(
+              store.currency,
+              store.totalSpentCentavos,
+              showCode: false,
+            ),
+          );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          l10n.dailySpendTitle,
+          showingIncome ? l10n.dailyIncomeTitle : l10n.dailySpendTitle,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 10),
@@ -369,12 +485,8 @@ class _DailySpendCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               DailySpendChart(
-                days: dailySpend(
-                  bounds: bounds,
-                  entries: store.cycleTransactions,
-                  today: store.today,
-                ),
-                dailyLimitCentavos: perDay,
+                days: days,
+                dailyLimitCentavos: showingIncome ? 0 : perDay,
               ),
               const SizedBox(height: 8),
               Row(
@@ -385,9 +497,7 @@ class _DailySpendCard extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    l10n.dailySpendLimit(
-                      formatMoney(store.currency, perDay, showCode: false),
-                    ),
+                    caption,
                     style: pixelText(size: 12, color: AppColors.muted),
                   ),
                   const Spacer(),

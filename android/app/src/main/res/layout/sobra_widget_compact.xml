@@ -1,152 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  Three cells wide, two tall. The figure needs the width: "$9,000 MXN" is
-  about 96dp at 22sp, and the two-cell version only had 68dp of content to
-  put it in, so five-digit amounts were simply cut off.
-
-  22sp rather than the largest size that fits on paper: glyph advances say
-  24sp would just squeeze in at the declared minimum width, but "just" is not
-  a margin, and the cost of being wrong is a cut-off amount — the one number
-  this widget exists to show.
-
-  Everything sits in a weighted row rather than being pinned to the top and
-  bottom of a FrameLayout. Pinned, any height the launcher hands over past
-  what the content needs turns into a hole down the middle — which is what
-  happened when minHeight asked for three rows while targetCellHeight asked
-  for two.
--->
+<!-- Two cells wide and one tall: the character and today's amount only.
+     The amount shrinks within its own column on narrow launchers. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/widget_background"
     android:contentDescription="@string/widget_compact_description"
-    android:orientation="vertical"
-    android:padding="12dp">
+    android:orientation="horizontal"
+    android:paddingLeft="7dp"
+    android:paddingTop="7dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="10dp">
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.35"
+        android:background="@drawable/widget_compact_character_panel">
+
+        <ImageView
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:background="@drawable/widget_character_halo"
+            android:contentDescription="@null" />
+
+        <ViewFlipper
+            android:id="@+id/cat_motion"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:autoStart="true"
+            android:flipInterval="900">
+
+            <ImageView android:id="@+id/character_frame_1" style="@style/SobraWidgetCatFrame" android:src="@drawable/widget_michi_1" />
+            <ImageView android:id="@+id/character_frame_2" style="@style/SobraWidgetCatFrame" android:src="@drawable/widget_michi_2" />
+            <ImageView android:id="@+id/character_frame_3" style="@style/SobraWidgetCatFrame" android:src="@drawable/widget_michi_3" />
+            <ImageView android:id="@+id/character_frame_4" style="@style/SobraWidgetCatFrame" android:src="@drawable/widget_michi_4" />
+        </ViewFlipper>
+
+        <ImageView
+            android:id="@+id/cat_static"
+            style="@style/SobraWidgetCatFrame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/widget_michi_1"
+            android:visibility="gone" />
+    </FrameLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.65"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="7dp"
+        android:paddingRight="5dp">
 
+        <!-- The currency code rides on the label line: beside the amount it
+             took the width a six-figure amount needed and cut it to "$2,033…". -->
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/today_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="14dp"
+                android:layout_weight="1"
+                android:autoSizeMaxTextSize="11sp"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
+                android:ellipsize="end"
                 android:fontFamily="@font/pixelify_sans"
                 android:includeFontPadding="false"
                 android:maxLines="1"
-                android:text="@string/widget_today_remaining"
+                android:text="@string/widget_today_remaining_short"
                 android:textColor="#FF202848"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:gravity="bottom"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/today_amount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:includeFontPadding="false"
-                    android:maxLines="1"
-                    android:text="$9,000"
-                    android:textColor="#FF0E7A72"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginBottom="3dp"
-                    android:fontFamily="@font/pixelify_sans"
-                    android:includeFontPadding="false"
-                    android:text="MXN"
-                    android:textColor="#FF4E5878"
-                    android:textSize="9sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
             <TextView
-                android:id="@+id/days_remaining"
+                android:id="@+id/currency_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginLeft="3dp"
                 android:fontFamily="@font/pixelify_sans"
                 android:includeFontPadding="false"
                 android:maxLines="1"
-                android:text="6 días"
+                android:text="MXN"
                 android:textColor="#FF4E5878"
-                android:textSize="11sp"
+                android:textSize="8sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!--
-          Fixed width on purpose. Give this column a weight and it widens with
-          the widget, taking the space the figure needs; the amount then gets
-          cut instead of the character simply having room to spare.
-        -->
-        <FrameLayout
-            android:layout_width="66dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="6dp">
-
-            <ViewFlipper
-                android:id="@+id/cat_motion"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom"
-                android:autoStart="true"
-                android:flipInterval="900">
-                <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_peek_open" />
-                <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_peek_open" />
-                <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_peek_open" />
-                <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_peek_blink" />
-            </ViewFlipper>
-
-            <ImageView
-                android:id="@+id/cat_static"
-                style="@style/SobraWidgetCatFrame"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom"
-                android:src="@drawable/cat_peek_open"
-                android:visibility="gone" />
-        </FrameLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/widget_progress_frame"
-        android:orientation="horizontal"
-        android:padding="2dp">
-
-        <TextView android:id="@+id/progress_1" style="@style/SobraWidgetProgressSegment" />
-        <TextView android:id="@+id/progress_2" style="@style/SobraWidgetProgressSegment" />
-        <TextView android:id="@+id/progress_3" style="@style/SobraWidgetProgressSegment" />
-        <TextView android:id="@+id/progress_4" style="@style/SobraWidgetProgressSegment" />
-        <TextView android:id="@+id/progress_5" style="@style/SobraWidgetProgressSegment" />
-        <TextView android:id="@+id/progress_6" style="@style/SobraWidgetProgressSegment" />
-        <TextView android:id="@+id/progress_7" style="@style/SobraWidgetProgressSegment" />
-        <TextView android:id="@+id/progress_8" style="@style/SobraWidgetProgressSegment" />
-        <TextView android:id="@+id/progress_9" style="@style/SobraWidgetProgressSegment" />
-        <TextView android:id="@+id/progress_10" style="@style/SobraWidgetProgressSegmentLast" />
+        <!-- A fixed height, not wrap_content: Android does not support autosize
+             on a wrap_content TextView, and this one ellipsized instead. -->
+        <TextView
+            android:id="@+id/today_amount"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_marginTop="2dp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeMinTextSize="9sp"
+            android:autoSizeStepGranularity="1sp"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/pixelify_sans"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="$9,000"
+            android:textColor="#FF0E7A72"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

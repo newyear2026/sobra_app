@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A chunky pixel button: navy stepped outline, expense face, and a darker
+     ink lip underneath that shrinks when pressed so the face sinks. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <layer-list>
+            <item android:left="4dp" android:top="0dp" android:right="4dp" android:bottom="0dp">
+                <shape android:shape="rectangle"><solid android:color="#FF202848" /></shape>
+            </item>
+            <item android:left="2dp" android:top="2dp" android:right="2dp" android:bottom="2dp">
+                <shape android:shape="rectangle"><solid android:color="#FF202848" /></shape>
+            </item>
+            <item android:left="0dp" android:top="4dp" android:right="0dp" android:bottom="4dp">
+                <shape android:shape="rectangle"><solid android:color="#FF202848" /></shape>
+            </item>
+            <item android:left="6dp" android:top="2dp" android:right="6dp" android:bottom="2dp">
+                <shape android:shape="rectangle"><solid android:color="#FFA63A25" /></shape>
+            </item>
+            <item android:left="4dp" android:top="4dp" android:right="4dp" android:bottom="4dp">
+                <shape android:shape="rectangle"><solid android:color="#FFA63A25" /></shape>
+            </item>
+            <item android:left="2dp" android:top="6dp" android:right="2dp" android:bottom="6dp">
+                <shape android:shape="rectangle"><solid android:color="#FFA63A25" /></shape>
+            </item>
+            <item android:left="6dp" android:top="5dp" android:right="6dp" android:bottom="3dp">
+                <shape android:shape="rectangle"><solid android:color="#FFD4553F" /></shape>
+            </item>
+            <item android:left="4dp" android:top="7dp" android:right="4dp" android:bottom="5dp">
+                <shape android:shape="rectangle"><solid android:color="#FFD4553F" /></shape>
+            </item>
+            <item android:left="2dp" android:top="9dp" android:right="2dp" android:bottom="7dp">
+                <shape android:shape="rectangle"><solid android:color="#FFD4553F" /></shape>
+            </item>
+            <item android:gravity="top" android:height="2dp" android:left="6dp" android:top="5dp" android:right="6dp">
+                <shape android:shape="rectangle"><solid android:color="#40FFFFFF" /></shape>
+            </item>
+        </layer-list>
+    </item>
+    <item>
+        <layer-list>
+            <item android:left="4dp" android:top="0dp" android:right="4dp" android:bottom="0dp">
+                <shape android:shape="rectangle"><solid android:color="#FF202848" /></shape>
+            </item>
+            <item android:left="2dp" android:top="2dp" android:right="2dp" android:bottom="2dp">
+                <shape android:shape="rectangle"><solid android:color="#FF202848" /></shape>
+            </item>
+            <item android:left="0dp" android:top="4dp" android:right="0dp" android:bottom="4dp">
+                <shape android:shape="rectangle"><solid android:color="#FF202848" /></shape>
+            </item>
+            <item android:left="6dp" android:top="2dp" android:right="6dp" android:bottom="2dp">
+                <shape android:shape="rectangle"><solid android:color="#FFA63A25" /></shape>
+            </item>
+            <item android:left="4dp" android:top="4dp" android:right="4dp" android:bottom="4dp">
+                <shape android:shape="rectangle"><solid android:color="#FFA63A25" /></shape>
+            </item>
+            <item android:left="2dp" android:top="6dp" android:right="2dp" android:bottom="6dp">
+                <shape android:shape="rectangle"><solid android:color="#FFA63A25" /></shape>
+            </item>
+            <item android:left="6dp" android:top="2dp" android:right="6dp" android:bottom="6dp">
+                <shape android:shape="rectangle"><solid android:color="#FFD4553F" /></shape>
+            </item>
+            <item android:left="4dp" android:top="4dp" android:right="4dp" android:bottom="8dp">
+                <shape android:shape="rectangle"><solid android:color="#FFD4553F" /></shape>
+            </item>
+            <item android:left="2dp" android:top="6dp" android:right="2dp" android:bottom="10dp">
+                <shape android:shape="rectangle"><solid android:color="#FFD4553F" /></shape>
+            </item>
+            <item android:gravity="top" android:height="2dp" android:left="6dp" android:top="2dp" android:right="6dp">
+                <shape android:shape="rectangle"><solid android:color="#40FFFFFF" /></shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

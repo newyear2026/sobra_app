@@ -5,6 +5,7 @@ import '../l10n/labels.dart';
 import '../models/xp_event.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
+import '../widgets/cat_sprite.dart';
 import '../widgets/gamification_ui.dart';
 import '../widgets/pixel_ui.dart';
 
@@ -34,7 +35,11 @@ class XpHistoryScreen extends StatelessWidget {
                 const SizedBox(height: 18),
                 LevelStrip(
                   level: progress.level,
-                  title: xpLevelTitle(l10n, progress.level),
+                  title: xpLevelTitle(
+                    l10n,
+                    progress.level,
+                    CharacterCatalog.resolve(store.characterId).displayName,
+                  ),
                   subtitle: l10n.xpTotal(progress.totalXp),
                   currentXp: progress.currentLevelXp,
                   targetXp: progress.targetLevelXp,
@@ -227,7 +232,10 @@ class _XpEventCard extends StatelessWidget {
     XpEventKind.firstSuccessfulCycle => l10n.xpRuleFirstSuccessfulCycle,
     XpEventKind.dailyMissionRecord ||
     XpEventKind.dailyMissionSameDay ||
-    XpEventKind.dailyMissionBudget => l10n.xpRuleDailyMission,
+    XpEventKind.dailyMissionBudget ||
+    XpEventKind.dailyMissionNote ||
+    XpEventKind.dailyMissionReceipt ||
+    XpEventKind.dailyMissionThreeToday => l10n.xpRuleDailyMission,
   };
 
   IconData _iconFor(XpEventKind kind) => switch (kind) {
@@ -238,6 +246,9 @@ class _XpEventCard extends StatelessWidget {
     XpEventKind.dailyMissionRecord => Icons.edit_outlined,
     XpEventKind.dailyMissionSameDay => Icons.today_outlined,
     XpEventKind.dailyMissionBudget => Icons.bar_chart_outlined,
+    XpEventKind.dailyMissionNote => Icons.sticky_note_2_outlined,
+    XpEventKind.dailyMissionReceipt => Icons.receipt_long_outlined,
+    XpEventKind.dailyMissionThreeToday => Icons.playlist_add_check,
   };
 
   (Color, Color) _colorsFor(XpEventKind kind) => switch (kind) {
@@ -248,6 +259,15 @@ class _XpEventCard extends StatelessWidget {
     XpEventKind.dailyMissionRecord => (AppColors.tealSoft, AppColors.tealInk),
     XpEventKind.dailyMissionSameDay => (AppColors.violetSoft, AppColors.violet),
     XpEventKind.dailyMissionBudget => (AppColors.blueSoft, AppColors.blue),
+    XpEventKind.dailyMissionNote => (AppColors.cashSoft, AppColors.cashInk),
+    XpEventKind.dailyMissionReceipt => (
+      AppColors.dangerSoft,
+      AppColors.dangerInk,
+    ),
+    XpEventKind.dailyMissionThreeToday => (
+      AppColors.tealSoft,
+      AppColors.tealInk,
+    ),
   };
 }
 

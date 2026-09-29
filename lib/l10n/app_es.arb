@@ -59,11 +59,56 @@
   "xpFirstSuccessfulCycleTitle": "Primer ciclo en verde",
   "xpFirstSuccessfulCycleDetail": "Bono de una sola vez",
 
-  "xpLevelTitle1": "Michi curioso",
-  "xpLevelTitle2": "Michi ahorrador",
-  "xpLevelTitle3": "Michi contador",
-  "xpLevelTitle4": "Michi guardián",
-  "xpLevelTitle5": "Michi maestro",
+  "xpLevelTitle1": "{name} curioso",
+  "@xpLevelTitle1": {
+    "description": "The title of level 1, worn by the chosen companion.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle2": "{name} ahorrador",
+  "@xpLevelTitle2": {
+    "description": "The title of level 2; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle3": "{name} contador",
+  "@xpLevelTitle3": {
+    "description": "The title of level 3; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle4": "{name} guardián",
+  "@xpLevelTitle4": {
+    "description": "The title of level 4; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle5": "{name} maestro",
+  "@xpLevelTitle5": {
+    "description": "The title of level 5; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle6": "{name} experto",
+  "@xpLevelTitle6": {
+    "description": "The title of level 6; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle7": "{name} estratega",
+  "@xpLevelTitle7": {
+    "description": "The title of level 7; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle8": "{name} próspero",
+  "@xpLevelTitle8": {
+    "description": "The title of level 8; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle9": "{name} sabio",
+  "@xpLevelTitle9": {
+    "description": "The title of level 9; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle10": "{name} leyenda",
+  "@xpLevelTitle10": {
+    "description": "The title of level 10; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
 
   "xpNoticeCyclesClosedTitle": "{count, plural, =1{Ciclo cerrado} other{{count} ciclos cerrados}}",
   "@xpNoticeCyclesClosedTitle": {
@@ -84,9 +129,16 @@
     }
   },
   "xpLevelUpContinue": "Seguir",
+  "xpLevelUpItemsUnlocked": "{count, plural, =1{¡Nuevo objeto desbloqueado!} other{¡{count} objetos nuevos desbloqueados!}}",
+  "@xpLevelUpItemsUnlocked": {
+    "description": "Shown inside the level-up card when that level grants collection items.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
 
   "dailyMissionTitle": "Misión de hoy",
-  "dailyMissionResetHint": "Se renuevan a medianoche. No se acumulan.",
+  "dailyMissionResetHint": "Cambian cada medianoche. No se acumulan.",
   "dailyMissionProgress": "{done} de {total} listas",
   "@dailyMissionProgress": {
     "placeholders": {
@@ -101,6 +153,19 @@
   "dailyMissionSameDayHint": "El gasto y el registro, hoy",
   "dailyMissionBudgetTitle": "Revisa tu presupuesto",
   "dailyMissionBudgetHint": "Abre la pestaña Presupuesto",
+  "dailyMissionNoteTitle": "Agrega una nota",
+  "dailyMissionNoteHint": "Un movimiento con nota",
+  "dailyMissionReceiptTitle": "Guarda un recibo",
+  "dailyMissionReceiptHint": "Adjunta la foto a un gasto",
+  "dailyMissionThreeTodayTitle": "Registra tres hoy",
+  "dailyMissionThreeTodayHint": "{count} movimientos con fecha de hoy",
+  "@dailyMissionThreeTodayHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dailyMissionDone": "Completada",
   "dailyMissionPending": "Pendiente",
   "dailyMissionReadyAt": "Listo · {time}",
@@ -118,7 +183,7 @@
       "possible": { "type": "int" }
     }
   },
-  "dailyMissionXpDetail": "Misión de hoy",
+  "dailyMissionXpDetail": "Misión completada",
   "xpRuleDailyMission": "Una vez al día; a medianoche empieza de nuevo",
   "xpNoticeMissionTitle": "{count, plural, =1{Misión lista} other{{count} misiones listas}}",
   "@xpNoticeMissionTitle": {
@@ -148,6 +213,22 @@
   "monthAbbr10": "oct",
   "monthAbbr11": "nov",
   "monthAbbr12": "dic",
+  "dateShort": "{day} {month}",
+  "@dateShort": {
+    "description": "A day and a month, as Sobra writes a date. {month} is one of the monthAbbr strings; the order is the locale's.",
+    "placeholders": {
+      "day": { "type": "String" },
+      "month": { "type": "String" }
+    }
+  },
+  "dateFull": "{day} {month} {year}",
+  "@dateFull": {
+    "placeholders": {
+      "day": { "type": "String" },
+      "month": { "type": "String" },
+      "year": { "type": "String" }
+    }
+  },
 
   "back": "Volver",
   "reduceMotion": "Reducir movimiento",
@@ -174,7 +255,153 @@
   "tabMovements": "Movim.",
   "tabRegister": "Registrar",
   "tabBudget": "Presup.",
-  "tabSettings": "Mi Sobra",
+  "tabSettings": "Mi Sobrita",
+
+  "collectionTitle": "Colección",
+  "collectionSettingsValue": "Ver",
+  "collectionCharacters": "Personajes",
+  "collectionItems": "Objetos",
+  "collectionLevel": "NIVEL {level}",
+  "@collectionLevel": {
+    "placeholders": { "level": { "type": "int" } }
+  },
+  "collectionOwnedCount": "{owned} de {total}",
+  "@collectionOwnedCount": {
+    "placeholders": {
+      "owned": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "collectionCharactersHint": "Reúne a quien te acompaña",
+  "collectionItemsHint": "Reúne lo que va en tu espacio",
+  "collectionCharacterPlaceholder": "Personaje {number}",
+  "@collectionCharacterPlaceholder": {
+    "placeholders": { "number": { "type": "int" } }
+  },
+  "collectionItemPlaceholder": "Objeto {number}",
+  "@collectionItemPlaceholder": {
+    "placeholders": { "number": { "type": "int" } }
+  },
+  "collectionEquipped": "EQUIPADO",
+  "collectionOwned": "OBTENIDO",
+  "collectionPlaceIt": "Colocarlo",
+  "collectionBuy": "COMPRAR",
+  "collectionWatchAd": "VER ANUNCIO",
+  "collectionAdLoading": "PREPARANDO",
+  "collectionAdProgressLine": "{progress}/{target}",
+  "@collectionAdProgressLine": {"placeholders": {"progress": {"type": "int"}, "target": {"type": "int"}}},
+  "collectionAdUnlockDaily": "Mira anuncios de recompensa · {progress}/{target} · uno por día",
+  "@collectionAdUnlockDaily": {"placeholders": {"progress": {"type": "int"}, "target": {"type": "int"}}},
+  "collectionAdUnavailable": "SIN ANUNCIOS",
+  "collectionAdDailyCap": "LÍMITE DE HOY",
+  "collectionAdTomorrow": "SIGUE MAÑANA",
+  "collectionUnlockedNotice": "¡{name} es tuyo!",
+  "@collectionUnlockedNotice": {"placeholders": {"name": {"type": "String"}}},
+  "collectionAdDismissedNotice": "Mira el anuncio completo para que cuente.",
+  "collectionPackOnly": "PAQUETE",
+  "collectionPackDecoration": "Estrella de Michi",
+  "collectionPackUnlock": "Llega con Michi y sus amigos. No se vende por separado.",
+  "collectionGiftOnly": "REGALO",
+  "collectionGiftUnlock": "Un regalo especial. No se vende.",
+  "collectionAdProgress": "ANUNCIO {progress}/{target}",
+  "@collectionAdProgress": {
+    "placeholders": {
+      "progress": { "type": "int" },
+      "target": { "type": "int" }
+    }
+  },
+  "collectionHowToGet": "CÓMO OBTENERLO",
+  "collectionAlreadyOwned": "Ya forma parte de tu colección.",
+  "collectionIncludedUnlock": "Incluido desde el inicio.",
+  "collectionPurchaseUnlock": "Compra única · {price}",
+  "@collectionPurchaseUnlock": {
+    "placeholders": { "price": { "type": "String" } }
+  },
+  "collectionAdUnlock": "Mira anuncios de recompensa · {progress}/{target}",
+  "@collectionAdUnlock": {
+    "placeholders": {
+      "progress": { "type": "int" },
+      "target": { "type": "int" }
+    }
+  },
+  "collectionLevelUnlock": "Se desbloquea en el nivel {level}.",
+  "@collectionLevelUnlock": {
+    "placeholders": { "level": { "type": "int" } }
+  },
+  "collectionStorePricePending": "precio de la tienda",
+  "collectionPreviewActionNotice": "La compra y los anuncios se conectarán en una etapa posterior.",
+  "roomTitle": "Mi casa",
+  "roomOpen": "Abrir mi casa",
+  "roomDecorate": "Decorar",
+  "roomDecorateTitle": "Decorar",
+  "roomDone": "Listo",
+  "roomThemeCasaClara": "Casa clara",
+  "roomThemeCasaJardin": "Casa jardín",
+  "roomThemeCasaDePlaya": "Casa de playa",
+  "roomChooseTheme": "Elige el ambiente de tu casa.",
+  "roomCatReaction": "¡Hoy lo hiciste muy bien!",
+  "roomInstruction": "Elige un objeto y toca el lugar donde va.",
+  "roomCategoryRooms": "Casa",
+  "roomCategoryFurniture": "Muebles",
+  "roomCategoryWallFloor": "Pared y piso",
+  "roomCategoryProps": "Adornos",
+  "roomCategoryCharacters": "Personajes",
+  "roomCharacterInstruction": "Elige quién te acompaña.",
+  "roomMoreInCollection": "Ver más en la colección",
+  "roomDefaultRug": "Tapete lavanda",
+  "roomFloorLamp": "Lámpara verde",
+  "roomTablePlant": "Planta de mesa",
+  "roomWallFrame": "Cuadro",
+  "roomRattanChair": "Sillón de ratán",
+  "roomStandingLamp": "Lámpara de pie",
+  "roomWallClock": "Reloj de pared",
+  "roomLowCabinet": "Aparador bajo",
+  "roomPetBed": "Cama para mascota",
+  "roomSavingsJar": "Frasco de ahorros",
+  "roomWallShelf": "Repisa de pared",
+  "roomTerracottaPouf": "Puf terracota",
+  "roomBlueCreamRug": "Tapete azul y crema",
+  "roomLaunchSofa": "Sofá de terciopelo",
+  "roomLaunchTv": "Tele de historias",
+  "launchGiftTitle": "¡Llegó tu regalo de lanzamiento!",
+  "launchGiftBody": "Empezaste Sobrita a tiempo. El sofá y la tele ya son tuyos.",
+  "launchGiftGoToRoom": "Ponerlos en mi casa",
+  "launchGiftLater": "Después",
+  "roomSuggestCabinet": "Ponlo junto a la pared izquierda. Toca el lugar marcado.",
+  "roomSuggestPetBed": "Ponla a la izquierda de tu compañero. Toca el lugar marcado.",
+  "roomSuggestSavingsJar": "Prueba la mesa o el rincón del piso. Toca un lugar marcado.",
+  "roomSuggestWallShelf": "Cuélgala en una pared libre. Toca un lugar marcado.",
+  "roomSuggestPouf": "Equilibra la sala a la derecha. Toca el lugar marcado.",
+  "roomSuggestBlueRug": "Ponlo debajo de tu compañero. Toca el lugar marcado.",
+  "roomSaved": "Tu casa quedó guardada.",
+  "roomPlaced": "Colocado",
+  "roomSurfaceWall": "Pared",
+  "roomSurfaceFloor": "Piso",
+  "roomSurfaceTabletop": "Mesa",
+  "roomSurfaceRug": "Tapete",
+  "roomSlotLabel": "{surface}, lugar {number}",
+  "@roomSlotLabel": {
+    "description": "Screen-reader name of one place in the room while an item is being placed. The surface is one of roomSurfaceWall, roomSurfaceFloor, roomSurfaceTabletop or roomSurfaceRug.",
+    "placeholders": { "surface": { "type": "String" }, "number": { "type": "int" } }
+  },
+  "roomPickWall": "{count, plural, =1{Hay un lugar en la pared. Tócalo para colgarlo.} other{Hay {count} lugares en la pared. Toca dónde va.}}",
+  "@roomPickWall": {
+    "description": "Hint while an item that hangs on the wall is chosen; only the matching places are lit.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "roomPickFloor": "{count, plural, =1{Hay un lugar en el piso. Tócalo para ponerlo.} other{Hay {count} lugares en el piso. Toca dónde va.}}",
+  "@roomPickFloor": { "placeholders": { "count": { "type": "int" } } },
+  "roomPickTabletop": "{count, plural, =1{Hay un lugar en la mesa. Tócalo para ponerlo.} other{Hay {count} lugares en la mesa. Toca dónde va.}}",
+  "@roomPickTabletop": { "placeholders": { "count": { "type": "int" } } },
+  "roomPickRug": "{count, plural, =1{Hay un lugar para el tapete. Tócalo para ponerlo.} other{Hay {count} lugares para el tapete. Toca dónde va.}}",
+  "@roomPickRug": { "placeholders": { "count": { "type": "int" } } },
+  "roomPickAny": "{count, plural, =1{Hay un lugar donde puede ir. Tócalo para ponerlo.} other{Hay {count} lugares donde puede ir. Toca dónde va.}}",
+  "@roomPickAny": {
+    "description": "Hint while an item that fits more than one surface is chosen, such as a small plant that goes on a table or the floor.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "roomMoveOrRemove": "Toca otro lugar para moverlo, o el suyo para quitarlo.",
+  "roomTapToRemove": "Toca su lugar otra vez para quitarlo.",
 
   "xpHistoryTitle": "Tu progreso",
   "xpTotal": "{count} XP totales",
@@ -215,7 +442,7 @@
   "recoveryExport": "Exportar archivo",
   "recoveryExported": "Archivo original copiado.",
 
-  "settingsTitle": "Mi Sobra",
+  "settingsTitle": "Mi Sobrita",
   "settingsLanguage": "Idioma",
   "currencyChangeTitle": "¿Cambiar a {code}?",
   "@currencyChangeTitle": {
@@ -230,24 +457,64 @@
     }
   },
   "currencyChangeConfirm": "Cambiar etiqueta",
+  "currencyRegionAmericas": "América",
+  "currencyRegionEurope": "Europa",
+  "currencyRegionAsiaPacific": "Asia y Oceanía",
   "settingsCurrency": "Moneda",
   "settingsBudgetCycle": "Ciclo de presupuesto",
   "settingsCountDay": "Día de conteo",
   "settingsReduceMotionHint": "Se activa solo si tu teléfono ya lo pide.",
+  "settingsQuickEntry": "Acceso rápido",
+  "settingsQuickEntryHint": "Muestra Ingreso y Gasto en la pantalla bloqueada.",
+  "quickEntryQuestion": "¿Qué quieres registrar?",
+  "quickEntryDenied": "Permite las notificaciones de Sobrita para activar el acceso rápido.",
+  "widgetTodayLeft": "Hoy te queda",
+  "widgetCycleBalance": "Saldo",
+  "widgetOpenApp": "Abre Sobrita",
+  "widgetRegisterExpense": "Registrar gasto",
   "settingsBackup": "Respaldo de datos",
   "settingsCopy": "Copiar",
   "settingsBackupCopied": "Respaldo copiado al portapapeles.",
+  "settingsRestorePurchases": "Restaurar compras",
+  "settingsAccount": "Cuenta de Google",
+  "settingsAccountConnect": "Conectar",
+  "settingsRestore": "Restaurar",
+  "purchaseRestored": "Listo. Tus compras volvieron.",
+  "purchaseFailureStoreUnavailable": "La tienda no está disponible ahora. Inténtalo más tarde.",
+  "purchaseFailureRejected": "No se pudo completar la compra. No se te cobró nada.",
+  "purchaseFailureDeliveryNotSaved": "Tu compra llegó, pero no se pudo guardar. Se aplicará la próxima vez que abras Sobrita.",
+  "purchaseFailureNothingToRestore": "No encontramos compras en esta cuenta.",
+  "collectionPurchasing": "COMPRANDO…",
   "settingsXpPreview": "Vista previa XP",
   "settingsDesign": "Diseño",
-  "settingsStorageNote": "Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobra.",
+  "settingsStorageNote": "Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobrita.",
+  "settingsSectionShop": "Tienda",
+  "settingsRemoveAds": "Quitar anuncios generales",
+  "settingsRemoveAdsHint": "Quita los anuncios del historial. Los de recompensa siguen disponibles.",
+  "settingsPackName": "Michi y sus amigos",
+  "settingsPackHint": "3 personajes + la estrella de Michi. También quita los anuncios generales.",
+  "settingsOwned": "Ya lo tienes",
+  "settingsShopRestoreNote": "Las compras se guardan en tu cuenta de la tienda. Puedes recuperarlas al reinstalar.",
+  "settlementTitle": "Cierre de este ciclo",
+  "settlementSpent": "Gastado",
+  "settlementLeft": "Sobrante",
+  "settlementOver": "Pasaste",
+  "settlementAverage": "Promedio diario",
+  "settlementContinue": "Listo",
+  "settlementCtaTitle": "Ir por un adorno especial",
+  "settlementCtaAction": "Ver colección",
   "settingsSectionBudget": "Presupuesto",
   "settingsSectionScreen": "Pantalla",
   "settingsSectionData": "Datos",
+  "settingsSectionPrivacy": "Privacidad",
+  "settingsAdPrivacy": "Privacidad de anuncios",
+  "settingsAdPrivacyValue": "Administrar",
+  "settingsAdPrivacyFailed": "No se pudieron abrir las opciones de privacidad. Inténtalo de nuevo.",
   "settingsSectionDesign": "Diseño",
   "@settingsSectionDesign": {
     "description": "Groups the debug design gallery, which is not data and does not belong beside the backup row."
   },
-  "settingsProfileStats": "{movements, plural, =1{1 movimiento} other{{movements} movimientos}} · {days, plural, =1{1 día con Sobra} other{{days} días con Sobra}}",
+  "settingsProfileStats": "{movements, plural, =1{1 movimiento} other{{movements} movimientos}} · {days, plural, =1{1 día con Sobrita} other{{days} días con Sobrita}}",
   "@settingsProfileStats": {
     "description": "The light history line under the profile card's name: how much the ledger has accumulated, without repeating the money figures the home screen already carries.",
     "placeholders": {
@@ -269,8 +536,23 @@
     "description": "The line across the daily chart: what one day of the cycle is worth.",
     "placeholders": { "amount": { "type": "String" } }
   },
+  "dailySpendCycleTotal": "Este ciclo {amount}",
+  "@dailySpendCycleTotal": {
+    "description": "The caption under the spending chart when no budget has been set, so there is no daily limit line to name.",
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "dailyIncomeTitle": "Ingreso por día",
+  "dailyIncomeCycleTotal": "Este ciclo {amount}",
+  "@dailyIncomeCycleTotal": {
+    "description": "The caption under the income chart: what came in during this cycle. Income has no daily limit line.",
+    "placeholders": { "amount": { "type": "String" } }
+  },
   "transactionsEmptyTitle": "Aún no hay movimientos",
   "transactionsEmptyMessage": "Registra tu primer gasto y aquí verás el resumen del ciclo.",
+  "transactionsEmptyExpensesTitle": "Aún no hay gastos",
+  "transactionsEmptyExpensesMessage": "Registra un gasto y aquí verás el día a día.",
+  "transactionsEmptyIncomesTitle": "Aún no hay ingresos",
+  "transactionsEmptyIncomesMessage": "Registra un ingreso y aquí verás el día a día.",
   "transactionsExpensePinned": "Este gasto viene de un conteo de efectivo. Vuelve a contar para corregirlo.",
   "transactionsIncomePinned": "Este ingreso viene de un conteo de efectivo. Vuelve a contar para corregirlo.",
   "transactionsExpenseDeleted": "Movimiento eliminado.",
@@ -293,7 +575,7 @@
   "budget": "Presupuesto",
   "spent": "Gastado",
 
-  "appName": "Sobra",
+  "appName": "Sobrita",
   "homeCycleBalance": "Saldo del ciclo",
   "homeTodayLeft": "Hoy te queda",
   "homeOverBudget": "Te pasaste del presupuesto de {budget} de este ciclo",
@@ -305,6 +587,8 @@
       "remaining": { "type": "String" }
     }
   },
+  "homeFirstQuestLabel": "Primera misión",
+  "homeBudgetQuestBody": "Ponle un presupuesto y te digo cuánto puedes gastar cada día.",
   "homeCycleProgress": "Avance del ciclo",
   "daysCount": "{count, plural, =1{{count} día} other{{count} días}}",
   "@daysCount": { "placeholders": { "count": { "type": "int" } } },
@@ -321,6 +605,9 @@
   "budgetTitle": "Presupuesto",
   "budgetCycleTotal": "Total del ciclo",
   "budgetTotal": "Presupuesto total",
+  "budgetNotSetTitle": "Aún no hay presupuesto",
+  "budgetNotSetBody": "Defínelo y calculamos cuánto puedes gastar cada día.",
+  "budgetSetAction": "Definir presupuesto",
   "budgetTooLow": "El total debe ser mayor que los ingresos asignados al ciclo ({allocated}).",
   "@budgetTooLow": { "placeholders": { "allocated": { "type": "String" } } },
   "budgetSpentShare": "{percent}% del presupuesto",
@@ -354,6 +641,9 @@
     }
   },
   "cycleHistoryEmpty": "Aún no se ha cerrado ningún ciclo.",
+  "cycleHistoryAverage": "Promedio diario {amount}",
+  "@cycleHistoryAverage": {"placeholders": {"amount": {"type": "String"}}},
+  "cycleHistoryAveragePending": "Promedio diario · reuniendo datos",
   "budgetChangedTitle": "Cambiaste tu presupuesto",
   "budgetChangedBody": "¿Qué hacemos con los límites por categoría? Al ajustarlos, cada uno cambia en la misma proporción y conservas tu reparto.",
   "budgetKeepLimits": "Conservarlos",
@@ -398,6 +688,20 @@
   "registerDate": "Fecha",
   "registerNoteExpenseExample": "Ej. Taquería El Faro",
   "registerNoteIncomeExample": "Ej. Propina del viernes",
+
+  "receiptTitle": "Ticket",
+  "receiptAdd": "Agregar ticket",
+  "receiptCamera": "Cámara",
+  "receiptGallery": "Galería",
+  "receiptChange": "Cambiar",
+  "receiptRemove": "Quitar",
+  "receiptHint": "Una foto para recordar qué fue este gasto.",
+  "receiptAttached": "Ticket adjunto",
+  "receiptView": "Ver ticket",
+  "receiptClose": "Cerrar",
+  "receiptMissing": "La foto ya no está en este dispositivo.",
+  "receiptFailed": "No se pudo guardar la foto.",
+  "receiptBackupNote": "La copia no incluye las fotos de tickets.",
   "registerPayment": "Pago",
   "registerPaymentHint": "El efectivo se descuenta de tu conteo. La tarjeta no.",
   "registerIncomeKind": "Tipo de ingreso",
@@ -457,10 +761,42 @@
 
   "onboardingBudgetAboveZero": "Ingresa un presupuesto mayor a cero.",
   "onboardingCashOrSkip": "Ingresa el efectivo o elige “Ahora no”.",
+  "prologueRainNoEnd": "La lluvia no daba señales de parar.",
+  "prologueRentPaid": "La renta estaba pagada, y en la cuenta quedaba lo justo hasta el próximo pago.",
+  "prologueSoundAtDoor": "Algo se movió junto a la puerta.",
+  "prologueGoLook": "Ir a ver",
+  "prologueWetTracks": "Dos hileras de huellas mojadas cruzaron el piso.",
+  "prologueShelter": "Déjanos esperar a que pase.",
+  "prologueItSpoke": "…habló.",
+  "prologueReplySurprised": "¿Acabas de hablar?",
+  "prologueReplyTowel": "(traes una toalla sin decir nada)",
+  "prologueEarnKeep": "Algo tengo que aportar. Yo llevo los números.",
+  "prologueAskSchedule": "Primero: ¿cuándo entra el dinero?",
+  "prologueAskPayday": "¿Qué día te pagan? Con el primero me basta; el resto lo cuento yo.",
+  "prologueAskBudget": "Faltan {days} días para el próximo pago. ¿Cuánto piensas gastar?",
+  "@prologueAskBudget": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "prologueSkipIsFine": "Puedes saltarlo. Te lo recuerdo en casa.",
+  "prologueSkip": "Saltar",
+  "prologueDriedOff": "Secos, los dos se calmaron. Afuera seguía lloviendo.",
+  "prologueWhoSits": "¿Quién se sienta contigo?",
+  "prologueMichiTrait": "Callado.\nBueno con los números.",
+  "prologuePoodleTrait": "Puro ánimo.\nMuy atento.",
+  "prologueSchnauzerTrait": "Observador.\nSiempre atento.",
+  "prologueLockedName": "???",
+  "prologueLockedTrait": "Puro ánimo.\nMuy atento.",
+  "prologueLockedSoon": "Arte en camino",
+  "prologueOtherStays": "El otro también se queda. Puedes cambiar de compañero más adelante.",
+  "prologueLiveTogether": "Que se queden",
+  "prologueGreeting": "Me llamo {name}. Gracias por abrir.",
+  "@prologueGreeting": {
+    "description": "The chosen character introducing itself, right after it is picked.",
+    "placeholders": { "name": { "type": "String" } }
+  },
   "onboardingStart": "Empezar",
   "onboardingTagline": "Tu dinero, sin presión.",
   "onboardingPromise": "Te decimos cuánto puedes gastar hoy.",
-  "onboardingNoAccount": "Sin cuenta. Tus datos se quedan contigo.",
   "onboardingHowPaid": "¿Cómo recibes tus ingresos?",
   "onboardingHowPaidHint": "Esto define las fechas de tu presupuesto.",
   "onboardingCycleHelperSemiMonthly": "Dos pagos al mes: el 15 y el fin de mes.",
@@ -476,10 +812,18 @@
   "@onboardingRepeatsEvery": { "placeholders": { "days": { "type": "int" } } },
   "onboardingShortMonthsNote": "Las fechas se ajustan solas en meses cortos.",
   "onboardingBudgetQuestion": "¿Cuánto quieres gastar\nen este ciclo?",
+  "onboardingBudgetLater": "Puedes ponerlo después desde Inicio.",
   "onboardingNotNow": "Ahora no",
   "onboardingCashQuestion": "¿Cuánto efectivo\ntienes hoy?",
   "onboardingCashOptional": "Déjalo vacío si prefieres contarlo después.",
   "onboardingCashIsBaseline": "Este será tu primer conteo, no un ingreso.",
+  "onboardingSettledIn": "Dejó de llover. {name} se acomodó a tu lado.",
+  "@onboardingSettledIn": {
+    "description": "The last prologue line, once the character has moved in.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "onboardingFirstQuests": "Tus primeras misiones",
+  "onboardingWaitingAtHome": "Te espera en casa",
   "onboardingGoHome": "Ir a Inicio",
   "onboardingPlanReady": "Tu plan está listo",
   "onboardingCanSpendToday": "Hoy puedes gastar",
@@ -522,5 +866,197 @@
       "first": { "type": "String" },
       "second": { "type": "String" }
     }
-  }
+  },
+
+  "settingsSectionAbout": "Acerca de",
+  "settingsReleaseNotes": "Novedades",
+  "settingsVersion": "Versión",
+  "settingsVersionUnknown": "—",
+  "@settingsVersionUnknown": {
+    "description": "Stands in the version column when the platform will not report the running build, such as in a test harness. A dash rather than a number, because a wrong version is worse here than none."
+  },
+
+  "releaseNotesTitle": "Novedades",
+  "releaseNotesCurrent": "Actual",
+  "@releaseNotesCurrent": {
+    "description": "Tag on the card for the version the phone is running."
+  },
+  "releaseNotesRetention": "Guardamos las últimas {count} versiones.",
+  "@releaseNotesRetention": {
+    "description": "Footnote under the list, saying why older versions are not there.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "releaseNote104Fixed": "Los gastos fijos van aparte del gasto diario. Aparecen en Inicio y pueden avisarte antes de vencer.",
+  "releaseNote104Decor": "La casa tiene más para colocar: una cama, una repisa, un tapete, un aparador, un frasco y un puf.",
+  "releaseNote104Names": "Miru, Yoshi y Cookie ya tienen nombre, y el título de nivel lleva el de quien te acompaña.",
+  "releaseNote104Widget": "El widget de inicio muestra el monto completo.",
+  "releaseNote104Languages": "Sobrita ahora habla portugués, alemán, francés y japonés.",
+  "releaseNote103GuineaPig": "Cobaya ya está en la colección. Dos anuncios cortos y se queda contigo.",
+  "releaseNote103Widget": "El widget de inicio muestra con quién vives, y el monto se escribe igual que en la app.",
+  "releaseNote102Schnauzer": "Schnauzer ya está en la colección. Dos anuncios cortos y se queda contigo.",
+  "releaseNote102Rooms": "La casa puede ser un jardín o la playa, y ya puedes colocar un sillón, una lámpara y un reloj.",
+  "releaseNote102Missions": "Dos de las tres misiones del día cambian cada día, y las que piden un paso más dan más XP.",
+  "releaseNote102Amounts": "Los pesos colombianos, argentinos y chilenos, los reales y el euro ahora se escriben con coma, como 1.234,56.",
+  "releaseNote101Currencies": "Ahora puedes etiquetar tu dinero en pesos colombianos, argentinos y chilenos, soles, libras o yenes.",
+  "releaseNote101Celebration": "La celebración ahora llena la tarjeta y termina su salto.",
+  "releaseNote100Launch": "Primera versión de Sobrita.",
+
+  "updateAvailableTitle": "Hay una versión nueva",
+  "@updateAvailableTitle": {
+    "description": "Heading of the dialog shown on launch when Google Play has a newer build waiting."
+  },
+  "updateAvailableBody": "Actualiza para tener lo último de Sobrita.",
+  "updateCurrentVersion": "Tu versión: v{version}",
+  "@updateCurrentVersion": {
+    "description": "Names the build in hand inside the update dialog. Only the running version is shown: Play reports the waiting build as a version code, which means nothing to a reader.",
+    "placeholders": { "version": { "type": "String" } }
+  },
+  "updateAction": "Actualizar",
+  "@updateAction": {
+    "description": "Opens the Sobrita listing on Google Play. It does not install anything itself."
+  },
+  "updateLater": "Ahora no",
+  "updateBannerMessage": "Versión nueva disponible",
+  "updateBannerDismiss": "Cerrar el aviso",
+  "@updateBannerDismiss": {
+    "description": "Screen-reader label for the banner's close button."
+  },
+  "updateStoreFailed": "No se pudo abrir Google Play.",
+  "settingsCheckUpdate": "Buscar actualización",
+  "settingsCheckUpdateBusy": "Buscando…",
+  "settingsCheckUpdateUpToDate": "Ya estás al día.",
+  "settingsRateApp": "Calificar Sobrita",
+  "@settingsRateApp": {
+    "description": "Ajustes row that opens the app's Google Play listing so the user can leave a rating."
+  },
+  "settingsOurApps": "Apps recomendadas",
+  "@settingsOurApps": {
+    "description": "Ajustes row, under Acerca de, that opens the list of the team's other apps. Also the title of that screen. Kept neutral on purpose: the screen's intro line says who made them."
+  },
+  "ourAppsIntro": "Hechas por el equipo de Sobrita.",
+  "@ourAppsIntro": {
+    "description": "One line under the title of the other-apps screen, saying who made them."
+  },
+  "ourAppsOpen": "Ver en Google Play",
+  "@ourAppsOpen": {
+    "description": "Button on each card of the other-apps screen; opens that app's Google Play listing."
+  },
+  "ourAppsLoopetKind": "Rutinas",
+  "@ourAppsLoopetKind": {
+    "description": "One word under the name LOOPET: what the app is for. Shown in capitals."
+  },
+  "ourAppsLoopetBlurb": "Todo tu día en un círculo. Mira qué toca ahora y qué viene después.",
+  "@ourAppsLoopetBlurb": {
+    "description": "Two-line description of LOOPET, a 24-hour circular routine planner. Adapted from its Play short description."
+  },
+  "ourAppsRandomFocusKind": "Enfoque",
+  "@ourAppsRandomFocusKind": {
+    "description": "One word under the name RandomFocus: what the app is for. Shown in capitals."
+  },
+  "ourAppsRandomFocusBlurb": "Gira la ruleta, elige cuánto tiempo y concéntrate sin pensarlo.",
+  "@ourAppsRandomFocusBlurb": {
+    "description": "Two-line description of RandomFocus, a focus timer whose length is picked by spinning a roulette wheel. Adapted from its Play short description."
+  },
+
+  "releaseAnnouncementViewAll": "Ver todo",
+  "@releaseAnnouncementViewAll": {
+    "description": "Opens the full Novedades screen from the card shown after an update."
+  },
+  "releaseAnnouncementDone": "Listo",
+
+  "settingsReleaseNotesUnread": "Novedades sin leer",
+  "@settingsReleaseNotesUnread": {
+    "description": "Screen-reader label for the dot on the Novedades row. The dot is the only thing that carries this meaning visually."
+  },
+
+  "fixedSectionTitle": "Gastos fijos",
+  "@fixedSectionTitle": {"description": "Budget tab heading for rent, phone plans, bills paid on a schedule."},
+  "fixedSectionMonth": "{month} · aparte de tu gasto diario",
+  "@fixedSectionMonth": {"description": "Under the heading: which month the list covers, and that it does not touch the daily amount.", "placeholders": {"month": {"type": "String"}}},
+  "fixedPaidOfTotal": "Pagado {paid} de {total}",
+  "@fixedPaidOfTotal": {"placeholders": {"paid": {"type": "String"}, "total": {"type": "String"}}},
+  "fixedAdd": "Agregar gasto fijo",
+  "fixedEmptyBody": "Renta, celular, luz: anótalos una vez y te recuerdo cuándo toca pagar. No cambian tu gasto diario.",
+  "fixedFrequencyWeekly": "Cada semana",
+  "fixedFrequencySemiMonthly": "Cada quincena",
+  "@fixedFrequencySemiMonthly": {"description": "On the 15th and the last day of the month. Korean matches the existing pay-cycle label."},
+  "fixedFrequencyMonthly": "Cada mes",
+  "fixedFrequencyBimonthly": "Cada 2 meses",
+  "@fixedFrequencyBimonthly": {"description": "CFE electricity and water are billed every two months in most of Mexico."},
+  "fixedStatusPaid": "Pagado",
+  "fixedStatusTomorrow": "Mañana",
+  "fixedStatusOverdue": "Fecha pasada",
+  "@fixedStatusOverdue": {"description": "Unpaid and past its date. Deliberately soft: no 'vencido' or '연체' — Sobra reminds, it does not scold."},
+  "fixedApprox": "aprox. {amount}",
+  "@fixedApprox": {"description": "An estimate for a bill whose amount changes each time.", "placeholders": {"amount": {"type": "String"}}},
+  "fixedFormNewTitle": "Nuevo gasto fijo",
+  "fixedFormEditTitle": "Editar gasto fijo",
+  "fixedName": "Nombre",
+  "fixedNameHint": "Renta, celular, luz…",
+  "fixedNameRequired": "Ponle un nombre",
+  "fixedHowOften": "¿Cada cuánto?",
+  "fixedNextDue": "Próximo pago",
+  "fixedThenDates": "Después: {dates}…",
+  "@fixedThenDates": {"description": "The next few due dates, so a wrong month shows up before saving.", "placeholders": {"dates": {"type": "String"}}},
+  "fixedVariable": "El monto cambia cada vez",
+  "fixedVariableHint": "Uso lo último que pagaste como estimado.",
+  "fixedFormNote": "No cambia tu gasto diario: tu presupuesto es lo que te queda después de los fijos.",
+  "fixedSave": "Guardar gasto fijo",
+  "fixedDelete": "Eliminar gasto fijo",
+  "fixedDeleteTitle": "¿Eliminar {name}?",
+  "@fixedDeleteTitle": {"placeholders": {"name": {"type": "String"}}},
+  "fixedDeleteBody": "Los pagos que ya registraste se quedan en tus movimientos.",
+  "fixedDueToday": "Vence hoy",
+  "fixedDueTomorrow": "Vence mañana",
+  "fixedDueOn": "Vence el {date}",
+  "@fixedDueOn": {"placeholders": {"date": {"type": "String"}}},
+  "fixedWasDue": "Tocaba el {date}",
+  "@fixedWasDue": {"placeholders": {"date": {"type": "String"}}},
+  "fixedHowMuch": "¿Cuánto pagaste?",
+  "fixedLastTime": "La vez pasada: {amount}",
+  "@fixedLastTime": {"placeholders": {"amount": {"type": "String"}}},
+  "fixedTodayUnchanged": "Tu gasto de hoy sigue en {amount}.",
+  "@fixedTodayUnchanged": {"placeholders": {"amount": {"type": "String"}}},
+  "fixedCashChange": "Efectivo estimado: de {from} a {to}",
+  "@fixedCashChange": {"description": "A cash payment does leave the wallet, so the cash estimate moves even though the budget does not.", "placeholders": {"from": {"type": "String"}, "to": {"type": "String"}}},
+  "fixedPaidWith": "Pago con {method}",
+  "@fixedPaidWith": {"placeholders": {"method": {"type": "String"}}},
+  "fixedChange": "Cambiar",
+  "fixedMarkPaid": "Ya lo pagué",
+  "fixedNotYet": "Todavía no",
+  "fixedBillOnly": "Solo llegó el recibo",
+  "@fixedBillOnly": {"description": "Updates the expected amount without recording a payment."},
+  "fixedBillSaved": "Listo, espero {amount}.",
+  "@fixedBillSaved": {"placeholders": {"amount": {"type": "String"}}},
+  "fixedPaymentSaved": "{name} registrado.",
+  "@fixedPaymentSaved": {"placeholders": {"name": {"type": "String"}}},
+  "fixedHomeLabel": "Gasto fijo",
+  "fixedHomeMany": "{count, plural, =1{1 pago fijo por revisar} other{{count} pagos fijos por revisar}}",
+  "@fixedHomeMany": {"placeholders": {"count": {"type": "int"}}},
+  "fixedHomeSee": "Ver",
+  "fixedIntroTitle": "Tu presupuesto es para gastar, sin fijos",
+  "fixedIntroBody": "Los gastos fijos no bajan tu gasto diario. Si tus {budget} ya contaban «{name}», conviene bajar el presupuesto.",
+  "@fixedIntroBody": {"placeholders": {"budget": {"type": "String"}, "name": {"type": "String"}}},
+  "fixedIntroKeep": "Está bien así",
+  "fixedIntroAdjust": "Ajustar presupuesto",
+  "fixedBadge": "Fijo",
+  "@fixedBadge": {"description": "Marks a fixed-expense payment in the movements list."},
+  "fixedNothingThisMonth": "Nada vence este mes.",
+  "fixedReminderLabel": "Recordatorio",
+  "fixedReminderNone": "Sin aviso",
+  "fixedReminderSameDay": "El mismo día",
+  "fixedReminderDayBefore": "1 día antes",
+  "fixedReminderThreeDaysBefore": "3 días antes",
+  "fixedReminderHint": "Te aviso a las 9:00 de la mañana.",
+  "fixedReminderBlocked": "Las notificaciones de Sobrita están apagadas, así que no podré avisarte.",
+  "@fixedReminderBlocked": {"description": "Shown after saving a fixed expense with a reminder when Android refused notification permission."},
+  "fixedReminderTitleToday": "Hoy toca pagar {name}",
+  "@fixedReminderTitleToday": {"description": "Notification title on the due date. {name} is what the user called the fixed expense.", "placeholders": {"name": {"type": "String"}}},
+  "fixedReminderTitleTomorrow": "Mañana toca pagar {name}",
+  "@fixedReminderTitleTomorrow": {"placeholders": {"name": {"type": "String"}}},
+  "fixedReminderTitleInDays": "{name} vence en {days} días",
+  "@fixedReminderTitleInDays": {"placeholders": {"name": {"type": "String"}, "days": {"type": "int"}}},
+  "fixedReminderBody": "{amount} · {method}. Cuando pagues, anótalo en Sobrita.",
+  "@fixedReminderBody": {"description": "Notification body. The payment is never recorded automatically.", "placeholders": {"amount": {"type": "String"}, "method": {"type": "String"}}}
 }

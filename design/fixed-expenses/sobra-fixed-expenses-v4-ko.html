@@ -1,0 +1,576 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face{font-family:PixelifySans;src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");}
+/* Tokens copied from lib/theme/app_theme.dart — muted is the app's #5F6885, not the old #8F95AC. */
+:root{--paper:#F6EFE0;--paperLight:#FBF5E9;--surface:#FFFDF7;--beige:#EFE7D6;--line:#E7DDC8;
+      --ink:#202848;--inkSoft:#4E5878;--muted:#5F6885;
+      --teal:#0E7A72;--tealSoft:#D8EDEA;--tealInk:#0B6660;--cash:#C0873A;--cashSoft:#F7E9CE;--cashInk:#845A1E;
+      --danger:#D4553F;--dangerSoft:#FBE1DA;--dangerInk:#A63A25;--blue:#39558E;--blueSoft:#DCE4F2;
+      --violet:#6E4A8C;--violetSoft:#E7DCF0;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);font-family:PixelifySans,monospace;color:var(--ink);
+     padding:32px 40px 40px;-webkit-font-smoothing:none;width:1660px}
+.head{display:flex;align-items:baseline;gap:14px;margin-bottom:20px;padding-left:6px}
+.head h1{font-size:26px;font-weight:900}
+.head span{font-size:14px;color:var(--inkSoft)}
+.row{display:flex;gap:30px;align-items:flex-start}
+.row+.row{margin-top:34px}
+.col{width:372px}
+.phone{width:372px;height:806px;background:var(--surface);border:5px solid var(--ink);
+       border-radius:26px;padding:14px 16px 16px;display:flex;flex-direction:column;
+       box-shadow:7px 7px 0 rgba(32,40,72,.14);position:relative;overflow:hidden}
+.phone.tabbed{padding-bottom:0}
+.cap{font-size:12.5px;color:var(--inkSoft);line-height:1.5;margin-top:12px;padding:0 4px;font-weight:800}
+.cap b{color:var(--ink)}
+.cap .fix{display:inline-block;background:var(--tealSoft);color:var(--tealInk);border:2px solid var(--teal);font-size:11px;padding:0 5px;margin-right:4px}
+.status{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:900;padding:2px 4px 8px}
+.dots{display:flex;gap:3px;align-items:center}
+.dots i{width:7px;height:7px;background:var(--ink);border-radius:50%}
+.dots b{width:14px;height:8px;border:2px solid var(--ink);display:inline-block;margin-left:3px}
+.nav{display:flex;align-items:center;gap:10px;height:28px;margin-bottom:8px}
+.nav .back{font-size:19px;font-weight:900;width:24px}
+.nav .ttl{flex:1;font-size:18px;font-weight:900}
+.h1{font-size:22px;font-weight:900;margin:2px 0 12px}
+.lbl{font-size:13px;font-weight:900;color:var(--inkSoft)}
+.lblrow{display:flex;justify-content:space-between;align-items:baseline}
+.lblrow em{font-style:normal;font-size:12px;font-weight:800;color:var(--muted)}
+.card{border:2.5px solid var(--ink);background:var(--surface);padding:12px;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.card.flat{box-shadow:none}
+/* equation */
+.eq{border:2.5px solid var(--ink);background:var(--paperLight);padding:11px 9px 9px;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.eq .cols{display:flex;align-items:flex-end;justify-content:space-between}
+.eq .c{text-align:center}
+.eq .c s{text-decoration:none;font-size:12px;font-weight:900;color:var(--inkSoft);line-height:1.2;margin-bottom:4px;min-height:29px;display:flex;align-items:flex-end;justify-content:center}
+.eq .c b{font-size:19px;font-weight:900}
+.eq .c.res b{font-size:22px;color:var(--teal)}
+.eq .op{font-size:18px;font-weight:900;color:var(--muted);padding-bottom:2px}
+.eq .foot{display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid var(--line);margin-top:9px;padding-top:7px;font-size:12px;font-weight:800;color:var(--muted)}
+.eq .foot b{color:var(--tealInk);font-size:15px}
+.seg{display:flex;border:3px solid var(--ink)}
+.seg div{flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:900;background:var(--surface)}
+.seg div+div{border-left:3px solid var(--ink)}
+.seg div.on{background:var(--teal);color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;border:3px solid var(--ink);gap:3px;background:var(--ink)}
+.grid div{text-align:center;padding:8px 0;font-size:13px;font-weight:900;background:var(--surface)}
+.grid div.on{background:var(--teal);color:#fff}
+.amount{border:3px solid var(--ink);background:var(--surface);padding:7px 12px;
+        display:flex;align-items:center;gap:8px;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.amount .n{font-size:30px;font-weight:900;color:var(--ink)}
+.amount .cur{font-size:13px;font-weight:900;color:var(--muted);margin-left:auto}
+.amount .aprox{font-size:12px;font-weight:900;color:var(--cashInk);background:var(--cashSoft);border:2px solid var(--cash);padding:0 5px}
+.field{border:2.5px solid var(--ink);background:var(--surface);padding:7px 10px;font-size:14px;font-weight:900;
+       display:flex;align-items:center;gap:9px}
+.field .caret{margin-left:auto;font-size:12px}
+.field .fi{width:24px;height:24px;display:flex;align-items:center;justify-content:center;border:2px solid var(--ink);flex:0 0 auto}
+.trow{display:flex;align-items:center;gap:9px;padding:6px 1px;border-bottom:2px solid var(--line)}
+.trow:last-child{border-bottom:none}
+.trow .ic{width:32px;height:32px;border:2.5px solid var(--ink);display:flex;align-items:center;
+          justify-content:center;flex:0 0 auto}
+.trow .t{flex:1;font-size:14px;font-weight:900;line-height:1.3;min-width:0}
+.trow .t s{display:block;font-size:12px;color:var(--muted);font-weight:800;text-decoration:none;white-space:nowrap}
+.trow .r{text-align:right;flex:0 0 auto}
+.trow .v{font-size:14px;font-weight:900;display:block}
+.trow .v small{font-size:12px;color:var(--muted)}
+.trow.next{background:repeating-linear-gradient(135deg,transparent 0 6px,rgba(231,221,200,.55) 6px 9px)}
+.trow.next .ic{border-style:dashed;background:var(--surface)!important}
+.trow.next .t,.trow.next .v{color:var(--inkSoft)}
+.tag{display:inline-flex;align-items:center;gap:4px;border:2px solid var(--ink);background:var(--surface);
+     padding:0 5px;font-size:12px;font-weight:900;margin-top:2px;white-space:nowrap;line-height:1.35}
+.tag.paid{background:var(--tealSoft);color:var(--tealInk);border-color:var(--teal)}
+.tag.due{background:var(--cashSoft);color:var(--cashInk);border-color:var(--cash)}
+.tag.late{background:var(--dangerSoft);color:var(--dangerInk);border-color:var(--danger)}
+.tag.next{border-style:dashed;color:var(--inkSoft);border-color:var(--inkSoft)}
+.toggle{display:flex;align-items:center;gap:10px}
+.toggle .sw{width:40px;height:22px;border:2.5px solid var(--ink);background:var(--teal);padding:2px;flex:0 0 auto;display:flex;justify-content:flex-end}
+.toggle .sw i{display:block;width:14px;height:14px;background:var(--surface)}
+.toggle .t{font-size:13px;font-weight:900}
+.toggle .d{font-size:12px;color:var(--muted);font-weight:800;margin-top:1px;line-height:1.35}
+.spacer{flex:1}
+.btn{border:3px solid var(--ink);background:var(--teal);color:#fff;text-align:center;padding:11px 0;
+     font-size:14.5px;font-weight:900;box-shadow:0 5px 0 var(--ink);margin-top:6px}
+.btn.ghost{background:var(--surface);color:var(--ink)}
+.btn.dash{background:transparent;color:var(--tealInk);border:2.5px dashed var(--teal);box-shadow:none;font-size:13.5px;padding:8px 0}
+.hint{font-size:12px;color:var(--muted);line-height:1.45;font-weight:800}
+.hint b{color:var(--ink)}
+.note{border:2.5px solid var(--line);background:var(--paperLight);padding:8px 10px;display:flex;gap:9px;align-items:flex-start}
+.tabbar{display:flex;border-top:3px solid var(--ink);margin:0 -16px;height:62px;background:var(--surface)}
+.tabbar div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:900}
+.tabbar div.on{background:var(--teal);color:#fff}
+.tabbar .plus{flex:0 0 58px;margin:8px 4px;background:var(--teal);border:3px solid var(--ink);color:#fff;font-size:26px;box-shadow:0 4px 0 var(--ink)}
+.dim{position:absolute;inset:0;background:rgba(32,40,72,.55)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-top:4px solid var(--ink);
+       padding:14px 16px 18px}
+.sheet .grab{width:44px;height:5px;background:var(--line);margin:0 auto 12px}
+.opt{border:2.5px solid var(--ink);background:var(--surface);padding:10px 11px;margin-bottom:9px;
+     display:flex;gap:10px;align-items:flex-start}
+.opt.on{background:var(--tealSoft);box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.opt .t{font-size:14px;font-weight:900}
+.opt .d{font-size:12px;color:var(--inkSoft);font-weight:800;line-height:1.45;margin-top:3px}
+.opt .d b{color:var(--ink)}
+.opt .rd{width:18px;height:18px;border:2.5px solid var(--ink);flex:0 0 auto;margin-top:2px;
+         display:flex;align-items:center;justify-content:center;background:var(--surface)}
+.opt .rd i{width:8px;height:8px;background:var(--teal)}
+.delta{display:flex;align-items:center;font-size:13px;font-weight:900;color:var(--inkSoft)}
+.delta b{margin-left:auto;font-size:15px;color:var(--ink)}
+.delta b em{font-style:normal;color:var(--teal)}
+.mini{width:100%;border-collapse:collapse;margin-top:2px}
+.mini td{font-size:12px;font-weight:900;padding:5px 4px;border-bottom:2px solid var(--line);color:var(--inkSoft)}
+.mini td.n{text-align:right;color:var(--ink);font-size:13px}
+.mini tr.hit td{color:var(--ink)}
+.mini tr.hit td.n{color:var(--teal)}
+.bar{height:16px;border:2.5px solid var(--ink);background:var(--surface);padding:2.5px;display:flex;gap:2px}
+.bar s{flex:1;background:var(--line)}
+.bar s.f{background:var(--teal)}
+/* lock screen */
+.lock{background:linear-gradient(#2B3560,#202848 60%,#1A2140);color:#fff}
+.lock .clock{text-align:center;font-size:64px;font-weight:900;margin-top:26px;letter-spacing:2px}
+.lock .date{text-align:center;font-size:14px;font-weight:900;opacity:.85;margin-top:2px}
+.notif{background:var(--surface);color:var(--ink);border:3px solid var(--ink);padding:11px 12px 12px;box-shadow:4px 4px 0 rgba(0,0,0,.35)}
+.notif .app{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:900;color:var(--muted)}
+.notif .app i{width:18px;height:18px;background:var(--teal);border:2px solid var(--ink);display:block}
+.notif .ti{font-size:15px;font-weight:900;margin-top:7px}
+.notif .bd{font-size:13px;font-weight:800;color:var(--inkSoft);margin-top:3px;line-height:1.4}
+.notif .acts{display:flex;gap:18px;margin-top:10px;font-size:13px;font-weight:900;color:var(--tealInk)}
+.chan{background:var(--surface);color:var(--ink);border:3px solid var(--ink);padding:10px 12px}
+.chan .r{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:2px solid var(--line)}
+.chan .r:last-child{border-bottom:none}
+.chan .r .t{flex:1;font-size:13.5px;font-weight:900}
+.chan .r .t s{display:block;text-decoration:none;font-size:12px;color:var(--muted);font-weight:800}
+/* spec */
+.spec{flex:1;border:5px solid var(--ink);background:var(--surface);padding:16px 18px 18px;
+      box-shadow:7px 7px 0 rgba(32,40,72,.14)}
+.spec h2{font-size:19px;font-weight:900;margin-bottom:3px}
+.spec .sh{font-size:12px;color:var(--muted);font-weight:800;margin-bottom:6px}
+.spec .two{display:flex;gap:22px}
+.spec .two>div{flex:1;min-width:0}
+.spec h5{font-size:13px;font-weight:900;margin:13px 0 6px;padding-bottom:5px;border-bottom:2.5px solid var(--ink)}
+table.t{width:100%;border-collapse:collapse;font-size:12px}
+table.t td,table.t th{padding:5px 3px;border-bottom:2px solid var(--line);font-weight:800;vertical-align:top;line-height:1.4;text-align:left}
+table.t th{font-size:11.5px;color:var(--muted);font-weight:900}
+table.t td.x{text-align:right;color:var(--tealInk);font-weight:900;white-space:nowrap}
+.guard{border:2.5px solid var(--line);background:var(--paperLight);padding:7px 9px;margin-bottom:6px;
+       font-size:12px;font-weight:800;color:var(--inkSoft);line-height:1.5}
+.guard b{color:var(--ink)}
+.no{display:flex;gap:8px;align-items:flex-start;font-size:12px;font-weight:800;color:var(--inkSoft);
+    padding:3px 0;line-height:1.45}
+.no em{color:var(--danger);font-style:normal;font-weight:900;flex:0 0 auto}
+.no.yes em{color:var(--teal)}
+code{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--tealSoft);padding:1px 4px}
+</style>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9H4v-9Z" fill="currentColor"/></symbol>
+    <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M5 2.5h14v19l-2.3-1.6-2.4 1.6-2.3-1.6-2.3 1.6-2.4-1.6L5 21.5v-19Z" fill="currentColor"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4" stroke="#FFFDF7" stroke-width="2"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" stroke="currentColor" stroke-width="2.6" fill="none"/><rect x="10.5" y="17" width="3" height="2" fill="currentColor"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8 8 0 0 1 11 0M10 16a3 3 0 0 1 4 0" stroke="currentColor" stroke-width="2.4" fill="none"/><rect x="11" y="18.5" width="2.4" height="2.4" fill="currentColor"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 5 13h6l-1 9 8-11h-6l1-9Z" fill="currentColor"/></symbol>
+    <symbol id="i-bottle" viewBox="0 0 24 24"><path d="M8 3h8M9 3v4l-3 4v10h12V11l-3-4V3" stroke="currentColor" stroke-width="2.4" fill="none"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 13H6L5 8Z" fill="currentColor"/><path d="M9 8V6a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="2.4" fill="none"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" stroke="currentColor" stroke-width="2.5" fill="none"/><path d="M3.5 10h17M8 2.5v5M16 2.5v5" stroke="currentColor" stroke-width="2.5"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4l2-2Z" fill="currentColor"/><rect x="10" y="20" width="4" height="2.5" fill="currentColor"/></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4l2-2Z" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="2.6"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="2.5" fill="none"/><rect x="10.8" y="10" width="2.4" height="8" fill="currentColor"/><rect x="10.8" y="6" width="2.4" height="2.4" fill="currentColor"/></symbol>
+    <symbol id="t-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4v-9Z" fill="currentColor"/></symbol>
+    <symbol id="t-list" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" stroke="currentColor" stroke-width="2.4" fill="none"/><path d="M8 8h8M8 12h8M8 16h8" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="t-bars" viewBox="0 0 24 24"><rect x="4" y="12" width="4" height="8" fill="currentColor"/><rect x="10" y="4" width="4" height="16" fill="currentColor"/><rect x="16" y="9" width="4" height="11" fill="currentColor"/></symbol>
+    <symbol id="t-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="3" fill="none"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.8 2.8M16.2 16.2 19 19M5 19l2.8-2.8M16.2 7.8 19 5" stroke="currentColor" stroke-width="2.6"/></symbol>
+  </defs>
+</svg>
+
+<style>
+@font-face{font-family:SobraHangul;src:url("../../assets/fonts/SobraHangul.ttf") format("truetype");font-weight:400;}
+@font-face{font-family:SobraHangul;src:url("../../assets/fonts/SobraHangul-Bold.ttf") format("truetype");font-weight:700;}
+.phone,.phone *{font-family:PixelifySans,SobraHangul,monospace}
+.spec .tag{font-family:PixelifySans,SobraHangul,monospace}
+.spec.full{flex:none;width:100%}
+.spec .three{display:flex;gap:22px}
+.spec .three>div{flex:1;min-width:0}
+.flow{display:flex;align-items:stretch;gap:0;margin:10px 0 4px}
+.flow .st{flex:1;border:2.5px solid var(--ink);background:var(--paperLight);padding:9px 10px}
+.flow .st.hi{background:var(--tealSoft)}
+.flow .st b{display:block;font-size:13.5px;font-weight:900}
+.flow .st i{display:block;font-style:normal;font-size:11px;font-weight:900;color:var(--tealInk);margin-bottom:3px}
+.flow .st span{display:block;font-size:12px;font-weight:800;color:var(--inkSoft);line-height:1.4;margin-top:3px}
+.flow .ar{flex:0 0 26px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:var(--muted)}
+table.t td.ok{text-align:center;color:var(--tealInk);font-weight:900}
+table.t td.nx{text-align:center;color:var(--dangerInk);font-weight:900}
+table.t th.c{text-align:center}
+.check{border:2.5px solid var(--danger);background:var(--dangerSoft);padding:8px 10px}
+.check .ln{display:flex;font-size:12px;font-weight:900;color:var(--inkSoft);padding:1px 0}
+.check .ln b{margin-left:auto;color:var(--ink)}
+.check .ln.res{border-top:2px solid rgba(166,58,37,.35);margin-top:4px;padding-top:5px;color:var(--dangerInk);font-size:13px}
+.check .ln.res b{color:var(--dangerInk)}
+.check.ok{border-color:var(--teal);background:var(--tealSoft)}
+.check.ok .ln.res{border-top-color:rgba(11,102,96,.35);color:var(--tealInk)}
+.check.ok .ln.res b{color:var(--tealInk)}
+.sumrow{display:flex;gap:8px}
+.sumrow .card{flex:1;padding:8px 10px;box-shadow:none;border-color:var(--line)}
+.sumrow .card s{display:block;text-decoration:none;font-size:12px;font-weight:900;color:var(--muted)}
+.sumrow .card b{font-size:17px;font-weight:900}
+.day{font-size:12px;font-weight:900;color:var(--muted);margin:8px 0 1px}
+.fijotag{margin:0 0 0 3px!important;border-color:var(--violet)!important;color:var(--violet)}
+</style>
+
+<div class="head"><h1>Sobra · 고정지출 v4 · 한국어</h1><span>고정지출은 «기록 + 안내»만 — 오늘 남은 돈·지출·정산에는 절대 들어가지 않는다</span></div>
+
+<div class="row">
+
+<!-- A: PRESUPUESTO -->
+<div class="col">
+<div class="phone tabbed">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="h1">예산</div>
+
+  <div class="lbl" style="color:var(--ink)">주기 총액</div>
+  <div class="card" style="margin-top:6px;display:flex;align-items:center;padding:10px 12px">
+    <span style="font-size:26px;font-weight:900">$6,900 <span style="font-size:14px">MXN</span></span>
+    <span style="margin-left:auto;color:var(--teal);font-size:16px;font-weight:900">✎</span></div>
+
+  <div class="lblrow" style="margin-top:16px"><span class="lbl" style="color:var(--ink);font-size:14px">9월 고정지출</span><em>하루 금액과 별개</em></div>
+  <div style="display:flex;align-items:baseline;margin-top:5px;font-size:12px;font-weight:900;color:var(--inkSoft)">$10,360 중 <b style="color:var(--ink);font-size:15px;margin:0 4px">$8,690</b> 납부</div>
+  <div class="bar" style="margin-top:4px;height:14px;padding:2px"><s class="f" style="background:var(--violet)"></s><s class="f" style="background:var(--violet)"></s><s class="f" style="background:var(--violet)"></s><s class="f" style="background:var(--violet)"></s><s class="f" style="background:var(--violet)"></s><s class="f" style="background:var(--violet)"></s><s class="f" style="background:var(--violet)"></s><s class="f" style="background:var(--violet)"></s><s></s><s></s></div>
+
+  <div style="margin-top:4px">
+    <div class="trow"><span class="ic" style="background:var(--tealSoft);color:var(--teal)"><svg width="16" height="16"><use href="#i-home"/></svg></span>
+      <span class="t">월세<s>매월 · 9월 1일</s></span>
+      <span class="r"><span class="v">$8,000</span><span class="tag paid">✓ 납부</span></span></div>
+    <div class="trow"><span class="ic" style="background:var(--violetSoft);color:var(--violet)"><svg width="16" height="16"><use href="#i-bag"/></svg></span>
+      <span class="t">Coppel 할부<s>월 2회 · 15일·30일</s></span>
+      <span class="r"><span class="v">$900</span><span class="tag">2회 중 1</span></span></div>
+    <div class="trow"><span class="ic" style="background:var(--blueSoft);color:var(--blue)"><svg width="16" height="16"><use href="#i-bottle"/></svg></span>
+      <span class="t">생수통<s>매주 · 금 · $60</s></span>
+      <span class="r"><span class="v">$240</span><span class="tag paid">✓ 4회 중 4</span></span></div>
+    <div class="trow"><span class="ic" style="background:var(--cashSoft);color:var(--cash)"><svg width="16" height="16"><use href="#i-phone"/></svg></span>
+      <span class="t">휴대폰<s>매월 · 9월 28일</s></span>
+      <span class="r"><span class="v">$200</span><span class="tag due">오늘</span></span></div>
+    <div class="trow"><span class="ic" style="background:var(--cashSoft);color:var(--cash)"><svg width="16" height="16"><use href="#i-bolt"/></svg></span>
+      <span class="t">전기 (CFE)<s>2개월마다 · 9월 29일</s></span>
+      <span class="r"><span class="v"><small>약</small> $620</span><span class="tag">내일</span></span></div>
+    <div class="trow"><span class="ic" style="background:var(--blueSoft);color:var(--blue)"><svg width="16" height="16"><use href="#i-wifi"/></svg></span>
+      <span class="t">인터넷<s>매월 · 9월 30일</s></span>
+      <span class="r"><span class="v">$400</span><span class="tag">9월 30일</span></span></div>
+  </div>
+  <div class="btn dash" style="margin-top:6px">+ 고정지출 추가</div>
+
+  <div class="check" style="margin-top:10px">
+    <div class="ln">9월 수입<b>$24,000</b></div>
+    <div class="ln">− 고정지출<b>$10,360</b></div>
+    <div class="ln">− 예산 (월 2회분)<b>$13,800</b></div>
+    <div class="ln res">부족<b>$160</b></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="tabbar">
+    <div><svg width="18" height="18"><use href="#t-home"/></svg>홈</div>
+    <div><svg width="18" height="18"><use href="#t-list"/></svg>내역</div>
+    <div class="plus">+</div>
+    <div class="on"><svg width="18" height="18"><use href="#t-bars"/></svg>예산</div>
+    <div><svg width="18" height="18"><use href="#t-gear"/></svg>내 정보</div></div>
+</div>
+<div class="cap"><b>1. 예산 탭 — 예산 카드는 그대로, 고정지출은 «이번 달» 별도 섹션.</b><br>월세·고지서는 달 단위로 생각하니 목록도 달 기준. 맨 아래는 <b>참고용 점검</b>(입금 기록이 있을 때만) — 계산에는 안 쓰고 모자라면 경고색만.</div>
+</div>
+
+<!-- B: NUEVO GASTO 고정 -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back">←</span><span class="ttl">새 고정지출</span></div>
+
+  <div class="amount"><span class="n">$8,000</span><span class="cur">MXN</span></div>
+  <div class="field" style="margin-top:10px">월세</div>
+
+  <div class="lbl" style="margin-top:11px">얼마나 자주?</div>
+  <div class="grid" style="margin-top:5px">
+    <div>매주</div><div>월 2회</div>
+    <div class="on">매월</div><div>2개월마다</div></div>
+
+  <div class="lbl" style="margin-top:11px">다음 납부일</div>
+  <div class="field" style="margin-top:5px"><svg width="18" height="18"><use href="#i-cal"/></svg>2026년 10월 1일<span class="caret">▼</span></div>
+  <div class="hint" style="margin-top:3px">그다음: 11월 1일, 12월 1일, 1월 1일…</div>
+
+  <div style="display:flex;gap:9px;margin-top:10px">
+    <div style="flex:1.15"><div class="lbl">분류</div>
+      <div class="field" style="margin-top:5px;padding:5px 8px"><span class="fi" style="background:var(--tealSoft);color:var(--teal)"><svg width="14" height="14"><use href="#i-home"/></svg></span>집<span class="caret">▼</span></div></div>
+    <div style="flex:1"><div class="lbl">결제</div>
+      <div class="seg" style="margin-top:5px"><div style="padding:8px 0">현금</div><div class="on" style="padding:8px 0">카드</div></div></div>
+  </div>
+
+  <div class="toggle" style="margin-top:11px">
+    <span class="sw" style="background:var(--line);justify-content:flex-start"><i style="background:var(--ink)"></i></span>
+    <div><div class="t">매번 금액이 달라요</div></div>
+  </div>
+
+  <div class="lbl" style="margin-top:11px">알림</div>
+  <div class="field" style="margin-top:5px"><svg width="18" height="18" style="color:var(--teal)"><use href="#i-bell"/></svg>하루 전 · 오전 9:00<span class="caret">▼</span></div>
+
+  <div class="note" style="margin-top:10px;color:var(--teal)">
+    <svg width="18" height="18" style="flex:0 0 auto"><use href="#i-info"/></svg>
+    <span class="hint">하루 금액은 그대로예요. <b>9월 30일</b>에 알려 드릴게요. 낸 뒤에 기록하면 돼요.</span></div>
+  <div class="spacer"></div>
+  <div class="btn">고정지출 저장</div>
+</div>
+<div class="cap"><b>2. 등록 — 떼어두기 미리보기가 사라졌다.</b><br>대신 «하루 금액은 그대로, 언제 알려준다»만 말한다. 프리셋 4개 · 다음 기한일(31일은 말일로 당겨도 31 기억) · 알림 기본 1일 전 9:00.</div>
+</div>
+
+<!-- C: INICIO — VENCE HOY -->
+<div class="col">
+<div class="phone tabbed">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="h1" style="display:flex;justify-content:space-between;align-items:center">Sobra<svg width="20" height="20"><use href="#t-gear"/></svg></div>
+  <div class="lbl" style="color:var(--ink)">오늘 남은 돈</div>
+  <div style="font-size:38px;font-weight:900;color:var(--teal);line-height:1.1">$400.00 <span style="font-size:15px">MXN</span></div>
+
+  <div class="lblrow" style="margin-top:12px"><span class="lbl" style="color:var(--ink)">주기 진행</span><em>3일 남음</em></div>
+  <div class="bar" style="margin-top:6px"><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s></s><s></s></div>
+  <div class="lblrow" style="margin-top:5px"><em>예산 <b style="color:var(--ink)">$6,900</b></em><em>지출 <b style="color:var(--ink)">$5,700</b></em></div>
+
+  <div class="card" style="margin-top:14px;background:var(--violetSoft);border-color:var(--violet)">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="width:36px;height:36px;border:2.5px solid var(--violet);background:var(--surface);color:var(--cash);display:flex;align-items:center;justify-content:center;flex:0 0 auto"><svg width="16" height="16"><use href="#i-phone"/></svg></span>
+      <div style="flex:1"><div style="font-size:12px;font-weight:900;color:var(--violet)">고정지출 · 오늘 납부일</div>
+        <div style="font-size:16px;font-weight:900">휴대폰 · $200</div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <div class="btn" style="flex:1;padding:8px 0;font-size:13.5px;box-shadow:0 4px 0 var(--ink);margin-top:0">냈어요</div>
+      <div class="btn ghost" style="flex:1;padding:8px 0;font-size:13.5px;box-shadow:0 4px 0 var(--ink);margin-top:0">아직이요</div>
+    </div>
+    <div class="hint" style="margin-top:9px;color:var(--violet)">오늘 남은 돈은 그대로예요.</div>
+  </div>
+
+  <div class="card" style="margin-top:14px;background:var(--cashSoft);border-color:var(--cash);display:flex;align-items:center;gap:11px">
+    <svg width="30" height="26" viewBox="0 0 24 20"><rect x="1" y="3" width="22" height="15" fill="#845A1E"/><rect x="15" y="7.5" width="6" height="6" fill="#F7E9CE"/></svg>
+    <div style="flex:1"><div style="font-size:12px;font-weight:900;color:var(--cashInk)">예상 현금</div>
+      <div style="font-size:19px;font-weight:900;color:var(--cashInk)">$1,980 MXN</div></div><span style="font-weight:900;color:var(--cashInk)">›</span></div>
+
+  <div class="lblrow" style="margin-top:16px"><span class="lbl" style="color:var(--ink);font-size:14px">최근 내역</span><em style="color:var(--tealInk);font-size:12.5px;font-weight:900">전체 보기</em></div>
+  <div style="margin-top:3px">
+    <div class="trow"><span class="ic" style="background:var(--dangerSoft);color:var(--danger)"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M4 11h16v2a8 8 0 0 1-16 0v-2Z" fill="currentColor"/></svg></span>
+      <span class="t">Taquería El Faro<s>식비 · 현금 · 어제</s></span><span class="v">−$180</span></div>
+    <div class="trow"><span class="ic" style="background:var(--blueSoft);color:var(--blue)"><svg width="16" height="16" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="15" stroke="currentColor" stroke-width="2.5" fill="none"/><path d="M5 11h14" stroke="currentColor" stroke-width="2.5"/></svg></span>
+      <span class="t">지하철<s>교통 · 카드 · 어제</s></span><span class="v">−$34</span></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="tabbar">
+    <div class="on"><svg width="18" height="18"><use href="#t-home"/></svg>홈</div>
+    <div><svg width="18" height="18"><use href="#t-list"/></svg>내역</div>
+    <div class="plus">+</div>
+    <div><svg width="18" height="18"><use href="#t-bars"/></svg>예산</div>
+    <div><svg width="18" height="18"><use href="#t-gear"/></svg>내 정보</div></div>
+</div>
+<div class="cap"><b>3. 홈 — 기한 당일 카드 한 장.</b><br>«오늘 남은 돈 $400»는 월세·고지서와 무관. 카드는 <b>당일부터 납부 전까지(최대 +2일)</b>, «아직이요»는 그날만 숨김. 고정 금액 항목은 «냈어요» 한 번으로 기록 끝.</div>
+</div>
+
+<!-- D: REGISTRAR PAGO (variable) -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="h1">예산</div>
+  <div class="card" style="display:flex;align-items:center;padding:10px 12px">
+    <span style="font-size:26px;font-weight:900">$6,900 <span style="font-size:14px">MXN</span></span></div>
+  <div class="dim"></div>
+  <div class="sheet">
+    <div class="grab"></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="width:38px;height:38px;border:2.5px solid var(--ink);background:var(--cashSoft);color:var(--cash);display:flex;align-items:center;justify-content:center;flex:0 0 auto"><svg width="18" height="18"><use href="#i-bolt"/></svg></span>
+      <div style="flex:1"><div style="font-size:17px;font-weight:900">전기 (CFE)</div>
+        <div class="hint">2개월마다 · 내일(9월 29일) 납부</div></div>
+    </div>
+
+    <div class="lbl" style="margin-top:14px">고지서 금액은 얼마였나요?</div>
+    <div class="amount" style="margin-top:6px"><span class="n" style="font-size:28px">$684</span><span class="cur">MXN</span></div>
+    <div class="hint" style="margin-top:4px">지난번: $620</div>
+
+    <div class="card flat" style="margin-top:12px;border-color:var(--line);background:var(--paperLight);padding:9px 10px">
+      <div class="delta">오늘 남은 돈<b>$400 <em style="color:var(--inkSoft);font-size:12px">변동 없음</em></b></div>
+      <div class="delta" style="margin-top:5px">예상 현금<b>$1,980 → <em style="color:var(--cashInk)">$1,296</em></b></div>
+      <div class="hint" style="margin-top:3px">현금은 줄어요. 지갑에서 나간 돈이니까요.</div>
+    </div>
+
+    <div class="btn" style="margin-top:14px">납부 기록</div>
+    <div style="display:flex;justify-content:center;align-items:center;gap:6px;margin-top:9px;font-size:13px;font-weight:900;color:var(--inkSoft)">현금 · 오늘 · <span style="color:var(--tealInk);text-decoration:underline">변경</span></div>
+    <div class="btn ghost" style="margin-top:12px">고지서만 받았어요</div>
+    <div class="hint" style="text-align:center;margin-top:9px">다음 고지서는 $684로 예상할게요.</div>
+  </div>
+</div>
+<div class="cap"><b>4. 납부 기록 — 금액이 바뀌는 항목.</b><br>오늘 금액은 <b>변화 없음</b>. 현금으로 냈다면 <b>예상 현금만</b> 줄어든다(지갑에서 실제로 나갔으니 현금 대사는 맞아야 한다). «고지서만 받았어요»는 목록 금액과 알림 문구만 갱신.</div>
+</div>
+
+</div>
+
+<div class="row">
+
+<!-- E: MOVIMIENTOS -->
+<div class="col">
+<div class="phone tabbed">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="h1">내역</div>
+  <div class="sumrow">
+    <div class="card"><s>지출 · 이번 주기</s><b>$5,700</b></div>
+    <div class="card" style="background:var(--violetSoft)"><s style="color:var(--violet)">고정지출 납부 · 9월</s><b>$8,890</b></div>
+  </div>
+  <div class="seg" style="margin-top:12px"><div class="on">전체</div><div>지출</div><div>고정</div></div>
+
+  <div class="day">오늘 · 9월 28일</div>
+  <div class="trow"><span class="ic" style="background:var(--cashSoft);color:var(--cash)"><svg width="16" height="16"><use href="#i-phone"/></svg></span>
+    <span class="t">휴대폰 <span class="tag fijotag">고정</span><s>공과금 · 현금</s></span><span class="v" style="color:var(--inkSoft)">−$200</span></div>
+  <div class="day">어제 · 9월 27일</div>
+  <div class="trow"><span class="ic" style="background:var(--dangerSoft);color:var(--danger)"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M4 11h16v2a8 8 0 0 1-16 0v-2Z" fill="currentColor"/></svg></span>
+    <span class="t">Taquería El Faro<s>식비 · 현금</s></span><span class="v">−$180</span></div>
+  <div class="trow"><span class="ic" style="background:var(--blueSoft);color:var(--blue)"><svg width="16" height="16" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="15" stroke="currentColor" stroke-width="2.5" fill="none"/><path d="M5 11h14" stroke="currentColor" stroke-width="2.5"/></svg></span>
+    <span class="t">지하철<s>교통 · 카드</s></span><span class="v">−$34</span></div>
+  <div class="day">9월 25일</div>
+  <div class="trow"><span class="ic" style="background:var(--blueSoft);color:var(--blue)"><svg width="16" height="16"><use href="#i-bottle"/></svg></span>
+    <span class="t">생수통 <span class="tag fijotag">고정</span><s>집 · 현금</s></span><span class="v" style="color:var(--inkSoft)">−$60</span></div>
+  <div class="trow"><span class="ic" style="background:var(--violetSoft);color:var(--violet)"><svg width="16" height="16" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="13" fill="currentColor"/></svg></span>
+    <span class="t">Liverpool<s>쇼핑 · 카드</s></span><span class="v">−$389</span></div>
+  <div class="spacer"></div>
+  <div class="tabbar">
+    <div><svg width="18" height="18"><use href="#t-home"/></svg>홈</div>
+    <div class="on"><svg width="18" height="18"><use href="#t-list"/></svg>내역</div>
+    <div class="plus">+</div>
+    <div><svg width="18" height="18"><use href="#t-bars"/></svg>예산</div>
+    <div><svg width="18" height="18"><use href="#t-gear"/></svg>내 정보</div></div>
+</div>
+<div class="cap"><b>5. 내역 — 한 목록, 두 합계.</b><br>납부 기록은 고정 배지로 같은 목록에 섞인다. 하지만 «지출»(사이클)와 «고정지출 납부»(달)는 <b>따로 더한다</b>. 필터로 고정지출만 볼 수 있다. (3번에서 «냈어요»를 누른 뒤)</div>
+</div>
+
+<!-- F: PRIMER 고정 — AVISO -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="h1">예산</div>
+  <div class="card" style="display:flex;align-items:center;padding:10px 12px">
+    <span style="font-size:26px;font-weight:900">$6,900 <span style="font-size:14px">MXN</span></span></div>
+  <div class="dim"></div>
+  <div class="sheet">
+    <div class="grab"></div>
+    <div style="font-size:17px;font-weight:900;line-height:1.3">$6,900은 고정지출을 뺀 쓸 돈이에요</div>
+    <div class="hint" style="margin:6px 0 12px;color:var(--inkSoft)">월세는 하루 금액을 줄이지 않아요. 그래서 예산은 월세를 <b>낸 뒤에</b> 남는 돈으로 잡는 게 좋아요.</div>
+
+    <div class="lbl">9월에 돈이 충분할까요?</div>
+    <div class="check ok" style="margin-top:6px">
+      <div class="ln">수입<b>$24,000</b></div>
+      <div class="ln">− 월세<b>$8,000</b></div>
+      <div class="ln">− 예산 (월 2회분)<b>$13,800</b></div>
+      <div class="ln res">남음<b>$2,200</b></div>
+    </div>
+    <div class="hint" style="margin-top:6px">수입 기록이 없으면 위 안내만 보여요.</div>
+
+    <div class="btn" style="margin-top:14px">이대로 좋아요</div>
+    <div class="btn ghost" style="margin-top:12px">예산 조정하기</div>
+  </div>
+</div>
+<div class="cap"><b>6. 첫 고정지출 등록 후 한 번 — 모드 질문 대신 안내.</b><br>예산을 «받는 돈 전부»로 잡은 사람을 <b>계산이 아니라 문구로</b> 잡는다. 입금 기록이 있으면 이번 달 점검표를 붙인다. 예산은 사용자가 직접 고친다.</div>
+</div>
+
+<!-- G: NOTIFICACIÓN -->
+<div class="col">
+<div class="phone lock">
+  <div class="status" style="color:#fff"><span>9:00</span><span class="dots"><i style="background:#fff"></i><i style="background:#fff"></i><i style="background:#fff"></i><b style="border-color:#fff"></b></span></div>
+  <div class="clock">9:00</div>
+  <div class="date">9월 30일 수요일</div>
+
+  <div class="notif" style="margin-top:28px">
+    <div class="app"><i></i>Sobra · 고정지출 · 지금</div>
+    <div class="ti">내일은 월세 내는 날이에요</div>
+    <div class="bd">카드로 $8,000. 낸 뒤에 Sobra에 기록해 주세요.</div>
+    <div class="acts"><span>열기</span></div>
+  </div>
+
+  <div style="margin-top:22px;font-size:12.5px;font-weight:900;opacity:.8">Sobra 알림 설정</div>
+  <div class="chan" style="margin-top:7px">
+    <div class="r"><svg width="20" height="20" style="color:var(--teal)"><use href="#i-bell"/></svg>
+      <span class="t">고정지출<s>소리와 진동 · 기본값</s></span></div>
+    <div class="r"><svg width="20" height="20" style="color:var(--muted)"><use href="#i-mute"/></svg>
+      <span class="t">빠른 기록<s>무음 · 상단 바에 고정</s></span></div>
+  </div>
+  <div class="spacer"></div>
+  <div style="text-align:center;font-size:12px;font-weight:800;opacity:.7">위로 밀어서 잠금 해제</div>
+</div>
+<div class="cap"><b>7. 알림 — 기한 전 한 번, 소리·진동은 채널.</b><br>«고정지출» 채널을 새로 만들어 시스템 기본 소리+진동으로 시작. 누르면 앱이 열리고 3번 카드(또는 4번 시트)로 간다. 기한 후 반복 알림은 없다.</div>
+</div>
+
+<!-- mini spec: states -->
+<div class="col">
+<div class="spec" style="height:806px">
+  <h2>회차 상태</h2>
+  <div class="sh">한 항목의 한 회차가 거치는 단계</div>
+  <table class="t">
+    <tr><th>상태</th><th>조건</th><th>보이는 곳</th></tr>
+    <tr><td><span class="tag">9월 30일</span></td><td>기한 &gt; 내일</td><td>예산 탭</td></tr>
+    <tr><td><span class="tag">내일</span></td><td>기한 = 내일</td><td>예산 탭 · 알림(기본)</td></tr>
+    <tr><td><span class="tag due">오늘</span></td><td>기한 = 오늘</td><td>예산 탭 · 홈 카드</td></tr>
+    <tr><td><span class="tag paid">✓ 납부</span></td><td>기록 연결됨</td><td>예산 탭 · 내역(고정)</td></tr>
+    <tr><td><span class="tag late">기한 지남</span></td><td>기한 &lt; 오늘 · 미기록</td><td>예산 탭 · 홈 카드(+2일까지)</td></tr>
+  </table>
+
+  <h5>홈 카드 규칙</h5>
+  <div class="guard">기한 당일에 뜨고, 기록하면 사라진다.</div>
+  <div class="guard"><b>«아직이요»</b> → 그날만 숨김. 다음 날 «기한 지남»으로 다시.</div>
+  <div class="guard"><b>기한 +2일</b>이 지나면 홈에서 내리고 예산 탭의 «기한 지남» 표시만 남긴다. 계속 따라다니지 않는다.</div>
+  <div class="guard">같은 날 여러 개면 카드 한 장에 «오늘 3건 납부일».</div>
+
+  <h5>미리 낸 경우</h5>
+  <div class="guard">기한 전에 기록해도 <b>가장 가까운 미납 회차</b>에 연결. 그 회차 알림은 취소.</div>
+</div>
+</div>
+
+</div>
+
+<div class="row">
+<div class="spec full">
+  <h2>동작 흐름</h2>
+  <div class="sh">한 번 등록하면 매 회차 이 순서로 돈다 — 오늘 금액은 처음부터 끝까지 그대로</div>
+  <div class="flow">
+    <div class="st"><i>① 등록</i><b>새 고정지출</b><span>금액 · 주기 프리셋 · 다음 기한일 · 알림 시점</span></div><div class="ar">→</div>
+    <div class="st"><i>② 목록</i><b>예산 탭 «이번 달 고정지출»</b><span>이번 달 회차 계산 · 상태 태그</span></div><div class="ar">→</div>
+    <div class="st"><i>③ 안내</i><b>알림 1일 전 9:00</b><span>«고정지출» 채널 · 소리+진동</span></div><div class="ar">→</div>
+    <div class="st"><i>④ 당일</i><b>홈 카드</b><span>냈어요 / 아직이요</span></div><div class="ar">→</div>
+    <div class="st hi"><i>⑤ 기록</i><b>고정 지출 생성</b><span>recurringId 연결 · 현금이면 예상 현금 차감</span></div><div class="ar">→</div>
+    <div class="st"><i>⑥ 다음 회차</i><b>anchor + n × 간격</b><span>변동 금액은 방금 낸 금액이 다음 예상액</span></div>
+  </div>
+
+  <div class="three">
+  <div>
+    <h5>어디에 더해지나</h5>
+    <table class="t">
+      <tr><th></th><th class="c">일반 지출</th><th class="c">고정 기록</th></tr>
+      <tr><td>오늘 남은 돈</td><td class="ok">✓</td><td class="nx">×</td></tr>
+      <tr><td>지출 · 예산 진행률</td><td class="ok">✓</td><td class="nx">×</td></tr>
+      <tr><td>정산 성공 · XP</td><td class="ok">✓</td><td class="nx">×</td></tr>
+      <tr><td>카테고리 한도</td><td class="ok">✓</td><td class="nx">×</td></tr>
+      <tr><td>예상 현금 (현금일 때)</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+      <tr><td>내역 목록</td><td class="ok">✓</td><td class="ok">✓ 고정</td></tr>
+      <tr><td>고정지출 납부 (달)</td><td class="nx">×</td><td class="ok">✓</td></tr>
+    </table>
+    <div class="guard" style="margin-top:7px">자유 지출 합계를 fold하는 모든 곳(<code>totalSpentCentavos</code>, <code>spentBeforeToday</code>, 사이클 마감)에서 <code>recurringId != null</code>을 제외. 테스트로 고정.</div>
+  </div>
+  <div>
+    <h5>모델</h5>
+    <table class="t">
+      <tr><td><code>RecurringExpense</code></td><td>id · name · amount · unit(week/semiMonth/month) · interval · anchorDate · isVariable · category · method · reminder</td></tr>
+      <tr><td><code>ExpenseEntry</code> +</td><td>recurringId · occurrenceDate</td></tr>
+      <tr><td><code>CycleRecord</code> +</td><td>fixedPaidCentavos (기록용, 성공 판정엔 안 씀)</td></tr>
+    </table>
+    <h5>프리셋 → 모델</h5>
+    <table class="t">
+      <tr><td>매주</td><td class="x">week × 1</td></tr>
+      <tr><td>월 2회</td><td class="x">semiMonth × 1 (15일·말일)</td></tr>
+      <tr><td>매월</td><td class="x">month × 1</td></tr>
+      <tr><td>2개월마다</td><td class="x">month × 2</td></tr>
+    </table>
+  </div>
+  <div>
+    <h5>경계 케이스</h5>
+    <div class="guard"><b>고정 기록 수정·삭제</b> → 회차 연결이 풀리고 다시 미납. 현금이면 예상 현금 복구.</div>
+    <div class="guard"><b>현금 대사에서 모자란 금액</b>은 여전히 일반 지출 — 고정로 오인하지 않는다.</div>
+    <div class="guard"><b>항목 삭제</b> → 과거 기록은 고정 그대로 남고, 미래 회차·알림만 사라진다.</div>
+    <h5>만들지 않을 것 (v1)</h5>
+    <div class="no"><em>×</em><span>떼어두기 · 예산 모드 질문 · 차액 반영 (v3까지의 계산 전부)</span></div>
+    <div class="no"><em>×</em><span>자동 기록 · 알림의 «냈어요» 버튼 · 기한 후 반복 알림</span></div>
+    <div class="no"><em>×</em><span>매년 · 자유 주기 · LP 가스</span></div>
+  </div>
+  </div>
+</div>
+</div>

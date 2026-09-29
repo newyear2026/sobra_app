@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
+import '../models/currency.dart';
 import '../models/expense_entry.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
+import '../widgets/fixed_expenses.dart';
 import '../widgets/pixel_ui.dart';
 import 'cycle_history_screen.dart';
 
 class BudgetScreen extends StatelessWidget {
-  const BudgetScreen({super.key});
+  const BudgetScreen({super.key, this.active = true});
+
+  /// IndexedStack keeps this tab mounted while another tab is visible.
+  final bool active;
 
   Future<bool?> _requestCategoryPolicy(BuildContext context) =>
       showDialog<bool>(
@@ -40,14 +45,100 @@ class BudgetScreen extends StatelessWidget {
     required int currentCentavos,
   }) => showDialog<int>(
     context: context,
-    builder: (_) =>
-        _AmountDialog(title: title, currentCentavos: currentCentavos),
+    builder: (_) => _AmountDialog(
+      title: title,
+      currentCentavos: currentCentavos,
+      currency: SobraScope.of(context).currency,
+    ),
+  );
+
+  Future<void> _editTotalBudget(
+    BuildContext context,
+    SobraStore store,
+    AppLocalizations l10n,
+  ) async {
+    final value = await _requestAmount(
+      context,
+      title: l10n.budgetTotal,
+      currentCentavos: store.totalBudgetCentavos,
+    );
+    if (value != null && context.mounted) {
+      if (value <= store.cycleBudgetExtrasCentavos) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              l10n.budgetTooLow(
+                formatMoney(store.currency, store.cycleBudgetExtrasCentavos),
+              ),
+            ),
+          ),
+        );
+        return;
+      }
+      final adjust = await _requestCategoryPolicy(context);
+      if (adjust != null && context.mounted) {
+        await guardStoreWrite(
+          ScaffoldMessenger.of(context),
+          l10n,
+          () => store.setTotalBudget(value, adjustCategoryLimits: adjust),
+        );
+      }
+    }
+  }
+
+  Widget _budgetPrompt(
+    BuildContext context,
+    SobraStore store,
+    AppLocalizations l10n,
+  ) => SafeArea(
+    bottom: false,
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PixelTopBar(title: l10n.budgetTitle),
+          const SizedBox(height: 18),
+          PixelEmptyState(
+            icon: Icons.savings_outlined,
+            title: l10n.budgetNotSetTitle,
+            message: l10n.budgetNotSetBody,
+          ),
+          const SizedBox(height: 16),
+          PixelButton(
+            label: l10n.budgetSetAction,
+            icon: Icons.add,
+            onPressed: () async {
+              final messenger = ScaffoldMessenger.of(context);
+              final value = await _requestAmount(
+                context,
+                title: l10n.budgetTotal,
+                currentCentavos: 0,
+              );
+              if (value == null) return;
+              await guardStoreWrite(
+                messenger,
+                l10n,
+                // The limits still hold the stock split of the default
+                // figure, and scaling that split reproduces it at whatever
+                // the first real budget turns out to be.
+                () => store.setTotalBudget(value, adjustCategoryLimits: true),
+              );
+            },
+          ),
+        ],
+      ),
+    ),
   );
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final store = SobraScope.of(context);
+    // Nothing on this screen survives a missing budget: the ring, the
+    // projection and every category limit are shares of a number that was
+    // never chosen. One prompt is the whole screen until it exists.
+    if (!store.hasBudget) return _budgetPrompt(context, store, l10n);
     final currency = store.currency;
     final projectionPositive = store.projectedRemainderCentavos >= 0;
     final motionToken = Object.hashAll([
@@ -73,41 +164,7 @@ class BudgetScreen extends StatelessWidget {
             const SizedBox(height: 8),
             PixelCard(
               elevation: PixelElevation.hero,
-              onTap: () async {
-                final value = await _requestAmount(
-                  context,
-                  title: l10n.budgetTotal,
-                  currentCentavos: store.totalBudgetCentavos,
-                );
-                if (value != null && context.mounted) {
-                  if (value <= store.cycleBudgetExtrasCentavos) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          l10n.budgetTooLow(
-                            formatMoney(
-                              currency,
-                              store.cycleBudgetExtrasCentavos,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                    return;
-                  }
-                  final adjust = await _requestCategoryPolicy(context);
-                  if (adjust != null && context.mounted) {
-                    await guardStoreWrite(
-                      ScaffoldMessenger.of(context),
-                      l10n,
-                      () => store.setTotalBudget(
-                        value,
-                        adjustCategoryLimits: adjust,
-                      ),
-                    );
-                  }
-                }
-              },
+              onTap: () => _editTotalBudget(context, store, l10n),
               child: Row(
                 children: [
                   Expanded(
@@ -139,6 +196,10 @@ class BudgetScreen extends StatelessWidget {
                 child: CycleHistorySummary(records: store.cycleRecords),
               ),
             ],
+            const SizedBox(height: 24),
+            FixedExpensesSection(
+              onAdjustBudget: () => _editTotalBudget(context, store, l10n),
+            ),
             const SizedBox(height: 24),
             Text(
               l10n.budgetByCategory,
@@ -292,12 +353,11 @@ class BudgetScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  CatSprite(
-                    motion: CatMotion.saving,
-                    width: 128,
-                    loop: false,
-                    playToken: motionToken,
-                    animate: !reducedMotionOf(context),
+                  _BudgetCompanion(
+                    characterId: store.characterId,
+                    motionToken: motionToken,
+                    active: active,
+                    reducedMotion: reducedMotionOf(context),
                   ),
                 ],
               ),
@@ -309,6 +369,58 @@ class BudgetScreen extends StatelessWidget {
   }
 }
 
+/// Plays the saving reaction once, then keeps the companion quietly alive.
+/// Leaving this tab pauses its ticker; returning is a new budget visit.
+class _BudgetCompanion extends StatefulWidget {
+  const _BudgetCompanion({
+    required this.characterId,
+    required this.motionToken,
+    required this.active,
+    required this.reducedMotion,
+  });
+
+  final String characterId;
+  final int motionToken;
+  final bool active;
+  final bool reducedMotion;
+
+  @override
+  State<_BudgetCompanion> createState() => _BudgetCompanionState();
+}
+
+class _BudgetCompanionState extends State<_BudgetCompanion> {
+  late bool _saving = widget.active && !widget.reducedMotion;
+
+  @override
+  void didUpdateWidget(covariant _BudgetCompanion oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!widget.active || widget.reducedMotion) {
+      _saving = false;
+    } else if (!oldWidget.active ||
+        oldWidget.reducedMotion ||
+        oldWidget.characterId != widget.characterId ||
+        oldWidget.motionToken != widget.motionToken) {
+      _saving = true;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => CatSprite(
+    characterId: widget.characterId,
+    motion: _saving ? CatMotion.saving : CatMotion.idle,
+    width: 128,
+    loop: !_saving,
+    playToken: widget.motionToken,
+    animate: widget.active && !widget.reducedMotion,
+    onComplete: _saving
+        ? () {
+            if (!mounted || !widget.active || widget.reducedMotion) return;
+            setState(() => _saving = false);
+          }
+        : null,
+  );
+}
+
 /// The amount prompt behind every "editar" on this screen.
 ///
 /// The controller lives in a State rather than beside the `showDialog` call:
@@ -316,10 +428,19 @@ class BudgetScreen extends StatelessWidget {
 /// disposed the moment `showDialog` returns would be read after disposal and
 /// take the frame — and the app — down with it.
 class _AmountDialog extends StatefulWidget {
-  const _AmountDialog({required this.title, required this.currentCentavos});
+  const _AmountDialog({
+    required this.title,
+    required this.currentCentavos,
+    required this.currency,
+  });
 
   final String title;
   final int currentCentavos;
+
+  /// Handed in rather than read from the scope, because the figure the field
+  /// opens on is spelled in [initState], where an inherited widget is out of
+  /// reach.
+  final Currency currency;
 
   @override
   State<_AmountDialog> createState() => _AmountDialogState();
@@ -332,7 +453,7 @@ class _AmountDialogState extends State<_AmountDialog> {
   void initState() {
     super.initState();
     _controller = TextEditingController(
-      text: (widget.currentCentavos / 100).toStringAsFixed(0),
+      text: amountFieldText(widget.currency, widget.currentCentavos),
     );
   }
 
@@ -350,10 +471,9 @@ class _AmountDialogState extends State<_AmountDialog> {
       content: TextField(
         controller: _controller,
         autofocus: true,
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        decoration: InputDecoration(
-          suffixText: SobraScope.of(context).currency.code,
-        ),
+        keyboardType: amountKeyboardType(widget.currency),
+        inputFormatters: amountInputFormattersFor(widget.currency),
+        decoration: InputDecoration(suffixText: widget.currency.code),
       ),
       actions: [
         TextButton(
@@ -361,8 +481,10 @@ class _AmountDialogState extends State<_AmountDialog> {
           child: Text(l10n.cancel),
         ),
         FilledButton(
-          onPressed: () =>
-              Navigator.pop(context, parseAmount(_controller.text)),
+          onPressed: () => Navigator.pop(
+            context,
+            parseAmount(widget.currency, _controller.text),
+          ),
           child: Text(l10n.save),
         ),
       ],

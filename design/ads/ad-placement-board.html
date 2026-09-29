@@ -1,0 +1,328 @@
+<!--
+  시안 참고 자료입니다. 기준 문서는 design/ads/ad-spec.md 입니다.
+  내용이 충돌하면 언제나 ad-spec.md가 우선합니다.
+  이 보드는 2026-09-15 코드 상태를 그렸습니다. 카드 문구는 lib/l10n/app_ko.arb 실제 값입니다.
+-->
+<title>Sobra 광고 배치 · 구현 기준</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+/* The app's own font file, not the one Google Fonts serves.
+   Upstream Pixelify Sans draws 2, 3, 5, 6 and 9 on the same closed frame as 8,
+   so a board loading it from the CDN shows "광고 1/2" as "광고 1/8" — the exact
+   misreading commit 8ee82f1 removed from the app. A board that misreports a
+   number is worse than one with no pixel font at all, so this loads the
+   patched file the app ships and falls back to a plain monospace, never to
+   upstream. */
+@font-face{
+  font-family:"Sobra Pixelify";
+  src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");
+  font-weight:400 700;
+  font-display:swap;
+}
+:root{
+  /* Sobra app tokens, lifted from lib/theme/app_theme.dart, unchanged. */
+  --s-paper:#F6EFE0; --s-surface:#FFFDF7; --s-beige:#EFE7D6; --s-line:#E7DDC8;
+  --s-ink:#202848; --s-muted:#5F6885;
+  --s-teal:#0E7A72; --s-tealSoft:#D8EDEA; --s-tealInk:#0B6660;
+  --s-danger:#D4553F; --s-dangerSoft:#FBE1DA; --s-dangerInk:#A63A25;
+  --s-blue:#39558E; --s-blueSoft:#DCE4F2;
+  --s-violet:#6E4A8C; --s-violetSoft:#E7DCF0;
+  --s-cash:#C0873A; --s-cashSoft:#F7E9CE; --s-cashInk:#845A1E;
+  --s-border:2.5px solid var(--s-ink);
+
+  /* Board chrome. Deliberately not Sobra's palette, so the annotation layer
+     can never be mistaken for the UI being annotated. */
+  --bg:#E4DFD2; --panel:#F1EBDE; --rule:#CFC6B2;
+  --text:#22252E; --dim:#5B6070; --accent:#0E7A72;
+  --done:#0E7A72; --next:#C0873A; --none:#A63A25;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#171A21; --panel:#212530; --rule:#333846;
+    --text:#E9E7E0; --dim:#98A0AF; --accent:#57B6AB;
+    --done:#57B6AB; --next:#D9A45A; --none:#D9705A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#171A21; --panel:#212530; --rule:#333846;
+  --text:#E9E7E0; --dim:#98A0AF; --accent:#57B6AB;
+  --done:#57B6AB; --next:#D9A45A; --none:#D9705A;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);
+  font-family:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  margin:0;padding-block:28px;padding-left:20px;padding-right:20px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-family:"Sobra Pixelify","IBM Plex Sans",sans-serif;font-size:34px;letter-spacing:.5px;margin:0 0 4px}
+.sub{color:var(--dim);font-size:13px;margin:0 0 20px;font-family:"IBM Plex Mono",monospace}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+  padding:4px 10px;border-radius:999px;border:1.5px solid currentColor}
+.t-done{color:var(--done)} .t-next{color:var(--next)} .t-none{color:var(--none)}
+
+section{background:var(--panel);border:1px solid var(--rule);border-radius:10px;
+  padding:18px;margin-bottom:16px}
+.head{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:4px}
+.head h2{font-family:"Sobra Pixelify","IBM Plex Sans",sans-serif;font-size:21px;margin:0}
+.where{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--dim);
+  margin:0 0 14px}
+.note{font-size:13px;color:var(--dim);margin:12px 0 0}
+
+/* --- Sobra card mockups --- */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(152px,1fr));gap:12px}
+.card{background:var(--s-surface);border:var(--s-border);border-radius:4px;padding:10px;
+  box-shadow:3px 3px 0 var(--s-ink);color:var(--s-ink)}
+.card .art{height:62px;display:flex;align-items:center;justify-content:center;
+  background:var(--s-beige);border:2px solid var(--s-ink);margin-bottom:8px}
+.card .art .material-icons{font-size:30px;color:var(--s-muted)}
+.card .name{font-family:"Sobra Pixelify","IBM Plex Sans",sans-serif;font-size:14px;text-align:center;
+  margin-bottom:6px}
+.btn{font-family:"Sobra Pixelify","IBM Plex Sans",sans-serif;font-size:12.5px;text-align:center;
+  padding:6px 4px;border:2px solid var(--s-ink);border-radius:3px;letter-spacing:.3px}
+.b-ad{background:var(--s-violetSoft);color:var(--s-violet)}
+.b-off{background:var(--s-line);color:var(--s-muted);opacity:.85}
+.b-lock{background:var(--s-blueSoft);color:var(--s-blue)}
+.b-buy{background:var(--s-cashSoft);color:var(--s-cashInk)}
+.b-own{background:var(--s-tealSoft);color:var(--s-tealInk)}
+.cap{font-size:11.5px;color:var(--dim);text-align:center;margin-top:7px;
+  font-family:"IBM Plex Mono",monospace}
+.now{color:var(--none);font-weight:700}
+
+/* --- flow --- */
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;
+  align-items:stretch}
+.step{background:var(--bg);border:1px solid var(--rule);border-radius:7px;padding:11px 13px}
+.step .k{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--accent);
+  font-weight:600;display:block;margin-bottom:3px}
+.step .v{font-size:13px}
+.branch{display:grid;gap:7px;margin-top:10px}
+.br{display:grid;grid-template-columns:104px 1fr;gap:10px;align-items:start;
+  background:var(--bg);border:1px solid var(--rule);border-radius:7px;padding:9px 12px;
+  font-size:13px}
+.br code{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:600}
+.ok{color:var(--done)} .warn{color:var(--next)} .bad{color:var(--none)}
+
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule)}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--dim)}
+td code,.mono{font-family:"IBM Plex Mono",monospace;font-size:12px}
+.scroll{overflow-x:auto}
+
+/* --- transaction list mockup --- */
+.list{background:var(--s-surface);border:var(--s-border);border-radius:4px;
+  padding:8px;color:var(--s-ink);max-width:400px;box-shadow:3px 3px 0 var(--s-ink)}
+.row{display:flex;align-items:center;gap:9px;padding:7px 6px;border-bottom:1px solid var(--s-line)}
+.row:last-child{border-bottom:0}
+.row .ic{width:26px;height:26px;display:grid;place-items:center;background:var(--s-beige);
+  border:1.5px solid var(--s-ink);flex:none}
+.row .ic .material-icons{font-size:15px}
+.row .t{flex:1;font-size:12.5px}
+.row .a{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600}
+.row.eighth{background:var(--s-tealSoft)}
+.adrow{border:2px dashed var(--s-violet);background:var(--s-violetSoft);
+  border-radius:3px;padding:9px;margin:7px 2px}
+.adrow .lbl{font-size:10px;font-weight:700;color:var(--s-violet);letter-spacing:.5px}
+.adrow .cp{font-size:12.5px;margin-top:3px}
+.day{font-size:11px;font-weight:700;color:var(--s-muted);padding:6px 6px 3px}
+
+.ban{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.ban ul{margin:6px 0 0;padding-left:18px;font-size:13.5px}
+.ban h3{font-size:13px;margin:0;color:var(--none);text-transform:uppercase;letter-spacing:.6px}
+</style>
+
+<div class="wrap">
+  <h1>Sobra 광고 배치 · 구현 기준</h1>
+  <p class="sub">design/ads/ad-spec.md에서 파생 · 코드 기준 2026-09-15 · 카드 문구는 app_ko.arb 실제 값</p>
+
+  <div class="legend">
+    <span class="tag t-done"><span class="material-icons" style="font-size:14px">check_circle</span>구현됨 · 지금 앱에서 동작</span>
+    <span class="tag t-next"><span class="material-icons" style="font-size:14px">schedule</span>다음 단계</span>
+    <span class="tag t-none"><span class="material-icons" style="font-size:14px">block</span>화면 자체가 없음</span>
+  </div>
+
+  <section>
+    <div class="head">
+      <h2>1 · 보상형 광고 — 컬렉션</h2>
+      <span class="tag t-done">구현됨</span>
+    </div>
+    <p class="where">설정 → 컬렉션 &nbsp;|&nbsp; lib/screens/collection_screen.dart &nbsp;|&nbsp; 보상형 광고의 <b>유일한</b> 진입점</p>
+
+    <div class="cards">
+      <div>
+        <div class="card">
+          <div class="art"><span class="material-icons">pets</span></div>
+          <div class="name">Personaje 3</div>
+          <div class="btn b-ad">광고 1/2</div>
+        </div>
+        <p class="cap">광고 있음<br>누르면 재생</p>
+      </div>
+      <div>
+        <div class="card">
+          <div class="art"><span class="material-icons">pets</span></div>
+          <div class="name">Personaje 3</div>
+          <div class="btn b-off">현재 광고 없음</div>
+        </div>
+        <p class="cap"><span class="now">지금 앱 상태</span><br>노필 · 비활성</p>
+      </div>
+      <div>
+        <div class="card">
+          <div class="art"><span class="material-icons">pets</span></div>
+          <div class="name">Personaje 3</div>
+          <div class="btn b-off">오늘 한도 도달</div>
+        </div>
+        <p class="cap">하루 3회 소진<br>모든 광고 카드가 이 상태</p>
+      </div>
+      <div>
+        <div class="card">
+          <div class="art"><span class="material-icons">pets</span></div>
+          <div class="name">Personaje 8</div>
+          <div class="btn b-off">내일 이어서</div>
+        </div>
+        <p class="cap">특별 캐릭터<br>오늘 몫을 이미 봄</p>
+      </div>
+    </div>
+
+    <p class="note"><b>같은 화면의 다른 카드들</b> — 광고와 섞이지 않습니다.</p>
+    <div class="cards" style="margin-top:8px">
+      <div><div class="card"><div class="art"><span class="material-icons">pets</span></div>
+        <div class="name">Personaje 2</div><div class="btn b-buy">구매하기</div></div>
+        <p class="cap">개별 구매</p></div>
+      <div><div class="card"><div class="art"><span class="material-icons">emoji_events</span></div>
+        <div class="name">후원자의 별</div><div class="btn b-lock">후원 전용</div></div>
+        <p class="cap">후원 묶음에만 있음<br>개별 구매 버튼 없음</p></div>
+      <div><div class="card"><div class="art"><span class="material-icons">chair</span></div>
+        <div class="name">Objeto 4</div><div class="btn b-lock">레벨 8</div></div>
+        <p class="cap">레벨 보상</p></div>
+      <div><div class="card"><div class="art"><span class="material-icons">pets</span></div>
+        <div class="name">Michi</div><div class="btn b-own">선택됨</div></div>
+        <p class="cap">처음부터 보유</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>2 · 광고 한 편이 지나가는 길</h2>
+      <span class="tag t-done">구현됨</span>
+    </div>
+    <p class="where">lib/services/rewarded_ad_service.dart &nbsp;|&nbsp; 진입점이 하나라 캡·진행도·로딩의 주인이 한 곳</p>
+
+    <div class="flow">
+      <div class="step"><span class="k">1 · 사용자</span><span class="v">컬렉션에서 카드를 누름</span></div>
+      <div class="step"><span class="k">2 · RewardedAds.watch()</span><span class="v">Sobra 규칙 확인<br>소유 · 하루 캡 · 오늘 몫</span></div>
+      <div class="step"><span class="k">3 · RewardedAdPort.show()</span><span class="v">네트워크가 광고를 재생</span></div>
+    </div>
+
+    <div class="branch">
+      <div class="br"><code class="ok">earned</code>
+        <span>진행도 +1 · 오늘 카운트 +1 · <b>한 번에 저장</b><br>목표 도달 시 해금 → <span class="mono">"{이름}을(를) 해금했어요!"</span></span></div>
+      <div class="br"><code class="warn">dismissed</code>
+        <span>아무것도 안 움직임 → <span class="mono">"광고를 끝까지 봐야 진행돼요."</span><br>진행도가 안 움직인 이유를 말해주지 않으면 버그로 읽힘</span></div>
+      <div class="br"><code class="bad">failed</code>
+        <span>아무것도 안 움직임 → <span class="mono">"현재 광고 없음"</span></span></div>
+    </div>
+
+    <p class="note">광고가 떠 있는 동안 두 번째 요청은 거부되고, 저장 직전에 규칙을 <b>다시</b> 검사합니다 — 광고 한 편이 재생되는 사이에 날짜가 바뀔 수 있어서요.</p>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>3 · 해금 티어</h2>
+      <span class="tag t-done">구현됨</span>
+    </div>
+    <p class="where">lib/data/catalog_preview_data.dart &nbsp;|&nbsp; 하루 전체 상한 3회</p>
+    <div class="scroll"><table>
+      <tr><th>대상</th><th>필요 광고</th><th>엔트리</th><th>목적</th></tr>
+      <tr><td>방 아이템</td><td><b>1회</b></td><td><code>item-03 / 05 / 08</code></td><td>가격</td></tr>
+      <tr><td>일반 캐릭터</td><td><b>2회</b></td><td><code>character-03 / 05</code></td><td>가격</td></tr>
+      <tr><td>특별 캐릭터</td><td><b>3회 · 서로 다른 날</b></td><td><code>character-08</code></td><td>재방문 장치 <i>(가격 아님)</i></td></tr>
+    </table></div>
+    <p class="note">가격은 하루 상한보다 낮습니다 — 캐릭터 2 + 아이템 1 = 3으로 하루가 딱 맞습니다. 가격과 상한이 같으면 캐릭터를 해금한 날은 다른 걸 아무것도 못 합니다.</p>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>4 · 3단계에서 붙는 것</h2>
+      <span class="tag t-next">다음 단계</span>
+    </div>
+    <p class="where">여기서 처음으로 AdMob이 필요합니다. 0~2단계는 계정조차 필요 없었습니다.</p>
+    <div class="flow">
+      <div class="step"><span class="k">AdMob 앱 등록</span><span class="v">앱 ID → AndroidManifest / Info.plist<br><b>Android는 없으면 크래시</b></span></div>
+      <div class="step"><span class="k">테스트 광고 ID</span><span class="v">Google 공식 문서의 고정값<br>실제 광고는 개발 중 클릭 금지</span></div>
+      <div class="step"><span class="k">동의</span><span class="v">UMP → (추적 시에만) ATT → 광고 요청</span></div>
+    </div>
+    <p class="note" style="margin-top:14px"><b>코드에서 바뀌는 건 한 줄입니다.</b></p>
+    <div class="br" style="grid-template-columns:1fr;margin-top:6px">
+      <span class="mono"><span class="bad">UnavailableRewardedAdPort()</span> &nbsp;→&nbsp; <span class="ok">AdMobRewardedAdPort(adUnitId: …)</span><br>
+      <span style="color:var(--dim)">lib/main.dart · 나머지 규칙·UI·테스트는 그대로</span></span>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>5 · 거래 내역 네이티브 광고</h2>
+      <span class="tag t-next">v1.1</span>
+    </div>
+    <p class="where">거래 8건 이상일 때, 8번째 거래 행 뒤에 1회 · 날짜 헤더는 세지 않음</p>
+
+    <div class="list">
+      <div class="day">오늘</div>
+      <div class="row"><span class="ic"><span class="material-icons">local_pharmacy</span></span><span class="t">약국 <span style="color:var(--s-muted)">· 09:12</span></span><span class="a">-$240</span></div>
+      <div class="row"><span class="ic"><span class="material-icons">directions_subway</span></span><span class="t">지하철 <span style="color:var(--s-muted)">· 09:43</span></span><span class="a">-$18</span></div>
+      <div class="row"><span class="ic"><span class="material-icons">lunch_dining</span></span><span class="t">타코 <span style="color:var(--s-muted)">· 12:05</span></span><span class="a">-$180</span></div>
+      <div class="row"><span class="ic"><span class="material-icons">local_cafe</span></span><span class="t">카페 <span style="color:var(--s-muted)">· 13:20</span></span><span class="a">-$65</span></div>
+      <div class="row"><span class="ic"><span class="material-icons">shopping_cart</span></span><span class="t">마트 <span style="color:var(--s-muted)">· 15:10</span></span><span class="a">-$320</span></div>
+      <div class="row"><span class="ic"><span class="material-icons">menu_book</span></span><span class="t">서점 <span style="color:var(--s-muted)">· 16:55</span></span><span class="a">-$120</span></div>
+      <div class="row"><span class="ic"><span class="material-icons">fitness_center</span></span><span class="t">헬스장 <span style="color:var(--s-muted)">· 18:20</span></span><span class="a">-$350</span></div>
+      <div class="row eighth"><span class="ic"><span class="material-icons">restaurant</span></span><span class="t"><b>저녁 식사</b> <span style="color:var(--s-muted)">· 20:15 — 8번째</span></span><span class="a">-$210</span></div>
+      <div class="adrow">
+        <div class="lbl">광고 · AdChoices ⓘ</div>
+        <div class="cp">나만의 공간을 더 특별하게<br><span style="color:var(--s-muted);font-size:11.5px">금액 · 시간 · 카테고리 없음 · 전체 너비 카드</span></div>
+      </div>
+      <div class="day">어제</div>
+      <div class="row"><span class="ic"><span class="material-icons">directions_bus</span></span><span class="t">버스 <span style="color:var(--s-muted)">· 08:11</span></span><span class="a">-$18</span></div>
+    </div>
+
+    <div class="scroll"><table style="margin-top:14px">
+      <tr><th>제한</th><th>내용</th></tr>
+      <tr><td>빈도</td><td>하루 최대 2회 · 같은 방문에서는 1회 <span class="mono" style="color:var(--dim)">(거래 내역 탭 진입 = 1방문)</span></td></tr>
+      <tr><td>집계</td><td>로드가 아니라 <code>onAdImpression</code> — 스크롤로 실제 도달해야 소비</td></tr>
+      <tr><td>유예</td><td>설치 후 7일 미노출</td></tr>
+      <tr><td>제외</td><td>일반 광고 제거 구매자 · 후원자</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>6 · 결산 카드</h2>
+      <span class="tag t-none">화면 자체가 없음</span>
+    </div>
+    <p class="where">주기는 sobra_store.dart의 settleCycles()에서 <b>조용히 마감</b>됩니다 — 사용자가 보는 결산 순간이 존재하지 않습니다</p>
+    <p class="note" style="margin-top:0">cycle_history_screen.dart는 지난 주기 <i>목록</i>이지 결산 완료 화면이 아닙니다. 결산 화면을 만들기로 하면 그때 아래가 붙습니다.</p>
+    <div class="branch" style="margin-top:12px">
+      <div class="br"><code>계속</code><span>바로 홈으로. <b>광고 없음</b></span></div>
+      <div class="br"><code>특별 꾸미기 받으러 가기 →</code><span>컬렉션을 열고 추천 엔트리 표시 — <b>이 화면에서 광고를 재생하지 않습니다</b></span></div>
+      <div class="br"><code class="bad">숨김 조건</code><span>하루 상한 소진 · 남은 보상형 엔트리 없음 → 비활성화가 아니라 <b>아예 숨김</b><br>축하 화면 직후의 회색 버튼은 최악의 순간</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><h2>광고 금지 구역</h2></div>
+    <div class="ban">
+      <div>
+        <h3>광고를 표시하지 않는 화면</h3>
+        <ul><li>홈</li><li>지출 등록</li><li>현금 세기</li><li>결산 결과</li></ul>
+      </div>
+      <div>
+        <h3>사용하지 않는 광고 형식</h3>
+        <ul><li>강제 전면 광고</li><li>앱 오픈 광고</li><li>하단 고정 배너</li></ul>
+      </div>
+      <div>
+        <h3>진입점 제한</h3>
+        <ul><li>보상형 광고는 <b>컬렉션에서만</b> 시작</li><li>결산·홈·알림에서 광고를 재생하지 않음</li></ul>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,316 @@
+<!--
+  제안 시안입니다. 기준 문서는 design/ads/ad-spec.md 입니다.
+  "지금" 열은 2026-09-15 구현 상태, "제안" 열은 아직 구현되지 않았습니다.
+  문구는 lib/l10n/app_ko.arb 실제 값을 씁니다.
+-->
+<title>보상형 카드 · 진행도 줄 제안</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+/* The app's own font file, not the one Google Fonts serves: upstream Pixelify
+   draws 2, 3, 5, 6 and 9 on the same closed frame as 8, so "광고 1/2" would
+   render as "광고 1/8" — the misreading commit 8ee82f1 removed from the app. */
+@font-face{
+  font-family:"Sobra Pixelify";
+  src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");
+  font-weight:400 700; font-display:swap;
+}
+:root{
+  --s-paper:#F6EFE0; --s-surface:#FFFDF7; --s-beige:#EFE7D6; --s-line:#E7DDC8;
+  --s-ink:#202848; --s-muted:#5F6885;
+  --s-teal:#0E7A72; --s-tealSoft:#D8EDEA; --s-tealInk:#0B6660;
+  --s-blue:#39558E; --s-blueSoft:#DCE4F2;
+  --s-violet:#6E4A8C; --s-violetSoft:#E7DCF0;
+  --s-cash:#C0873A; --s-cashSoft:#F7E9CE; --s-cashInk:#845A1E;
+  --s-border:2.5px solid var(--s-ink);
+
+  --bg:#E4DFD2; --panel:#F1EBDE; --rule:#CFC6B2;
+  --text:#22252E; --dim:#5B6070; --accent:#0E7A72;
+  --bad:#A63A25; --good:#0E7A72;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#171A21; --panel:#212530; --rule:#333846;
+    --text:#E9E7E0; --dim:#98A0AF; --accent:#57B6AB;
+    --bad:#D9705A; --good:#57B6AB;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#171A21; --panel:#212530; --rule:#333846;
+  --text:#E9E7E0; --dim:#98A0AF; --accent:#57B6AB;
+  --bad:#D9705A; --good:#57B6AB;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);margin:0;
+  font-family:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;line-height:1.5;
+  padding-block:28px;padding-left:20px;padding-right:20px}
+.wrap{max-width:1080px;margin:0 auto}
+h1{font-family:"Sobra Pixelify","IBM Plex Sans",sans-serif;font-size:32px;margin:0 0 4px}
+.sub{color:var(--dim);font-size:13px;margin:0 0 22px;font-family:"IBM Plex Mono",monospace}
+section{background:var(--panel);border:1px solid var(--rule);border-radius:10px;
+  padding:18px;margin-bottom:16px}
+h2{font-family:"Sobra Pixelify","IBM Plex Sans",sans-serif;font-size:20px;margin:0 0 3px}
+.where{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--dim);margin:0 0 15px}
+
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:18px}
+.col > h3{font-size:12px;letter-spacing:.7px;text-transform:uppercase;margin:0 0 3px}
+.col.now > h3{color:var(--bad)} .col.new > h3{color:var(--good)}
+.col > p{font-size:12.5px;color:var(--dim);margin:0 0 12px;min-height:34px}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:var(--s-surface);border:var(--s-border);border-radius:4px;padding:10px;
+  box-shadow:3px 3px 0 var(--s-ink);color:var(--s-ink)}
+.card .art{height:54px;display:grid;place-items:center;background:var(--s-beige);
+  border:2px solid var(--s-ink);margin-bottom:7px}
+.card .art .material-icons{font-size:26px;color:var(--s-muted)}
+.card .name{font-family:"Sobra Pixelify","IBM Plex Sans",sans-serif;font-size:13px;
+  text-align:center;margin-bottom:6px}
+.btn{font-family:"Sobra Pixelify","IBM Plex Sans",sans-serif;font-size:12px;text-align:center;
+  padding:5px 3px;border:2px solid var(--s-ink);border-radius:3px}
+.b-ad{background:var(--s-violetSoft);color:var(--s-violet)}
+.b-off{background:var(--s-line);color:var(--s-muted)}
+
+/* the proposed progress line */
+.prog{margin-top:7px}
+.bar{display:flex;gap:3px;margin-bottom:3px}
+.seg{height:7px;flex:1;border:1.5px solid var(--s-ink);background:var(--s-beige)}
+.seg.on{background:var(--s-violet)}
+.pct{display:flex;justify-content:space-between;align-items:baseline;
+  font-family:"Sobra Pixelify","IBM Plex Sans",sans-serif;font-size:10.5px;color:var(--s-muted)}
+.pct b{color:var(--s-ink)}
+.every{font-size:9.5px;color:var(--s-muted);font-family:"IBM Plex Sans",sans-serif}
+
+.state{font-size:11px;color:var(--dim);text-align:center;margin-top:6px;
+  font-family:"IBM Plex Mono",monospace}
+.gone{color:var(--bad);font-weight:700}
+.kept{color:var(--good);font-weight:700}
+
+/* screen strip */
+.screen{background:var(--s-paper);border:var(--s-border);border-radius:5px;padding:12px;
+  color:var(--s-ink);max-width:430px;box-shadow:4px 4px 0 var(--s-ink)}
+.stitle{font-family:"Sobra Pixelify","IBM Plex Sans",sans-serif;font-size:17px;margin-bottom:9px}
+.tabs{display:flex;border:2px solid var(--s-ink);margin-bottom:9px}
+.tabs div{flex:1;text-align:center;padding:5px;font-size:12px;
+  font-family:"Sobra Pixelify","IBM Plex Sans",sans-serif}
+.tabs .sel{background:var(--s-teal);color:#fff}
+.panels{display:flex;gap:8px;margin-bottom:8px}
+.panel{flex:1;background:var(--s-surface);border:2px solid var(--s-ink);padding:6px 8px;
+  font-size:11.5px;display:flex;align-items:center;gap:6px}
+.panel .material-icons{font-size:15px;color:var(--s-teal)}
+.strip{background:var(--s-violetSoft);border:2px solid var(--s-violet);padding:7px 9px;
+  display:flex;align-items:center;gap:7px;font-size:12px;color:var(--s-violet);
+  margin-bottom:9px}
+.strip .material-icons{font-size:16px}
+.strip b{font-family:"Sobra Pixelify","IBM Plex Sans",sans-serif}
+.strip.done{background:var(--s-line);border-color:var(--s-muted);color:var(--s-muted)}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;
+  font-size:13.5px}
+.why div{background:var(--bg);border:1px solid var(--rule);border-radius:7px;padding:12px 14px}
+.why h4{margin:0 0 5px;font-size:13px;color:var(--accent)}
+.note{font-size:13px;color:var(--dim);margin:14px 0 0}
+.mono{font-family:"IBM Plex Mono",monospace;font-size:12px}
+</style>
+
+<div class="wrap">
+  <h1>보상형 카드 · 진행도 줄 제안</h1>
+  <p class="sub">design/ads/ad-spec.md 2절 관련 · 왼쪽은 2026-09-15 구현 상태, 오른쪽은 제안 · 미구현</p>
+
+  <section>
+    <h2>카드 네 가지 상태</h2>
+    <p class="where">lib/screens/collection_screen.dart · Personaje 3 — 일반 캐릭터(광고 2편) · Personaje 8 — 특별(광고 3편, 하루 1편)</p>
+
+    <div class="two">
+      <div class="col now">
+        <h3>지금 · 버튼이 진행도를 겸함</h3>
+        <p>버튼이 상태를 말하는 순간 <b>진행도가 사라집니다.</b> 네 상태 중 셋에서 안 보입니다.</p>
+        <div class="grid2">
+          <div>
+            <div class="card">
+              <div class="art"><span class="material-icons">pets</span></div>
+              <div class="name">Personaje 3</div>
+              <div class="btn b-ad">광고 1/2</div>
+            </div>
+            <p class="state">광고 있음</p>
+          </div>
+          <div>
+            <div class="card">
+              <div class="art"><span class="material-icons">pets</span></div>
+              <div class="name">Personaje 3</div>
+              <div class="btn b-off">현재 광고 없음</div>
+            </div>
+            <p class="state"><span class="gone">진행도 사라짐</span></p>
+          </div>
+          <div>
+            <div class="card">
+              <div class="art"><span class="material-icons">pets</span></div>
+              <div class="name">Personaje 3</div>
+              <div class="btn b-off">오늘 한도 도달</div>
+            </div>
+            <p class="state"><span class="gone">진행도 사라짐</span></p>
+          </div>
+          <div>
+            <div class="card">
+              <div class="art"><span class="material-icons">pets</span></div>
+              <div class="name">Personaje 8</div>
+              <div class="btn b-off">내일 이어서</div>
+            </div>
+            <p class="state">특별 · <span class="gone">진행도 사라짐</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col new">
+        <h3>제안 · 진행도를 버튼에서 분리</h3>
+        <p>버튼은 <b>상태</b>만, 아래 줄은 <b>진행도</b>만. 네 상태 모두에서 얼마나 왔는지 보입니다.</p>
+        <div class="grid2">
+          <div>
+            <div class="card">
+              <div class="art"><span class="material-icons">pets</span></div>
+              <div class="name">Personaje 3</div>
+              <div class="btn b-ad">광고 보기</div>
+              <div class="prog">
+                <div class="bar"><span class="seg on"></span><span class="seg"></span></div>
+                <div class="pct"><span><b>1</b>/2</span></div>
+              </div>
+            </div>
+            <p class="state">광고 있음</p>
+          </div>
+          <div>
+            <div class="card">
+              <div class="art"><span class="material-icons">pets</span></div>
+              <div class="name">Personaje 3</div>
+              <div class="btn b-off">현재 광고 없음</div>
+              <div class="prog">
+                <div class="bar"><span class="seg on"></span><span class="seg"></span></div>
+                <div class="pct"><span><b>1</b>/2</span></div>
+              </div>
+            </div>
+            <p class="state"><span class="kept">진행도 유지</span></p>
+          </div>
+          <div>
+            <div class="card">
+              <div class="art"><span class="material-icons">pets</span></div>
+              <div class="name">Personaje 3</div>
+              <div class="btn b-off">오늘 한도 도달</div>
+              <div class="prog">
+                <div class="bar"><span class="seg on"></span><span class="seg"></span></div>
+                <div class="pct"><span><b>1</b>/2</span></div>
+              </div>
+            </div>
+            <p class="state"><span class="kept">진행도 유지</span></p>
+          </div>
+          <div>
+            <div class="card">
+              <div class="art"><span class="material-icons">pets</span></div>
+              <div class="name">Personaje 8</div>
+              <div class="btn b-off">내일 이어서</div>
+              <div class="prog">
+                <div class="bar"><span class="seg on"></span><span class="seg on"></span><span class="seg"></span></div>
+                <div class="pct"><span><b>2</b>/3</span><span class="every">하루 1편</span></div>
+              </div>
+            </div>
+            <p class="state"><span class="kept">특별 · 진행도 유지</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="note">특별 캐릭터만 진행도 줄 오른쪽에 <span class="mono">하루 1편</span>을 답니다. 세 칸짜리 막대와 함께 "사흘 걸린다"가 한눈에 읽힙니다.</p>
+  </section>
+
+  <section>
+    <h2>하루 한도는 카드가 아니라 화면에</h2>
+    <p class="where">시안 2번 보드는 카드마다 "오늘 1/3"을 넣었습니다 — 같은 숫자를 카드 세 장에 반복하면 소음입니다</p>
+
+    <div class="two">
+      <div class="col">
+        <h3 style="color:var(--dim)">아직 볼 수 있을 때</h3>
+        <p></p>
+        <div class="screen">
+          <div class="stitle">컬렉션</div>
+          <div class="tabs"><div class="sel">캐릭터</div><div>오브젝트</div></div>
+          <div class="panels">
+            <div class="panel"><span class="material-icons">pets</span> 3 / 10</div>
+            <div class="panel"><span class="material-icons">auto_awesome</span> 친구를 모아보세요</div>
+          </div>
+          <div class="strip">
+            <span class="material-icons">smart_display</span>
+            <span>오늘 광고 <b>1/3</b> · 2편 더 볼 수 있어요</span>
+          </div>
+          <div class="mini">
+            <div class="card" style="box-shadow:2px 2px 0 var(--s-ink)">
+              <div class="art" style="height:40px"><span class="material-icons">pets</span></div>
+              <div class="name">Personaje 3</div>
+              <div class="btn b-ad">광고 보기</div>
+              <div class="prog"><div class="bar"><span class="seg on"></span><span class="seg"></span></div>
+                <div class="pct"><span><b>1</b>/2</span></div></div>
+            </div>
+            <div class="card" style="box-shadow:2px 2px 0 var(--s-ink)">
+              <div class="art" style="height:40px"><span class="material-icons">pets</span></div>
+              <div class="name">Personaje 8</div>
+              <div class="btn b-ad">광고 보기</div>
+              <div class="prog"><div class="bar"><span class="seg on"></span><span class="seg"></span><span class="seg"></span></div>
+                <div class="pct"><span><b>2</b>/3</span><span class="every">하루 1편</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <h3 style="color:var(--dim)">하루 몫을 다 썼을 때</h3>
+        <p></p>
+        <div class="screen">
+          <div class="stitle">컬렉션</div>
+          <div class="tabs"><div class="sel">캐릭터</div><div>오브젝트</div></div>
+          <div class="panels">
+            <div class="panel"><span class="material-icons">pets</span> 3 / 10</div>
+            <div class="panel"><span class="material-icons">auto_awesome</span> 친구를 모아보세요</div>
+          </div>
+          <div class="strip done">
+            <span class="material-icons">bedtime</span>
+            <span>오늘 광고 <b>3/3</b> · 내일 다시 3편</span>
+          </div>
+          <div class="mini">
+            <div class="card" style="box-shadow:2px 2px 0 var(--s-ink)">
+              <div class="art" style="height:40px"><span class="material-icons">pets</span></div>
+              <div class="name">Personaje 3</div>
+              <div class="btn b-off">오늘 한도 도달</div>
+              <div class="prog"><div class="bar"><span class="seg on"></span><span class="seg"></span></div>
+                <div class="pct"><span><b>1</b>/2</span></div></div>
+            </div>
+            <div class="card" style="box-shadow:2px 2px 0 var(--s-ink)">
+              <div class="art" style="height:40px"><span class="material-icons">pets</span></div>
+              <div class="name">Personaje 8</div>
+              <div class="btn b-off">내일 이어서</div>
+              <div class="prog"><div class="bar"><span class="seg on"></span><span class="seg on"></span><span class="seg"></span></div>
+                <div class="pct"><span><b>2</b>/3</span><span class="every">하루 1편</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="note">보상형 엔트리가 있는 탭에서만 띠가 뜹니다. 오브젝트 탭에 보상형 아이템이 없다면 띠도 없습니다.</p>
+  </section>
+
+  <section>
+    <h2>왜 이렇게</h2>
+    <div class="why">
+      <div>
+        <h4>차단이 예외가 아니라 기본입니다</h4>
+        하루 캡이 3편이라, 광고 3편을 본 사용자는 그날 남은 시간 내내 <b>모든</b> 보상형 카드가 차단입니다. 노필까지 더하면 컬렉션을 여는 순간 대부분이 차단 상태예요.
+      </div>
+      <div>
+        <h4>진행도는 다시 오게 만드는 정보입니다</h4>
+        그런데 지금 구조는 가장 필요한 순간에 그걸 숨깁니다. <span class="mono">1/2</span>가 보이면 "한 편 더"가 되고, 안 보이면 "받을 게 없는 화면"이 됩니다.
+      </div>
+      <div>
+        <h4>같은 숫자를 세 번 쓰지 않습니다</h4>
+        하루 한도는 화면 전체의 사실입니다. 상단에 한 번 두면 "오늘 두 편 더"가 한눈에 들어오고, 카드는 자기 진행도만 말합니다.
+      </div>
+    </div>
+    <p class="note">카드 높이가 늘어납니다 — <span class="mono">mainAxisExtent: 236</span>에서 대략 <span class="mono">262</span>. 보상형이 아닌 카드(구매·레벨·보유)는 진행도 줄이 없으므로 같은 격자 안에서 여백만 조금 더 갖습니다.</p>
+  </section>
+</div>

@@ -1,0 +1,426 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face{font-family:PixelifySans;src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");}
+@font-face{font-family:SobraHangul;src:url("../../assets/fonts/SobraHangul.ttf") format("truetype");font-weight:400;}
+@font-face{font-family:SobraHangul;src:url("../../assets/fonts/SobraHangul-Bold.ttf") format("truetype");font-weight:700;}
+/* Tokens copied from lib/theme/app_theme.dart. */
+:root{--paper:#F6EFE0;--paperLight:#FBF5E9;--surface:#FFFDF7;--beige:#EFE7D6;--line:#E7DDC8;
+      --ink:#202848;--inkSoft:#4E5878;--muted:#5F6885;
+      --teal:#0E7A72;--tealSoft:#D8EDEA;--tealInk:#0B6660;--cash:#C0873A;--cashSoft:#F7E9CE;--cashInk:#845A1E;
+      --danger:#D4553F;--dangerSoft:#FBE1DA;--dangerInk:#A63A25;--blue:#39558E;--blueSoft:#DCE4F2;
+      --violet:#6E4A8C;--violetSoft:#E7DCF0;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);font-family:PixelifySans,SobraHangul,monospace;color:var(--ink);
+     padding:32px 40px 40px;-webkit-font-smoothing:none;width:1660px}
+.head{display:flex;align-items:baseline;gap:14px;margin-bottom:20px;padding-left:6px}
+.head h1{font-size:26px;font-weight:900}
+.head span{font-size:14px;color:var(--inkSoft);font-weight:800}
+.row{display:flex;gap:30px;align-items:flex-start}
+.row+.row{margin-top:34px}
+.col{width:372px;flex:0 0 372px}
+.phone{width:372px;height:806px;background:var(--surface);border:5px solid var(--ink);
+       border-radius:26px;padding:14px 16px 0;display:flex;flex-direction:column;
+       box-shadow:7px 7px 0 rgba(32,40,72,.14);position:relative;overflow:hidden}
+.cap{font-size:12.5px;color:var(--inkSoft);line-height:1.5;margin-top:12px;padding:0 4px;font-weight:800}
+.cap b{color:var(--ink)}
+.status{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:900;padding:2px 4px 8px}
+.dots{display:flex;gap:3px;align-items:center}
+.dots i{width:7px;height:7px;background:var(--ink);border-radius:50%}
+.dots b{width:14px;height:8px;border:2px solid var(--ink);display:inline-block;margin-left:3px}
+.brand{display:flex;justify-content:space-between;align-items:center;margin:2px 0 14px}
+.brand b{font-size:24px;font-weight:900}
+.lbl{font-size:13px;font-weight:900;color:var(--inkSoft)}
+.big{font-size:40px;font-weight:900;color:var(--teal);line-height:1.1;margin:4px 0 4px}
+.big small{font-size:20px}
+.sub{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:14px}
+/* level card, same structure as Inicio */
+.lvl{border:2.5px solid var(--ink);background:var(--tealSoft)}
+.lvl .top{padding:11px 12px 10px}
+.lvl .who{display:flex;align-items:center;gap:10px}
+.lvl .n{width:34px;height:34px;background:var(--teal);color:#fff;border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900}
+.lvl .who b{display:block;font-size:14px;font-weight:900}
+.lvl .who s{display:block;text-decoration:none;font-size:12px;font-weight:800;color:var(--muted)}
+.lvl .who .chev{margin-left:auto;font-size:16px;font-weight:900}
+.xpbar{height:14px;border:2.5px solid var(--ink);background:var(--surface);padding:2px;display:flex;gap:2px;margin-top:9px}
+.xpbar s{flex:1;background:var(--line)}
+.xpbar s.f{background:var(--teal)}
+.lvl .xp{display:flex;justify-content:space-between;font-size:11.5px;font-weight:900;color:var(--muted);margin-top:5px}
+.lvl .xp em{font-style:normal;color:var(--tealInk)}
+.lvl .mis{border-top:2.5px solid var(--ink);padding:9px 12px;display:flex;align-items:center;gap:10px}
+.lvl .mis .box{width:22px;height:22px;border:2.5px solid var(--ink);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900}
+.lvl .mis .t{flex:1}
+.lvl .mis .t s{display:block;text-decoration:none;font-size:11.5px;font-weight:800;color:var(--muted)}
+.lvl .mis .t b{display:block;font-size:13px;font-weight:900}
+.lvl .mis em{font-style:normal;font-size:12px;font-weight:900;color:var(--tealInk)}
+/* NEW: streak row */
+.streak{border-top:2.5px solid var(--ink);padding:10px 12px 11px;background:var(--surface);position:relative}
+.streak.warn{background:var(--cashSoft)}
+.streak .hd{display:flex;align-items:baseline;gap:6px}
+.streak .hd b{font-size:13.5px;font-weight:900}
+.streak .hd s{text-decoration:none;font-size:11.5px;font-weight:800;color:var(--muted);margin-left:auto}
+.days{display:flex;gap:5px;margin-top:8px}
+.days div{flex:1;text-align:center}
+.days i{display:block;height:24px;border:2.5px solid var(--ink);background:var(--surface)}
+.days i.f{background:var(--teal)}
+.days i.today{border-style:dashed;border-color:var(--teal);background:var(--tealSoft)}
+.days i.todaywarn{border-style:dashed;border-color:var(--cash);background:var(--surface)}
+.days i.gift{background:var(--violetSoft);border-color:var(--violet);display:flex;align-items:center;justify-content:center}
+.days span{display:block;font-size:10.5px;font-weight:900;color:var(--muted);margin-top:3px}
+.new{position:absolute;top:-11px;right:10px;background:var(--violet);color:#fff;font-size:10.5px;font-weight:900;padding:1px 6px;border:2px solid var(--ink)}
+.acts{display:flex;gap:8px;margin-top:10px}
+.acts div{flex:1;text-align:center;border:2.5px solid var(--ink);padding:8px 0;font-size:12.5px;font-weight:900;box-shadow:0 3px 0 var(--ink)}
+.acts .p{background:var(--teal);color:#fff}
+.acts .g{background:var(--surface)}
+.cyc{margin-top:16px}
+.cyc .lblrow{display:flex;justify-content:space-between;font-size:13px;font-weight:900;margin-bottom:6px}
+.cyc .lblrow em{font-style:normal;color:var(--muted);font-size:12px}
+.spacer{flex:1}
+.tabbar{display:flex;border-top:3px solid var(--ink);margin:0 -16px;height:62px;background:var(--surface)}
+.tabbar div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:900}
+.tabbar div.on{background:var(--teal);color:#fff}
+.tabbar .plus{flex:0 0 58px;margin:8px 4px;background:var(--teal);border:3px solid var(--ink);color:#fff;font-size:26px;box-shadow:0 4px 0 var(--ink)}
+.dim{position:absolute;inset:0;background:rgba(32,40,72,.58)}
+.dialog{position:absolute;left:22px;right:22px;top:170px;background:var(--surface);border:4px solid var(--ink);
+        box-shadow:6px 6px 0 rgba(0,0,0,.3);padding:18px 16px 16px;text-align:center}
+.dialog .kick{font-size:12px;font-weight:900;color:var(--violet)}
+.dialog h3{font-size:21px;font-weight:900;margin:4px 0 12px}
+.dialog .stage{height:150px;background:var(--violetSoft);border:2.5px solid var(--ink);display:flex;align-items:flex-end;justify-content:center;gap:10px;padding-bottom:14px;position:relative}
+.dialog .stage .spark{position:absolute;font-size:16px;font-weight:900;color:var(--violet)}
+.dialog .nm{font-size:16px;font-weight:900;margin-top:12px}
+.dialog .ds{font-size:12.5px;font-weight:800;color:var(--inkSoft);margin-top:4px;line-height:1.5}
+.dialog .row7{display:flex;gap:4px;margin:12px 0 2px}
+.dialog .row7 i{flex:1;height:10px;background:var(--teal);border:2px solid var(--ink)}
+.btn{border:3px solid var(--ink);background:var(--teal);color:#fff;text-align:center;padding:11px 0;
+     font-size:14px;font-weight:900;box-shadow:0 5px 0 var(--ink);margin-top:14px}
+.btn.ghost{background:var(--surface);color:var(--ink);box-shadow:none;border-width:2.5px;margin-top:9px;padding:9px 0}
+/* collection */
+.nav{display:flex;align-items:center;justify-content:space-between;margin:2px 0 10px}
+.nav b{font-size:19px;font-weight:900}
+.nav em{font-style:normal;font-size:13px;font-weight:900;color:var(--tealInk)}
+.tabs{display:flex;border:3px solid var(--ink)}
+.tabs div{flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:900;background:var(--beige)}
+.tabs div.on{background:var(--surface);box-shadow:inset 0 -4px 0 var(--teal)}
+.tabs div+div{border-left:3px solid var(--ink)}
+.hint{font-size:11.5px;font-weight:800;color:var(--muted);margin:9px 0 9px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cell{border:2.5px solid var(--line);background:var(--paperLight);height:122px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 3px 7px;position:relative}
+.cell.own{border-color:var(--ink);background:var(--surface)}
+.cell .art{flex:1;display:flex;align-items:center;justify-content:center}
+.cell .nm{font-size:11.5px;font-weight:900;text-align:center;line-height:1.2}
+.cell .st{font-size:10.5px;font-weight:900;color:var(--muted);margin-top:3px;white-space:nowrap}
+.cell .st.v{color:var(--violet)}
+.cell .st.t{color:var(--tealInk)}
+.cell .badge{position:absolute;top:-2px;right:-2px;font-size:10px;font-weight:900;padding:0 5px;border:2px solid var(--ink)}
+.cell .badge.gift{background:var(--violetSoft);color:var(--violet);border-color:var(--violet)}
+.cell .badge.str{background:var(--tealSoft);color:var(--tealInk);border-color:var(--teal)}
+.cell.hl{outline:3px dashed var(--violet);outline-offset:3px}
+.ph{width:36px;height:36px;border:2.5px solid var(--line);background:var(--beige)}
+.minibar{display:flex;gap:2px;width:78%;height:8px;margin-top:4px}
+.minibar s{flex:1;background:var(--line)}
+.minibar s.f{background:var(--teal)}
+/* gift sheet */
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-top:4px solid var(--ink);padding:14px 16px 20px}
+.sheet .grab{width:44px;height:5px;background:var(--line);margin:0 auto 12px}
+.sheet h3{font-size:19px;font-weight:900}
+.sheet .sd{font-size:12.5px;font-weight:800;color:var(--inkSoft);margin:3px 0 12px}
+.giftrow{display:flex;gap:11px;align-items:center;border:2.5px solid var(--ink);padding:10px 11px;margin-bottom:9px;background:var(--surface);box-shadow:4px 4px 0 rgba(32,40,72,.14)}
+.giftrow .ga{width:54px;height:54px;background:var(--violetSoft);border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.giftrow b{display:block;font-size:14.5px;font-weight:900}
+.giftrow s{display:block;text-decoration:none;font-size:12px;font-weight:800;color:var(--muted);margin-top:2px;line-height:1.4}
+.src{display:inline-block;font-size:10.5px;font-weight:900;padding:0 5px;border:2px solid;margin-top:4px}
+.src.play{color:var(--blue);background:var(--blueSoft);border-color:var(--blue)}
+.src.ev{color:var(--cashInk);background:var(--cashSoft);border-color:var(--cash)}
+/* spec */
+.spec{flex:1;border:5px solid var(--ink);background:var(--surface);padding:16px 18px 18px;box-shadow:7px 7px 0 rgba(32,40,72,.14);min-width:0}
+.spec h2{font-size:19px;font-weight:900;margin-bottom:3px}
+.spec .sh{font-size:12px;color:var(--muted);font-weight:800;margin-bottom:6px}
+.spec h5{font-size:13px;font-weight:900;margin:14px 0 6px;padding-bottom:5px;border-bottom:2.5px solid var(--ink)}
+.two{display:flex;gap:22px}
+.two>div{flex:1;min-width:0}
+table.t{width:100%;border-collapse:collapse;font-size:12px}
+table.t td,table.t th{padding:6px 5px;border-bottom:2px solid var(--line);font-weight:800;vertical-align:top;line-height:1.45;text-align:left}
+table.t th{font-size:11.5px;color:var(--muted);font-weight:900}
+table.t td:first-child{color:var(--muted);font-weight:900;white-space:nowrap}
+.pill{display:inline-block;font-size:10.5px;font-weight:900;padding:0 5px;border:2px solid;white-space:nowrap}
+.pill.done{color:var(--tealInk);background:var(--tealSoft);border-color:var(--teal)}
+.pill.todo{color:var(--cashInk);background:var(--cashSoft);border-color:var(--cash)}
+.guard{border:2.5px solid var(--line);background:var(--paperLight);padding:7px 9px;margin-bottom:6px;font-size:12px;font-weight:800;color:var(--inkSoft);line-height:1.5}
+.guard b{color:var(--ink)}
+.q{display:flex;gap:8px;font-size:12px;font-weight:800;color:var(--inkSoft);padding:4px 0;line-height:1.45}
+.q em{font-style:normal;color:var(--violet);font-weight:900;flex:0 0 auto}
+.q b{color:var(--ink)}
+.michi{background:url("../../assets/characters/michi/success-8.png") 0 0/800% 100% no-repeat;image-rendering:pixelated}
+</style>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- Placeholder art for the three gifts. Final art is still to be drawn. -->
+    <symbol id="g-frame" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <rect x="1" y="2" width="14" height="12" fill="#845A1E"/><rect x="2" y="3" width="12" height="10" fill="#C0873A"/>
+      <rect x="3" y="4" width="10" height="8" fill="#DCE4F2"/><rect x="3" y="9" width="10" height="3" fill="#0E7A72"/>
+      <rect x="5" y="7" width="3" height="2" fill="#0E7A72"/><rect x="10" y="5" width="2" height="2" fill="#F7E9CE"/>
+      <rect x="7" y="0" width="2" height="2" fill="#202848"/>
+    </symbol>
+    <symbol id="g-cal" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <rect x="2" y="3" width="12" height="12" fill="#202848"/><rect x="3" y="6" width="10" height="8" fill="#FFFDF7"/>
+      <rect x="3" y="4" width="10" height="2" fill="#D4553F"/><rect x="4" y="2" width="2" height="3" fill="#4E5878"/><rect x="10" y="2" width="2" height="3" fill="#4E5878"/>
+      <rect x="6" y="8" width="4" height="4" fill="#6E4A8C"/><rect x="7" y="9" width="2" height="2" fill="#E7DCF0"/>
+    </symbol>
+    <symbol id="g-plant" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <rect x="7" y="4" width="2" height="6" fill="#0B6660"/><rect x="3" y="3" width="4" height="3" fill="#0E7A72"/><rect x="9" y="1" width="4" height="4" fill="#0E7A72"/>
+      <rect x="4" y="6" width="3" height="2" fill="#0E7A72"/><rect x="9" y="5" width="3" height="2" fill="#0E7A72"/>
+      <rect x="4" y="10" width="8" height="2" fill="#845A1E"/><rect x="5" y="12" width="6" height="3" fill="#C0873A"/>
+    </symbol>
+    <symbol id="g-plantdim" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <rect x="7" y="4" width="2" height="6" fill="#C9BFAB"/><rect x="3" y="3" width="4" height="3" fill="#D6CCB7"/><rect x="9" y="1" width="4" height="4" fill="#D6CCB7"/>
+      <rect x="4" y="10" width="8" height="2" fill="#C9BFAB"/><rect x="5" y="12" width="6" height="3" fill="#D6CCB7"/>
+    </symbol>
+    <symbol id="g-lamp" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <rect x="4" y="2" width="8" height="4" fill="#0E7A72"/><rect x="7" y="6" width="2" height="7" fill="#202848"/><rect x="4" y="13" width="8" height="2" fill="#202848"/>
+    </symbol>
+    <symbol id="g-gift" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <rect x="2" y="6" width="12" height="9" fill="#6E4A8C"/><rect x="1" y="4" width="14" height="3" fill="#8B64AA"/>
+      <rect x="7" y="4" width="2" height="11" fill="#F7E9CE"/><rect x="4" y="1" width="3" height="3" fill="#F7E9CE"/><rect x="9" y="1" width="3" height="3" fill="#F7E9CE"/>
+    </symbol>
+    <symbol id="t-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4v-9Z" fill="currentColor"/></symbol>
+    <symbol id="t-list" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" stroke="currentColor" stroke-width="2.4" fill="none"/><path d="M8 8h8M8 12h8M8 16h8" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="t-bars" viewBox="0 0 24 24"><rect x="4" y="12" width="4" height="8" fill="currentColor"/><rect x="10" y="4" width="4" height="16" fill="currentColor"/><rect x="16" y="9" width="4" height="11" fill="currentColor"/></symbol>
+    <symbol id="t-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="3" fill="none"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.8 2.8M16.2 16.2 19 19M5 19l2.8-2.8M16.2 7.8 19 5" stroke="currentColor" stroke-width="2.6"/></symbol>
+  </defs>
+</svg>
+
+<style>
+.spr{background-repeat:no-repeat;image-rendering:pixelated;background-position:0 0}
+.s8{background-size:800% 100%}.s12{background-size:1200% 100%}
+.michi-idle{background-image:url("../../assets/characters/michi/idle-8.png")}
+.poodle-idle{background-image:url("../../assets/characters/poodle/idle-8.png")}
+.poodle-success{background-image:url("../../assets/characters/poodle/success-12.png")}
+.poodle-positive{background-image:url("../../assets/characters/poodle/positive-12.png")}
+.shy{filter:grayscale(.15) brightness(.97);opacity:.9}
+.ob-top{display:flex;align-items:center;height:30px;margin-bottom:8px;font-size:19px;font-weight:900}
+.prose{font-size:13px;font-weight:800;line-height:1.55;margin:6px 0 12px}
+.who{font-size:13.5px;font-weight:900;color:var(--teal);text-align:center;margin-bottom:10px}
+.picks{display:flex;gap:10px}
+.pick{flex:1;border:2.5px solid var(--ink);background:var(--surface);padding:7px 7px 10px;text-align:center}
+.pick.on{background:var(--tealSoft);border:3px solid var(--teal)}
+.pick .pic{height:112px;background:var(--beige);border:2.5px solid var(--ink);display:flex;align-items:flex-end;justify-content:center}
+.pick b{display:block;font-size:14px;font-weight:900;margin-top:8px}
+.pick s{display:block;text-decoration:none;font-size:12px;font-weight:800;color:var(--inkSoft);line-height:1.45;margin-top:3px}
+.pick.on s{color:var(--tealInk)}
+.say{border:2.5px solid var(--cash);background:var(--cashSoft);padding:10px 11px;font-size:13px;font-weight:900;margin-top:12px}
+.infoline{border:2.5px solid var(--ink);background:var(--paperLight);padding:9px 10px;margin-top:9px;display:flex;gap:9px;font-size:12.5px;font-weight:800;line-height:1.5;color:var(--inkSoft)}
+.infoline b{color:var(--ink)}
+.infoline.hint2{border-color:var(--violet);background:var(--violetSoft);position:relative}
+.infoline .i{flex:0 0 auto;width:18px;height:18px;border:2px solid currentColor;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900}
+.was{font-size:11.5px;font-weight:800;color:var(--muted);margin-top:7px;text-decoration:line-through}
+.bigbtn{border:3px solid var(--ink);background:var(--teal);color:#fff;text-align:center;padding:12px 0;font-size:14.5px;font-weight:900;box-shadow:0 5px 0 var(--ink);margin:0 0 18px}
+/* waiting friend row */
+.wait{border-top:2.5px solid var(--ink);background:var(--surface);padding:10px 12px 11px;position:relative}
+.wait .in{display:flex;gap:10px;align-items:center}
+.wait .door{width:58px;height:62px;border:2.5px solid var(--ink);background:var(--beige);display:flex;align-items:flex-end;justify-content:center;overflow:hidden;flex:0 0 auto;position:relative}
+.wait .door:before{content:"";position:absolute;left:0;top:0;bottom:0;width:10px;background:var(--cash);border-right:2.5px solid var(--ink)}
+.wait .t{flex:1;min-width:0}
+.wait .t b{display:block;font-size:13.5px;font-weight:900}
+.wait .t s{display:block;text-decoration:none;font-size:11.5px;font-weight:800;color:var(--muted);margin-top:2px;line-height:1.4}
+.steps{display:flex;gap:4px;margin-top:6px}
+.steps i{flex:1;height:12px;border:2px solid var(--ink);background:var(--surface)}
+.steps i.f{background:var(--teal)}
+.steps i.today{border-style:dashed;border-color:var(--teal);background:var(--tealSoft)}
+.adlink{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:9px;border:2.5px solid var(--violet);background:var(--violetSoft);color:var(--violet);font-size:12.5px;font-weight:900;padding:7px 0}
+.adlink em{font-style:normal;background:var(--violet);color:#fff;padding:0 5px;font-size:10.5px}
+/* collection char */
+.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cc{border:2.5px solid var(--line);background:var(--paperLight);height:138px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 3px 7px;position:relative}
+.cc.own{border-color:var(--ink);background:var(--surface)}
+.cc.sel{border:3px solid var(--teal);background:var(--tealSoft)}
+.cc.hl{outline:3px dashed var(--violet);outline-offset:3px}
+.cc .art{flex:1;display:flex;align-items:flex-end;justify-content:center}
+.cc .nm{font-size:12px;font-weight:900}
+.cc .st{font-size:10.5px;font-weight:900;color:var(--muted);margin-top:2px;white-space:nowrap}
+.cc .st.t{color:var(--tealInk)}.cc .st.v{color:var(--violet)}
+.cc .ph{width:44px;height:50px;background:var(--beige);border:2.5px solid var(--line);margin-bottom:6px}
+.cc .minibar{display:flex;gap:2px;width:80%;height:7px;margin-top:3px}
+.cc .minibar s{flex:1;background:var(--line)}.cc .minibar s.f{background:var(--teal)}
+.detail{margin-top:14px;border:3px solid var(--ink);background:var(--surface);padding:12px;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.detail .dh{display:flex;gap:11px;align-items:center}
+.detail .dh .pic{width:64px;height:70px;background:var(--beige);border:2.5px solid var(--ink);display:flex;align-items:flex-end;justify-content:center;flex:0 0 auto}
+.detail b.n{font-size:16px;font-weight:900}
+.detail .tr{font-size:12px;font-weight:800;color:var(--inkSoft);margin-top:2px;line-height:1.4}
+.detail h6{font-size:11.5px;font-weight:900;color:var(--muted);margin:11px 0 6px}
+.way{display:flex;align-items:center;gap:9px;border:2.5px solid var(--ink);padding:8px 10px;margin-bottom:7px;font-size:12.5px;font-weight:900}
+.way s{text-decoration:none;display:block;font-size:11.5px;color:var(--muted);font-weight:800;margin-top:1px}
+.way .k{margin-left:auto;font-size:12px;white-space:nowrap}
+.way.ad{background:var(--violetSoft);border-color:var(--violet)}
+.way.ad .k{background:var(--violet);color:#fff;padding:3px 8px;border:2px solid var(--ink)}
+.way.rec .k{color:var(--tealInk)}
+.or{text-align:center;font-size:11px;font-weight:900;color:var(--muted);margin:-2px 0 5px}
+/* arrival */
+.arr .stage{height:170px;background:linear-gradient(var(--blueSoft) 0 55%,#E9C99A 55%);border:2.5px solid var(--ink);display:flex;align-items:flex-end;justify-content:center;gap:4px;padding-bottom:8px;position:relative}
+.choice{border:2.5px solid var(--ink);background:var(--surface);padding:9px 10px;display:flex;gap:9px;align-items:center;margin-top:8px;text-align:left}
+.choice.on{background:var(--tealSoft);border-color:var(--teal);border-width:3px}
+.choice .rd{width:18px;height:18px;border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;flex:0 0 auto;background:var(--surface)}
+.choice .rd i{width:8px;height:8px;background:var(--teal)}
+.choice b{font-size:13px;font-weight:900;display:block}
+.choice s{text-decoration:none;font-size:11.5px;font-weight:800;color:var(--muted);display:block}
+/* flow */
+.flow{display:flex;align-items:stretch;margin:10px 0 4px}
+.flow .st{flex:1;border:2.5px solid var(--ink);background:var(--paperLight);padding:9px 10px}
+.flow .st.hi{background:var(--tealSoft)}.flow .st.vi{background:var(--violetSoft)}
+.flow .st i{display:block;font-style:normal;font-size:11px;font-weight:900;color:var(--tealInk);margin-bottom:3px}
+.flow .st b{display:block;font-size:13.5px;font-weight:900}
+.flow .st span{display:block;font-size:12px;font-weight:800;color:var(--inkSoft);line-height:1.4;margin-top:3px}
+.flow .ar{flex:0 0 26px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:var(--muted)}
+.three{display:flex;gap:22px}.three>div{flex:1;min-width:0}
+code{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--tealSoft);padding:1px 4px}
+</style>
+
+<div class="head"><h1>Sobra · 스타터 친구 시안 · 한국어</h1><span>온보딩에서 한 명만 데려오고, 남은 친구는 문가에서 기다린다 — 3일 기록하면 다가오고, 광고 2번이면 바로 온다</span></div>
+
+<div class="row">
+  <!-- 1. Onboarding pick -->
+  <div class="col">
+    <div class="phone">
+      <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+      <div class="ob-top">←</div>
+      <div class="prose">수건으로 닦아주자 둘 다 얌전해졌다. 비는 아직 그치지 않았다.</div>
+      <div class="who">누가 옆에 앉을까?</div>
+      <div class="picks">
+        <div class="pick on"><div class="pic"><div class="spr s8 michi-idle" style="width:92px;height:104px"></div></div><b>미치</b><s>조용하다.<br>셈이 빠르다.</s></div>
+        <div class="pick"><div class="pic"><div class="spr s8 poodle-idle" style="width:92px;height:104px"></div></div><b>미루</b><s>기운이 넘친다.<br>잘 챙긴다.</s></div>
+      </div>
+      <div class="say">나는 미치. 문 열어줘서 고마워.</div>
+      <div class="infoline hint2"><span class="i" style="color:var(--violet)">i</span><span><b>미루는 수줍어서 문가에 남았어요.</b> 3일 동안 기록하면 다가와요. 광고 2번이면 바로 부를 수도 있어요.</span></div>
+      <div class="was">지금: 다른 친구도 함께 지내요. 나중에 언제든 바꿀 수 있어요.</div>
+      <div class="spacer"></div>
+      <div class="bigbtn">같이 지내자</div>
+    </div>
+    <div class="cap"><b>1. 온보딩 선택 — 그림은 그대로, 안내 한 줄만 바뀐다.</b> "둘 다 함께 지내요"가 "하나는 문가에서 기다려요"로. <b>고르기 전에</b> 다른 친구를 데려올 방법을 먼저 말해줘서, 고민하거나 후회하지 않게 한다. 미루를 고르면 미치가 문가에 남는다.</div>
+  </div>
+
+  <!-- 2. Home with waiting friend -->
+  <div class="col">
+    <div class="phone">
+      <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+      <div class="brand"><b>Sobra</b><svg width="22" height="22"><use href="#t-gear"/></svg></div>
+      <div class="lbl">오늘 남은 돈</div>
+      <div class="big">$186 <small>MXN</small></div>
+      <div class="sub">한도 $220 · 남은 $4,120</div>
+      <div class="lvl">
+        <div class="top">
+          <div class="who" style="display:flex;align-items:center;gap:10px;color:inherit;text-align:left;margin:0"><div class="n">1</div><div><b>호기심 많은 미치</b><s>40 XP 누적</s></div><span class="chev">›</span></div>
+          <div class="xpbar"><s class="f"></s><s class="f"></s><s class="f"></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s></div>
+          <div class="xp"><span>40 / 180 XP</span><em>140 XP</em></div>
+        </div>
+        <div class="mis"><div class="box">1</div><div class="t"><s>오늘의 미션</s><b>3개 중 1개 완료</b></div><em>+20 XP ›</em></div>
+        <div class="wait">
+          <span class="new">NEW</span>
+          <div class="in">
+            <div class="door"><div class="spr s8 poodle-idle shy" style="width:52px;height:58px;margin-left:10px"></div></div>
+            <div class="t"><b>미루가 문가에서 기다려요</b><s>기록한 날 3일이면 다가와요</s>
+              <div class="steps"><i class="f"></i><i class="today"></i><i></i></div></div>
+          </div>
+          <div class="adlink"><em>AD</em>광고 2번 보고 바로 부르기 · 0/2</div>
+        </div>
+      </div>
+      <div class="cyc"><div class="lblrow"><span>주기 진행</span><em>13일 남음</em></div>
+        <div class="xpbar" style="margin-top:0"><s class="f"></s><s class="f"></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s></div></div>
+      <div class="spacer"></div>
+      <div class="tabbar">
+        <div class="on"><svg width="20" height="20"><use href="#t-home"/></svg>홈</div>
+        <div><svg width="20" height="20"><use href="#t-list"/></svg>내역</div>
+        <div class="plus">+</div>
+        <div><svg width="20" height="20"><use href="#t-bars"/></svg>예산</div>
+        <div><svg width="20" height="20"><use href="#t-gear"/></svg>내 정보</div>
+      </div>
+    </div>
+    <div class="cap"><b>2. 홈 — 레벨 카드 맨 아래, 미루가 문틈으로.</b> 오늘 칸은 점선, 기록하면 찬다. 광고 버튼은 <b>같은 줄 안에 작게</b> — 광고가 주인공이 아니라 "급하면 이 길도 있다"는 느낌. 미루가 오면 이 줄은 사라지고, 그 자리에 다음 목표(주간 보상)가 들어온다.</div>
+  </div>
+
+  <!-- 3. Arrival -->
+  <div class="col">
+    <div class="phone">
+      <div class="status"><span>20:12</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+      <div class="brand"><b>Sobra</b><svg width="22" height="22"><use href="#t-gear"/></svg></div>
+      <div class="lbl">오늘 남은 돈</div>
+      <div class="big">$96 <small>MXN</small></div>
+      <div class="dim"></div>
+      <div class="dialog arr" style="top:150px">
+        <div class="kick">기록한 날 3일</div>
+        <h3>미루가 다가왔어요!</h3>
+        <div class="stage">
+          <span class="spark" style="left:40px;top:20px">+</span><span class="spark" style="right:48px;top:30px">+</span>
+          <div class="spr s8 michi-idle" style="width:88px;height:99px"></div>
+          <div class="spr s12 poodle-success" style="width:104px;height:117px"></div>
+        </div>
+        <div class="ds" style="margin-top:10px">"매일 적는 거 봤어. 나도 같이 챙길래!"</div>
+        <div class="choice on"><span class="rd"><i></i></span><div><b>지금은 미치와 계속</b><s>미루는 컬렉션에 있어요. 언제든 바꿀 수 있어요.</s></div></div>
+        <div class="choice"><span class="rd"></span><div><b>미루랑 지내기</b><s>홈과 방에 미루가 나와요.</s></div></div>
+        <div class="btn">좋아</div>
+      </div>
+    </div>
+    <div class="cap"><b>3. 3일째 기록한 순간, 한 번.</b> 미루가 success 동작으로 들어온다. 바꿀지는 묻되 <b>기본값은 "지금 그대로"</b> — 3일 동안 정든 미치를 자동으로 바꾸지 않는다. 광고로 불렀을 때도 같은 화면(맨 위 줄만 "광고로 불렀어요").</div>
+  </div>
+
+  <!-- 4. Collection -->
+  <div class="col">
+    <div class="phone">
+      <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+      <div class="nav"><b>컬렉션</b><em>닫기</em></div>
+      <div class="tabs"><div class="on">캐릭터</div><div>아이템</div></div>
+      <div class="hint">1 / 13 · 함께할 캐릭터를 모아요</div>
+      <div class="cg">
+        <div class="cc sel"><div class="art"><div class="spr s8 michi-idle" style="width:62px;height:70px"></div></div><div class="nm">미치</div><div class="st t">함께하는 중</div></div>
+        <div class="cc hl"><div class="art"><div class="spr s8 poodle-idle shy" style="width:62px;height:70px"></div></div><div class="nm">미루</div><div class="st t">기록 1/3 · 광고 0/2</div><div class="minibar"><s class="f"></s><s></s><s></s></div></div>
+        <div class="cc"><div class="art"><div class="ph"></div></div><div class="nm">요시</div><div class="st v">광고 0/2</div></div>
+        <div class="cc"><div class="art"><div class="ph"></div></div><div class="nm">쿠키</div><div class="st v">광고 0/2</div></div>
+        <div class="cc"><div class="art"><div class="ph"></div></div><div class="nm">캐릭터 07</div><div class="st" style="color:var(--cashInk)">MX$39</div></div>
+        <div class="cc"><div class="art"><div class="ph"></div></div><div class="nm">캐릭터 02</div><div class="st">팩 전용</div></div>
+      </div>
+      <div class="detail">
+        <div class="dh"><div class="pic"><div class="spr s8 poodle-idle" style="width:60px;height:67px"></div></div>
+          <div><b class="n">미루</b><div class="tr">기운이 넘친다. 잘 챙긴다.<br>처음 만난 날 문가에 남은 친구.</div></div></div>
+        <h6>데려오는 방법 · 둘 중 먼저 되는 쪽</h6>
+        <div class="way rec"><div>기록한 날 3일<s>오늘 기록하면 2/3</s></div><span class="k">1 / 3</span></div>
+        <div class="or">또는</div>
+        <div class="way ad"><div>광고 2번 보기<s>요시·쿠키와 같은 규칙</s></div><span class="k">광고 0/2</span></div>
+      </div>
+    </div>
+    <div class="cap"><b>4. 컬렉션 — 두 길이 한 카드에.</b> 다른 캐릭터는 해금 방법이 하나지만, 스타터만 <b>기록 또는 광고</b> 둘 중 먼저 되는 쪽. 광고는 요시·쿠키와 같은 <b>2번</b> — "캐릭터는 광고 2번"이라는 규칙 하나로 통일된다. 광고를 한 번 보면 0/2 → 1/2로 진행이 남아서, 첫 번째에 끊겨도 헛수고가 아니다.</div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="spec" style="flex:none;width:100%">
+    <h2>스타터 친구 규칙</h2>
+    <div class="sh">전부 캐릭터 소유 규칙만 바뀐다. 돈·예산·XP 계산은 그대로. 한 번 온 친구는 절대 되돌리지 않는다.</div>
+    <div class="flow">
+      <div class="st"><i>① 온보딩</i><b>한 명 선택</b><span>미치 또는 미루. 고른 쪽은 바로 보유 + 장착.</span></div><div class="ar">→</div>
+      <div class="st"><i>② 문가</i><b>남은 친구 대기</b><span>홈 레벨 카드에 "기록 0/3", 컬렉션에 두 길.</span></div><div class="ar">→</div>
+      <div class="st hi"><i>③-a 기록</i><b>기록한 날 3일</b><span>연속 아님, 누적. 하루 빠져도 진행도 유지.</span></div><div class="ar">or</div>
+      <div class="st vi"><i>③-b 광고</i><b>보상형 광고 2번</b><span>끝까지 봐야 인정 — 지금 광고 규칙 그대로.</span></div><div class="ar">→</div>
+      <div class="st"><i>④ 도착</i><b>다가왔어요 화면</b><span>바꿀지 묻고, 기본은 그대로. 이후 줄은 다음 목표로.</span></div>
+    </div>
+    <div class="three">
+      <div>
+        <h5>기록한 날 3일</h5>
+        <div class="guard"><b>폰 날짜 기준, 그날 날짜로 기록 1건 이상.</b> 지출·수입 모두. 어제 걸 오늘 적어도 어제 칸은 안 찬다.</div>
+        <div class="guard"><b>《오늘은 안 썼어요》도 1일.</b> 출시 이벤트 시안의 버튼과 같은 것 — 여기서 처음 쓰인다.</div>
+        <div class="guard"><b>새로 저장하는 건 "안 썼어요 누른 날" 목록뿐.</b> 나머지는 이미 있는 기록에서 계산.</div>
+      </div>
+      <div>
+        <h5>바뀌는 코드</h5>
+        <div class="guard"><b>미치·미루의 해금 방식</b> <code>included</code> → 새 방식 <code>starter</code>. 고른 쪽만 보유.</div>
+        <div class="guard"><b>"기본 캐릭터 = 미치" 가정을 "처음 고른 친구"로.</b> 환불 되돌리기의 복귀 대상(<code>sobra_store.dart:1887</code>), 방 화면의 대체값 등.</div>
+        <div class="guard"><b>되돌리기 대상 아님.</b> 산 게 아니라서 Play 구매 목록과 무관.</div>
+      </div>
+      <div>
+        <h5>지금 테스터 · 정할 것</h5>
+        <div class="guard"><b>업데이트 시 둘 다 보유로 옮겨 적는다.</b> 이미 가진 걸 빼앗지 않는다. 온보딩을 마친 기록이 있으면 = 기존 사용자.</div>
+        <div class="q"><em>✓</em><span>광고는 <b>2번</b>으로 확정 — 요시·쿠키와 같은 규칙</span></div>
+        <div class="q"><em>Q2</em><span>3일은 <b>누적</b>으로 (추천) — 연속이면 첫 주에 끊겨 포기할 수 있다</span></div>
+        <div class="q"><em>Q3</em><span>미루가 온 뒤 홈 줄의 다음 목표 — 주간 보상(광고 없는 날)과 이어서 정하기</span></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/xp_event.dart';
+import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import 'cat_sprite.dart';
 import 'pixel_ui.dart';
@@ -407,21 +408,35 @@ class XpToast extends StatelessWidget {
 /// record. A level-up happens once every few weeks, so it earns a card the
 /// user has to close — otherwise a four-second toast is all that marks it
 /// and most of them would go unseen.
-Future<void> showLevelUpCelebration(BuildContext context, int newLevel) =>
-    showDialog<void>(
-      context: context,
-      barrierColor: const Color(0x99242B4A),
-      builder: (context) => LevelUpCelebration(newLevel: newLevel),
-    );
+Future<void> showLevelUpCelebration(
+  BuildContext context,
+  int newLevel, {
+  List<String> newlyUnlockedItemNames = const [],
+}) => showDialog<void>(
+  context: context,
+  barrierColor: const Color(0x99242B4A),
+  builder: (context) => LevelUpCelebration(
+    newLevel: newLevel,
+    newlyUnlockedItemNames: newlyUnlockedItemNames,
+  ),
+);
 
 class LevelUpCelebration extends StatelessWidget {
-  const LevelUpCelebration({super.key, required this.newLevel});
+  const LevelUpCelebration({
+    super.key,
+    required this.newLevel,
+    this.newlyUnlockedItemNames = const [],
+  });
 
   final int newLevel;
+  final List<String> newlyUnlockedItemNames;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final companion = CharacterCatalog.resolve(
+      SobraScope.maybeOf(context)?.characterId ?? CharacterCatalog.defaultId,
+    ).displayName;
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 32),
@@ -437,7 +452,7 @@ class LevelUpCelebration extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              xpLevelTitle(l10n, newLevel),
+              xpLevelTitle(l10n, newLevel, companion),
               textAlign: TextAlign.center,
               style: pixelText(size: 14, color: AppColors.inkSoft),
             ),
@@ -445,11 +460,61 @@ class LevelUpCelebration extends StatelessWidget {
             // A still frame of the celebration pose. The sprite's loop never
             // settles, which stalls `pumpAndSettle` in any test that meets
             // this dialog — and a portrait reads just as well here.
-            const CatSprite(
-              motion: CatMotion.celebrate,
-              width: 130,
-              animate: false,
+            const FittedBox(
+              fit: BoxFit.scaleDown,
+              child: CatSprite(
+                motion: CatMotion.celebrate,
+                width: 130,
+                animate: false,
+                reserveMotionSpace: true,
+              ),
             ),
+            if (newlyUnlockedItemNames.isNotEmpty) ...[
+              const SizedBox(height: 14),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppColors.tealSoft,
+                  border: Border.all(color: AppColors.tealInk, width: 2.5),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.card_giftcard,
+                      size: 24,
+                      color: AppColors.tealInk,
+                    ),
+                    const SizedBox(width: 9),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.xpLevelUpItemsUnlocked(
+                              newlyUnlockedItemNames.length,
+                            ),
+                            style: pixelText(
+                              size: 13,
+                              bold: true,
+                              color: AppColors.tealInk,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            newlyUnlockedItemNames.join(' · '),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: pixelText(size: 12, bold: true),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
             const SizedBox(height: 16),
             PixelButton(
               label: l10n.xpLevelUpContinue,
@@ -462,13 +527,20 @@ class LevelUpCelebration extends StatelessWidget {
   }
 }
 
-SnackBar xpSnackBar(XpNotice notice) => SnackBar(
-  backgroundColor: AppColors.ink,
-  behavior: SnackBarBehavior.floating,
-  duration: const Duration(seconds: 4),
-  shape: const RoundedRectangleBorder(
-    borderRadius: BorderRadius.zero,
-    side: BorderSide(color: AppColors.ink, width: 2.5),
-  ),
-  content: XpToast(notice: notice),
-);
+SnackBar xpSnackBar(BuildContext context, XpNotice notice) {
+  // The tab bar lives inside the Scaffold body, so a floating snackbar's
+  // default slot is on top of it. Lift by the bar plus the home indicator.
+  final bottom =
+      kPixelBottomBarHeight + MediaQuery.paddingOf(context).bottom + 12;
+  return SnackBar(
+    backgroundColor: AppColors.ink,
+    behavior: SnackBarBehavior.floating,
+    duration: const Duration(seconds: 4),
+    margin: EdgeInsets.fromLTRB(12, 0, 12, bottom),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.zero,
+      side: BorderSide(color: AppColors.ink, width: 2.5),
+    ),
+    content: XpToast(notice: notice),
+  );
+}

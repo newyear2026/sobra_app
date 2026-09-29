@@ -94,6 +94,33 @@ void main() {
     expect(store.totalXp, 50);
   });
 
+  test(
+    'changing the count weekday does not pay a second time in the same week',
+    () async {
+      final store = await newUser(cashCentavos: 200000);
+      now = DateTime(2026, 9, 7, 10);
+      await store.reconcileCashCount(
+        actualCentavos: 200000,
+        resolution: CashResolution.correction,
+      );
+      expect(store.totalXp, 25);
+      store.takePendingXpNotice();
+
+      await store.setCashCountWeekday(DateTime.wednesday);
+      now = DateTime(2026, 9, 8, 10);
+      await store.reconcileCashCount(
+        actualCentavos: 200000,
+        resolution: CashResolution.correction,
+      );
+      expect(
+        store.totalXp,
+        25,
+        reason: 'Tuesday is still inside the week that already paid',
+      );
+      expect(store.pendingXpNotice, isNull);
+    },
+  );
+
   test('the chosen count day survives a reload', () async {
     final store = await newUser(cashCentavos: 200000);
     await store.setCashCountWeekday(DateTime.friday);
@@ -272,7 +299,11 @@ void main() {
     expect(XpProgress.fromTotal(450).level, 3);
     expect(XpProgress.fromTotal(895).level, 4);
     expect(XpProgress.fromTotal(895).currentLevelXp, 45);
-    expect(XpProgress.fromTotal(1550).isMaxLevel, isTrue);
+    expect(XpProgress.fromTotal(1550).level, 5);
+    expect(XpProgress.fromTotal(5450).level, 8);
+    expect(XpProgress.fromTotal(9549).level, 9);
+    expect(XpProgress.fromTotal(9550).level, 10);
+    expect(XpProgress.fromTotal(9550).isMaxLevel, isTrue);
   });
 
   test('existing installs start today without retroactive XP', () async {

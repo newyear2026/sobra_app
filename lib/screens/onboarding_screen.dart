@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
+import '../models/xp_event.dart';
 import '../models/pay_schedule.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/prologue_scene.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -15,25 +17,57 @@ class OnboardingScreen extends StatefulWidget {
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
+/// The figure the budget field opens on, for the user to write over.
+///
+/// A count of hundredths like every other amount, so it reads as $6,000 in the
+/// peso and ¥6,000 in the yen — a starting point in both, and nobody's real
+/// budget in either.
+const _suggestedBudgetCentavos = 600000;
+
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final _pageController = PageController();
-  final _budgetController = TextEditingController(text: '6000');
-  final _cashController = TextEditingController();
+  final _budgetController = TextEditingController();
+  bool _seededBudget = false;
   PayCycleType _type = PayCycleType.semiMonthly;
   int _firstPayDay = 15;
   int _monthlyPayDay = 30;
   int _weeklyPayDay = DateTime.friday;
   int _planningHorizon = 7;
+  String _selectedCharacterId = CharacterCatalog.defaultId;
+  bool _loadedCharacterChoice = false;
 
   /// The day the user says they were last paid, which anchors a fortnight.
   DateTime? _lastPayday;
   bool _saving = false;
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_seededBudget) {
+      _seededBudget = true;
+      // The suggested figure is spelled here rather than where the controller
+      // is made, because how it is spelled depends on the currency and no
+      // initialiser can reach the scope holding it. Once only: a later rebuild
+      // must not write over what the user has typed since.
+      _budgetController.text = amountFieldText(
+        SobraScope.of(context).currency,
+        _suggestedBudgetCentavos,
+      );
+    }
+    if (_loadedCharacterChoice) return;
+    _loadedCharacterChoice = true;
+    final restoredCharacterId = CharacterCatalog.resolve(
+      SobraScope.of(context).characterId,
+    ).id;
+    _selectedCharacterId = restoredCharacterId == CharacterCatalog.poodle.id
+        ? restoredCharacterId
+        : CharacterCatalog.michi.id;
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
     _budgetController.dispose();
-    _cashController.dispose();
     super.dispose();
   }
 
@@ -72,28 +106,37 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       _showError(AppLocalizations.of(context).onboardingBiweeklyNeedsDate);
       return;
     }
+    await _goTo(5);
+  }
+
+  /// Confirms the companion and moves on.
+  Future<void> _chooseCharacter(SobraStore store) async {
+    await store.chooseCharacter(_selectedCharacterId);
     await _goTo(3);
   }
 
   Future<void> _continueFromBudget() async {
-    if (parseAmount(_budgetController.text) == null) {
+    if (parseAmount(SobraScope.of(context).currency, _budgetController.text) ==
+        null) {
       _showError(AppLocalizations.of(context).onboardingBudgetAboveZero);
       return;
     }
-    await _goTo(4);
+    await _prepareSummary(skipBudget: false);
   }
 
-  Future<void> _prepareSummary({required bool skipCash}) async {
+  /// Writes the answers and moves to the last page.
+  ///
+  /// The cash count is not asked here any more. Counting it inside onboarding
+  /// wrote the same baseline the cash screen writes but earned none of its XP,
+  /// because the award is gated on onboarding being finished — so the first
+  /// count is worth more once the user is home.
+  Future<void> _prepareSummary({required bool skipBudget}) async {
     if (_saving) return;
-    final budget = parseAmount(_budgetController.text);
-    if (budget == null) {
+    final budget = skipBudget
+        ? null
+        : parseAmount(SobraScope.of(context).currency, _budgetController.text);
+    if (!skipBudget && budget == null) {
       _showError(AppLocalizations.of(context).onboardingBudgetAboveZero);
-      await _goTo(3);
-      return;
-    }
-    final cash = skipCash ? null : parseNonNegativeAmount(_cashController.text);
-    if (!skipCash && cash == null) {
-      _showError(AppLocalizations.of(context).onboardingCashOrSkip);
       return;
     }
     setState(() => _saving = true);
@@ -105,7 +148,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       () => store.configureOnboarding(
         budgetCentavos: budget,
         schedule: _schedule(store.today),
-        cashCentavos: cash,
       ),
     );
     if (!mounted) return;
@@ -113,7 +155,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     // The summary page reads its figures back out of the store, so it would
     // present numbers that were never written down.
     if (!saved) return;
-    await _goTo(5);
+    await _goTo(6);
   }
 
   /// Marks onboarding finished, which is what swaps the whole app over to the
@@ -142,15 +184,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 controller: _pageController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  _WelcomePage(
+                  _TitlePage(onContinue: () => _goTo(1)),
+                  _MeetingPage(
                     reducedMotion: reducedMotionOf(context),
-                    onContinue: () => _goTo(1),
+                    onBack: () => _goTo(0),
+                    onContinue: () => _goTo(2),
+                  ),
+                  _CharacterPickPage(
+                    reducedMotion: reducedMotionOf(context),
+                    selectedCharacterId: _selectedCharacterId,
+                    onCharacterChanged: (characterId) =>
+                        setState(() => _selectedCharacterId = characterId),
+                    onBack: () => _goTo(1),
+                    onContinue: () => _chooseCharacter(store),
                   ),
                   _PayCyclePage(
                     type: _type,
                     onChanged: (type) => setState(() => _type = type),
-                    onBack: () => _goTo(0),
-                    onContinue: () => _goTo(2),
+                    onBack: () => _goTo(2),
+                    onContinue: () => _goTo(4),
                   ),
                   _ScheduleDetailsPage(
                     type: _type,
@@ -170,24 +222,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         setState(() => _weeklyPayDay = value),
                     onPlanningHorizonChanged: (value) =>
                         setState(() => _planningHorizon = value),
-                    onBack: () => _goTo(1),
+                    onBack: () => _goTo(3),
                     onContinue: _continueFromSchedule,
                   ),
                   _BudgetSetupPage(
                     controller: _budgetController,
                     preview: preview,
-                    onBack: () => _goTo(2),
-                    onContinue: _continueFromBudget,
-                  ),
-                  _CashSetupPage(
-                    controller: _cashController,
                     saving: _saving,
-                    onBack: () => _goTo(3),
-                    onContinue: () => _prepareSummary(skipCash: false),
-                    onSkip: () => _prepareSummary(skipCash: true),
+                    onBack: () => _goTo(4),
+                    onContinue: _continueFromBudget,
+                    onSkip: () => _prepareSummary(skipBudget: true),
                   ),
                   _ReadyPage(
-                    budgetCentavos: store.totalBudgetCentavos,
+                    budgetCentavos: store.hasBudget
+                        ? store.totalBudgetCentavos
+                        : null,
                     todayCentavos: store.todayRemainingCentavos,
                     bounds: store.cycleBounds,
                     reducedMotion: reducedMotionOf(context),
@@ -203,70 +252,398 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 }
 
-class _WelcomePage extends StatelessWidget {
-  const _WelcomePage({required this.reducedMotion, required this.onContinue});
-  final bool reducedMotion;
+/// Wet, cold, and not yet anybody's.
+Widget _rained(Widget child) => ColorFiltered(
+  colorFilter: const ColorFilter.mode(Color(0x553A5484), BlendMode.srcATop),
+  child: child,
+);
+
+/// A line of the prologue's prose.
+class _Prose extends StatelessWidget {
+  const _Prose(this.text, {this.centered = false});
+  final String text;
+  final bool centered;
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 12),
+    child: Text(
+      text,
+      textAlign: centered ? TextAlign.center : TextAlign.start,
+      style: pixelText(size: 14, bold: true, height: 1.7),
+    ),
+  );
+}
+
+/// One of the prologue's answers, in the player's own voice.
+class _StoryChoice extends StatelessWidget {
+  const _StoryChoice({required this.label, required this.onTap});
+  final String label;
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 10),
+    child: PixelCard(
+      onTap: onTap,
+      child: Row(
+        children: [
+          Text(
+            '\u25c8 ',
+            style: pixelText(size: 15, bold: true, color: AppColors.teal),
+          ),
+          Expanded(child: Text(label, style: pixelText(size: 15, bold: true))),
+        ],
+      ),
+    ),
+  );
+}
+
+/// What the companion says, with its name on it.
+///
+/// The character asks the setup questions from here on, so the questions keep
+/// a speaker instead of turning back into form labels.
+class _Says extends StatelessWidget {
+  const _Says(this.lines);
+  final List<String> lines;
+
+  @override
+  Widget build(BuildContext context) {
+    final name = CharacterCatalog.resolve(
+      SobraScope.of(context).characterId,
+    ).displayName;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < lines.length; i++) ...[
+          if (i > 0) const SizedBox(height: 8),
+          PixelCard(
+            color: i == 0 ? AppColors.cashSoft : AppColors.paperLight,
+            borderColor: AppColors.cashInk,
+            elevation: PixelElevation.none,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (i == 0) ...[
+                  Text(
+                    name,
+                    style: pixelText(
+                      size: 11,
+                      bold: true,
+                      color: AppColors.cashInk,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                ],
+                Text(
+                  lines[i],
+                  style: pixelText(size: 14, bold: true, height: 1.5),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _TitlePage extends StatelessWidget {
+  const _TitlePage({required this.onContinue});
   final VoidCallback onContinue;
 
   @override
-  Widget build(BuildContext context) => _OnboardingFrame(
-    bottom: PixelButton(
-      label: AppLocalizations.of(context).onboardingStart,
-      onPressed: onContinue,
-    ),
-    child: Column(
-      children: [
-        const Spacer(),
-        Text(
-          AppLocalizations.of(context).appName,
-          style: Theme.of(
-            context,
-          ).textTheme.headlineLarge?.copyWith(fontSize: 50),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          AppLocalizations.of(context).onboardingTagline,
-          textAlign: TextAlign.center,
-          style: Theme.of(
-            context,
-          ).textTheme.headlineMedium?.copyWith(fontSize: 27),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          AppLocalizations.of(context).onboardingPromise,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
-        const SizedBox(height: 28),
-        PixelCard(
-          elevation: PixelElevation.none,
-          color: AppColors.beige,
-          padding: const EdgeInsets.fromLTRB(12, 18, 12, 0),
-          child: Center(
-            child: CatSprite(
-              motion: CatMotion.idle,
-              width: 190,
-              animate: !reducedMotion,
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return _OnboardingFrame(
+      bottom: PixelButton(label: l10n.prologueGoLook, onPressed: onContinue),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.appName,
+            textAlign: TextAlign.center,
+            style: Theme.of(
+              context,
+            ).textTheme.headlineLarge?.copyWith(fontSize: 44),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.onboardingTagline,
+            textAlign: TextAlign.center,
+            style: pixelText(size: 17, bold: true, color: AppColors.inkSoft),
+          ),
+          const SizedBox(height: 14),
+          // Nobody is in the room yet. The sound at the door is the hook, and
+          // showing who made it here would spend it a page early.
+          const PrologueScene(height: 170, raining: true),
+          const SizedBox(height: 12),
+          _Prose(l10n.prologueRainNoEnd),
+          _Prose(l10n.prologueRentPaid),
+          _Prose(l10n.prologueSoundAtDoor),
+          // No reassurance about accounts here any more. The screen before
+          // this one is where that belongs now: it says what is stored and
+          // offers "start without an account" as a button the user presses.
+          // Repeating "no account needed" one page later told somebody who
+          // had just chosen to connect one the opposite of what they did.
+          const Spacer(),
+        ],
+      ),
+    );
+  }
+}
+
+class _MeetingPage extends StatelessWidget {
+  const _MeetingPage({
+    required this.reducedMotion,
+    required this.onBack,
+    required this.onContinue,
+  });
+  final bool reducedMotion;
+  final VoidCallback onBack;
+  final VoidCallback onContinue;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    Widget arriving({required String characterId, required double delay}) {
+      Widget pose(CatMotion motion, {required bool animate}) => CatSprite(
+        motion: motion,
+        characterId: characterId,
+        width: 96,
+        animate: animate,
+        loop: motion == CatMotion.walk ? true : false,
+      );
+
+      final moving = _rained(pose(CatMotion.walk, animate: !reducedMotion));
+      final arrived = _rained(pose(CatMotion.concern, animate: !reducedMotion));
+      return PrologueArrival(
+        animate: !reducedMotion,
+        delayFraction: delay,
+        moving: moving,
+        arrived: arrived,
+      );
+    }
+
+    return _OnboardingFrame(
+      bottom: const SizedBox.shrink(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            height: 46,
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: onBack,
+                  icon: const Icon(Icons.arrow_back),
+                ),
+                const Spacer(),
+                TextButton(
+                  onPressed: onContinue,
+                  child: Text(l10n.prologueSkip),
+                ),
+              ],
             ),
           ),
-        ),
-        const SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.lock_outline, size: 17, color: AppColors.teal),
-            const SizedBox(width: 7),
-            Flexible(
-              child: Text(
-                AppLocalizations.of(context).onboardingNoAccount,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.inkSoft),
+          PrologueScene(
+            height: 176,
+            raining: true,
+            actors: [
+              arriving(characterId: CharacterCatalog.michi.id, delay: 0),
+              arriving(characterId: CharacterCatalog.poodle.id, delay: 0.16),
+            ],
+          ),
+          const SizedBox(height: 14),
+          _Prose(l10n.prologueWetTracks),
+          PixelCard(
+            color: AppColors.cashSoft,
+            borderColor: AppColors.cashInk,
+            child: Text(
+              l10n.prologueShelter,
+              textAlign: TextAlign.center,
+              style: pixelText(size: 19, bold: true),
+            ),
+          ),
+          const SizedBox(height: 14),
+          _Prose(l10n.prologueItSpoke, centered: true),
+          const SizedBox(height: 2),
+          // Both answers reach the same next page. The choice is a tone, not
+          // a branch: a prologue that forked here would owe the player two of
+          // everything after it.
+          _StoryChoice(label: l10n.prologueReplySurprised, onTap: onContinue),
+          _StoryChoice(label: l10n.prologueReplyTowel, onTap: onContinue),
+          const Spacer(),
+        ],
+      ),
+    );
+  }
+}
+
+class _CharacterPickPage extends StatelessWidget {
+  const _CharacterPickPage({
+    required this.reducedMotion,
+    required this.selectedCharacterId,
+    required this.onCharacterChanged,
+    required this.onBack,
+    required this.onContinue,
+  });
+  final bool reducedMotion;
+  final String selectedCharacterId;
+  final ValueChanged<String> onCharacterChanged;
+  final VoidCallback onBack;
+  final VoidCallback onContinue;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final selectedName = CharacterCatalog.resolve(
+      selectedCharacterId,
+    ).displayName;
+    return _OnboardingFrame(
+      bottom: PixelButton(
+        label: l10n.prologueLiveTogether,
+        onPressed: onContinue,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            height: 46,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                onPressed: onBack,
+                icon: const Icon(Icons.arrow_back),
               ),
             ),
-          ],
-        ),
-        const Spacer(),
-      ],
+          ),
+          PrologueScene(
+            height: 164,
+            actors: [
+              CharacterSprite(
+                characterId: CharacterCatalog.michi.id,
+                role: CharacterMotionRole.idle,
+                width: 92,
+                animate: !reducedMotion,
+              ),
+              CharacterSprite(
+                characterId: CharacterCatalog.poodle.id,
+                role: CharacterMotionRole.idle,
+                width: 92,
+                animate: !reducedMotion,
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          _Prose(l10n.prologueDriedOff),
+          Text(
+            l10n.prologueWhoSits,
+            textAlign: TextAlign.center,
+            style: pixelText(size: 13, bold: true, color: AppColors.teal),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: _PickCard(
+                  name: CharacterCatalog.michi.displayName,
+                  trait: l10n.prologueMichiTrait,
+                  selected: selectedCharacterId == CharacterCatalog.michi.id,
+                  onTap: () => onCharacterChanged(CharacterCatalog.michi.id),
+                  child: CharacterSprite(
+                    characterId: CharacterCatalog.michi.id,
+                    role: CharacterMotionRole.idle,
+                    width: 86,
+                    animate: !reducedMotion,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _PickCard(
+                  name: CharacterCatalog.poodle.displayName,
+                  trait: l10n.prologuePoodleTrait,
+                  selected: selectedCharacterId == CharacterCatalog.poodle.id,
+                  onTap: () => onCharacterChanged(CharacterCatalog.poodle.id),
+                  child: CharacterSprite(
+                    characterId: CharacterCatalog.poodle.id,
+                    role: CharacterMotionRole.idle,
+                    width: 86,
+                    animate: !reducedMotion,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          PixelCard(
+            color: AppColors.cashSoft,
+            borderColor: AppColors.cashInk,
+            elevation: PixelElevation.none,
+            child: Text(
+              l10n.prologueGreeting(selectedName),
+              style: pixelText(size: 14, bold: true),
+            ),
+          ),
+          const SizedBox(height: 10),
+          PixelHint(tone: PixelHintTone.neutral, text: l10n.prologueOtherStays),
+          const Spacer(),
+        ],
+      ),
+    );
+  }
+}
+
+class _PickCard extends StatelessWidget {
+  const _PickCard({
+    required this.name,
+    required this.trait,
+    required this.selected,
+    required this.child,
+    required this.onTap,
+  });
+  final String name;
+  final String trait;
+  final bool selected;
+  final Widget child;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    selected: selected,
+    label: name,
+    child: PixelCard(
+      onTap: onTap,
+      color: selected ? AppColors.tealSoft : AppColors.surface,
+      borderColor: selected ? AppColors.tealInk : AppColors.ink,
+      padding: const EdgeInsets.fromLTRB(9, 9, 9, 10),
+      child: Column(
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: AppColors.beige,
+              border: Border.all(color: AppColors.ink, width: 2.5),
+            ),
+            child: SizedBox(
+              height: 104,
+              width: double.infinity,
+              child: Align(alignment: Alignment.bottomCenter, child: child),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(name, style: pixelText(size: 15, bold: true)),
+          const SizedBox(height: 3),
+          Text(
+            trait,
+            textAlign: TextAlign.center,
+            style: pixelText(
+              size: 11,
+              color: selected ? AppColors.tealInk : AppColors.inkSoft,
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -292,21 +669,22 @@ class _PayCyclePage extends StatelessWidget {
     child: Column(
       children: [
         _ProgressHeader(step: 1, onBack: onBack),
-        const SizedBox(height: 24),
-        Text(
-          AppLocalizations.of(context).onboardingHowPaid,
-          textAlign: TextAlign.center,
-          style: Theme.of(
-            context,
-          ).textTheme.headlineMedium?.copyWith(fontSize: 29),
+        const SizedBox(height: 10),
+        Center(
+          child: CatSprite(
+            motion: CatMotion.calculate,
+            width: 96,
+            animate: !reducedMotionOf(context),
+          ),
         ),
-        const SizedBox(height: 8),
-        Text(
-          AppLocalizations.of(context).onboardingHowPaidHint,
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: AppColors.inkSoft),
-        ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 10),
+        // The role that had never been used in onboarding, and the one beat
+        // where the character is visibly doing the counting it offered.
+        _Says([
+          AppLocalizations.of(context).prologueEarnKeep,
+          AppLocalizations.of(context).prologueAskSchedule,
+        ]),
+        const SizedBox(height: 18),
         for (final option in PayCycleType.values)
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
@@ -387,8 +765,8 @@ class _ScheduleDetailsPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _ProgressHeader(step: 2, onBack: onBack),
-        const SizedBox(height: 24),
-        Text(
+        const SizedBox(height: 10),
+        _Says([
           switch (type) {
             PayCycleType.irregular => AppLocalizations.of(
               context,
@@ -396,14 +774,10 @@ class _ScheduleDetailsPage extends StatelessWidget {
             PayCycleType.biweekly => AppLocalizations.of(
               context,
             ).onboardingWhenLastPaid,
-            _ => AppLocalizations.of(context).onboardingWhichDayPaid,
+            _ => AppLocalizations.of(context).prologueAskPayday,
           },
-          textAlign: TextAlign.center,
-          style: Theme.of(
-            context,
-          ).textTheme.headlineMedium?.copyWith(fontSize: 28),
-        ),
-        const SizedBox(height: 24),
+        ]),
+        const SizedBox(height: 18),
         if (type == PayCycleType.semiMonthly) ...[
           _DayDropdown(
             label: AppLocalizations.of(context).cycleFirstPay,
@@ -528,34 +902,60 @@ class _BudgetSetupPage extends StatelessWidget {
     required this.controller,
     required this.preview,
     required this.onBack,
+    required this.saving,
     required this.onContinue,
+    required this.onSkip,
   });
   final TextEditingController controller;
   final CycleBounds preview;
+  final bool saving;
   final VoidCallback onBack;
   final VoidCallback onContinue;
+  final VoidCallback onSkip;
 
   @override
   Widget build(BuildContext context) => _OnboardingFrame(
-    bottom: PixelButton(
-      label: AppLocalizations.of(context).continueLabel,
-      onPressed: onContinue,
+    // The cash question already offers "not now"; this one used to be the
+    // single page onboarding could not get past. Somebody who does not know
+    // their number yet is not stuck with a wrong one.
+    bottom: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        PixelButton(
+          label: saving
+              ? AppLocalizations.of(context).saving
+              : AppLocalizations.of(context).continueLabel,
+          onPressed: saving ? null : onContinue,
+        ),
+        const SizedBox(height: 10),
+        TextButton(
+          onPressed: saving ? null : onSkip,
+          child: Text(AppLocalizations.of(context).onboardingNotNow),
+        ),
+      ],
     ),
     child: Column(
       children: [
         _ProgressHeader(step: 3, onBack: onBack),
-        const Spacer(),
-        Text(
-          AppLocalizations.of(context).onboardingBudgetQuestion,
-          textAlign: TextAlign.center,
-          style: Theme.of(
-            context,
-          ).textTheme.headlineMedium?.copyWith(fontSize: 28),
+        const SizedBox(height: 10),
+        Center(
+          child: CatSprite(
+            motion: CatMotion.saving,
+            width: 96,
+            animate: !reducedMotionOf(context),
+          ),
         ),
-        const SizedBox(height: 30),
+        const SizedBox(height: 10),
+        _Says([
+          AppLocalizations.of(context).prologueAskBudget(preview.lengthInDays),
+        ]),
+        const SizedBox(height: 18),
         TextField(
           controller: controller,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          keyboardType: amountKeyboardType(SobraScope.of(context).currency),
+          inputFormatters: amountInputFormattersFor(
+            SobraScope.of(context).currency,
+          ),
           textAlign: TextAlign.center,
           style: const TextStyle(
             color: AppColors.teal,
@@ -590,99 +990,14 @@ class _BudgetSetupPage extends StatelessWidget {
             ],
           ),
         ),
-        const Spacer(flex: 2),
-      ],
-    ),
-  );
-}
-
-class _CashSetupPage extends StatelessWidget {
-  const _CashSetupPage({
-    required this.controller,
-    required this.saving,
-    required this.onBack,
-    required this.onContinue,
-    required this.onSkip,
-  });
-  final TextEditingController controller;
-  final bool saving;
-  final VoidCallback onBack;
-  final VoidCallback onContinue;
-  final VoidCallback onSkip;
-
-  @override
-  Widget build(BuildContext context) => _OnboardingFrame(
-    bottom: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        PixelButton(
-          label: saving
-              ? AppLocalizations.of(context).saving
-              : AppLocalizations.of(context).continueLabel,
-          onPressed: saving ? null : onContinue,
+        const SizedBox(height: 12),
+        // Said before the skip is taken, not after: permission is only worth
+        // something while the choice is still open.
+        PixelHint(
+          tone: PixelHintTone.neutral,
+          text: AppLocalizations.of(context).prologueSkipIsFine,
         ),
-        const SizedBox(height: 10),
-        TextButton(
-          onPressed: saving ? null : onSkip,
-          child: Text(AppLocalizations.of(context).onboardingNotNow),
-        ),
-      ],
-    ),
-    child: Column(
-      children: [
-        _ProgressHeader(step: 4, onBack: onBack),
         const Spacer(),
-        Text(
-          AppLocalizations.of(context).onboardingCashQuestion,
-          textAlign: TextAlign.center,
-          style: Theme.of(
-            context,
-          ).textTheme.headlineMedium?.copyWith(fontSize: 29),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          AppLocalizations.of(context).onboardingCashOptional,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 30),
-        TextField(
-          controller: controller,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          textAlign: TextAlign.center,
-          style: pixelText(size: 39, bold: true, color: AppColors.teal),
-          decoration: InputDecoration(
-            prefixText: SobraScope.of(context).currency.symbol,
-            hintText: '—',
-            suffixText: SobraScope.of(context).currency.code,
-          ),
-        ),
-        const SizedBox(height: 30),
-        PixelCard(
-          elevation: PixelElevation.none,
-          color: AppColors.cashSoft,
-          borderColor: AppColors.cashInk,
-          child: Row(
-            children: [
-              const Icon(
-                Icons.account_balance_wallet,
-                size: 38,
-                color: AppColors.cashInk,
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Text(
-                  AppLocalizations.of(context).onboardingCashIsBaseline,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: AppColors.cashInk,
-                    height: 1.45,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const Spacer(flex: 2),
       ],
     ),
   );
@@ -696,102 +1011,235 @@ class _ReadyPage extends StatelessWidget {
     required this.reducedMotion,
     required this.onFinish,
   });
-  final int budgetCentavos;
+
+  /// Null when the budget question was answered with "not yet".
+  final int? budgetCentavos;
   final int todayCentavos;
   final CycleBounds bounds;
   final bool reducedMotion;
   final VoidCallback onFinish;
 
   @override
-  Widget build(BuildContext context) => _OnboardingFrame(
-    bottom: PixelButton(
-      label: AppLocalizations.of(context).onboardingGoHome,
-      onPressed: onFinish,
-    ),
-    child: Column(
-      children: [
-        const Spacer(),
-        Text(
-          AppLocalizations.of(context).onboardingPlanReady,
-          style: Theme.of(
-            context,
-          ).textTheme.headlineMedium?.copyWith(fontSize: 31),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          AppLocalizations.of(context).onboardingCanSpendToday,
-          style: const TextStyle(fontSize: 18, fontVariations: AppType.bold),
-        ),
-        const SizedBox(height: 8),
-        FittedBox(
-          child: Text(
-            formatMoney(SobraScope.of(context).currency, todayCentavos),
-            style: const TextStyle(
-              color: AppColors.teal,
-              fontSize: 47,
-              fontVariations: AppType.bold,
-            ),
-          ),
-        ),
-        const SizedBox(height: 18),
-        PixelCard(
-          elevation: PixelElevation.none,
-          child: Column(
-            children: [
-              _SummaryRow(
-                label: AppLocalizations.of(context).xpDetailCycle,
-                value: cycleDateRange(
-                  AppLocalizations.of(context),
-                  bounds.start,
-                  bounds.end,
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final store = SobraScope.of(context);
+    final name = CharacterCatalog.resolve(store.characterId).displayName;
+    return _OnboardingFrame(
+      bottom: PixelButton(label: l10n.onboardingGoHome, onPressed: onFinish),
+      scrollContent: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 6),
+          PrologueScene(
+            height: 172,
+            actors: [
+              PrologueArrival(
+                animate: !reducedMotion,
+                distance: 96,
+                duration: const Duration(milliseconds: 2400),
+                moving: CatSprite(
+                  motion: CatMotion.walk,
+                  width: 104,
+                  animate: !reducedMotion,
+                ),
+                arrived: CatSprite(
+                  motion: reducedMotion ? CatMotion.idle : CatMotion.celebrate,
+                  width: 104,
+                  loop: false,
+                  animate: !reducedMotion,
                 ),
               ),
-              const Divider(),
-              _SummaryRow(
-                label: AppLocalizations.of(context).budget,
-                value: formatMoney(
-                  SobraScope.of(context).currency,
-                  budgetCentavos,
+            ],
+          ),
+          const SizedBox(height: 14),
+          // The weather opened the prologue and closes it, so no line has to
+          // announce that the story is over.
+          _Prose(l10n.onboardingSettledIn(name), centered: true),
+          _LevelBadge(name: name),
+          const SizedBox(height: 16),
+          Text(
+            l10n.onboardingCanSpendToday,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 16, fontVariations: AppType.bold),
+          ),
+          const SizedBox(height: 6),
+          if (budgetCentavos == null) ...[
+            // The same placeholder Inicio shows, so the two screens agree
+            // about what is missing.
+            const Text(
+              emDash,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColors.line,
+                fontSize: 44,
+                fontVariations: AppType.bold,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              l10n.onboardingBudgetLater,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 13, color: AppColors.muted),
+            ),
+          ] else
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                formatMoney(store.currency, todayCentavos),
+                style: const TextStyle(
+                  color: AppColors.teal,
+                  fontSize: 44,
+                  fontVariations: AppType.bold,
+                ),
+              ),
+            ),
+          const SizedBox(height: 18),
+          Text(
+            l10n.onboardingFirstQuests,
+            style: pixelText(size: 12, bold: true, color: AppColors.teal),
+          ),
+          const SizedBox(height: 8),
+          for (final mission in store.dailyMissions.missions)
+            _QuestRow(label: mission.kind.title(l10n), xp: mission.xp),
+          const SizedBox(height: 4),
+          // The biggest single reward in the app, and it is deliberately not
+          // collectable here: the award is gated on onboarding being over.
+          _WaitingAtHome(l10n: l10n),
+        ],
+      ),
+    );
+  }
+}
+
+class _LevelBadge extends StatelessWidget {
+  const _LevelBadge({required this.name});
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final progress = XpProgress.fromTotal(0);
+    return PixelCard(
+      color: AppColors.tealSoft,
+      borderColor: AppColors.tealInk,
+      child: Row(
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: AppColors.teal,
+              border: Border.all(color: AppColors.ink, width: 2.5),
+            ),
+            child: SizedBox(
+              width: 36,
+              height: 36,
+              child: Center(
+                child: Text(
+                  '${progress.level}',
+                  style: pixelText(size: 17, bold: true, color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 11),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  xpLevelTitle(l10n, progress.level, name),
+                  style: pixelText(size: 14, bold: true),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  l10n.xpOfTarget(
+                    progress.currentLevelXp,
+                    progress.targetLevelXp,
+                  ),
+                  style: pixelText(size: 12, color: AppColors.tealInk),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QuestRow extends StatelessWidget {
+  const _QuestRow({required this.label, required this.xp});
+  final String label;
+  final int xp;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: PixelCard(
+      elevation: PixelElevation.none,
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 10),
+      child: Row(
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(color: AppColors.ink, width: 2.5),
+            ),
+            child: const SizedBox(width: 18, height: 18),
+          ),
+          const SizedBox(width: 10),
+          Expanded(child: Text(label, style: pixelText(size: 13, bold: true))),
+          Text(
+            AppLocalizations.of(context).xpAmount(xp),
+            style: pixelText(size: 13, bold: true, color: AppColors.teal),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+class _WaitingAtHome extends StatelessWidget {
+  const _WaitingAtHome({required this.l10n});
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) => PixelCard(
+    elevation: PixelElevation.none,
+    color: AppColors.cashSoft,
+    borderColor: AppColors.cashInk,
+    padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 10),
+    child: Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.onboardingWaitingAtHome,
+                style: pixelText(
+                  size: 11,
+                  bold: true,
+                  color: AppColors.cashInk,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                l10n.cashCountTitle,
+                style: pixelText(
+                  size: 13,
+                  bold: true,
+                  color: AppColors.cashInk,
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 18),
-        PixelCard(
-          elevation: PixelElevation.none,
-          color: AppColors.beige,
-          padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-          child: Center(
-            child: CatSprite(
-              motion: CatMotion.celebrate,
-              width: 176,
-              loop: false,
-              animate: !reducedMotion,
-            ),
-          ),
+        Text(
+          l10n.xpAmount(25),
+          style: pixelText(size: 15, bold: true, color: AppColors.cashInk),
         ),
-        const Spacer(),
       ],
     ),
-  );
-}
-
-class _SummaryRow extends StatelessWidget {
-  const _SummaryRow({required this.label, required this.value});
-  final String label;
-  final String value;
-  @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      Expanded(
-        child: Text(
-          label,
-          style: const TextStyle(fontVariations: AppType.bold),
-        ),
-      ),
-      Text(value, style: const TextStyle(fontVariations: AppType.bold)),
-    ],
   );
 }
 
@@ -917,6 +1365,9 @@ class _SmallChoice extends StatelessWidget {
   );
 }
 
+/// How many questions onboarding still asks after the prologue.
+const _settingSteps = 3;
+
 class _ProgressHeader extends StatelessWidget {
   const _ProgressHeader({required this.step, this.onBack});
   final int step;
@@ -936,7 +1387,7 @@ class _ProgressHeader extends StatelessWidget {
             ),
           ),
         Text(
-          AppLocalizations.of(context).onboardingStepOf(step, 4),
+          AppLocalizations.of(context).onboardingStepOf(step, _settingSteps),
           style: pixelText(size: 16, bold: true),
         ),
       ],
@@ -945,12 +1396,30 @@ class _ProgressHeader extends StatelessWidget {
 }
 
 class _OnboardingFrame extends StatelessWidget {
-  const _OnboardingFrame({required this.child, required this.bottom});
+  const _OnboardingFrame({
+    required this.child,
+    required this.bottom,
+    this.scrollContent = false,
+  });
   final Widget child;
   final Widget bottom;
+  final bool scrollContent;
   @override
   Widget build(BuildContext context) {
     const padding = EdgeInsets.fromLTRB(20, 12, 20, 18);
+    if (scrollContent) {
+      return Padding(
+        padding: padding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(child: SingleChildScrollView(child: child)),
+            const SizedBox(height: 16),
+            bottom,
+          ],
+        ),
+      );
+    }
     return LayoutBuilder(
       builder: (context, constraints) {
         final minimumHeight = (constraints.maxHeight - padding.vertical).clamp(

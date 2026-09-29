@@ -87,23 +87,25 @@ object SobraWidgetUpdater {
     fun compact(context: Context): RemoteViews {
         val preferences = preferences(context)
         val hasData = preferences.getBoolean("hasData", false)
-        val overCycleBudget = hasData &&
-            preferences.getBoolean("overCycleBudget", false)
+        // Absent from every payload written before the budget could be left
+        // unanswered, and those users had answered it.
+        val hasBudget = preferences.getBoolean("hasBudget", true)
+        // The day's room is a slice of the budget. With no budget there is no
+        // slice, and a confident "0" would read as a day already spent.
+        val showsMoney = hasData && hasBudget
         return RemoteViews(context.packageName, R.layout.sobra_widget_compact).apply {
-            setTextViewText(R.id.today_label, todayLabel(context, preferences))
+            setTextViewText(
+                R.id.today_label,
+                if (hasData && hasBudget) todayLabel(context, preferences, short = true)
+                else openApp(context, preferences),
+            )
             setTextViewText(
                 R.id.today_amount,
-                if (hasData) money(preferences.getLong("todayRemainingCentavos", 0L)) else "\$—",
+                if (showsMoney) todayAmount(preferences) else noAmount(preferences),
             )
-            setTextViewText(
-                R.id.days_remaining,
-                if (hasData) days(preferences.getInt("daysRemaining", 0)) else "Abre Sobra",
-            )
-            applyProgress(
-                this,
-                if (hasData) preferences.getInt("progressSegments", 0) else 0,
-                danger = overCycleBudget,
-            )
+            setTextViewText(R.id.currency_code, currencyCode(preferences))
+            setViewVisibility(R.id.currency_code, if (showsMoney) View.VISIBLE else View.GONE)
+            applyCharacter(context, this, preferences.getString("characterId", null), summary = false)
             applyMotionPreference(this, preferences.getBoolean("reducedMotion", false))
             setOnClickPendingIntent(R.id.widget_root, launch(context, "home", 100))
         }
@@ -112,24 +114,42 @@ object SobraWidgetUpdater {
     fun summary(context: Context): RemoteViews {
         val preferences = preferences(context)
         val hasData = preferences.getBoolean("hasData", false)
-        val overCycleBudget = hasData &&
+        // Absent from every payload written before the budget could be left
+        // unanswered, and those users had answered it.
+        val hasBudget = preferences.getBoolean("hasBudget", true)
+        // The day's room is a slice of the budget. With no budget there is no
+        // slice, and a confident "0" would read as a day already spent.
+        val showsMoney = hasData && hasBudget
+        val overCycleBudget = showsMoney &&
             preferences.getBoolean("overCycleBudget", false)
         return RemoteViews(context.packageName, R.layout.sobra_widget_summary).apply {
             setTextViewText(R.id.today_label, todayLabel(context, preferences))
             setTextViewText(
                 R.id.today_amount,
-                if (hasData) money(preferences.getLong("todayRemainingCentavos", 0L)) else "\$—",
+                if (showsMoney) todayAmount(preferences) else noAmount(preferences),
+            )
+            setTextViewText(R.id.currency_code, currencyCode(preferences))
+            setViewVisibility(R.id.currency_code, if (showsMoney) View.VISIBLE else View.GONE)
+            setTextViewText(
+                R.id.cycle_progress_label,
+                copy(preferences, "cycleProgressText")
+                    ?: context.getString(R.string.widget_cycle_progress),
             )
             setTextViewText(
                 R.id.days_remaining,
-                if (hasData) days(preferences.getInt("daysRemaining", 0)) else "Abre Sobra",
+                if (hasData) days(context, preferences) else openApp(context, preferences),
             )
             applyProgress(
                 this,
-                if (hasData) preferences.getInt("progressSegments", 0) else 0,
+                if (showsMoney) preferences.getInt("progressSegments", 0) else 0,
                 danger = overCycleBudget,
             )
+            applyCharacter(context, this, preferences.getString("characterId", null), summary = true)
             applyMotionPreference(this, preferences.getBoolean("reducedMotion", false))
+            val register = copy(preferences, "registerExpenseText")
+                ?: context.getString(R.string.widget_register_expense)
+            setTextViewText(R.id.register_button, "+  $register")
+            setContentDescription(R.id.register_button, register)
             setOnClickPendingIntent(R.id.widget_root, launch(context, "home", 200))
             setOnClickPendingIntent(R.id.register_button, launch(context, "register", 201))
         }
@@ -168,6 +188,69 @@ object SobraWidgetUpdater {
         )
     }
 
+    private fun applyCharacter(
+        context: Context,
+        views: RemoteViews,
+        characterId: String?,
+        summary: Boolean,
+    ) {
+        // The native widget cannot load Flutter's sprite sheets. These four
+        // frames are exported from each character's idle sheet by
+        // tool/export_android_widget_characters.py.
+        val frames = when (characterId) {
+            "poodle" -> intArrayOf(
+                R.drawable.widget_poodle_1, R.drawable.widget_poodle_2,
+                R.drawable.widget_poodle_3, R.drawable.widget_poodle_4,
+            )
+            "schnauzer" -> intArrayOf(
+                R.drawable.widget_schnauzer_1, R.drawable.widget_schnauzer_2,
+                R.drawable.widget_schnauzer_3, R.drawable.widget_schnauzer_4,
+            )
+            "guinea-pig" -> intArrayOf(
+                R.drawable.widget_guinea_pig_1, R.drawable.widget_guinea_pig_2,
+                R.drawable.widget_guinea_pig_3, R.drawable.widget_guinea_pig_4,
+            )
+            else -> if (summary) intArrayOf(
+                R.drawable.cat_saving_original_high,
+                R.drawable.cat_saving_original_mid,
+                R.drawable.cat_saving_original_drop,
+                R.drawable.cat_saving_original_done,
+                R.drawable.cat_saving_original_done,
+            ) else intArrayOf(
+                R.drawable.widget_michi_1, R.drawable.widget_michi_2,
+                R.drawable.widget_michi_3, R.drawable.widget_michi_4,
+            )
+        }
+        val frameIds = intArrayOf(
+            R.id.character_frame_1, R.id.character_frame_2,
+            R.id.character_frame_3, R.id.character_frame_4,
+        )
+        val description = context.getString(when (characterId) {
+            "poodle" -> R.string.widget_poodle_description
+            "schnauzer" -> R.string.widget_schnauzer_description
+            "guinea-pig" -> R.string.widget_guinea_pig_description
+            else -> R.string.widget_cat_description
+        })
+        frameIds.forEachIndexed { index, id ->
+            views.setImageViewResource(id, frames[index])
+            views.setContentDescription(id, description)
+        }
+        if (summary) {
+            views.setImageViewResource(
+                R.id.character_frame_5,
+                if (frames.size == 5) frames[4] else frames[0],
+            )
+            views.setContentDescription(R.id.character_frame_5, description)
+        }
+        val staticFrame = if (characterId == null || characterId == "michi") {
+            if (summary) frames.last() else frames.first()
+        } else {
+            frames.first()
+        }
+        views.setImageViewResource(R.id.cat_static, staticFrame)
+        views.setContentDescription(R.id.cat_static, description)
+    }
+
     private fun launch(context: Context, destination: String, requestCode: Int): PendingIntent {
         val intent = Intent(context, MainActivity::class.java).apply {
             putExtra(MainActivity.EXTRA_DESTINATION, destination)
@@ -183,16 +266,59 @@ object SobraWidgetUpdater {
         )
     }
 
+    /**
+     * A word the app wrote in the language chosen in Ajustes, or null before
+     * the app has run once, when the caller falls back to the resource string,
+     * which follows the phone instead.
+     */
+    private fun copy(preferences: SharedPreferences, key: String): String? =
+        preferences.getString(key, null)?.takeIf { it.isNotEmpty() }
+
     // Over budget the figure is the cycle's deficit, not the day's room.
-    private fun todayLabel(context: Context, preferences: SharedPreferences): String {
+    private fun todayLabel(
+        context: Context,
+        preferences: SharedPreferences,
+        short: Boolean = false,
+    ): String {
         val overCycleBudget = preferences.getBoolean("hasData", false) &&
+            preferences.getBoolean("hasBudget", true) &&
             preferences.getBoolean("overCycleBudget", false)
-        return context.getString(
-            if (overCycleBudget) R.string.widget_cycle_balance else R.string.widget_today_remaining,
-        )
+        return if (overCycleBudget && short) {
+            copy(preferences, "cycleBalanceShortText")
+                ?: context.getString(R.string.widget_cycle_balance_short)
+        } else if (overCycleBudget) {
+            copy(preferences, "cycleBalanceText")
+                ?: context.getString(R.string.widget_cycle_balance)
+        } else if (short) {
+            copy(preferences, "todayLeftShortText")
+                ?: context.getString(R.string.widget_today_remaining_short)
+        } else {
+            copy(preferences, "todayLeftText")
+                ?: context.getString(R.string.widget_today_remaining)
+        }
     }
 
-    private fun days(value: Int): String = if (value == 1) "1 día" else "$value días"
+    private fun openApp(context: Context, preferences: SharedPreferences): String =
+        copy(preferences, "openAppText") ?: context.getString(R.string.widget_open_app)
+
+    private fun days(context: Context, preferences: SharedPreferences): String {
+        val count = preferences.getInt("daysRemaining", 0)
+        return copy(preferences, "daysRemainingText")
+            ?: context.resources.getQuantityString(R.plurals.widget_days, count, count)
+    }
+
+    // The app writes the figure in the user's currency, sign and separators
+    // included. Only a payload saved before it did falls back to the old
+    // Mexican-peso rendering, until the app next opens and re-sends.
+    private fun todayAmount(preferences: SharedPreferences): String =
+        preferences.getString("todayRemainingText", null)?.takeIf { it.isNotEmpty() }
+            ?: money(preferences.getLong("todayRemainingCentavos", 0L))
+
+    private fun noAmount(preferences: SharedPreferences): String =
+        preferences.getString("noAmountText", null)?.takeIf { it.isNotEmpty() } ?: "\$—"
+
+    private fun currencyCode(preferences: SharedPreferences): String =
+        preferences.getString("currencyCode", null)?.takeIf { it.isNotEmpty() } ?: "MXN"
 
     private fun money(centavos: Long): String {
         val negative = centavos < 0

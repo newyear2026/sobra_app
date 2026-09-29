@@ -5,6 +5,7 @@ import 'support/localizations.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/cash_reconciliation.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/screens/settlement_screen.dart';
 import 'package:sobra_app/screens/xp_history_screen.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
@@ -79,7 +80,7 @@ void main() {
     await tester.tap(find.byTooltip('Volver'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
-    await tester.tap(find.text('Mi Sobra'));
+    await tester.tap(find.text('Mi Sobrita'));
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Niveles y XP'), findsNothing);
@@ -178,6 +179,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
+    expect(find.byType(SettlementScreen), findsOneWidget);
     expect(find.text('Ciclo cerrado'), findsOneWidget);
     expect(find.text('+130 XP'), findsOneWidget);
     expect(tester.takeException(), isNull);

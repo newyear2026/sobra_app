@@ -1,13 +1,11 @@
-schemaVersion: 2
+schemaVersion: 3
 character:
   id: michi
   displayName: Michi
 
 sprite:
-  frameCount: 8
   frameWidth: 320
   frameHeight: 360
-  sheetWidth: 2560
   sheetHeight: 360
   layout: horizontal
   format: png-rgba
@@ -21,43 +19,59 @@ sprite:
 roles:
   idle:
     asset: idle-8.png
+    frameCount: 8
+    sheetWidth: 2560
     durationMs: 2800
     playback: loop
     playRange: [0, 7]
     posterFrame: 0
     legacyName: idle
   activity:
-    asset: activity-8.png
-    durationMs: 800
+    asset: activity-12.png
+    frameCount: 12
+    sheetWidth: 3840
+    durationMs: 1800
+    frameOffsetsY: [22, 23, 21, 23, 47, 48, 48, 46, 75, 72, 72, 72]
     playback: loop
-    playRange: [0, 7]
+    playRange: [0, 11]
     posterFrame: 0
     legacyName: walk
   processing:
-    asset: processing-8.png
-    durationMs: 2200
+    asset: processing-12.png
+    frameCount: 12
+    sheetWidth: 3840
+    durationMs: 3600
+    frameOffsetsY: [4, 4, 4, 4, 23, 23, 23, 24, 49, 49, 49, 49]
     playback: loop
-    playRange: [0, 7]
-    posterFrame: 4
+    playRange: [0, 11]
+    posterFrame: 7
     legacyName: calculate
   positive:
-    asset: positive-8.png
-    durationMs: 2400
+    asset: positive-12.png
+    frameCount: 12
+    sheetWidth: 3840
+    durationMs: 4000
+    frameOffsetsY: [4, 4, 4, 4, 20, 20, 20, 21, 45, 45, 45, 45]
     playback: loop
-    playRange: [0, 6]
-    posterFrame: 6
+    playRange: [0, 11]
+    posterFrame: 8
     legacyName: saving
   success:
-    asset: success-8.png
-    durationMs: 1250
+    asset: success-12.png
+    frameCount: 12
+    sheetWidth: 3840
+    durationMs: 2200
+    frameOffsetsY: [14, 15, 14, -5, -15, -8, 8, 12, 64, 67, 64, 64]
+    displayScale: 1.45
     playback: once-hold
-    playRange: [0, 7]
+    playRange: [0, 11]
     posterFrame: 5
-    holdFrame: 0
-    compatibility: legacy-loop-authored
+    holdFrame: 11
     legacyName: celebrate
   warning:
     asset: warning-8.png
+    frameCount: 8
+    sheetWidth: 2560
     durationMs: 1600
     playback: once-hold
     playRange: [0, 7]

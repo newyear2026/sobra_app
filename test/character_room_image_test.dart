@@ -3,16 +3,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/models/room_design.dart';
 import 'package:sobra_app/screens/app_shell.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/character_room.dart';
+import 'package:sobra_app/widgets/room_scene.dart';
 
 import 'support/localizations.dart';
 
 /// Decoding the room whole costs this much, and it is what the widget must
 /// never spend: the card paints into 1,440 px at the very widest.
-const int fullDecodeBytes = 1774 * 887 * 4;
+const int fullDecodeBytes = 1536 * 1024 * 4;
 
 Widget _roomHarness({String? asset}) => MaterialApp(
   theme: buildSobraTheme(),
@@ -53,10 +55,10 @@ void main() {
       await tester.pump();
 
       // 360dp screen at 3x, so min(360, 480) * 3 = 1080 px wide, and the art
-      // is exactly 2:1, so 540 tall.
+      // is 3:2, so the 1080 px decode is 720 px tall.
       expect(
         PaintingBinding.instance.imageCache.currentSizeBytes,
-        1080 * 540 * 4,
+        1080 * 720 * 4,
       );
       expect(
         PaintingBinding.instance.imageCache.currentSizeBytes,
@@ -82,7 +84,7 @@ void main() {
 
       expect(
         PaintingBinding.instance.imageCache.currentSizeBytes,
-        1080 * 540 * 4,
+        1080 * 720 * 4,
       );
     });
   });
@@ -159,9 +161,7 @@ void main() {
     );
   });
 
-  testWidgets('the shell warms the room before it is scrolled into view', (
-    tester,
-  ) async {
+  testWidgets('the shell warms the hybrid room layers', (tester) async {
     useSpanishDevice(tester);
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 3;
@@ -179,16 +179,15 @@ void main() {
     await tester.runAsync(() async {
       await tester.pumpWidget(SobraApp(store: store));
       await tester.pump();
-      // Let the warm-up land without ever building the room.
+      // Let the shell's warm-up land.
       await Future<void>.delayed(const Duration(milliseconds: 50));
     });
     await tester.pump();
 
-    // Inicio's list is lazy, so the room really has not been built yet.
-    expect(find.byType(CharacterRoom), findsNothing);
+    expect(find.byType(RoomScene), findsOneWidget);
 
     final context = tester.element(find.byType(AppShell));
-    final provider = CharacterRoom.backgroundProvider(context);
+    const provider = AssetImage(RoomThemes.casaClaraPreviewAsset);
     final key = await provider.obtainKey(
       createLocalImageConfiguration(context),
     );

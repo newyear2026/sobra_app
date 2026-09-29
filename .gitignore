@@ -31,6 +31,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+/android/build/
 /coverage/
 
 # Symbolication related
@@ -46,3 +47,15 @@ app.*.map.json
 
 # Golden-test failure output. Regenerated on every failing run.
 test/failures/
+
+# Python bytecode from the design scripts.
+__pycache__/
+
+# Store listing output. The scripts beside it redraw all of this, and the
+# reference renders run to 130MB — too much to carry in every clone.
+design/store/reference-style/
+design/store/screenshots/
+design/store/shots/
+design/store/fonts/
+design/store/feature-graphic-benchmark.png
+design/store/icon-vs-mascot.png

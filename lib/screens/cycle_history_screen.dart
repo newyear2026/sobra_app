@@ -158,6 +158,18 @@ class _CycleRow extends StatelessWidget {
                   ),
                   style: pixelText(size: 12, color: AppColors.muted),
                 ),
+                const SizedBox(height: 2),
+                Text(
+                  switch (record.averageSpentPerDayCentavos) {
+                    final average? => l10n.cycleHistoryAverage(
+                      formatMoney(currency, average, showCode: false),
+                    ),
+                    // A cycle shorter than the minimum. Rare, but a pay
+                    // schedule that moves can cut one.
+                    null => l10n.cycleHistoryAveragePending,
+                  },
+                  style: pixelText(size: 12, color: AppColors.muted),
+                ),
               ],
             ),
           ),

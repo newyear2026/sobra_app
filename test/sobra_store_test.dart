@@ -353,6 +353,87 @@ void main() {
     expect(restored.cycleEnd, fresh.cycleEnd);
   });
 
+  test('a file saved before the budget could be skipped reads as budgeted', () async {
+    // The flag is absent from every state written before onboarding could
+    // leave the budget unanswered, and those users did answer it. Reading a
+    // missing flag as "not set" would blank the figures of everyone who
+    // already has a budget.
+    SharedPreferences.setMockInitialValues({
+      'sobra_state_v2': jsonEncode({
+        'transactions': <Object?>[],
+        'totalBudgetCentavos': 600000,
+        'countedCashCentavos': 0,
+        'expectedCashCentavos': 0,
+        'hasCompletedOnboarding': true,
+      }),
+    });
+
+    final restored = await loadStore();
+
+    expect(restored.hasBudget, isTrue);
+    expect(restored.totalBudgetCentavos, 600000);
+  });
+
+  test('an unanswered budget reports zero rather than a deficit', () async {
+    SharedPreferences.setMockInitialValues({
+      'sobra_state_v2': jsonEncode({
+        'transactions': <Object?>[],
+        'totalBudgetCentavos': 600000,
+        'hasBudget': false,
+        'countedCashCentavos': 0,
+        'expectedCashCentavos': 0,
+        'hasCompletedOnboarding': true,
+      }),
+    });
+    final store = await loadStore();
+
+    expect(store.hasBudget, isFalse);
+    expect(store.todayRemainingCentavos, 0);
+    expect(store.remainingBudgetCentavos, 0);
+    expect(store.dailyAllowanceCentavos, 0);
+    expect(store.budgetProgress, 0);
+    expect(store.projectedRemainderCentavos, 0);
+
+    // Spending is what a budget of zero would turn into a growing deficit,
+    // and the home screen would then present an overrun to somebody who was
+    // never asked to stay under anything.
+    await store.addExpense(
+      amountCentavos: 12000,
+      category: ExpenseCategory.food,
+      note: 'Tacos',
+      occurredAt: now,
+      paymentMethod: PaymentMethod.cash,
+    );
+
+    expect(store.totalSpentCentavos, 12000);
+    expect(store.todayRemainingCentavos, 0);
+    expect(store.remainingBudgetCentavos, 0);
+  });
+
+  test('setting a budget answers the question for good', () async {
+    SharedPreferences.setMockInitialValues({
+      'sobra_state_v2': jsonEncode({
+        'transactions': <Object?>[],
+        'totalBudgetCentavos': 600000,
+        'hasBudget': false,
+        'countedCashCentavos': 0,
+        'expectedCashCentavos': 0,
+        'hasCompletedOnboarding': true,
+      }),
+    });
+    final store = await loadStore();
+    expect(store.hasBudget, isFalse);
+
+    await store.setTotalBudget(450000);
+
+    expect(store.hasBudget, isTrue);
+    expect(store.totalBudgetCentavos, 450000);
+    expect(store.todayRemainingCentavos, greaterThan(0));
+
+    final reopened = await loadStore();
+    expect(reopened.hasBudget, isTrue);
+  });
+
   test('income, onboarding choices and completion persist', () async {
     final store = await loadStore();
     await store.configureOnboarding(

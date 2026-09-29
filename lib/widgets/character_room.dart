@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../models/room_design.dart';
 import '../theme/app_theme.dart';
 import 'pixel_ui.dart';
 
@@ -18,8 +19,7 @@ class CharacterRoom extends StatelessWidget {
     this.backgroundAsset = casaClaraBackgroundAsset,
   });
 
-  static const casaClaraBackgroundAsset =
-      'assets/rooms/casa_clara/background.webp';
+  static const casaClaraBackgroundAsset = RoomThemes.casaClaraPreviewAsset;
   static const backgroundKey = ValueKey('character-room-background');
 
   /// Widest the room is ever laid out: the shell caps its content at 520 and
@@ -30,12 +30,12 @@ class CharacterRoom extends StatelessWidget {
   static const double maxLogicalWidth = 480;
 
   /// The background's own pixel width. Decoding past it would only upscale.
-  static const int backgroundNativeWidth = 1774;
+  static const int backgroundNativeWidth = 1536;
 
   /// The background sized for this screen.
   ///
   /// The art is far larger than the card ever is, so decoding it whole costs
-  /// 6.3 MB for something that paints into at most 1440 px. Warm it through
+  /// about 6.3 MB for something that paints into at most 1440 px. Warm it through
   /// this method too: [ResizeImage] keys on the target width, so precaching
   /// the bare [AssetImage] would fill the cache with an entry nothing reads.
   static ImageProvider backgroundProvider(
@@ -68,8 +68,7 @@ class CharacterRoom extends StatelessWidget {
             builder: (context, constraints) {
               final compact = constraints.maxWidth < 380;
               final characterWidth = compact ? 84.0 : 112.0;
-              // The character stands on the rug, which is the one clear patch
-              // of floor the room art gives it, and the speech sits directly
+              // The character stands on the clear floor, and the speech sits directly
               // above rather than beside: stacked, a long message grows upward
               // into empty wall instead of squeezing against the card's edge.
               final bubbleWidth =

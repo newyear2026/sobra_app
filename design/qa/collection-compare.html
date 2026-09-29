@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sobra collection comparison</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; background: #efe7d8; }
+      body {
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        color: #202848;
+        font: 700 13px system-ui, sans-serif;
+      }
+      main { display: flex; gap: 28px; align-items: flex-start; }
+      section { display: grid; gap: 8px; }
+      .label { letter-spacing: .08em; text-transform: uppercase; }
+      .source {
+        position: relative;
+        width: 423px;
+        height: 900px;
+        overflow: hidden;
+        background: #fffdf7;
+        border: 2px solid #202848;
+      }
+      .source img {
+        position: absolute;
+        width: 946px;
+        height: 948px;
+        max-width: none;
+        left: -489px;
+        top: -17px;
+      }
+      .implementation {
+        width: 488px;
+        height: 900px;
+        overflow: hidden;
+        background: #fffdf7;
+        border: 2px solid #202848;
+      }
+      iframe {
+        display: block;
+        width: 520px;
+        height: 960px;
+        border: 0;
+        transform: scale(.9375);
+        transform-origin: top left;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section>
+        <div class="label">Selected mockup · item state</div>
+        <div class="source">
+          <img src="collection-source-mockup.png" alt="Selected Sobra collection mockup" />
+        </div>
+      </section>
+      <section>
+        <div class="label">Flutter implementation · 520 × 960</div>
+        <div class="implementation">
+          <iframe src="http://127.0.0.1:4173/" title="Sobra Flutter implementation"></iframe>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

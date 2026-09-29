@@ -1,0 +1,515 @@
+<title>Sobra 로그인 시안</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+:root{
+  /* --- Sobra app tokens. Lifted from lib/theme/app_theme.dart, unchanged. --- */
+  --s-paper:#F6EFE0; --s-surface:#FFFDF7; --s-beige:#EFE7D6; --s-line:#E7DDC8;
+  --s-ink:#202848; --s-inkSoft:#4E5878; --s-muted:#5F6885;
+  --s-teal:#0E7A72; --s-tealSoft:#D8EDEA; --s-tealInk:#0B6660;
+  --s-danger:#D4553F; --s-dangerSoft:#FBE1DA; --s-dangerInk:#A63A25;
+  --s-blue:#39558E; --s-blueSoft:#DCE4F2;
+  --s-cash:#C0873A; --s-cashSoft:#F7E9CE;
+  --s-slate:#596174;
+  --s-shadow:rgba(32,40,72,.157);
+  --s-border:2.5px solid var(--s-ink);
+
+  /* --- Board chrome. Theme-aware, deliberately not Sobra's palette so the
+         annotation layer can never be mistaken for the UI being annotated. --- */
+  --bg:#E4DFD2; --panel:#F1EBDE; --rule:#CFC6B2;
+  --text:#22252E; --dim:#5B6070; --accent:#0E7A72; --accent-dim:#7FA9A4;
+  --plate:#EDE7D9;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#171A21; --panel:#212530; --rule:#333846;
+    --text:#E9E7E0; --dim:#98A0AF; --accent:#57B6AB; --accent-dim:#3C6C67;
+    --plate:#1C202A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#171A21; --panel:#212530; --rule:#333846;
+  --text:#E9E7E0; --dim:#98A0AF; --accent:#57B6AB; --accent-dim:#3C6C67;
+  --plate:#1C202A;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  line-height:1.55; margin:0; padding:40px 24px 72px;
+}
+.wrap{max-width:1180px; margin:0 auto; display:flex; flex-direction:column; gap:44px}
+
+/* ---- board header ---- */
+.masthead{display:flex; flex-direction:column; gap:14px; border-bottom:1px solid var(--rule); padding-bottom:26px}
+.eyebrow{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px; font-weight:500;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--accent);
+}
+h1{font-size:30px; font-weight:600; letter-spacing:-.01em; margin:0; text-wrap:balance}
+.lede{max-width:62ch; color:var(--dim); font-size:14.5px; margin:0}
+.lede b{color:var(--text); font-weight:600}
+
+.tokens{display:flex; flex-wrap:wrap; gap:6px; margin-top:4px}
+.tok{
+  display:flex; align-items:center; gap:7px; padding:5px 10px 5px 6px;
+  background:var(--panel); border:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--dim);
+}
+.sw{width:13px; height:13px; border:1px solid rgba(32,40,72,.35)}
+
+/* ---- sections ---- */
+section{display:flex; flex-direction:column; gap:22px}
+.shead{display:flex; flex-direction:column; gap:6px; border-left:3px solid var(--accent); padding-left:14px}
+.shead h2{font-size:20px; font-weight:600; margin:0; letter-spacing:-.005em}
+.shead p{margin:0; color:var(--dim); font-size:13.5px; max-width:70ch}
+.slabel{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.1em; color:var(--accent); text-transform:uppercase}
+
+.plates{display:flex; flex-wrap:wrap; gap:26px; align-items:flex-start}
+.plate{display:flex; flex-direction:column; gap:11px; background:var(--plate); border:1px solid var(--rule); padding:18px}
+.cap{display:flex; flex-direction:column; gap:3px; max-width:360px}
+.cap .state{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--accent)}
+.cap .name{font-size:14px; font-weight:600}
+.cap .note{font-size:12.5px; color:var(--dim); line-height:1.5}
+
+/* =====================================================================
+   Sobra pixel UI. Square corners, 2.5px ink borders, offset hard shadows.
+   These colours are literals on purpose: the app ships a single light
+   theme (ThemeData brightness: light), so the screens must not follow the
+   viewer's theme the way the board around them does.
+   ===================================================================== */
+.screen{
+  width:360px; background:var(--s-surface); border:var(--s-border);
+  box-shadow:4px 4px 0 var(--s-shadow);
+  font-family:"Pixelify Sans","Courier New",monospace; color:var(--s-ink);
+  padding:18px 20px 22px; display:flex; flex-direction:column; gap:0;
+}
+.screen.tall{min-height:420px}
+.screen .material-icons{font-size:22px; line-height:1}
+
+.topbar{display:flex; align-items:center; gap:4px; margin-bottom:18px}
+.topbar .material-icons{font-size:26px}
+.topbar .t{flex:1; text-align:center; font-size:20px; font-weight:700}
+.topbar .pad{width:30px}
+
+.sechead{font-size:12px; font-weight:700; color:var(--s-muted); letter-spacing:.06em; margin:0 0 10px 2px}
+
+.row{
+  display:flex; align-items:center; gap:13px;
+  background:var(--s-surface); border:var(--s-border); padding:13px 14px; margin-bottom:12px;
+}
+.row.flat{box-shadow:none}
+.tile{
+  width:42px; height:42px; flex:none; border:var(--s-border);
+  display:grid; place-items:center;
+}
+.row .lab{flex:1; font-size:15px; font-weight:700; line-height:1.25}
+.row .val{white-space:nowrap}
+.row .val{font-size:14px; font-weight:700; color:var(--s-muted); text-align:right}
+.row .val small{display:block; font-size:12px; font-weight:400; color:var(--s-muted)}
+.row .chev{color:var(--s-ink); font-size:22px}
+.foot{font-size:12px; color:var(--s-muted); line-height:1.45; margin:-2px 0 0 4px}
+
+.btn{
+  border:var(--s-border); padding:14px 16px; text-align:center;
+  font-size:16px; font-weight:700; box-shadow:0 5px 0 var(--s-ink);
+  display:flex; align-items:center; justify-content:center; gap:9px; margin-bottom:5px;
+}
+.btn.primary{background:var(--s-teal); color:#fff}
+.btn.plain{background:var(--s-surface); color:var(--s-ink)}
+.btn.danger{background:var(--s-danger); color:#fff}
+.btn.off{background:var(--s-line); color:var(--s-muted); box-shadow:none}
+.btn.small{font-size:14px; padding:11px 14px; box-shadow:0 4px 0 var(--s-ink)}
+.ghost{text-align:center; font-size:15px; font-weight:700; color:var(--s-inkSoft); padding:12px 0 4px}
+
+.hint{display:flex; gap:10px; border:var(--s-border); padding:11px 12px; font-size:13px; line-height:1.45}
+.hint .material-icons{font-size:19px; flex:none}
+.hint.warn{background:var(--s-dangerSoft); border-color:var(--s-danger); color:var(--s-dangerInk)}
+.hint.calm{background:var(--s-blueSoft); border-color:var(--s-blue); color:var(--s-blue)}
+
+/* bottom sheet: sits on a dimmed room, hard top edge, no radius anywhere */
+.phone{
+  width:360px; border:var(--s-border); background:var(--s-paper);
+  box-shadow:4px 4px 0 var(--s-shadow); display:flex; flex-direction:column;
+  font-family:"Pixelify Sans","Courier New",monospace; color:var(--s-ink);
+}
+.dim{flex:1; min-height:132px; background:repeating-linear-gradient(135deg,#C8C0AE 0 6px,#C2BAA8 6px 12px)}
+.sheet{background:var(--s-surface); border-top:var(--s-border); padding:20px 20px 18px; display:flex; flex-direction:column; gap:12px}
+.sheet h3{font-size:21px; font-weight:700; margin:0; line-height:1.2}
+.sheet p{font-size:14px; color:var(--s-inkSoft); margin:0; line-height:1.5}
+.sheet .fine{font-size:12px; color:var(--s-muted); line-height:1.45; text-align:center}
+.sheet .fine a{color:var(--s-teal); text-decoration:underline}
+
+.gmark{width:19px; height:19px; flex:none}
+
+/* progress: the app's own SegmentedProgress, not a spinner */
+.segs{display:flex; gap:4px}
+.segs i{flex:1; height:9px; border:2px solid var(--s-ink); background:var(--s-beige)}
+.segs i.on{background:var(--s-teal)}
+
+/* dialog */
+.dlg{
+  width:320px; background:var(--s-surface); border:var(--s-border); box-shadow:4px 4px 0 var(--s-shadow);
+  font-family:"Pixelify Sans","Courier New",monospace; color:var(--s-ink); padding:18px;
+  display:flex; flex-direction:column; gap:13px;
+}
+.dlg h4{font-size:18px; font-weight:700; margin:0}
+.dlg p{font-size:14px; color:var(--s-inkSoft); margin:0; line-height:1.5}
+.dlg .acts{display:flex; gap:10px; margin-top:2px}
+.dlg .acts>*{flex:1; margin-bottom:0}
+
+/* ---- decisions table ---- */
+.tablewrap{overflow-x:auto; border:1px solid var(--rule); background:var(--panel)}
+table{border-collapse:collapse; width:100%; min-width:560px; font-size:13.5px}
+th,td{text-align:left; padding:12px 16px; border-bottom:1px solid var(--rule); vertical-align:top}
+th{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); font-weight:500}
+tr:last-child td{border-bottom:0}
+td b{font-weight:600}
+td .rec{color:var(--accent); font-weight:600}
+
+.sourced{font-size:12px; color:var(--dim); border-top:1px solid var(--rule); padding-top:18px; line-height:1.6}
+.sourced code{font-family:"IBM Plex Mono",monospace; font-size:11.5px; background:var(--panel); padding:1px 5px; border:1px solid var(--rule)}
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">Sobra · 시안 v1</div>
+    <h1>클라우드 백업 로그인</h1>
+    <p class="lede">
+      기존 픽셀 UI 토큰으로만 구성했습니다. 새 컴포넌트는 없고, <b>PixelCard · PixelButton ·
+      PixelHint · PixelTopBar · SegmentedProgress</b>를 그대로 씁니다.
+      화면 속 문구는 실제 출시 언어인 스페인어, 바깥 주석은 한국어입니다.
+    </p>
+    <div class="tokens">
+      <span class="tok"><span class="sw" style="background:#FFFDF7"></span>surface</span>
+      <span class="tok"><span class="sw" style="background:#202848"></span>ink</span>
+      <span class="tok"><span class="sw" style="background:#0E7A72"></span>teal</span>
+      <span class="tok"><span class="sw" style="background:#5F6885"></span>muted</span>
+      <span class="tok"><span class="sw" style="background:#D4553F"></span>danger</span>
+      <span class="tok"><span class="sw" style="background:#39558E"></span>blue</span>
+      <span class="tok"><span class="sw" style="background:#E7DDC8"></span>line</span>
+    </div>
+  </header>
+
+  <!-- ============================ A ============================ -->
+  <section>
+    <div class="shead">
+      <div class="slabel">A · 진입점</div>
+      <h2>설정 › Datos 섹션의 행 하나</h2>
+      <p>새 화면이 아니라 기존 <code>DATOS</code> 섹션에 행을 하나 더합니다. 같은 섹션의 기존 복사 행이
+      <code>Icons.cloud_upload</code>를 쓰고 있어, 클립보드 기능이 클라우드 아이콘을 선점한 상태입니다 — 복사 행을
+      <code>content_copy</code>로 넘겨야 두 행이 구분됩니다.</p>
+    </div>
+
+    <div class="plates">
+      <div class="plate">
+        <div class="cap">
+          <span class="state">signed out · 기본</span>
+          <span class="name">아직 로그인하지 않은 상태</span>
+          <span class="note">값은 "Activar". 배지도 느낌표도 붙이지 않습니다 — 로그인은 해결해야 할 경고가 아닙니다.</span>
+        </div>
+        <div class="screen">
+          <div class="sechead">DATOS</div>
+          <div class="row flat">
+            <div class="tile" style="background:rgba(14,122,114,.13)"><span class="material-icons" style="color:#0E7A72">content_copy</span></div>
+            <div class="lab">Respaldo de datos</div>
+            <div class="val">Copiar</div>
+            <span class="material-icons chev">chevron_right</span>
+          </div>
+          <div class="row flat">
+            <div class="tile" style="background:rgba(57,85,142,.13)"><span class="material-icons" style="color:#39558E">cloud_off</span></div>
+            <div class="lab">Respaldo en la nube</div>
+            <div class="val">Activar</div>
+            <span class="material-icons chev">chevron_right</span>
+          </div>
+          <div class="foot">La copia no incluye las fotos de tickets.</div>
+        </div>
+      </div>
+
+      <div class="plate">
+        <div class="cap">
+          <span class="state">signed in</span>
+          <span class="name">로그인 + 동기화 완료</span>
+          <span class="note">값 칸은 320px 폭에서 이메일 전체를 감당하지 못합니다. 행은 <b>마지막 동기화 시각</b>만 말하고 — 이게 없으면 "켜져 있다"만 알 뿐 실제로 도는지는 모릅니다 — 계정 주소는 C 화면이 맡습니다.</span>
+        </div>
+        <div class="screen">
+          <div class="sechead">DATOS</div>
+          <div class="row flat">
+            <div class="tile" style="background:rgba(14,122,114,.13)"><span class="material-icons" style="color:#0E7A72">content_copy</span></div>
+            <div class="lab">Respaldo de datos</div>
+            <div class="val">Copiar</div>
+            <span class="material-icons chev">chevron_right</span>
+          </div>
+          <div class="row flat">
+            <div class="tile" style="background:rgba(14,122,114,.13)"><span class="material-icons" style="color:#0E7A72">cloud_done</span></div>
+            <div class="lab">Respaldo en la nube</div>
+            <div class="val">Activado<small>hace 2 min</small></div>
+            <span class="material-icons chev">chevron_right</span>
+          </div>
+          <div class="foot">Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobra.</div>
+        </div>
+      </div>
+
+      <div class="plate">
+        <div class="cap">
+          <span class="state">syncing / offline</span>
+          <span class="name">동기화 중 · 연결 없음</span>
+          <span class="note">오프라인은 <b>실패가 아니라 상태</b>입니다. danger 톤을 쓰지 않고 muted로 조용히 적습니다. 연결이 돌아오면 저절로 해결되니까요.</span>
+        </div>
+        <div class="screen">
+          <div class="sechead">DATOS</div>
+          <div class="row flat">
+            <div class="tile" style="background:rgba(14,122,114,.13)"><span class="material-icons" style="color:#0E7A72">sync</span></div>
+            <div class="lab">Respaldo en la nube</div>
+            <div class="val">Sincronizando…</div>
+            <span class="material-icons chev">chevron_right</span>
+          </div>
+          <div class="row flat">
+            <div class="tile" style="background:rgba(89,97,116,.13)"><span class="material-icons" style="color:#596174">cloud_off</span></div>
+            <div class="lab">Respaldo en la nube</div>
+            <div class="val">Sin conexión</div>
+            <span class="material-icons chev">chevron_right</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ B ============================ -->
+  <section>
+    <div class="shead">
+      <div class="slabel">B · 로그인</div>
+      <h2>바텀시트 — 풀스크린이 아닌 이유</h2>
+      <p>로그인은 목적지가 아니라 한 번의 동작입니다. 풀스크린 라우트는 "이걸 통과해야 한다"고 말하는데,
+      이 앱은 설정 화면에서 이미 <b>"계정 없이 쓸 수 있다"</b>고 약속했습니다. 시트는 그 약속과 충돌하지 않습니다.</p>
+    </div>
+
+    <div class="plates">
+      <div class="plate">
+        <div class="cap">
+          <span class="state">idle</span>
+          <span class="name">기본 상태</span>
+          <span class="note">제목에 "cuenta(계정)"를 쓰지 않았습니다. 유저가 원하는 건 계정이 아니라 <b>진행 상황 보존</b>입니다.</span>
+        </div>
+        <div class="phone">
+          <div class="dim"></div>
+          <div class="sheet">
+            <h3>Guarda tu progreso</h3>
+            <p>Tus personajes, tus objetos y tu historial vuelven si cambias de móvil.</p>
+            <div class="btn plain">
+              <svg class="gmark" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="8.5" fill="none" stroke="#EA4335" stroke-width="5" stroke-dasharray="14 40" transform="rotate(-70 12 12)"/>
+                <circle cx="12" cy="12" r="8.5" fill="none" stroke="#FBBC05" stroke-width="5" stroke-dasharray="13 40" transform="rotate(35 12 12)"/>
+                <circle cx="12" cy="12" r="8.5" fill="none" stroke="#34A853" stroke-width="5" stroke-dasharray="13 40" transform="rotate(95 12 12)"/>
+                <circle cx="12" cy="12" r="8.5" fill="none" stroke="#4285F4" stroke-width="5" stroke-dasharray="14 40" transform="rotate(155 12 12)"/>
+                <rect x="12" y="10" width="7.5" height="4" fill="#4285F4"/>
+              </svg>
+              Continuar con Google
+            </div>
+            <div class="ghost">Ahora no</div>
+            <div class="fine">Solo guardamos tu nombre y tu correo.<br><a href="#">Aviso de privacidad</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="plate">
+        <div class="cap">
+          <span class="state">working</span>
+          <span class="name">진행 중</span>
+          <span class="note">스피너 대신 앱이 이미 가진 <b>SegmentedProgress</b>를 씁니다. 회전하는 원은 이 디자인에 둥근 것이 하나도 없다는 원칙을 깹니다. <code>reducedMotion</code>이면 정지 상태로 둡니다.</span>
+        </div>
+        <div class="phone">
+          <div class="dim"></div>
+          <div class="sheet">
+            <h3>Guarda tu progreso</h3>
+            <p>Tus personajes, tus objetos y tu historial vuelven si cambias de móvil.</p>
+            <div class="btn off">Conectando…</div>
+            <div class="segs"><i class="on"></i><i class="on"></i><i></i><i></i></div>
+            <div class="fine">Solo guardamos tu nombre y tu correo.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="plate">
+        <div class="cap">
+          <span class="state">error</span>
+          <span class="name">실패</span>
+          <span class="note">시트는 닫지 않습니다. 반대로 <b>유저가 직접 취소한 경우엔 아무 메시지도 띄우지 않습니다</b> — 의도한 행동에 에러를 붙이면 안 됩니다.</span>
+        </div>
+        <div class="phone">
+          <div class="dim"></div>
+          <div class="sheet">
+            <h3>Guarda tu progreso</h3>
+            <div class="hint warn"><span class="material-icons">error_outline</span><span>No pudimos conectar. Revisa tu conexión e inténtalo otra vez.</span></div>
+            <div class="btn plain">
+              <svg class="gmark" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="8.5" fill="none" stroke="#EA4335" stroke-width="5" stroke-dasharray="14 40" transform="rotate(-70 12 12)"/>
+                <circle cx="12" cy="12" r="8.5" fill="none" stroke="#FBBC05" stroke-width="5" stroke-dasharray="13 40" transform="rotate(35 12 12)"/>
+                <circle cx="12" cy="12" r="8.5" fill="none" stroke="#34A853" stroke-width="5" stroke-dasharray="13 40" transform="rotate(95 12 12)"/>
+                <circle cx="12" cy="12" r="8.5" fill="none" stroke="#4285F4" stroke-width="5" stroke-dasharray="14 40" transform="rotate(155 12 12)"/>
+                <rect x="12" y="10" width="7.5" height="4" fill="#4285F4"/>
+              </svg>
+              Reintentar
+            </div>
+            <div class="ghost">Ahora no</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="plate">
+        <div class="cap">
+          <span class="state">trigger · 1회 한정</span>
+          <span class="name">광고 해금 직후의 제안</span>
+          <span class="note">애착이 생긴 순간에만 자동으로 뜹니다. "Ahora no"를 누르면 <b>다시는 자동으로 뜨지 않고</b> 설정에서만 열립니다.</span>
+        </div>
+        <div class="phone">
+          <div class="dim"></div>
+          <div class="sheet">
+            <h3>Personaje 3 es tuyo</h3>
+            <p>Lo desbloqueaste viendo anuncios. Eso no se recupera solo: guárdalo antes de cambiar de móvil.</p>
+            <div class="btn plain">
+              <svg class="gmark" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="8.5" fill="none" stroke="#EA4335" stroke-width="5" stroke-dasharray="14 40" transform="rotate(-70 12 12)"/>
+                <circle cx="12" cy="12" r="8.5" fill="none" stroke="#FBBC05" stroke-width="5" stroke-dasharray="13 40" transform="rotate(35 12 12)"/>
+                <circle cx="12" cy="12" r="8.5" fill="none" stroke="#34A853" stroke-width="5" stroke-dasharray="13 40" transform="rotate(95 12 12)"/>
+                <circle cx="12" cy="12" r="8.5" fill="none" stroke="#4285F4" stroke-width="5" stroke-dasharray="14 40" transform="rotate(155 12 12)"/>
+                <rect x="12" y="10" width="7.5" height="4" fill="#4285F4"/>
+              </svg>
+              Continuar con Google
+            </div>
+            <div class="ghost">Ahora no</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ C ============================ -->
+  <section>
+    <div class="shead">
+      <div class="slabel">C · 계정</div>
+      <h2>유일한 신규 풀스크린, 그리고 두 개의 확인 창</h2>
+      <p><code>Eliminar cuenta</code>는 취향이 아니라 플레이 스토어 정책 요구사항입니다. 계정 전환 경고는 이 설계에서
+      가장 중요한 방어선입니다 — 없으면 <b>남의 지출 내역이 내 가계부에 병합됩니다.</b></p>
+    </div>
+
+    <div class="plates">
+      <div class="plate">
+        <div class="cap">
+          <span class="state">account</span>
+          <span class="name">계정 화면</span>
+          <span class="note">기존 <code>PixelTopBar</code> + <code>_SettingsRow</code> 재사용이라 신규 코드가 거의 없습니다.</span>
+        </div>
+        <div class="screen tall">
+          <div class="topbar"><span class="material-icons">arrow_back</span><span class="t">Cuenta</span><span class="pad"></span></div>
+          <div class="sechead">CUENTA</div>
+          <div class="row flat">
+            <div class="tile" style="background:rgba(57,85,142,.13)"><span class="material-icons" style="color:#39558E">mail_outline</span></div>
+            <div class="lab">Correo</div>
+            <div class="val">jaewook@gmail.com</div>
+          </div>
+          <div class="row flat">
+            <div class="tile" style="background:rgba(14,122,114,.13)"><span class="material-icons" style="color:#0E7A72">schedule</span></div>
+            <div class="lab">Última sincronización</div>
+            <div class="val">hace 2 min</div>
+          </div>
+          <div class="btn primary small" style="margin-top:2px">Sincronizar ahora</div>
+          <div class="sechead" style="margin-top:16px">SESIÓN</div>
+          <div class="row flat">
+            <div class="tile" style="background:rgba(89,97,116,.13)"><span class="material-icons" style="color:#596174">logout</span></div>
+            <div class="lab">Cerrar sesión</div>
+            <div class="val"></div>
+            <span class="material-icons chev">chevron_right</span>
+          </div>
+          <div class="row flat" style="border-color:#D4553F">
+            <div class="tile" style="background:rgba(212,85,63,.13); border-color:#D4553F"><span class="material-icons" style="color:#D4553F">delete_outline</span></div>
+            <div class="lab" style="color:#A63A25">Eliminar cuenta</div>
+            <div class="val"></div>
+            <span class="material-icons chev" style="color:#A63A25">chevron_right</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="plate">
+        <div class="cap">
+          <span class="state">destructive</span>
+          <span class="name">계정 삭제 확인</span>
+          <span class="note">무엇이 사라지고 <b>무엇이 남는지</b>를 같이 적습니다. 이 기기의 가계부는 그대로 남는다는 말이 없으면, 유저는 이 버튼을 영원히 못 누릅니다.</span>
+        </div>
+        <div class="dlg">
+          <h4>¿Eliminar tu cuenta?</h4>
+          <p>Se borrarán tu cuenta y tu respaldo en la nube.</p>
+          <div class="hint calm"><span class="material-icons">info_outline</span><span>Los datos de este móvil se quedan como están.</span></div>
+          <div class="acts">
+            <div class="btn plain small">Cancelar</div>
+            <div class="btn danger small">Eliminar</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="plate">
+        <div class="cap">
+          <span class="state">conflict · 핵심</span>
+          <span class="name">다른 계정 로그인 경고</span>
+          <span class="note">병합은 평소 자동입니다. <b>오직 이 경우에만 묻습니다</b> — 기기에 남은 이전 계정의 기록이 새 계정으로 섞이는 것을 막는 유일한 지점입니다.</span>
+        </div>
+        <div class="dlg">
+          <h4>Este móvil tiene otros datos</h4>
+          <p>Aquí hay movimientos de otra cuenta. Si continúas, Sobra usará los datos de la nube de jaewook@gmail.com.</p>
+          <div class="hint warn"><span class="material-icons">error_outline</span><span>Los movimientos que no estén en la nube no se mezclarán.</span></div>
+          <div class="acts">
+            <div class="btn plain small">Cancelar</div>
+            <div class="btn primary small">Continuar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ D ============================ -->
+  <section>
+    <div class="shead">
+      <div class="slabel">D · 확정이 필요한 항목</div>
+      <h2>이 시안이 전제한 세 가지 결정</h2>
+      <p>화면은 전부 아래 기본값을 가정하고 그렸습니다. 결정이 바뀌면 바뀌는 화면도 같이 적었습니다.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>결정</th><th>기본값</th><th>근거</th><th>바뀌면 영향받는 화면</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>로그아웃 시 기기 데이터</b></td>
+            <td class="rec">남긴다</td>
+            <td>앱이 "계정 없이 쓸 수 있다"고 이미 약속했습니다. 로그아웃이 삭제를 뜻하면 그 약속이 깨집니다.</td>
+            <td>C · 계정 삭제 확인의 안내 문구</td>
+          </tr>
+          <tr>
+            <td><b>병합 방식</b></td>
+            <td class="rec">묻지 않고 합집합</td>
+            <td>소유권은 합집합, 진행도는 최댓값, 기록은 id 합집합 — 어느 쪽도 잃지 않으니 물어볼 이유가 없습니다.</td>
+            <td>C · 계정 전환 경고만 남고 나머지 질문은 사라짐</td>
+          </tr>
+          <tr>
+            <td><b>자동 제안 시점</b></td>
+            <td class="rec">광고 해금 · 첫 결제 직후 1회</td>
+            <td>애착이 생기기 전에 묻는 온보딩 벽은 설득되지 않은 유저까지 걸러냅니다.</td>
+            <td>B · 트리거 시트의 존재 여부</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="sourced">
+    색·치수 출처 — <code>lib/theme/app_theme.dart</code> (AppColors, AppType),
+    <code>lib/widgets/pixel_ui.dart</code> (PixelCard 2.5px 테두리 / 4px 그림자, PixelButton 0·5px 그림자, PixelHint, PixelTopBar),
+    <code>lib/screens/settings_screen.dart</code> (_SettingsRow 42px 아이콘 타일, _SectionHeader).
+    화면 내부는 보는 사람의 다크 모드를 따라가지 않습니다 — 앱이 단일 라이트 테마(<code>brightness: Brightness.light</code>)로 출시되기 때문입니다.
+    구글 마크는 시안용 근사치이며, 구현에는 구글 공식 버튼 에셋을 씁니다.
+  </p>
+
+</div>
