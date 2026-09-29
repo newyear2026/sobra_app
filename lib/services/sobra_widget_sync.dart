@@ -7,7 +7,15 @@ import '../models/money_movement.dart';
 import '../state/sobra_store.dart';
 import '../widgets/pixel_ui.dart';
 
-enum SobraWidgetDestination { home, register, registerExpense, registerIncome }
+enum SobraWidgetDestination {
+  home,
+  register,
+  registerExpense,
+  registerIncome,
+
+  /// The budget tab, where a fixed-expense reminder leads.
+  budget,
+}
 
 /// Turns a movement into the line the home screen widget shows.
 ///
@@ -294,6 +302,7 @@ abstract final class SobraWidgetSync {
       'register_expense' => SobraWidgetDestination.registerExpense,
       'register_income' => SobraWidgetDestination.registerIncome,
       'home' => SobraWidgetDestination.home,
+      'budget' => SobraWidgetDestination.budget,
       _ => null,
     };
     if (value != null) destination.value = value;

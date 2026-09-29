@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../data/catalog_preview_data.dart';
+import '../l10n/catalog_labels.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/room_labels.dart';
 import '../state/sobra_store.dart';
@@ -55,6 +57,10 @@ class _RoomScreenState extends State<RoomScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final store = SobraScope.of(context);
+    final character = CatalogPreviewData.characters.firstWhere(
+      (entry) => entry.id == store.characterId,
+      orElse: () => CatalogPreviewData.characters.first,
+    );
     return Scaffold(
       backgroundColor: AppColors.surface,
       body: SafeArea(
@@ -110,7 +116,7 @@ class _RoomScreenState extends State<RoomScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Michi',
+                              catalogEntryDisplayName(l10n, character),
                               style: pixelText(size: 16, bold: true),
                             ),
                             Text(

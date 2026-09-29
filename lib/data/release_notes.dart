@@ -5,7 +5,7 @@ import '../l10n/generated/app_localizations.dart';
 /// Every version retained here costs one ARB string per line in *every*
 /// locale, and nobody running v1.4 opens the screen to read what changed in
 /// v1.1. So adding a release means dropping the oldest entry below and
-/// deleting its keys from all three ARB files — not appending and moving on.
+/// deleting its keys from every ARB file — not appending and moving on.
 /// `release_notes_test.dart` fails the build if this slips.
 const releaseNoteRetention = 5;
 
@@ -36,6 +36,17 @@ class ReleaseNote {
 /// eligibility, build plumbing — ships without an entry and announces
 /// nothing, which is what [ReleaseAnnouncements] reads a missing note as.
 final releaseNotes = <ReleaseNote>[
+  ReleaseNote(
+    version: '1.0.4',
+    releasedOn: DateTime(2026, 9, 28),
+    lines: [
+      (l10n) => l10n.releaseNote104Fixed,
+      (l10n) => l10n.releaseNote104Decor,
+      (l10n) => l10n.releaseNote104Names,
+      (l10n) => l10n.releaseNote104Widget,
+      (l10n) => l10n.releaseNote104Languages,
+    ],
+  ),
   ReleaseNote(
     version: '1.0.3',
     releasedOn: DateTime(2026, 9, 26),

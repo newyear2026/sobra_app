@@ -5,6 +5,7 @@ import '../l10n/labels.dart';
 import '../models/xp_event.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
+import '../widgets/cat_sprite.dart';
 import '../widgets/gamification_ui.dart';
 import '../widgets/pixel_ui.dart';
 
@@ -34,7 +35,11 @@ class XpHistoryScreen extends StatelessWidget {
                 const SizedBox(height: 18),
                 LevelStrip(
                   level: progress.level,
-                  title: xpLevelTitle(l10n, progress.level),
+                  title: xpLevelTitle(
+                    l10n,
+                    progress.level,
+                    CharacterCatalog.resolve(store.characterId).displayName,
+                  ),
                   subtitle: l10n.xpTotal(progress.totalXp),
                   currentXp: progress.currentLevelXp,
                   targetXp: progress.targetLevelXp,

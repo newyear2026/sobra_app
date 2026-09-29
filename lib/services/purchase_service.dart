@@ -187,6 +187,7 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   StoreReadiness _readiness = StoreReadiness.checking;
   PurchaseFailure? _pendingFailure;
   bool _restoreGrantedSomething = false;
+  bool _refreshing = false;
 
   /// Ids the store delivered since launch, which a revocation must not touch.
   ///
@@ -260,6 +261,35 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
     notifyListeners();
   }
 
+  /// Replays purchases again when the app comes back to the foreground.
+  ///
+  /// Catches what was bought outside the app while it sat in the background:
+  /// for example, a promo code redeemed in the Play Store. Play does not
+  /// announce it to a running app, so without asking it would
+  /// wait for the next cold start — which can be days on a phone that keeps
+  /// the app alive.
+  ///
+  /// Only replays; the revocation stays a launch-time check. Silent like the
+  /// launch restore, and skipped while a checkout is open: the Play sheet is
+  /// itself a trip to the background, and the purchase it returns with is
+  /// already on its way down the stream.
+  Future<void> refreshOnResume() async {
+    if (!restoreOnStart ||
+        _readiness != StoreReadiness.ready ||
+        _checkingOut.isNotEmpty ||
+        _refreshing) {
+      return;
+    }
+    _refreshing = true;
+    try {
+      await _backend.restorePurchases();
+    } on Object {
+      // Nothing the user asked for failed. The next resume asks again.
+    } finally {
+      _refreshing = false;
+    }
+  }
+
   /// Revokes purchases the store account no longer holds as paid.
   ///
   /// A refund, a chargeback, or a cash payment that expired unpaid all look
@@ -319,7 +349,8 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   /// An entry that can also be earned with ads must not be taken back on the
   /// strength of a refund for something else: the user may have watched for
   /// it. Ids outside the catalog — ad removal, raw product ids — are sold
-  /// only.
+  /// only. Gifts are not: nobody paid for them, so there is no refund to
+  /// follow.
   static bool _onlyEverSold(String id) {
     final entry = CatalogPreviewData.all
         .where((candidate) => candidate.id == id)

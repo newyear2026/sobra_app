@@ -140,34 +140,54 @@ class AppLocalizationsEs extends AppLocalizations {
   String get xpFirstSuccessfulCycleDetail => 'Bono de una sola vez';
 
   @override
-  String get xpLevelTitle1 => 'Michi curioso';
+  String xpLevelTitle1(String name) {
+    return '$name curioso';
+  }
 
   @override
-  String get xpLevelTitle2 => 'Michi ahorrador';
+  String xpLevelTitle2(String name) {
+    return '$name ahorrador';
+  }
 
   @override
-  String get xpLevelTitle3 => 'Michi contador';
+  String xpLevelTitle3(String name) {
+    return '$name contador';
+  }
 
   @override
-  String get xpLevelTitle4 => 'Michi guardián';
+  String xpLevelTitle4(String name) {
+    return '$name guardián';
+  }
 
   @override
-  String get xpLevelTitle5 => 'Michi maestro';
+  String xpLevelTitle5(String name) {
+    return '$name maestro';
+  }
 
   @override
-  String get xpLevelTitle6 => 'Michi experto';
+  String xpLevelTitle6(String name) {
+    return '$name experto';
+  }
 
   @override
-  String get xpLevelTitle7 => 'Michi estratega';
+  String xpLevelTitle7(String name) {
+    return '$name estratega';
+  }
 
   @override
-  String get xpLevelTitle8 => 'Michi próspero';
+  String xpLevelTitle8(String name) {
+    return '$name próspero';
+  }
 
   @override
-  String get xpLevelTitle9 => 'Michi sabio';
+  String xpLevelTitle9(String name) {
+    return '$name sabio';
+  }
 
   @override
-  String get xpLevelTitle10 => 'Michi leyenda';
+  String xpLevelTitle10(String name) {
+    return '$name leyenda';
+  }
 
   @override
   String xpNoticeCyclesClosedTitle(int count) {
@@ -365,6 +385,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get monthAbbr12 => 'dic';
 
   @override
+  String dateShort(String day, String month) {
+    return '$day $month';
+  }
+
+  @override
+  String dateFull(String day, String month, String year) {
+    return '$day $month $year';
+  }
+
+  @override
   String get back => 'Volver';
 
   @override
@@ -439,9 +469,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get collectionCharacters => 'Personajes';
-
-  @override
-  String get collectionGuineaPigName => 'Cobaya';
 
   @override
   String get collectionItems => 'Objetos';
@@ -527,6 +554,12 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get collectionPackUnlock =>
       'Llega con Michi y sus amigos. No se vende por separado.';
+
+  @override
+  String get collectionGiftOnly => 'REGALO';
+
+  @override
+  String get collectionGiftUnlock => 'Un regalo especial. No se vende.';
 
   @override
   String collectionAdProgress(int progress, int target) {
@@ -656,6 +689,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get roomBlueCreamRug => 'Tapete azul y crema';
+
+  @override
+  String get roomLaunchSofa => 'Sofá de terciopelo';
+
+  @override
+  String get roomLaunchTv => 'Tele de historias';
+
+  @override
+  String get launchGiftTitle => '¡Llegó tu regalo de lanzamiento!';
+
+  @override
+  String get launchGiftBody =>
+      'Empezaste Sobrita a tiempo. El sofá y la tele ya son tuyos.';
+
+  @override
+  String get launchGiftGoToRoom => 'Ponerlos en mi casa';
+
+  @override
+  String get launchGiftLater => 'Después';
 
   @override
   String get roomSuggestCabinet =>
@@ -1738,13 +1790,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get prologueMichiTrait => 'Callado.\nBueno con los números.';
 
   @override
-  String get prologuePoodleName => 'Poodle';
-
-  @override
   String get prologuePoodleTrait => 'Puro ánimo.\nMuy atento.';
-
-  @override
-  String get prologueSchnauzerName => 'Schnauzer';
 
   @override
   String get prologueSchnauzerTrait => 'Observador.\nSiempre atento.';
@@ -1933,6 +1979,26 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get releaseNote104Fixed =>
+      'Los gastos fijos van aparte del gasto diario. Aparecen en Inicio y pueden avisarte antes de vencer.';
+
+  @override
+  String get releaseNote104Decor =>
+      'La casa tiene más para colocar: una cama, una repisa, un tapete, un aparador, un frasco y un puf.';
+
+  @override
+  String get releaseNote104Names =>
+      'Miru, Yoshi y Cookie ya tienen nombre, y el título de nivel lleva el de quien te acompaña.';
+
+  @override
+  String get releaseNote104Widget =>
+      'El widget de inicio muestra el monto completo.';
+
+  @override
+  String get releaseNote104Languages =>
+      'Sobrita ahora habla portugués, alemán, francés y japonés.';
+
+  @override
   String get releaseNote103GuineaPig =>
       'Cobaya ya está en la colección. Dos anuncios cortos y se queda contigo.';
 
@@ -2007,6 +2073,29 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsRateApp => 'Calificar Sobrita';
 
   @override
+  String get settingsOurApps => 'Apps recomendadas';
+
+  @override
+  String get ourAppsIntro => 'Hechas por el equipo de Sobrita.';
+
+  @override
+  String get ourAppsOpen => 'Ver en Google Play';
+
+  @override
+  String get ourAppsLoopetKind => 'Rutinas';
+
+  @override
+  String get ourAppsLoopetBlurb =>
+      'Todo tu día en un círculo. Mira qué toca ahora y qué viene después.';
+
+  @override
+  String get ourAppsRandomFocusKind => 'Enfoque';
+
+  @override
+  String get ourAppsRandomFocusBlurb =>
+      'Gira la ruleta, elige cuánto tiempo y concéntrate sin pensarlo.';
+
+  @override
   String get releaseAnnouncementViewAll => 'Ver todo';
 
   @override
@@ -2014,4 +2103,241 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsReleaseNotesUnread => 'Novedades sin leer';
+
+  @override
+  String get fixedSectionTitle => 'Gastos fijos';
+
+  @override
+  String fixedSectionMonth(String month) {
+    return '$month · aparte de tu gasto diario';
+  }
+
+  @override
+  String fixedPaidOfTotal(String paid, String total) {
+    return 'Pagado $paid de $total';
+  }
+
+  @override
+  String get fixedAdd => 'Agregar gasto fijo';
+
+  @override
+  String get fixedEmptyBody =>
+      'Renta, celular, luz: anótalos una vez y te recuerdo cuándo toca pagar. No cambian tu gasto diario.';
+
+  @override
+  String get fixedFrequencyWeekly => 'Cada semana';
+
+  @override
+  String get fixedFrequencySemiMonthly => 'Cada quincena';
+
+  @override
+  String get fixedFrequencyMonthly => 'Cada mes';
+
+  @override
+  String get fixedFrequencyBimonthly => 'Cada 2 meses';
+
+  @override
+  String get fixedStatusPaid => 'Pagado';
+
+  @override
+  String get fixedStatusTomorrow => 'Mañana';
+
+  @override
+  String get fixedStatusOverdue => 'Fecha pasada';
+
+  @override
+  String fixedApprox(String amount) {
+    return 'aprox. $amount';
+  }
+
+  @override
+  String get fixedFormNewTitle => 'Nuevo gasto fijo';
+
+  @override
+  String get fixedFormEditTitle => 'Editar gasto fijo';
+
+  @override
+  String get fixedName => 'Nombre';
+
+  @override
+  String get fixedNameHint => 'Renta, celular, luz…';
+
+  @override
+  String get fixedNameRequired => 'Ponle un nombre';
+
+  @override
+  String get fixedHowOften => '¿Cada cuánto?';
+
+  @override
+  String get fixedNextDue => 'Próximo pago';
+
+  @override
+  String fixedThenDates(String dates) {
+    return 'Después: $dates…';
+  }
+
+  @override
+  String get fixedVariable => 'El monto cambia cada vez';
+
+  @override
+  String get fixedVariableHint => 'Uso lo último que pagaste como estimado.';
+
+  @override
+  String get fixedFormNote =>
+      'No cambia tu gasto diario: tu presupuesto es lo que te queda después de los fijos.';
+
+  @override
+  String get fixedSave => 'Guardar gasto fijo';
+
+  @override
+  String get fixedDelete => 'Eliminar gasto fijo';
+
+  @override
+  String fixedDeleteTitle(String name) {
+    return '¿Eliminar $name?';
+  }
+
+  @override
+  String get fixedDeleteBody =>
+      'Los pagos que ya registraste se quedan en tus movimientos.';
+
+  @override
+  String get fixedDueToday => 'Vence hoy';
+
+  @override
+  String get fixedDueTomorrow => 'Vence mañana';
+
+  @override
+  String fixedDueOn(String date) {
+    return 'Vence el $date';
+  }
+
+  @override
+  String fixedWasDue(String date) {
+    return 'Tocaba el $date';
+  }
+
+  @override
+  String get fixedHowMuch => '¿Cuánto pagaste?';
+
+  @override
+  String fixedLastTime(String amount) {
+    return 'La vez pasada: $amount';
+  }
+
+  @override
+  String fixedTodayUnchanged(String amount) {
+    return 'Tu gasto de hoy sigue en $amount.';
+  }
+
+  @override
+  String fixedCashChange(String from, String to) {
+    return 'Efectivo estimado: de $from a $to';
+  }
+
+  @override
+  String fixedPaidWith(String method) {
+    return 'Pago con $method';
+  }
+
+  @override
+  String get fixedChange => 'Cambiar';
+
+  @override
+  String get fixedMarkPaid => 'Ya lo pagué';
+
+  @override
+  String get fixedNotYet => 'Todavía no';
+
+  @override
+  String get fixedBillOnly => 'Solo llegó el recibo';
+
+  @override
+  String fixedBillSaved(String amount) {
+    return 'Listo, espero $amount.';
+  }
+
+  @override
+  String fixedPaymentSaved(String name) {
+    return '$name registrado.';
+  }
+
+  @override
+  String get fixedHomeLabel => 'Gasto fijo';
+
+  @override
+  String fixedHomeMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pagos fijos por revisar',
+      one: '1 pago fijo por revisar',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fixedHomeSee => 'Ver';
+
+  @override
+  String get fixedIntroTitle => 'Tu presupuesto es para gastar, sin fijos';
+
+  @override
+  String fixedIntroBody(String budget, String name) {
+    return 'Los gastos fijos no bajan tu gasto diario. Si tus $budget ya contaban «$name», conviene bajar el presupuesto.';
+  }
+
+  @override
+  String get fixedIntroKeep => 'Está bien así';
+
+  @override
+  String get fixedIntroAdjust => 'Ajustar presupuesto';
+
+  @override
+  String get fixedBadge => 'Fijo';
+
+  @override
+  String get fixedNothingThisMonth => 'Nada vence este mes.';
+
+  @override
+  String get fixedReminderLabel => 'Recordatorio';
+
+  @override
+  String get fixedReminderNone => 'Sin aviso';
+
+  @override
+  String get fixedReminderSameDay => 'El mismo día';
+
+  @override
+  String get fixedReminderDayBefore => '1 día antes';
+
+  @override
+  String get fixedReminderThreeDaysBefore => '3 días antes';
+
+  @override
+  String get fixedReminderHint => 'Te aviso a las 9:00 de la mañana.';
+
+  @override
+  String get fixedReminderBlocked =>
+      'Las notificaciones de Sobrita están apagadas, así que no podré avisarte.';
+
+  @override
+  String fixedReminderTitleToday(String name) {
+    return 'Hoy toca pagar $name';
+  }
+
+  @override
+  String fixedReminderTitleTomorrow(String name) {
+    return 'Mañana toca pagar $name';
+  }
+
+  @override
+  String fixedReminderTitleInDays(String name, int days) {
+    return '$name vence en $days días';
+  }
+
+  @override
+  String fixedReminderBody(String amount, String method) {
+    return '$amount · $method. Cuando pagues, anótalo en Sobrita.';
+  }
 }

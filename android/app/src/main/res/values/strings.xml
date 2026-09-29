@@ -8,6 +8,8 @@
     <string name="app_name">Sobrita</string>
     <string name="quick_entry_channel_name">Quick entry</string>
     <string name="quick_entry_channel_description">Shortcuts to add income and expenses</string>
+    <string name="fixed_channel_name">Fixed payments</string>
+    <string name="fixed_channel_description">Reminders before rent and bills are due</string>
     <string name="quick_entry_question">What do you want to add?</string>
     <string name="quick_entry_income">Income</string>
     <string name="quick_entry_expense">Expense</string>

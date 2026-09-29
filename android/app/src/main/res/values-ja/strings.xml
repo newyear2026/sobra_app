@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quick_entry_channel_name">クイック記録</string>
+    <string name="quick_entry_channel_description">収入と支出をすぐに記録するショートカット</string>
+    <string name="fixed_channel_name">固定費</string>
+    <string name="fixed_channel_description">家賃や請求の支払い日の前にお知らせします</string>
+    <string name="quick_entry_question">何を記録しますか？</string>
+    <string name="quick_entry_income">収入</string>
+    <string name="quick_entry_expense">支出</string>
+    <string name="widget_today_remaining">今日使えるお金</string>
+    <string name="widget_today_remaining_short">今日の残り</string>
+    <string name="widget_open_app">Sobritaを開く</string>
+    <string name="widget_cycle_balance">サイクルの残高</string>
+    <string name="widget_cycle_balance_short">残高</string>
+    <string name="widget_cycle_progress">サイクルの進み具合</string>
+    <string name="widget_recent_movements">最近の記録</string>
+    <string name="widget_register_expense">支出を記録</string>
+    <string name="widget_compact_description">Sobrita：今日使えるお金</string>
+    <string name="widget_summary_description">Sobrita：使えるお金とサイクルの進み具合</string>
+    <string name="widget_cat_description">Sobritaのネコ</string>
+    <string name="widget_poodle_description">Sobritaのプードル</string>
+    <string name="widget_schnauzer_description">Sobritaのシュナウザー</string>
+    <string name="widget_guinea_pig_description">Sobritaのモルモット</string>
+    <!-- Sample text for the widget picker's preview only. -->
+    <string name="widget_preview_days">8日</string>
+    <string name="widget_preview_register">+  支出を記録</string>
+    <plurals name="widget_days">
+        <item quantity="other">%d日</item>
+    </plurals>
+</resources>

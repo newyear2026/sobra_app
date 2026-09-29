@@ -9,7 +9,10 @@ enum CatalogKind { character, item }
 /// as part of a larger product, so its card explains where it comes from
 /// instead of offering a price. Keeping it apart from [purchase] is what stops
 /// a single decoration card from opening the checkout for a whole bundle.
-enum CatalogUnlockMethod { included, purchase, rewardedAd, level, bundle }
+///
+/// [gift] is handed out by the app for a limited event. It has no store
+/// product, price or checkout, and stays owned after the event ends.
+enum CatalogUnlockMethod { included, purchase, rewardedAd, level, bundle, gift }
 
 /// The visual slot a preview entry occupies until its final art is approved.
 ///
@@ -21,6 +24,9 @@ enum CatalogVisual {
   poodle,
   schnauzer,
   guineaPig,
+  capybara,
+  alpaca,
+  platypus,
   characterPlaceholder,
   lamp,
   savings,

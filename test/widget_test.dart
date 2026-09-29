@@ -129,8 +129,8 @@ void main() {
     expect(find.text('PERSONAJES'), findsOneWidget);
     // Only Michi and Poodle ship owned; the two new pets need rewarded ads.
     expect(find.text('OBTENIDO'), findsNWidgets(2));
-    expect(find.text('Schnauzer'), findsOneWidget);
-    expect(find.text('Cobaya'), findsOneWidget);
+    expect(find.text('Yoshi'), findsOneWidget);
+    expect(find.text('Cookie'), findsOneWidget);
     await tester.scrollUntilVisible(
       find.text('Personaje 2'),
       200,

@@ -84,11 +84,23 @@ abstract final class AppType {
   /// static face cannot, and Flutter synthesises no bold for a fallback — so
   /// without a bold file a Korean heading renders at the weight of the
   /// sentence under it.
-  static const fallback = <String>['SobraHangul'];
+  ///
+  /// Kana and kanji come from a second face cut from the same Galmuri at the
+  /// same scale (`tool/build_japanese_fallback.py`). It has no bold: Galmuri
+  /// draws none for Japanese, and a mechanical one clogs dense kanji. So a
+  /// Japanese heading is set at regular weight on purpose, and its hierarchy
+  /// comes from size alone.
+  static const fallback = <String>['SobraHangul', 'SobraJapanese'];
   static const minFontSize = 12.0;
 
   static const regular = <FontVariation>[FontVariation('wght', 400)];
   static const bold = <FontVariation>[FontVariation('wght', 700)];
+
+  /// Standard ligatures off. Pixelify's `fi` and `fl` are one pixel cell
+  /// wide and draw as something close to an `A`, so with `liga` on, "fijos"
+  /// read "Ajos" and "Profil" read "ProAl". The letters are fine on their
+  /// own, and a pixel font has no joins that need a ligature.
+  static const features = <FontFeature>[FontFeature.disable('liga')];
 }
 
 /// A [TextStyle] on the Sobra type ramp.
@@ -110,6 +122,7 @@ TextStyle pixelText({
   // them leaves half of a Korean heading unbolded.
   fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
   fontVariations: bold ? AppType.bold : AppType.regular,
+  fontFeatures: AppType.features,
   color: color,
   height: height,
   letterSpacing: 0,

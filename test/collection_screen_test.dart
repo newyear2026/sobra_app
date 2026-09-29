@@ -81,6 +81,23 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  // The header art is a picture of a room, so it has to be the user's room:
+  // pinned to Casa clara it went stale the moment another one was equipped.
+  testWidgets('the header shows the equipped room', (tester) async {
+    final store = await loadStore();
+    await store.saveRoomSelection(
+      roomId: RoomThemes.casaJardinId,
+      placementsByRoom: const {},
+    );
+    await pump(tester, store);
+
+    final art = tester
+        .widgetList<Image>(find.byType(Image))
+        .map((image) => (image.image as AssetImage).assetName);
+    expect(art, contains(RoomThemes.casaJardin.previewAsset));
+    expect(art, isNot(contains(RoomThemes.casaClara.previewAsset)));
+  });
+
   // The screen used to hold ownership in its own State, so what it offered was
   // the same two ids for everybody regardless of what the user had done.
   // Owning it ends the collection's business with it: not for sale any more,
@@ -108,13 +125,54 @@ void main() {
     final store = await loadStore();
     await pump(tester, store);
 
-    await tester.ensureVisible(find.text('Personaje 7'));
+    await tester.scrollUntilVisible(
+      find.text('Personaje 10'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Personaje 7'));
+    await tester.tap(find.text('Personaje 10'));
     await tester.pumpAndSettle();
 
     expect(inDialog('COMPRAR'), findsOneWidget);
     expect(inDialog('EQUIPAR'), findsNothing);
+  });
+
+  // Slot 10 has no product in Play until it has a name, so nothing quotes it.
+  testWidgets('a paid character with no price cannot be bought', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    final unpriced = entryById('character-10');
+    expect(store.ownsCatalogEntry(unpriced), isFalse);
+    await pump(tester, store, initialEntryId: 'character-10');
+
+    expect(inDialog('Personaje 10'), findsOneWidget);
+    expect(inDialog('COMPRAR'), findsOneWidget);
+    final buyButton = tester.widget<FilledButton>(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.byType(FilledButton),
+      ),
+    );
+    expect(buyButton.onPressed, isNull);
+  });
+
+  testWidgets('Pico appears in the collection with its price pending', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store, initialEntryId: 'platypus');
+
+    expect(inDialog('Pico'), findsOneWidget);
+    expect(inDialog('COMPRAR'), findsOneWidget);
+    final buyButton = tester.widget<FilledButton>(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.byType(FilledButton),
+      ),
+    );
+    expect(buyButton.onPressed, isNull);
   });
 
   testWidgets('a stored ad count is what the card counts from', (tester) async {
@@ -126,10 +184,10 @@ void main() {
     // The count is its own line now, so the button says what it does and the
     // line says how far along the run is.
     // The lazy grid builds the visible cards; later entries load on scroll.
-    expect(find.text('VER ANUNCIO'), findsNWidgets(4));
+    expect(find.text('VER ANUNCIO'), findsAtLeastNWidgets(3));
     expect(find.text('1/2'), findsOneWidget);
-    // Schnauzer, Guinea Pig and Character 05 remain untouched.
-    expect(find.text('0/2'), findsNWidgets(3));
+    // The lazy grid has not necessarily built every later character card.
+    expect(find.text('0/2'), findsAtLeastNWidgets(2));
   });
 
   testWidgets('an owned item offers nothing to place', (tester) async {
@@ -190,9 +248,9 @@ void main() {
 
     await pump(tester, store, ads: ads);
 
-    expect(find.text('SIN ANUNCIOS'), findsNWidgets(4));
+    expect(find.text('SIN ANUNCIOS'), findsAtLeastNWidgets(3));
     // Blocked, but the run is still legible.
-    expect(find.text('0/2'), findsNWidgets(4));
+    expect(find.text('0/2'), findsAtLeastNWidgets(3));
   });
 
   // No ad system above the screen at all — the design gallery, and every
@@ -204,7 +262,7 @@ void main() {
 
     await pump(tester, store);
 
-    expect(find.text('SIN ANUNCIOS'), findsNWidgets(4));
+    expect(find.text('SIN ANUNCIOS'), findsAtLeastNWidgets(3));
   });
 
   testWidgets('a spent daily cap is what every ad card says', (tester) async {
@@ -216,7 +274,7 @@ void main() {
 
     await pump(tester, store, ads: await readyAds(store));
 
-    expect(find.text('LÍMITE DE HOY'), findsNWidgets(4));
+    expect(find.text('LÍMITE DE HOY'), findsAtLeastNWidgets(3));
   });
 
   testWidgets('the special tier says it continues tomorrow', (tester) async {
@@ -356,6 +414,8 @@ void main() {
     final store = await loadStore();
 
     await pump(tester, store, ads: await readyAds(store));
+    await tester.ensureVisible(find.text('Personaje 3'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Personaje 3'));
     await tester.pumpAndSettle();
 
@@ -378,7 +438,7 @@ void main() {
       initialEntryId: 'guinea-pig',
     );
 
-    expect(find.text('Cobaya'), findsWidgets);
+    expect(find.text('Cookie'), findsWidgets);
     expect(inDialog('Mira anuncios de recompensa · 0/2'), findsOneWidget);
     expect(inDialog('VER ANUNCIO'), findsOneWidget);
     expect(store.ownsCatalogEntry(entry), isFalse);
@@ -388,13 +448,13 @@ void main() {
     expect(store.rewardedAdProgressFor(entry.id), 1);
     expect(store.ownsCatalogEntry(entry), isFalse);
 
-    await tester.tap(find.text('Cobaya'));
+    await tester.tap(find.text('Cookie'));
     await tester.pumpAndSettle();
     expect(inDialog('Mira anuncios de recompensa · 1/2'), findsOneWidget);
     await tester.tap(inDialog('VER ANUNCIO'));
     await tester.pumpAndSettle();
     expect(store.ownsCatalogEntry(entry), isTrue);
-    expect(find.text('¡Cobaya es tuyo!'), findsOneWidget);
+    expect(find.text('¡Cookie es tuyo!'), findsOneWidget);
   });
 
   // The fetch in front of the ad is a network round trip. Before the card said
@@ -473,6 +533,8 @@ void main() {
     expect(store.rewardedAdsLeftToday, 0);
 
     await pump(tester, store, ads: await readyAds(store));
+    await tester.ensureVisible(find.text('Personaje 3'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Personaje 3'));
     await tester.pumpAndSettle();
 

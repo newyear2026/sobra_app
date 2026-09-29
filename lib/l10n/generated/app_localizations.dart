@@ -5,9 +5,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
+import 'app_localizations_fr.dart';
+import 'app_localizations_ja.dart';
 import 'app_localizations_ko.dart';
+import 'app_localizations_pt.dart';
 
 // ignore_for_file: type=lint
 
@@ -95,9 +99,13 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
+    Locale('de'),
     Locale('en'),
     Locale('es'),
+    Locale('fr'),
+    Locale('ja'),
     Locale('ko'),
+    Locale('pt'),
   ];
 
   /// No description provided for @categoryFood.
@@ -346,65 +354,65 @@ abstract class AppLocalizations {
   /// **'Bono de una sola vez'**
   String get xpFirstSuccessfulCycleDetail;
 
-  /// No description provided for @xpLevelTitle1.
+  /// The title of level 1, worn by the chosen companion.
   ///
   /// In es, this message translates to:
-  /// **'Michi curioso'**
-  String get xpLevelTitle1;
+  /// **'{name} curioso'**
+  String xpLevelTitle1(String name);
 
-  /// No description provided for @xpLevelTitle2.
+  /// The title of level 2; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi ahorrador'**
-  String get xpLevelTitle2;
+  /// **'{name} ahorrador'**
+  String xpLevelTitle2(String name);
 
-  /// No description provided for @xpLevelTitle3.
+  /// The title of level 3; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi contador'**
-  String get xpLevelTitle3;
+  /// **'{name} contador'**
+  String xpLevelTitle3(String name);
 
-  /// No description provided for @xpLevelTitle4.
+  /// The title of level 4; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi guardián'**
-  String get xpLevelTitle4;
+  /// **'{name} guardián'**
+  String xpLevelTitle4(String name);
 
-  /// No description provided for @xpLevelTitle5.
+  /// The title of level 5; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi maestro'**
-  String get xpLevelTitle5;
+  /// **'{name} maestro'**
+  String xpLevelTitle5(String name);
 
-  /// No description provided for @xpLevelTitle6.
+  /// The title of level 6; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi experto'**
-  String get xpLevelTitle6;
+  /// **'{name} experto'**
+  String xpLevelTitle6(String name);
 
-  /// No description provided for @xpLevelTitle7.
+  /// The title of level 7; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi estratega'**
-  String get xpLevelTitle7;
+  /// **'{name} estratega'**
+  String xpLevelTitle7(String name);
 
-  /// No description provided for @xpLevelTitle8.
+  /// The title of level 8; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi próspero'**
-  String get xpLevelTitle8;
+  /// **'{name} próspero'**
+  String xpLevelTitle8(String name);
 
-  /// No description provided for @xpLevelTitle9.
+  /// The title of level 9; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi sabio'**
-  String get xpLevelTitle9;
+  /// **'{name} sabio'**
+  String xpLevelTitle9(String name);
 
-  /// No description provided for @xpLevelTitle10.
+  /// The title of level 10; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi leyenda'**
-  String get xpLevelTitle10;
+  /// **'{name} leyenda'**
+  String xpLevelTitle10(String name);
 
   /// Shown after settling closed cycles, when at least one of them earned XP.
   ///
@@ -711,6 +719,18 @@ abstract class AppLocalizations {
   /// **'dic'**
   String get monthAbbr12;
 
+  /// A day and a month, as Sobra writes a date. {month} is one of the monthAbbr strings; the order is the locale's.
+  ///
+  /// In es, this message translates to:
+  /// **'{day} {month}'**
+  String dateShort(String day, String month);
+
+  /// No description provided for @dateFull.
+  ///
+  /// In es, this message translates to:
+  /// **'{day} {month} {year}'**
+  String dateFull(String day, String month, String year);
+
   /// No description provided for @back.
   ///
   /// In es, this message translates to:
@@ -861,12 +881,6 @@ abstract class AppLocalizations {
   /// **'Personajes'**
   String get collectionCharacters;
 
-  /// No description provided for @collectionGuineaPigName.
-  ///
-  /// In es, this message translates to:
-  /// **'Cobaya'**
-  String get collectionGuineaPigName;
-
   /// No description provided for @collectionItems.
   ///
   /// In es, this message translates to:
@@ -1004,6 +1018,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Llega con Michi y sus amigos. No se vende por separado.'**
   String get collectionPackUnlock;
+
+  /// No description provided for @collectionGiftOnly.
+  ///
+  /// In es, this message translates to:
+  /// **'REGALO'**
+  String get collectionGiftOnly;
+
+  /// No description provided for @collectionGiftUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'Un regalo especial. No se vende.'**
+  String get collectionGiftUnlock;
 
   /// No description provided for @collectionAdProgress.
   ///
@@ -1244,6 +1270,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Tapete azul y crema'**
   String get roomBlueCreamRug;
+
+  /// No description provided for @roomLaunchSofa.
+  ///
+  /// In es, this message translates to:
+  /// **'Sofá de terciopelo'**
+  String get roomLaunchSofa;
+
+  /// No description provided for @roomLaunchTv.
+  ///
+  /// In es, this message translates to:
+  /// **'Tele de historias'**
+  String get roomLaunchTv;
+
+  /// No description provided for @launchGiftTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Llegó tu regalo de lanzamiento!'**
+  String get launchGiftTitle;
+
+  /// No description provided for @launchGiftBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Empezaste Sobrita a tiempo. El sofá y la tele ya son tuyos.'**
+  String get launchGiftBody;
+
+  /// No description provided for @launchGiftGoToRoom.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponerlos en mi casa'**
+  String get launchGiftGoToRoom;
+
+  /// No description provided for @launchGiftLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Después'**
+  String get launchGiftLater;
 
   /// No description provided for @roomSuggestCabinet.
   ///
@@ -3027,23 +3089,11 @@ abstract class AppLocalizations {
   /// **'Callado.\nBueno con los números.'**
   String get prologueMichiTrait;
 
-  /// No description provided for @prologuePoodleName.
-  ///
-  /// In es, this message translates to:
-  /// **'Poodle'**
-  String get prologuePoodleName;
-
   /// No description provided for @prologuePoodleTrait.
   ///
   /// In es, this message translates to:
   /// **'Puro ánimo.\nMuy atento.'**
   String get prologuePoodleTrait;
-
-  /// No description provided for @prologueSchnauzerName.
-  ///
-  /// In es, this message translates to:
-  /// **'Schnauzer'**
-  String get prologueSchnauzerName;
 
   /// No description provided for @prologueSchnauzerTrait.
   ///
@@ -3363,6 +3413,36 @@ abstract class AppLocalizations {
   /// **'Guardamos las últimas {count} versiones.'**
   String releaseNotesRetention(int count);
 
+  /// No description provided for @releaseNote104Fixed.
+  ///
+  /// In es, this message translates to:
+  /// **'Los gastos fijos van aparte del gasto diario. Aparecen en Inicio y pueden avisarte antes de vencer.'**
+  String get releaseNote104Fixed;
+
+  /// No description provided for @releaseNote104Decor.
+  ///
+  /// In es, this message translates to:
+  /// **'La casa tiene más para colocar: una cama, una repisa, un tapete, un aparador, un frasco y un puf.'**
+  String get releaseNote104Decor;
+
+  /// No description provided for @releaseNote104Names.
+  ///
+  /// In es, this message translates to:
+  /// **'Miru, Yoshi y Cookie ya tienen nombre, y el título de nivel lleva el de quien te acompaña.'**
+  String get releaseNote104Names;
+
+  /// No description provided for @releaseNote104Widget.
+  ///
+  /// In es, this message translates to:
+  /// **'El widget de inicio muestra el monto completo.'**
+  String get releaseNote104Widget;
+
+  /// No description provided for @releaseNote104Languages.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobrita ahora habla portugués, alemán, francés y japonés.'**
+  String get releaseNote104Languages;
+
   /// No description provided for @releaseNote103GuineaPig.
   ///
   /// In es, this message translates to:
@@ -3489,6 +3569,48 @@ abstract class AppLocalizations {
   /// **'Calificar Sobrita'**
   String get settingsRateApp;
 
+  /// Ajustes row, under Acerca de, that opens the list of the team's other apps. Also the title of that screen. Kept neutral on purpose: the screen's intro line says who made them.
+  ///
+  /// In es, this message translates to:
+  /// **'Apps recomendadas'**
+  String get settingsOurApps;
+
+  /// One line under the title of the other-apps screen, saying who made them.
+  ///
+  /// In es, this message translates to:
+  /// **'Hechas por el equipo de Sobrita.'**
+  String get ourAppsIntro;
+
+  /// Button on each card of the other-apps screen; opens that app's Google Play listing.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver en Google Play'**
+  String get ourAppsOpen;
+
+  /// One word under the name LOOPET: what the app is for. Shown in capitals.
+  ///
+  /// In es, this message translates to:
+  /// **'Rutinas'**
+  String get ourAppsLoopetKind;
+
+  /// Two-line description of LOOPET, a 24-hour circular routine planner. Adapted from its Play short description.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo tu día en un círculo. Mira qué toca ahora y qué viene después.'**
+  String get ourAppsLoopetBlurb;
+
+  /// One word under the name RandomFocus: what the app is for. Shown in capitals.
+  ///
+  /// In es, this message translates to:
+  /// **'Enfoque'**
+  String get ourAppsRandomFocusKind;
+
+  /// Two-line description of RandomFocus, a focus timer whose length is picked by spinning a roulette wheel. Adapted from its Play short description.
+  ///
+  /// In es, this message translates to:
+  /// **'Gira la ruleta, elige cuánto tiempo y concéntrate sin pensarlo.'**
+  String get ourAppsRandomFocusBlurb;
+
   /// Opens the full Novedades screen from the card shown after an update.
   ///
   /// In es, this message translates to:
@@ -3506,6 +3628,384 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Novedades sin leer'**
   String get settingsReleaseNotesUnread;
+
+  /// Budget tab heading for rent, phone plans, bills paid on a schedule.
+  ///
+  /// In es, this message translates to:
+  /// **'Gastos fijos'**
+  String get fixedSectionTitle;
+
+  /// Under the heading: which month the list covers, and that it does not touch the daily amount.
+  ///
+  /// In es, this message translates to:
+  /// **'{month} · aparte de tu gasto diario'**
+  String fixedSectionMonth(String month);
+
+  /// No description provided for @fixedPaidOfTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'Pagado {paid} de {total}'**
+  String fixedPaidOfTotal(String paid, String total);
+
+  /// No description provided for @fixedAdd.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar gasto fijo'**
+  String get fixedAdd;
+
+  /// No description provided for @fixedEmptyBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Renta, celular, luz: anótalos una vez y te recuerdo cuándo toca pagar. No cambian tu gasto diario.'**
+  String get fixedEmptyBody;
+
+  /// No description provided for @fixedFrequencyWeekly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada semana'**
+  String get fixedFrequencyWeekly;
+
+  /// On the 15th and the last day of the month. Korean matches the existing pay-cycle label.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada quincena'**
+  String get fixedFrequencySemiMonthly;
+
+  /// No description provided for @fixedFrequencyMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada mes'**
+  String get fixedFrequencyMonthly;
+
+  /// CFE electricity and water are billed every two months in most of Mexico.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada 2 meses'**
+  String get fixedFrequencyBimonthly;
+
+  /// No description provided for @fixedStatusPaid.
+  ///
+  /// In es, this message translates to:
+  /// **'Pagado'**
+  String get fixedStatusPaid;
+
+  /// No description provided for @fixedStatusTomorrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Mañana'**
+  String get fixedStatusTomorrow;
+
+  /// Unpaid and past its date. Deliberately soft: no 'vencido' or '연체' — Sobra reminds, it does not scold.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha pasada'**
+  String get fixedStatusOverdue;
+
+  /// An estimate for a bill whose amount changes each time.
+  ///
+  /// In es, this message translates to:
+  /// **'aprox. {amount}'**
+  String fixedApprox(String amount);
+
+  /// No description provided for @fixedFormNewTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo gasto fijo'**
+  String get fixedFormNewTitle;
+
+  /// No description provided for @fixedFormEditTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar gasto fijo'**
+  String get fixedFormEditTitle;
+
+  /// No description provided for @fixedName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get fixedName;
+
+  /// No description provided for @fixedNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Renta, celular, luz…'**
+  String get fixedNameHint;
+
+  /// No description provided for @fixedNameRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponle un nombre'**
+  String get fixedNameRequired;
+
+  /// No description provided for @fixedHowOften.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cada cuánto?'**
+  String get fixedHowOften;
+
+  /// No description provided for @fixedNextDue.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximo pago'**
+  String get fixedNextDue;
+
+  /// The next few due dates, so a wrong month shows up before saving.
+  ///
+  /// In es, this message translates to:
+  /// **'Después: {dates}…'**
+  String fixedThenDates(String dates);
+
+  /// No description provided for @fixedVariable.
+  ///
+  /// In es, this message translates to:
+  /// **'El monto cambia cada vez'**
+  String get fixedVariable;
+
+  /// No description provided for @fixedVariableHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Uso lo último que pagaste como estimado.'**
+  String get fixedVariableHint;
+
+  /// No description provided for @fixedFormNote.
+  ///
+  /// In es, this message translates to:
+  /// **'No cambia tu gasto diario: tu presupuesto es lo que te queda después de los fijos.'**
+  String get fixedFormNote;
+
+  /// No description provided for @fixedSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar gasto fijo'**
+  String get fixedSave;
+
+  /// No description provided for @fixedDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar gasto fijo'**
+  String get fixedDelete;
+
+  /// No description provided for @fixedDeleteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar {name}?'**
+  String fixedDeleteTitle(String name);
+
+  /// No description provided for @fixedDeleteBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Los pagos que ya registraste se quedan en tus movimientos.'**
+  String get fixedDeleteBody;
+
+  /// No description provided for @fixedDueToday.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence hoy'**
+  String get fixedDueToday;
+
+  /// No description provided for @fixedDueTomorrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence mañana'**
+  String get fixedDueTomorrow;
+
+  /// No description provided for @fixedDueOn.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence el {date}'**
+  String fixedDueOn(String date);
+
+  /// No description provided for @fixedWasDue.
+  ///
+  /// In es, this message translates to:
+  /// **'Tocaba el {date}'**
+  String fixedWasDue(String date);
+
+  /// No description provided for @fixedHowMuch.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuánto pagaste?'**
+  String get fixedHowMuch;
+
+  /// No description provided for @fixedLastTime.
+  ///
+  /// In es, this message translates to:
+  /// **'La vez pasada: {amount}'**
+  String fixedLastTime(String amount);
+
+  /// No description provided for @fixedTodayUnchanged.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu gasto de hoy sigue en {amount}.'**
+  String fixedTodayUnchanged(String amount);
+
+  /// A cash payment does leave the wallet, so the cash estimate moves even though the budget does not.
+  ///
+  /// In es, this message translates to:
+  /// **'Efectivo estimado: de {from} a {to}'**
+  String fixedCashChange(String from, String to);
+
+  /// No description provided for @fixedPaidWith.
+  ///
+  /// In es, this message translates to:
+  /// **'Pago con {method}'**
+  String fixedPaidWith(String method);
+
+  /// No description provided for @fixedChange.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar'**
+  String get fixedChange;
+
+  /// No description provided for @fixedMarkPaid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya lo pagué'**
+  String get fixedMarkPaid;
+
+  /// No description provided for @fixedNotYet.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no'**
+  String get fixedNotYet;
+
+  /// Updates the expected amount without recording a payment.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo llegó el recibo'**
+  String get fixedBillOnly;
+
+  /// No description provided for @fixedBillSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo, espero {amount}.'**
+  String fixedBillSaved(String amount);
+
+  /// No description provided for @fixedPaymentSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} registrado.'**
+  String fixedPaymentSaved(String name);
+
+  /// No description provided for @fixedHomeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto fijo'**
+  String get fixedHomeLabel;
+
+  /// No description provided for @fixedHomeMany.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 pago fijo por revisar} other{{count} pagos fijos por revisar}}'**
+  String fixedHomeMany(int count);
+
+  /// No description provided for @fixedHomeSee.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver'**
+  String get fixedHomeSee;
+
+  /// No description provided for @fixedIntroTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu presupuesto es para gastar, sin fijos'**
+  String get fixedIntroTitle;
+
+  /// No description provided for @fixedIntroBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Los gastos fijos no bajan tu gasto diario. Si tus {budget} ya contaban «{name}», conviene bajar el presupuesto.'**
+  String fixedIntroBody(String budget, String name);
+
+  /// No description provided for @fixedIntroKeep.
+  ///
+  /// In es, this message translates to:
+  /// **'Está bien así'**
+  String get fixedIntroKeep;
+
+  /// No description provided for @fixedIntroAdjust.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustar presupuesto'**
+  String get fixedIntroAdjust;
+
+  /// Marks a fixed-expense payment in the movements list.
+  ///
+  /// In es, this message translates to:
+  /// **'Fijo'**
+  String get fixedBadge;
+
+  /// No description provided for @fixedNothingThisMonth.
+  ///
+  /// In es, this message translates to:
+  /// **'Nada vence este mes.'**
+  String get fixedNothingThisMonth;
+
+  /// No description provided for @fixedReminderLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorio'**
+  String get fixedReminderLabel;
+
+  /// No description provided for @fixedReminderNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin aviso'**
+  String get fixedReminderNone;
+
+  /// No description provided for @fixedReminderSameDay.
+  ///
+  /// In es, this message translates to:
+  /// **'El mismo día'**
+  String get fixedReminderSameDay;
+
+  /// No description provided for @fixedReminderDayBefore.
+  ///
+  /// In es, this message translates to:
+  /// **'1 día antes'**
+  String get fixedReminderDayBefore;
+
+  /// No description provided for @fixedReminderThreeDaysBefore.
+  ///
+  /// In es, this message translates to:
+  /// **'3 días antes'**
+  String get fixedReminderThreeDaysBefore;
+
+  /// No description provided for @fixedReminderHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Te aviso a las 9:00 de la mañana.'**
+  String get fixedReminderHint;
+
+  /// Shown after saving a fixed expense with a reminder when Android refused notification permission.
+  ///
+  /// In es, this message translates to:
+  /// **'Las notificaciones de Sobrita están apagadas, así que no podré avisarte.'**
+  String get fixedReminderBlocked;
+
+  /// Notification title on the due date. {name} is what the user called the fixed expense.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy toca pagar {name}'**
+  String fixedReminderTitleToday(String name);
+
+  /// No description provided for @fixedReminderTitleTomorrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Mañana toca pagar {name}'**
+  String fixedReminderTitleTomorrow(String name);
+
+  /// No description provided for @fixedReminderTitleInDays.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} vence en {days} días'**
+  String fixedReminderTitleInDays(String name, int days);
+
+  /// Notification body. The payment is never recorded automatically.
+  ///
+  /// In es, this message translates to:
+  /// **'{amount} · {method}. Cuando pagues, anótalo en Sobrita.'**
+  String fixedReminderBody(String amount, String method);
 }
 
 class _AppLocalizationsDelegate
@@ -3518,8 +4018,15 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'es', 'ko'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[
+    'de',
+    'en',
+    'es',
+    'fr',
+    'ja',
+    'ko',
+    'pt',
+  ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -3528,12 +4035,20 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'de':
+      return AppLocalizationsDe();
     case 'en':
       return AppLocalizationsEn();
     case 'es':
       return AppLocalizationsEs();
+    case 'fr':
+      return AppLocalizationsFr();
+    case 'ja':
+      return AppLocalizationsJa();
     case 'ko':
       return AppLocalizationsKo();
+    case 'pt':
+      return AppLocalizationsPt();
   }
 
   throw FlutterError(

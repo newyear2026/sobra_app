@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/xp_event.dart';
+import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import 'cat_sprite.dart';
 import 'pixel_ui.dart';
@@ -433,6 +434,9 @@ class LevelUpCelebration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final companion = CharacterCatalog.resolve(
+      SobraScope.maybeOf(context)?.characterId ?? CharacterCatalog.defaultId,
+    ).displayName;
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 32),
@@ -448,7 +452,7 @@ class LevelUpCelebration extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              xpLevelTitle(l10n, newLevel),
+              xpLevelTitle(l10n, newLevel, companion),
               textAlign: TextAlign.center,
               style: pixelText(size: 14, color: AppColors.inkSoft),
             ),

@@ -10,7 +10,15 @@ import 'support/localizations.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  for (final id in ['michi', 'poodle', 'schnauzer', 'guinea-pig']) {
+  for (final id in [
+    'michi',
+    'poodle',
+    'schnauzer',
+    'guinea-pig',
+    'capybara',
+    'alpaca',
+    'platypus',
+  ]) {
     testWidgets('$id dialog reserves the full enlarged motion bounds', (
       tester,
     ) async {
@@ -264,6 +272,60 @@ void main() {
     }
     expect(
       CharacterCatalog.guineaPig
+          .motionFor(CharacterMotionRole.success)
+          .playbackSpec
+          .completionFrame,
+      11,
+    );
+  });
+
+  test('Capybara owns all six normalized motions', () {
+    expect(
+      CharacterCatalog.all,
+      containsPair('capybara', CharacterCatalog.capybara),
+    );
+    expect(
+      CharacterCatalog.capybara.motions.keys.toSet(),
+      CharacterMotionRole.values.toSet(),
+    );
+    for (final role in CharacterMotionRole.values) {
+      expect(
+        CharacterCatalog.capybara.motionFor(role).frameCount,
+        role == CharacterMotionRole.idle || role == CharacterMotionRole.warning
+            ? 8
+            : 12,
+        reason: role.name,
+      );
+    }
+    expect(
+      CharacterCatalog.capybara
+          .motionFor(CharacterMotionRole.success)
+          .playbackSpec
+          .completionFrame,
+      11,
+    );
+  });
+
+  test('Platypus owns the complete eight- and twelve-frame motion pack', () {
+    expect(
+      CharacterCatalog.all,
+      containsPair('platypus', CharacterCatalog.platypus),
+    );
+    expect(
+      CharacterCatalog.platypus.motions.keys.toSet(),
+      CharacterMotionRole.values.toSet(),
+    );
+    for (final role in CharacterMotionRole.values) {
+      expect(
+        CharacterCatalog.platypus.motionFor(role).frameCount,
+        role == CharacterMotionRole.idle || role == CharacterMotionRole.warning
+            ? 8
+            : 12,
+        reason: role.name,
+      );
+    }
+    expect(
+      CharacterCatalog.platypus
           .motionFor(CharacterMotionRole.success)
           .playbackSpec
           .completionFrame,

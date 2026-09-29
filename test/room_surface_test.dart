@@ -65,6 +65,38 @@ Future<void> _tapAndSettle(WidgetTester tester, Finder finder) async {
 
 void main() {
   group('saved rooms', () {
+    test('launch sofa and TV can stand together in all three rooms', () async {
+      final store = await _store();
+      await store.grantCatalogEntries({
+        RoomDecorAssets.launchSofaId,
+        RoomDecorAssets.launchTvId,
+      });
+      for (final theme in RoomThemes.all) {
+        expect(theme.slotsForItem(RoomDecorAssets.launchSofaId), [
+          RoomSlot.floorSofa,
+        ]);
+        expect(theme.slotsForItem(RoomDecorAssets.launchTvId), [
+          RoomSlot.floorCabinet,
+        ]);
+        final placements = {
+          RoomSlot.floorSofa: RoomDecorAssets.launchSofaId,
+          RoomSlot.floorCabinet: RoomDecorAssets.launchTvId,
+        };
+        await store.saveRoomSelection(
+          roomId: theme.id,
+          placementsByRoom: {theme.id: placements},
+        );
+        expect(
+          store.roomDecorationsFor(theme.id),
+          containsPair(RoomSlot.floorSofa, RoomDecorAssets.launchSofaId),
+        );
+        expect(
+          store.roomDecorationsFor(theme.id),
+          containsPair(RoomSlot.floorCabinet, RoomDecorAssets.launchTvId),
+        );
+      }
+    });
+
     test('six new decorations have distinct places in an empty room', () async {
       final store = await _store();
       final garden = RoomThemes.casaJardin;

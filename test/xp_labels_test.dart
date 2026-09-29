@@ -79,10 +79,15 @@ void main() {
 
   test('every level has a name', () {
     for (var level = 1; level <= XpProgress.levelCount; level++) {
-      expect(xpLevelTitle(l10n, level), isNotEmpty, reason: 'level $level');
+      expect(
+        xpLevelTitle(l10n, level, 'Michi'),
+        isNotEmpty,
+        reason: 'level $level',
+      );
     }
-    expect(xpLevelTitle(l10n, 1), 'Michi curioso');
-    expect(xpLevelTitle(l10n, XpProgress.levelCount), 'Michi leyenda');
+    expect(xpLevelTitle(l10n, 1, 'Michi'), 'Michi curioso');
+    expect(xpLevelTitle(l10n, 1, 'Miru'), 'Miru curioso');
+    expect(xpLevelTitle(l10n, XpProgress.levelCount, 'Michi'), 'Michi leyenda');
   });
 
   group('an XP notice', () {

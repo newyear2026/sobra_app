@@ -307,10 +307,9 @@ class _Says extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = _localizedCharacterName(
-      AppLocalizations.of(context),
+    final name = CharacterCatalog.resolve(
       SobraScope.of(context).characterId,
-    );
+    ).displayName;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -496,7 +495,9 @@ class _CharacterPickPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final selectedName = _localizedCharacterName(l10n, selectedCharacterId);
+    final selectedName = CharacterCatalog.resolve(
+      selectedCharacterId,
+    ).displayName;
     return _OnboardingFrame(
       bottom: PixelButton(
         label: l10n.prologueLiveTogether,
@@ -560,7 +561,7 @@ class _CharacterPickPage extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: _PickCard(
-                  name: l10n.prologuePoodleName,
+                  name: CharacterCatalog.poodle.displayName,
                   trait: l10n.prologuePoodleTrait,
                   selected: selectedCharacterId == CharacterCatalog.poodle.id,
                   onTap: () => onCharacterChanged(CharacterCatalog.poodle.id),
@@ -1022,7 +1023,7 @@ class _ReadyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final store = SobraScope.of(context);
-    final name = _localizedCharacterName(l10n, store.characterId);
+    final name = CharacterCatalog.resolve(store.characterId).displayName;
     return _OnboardingFrame(
       bottom: PixelButton(label: l10n.onboardingGoHome, onPressed: onFinish),
       scrollContent: true,
@@ -1111,16 +1112,6 @@ class _ReadyPage extends StatelessWidget {
   }
 }
 
-String _localizedCharacterName(AppLocalizations l10n, String characterId) {
-  if (characterId == CharacterCatalog.poodle.id) {
-    return l10n.prologuePoodleName;
-  }
-  if (characterId == CharacterCatalog.schnauzer.id) {
-    return l10n.prologueSchnauzerName;
-  }
-  return CharacterCatalog.resolve(characterId).displayName;
-}
-
 class _LevelBadge extends StatelessWidget {
   const _LevelBadge({required this.name});
   final String name;
@@ -1156,7 +1147,7 @@ class _LevelBadge extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  xpLevelTitle(l10n, progress.level),
+                  xpLevelTitle(l10n, progress.level, name),
                   style: pixelText(size: 14, bold: true),
                 ),
                 const SizedBox(height: 3),

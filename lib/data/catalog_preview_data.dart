@@ -18,7 +18,7 @@ abstract final class CatalogPreviewData {
     ),
     CatalogEntry(
       id: 'poodle',
-      name: 'Poodle',
+      name: 'Miru',
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.included,
       visual: CatalogVisual.poodle,
@@ -30,7 +30,7 @@ abstract final class CatalogPreviewData {
     // no payment on the account.
     CatalogEntry(
       id: 'schnauzer',
-      name: 'Schnauzer',
+      name: 'Yoshi',
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.schnauzer,
@@ -39,19 +39,46 @@ abstract final class CatalogPreviewData {
     ),
     CatalogEntry(
       id: 'guinea-pig',
-      name: 'Guinea Pig',
+      name: 'Cookie',
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.guineaPig,
       assetPath: 'assets/characters/guinea-pig/idle-8.png',
       rewardedAdTarget: 2,
     ),
+    CatalogEntry(
+      id: 'capybara',
+      name: 'Tranqui',
+      kind: CatalogKind.character,
+      unlockMethod: CatalogUnlockMethod.purchase,
+      visual: CatalogVisual.capybara,
+      assetPath: 'assets/characters/capybara/idle-8.png',
+      storeProductId: 'sobra.character.capybara',
+    ),
+    CatalogEntry(
+      id: 'alpaca',
+      name: 'Lana',
+      kind: CatalogKind.character,
+      unlockMethod: CatalogUnlockMethod.purchase,
+      visual: CatalogVisual.alpaca,
+      assetPath: 'assets/characters/alpaca/idle-8.png',
+      storeProductId: 'sobra.character.alpaca',
+    ),
+    CatalogEntry(
+      id: 'platypus',
+      name: 'Pico',
+      kind: CatalogKind.character,
+      unlockMethod: CatalogUnlockMethod.purchase,
+      visual: CatalogVisual.platypus,
+      assetPath: 'assets/characters/platypus/idle-8.png',
+      storeProductId: 'sobra.character.platypus',
+    ),
     // In the pack and nowhere else, along with 04 and 06. Selling these
     // individually as well would charge twice for the overlap: a buyer who
     // takes one and later the pack pays for it in both, because
     // grantCatalogEntries drops ids already owned and no store refunds the
-    // difference. Characters 07, 09 and 10 are what single purchases are
-    // for, so the pack does not empty that shelf either.
+    // difference. Tranqui, Lana, Pico and 10 are what single purchases
+    // are for, so the pack does not empty that shelf either.
     CatalogEntry(
       id: 'character-02',
       name: 'Personaje 02',
@@ -93,14 +120,6 @@ abstract final class CatalogPreviewData {
       storeProductId: packProductId,
     ),
     CatalogEntry(
-      id: 'character-07',
-      name: 'Personaje 07',
-      kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.purchase,
-      visual: CatalogVisual.characterPlaceholder,
-      storeProductId: 'sobra.character.07',
-    ),
-    CatalogEntry(
       id: 'character-08',
       name: 'Personaje 08',
       kind: CatalogKind.character,
@@ -108,14 +127,6 @@ abstract final class CatalogPreviewData {
       visual: CatalogVisual.characterPlaceholder,
       rewardedAdTarget: 3,
       rewardedAdOncePerDay: true,
-    ),
-    CatalogEntry(
-      id: 'character-09',
-      name: 'Personaje 09',
-      kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.purchase,
-      visual: CatalogVisual.characterPlaceholder,
-      storeProductId: 'sobra.character.09',
     ),
     CatalogEntry(
       id: 'character-10',
@@ -295,6 +306,24 @@ abstract final class CatalogPreviewData {
       visual: CatalogVisual.rug,
       assetPath: RoomDecorAssets.blueCreamRug,
     ),
+    // The launch gift is granted by the app, not by Play Billing. Gift cards
+    // remain hidden until owned so nobody sees an unobtainable locked item.
+    CatalogEntry(
+      id: RoomDecorAssets.launchSofaId,
+      name: 'Sofá de terciopelo',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.gift,
+      visual: CatalogVisual.cushion,
+      assetPath: RoomDecorAssets.launchSofa,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.launchTvId,
+      name: 'Tele de historias',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.gift,
+      visual: CatalogVisual.shelf,
+      assetPath: RoomDecorAssets.launchTv,
+    ),
   ];
 
   /// Michi & Friends: three characters, one decoration, and ad removal.
@@ -367,11 +396,25 @@ abstract final class CatalogPreviewData {
   /// Bundle ids are unioned in rather than left to the entries: a bundle that
   /// contains only characters names no entry of its own, and a product the
   /// store was never asked about has no price and cannot be bought.
+  ///
+  /// Gifts are left out. They are never sold, and this set is also the list
+  /// the launch revocation checks against Play — where a gift that was never
+  /// paid for would read as a refund.
   static Set<String> get storeProductIds => {
     for (final entry in all)
-      if (entry.storeProductId != null) entry.storeProductId!,
+      if (entry.storeProductId != null &&
+          entry.unlockMethod != CatalogUnlockMethod.gift)
+        entry.storeProductId!,
     ...productEntitlements.keys,
   };
+
+  /// Whether the collection should show [entry] to someone who
+  /// [isOwned] it or not.
+  ///
+  /// A gift nobody can still get is not shown locked. Everything else is,
+  /// because each locked card says how to unlock it.
+  static bool isListed(CatalogEntry entry, {required bool isOwned}) =>
+      isOwned || entry.unlockMethod != CatalogUnlockMethod.gift;
 
   static bool isUnlockedAtLevel(CatalogEntry entry, int playerLevel) =>
       entry.unlockMethod == CatalogUnlockMethod.level &&
@@ -416,9 +459,8 @@ final class PreviewCatalogPriceSource implements CatalogPriceSource {
 
   @override
   String? localizedPriceFor(String storeProductId) => switch (storeProductId) {
-    'sobra.character.07' => r'MX$ 39',
-    'sobra.character.09' => r'MX$ 39',
-    'sobra.character.10' => r'MX$ 39',
+    'sobra.character.capybara' => r'MX$ 39',
+    'sobra.character.alpaca' => r'MX$ 39',
     CatalogPreviewData.packProductId => r'MX$ 89',
     CatalogPreviewData.removeAdsProductId => r'MX$ 49',
     _ => null,

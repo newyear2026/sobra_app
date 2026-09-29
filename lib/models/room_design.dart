@@ -26,7 +26,9 @@ enum RoomSlot {
   // Added after the original slots so old saved slot names remain stable.
   floorCenter(RoomSurface.floor),
   floorAccent(RoomSurface.floor),
-  floorCabinet(RoomSurface.floor);
+  floorCabinet(RoomSurface.floor),
+  // Added at the end so names of existing saved placements stay unchanged.
+  floorSofa(RoomSurface.floor);
 
   const RoomSlot(this.surface);
 
@@ -107,6 +109,7 @@ abstract final class RoomThemes {
     RoomSlot.floorCenter,
     RoomSlot.floorAccent,
     RoomSlot.floorCabinet,
+    RoomSlot.floorSofa,
   ];
 
   static const casaClara = RoomTheme(
@@ -167,6 +170,8 @@ abstract final class RoomDecorAssets {
   static const wallShelfId = 'decor-wall-shelf';
   static const terracottaPoufId = 'decor-terracotta-pouf';
   static const blueCreamRugId = 'decor-blue-cream-rug';
+  static const launchSofaId = 'launch-sofa';
+  static const launchTvId = 'launch-tv';
 
   /// Saved in place of an item for a slot the user emptied.
   ///
@@ -188,6 +193,15 @@ abstract final class RoomDecorAssets {
   static const wallShelf = 'assets/rooms/shared_items/wall_shelf.png';
   static const terracottaPouf = 'assets/rooms/shared_items/terracotta_pouf.png';
   static const blueCreamRug = 'assets/rooms/shared_items/blue_cream_rug.png';
+  static const launchSofa = 'assets/rooms/shared_items/launch_sofa.png';
+  static const launchTvBase = 'assets/rooms/shared_items/launch_tv_base.png';
+  static const launchTv = 'assets/rooms/shared_items/launch_tv_telenovela.png';
+  static const launchTvBlink =
+      'assets/rooms/shared_items/launch_tv_telenovela_blink.png';
+  static const launchTvSoccer =
+      'assets/rooms/shared_items/launch_tv_soccer.png';
+  static const launchTvSoccerAlt =
+      'assets/rooms/shared_items/launch_tv_soccer_alt.png';
 
   static const defaultPlacements = <RoomSlot, String>{
     RoomSlot.rug: defaultRugId,
@@ -212,6 +226,8 @@ abstract final class RoomDecorAssets {
     wallShelfId => wallShelf,
     terracottaPoufId => terracottaPouf,
     blueCreamRugId => blueCreamRug,
+    launchSofaId => launchSofa,
+    launchTvId => launchTv,
     'item-01' => lamp,
     'item-05' => wallFrame,
     _ => null,
@@ -231,6 +247,7 @@ abstract final class RoomDecorAssets {
     rattanChairId || floorLampId => const [RoomSurface.floor],
     wallClockId => const [RoomSurface.wall],
     lowCabinetId || petBedId || terracottaPoufId => const [RoomSurface.floor],
+    launchSofaId || launchTvId => const [RoomSurface.floor],
     savingsJarId => const [RoomSurface.tabletop, RoomSurface.floor],
     wallShelfId => const [RoomSurface.wall],
     blueCreamRugId => const [RoomSurface.rug],
@@ -256,6 +273,8 @@ abstract final class RoomDecorAssets {
       RoomSlot.floorAccent,
     ],
     lowCabinetId => const [RoomSlot.floorCabinet],
+    launchSofaId => const [RoomSlot.floorSofa],
+    launchTvId => const [RoomSlot.floorCabinet],
     petBedId => const [RoomSlot.floorCenter],
     savingsJarId => const [RoomSlot.tabletop, RoomSlot.floorAccent],
     wallShelfId => const [RoomSlot.wallLeft, RoomSlot.wallCenter],
@@ -288,6 +307,8 @@ abstract final class RoomDecorAssets {
     savingsJarId => 155,
     wallShelfId => 175,
     terracottaPoufId => 170,
+    launchSofaId => 285,
+    launchTvId => 285,
     _ => null,
   };
 
@@ -298,6 +319,7 @@ abstract final class RoomDecorAssets {
     rattanChairId || floorLampId => RoomDecorCategory.furniture,
     wallClockId => RoomDecorCategory.wallAndFloor,
     lowCabinetId || petBedId || terracottaPoufId => RoomDecorCategory.furniture,
+    launchSofaId || launchTvId => RoomDecorCategory.furniture,
     savingsJarId => RoomDecorCategory.props,
     wallShelfId || blueCreamRugId => RoomDecorCategory.wallAndFloor,
     _ => RoomDecorCategory.props,

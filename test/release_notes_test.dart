@@ -67,7 +67,7 @@ void main() {
 
   testWidgets('reads a line in every language the app ships', (tester) async {
     // Renders, rather than reading the ARB, so a note whose text comes back
-    // blank at runtime fails here too. That a key exists in all three files
+    // blank at runtime fails here too. That a key exists in every file
     // is a separate question, and `l10n_parity_test.dart` asks it — gen-l10n
     // inherits the template silently, so this test alone would not notice.
     for (final language in SobraLanguage.supportedLocales) {

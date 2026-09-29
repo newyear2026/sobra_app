@@ -16,12 +16,14 @@ import '../services/sobra_widget_sync.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/gamification_ui.dart';
+import '../widgets/launch_gift_dialog.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/release_announcement.dart';
 import '../widgets/update_prompt.dart';
 import 'budget_screen.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
+import 'room_decorate_screen.dart';
 import 'settings_screen.dart';
 import 'settlement_screen.dart';
 import 'transactions_screen.dart';
@@ -86,6 +88,8 @@ class _AppShellState extends State<AppShell> {
   AppUpdates? _updates;
   ReleaseAnnouncements? _announcements;
   bool _xpNoticeScheduled = false;
+  bool _launchGiftScheduled = false;
+  bool _launchGiftPresenting = false;
   bool _updatePromptScheduled = false;
   bool _announcementScheduled = false;
   String? _runningVersion;
@@ -145,6 +149,7 @@ class _AppShellState extends State<AppShell> {
       ]),
     );
     _scheduleXpNotice();
+    _scheduleLaunchGiftNotice();
   }
 
   @override
@@ -162,6 +167,8 @@ class _AppShellState extends State<AppShell> {
     switch (destination) {
       case SobraWidgetDestination.home:
         _changeSelection(AppTab.home);
+      case SobraWidgetDestination.budget:
+        _changeSelection(AppTab.budget);
       case SobraWidgetDestination.register:
       case SobraWidgetDestination.registerExpense:
         _noteTabTransition(AppTab.register);
@@ -181,7 +188,10 @@ class _AppShellState extends State<AppShell> {
     SobraWidgetSync.consumeDestination(destination);
   }
 
-  void _onStoreChanged() => _scheduleXpNotice();
+  void _onStoreChanged() {
+    _scheduleXpNotice();
+    _scheduleLaunchGiftNotice();
+  }
 
   void _onUpdatesChanged() {
     setState(() {});
@@ -192,6 +202,7 @@ class _AppShellState extends State<AppShell> {
     if (!mounted) return;
     setState(() {});
     _scheduleAnnouncement();
+    _scheduleLaunchGiftNotice();
   }
 
   /// Says what the update they already installed changed.
@@ -203,6 +214,7 @@ class _AppShellState extends State<AppShell> {
     if (_announcementScheduled ||
         announcements == null ||
         !announcements.shouldAnnounce ||
+        (_store?.launchGiftNoticePending ?? false) ||
         _store?.pendingXpNotice != null) {
       return;
     }
@@ -211,6 +223,7 @@ class _AppShellState extends State<AppShell> {
       _announcementScheduled = false;
       if (!mounted || !announcements.shouldAnnounce) return;
       await showReleaseAnnouncement(context, announcements: announcements);
+      if (mounted) _scheduleUpdatePrompt();
     });
   }
 
@@ -226,6 +239,7 @@ class _AppShellState extends State<AppShell> {
         updates == null ||
         !updates.shouldPrompt ||
         _store?.pendingXpNotice != null ||
+        (_store?.launchGiftNoticePending ?? false) ||
         (_announcements?.shouldAnnounce ?? false)) {
       return;
     }
@@ -266,8 +280,47 @@ class _AppShellState extends State<AppShell> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _xpNoticeScheduled = false;
       if (!mounted) return;
-      unawaited(_presentXpNotice());
+      unawaited(_presentXpNotice().whenComplete(_scheduleLaunchGiftNotice));
     });
+  }
+
+  void _scheduleLaunchGiftNotice() {
+    if (_launchGiftScheduled ||
+        _launchGiftPresenting ||
+        !(_store?.launchGiftNoticePending ?? false) ||
+        _store?.pendingXpNotice != null) {
+      return;
+    }
+    _launchGiftScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _launchGiftScheduled = false;
+      if (mounted) unawaited(_presentLaunchGift());
+    });
+  }
+
+  Future<void> _presentLaunchGift() async {
+    final store = _store;
+    if (_launchGiftPresenting || store == null || !mounted) return;
+    _launchGiftPresenting = true;
+    try {
+      if (!store.launchGiftNoticePending) return;
+      final placeNow = await showLaunchGiftDialog(context);
+      if (!mounted) return;
+      await store.takeLaunchGiftNotice();
+      if (placeNow) {
+        await Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => const RoomDecorateScreen()),
+        );
+      }
+    } on Object {
+      // If saving the seen state fails, it remains pending for the next open.
+    } finally {
+      _launchGiftPresenting = false;
+      if (mounted) {
+        _scheduleAnnouncement();
+        _scheduleUpdatePrompt();
+      }
+    }
   }
 
   Future<void> _presentXpNotice() async {
@@ -343,7 +396,7 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     final screens = [
-      const HomeScreen(),
+      HomeScreen(active: _selected == AppTab.home),
       const TransactionsScreen(),
       RegisterScreen(
         key: ValueKey('register-$_registerSession'),

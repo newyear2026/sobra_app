@@ -451,7 +451,7 @@ class _DailyChartCard extends StatelessWidget {
           )
         : dailySpend(
             bounds: bounds,
-            entries: store.cycleTransactions,
+            entries: store.cycleSpending,
             today: store.today,
           );
     final caption = showingIncome

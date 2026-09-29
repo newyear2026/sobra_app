@@ -59,16 +59,56 @@
   "xpFirstSuccessfulCycleTitle": "Primer ciclo en verde",
   "xpFirstSuccessfulCycleDetail": "Bono de una sola vez",
 
-  "xpLevelTitle1": "Michi curioso",
-  "xpLevelTitle2": "Michi ahorrador",
-  "xpLevelTitle3": "Michi contador",
-  "xpLevelTitle4": "Michi guardián",
-  "xpLevelTitle5": "Michi maestro",
-  "xpLevelTitle6": "Michi experto",
-  "xpLevelTitle7": "Michi estratega",
-  "xpLevelTitle8": "Michi próspero",
-  "xpLevelTitle9": "Michi sabio",
-  "xpLevelTitle10": "Michi leyenda",
+  "xpLevelTitle1": "{name} curioso",
+  "@xpLevelTitle1": {
+    "description": "The title of level 1, worn by the chosen companion.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle2": "{name} ahorrador",
+  "@xpLevelTitle2": {
+    "description": "The title of level 2; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle3": "{name} contador",
+  "@xpLevelTitle3": {
+    "description": "The title of level 3; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle4": "{name} guardián",
+  "@xpLevelTitle4": {
+    "description": "The title of level 4; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle5": "{name} maestro",
+  "@xpLevelTitle5": {
+    "description": "The title of level 5; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle6": "{name} experto",
+  "@xpLevelTitle6": {
+    "description": "The title of level 6; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle7": "{name} estratega",
+  "@xpLevelTitle7": {
+    "description": "The title of level 7; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle8": "{name} próspero",
+  "@xpLevelTitle8": {
+    "description": "The title of level 8; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle9": "{name} sabio",
+  "@xpLevelTitle9": {
+    "description": "The title of level 9; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle10": "{name} leyenda",
+  "@xpLevelTitle10": {
+    "description": "The title of level 10; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
 
   "xpNoticeCyclesClosedTitle": "{count, plural, =1{Ciclo cerrado} other{{count} ciclos cerrados}}",
   "@xpNoticeCyclesClosedTitle": {
@@ -173,6 +213,22 @@
   "monthAbbr10": "oct",
   "monthAbbr11": "nov",
   "monthAbbr12": "dic",
+  "dateShort": "{day} {month}",
+  "@dateShort": {
+    "description": "A day and a month, as Sobra writes a date. {month} is one of the monthAbbr strings; the order is the locale's.",
+    "placeholders": {
+      "day": { "type": "String" },
+      "month": { "type": "String" }
+    }
+  },
+  "dateFull": "{day} {month} {year}",
+  "@dateFull": {
+    "placeholders": {
+      "day": { "type": "String" },
+      "month": { "type": "String" },
+      "year": { "type": "String" }
+    }
+  },
 
   "back": "Volver",
   "reduceMotion": "Reducir movimiento",
@@ -204,7 +260,6 @@
   "collectionTitle": "Colección",
   "collectionSettingsValue": "Ver",
   "collectionCharacters": "Personajes",
-  "collectionGuineaPigName": "Cobaya",
   "collectionItems": "Objetos",
   "collectionLevel": "NIVEL {level}",
   "@collectionLevel": {
@@ -246,6 +301,8 @@
   "collectionPackOnly": "PAQUETE",
   "collectionPackDecoration": "Estrella de Michi",
   "collectionPackUnlock": "Llega con Michi y sus amigos. No se vende por separado.",
+  "collectionGiftOnly": "REGALO",
+  "collectionGiftUnlock": "Un regalo especial. No se vende.",
   "collectionAdProgress": "ANUNCIO {progress}/{target}",
   "@collectionAdProgress": {
     "placeholders": {
@@ -304,6 +361,12 @@
   "roomWallShelf": "Repisa de pared",
   "roomTerracottaPouf": "Puf terracota",
   "roomBlueCreamRug": "Tapete azul y crema",
+  "roomLaunchSofa": "Sofá de terciopelo",
+  "roomLaunchTv": "Tele de historias",
+  "launchGiftTitle": "¡Llegó tu regalo de lanzamiento!",
+  "launchGiftBody": "Empezaste Sobrita a tiempo. El sofá y la tele ya son tuyos.",
+  "launchGiftGoToRoom": "Ponerlos en mi casa",
+  "launchGiftLater": "Después",
   "roomSuggestCabinet": "Ponlo junto a la pared izquierda. Toca el lugar marcado.",
   "roomSuggestPetBed": "Ponla a la izquierda de tu compañero. Toca el lugar marcado.",
   "roomSuggestSavingsJar": "Prueba la mesa o el rincón del piso. Toca un lugar marcado.",
@@ -719,9 +782,7 @@
   "prologueDriedOff": "Secos, los dos se calmaron. Afuera seguía lloviendo.",
   "prologueWhoSits": "¿Quién se sienta contigo?",
   "prologueMichiTrait": "Callado.\nBueno con los números.",
-  "prologuePoodleName": "Poodle",
   "prologuePoodleTrait": "Puro ánimo.\nMuy atento.",
-  "prologueSchnauzerName": "Schnauzer",
   "prologueSchnauzerTrait": "Observador.\nSiempre atento.",
   "prologueLockedName": "???",
   "prologueLockedTrait": "Puro ánimo.\nMuy atento.",
@@ -826,6 +887,11 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
+  "releaseNote104Fixed": "Los gastos fijos van aparte del gasto diario. Aparecen en Inicio y pueden avisarte antes de vencer.",
+  "releaseNote104Decor": "La casa tiene más para colocar: una cama, una repisa, un tapete, un aparador, un frasco y un puf.",
+  "releaseNote104Names": "Miru, Yoshi y Cookie ya tienen nombre, y el título de nivel lleva el de quien te acompaña.",
+  "releaseNote104Widget": "El widget de inicio muestra el monto completo.",
+  "releaseNote104Languages": "Sobrita ahora habla portugués, alemán, francés y japonés.",
   "releaseNote103GuineaPig": "Cobaya ya está en la colección. Dos anuncios cortos y se queda contigo.",
   "releaseNote103Widget": "El widget de inicio muestra con quién vives, y el monto se escribe igual que en la app.",
   "releaseNote102Schnauzer": "Schnauzer ya está en la colección. Dos anuncios cortos y se queda contigo.",
@@ -864,6 +930,34 @@
   "@settingsRateApp": {
     "description": "Ajustes row that opens the app's Google Play listing so the user can leave a rating."
   },
+  "settingsOurApps": "Apps recomendadas",
+  "@settingsOurApps": {
+    "description": "Ajustes row, under Acerca de, that opens the list of the team's other apps. Also the title of that screen. Kept neutral on purpose: the screen's intro line says who made them."
+  },
+  "ourAppsIntro": "Hechas por el equipo de Sobrita.",
+  "@ourAppsIntro": {
+    "description": "One line under the title of the other-apps screen, saying who made them."
+  },
+  "ourAppsOpen": "Ver en Google Play",
+  "@ourAppsOpen": {
+    "description": "Button on each card of the other-apps screen; opens that app's Google Play listing."
+  },
+  "ourAppsLoopetKind": "Rutinas",
+  "@ourAppsLoopetKind": {
+    "description": "One word under the name LOOPET: what the app is for. Shown in capitals."
+  },
+  "ourAppsLoopetBlurb": "Todo tu día en un círculo. Mira qué toca ahora y qué viene después.",
+  "@ourAppsLoopetBlurb": {
+    "description": "Two-line description of LOOPET, a 24-hour circular routine planner. Adapted from its Play short description."
+  },
+  "ourAppsRandomFocusKind": "Enfoque",
+  "@ourAppsRandomFocusKind": {
+    "description": "One word under the name RandomFocus: what the app is for. Shown in capitals."
+  },
+  "ourAppsRandomFocusBlurb": "Gira la ruleta, elige cuánto tiempo y concéntrate sin pensarlo.",
+  "@ourAppsRandomFocusBlurb": {
+    "description": "Two-line description of RandomFocus, a focus timer whose length is picked by spinning a roulette wheel. Adapted from its Play short description."
+  },
 
   "releaseAnnouncementViewAll": "Ver todo",
   "@releaseAnnouncementViewAll": {
@@ -874,5 +968,95 @@
   "settingsReleaseNotesUnread": "Novedades sin leer",
   "@settingsReleaseNotesUnread": {
     "description": "Screen-reader label for the dot on the Novedades row. The dot is the only thing that carries this meaning visually."
-  }
+  },
+
+  "fixedSectionTitle": "Gastos fijos",
+  "@fixedSectionTitle": {"description": "Budget tab heading for rent, phone plans, bills paid on a schedule."},
+  "fixedSectionMonth": "{month} · aparte de tu gasto diario",
+  "@fixedSectionMonth": {"description": "Under the heading: which month the list covers, and that it does not touch the daily amount.", "placeholders": {"month": {"type": "String"}}},
+  "fixedPaidOfTotal": "Pagado {paid} de {total}",
+  "@fixedPaidOfTotal": {"placeholders": {"paid": {"type": "String"}, "total": {"type": "String"}}},
+  "fixedAdd": "Agregar gasto fijo",
+  "fixedEmptyBody": "Renta, celular, luz: anótalos una vez y te recuerdo cuándo toca pagar. No cambian tu gasto diario.",
+  "fixedFrequencyWeekly": "Cada semana",
+  "fixedFrequencySemiMonthly": "Cada quincena",
+  "@fixedFrequencySemiMonthly": {"description": "On the 15th and the last day of the month. Korean matches the existing pay-cycle label."},
+  "fixedFrequencyMonthly": "Cada mes",
+  "fixedFrequencyBimonthly": "Cada 2 meses",
+  "@fixedFrequencyBimonthly": {"description": "CFE electricity and water are billed every two months in most of Mexico."},
+  "fixedStatusPaid": "Pagado",
+  "fixedStatusTomorrow": "Mañana",
+  "fixedStatusOverdue": "Fecha pasada",
+  "@fixedStatusOverdue": {"description": "Unpaid and past its date. Deliberately soft: no 'vencido' or '연체' — Sobra reminds, it does not scold."},
+  "fixedApprox": "aprox. {amount}",
+  "@fixedApprox": {"description": "An estimate for a bill whose amount changes each time.", "placeholders": {"amount": {"type": "String"}}},
+  "fixedFormNewTitle": "Nuevo gasto fijo",
+  "fixedFormEditTitle": "Editar gasto fijo",
+  "fixedName": "Nombre",
+  "fixedNameHint": "Renta, celular, luz…",
+  "fixedNameRequired": "Ponle un nombre",
+  "fixedHowOften": "¿Cada cuánto?",
+  "fixedNextDue": "Próximo pago",
+  "fixedThenDates": "Después: {dates}…",
+  "@fixedThenDates": {"description": "The next few due dates, so a wrong month shows up before saving.", "placeholders": {"dates": {"type": "String"}}},
+  "fixedVariable": "El monto cambia cada vez",
+  "fixedVariableHint": "Uso lo último que pagaste como estimado.",
+  "fixedFormNote": "No cambia tu gasto diario: tu presupuesto es lo que te queda después de los fijos.",
+  "fixedSave": "Guardar gasto fijo",
+  "fixedDelete": "Eliminar gasto fijo",
+  "fixedDeleteTitle": "¿Eliminar {name}?",
+  "@fixedDeleteTitle": {"placeholders": {"name": {"type": "String"}}},
+  "fixedDeleteBody": "Los pagos que ya registraste se quedan en tus movimientos.",
+  "fixedDueToday": "Vence hoy",
+  "fixedDueTomorrow": "Vence mañana",
+  "fixedDueOn": "Vence el {date}",
+  "@fixedDueOn": {"placeholders": {"date": {"type": "String"}}},
+  "fixedWasDue": "Tocaba el {date}",
+  "@fixedWasDue": {"placeholders": {"date": {"type": "String"}}},
+  "fixedHowMuch": "¿Cuánto pagaste?",
+  "fixedLastTime": "La vez pasada: {amount}",
+  "@fixedLastTime": {"placeholders": {"amount": {"type": "String"}}},
+  "fixedTodayUnchanged": "Tu gasto de hoy sigue en {amount}.",
+  "@fixedTodayUnchanged": {"placeholders": {"amount": {"type": "String"}}},
+  "fixedCashChange": "Efectivo estimado: de {from} a {to}",
+  "@fixedCashChange": {"description": "A cash payment does leave the wallet, so the cash estimate moves even though the budget does not.", "placeholders": {"from": {"type": "String"}, "to": {"type": "String"}}},
+  "fixedPaidWith": "Pago con {method}",
+  "@fixedPaidWith": {"placeholders": {"method": {"type": "String"}}},
+  "fixedChange": "Cambiar",
+  "fixedMarkPaid": "Ya lo pagué",
+  "fixedNotYet": "Todavía no",
+  "fixedBillOnly": "Solo llegó el recibo",
+  "@fixedBillOnly": {"description": "Updates the expected amount without recording a payment."},
+  "fixedBillSaved": "Listo, espero {amount}.",
+  "@fixedBillSaved": {"placeholders": {"amount": {"type": "String"}}},
+  "fixedPaymentSaved": "{name} registrado.",
+  "@fixedPaymentSaved": {"placeholders": {"name": {"type": "String"}}},
+  "fixedHomeLabel": "Gasto fijo",
+  "fixedHomeMany": "{count, plural, =1{1 pago fijo por revisar} other{{count} pagos fijos por revisar}}",
+  "@fixedHomeMany": {"placeholders": {"count": {"type": "int"}}},
+  "fixedHomeSee": "Ver",
+  "fixedIntroTitle": "Tu presupuesto es para gastar, sin fijos",
+  "fixedIntroBody": "Los gastos fijos no bajan tu gasto diario. Si tus {budget} ya contaban «{name}», conviene bajar el presupuesto.",
+  "@fixedIntroBody": {"placeholders": {"budget": {"type": "String"}, "name": {"type": "String"}}},
+  "fixedIntroKeep": "Está bien así",
+  "fixedIntroAdjust": "Ajustar presupuesto",
+  "fixedBadge": "Fijo",
+  "@fixedBadge": {"description": "Marks a fixed-expense payment in the movements list."},
+  "fixedNothingThisMonth": "Nada vence este mes.",
+  "fixedReminderLabel": "Recordatorio",
+  "fixedReminderNone": "Sin aviso",
+  "fixedReminderSameDay": "El mismo día",
+  "fixedReminderDayBefore": "1 día antes",
+  "fixedReminderThreeDaysBefore": "3 días antes",
+  "fixedReminderHint": "Te aviso a las 9:00 de la mañana.",
+  "fixedReminderBlocked": "Las notificaciones de Sobrita están apagadas, así que no podré avisarte.",
+  "@fixedReminderBlocked": {"description": "Shown after saving a fixed expense with a reminder when Android refused notification permission."},
+  "fixedReminderTitleToday": "Hoy toca pagar {name}",
+  "@fixedReminderTitleToday": {"description": "Notification title on the due date. {name} is what the user called the fixed expense.", "placeholders": {"name": {"type": "String"}}},
+  "fixedReminderTitleTomorrow": "Mañana toca pagar {name}",
+  "@fixedReminderTitleTomorrow": {"placeholders": {"name": {"type": "String"}}},
+  "fixedReminderTitleInDays": "{name} vence en {days} días",
+  "@fixedReminderTitleInDays": {"placeholders": {"name": {"type": "String"}, "days": {"type": "int"}}},
+  "fixedReminderBody": "{amount} · {method}. Cuando pagues, anótalo en Sobrita.",
+  "@fixedReminderBody": {"description": "Notification body. The payment is never recorded automatically.", "placeholders": {"amount": {"type": "String"}, "method": {"type": "String"}}}
 }

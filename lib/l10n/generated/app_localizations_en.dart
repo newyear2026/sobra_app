@@ -141,34 +141,54 @@ class AppLocalizationsEn extends AppLocalizations {
   String get xpFirstSuccessfulCycleDetail => 'One-time bonus';
 
   @override
-  String get xpLevelTitle1 => 'Curious Michi';
+  String xpLevelTitle1(String name) {
+    return 'Curious $name';
+  }
 
   @override
-  String get xpLevelTitle2 => 'Saver Michi';
+  String xpLevelTitle2(String name) {
+    return 'Saver $name';
+  }
 
   @override
-  String get xpLevelTitle3 => 'Counter Michi';
+  String xpLevelTitle3(String name) {
+    return 'Counter $name';
+  }
 
   @override
-  String get xpLevelTitle4 => 'Guardian Michi';
+  String xpLevelTitle4(String name) {
+    return 'Guardian $name';
+  }
 
   @override
-  String get xpLevelTitle5 => 'Master Michi';
+  String xpLevelTitle5(String name) {
+    return 'Master $name';
+  }
 
   @override
-  String get xpLevelTitle6 => 'Expert Michi';
+  String xpLevelTitle6(String name) {
+    return 'Expert $name';
+  }
 
   @override
-  String get xpLevelTitle7 => 'Strategist Michi';
+  String xpLevelTitle7(String name) {
+    return 'Strategist $name';
+  }
 
   @override
-  String get xpLevelTitle8 => 'Prosperous Michi';
+  String xpLevelTitle8(String name) {
+    return 'Prosperous $name';
+  }
 
   @override
-  String get xpLevelTitle9 => 'Wise Michi';
+  String xpLevelTitle9(String name) {
+    return 'Wise $name';
+  }
 
   @override
-  String get xpLevelTitle10 => 'Legendary Michi';
+  String xpLevelTitle10(String name) {
+    return 'Legendary $name';
+  }
 
   @override
   String xpNoticeCyclesClosedTitle(int count) {
@@ -366,6 +386,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get monthAbbr12 => 'Dec';
 
   @override
+  String dateShort(String day, String month) {
+    return '$day $month';
+  }
+
+  @override
+  String dateFull(String day, String month, String year) {
+    return '$day $month $year';
+  }
+
+  @override
   String get back => 'Back';
 
   @override
@@ -439,9 +469,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get collectionCharacters => 'Characters';
-
-  @override
-  String get collectionGuineaPigName => 'Guinea Pig';
 
   @override
   String get collectionItems => 'Items';
@@ -527,6 +554,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get collectionPackUnlock =>
       'Arrives with Michi & Friends. It is not sold separately.';
+
+  @override
+  String get collectionGiftOnly => 'GIFT';
+
+  @override
+  String get collectionGiftUnlock => 'A special gift. It is not sold.';
 
   @override
   String collectionAdProgress(int progress, int target) {
@@ -656,6 +689,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get roomBlueCreamRug => 'Blue and cream rug';
+
+  @override
+  String get roomLaunchSofa => 'Velvet sofa';
+
+  @override
+  String get roomLaunchTv => 'Story TV';
+
+  @override
+  String get launchGiftTitle => 'Your launch gift is here!';
+
+  @override
+  String get launchGiftBody =>
+      'You started Sobrita in time. The sofa and TV are yours.';
+
+  @override
+  String get launchGiftGoToRoom => 'Place them in my home';
+
+  @override
+  String get launchGiftLater => 'Later';
 
   @override
   String get roomSuggestCabinet =>
@@ -1738,13 +1790,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prologueMichiTrait => 'Quiet.\nGood with numbers.';
 
   @override
-  String get prologuePoodleName => 'Poodle';
-
-  @override
   String get prologuePoodleTrait => 'All energy.\nLooks after you.';
-
-  @override
-  String get prologueSchnauzerName => 'Schnauzer';
 
   @override
   String get prologueSchnauzerTrait => 'Thoughtful.\nKeeps watch.';
@@ -1932,6 +1978,25 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get releaseNote104Fixed =>
+      'Fixed expenses stay apart from the daily spend. They show on Home and can remind you before they are due.';
+
+  @override
+  String get releaseNote104Decor =>
+      'The house has more to place: a bed, a shelf, a rug, a cabinet, a jar and a pouf.';
+
+  @override
+  String get releaseNote104Names =>
+      'Miru, Yoshi and Cookie have names now, and the level title wears whoever sits with you.';
+
+  @override
+  String get releaseNote104Widget => 'The home widget shows the whole amount.';
+
+  @override
+  String get releaseNote104Languages =>
+      'Sobrita now speaks Portuguese, German, French and Japanese.';
+
+  @override
   String get releaseNote103GuineaPig =>
       'Guinea Pig is in the collection. Two short ads, and they stay.';
 
@@ -2005,6 +2070,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsRateApp => 'Rate Sobrita';
 
   @override
+  String get settingsOurApps => 'Recommended apps';
+
+  @override
+  String get ourAppsIntro => 'Made by the Sobrita team.';
+
+  @override
+  String get ourAppsOpen => 'View on Google Play';
+
+  @override
+  String get ourAppsLoopetKind => 'Routines';
+
+  @override
+  String get ourAppsLoopetBlurb =>
+      'Your whole day in one circle. See what to do now and what comes next.';
+
+  @override
+  String get ourAppsRandomFocusKind => 'Focus';
+
+  @override
+  String get ourAppsRandomFocusBlurb =>
+      'Spin the wheel to pick how long, then focus without overthinking it.';
+
+  @override
   String get releaseAnnouncementViewAll => 'See all';
 
   @override
@@ -2012,4 +2100,243 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsReleaseNotesUnread => 'Unread release notes';
+
+  @override
+  String get fixedSectionTitle => 'Fixed expenses';
+
+  @override
+  String fixedSectionMonth(String month) {
+    return '$month · separate from your daily amount';
+  }
+
+  @override
+  String fixedPaidOfTotal(String paid, String total) {
+    return 'Paid $paid of $total';
+  }
+
+  @override
+  String get fixedAdd => 'Add fixed expense';
+
+  @override
+  String get fixedEmptyBody =>
+      'Rent, phone, electricity: add them once and I\'ll remind you when they\'re due. They don\'t change your daily amount.';
+
+  @override
+  String get fixedFrequencyWeekly => 'Every week';
+
+  @override
+  String get fixedFrequencySemiMonthly => 'Twice a month';
+
+  @override
+  String get fixedFrequencyMonthly => 'Every month';
+
+  @override
+  String get fixedFrequencyBimonthly => 'Every 2 months';
+
+  @override
+  String get fixedStatusPaid => 'Paid';
+
+  @override
+  String get fixedStatusTomorrow => 'Tomorrow';
+
+  @override
+  String get fixedStatusOverdue => 'Past due';
+
+  @override
+  String fixedApprox(String amount) {
+    return 'about $amount';
+  }
+
+  @override
+  String get fixedFormNewTitle => 'New fixed expense';
+
+  @override
+  String get fixedFormEditTitle => 'Edit fixed expense';
+
+  @override
+  String get fixedName => 'Name';
+
+  @override
+  String get fixedNameHint => 'Rent, phone, electricity…';
+
+  @override
+  String get fixedNameRequired => 'Give it a name';
+
+  @override
+  String get fixedHowOften => 'How often?';
+
+  @override
+  String get fixedNextDue => 'Next payment';
+
+  @override
+  String fixedThenDates(String dates) {
+    return 'Then: $dates…';
+  }
+
+  @override
+  String get fixedVariable => 'The amount changes each time';
+
+  @override
+  String get fixedVariableHint =>
+      'I\'ll use what you paid last as the estimate.';
+
+  @override
+  String get fixedFormNote =>
+      'It doesn\'t change your daily amount: your budget is what\'s left after fixed expenses.';
+
+  @override
+  String get fixedSave => 'Save fixed expense';
+
+  @override
+  String get fixedDelete => 'Delete fixed expense';
+
+  @override
+  String fixedDeleteTitle(String name) {
+    return 'Delete $name?';
+  }
+
+  @override
+  String get fixedDeleteBody =>
+      'Payments you already recorded stay in your movements.';
+
+  @override
+  String get fixedDueToday => 'Due today';
+
+  @override
+  String get fixedDueTomorrow => 'Due tomorrow';
+
+  @override
+  String fixedDueOn(String date) {
+    return 'Due $date';
+  }
+
+  @override
+  String fixedWasDue(String date) {
+    return 'Was due $date';
+  }
+
+  @override
+  String get fixedHowMuch => 'How much did you pay?';
+
+  @override
+  String fixedLastTime(String amount) {
+    return 'Last time: $amount';
+  }
+
+  @override
+  String fixedTodayUnchanged(String amount) {
+    return 'Today\'s amount stays at $amount.';
+  }
+
+  @override
+  String fixedCashChange(String from, String to) {
+    return 'Estimated cash: $from to $to';
+  }
+
+  @override
+  String fixedPaidWith(String method) {
+    return 'Paid by $method';
+  }
+
+  @override
+  String get fixedChange => 'Change';
+
+  @override
+  String get fixedMarkPaid => 'I paid it';
+
+  @override
+  String get fixedNotYet => 'Not yet';
+
+  @override
+  String get fixedBillOnly => 'I just got the bill';
+
+  @override
+  String fixedBillSaved(String amount) {
+    return 'Got it, expecting $amount.';
+  }
+
+  @override
+  String fixedPaymentSaved(String name) {
+    return '$name recorded.';
+  }
+
+  @override
+  String get fixedHomeLabel => 'Fixed expense';
+
+  @override
+  String fixedHomeMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fixed payments to check',
+      one: '1 fixed payment to check',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fixedHomeSee => 'See';
+
+  @override
+  String get fixedIntroTitle =>
+      'Your budget is for spending, fixed costs aside';
+
+  @override
+  String fixedIntroBody(String budget, String name) {
+    return 'Fixed expenses don\'t lower your daily amount. If your $budget already counted “$name”, lower the budget.';
+  }
+
+  @override
+  String get fixedIntroKeep => 'It\'s fine as is';
+
+  @override
+  String get fixedIntroAdjust => 'Adjust budget';
+
+  @override
+  String get fixedBadge => 'Fixed';
+
+  @override
+  String get fixedNothingThisMonth => 'Nothing due this month.';
+
+  @override
+  String get fixedReminderLabel => 'Reminder';
+
+  @override
+  String get fixedReminderNone => 'No reminder';
+
+  @override
+  String get fixedReminderSameDay => 'On the day';
+
+  @override
+  String get fixedReminderDayBefore => '1 day before';
+
+  @override
+  String get fixedReminderThreeDaysBefore => '3 days before';
+
+  @override
+  String get fixedReminderHint => 'I\'ll remind you at 9:00 in the morning.';
+
+  @override
+  String get fixedReminderBlocked =>
+      'Sobrita\'s notifications are off, so I can\'t remind you.';
+
+  @override
+  String fixedReminderTitleToday(String name) {
+    return '$name is due today';
+  }
+
+  @override
+  String fixedReminderTitleTomorrow(String name) {
+    return '$name is due tomorrow';
+  }
+
+  @override
+  String fixedReminderTitleInDays(String name, int days) {
+    return '$name is due in $days days';
+  }
+
+  @override
+  String fixedReminderBody(String amount, String method) {
+    return '$amount · $method. Mark it paid in Sobrita once you pay.';
+  }
 }

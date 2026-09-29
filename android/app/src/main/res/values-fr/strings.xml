@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quick_entry_channel_name">Saisie rapide</string>
+    <string name="quick_entry_channel_description">Raccourcis pour noter rentrées et dépenses</string>
+    <string name="fixed_channel_name">Dépenses fixes</string>
+    <string name="fixed_channel_description">Rappels avant l’échéance du loyer et des factures</string>
+    <string name="quick_entry_question">Que veux-tu noter ?</string>
+    <string name="quick_entry_income">Rentrée</string>
+    <string name="quick_entry_expense">Dépense</string>
+    <string name="widget_today_remaining">Il te reste aujourd’hui</string>
+    <string name="widget_today_remaining_short">Reste du jour</string>
+    <string name="widget_open_app">Ouvrir Sobrita</string>
+    <string name="widget_cycle_balance">Solde du cycle</string>
+    <string name="widget_cycle_balance_short">Solde</string>
+    <string name="widget_cycle_progress">Avancée du cycle</string>
+    <string name="widget_recent_movements">Activité récente</string>
+    <string name="widget_register_expense">Noter une dépense</string>
+    <string name="widget_compact_description">Sobrita : ce qu’il reste aujourd’hui</string>
+    <string name="widget_summary_description">Sobrita : ce qu’il reste et l’avancée du cycle</string>
+    <string name="widget_cat_description">Chat de Sobrita</string>
+    <string name="widget_poodle_description">Caniche de Sobrita</string>
+    <string name="widget_schnauzer_description">Schnauzer de Sobrita</string>
+    <string name="widget_guinea_pig_description">Cochon d’Inde de Sobrita</string>
+    <!-- Sample text for the widget picker's preview only. -->
+    <string name="widget_preview_days">8 jours</string>
+    <string name="widget_preview_register">+  Noter une dépense</string>
+    <plurals name="widget_days">
+        <item quantity="one">%d jour</item>
+        <item quantity="other">%d jours</item>
+    </plurals>
+</resources>

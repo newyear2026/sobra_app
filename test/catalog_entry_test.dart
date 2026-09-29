@@ -1,13 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sobra_app/data/catalog_preview_data.dart';
 import 'package:sobra_app/models/catalog_entry.dart';
+import 'package:sobra_app/models/room_design.dart';
 import 'package:sobra_app/models/xp_event.dart';
 
 void main() {
   test('Michi and Poodle are included; new companions use ads', () {
     final entries = CatalogPreviewData.characters;
 
-    expect(entries, hasLength(13));
+    expect(entries, hasLength(14));
     expect(
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.included,
@@ -18,7 +19,7 @@ void main() {
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.purchase,
       ),
-      hasLength(3),
+      hasLength(4),
     );
     expect(
       entries.where(
@@ -38,6 +39,52 @@ void main() {
     expect(guineaPig.rewardedAdOncePerDay, isFalse);
     expect(guineaPig.storeProductId, isNull);
     expect(guineaPig.assetPath, 'assets/characters/guinea-pig/idle-8.png');
+    final capybara = entries.firstWhere((entry) => entry.id == 'capybara');
+    expect(capybara.unlockMethod, CatalogUnlockMethod.purchase);
+    expect(capybara.storeProductId, 'sobra.character.capybara');
+    expect(capybara.assetPath, 'assets/characters/capybara/idle-8.png');
+    expect(
+      CatalogPreviewData.entryForProductId(capybara.storeProductId!),
+      same(capybara),
+    );
+    expect(
+      CatalogPreviewData.storeProductIds,
+      contains(capybara.storeProductId),
+    );
+    expect(capybara.name, 'Tranqui');
+    final alpaca = entries.firstWhere((entry) => entry.id == 'alpaca');
+    expect(alpaca.name, 'Lana');
+    expect(alpaca.unlockMethod, CatalogUnlockMethod.purchase);
+    expect(alpaca.storeProductId, 'sobra.character.alpaca');
+    expect(alpaca.assetPath, 'assets/characters/alpaca/idle-8.png');
+    final platypus = entries.firstWhere((entry) => entry.id == 'platypus');
+    expect(platypus.name, 'Pico');
+    expect(platypus.unlockMethod, CatalogUnlockMethod.purchase);
+    expect(platypus.storeProductId, 'sobra.character.platypus');
+    expect(platypus.assetPath, 'assets/characters/platypus/idle-8.png');
+    expect(
+      CatalogPreviewData.entryForProductId(platypus.storeProductId!),
+      same(platypus),
+    );
+    expect(
+      CatalogPreviewData.storeProductIds,
+      contains(platypus.storeProductId),
+    );
+    expect(
+      const PreviewCatalogPriceSource().localizedPriceFor(
+        platypus.storeProductId!,
+      ),
+      isNull,
+    );
+    // Every single character is one flat price.
+    for (final paid in [capybara, alpaca]) {
+      expect(
+        const PreviewCatalogPriceSource().localizedPriceFor(
+          paid.storeProductId!,
+        ),
+        r'MX$ 39',
+      );
+    }
     // The three the pack delivers, which are sold no other way.
     expect(
       entries.where(
@@ -51,7 +98,11 @@ void main() {
     final entries = CatalogPreviewData.items;
 
     // The numbered lineup and pack decoration keep their unlock routes.
-    expect(entries, hasLength(20));
+    expect(entries, hasLength(22));
+    expect(
+      entries.where((entry) => entry.unlockMethod == CatalogUnlockMethod.gift),
+      hasLength(2),
+    );
     expect(
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.included,
@@ -91,6 +142,35 @@ void main() {
     );
   });
 
+  group('the launch gift', () {
+    final gifts = CatalogPreviewData.items
+        .where((entry) => entry.unlockMethod == CatalogUnlockMethod.gift)
+        .toList();
+
+    test('is a two-item app grant with no Play product', () {
+      expect(gifts.map((entry) => entry.id).toSet(), {
+        RoomDecorAssets.launchSofaId,
+        RoomDecorAssets.launchTvId,
+      });
+      expect(gifts.every((entry) => entry.storeProductId == null), isTrue);
+      expect(
+        CatalogPreviewData.storeProductIds,
+        isNot(contains('sobra.reward.preregistration')),
+      );
+    });
+
+    test('is listed only once owned', () {
+      for (final gift in gifts) {
+        expect(CatalogPreviewData.isListed(gift, isOwned: false), isFalse);
+        expect(CatalogPreviewData.isListed(gift, isOwned: true), isTrue);
+      }
+      final sold = CatalogPreviewData.all.firstWhere(
+        (entry) => entry.unlockMethod == CatalogUnlockMethod.purchase,
+      );
+      expect(CatalogPreviewData.isListed(sold, isOwned: false), isTrue);
+    });
+  });
+
   test('level rewards are derived for existing and multi-level users', () {
     final restoredProgress = XpProgress.fromTotal(5450);
     final existingLevelEight = CatalogPreviewData.levelItemsUnlockedAt(
@@ -115,7 +195,7 @@ void main() {
   test('localized price is resolved outside the static catalog entry', () {
     const source = PreviewCatalogPriceSource();
     final paid = CatalogPreviewData.characters.firstWhere(
-      (entry) => entry.id == 'character-07',
+      (entry) => entry.id == 'alpaca',
     );
 
     expect(paid.storeProductId, isNotEmpty);

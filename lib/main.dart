@@ -27,6 +27,7 @@ import 'services/admob_rewarded_ad_port.dart';
 import 'services/native_ad_service.dart';
 import 'services/rewarded_ad_service.dart';
 import 'services/receipt_store.dart';
+import 'services/fixed_reminders.dart';
 import 'services/sobra_quick_entry.dart';
 import 'services/sobra_widget_sync.dart';
 import 'state/sobra_store.dart';
@@ -49,6 +50,7 @@ Future<void> main() async {
   final store = await SobraStore.load();
   await SobraWidgetSync.initialize(store);
   await SobraQuickEntry.initialize();
+  SobraFixedReminders.initialize(store);
   final receipts = ReceiptStore.forPlatform();
   await _prepareReceipts(receipts, store);
   final purchasePlatform =
@@ -234,6 +236,7 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       unawaited(widget.store.refreshForCurrentDate());
+      unawaited(widget.purchases?.refreshOnResume());
       _scheduleMidnightRefresh();
     }
   }
@@ -351,6 +354,7 @@ class _WidgetSyncLabelsState extends State<_WidgetSyncLabels> {
         days: l10n.daysCount,
       ),
     );
+    SobraFixedReminders.localize(l10n);
     SobraQuickEntry.copy = SobraQuickEntryCopy(
       question: l10n.quickEntryQuestion,
       income: l10n.registerIncome,

@@ -153,6 +153,39 @@ void main() {
     },
   );
 
+  test(
+    'Capybara requires purchase ownership before it can be equipped',
+    () async {
+      final store = await loadStore();
+      final capybara = entryById('capybara');
+
+      expect(capybara.unlockMethod, CatalogUnlockMethod.purchase);
+      expect(store.ownsCatalogEntry(capybara), isFalse);
+      expect(() => store.chooseCharacter('capybara'), throwsArgumentError);
+
+      await store.grantCatalogEntry(capybara.id);
+      await store.equipCharacter(capybara);
+      final reopened = await loadStore();
+      expect(reopened.characterId, 'capybara');
+      expect(reopened.ownsCatalogEntry(capybara), isTrue);
+    },
+  );
+
+  test('Platypus can be equipped only after purchase ownership', () async {
+    final store = await loadStore();
+    final platypus = entryById('platypus');
+
+    expect(platypus.unlockMethod, CatalogUnlockMethod.purchase);
+    expect(store.ownsCatalogEntry(platypus), isFalse);
+    expect(() => store.chooseCharacter('platypus'), throwsArgumentError);
+
+    await store.grantCatalogEntry(platypus.id);
+    await store.equipCharacter(platypus);
+    final reopened = await loadStore();
+    expect(reopened.characterId, 'platypus');
+    expect(reopened.ownsCatalogEntry(platypus), isTrue);
+  });
+
   test('an old free Schnauzer choice reverts until it is earned', () async {
     await loadStore();
     final preferences = await SharedPreferences.getInstance();
@@ -442,5 +475,27 @@ void main() {
     }
 
     expect(store.recommendedRewardedAdEntry, isNull);
+  });
+
+  test('the debug switch lends paid characters without buying them', () async {
+    final capybara = entryById('capybara');
+    final packOnly = entryById('character-02');
+    final adEarned = entryById('schnauzer');
+    final store = await loadStore();
+
+    await store.setDebugPaidCharactersUnlocked(true);
+    await store.chooseCharacter(capybara.id);
+
+    expect(store.ownsCatalogEntry(capybara), isTrue);
+    expect(store.ownsCatalogEntry(packOnly), isTrue);
+    expect(store.ownsCatalogEntry(adEarned), isFalse);
+    // Lent, not granted: nothing a revocation or a backup would read.
+    expect(store.ownedCatalogIds, isEmpty);
+    expect((await loadStore()).characterId, capybara.id);
+
+    await store.setDebugPaidCharactersUnlocked(false);
+
+    expect(store.ownsCatalogEntry(capybara), isFalse);
+    expect(store.characterId, 'michi');
   });
 }

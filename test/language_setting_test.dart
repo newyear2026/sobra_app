@@ -45,7 +45,7 @@ void main() {
     // An unknown code in saved data must not crash the picker: an older or
     // newer build could have written one.
     test('reads an unknown code as following the phone', () {
-      expect(SobraLanguage.fromCode('ja'), SobraLanguage.automatic);
+      expect(SobraLanguage.fromCode('it'), SobraLanguage.automatic);
       expect(SobraLanguage.fromCode(null), SobraLanguage.automatic);
       expect(SobraLanguage.fromCode('es'), SobraLanguage.spanish);
     });
@@ -76,11 +76,15 @@ void main() {
       // never for want of a translation, and `AppType.fallback` carries one.
       expect(SobraLanguage.korean.shipped, isTrue);
       expect(SobraLanguage.supportedLocales, contains(const Locale('ko')));
+      expect(SobraLanguage.supportedLocales, contains(const Locale('pt')));
+      expect(SobraLanguage.supportedLocales, contains(const Locale('de')));
+      expect(SobraLanguage.supportedLocales, contains(const Locale('fr')));
+      expect(SobraLanguage.supportedLocales, contains(const Locale('ja')));
     });
 
     test('drops a stored code this build cannot show', () async {
       final store = await _onboardedStore();
-      await store.setLanguageCode('ja');
+      await store.setLanguageCode('it');
 
       final restored = await SobraStore.load(now: () => DateTime(2026, 9, 5));
       expect(
@@ -98,6 +102,10 @@ void main() {
         expect(SobraLanguage.spanish.label(l10n), 'Español');
         expect(SobraLanguage.english.label(l10n), 'English');
         expect(SobraLanguage.korean.label(l10n), '한국어');
+        expect(SobraLanguage.portuguese.label(l10n), 'Português');
+        expect(SobraLanguage.german.label(l10n), 'Deutsch');
+        expect(SobraLanguage.french.label(l10n), 'Français');
+        expect(SobraLanguage.japanese.label(l10n), '日本語');
       }
       expect(
         SobraLanguage.automatic.label(
@@ -133,12 +141,12 @@ void main() {
     });
 
     // English leads the supported list, so a phone set to none of the
-    // languages — somebody spending yen, euros or reais — lands on English.
+    // languages — somebody spending yuan, or euros in Italy or the
+    // Netherlands — lands on English.
     for (final phone in const [
-      Locale('ja', 'JP'),
-      Locale('de', 'DE'),
-      Locale('fr', 'FR'),
-      Locale('pt', 'BR'),
+      Locale('zh', 'CN'),
+      Locale('it', 'IT'),
+      Locale('nl', 'NL'),
     ]) {
       testWidgets('falls back to English on a $phone phone', (tester) async {
         tester.platformDispatcher
@@ -162,7 +170,7 @@ void main() {
     for (final phones in const [
       [Locale('es', 'CO')],
       [Locale('es', 'AR')],
-      [Locale('pt', 'BR'), Locale('es', 'ES')],
+      [Locale('it', 'IT'), Locale('es', 'ES')],
     ]) {
       testWidgets('stays in Spanish on a $phones phone', (tester) async {
         tester.platformDispatcher
@@ -176,6 +184,34 @@ void main() {
         await tester.pump();
 
         expect(find.text('Inicio'), findsWidgets);
+        expect(find.text('Home'), findsNothing);
+      });
+    }
+
+    // A Brazilian or Portuguese phone reads Portuguese, any German-speaking
+    // one reads German and any French-speaking one French, without anybody
+    // opening the picker.
+    for (final (phone, home) in const [
+      (Locale('pt', 'BR'), 'Início'),
+      (Locale('pt', 'PT'), 'Início'),
+      (Locale('de', 'DE'), 'Start'),
+      (Locale('de', 'AT'), 'Start'),
+      (Locale('fr', 'FR'), 'Accueil'),
+      (Locale('fr', 'CA'), 'Accueil'),
+      (Locale('ja', 'JP'), 'ホーム'),
+    ]) {
+      testWidgets('follows a $phone phone', (tester) async {
+        tester.platformDispatcher
+          ..localeTestValue = phone
+          ..localesTestValue = <Locale>[phone];
+        addTearDown(tester.platformDispatcher.clearLocaleTestValue);
+        addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+
+        final store = await _onboardedStore();
+        await tester.pumpWidget(SobraApp(store: store));
+        await tester.pump();
+
+        expect(find.text(home), findsWidgets);
         expect(find.text('Home'), findsNothing);
       });
     }

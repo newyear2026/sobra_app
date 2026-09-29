@@ -139,34 +139,54 @@ class AppLocalizationsKo extends AppLocalizations {
   String get xpFirstSuccessfulCycleDetail => '한 번만 주는 보너스';
 
   @override
-  String get xpLevelTitle1 => '호기심 많은 미치';
+  String xpLevelTitle1(String name) {
+    return '호기심 많은 $name';
+  }
 
   @override
-  String get xpLevelTitle2 => '알뜰한 미치';
+  String xpLevelTitle2(String name) {
+    return '알뜰한 $name';
+  }
 
   @override
-  String get xpLevelTitle3 => '계산하는 미치';
+  String xpLevelTitle3(String name) {
+    return '계산하는 $name';
+  }
 
   @override
-  String get xpLevelTitle4 => '지키는 미치';
+  String xpLevelTitle4(String name) {
+    return '지키는 $name';
+  }
 
   @override
-  String get xpLevelTitle5 => '마스터 미치';
+  String xpLevelTitle5(String name) {
+    return '마스터 $name';
+  }
 
   @override
-  String get xpLevelTitle6 => '전문가 미치';
+  String xpLevelTitle6(String name) {
+    return '전문가 $name';
+  }
 
   @override
-  String get xpLevelTitle7 => '전략가 미치';
+  String xpLevelTitle7(String name) {
+    return '전략가 $name';
+  }
 
   @override
-  String get xpLevelTitle8 => '성장하는 미치';
+  String xpLevelTitle8(String name) {
+    return '성장하는 $name';
+  }
 
   @override
-  String get xpLevelTitle9 => '현명한 미치';
+  String xpLevelTitle9(String name) {
+    return '현명한 $name';
+  }
 
   @override
-  String get xpLevelTitle10 => '전설의 미치';
+  String xpLevelTitle10(String name) {
+    return '전설의 $name';
+  }
 
   @override
   String xpNoticeCyclesClosedTitle(int count) {
@@ -351,6 +371,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get monthAbbr12 => '12월';
 
   @override
+  String dateShort(String day, String month) {
+    return '$month $day일';
+  }
+
+  @override
+  String dateFull(String day, String month, String year) {
+    return '$year년 $month $day일';
+  }
+
+  @override
   String get back => '뒤로';
 
   @override
@@ -424,9 +454,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get collectionCharacters => '캐릭터';
-
-  @override
-  String get collectionGuineaPigName => '기니피그';
 
   @override
   String get collectionItems => '아이템';
@@ -510,6 +537,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get collectionPackUnlock => '미치와 친구들에 들어 있어요. 따로 판매하지 않아요.';
+
+  @override
+  String get collectionGiftOnly => '선물';
+
+  @override
+  String get collectionGiftUnlock => '특별한 선물이에요. 판매하지 않아요.';
 
   @override
   String collectionAdProgress(int progress, int target) {
@@ -638,6 +671,24 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get roomBlueCreamRug => '블루 크림 러그';
+
+  @override
+  String get roomLaunchSofa => '벨벳 소파';
+
+  @override
+  String get roomLaunchTv => '이야기 TV';
+
+  @override
+  String get launchGiftTitle => '출시 기념 선물이 도착했어요!';
+
+  @override
+  String get launchGiftBody => '기간 안에 Sobrita를 시작하셨어요. 소파와 TV를 받았습니다.';
+
+  @override
+  String get launchGiftGoToRoom => '우리 집에 놓기';
+
+  @override
+  String get launchGiftLater => '나중에';
 
   @override
   String get roomSuggestCabinet => '벽 가까운 왼쪽 바닥에 두면 안정적이에요. 표시된 자리를 눌러요.';
@@ -1672,13 +1723,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get prologueMichiTrait => '조용하다.\n셈이 빠르다.';
 
   @override
-  String get prologuePoodleName => '푸들';
-
-  @override
   String get prologuePoodleTrait => '기운이 넘친다.\n잘 챙긴다.';
-
-  @override
-  String get prologueSchnauzerName => '슈나우저';
 
   @override
   String get prologueSchnauzerTrait => '차분하다.\n꼼꼼히 살핀다.';
@@ -1858,6 +1903,24 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get releaseNote104Fixed =>
+      '고정 지출은 하루 지출과 따로 다녀요. 홈에 보이고, 나가기 전에 알려줄 수 있어요.';
+
+  @override
+  String get releaseNote104Decor =>
+      '집에 놓을 것이 더 생겼어요. 침대, 선반, 러그, 수납장, 저금통, 푸프.';
+
+  @override
+  String get releaseNote104Names =>
+      'Miru, Yoshi, Cookie가 이름을 가졌고, 레벨 칭호에도 함께하는 친구 이름이 붙어요.';
+
+  @override
+  String get releaseNote104Widget => '홈 위젯에 금액이 잘리지 않고 전부 보여요.';
+
+  @override
+  String get releaseNote104Languages => '이제 포르투갈어, 독일어, 프랑스어, 일본어로도 쓸 수 있어요.';
+
+  @override
   String get releaseNote103GuineaPig => '기니피그가 컬렉션에 들어왔어요. 짧은 광고 두 번이면 함께 지내요.';
 
   @override
@@ -1928,6 +1991,28 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsRateApp => '앱 평가하기';
 
   @override
+  String get settingsOurApps => '추천 앱';
+
+  @override
+  String get ourAppsIntro => 'Sobrita 팀이 만든 앱이에요.';
+
+  @override
+  String get ourAppsOpen => 'Google Play에서 보기';
+
+  @override
+  String get ourAppsLoopetKind => '루틴';
+
+  @override
+  String get ourAppsLoopetBlurb => '하루 24시간을 원 하나로. 지금 할 루틴과 다음 루틴이 한눈에 보여요.';
+
+  @override
+  String get ourAppsRandomFocusKind => '집중';
+
+  @override
+  String get ourAppsRandomFocusBlurb =>
+      '룰렛을 돌려 집중할 시간을 정하는 타이머. 고민 없이 바로 시작해요.';
+
+  @override
   String get releaseAnnouncementViewAll => '전체 보기';
 
   @override
@@ -1935,4 +2020,237 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsReleaseNotesUnread => '읽지 않은 새로운 소식';
+
+  @override
+  String get fixedSectionTitle => '고정지출';
+
+  @override
+  String fixedSectionMonth(String month) {
+    return '$month · 하루 금액과 별개';
+  }
+
+  @override
+  String fixedPaidOfTotal(String paid, String total) {
+    return '$total 중 $paid 납부';
+  }
+
+  @override
+  String get fixedAdd => '고정지출 추가';
+
+  @override
+  String get fixedEmptyBody =>
+      '월세, 휴대폰, 전기: 한 번 등록하면 낼 때를 알려 드려요. 하루 금액은 바뀌지 않아요.';
+
+  @override
+  String get fixedFrequencyWeekly => '매주';
+
+  @override
+  String get fixedFrequencySemiMonthly => '월 2회';
+
+  @override
+  String get fixedFrequencyMonthly => '매월';
+
+  @override
+  String get fixedFrequencyBimonthly => '2개월마다';
+
+  @override
+  String get fixedStatusPaid => '납부';
+
+  @override
+  String get fixedStatusTomorrow => '내일';
+
+  @override
+  String get fixedStatusOverdue => '기한 지남';
+
+  @override
+  String fixedApprox(String amount) {
+    return '약 $amount';
+  }
+
+  @override
+  String get fixedFormNewTitle => '새 고정지출';
+
+  @override
+  String get fixedFormEditTitle => '고정지출 수정';
+
+  @override
+  String get fixedName => '이름';
+
+  @override
+  String get fixedNameHint => '월세, 휴대폰, 전기…';
+
+  @override
+  String get fixedNameRequired => '이름을 적어 주세요';
+
+  @override
+  String get fixedHowOften => '얼마나 자주?';
+
+  @override
+  String get fixedNextDue => '다음 납부일';
+
+  @override
+  String fixedThenDates(String dates) {
+    return '그다음: $dates…';
+  }
+
+  @override
+  String get fixedVariable => '매번 금액이 달라요';
+
+  @override
+  String get fixedVariableHint => '마지막으로 낸 금액을 예상액으로 써요.';
+
+  @override
+  String get fixedFormNote => '하루 금액은 그대로예요. 예산은 고정지출을 낸 뒤 남는 돈이에요.';
+
+  @override
+  String get fixedSave => '고정지출 저장';
+
+  @override
+  String get fixedDelete => '고정지출 삭제';
+
+  @override
+  String fixedDeleteTitle(String name) {
+    return '\'$name\'을(를) 삭제할까요?';
+  }
+
+  @override
+  String get fixedDeleteBody => '이미 기록한 납부는 내역에 그대로 남아요.';
+
+  @override
+  String get fixedDueToday => '오늘 납부일';
+
+  @override
+  String get fixedDueTomorrow => '내일 납부일';
+
+  @override
+  String fixedDueOn(String date) {
+    return '$date 납부일';
+  }
+
+  @override
+  String fixedWasDue(String date) {
+    return '$date 기한 지남';
+  }
+
+  @override
+  String get fixedHowMuch => '얼마 냈나요?';
+
+  @override
+  String fixedLastTime(String amount) {
+    return '지난번: $amount';
+  }
+
+  @override
+  String fixedTodayUnchanged(String amount) {
+    return '오늘 남은 돈은 $amount 그대로예요.';
+  }
+
+  @override
+  String fixedCashChange(String from, String to) {
+    return '예상 현금: $from에서 $to로';
+  }
+
+  @override
+  String fixedPaidWith(String method) {
+    return '결제: $method';
+  }
+
+  @override
+  String get fixedChange => '변경';
+
+  @override
+  String get fixedMarkPaid => '냈어요';
+
+  @override
+  String get fixedNotYet => '아직이요';
+
+  @override
+  String get fixedBillOnly => '고지서만 받았어요';
+
+  @override
+  String fixedBillSaved(String amount) {
+    return '$amount로 예상할게요.';
+  }
+
+  @override
+  String fixedPaymentSaved(String name) {
+    return '\'$name\' 기록했어요.';
+  }
+
+  @override
+  String get fixedHomeLabel => '고정지출';
+
+  @override
+  String fixedHomeMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '확인할 고정지출 $count건',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fixedHomeSee => '보기';
+
+  @override
+  String get fixedIntroTitle => '예산은 고정지출을 뺀 쓸 돈이에요';
+
+  @override
+  String fixedIntroBody(String budget, String name) {
+    return '고정지출은 하루 금액을 줄이지 않아요. $budget 예산에 이미 \'$name\' 몫이 들어 있었다면 예산을 줄이는 게 좋아요.';
+  }
+
+  @override
+  String get fixedIntroKeep => '이대로 좋아요';
+
+  @override
+  String get fixedIntroAdjust => '예산 조정하기';
+
+  @override
+  String get fixedBadge => '고정';
+
+  @override
+  String get fixedNothingThisMonth => '이번 달엔 낼 게 없어요.';
+
+  @override
+  String get fixedReminderLabel => '알림';
+
+  @override
+  String get fixedReminderNone => '알림 없음';
+
+  @override
+  String get fixedReminderSameDay => '당일';
+
+  @override
+  String get fixedReminderDayBefore => '하루 전';
+
+  @override
+  String get fixedReminderThreeDaysBefore => '3일 전';
+
+  @override
+  String get fixedReminderHint => '오전 9시에 알려 드려요.';
+
+  @override
+  String get fixedReminderBlocked => 'Sobrita 알림이 꺼져 있어서 알려 드릴 수 없어요.';
+
+  @override
+  String fixedReminderTitleToday(String name) {
+    return '오늘은 $name 내는 날이에요';
+  }
+
+  @override
+  String fixedReminderTitleTomorrow(String name) {
+    return '내일은 $name 내는 날이에요';
+  }
+
+  @override
+  String fixedReminderTitleInDays(String name, int days) {
+    return '$days일 뒤 $name 내는 날이에요';
+  }
+
+  @override
+  String fixedReminderBody(String amount, String method) {
+    return '$amount · $method. 낸 뒤에 Sobrita에 기록해 주세요.';
+  }
 }

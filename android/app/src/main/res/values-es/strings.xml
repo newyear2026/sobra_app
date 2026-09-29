@@ -2,6 +2,8 @@
 <resources>
     <string name="quick_entry_channel_name">Registro rápido</string>
     <string name="quick_entry_channel_description">Accesos para registrar ingresos y gastos</string>
+    <string name="fixed_channel_name">Pagos fijos</string>
+    <string name="fixed_channel_description">Avisos antes de que toque pagar la renta y los recibos</string>
     <string name="quick_entry_question">¿Qué quieres registrar?</string>
     <string name="quick_entry_income">Ingreso</string>
     <string name="quick_entry_expense">Gasto</string>

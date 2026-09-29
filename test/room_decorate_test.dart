@@ -167,17 +167,17 @@ void main() {
   group('characters', () {
     testWidgets('the category lists only what is owned', (tester) async {
       final store = await loadStore();
-      await store.grantCatalogEntry('character-07');
+      await store.grantCatalogEntry('capybara');
       await pump(tester, store);
 
       await openCategory(tester, 'Personajes');
 
       expect(find.text('Michi'), findsOneWidget);
-      expect(find.text('Poodle'), findsOneWidget);
-      expect(find.text('Schnauzer'), findsNothing);
-      expect(find.text('Personaje 7'), findsOneWidget);
+      expect(find.text('Miru'), findsOneWidget);
+      expect(find.text('Yoshi'), findsNothing);
+      expect(find.text('Tranqui'), findsOneWidget);
       // Owned by nobody in this store, and so not a choice to make here.
-      expect(find.text('Personaje 9'), findsNothing);
+      expect(find.text('Lana'), findsNothing);
     });
 
     // The screen promises Undo and Done. A character that changed on the tap
@@ -185,13 +185,13 @@ void main() {
     // the cat swapped.
     testWidgets('choosing one is staged until Done', (tester) async {
       final store = await loadStore();
-      await store.grantCatalogEntry('character-07');
+      await store.grantCatalogEntry('capybara');
       await pump(tester, store);
 
       await openCategory(tester, 'Personajes');
       await tester.drag(find.byType(GridView), const Offset(0, -180));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Personaje 7'));
+      await tester.tap(find.text('Tranqui'));
       await tester.pumpAndSettle();
 
       expect(store.characterId, 'michi');
@@ -199,19 +199,19 @@ void main() {
       await tester.tap(find.text('Listo'));
       await tester.pumpAndSettle();
 
-      expect(store.characterId, 'character-07');
-      expect((await loadStore()).characterId, 'character-07');
+      expect(store.characterId, 'capybara');
+      expect((await loadStore()).characterId, 'capybara');
     });
 
     testWidgets('Undo puts the character back', (tester) async {
       final store = await loadStore();
-      await store.grantCatalogEntry('character-07');
+      await store.grantCatalogEntry('capybara');
       await pump(tester, store);
 
       await openCategory(tester, 'Personajes');
       await tester.drag(find.byType(GridView), const Offset(0, -180));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Personaje 7'));
+      await tester.tap(find.text('Tranqui'));
       await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('Deshacer'));
       await tester.pumpAndSettle();

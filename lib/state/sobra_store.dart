@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/catalog_preview_data.dart';
+import '../data/launch_gift_campaign.dart';
 import '../models/cash_reconciliation.dart';
 import '../models/catalog_entry.dart';
 import '../models/currency.dart';
@@ -14,6 +16,7 @@ import '../models/language.dart';
 import '../models/income_entry.dart';
 import '../models/money_movement.dart';
 import '../models/pay_schedule.dart';
+import '../models/recurring_expense.dart';
 import '../models/room_design.dart';
 import '../models/store_failure.dart';
 import '../models/xp_event.dart';
@@ -64,6 +67,10 @@ class SobraStore extends ChangeNotifier {
   static const _defaultPaySchedule = PaySchedule.semiMonthly();
 
   static const _storageKey = 'sobra_state_v2';
+
+  /// Kept apart from [_storageKey] so the switch never enters a backup, an
+  /// export, or the owned set the store's revocation reads.
+  static const _debugPaidCharactersKey = 'sobra_debug_paid_characters';
   static const _backupKey = 'sobra_state_backup_v2';
   static const _corruptArchiveKey = 'sobra_state_corrupt_v2';
 
@@ -75,6 +82,7 @@ class SobraStore extends ChangeNotifier {
   final List<XpEvent> _xpEvents = [];
   final Map<String, int> _cycleBudgetExtras = {};
   final List<CycleRecord> _cycleRecords = [];
+  final List<RecurringExpense> _recurringExpenses = [];
 
   /// Catalog entries the user actually acquired — a real-money purchase, or a
   /// rewarded-ad run they finished.
@@ -115,6 +123,10 @@ class SobraStore extends ChangeNotifier {
   /// The local day [_nativeAdImpressionsOnDay] belongs to.
   String? _nativeAdDay;
   int _nativeAdImpressionsOnDay = 0;
+
+  /// The local day the user answered "Todavía no" on Inicio's fixed-expense
+  /// card, which keeps the card away for the rest of that day only.
+  String? _fixedHomeSnoozedDay;
   int _idSequence = 0;
 
   int _baseBudgetCentavos = 600000;
@@ -191,6 +203,8 @@ class SobraStore extends ChangeNotifier {
   DateTime? pendingPayScheduleEffectiveAt;
   DateTime? payScheduleEffectiveFloor;
   DateTime? xpTrackingStartedAt;
+  DateTime? firstStartedAt;
+  bool launchGiftNoticePending = false;
   DateTime? lastSettledCycleEnd;
   bool hasStorageError = false;
   String? corruptedStorage;
@@ -222,6 +236,10 @@ class SobraStore extends ChangeNotifier {
     // One-time migration for states written before native ads existed. Saving
     // now matters: if the missing value were only filled in memory, every
     // restart would begin a fresh configured grace period forever.
+    store._debugPaidCharacters =
+        kDebugMode &&
+        (preferences.getBool(_debugPaidCharactersKey) ?? false);
+    await store._ensureFirstStartedAt();
     await store._ensureNativeAdInstallDay();
     // A character that was previously bundled for free can become a paid
     // entry. Keep the saved choice only when its entitlement is still owned.
@@ -233,6 +251,7 @@ class SobraStore extends ChangeNotifier {
       await store._save();
     }
     await store.settleCycles();
+    await store.maybeGrantLaunchGift();
     store._lastObservedDate = store.today;
     return store;
   }
@@ -374,7 +393,17 @@ class SobraStore extends ChangeNotifier {
   List<CycleRecord> get cycleRecords =>
       List.unmodifiable(_cycleRecords.reversed);
 
-  List<ExpenseEntry> get cycleTransactions => _transactions
+  /// Everyday spending: every expense except fixed-expense payments.
+  ///
+  /// Every figure the budget is measured with folds over this and never over
+  /// [_transactions] directly. Paying rent must not move "Hoy te queda", a
+  /// category limit or whether a cycle closes green — the budget is what is
+  /// left to spend once the fixed expenses are paid.
+  Iterable<ExpenseEntry> get _spending =>
+      _transactions.where((entry) => !entry.isFixedPayment);
+
+  /// The current cycle's everyday spending — see [_spending].
+  List<ExpenseEntry> get cycleSpending => _spending
       .where((entry) => cycleBounds.contains(entry.occurredAt))
       .toList();
   List<IncomeEntry> get cycleIncomes => _incomes
@@ -389,7 +418,7 @@ class SobraStore extends ChangeNotifier {
   }
 
   int get totalSpentCentavos =>
-      cycleTransactions.fold(0, (total, entry) => total + entry.amountCentavos);
+      cycleSpending.fold(0, (total, entry) => total + entry.amountCentavos);
 
   /// Days of the current cycle lived so far, today included.
   ///
@@ -402,7 +431,7 @@ class SobraStore extends ChangeNotifier {
   int? get cycleAveragePerDayCentavos =>
       averagePerDayCentavos(totalSpentCentavos, cycleElapsedDays);
 
-  int get spentTodayCentavos => cycleTransactions
+  int get spentTodayCentavos => cycleSpending
       .where((entry) => _isSameDay(entry.occurredAt, today))
       .fold(0, (total, entry) => total + entry.amountCentavos);
   int get spentBeforeTodayCentavos => totalSpentCentavos - spentTodayCentavos;
@@ -445,7 +474,7 @@ class SobraStore extends ChangeNotifier {
     return remainingBudgetCentavos - (average * futureDays).round();
   }
 
-  int spentFor(ExpenseCategory category) => cycleTransactions
+  int spentFor(ExpenseCategory category) => cycleSpending
       .where((entry) => entry.category == category)
       .fold(0, (total, entry) => total + entry.amountCentavos);
 
@@ -531,8 +560,13 @@ class SobraStore extends ChangeNotifier {
   int _settleCycle(CycleBounds bounds, DateTime trackingStart) {
     final cycleKey = _cycleKey(bounds.start);
     final budget = _baseBudgetCentavos + (_cycleBudgetExtras[cycleKey] ?? 0);
-    final spent = _transactions
+    final spent = _spending
         .where((entry) => bounds.contains(entry.occurredAt))
+        .fold(0, (sum, entry) => sum + entry.amountCentavos);
+    final fixedPaid = _transactions
+        .where(
+          (entry) => entry.isFixedPayment && bounds.contains(entry.occurredAt),
+        )
         .fold(0, (sum, entry) => sum + entry.amountCentavos);
     final fullCycleTracked = !dateOnly(trackingStart).isAfter(bounds.start);
     final successful = budget > 0 && spent <= budget;
@@ -540,6 +574,7 @@ class SobraStore extends ChangeNotifier {
       bounds,
       budget: budget,
       spent: spent,
+      fixedPaid: fixedPaid,
       tracked: fullCycleTracked,
     );
     final occurredAt = DateTime(
@@ -605,7 +640,7 @@ class SobraStore extends ChangeNotifier {
   }) {
     if (budgetCentavos <= 0) return 0;
     final spentByDay = <String, int>{};
-    for (final entry in _transactions) {
+    for (final entry in _spending) {
       if (!bounds.contains(entry.occurredAt)) continue;
       final key = _cycleKey(entry.occurredAt);
       spentByDay[key] = (spentByDay[key] ?? 0) + entry.amountCentavos;
@@ -671,6 +706,7 @@ class SobraStore extends ChangeNotifier {
     CycleBounds bounds, {
     required int budget,
     required int spent,
+    required int fixedPaid,
     required bool tracked,
   }) {
     if (!tracked) return;
@@ -682,6 +718,7 @@ class SobraStore extends ChangeNotifier {
         budgetCentavos: budget,
         spentCentavos: spent,
         cycleType: paySchedule.type,
+        fixedPaidCentavos: fixedPaid,
       ),
     );
   }
@@ -820,9 +857,10 @@ class SobraStore extends ChangeNotifier {
   /// Expenses and incomes the user typed that are dated today.
   ///
   /// Cash-count rows are measured, not typed, so they do not count toward
-  /// [DailyMissionKind.threeToday].
+  /// [DailyMissionKind.threeToday]. Nor do fixed-expense payments: they sit
+  /// outside the budget, and the missions are about the budget habit.
   int get _userMovementsDatedToday =>
-      _transactions
+      _spending
           .where(
             (entry) =>
                 !entry.isLinkedToCashCount &&
@@ -943,6 +981,7 @@ class SobraStore extends ChangeNotifier {
     // Dated today: the same habits a new save would complete. Cash-count
     // rows keep their own weekly XP and must not also fill today's missions.
     if (!next.isLinkedToCashCount &&
+        !next.isFixedPayment &&
         _isSameDay(dateOnly(next.occurredAt), today)) {
       _awardDailyMissionsForMovement(
         next.occurredAt,
@@ -1003,6 +1042,235 @@ class SobraStore extends ChangeNotifier {
     }
     await _save();
     notifyListeners();
+  }
+
+  /// Fixed expenses in the order they were added.
+  List<RecurringExpense> get recurringExpenses =>
+      List.unmodifiable(_recurringExpenses);
+
+  RecurringExpense? recurringExpenseById(String id) =>
+      _recurringExpenses.where((entry) => entry.id == id).firstOrNull;
+
+  Future<RecurringExpense> addRecurringExpense({
+    required String name,
+    required int amountCentavos,
+    required ExpenseCategory category,
+    required PaymentMethod paymentMethod,
+    required FixedFrequency frequency,
+    required DateTime firstDueDate,
+    bool isVariable = false,
+    FixedReminder? reminder,
+  }) async {
+    if (amountCentavos <= 0) {
+      throw ArgumentError.value(amountCentavos, 'amountCentavos');
+    }
+    final expense = RecurringExpense(
+      id: _newId('fixed'),
+      name: name.trim(),
+      amountCentavos: amountCentavos,
+      category: category,
+      paymentMethod: paymentMethod,
+      unit: frequency.unit,
+      interval: frequency.interval,
+      anchorDate: dateOnly(firstDueDate),
+      isVariable: isVariable,
+      reminder: reminder ?? frequency.defaultReminder,
+    );
+    _recurringExpenses.add(expense);
+    await _save();
+    notifyListeners();
+    return expense;
+  }
+
+  /// Replaces a fixed expense with [updated], matched by id.
+  ///
+  /// Payments already filed keep the due date they settled. Moving the
+  /// schedule can leave one of them pointing at a date the new schedule does
+  /// not have; it stays a fixed payment all the same, and the new date simply
+  /// reads as unpaid until the user files it.
+  Future<void> updateRecurringExpense(RecurringExpense updated) async {
+    if (updated.amountCentavos <= 0) {
+      throw ArgumentError.value(updated.amountCentavos, 'amountCentavos');
+    }
+    final index = _recurringExpenses.indexWhere(
+      (entry) => entry.id == updated.id,
+    );
+    if (index == -1) return;
+    _recurringExpenses[index] = updated;
+    await _save();
+    notifyListeners();
+  }
+
+  /// Stops tracking a fixed expense.
+  ///
+  /// Its past payments stay exactly as they are — still in the ledger, still
+  /// out of the budget. Only the future dates and their reminders go.
+  Future<void> deleteRecurringExpense(String id) async {
+    final before = _recurringExpenses.length;
+    _recurringExpenses.removeWhere((entry) => entry.id == id);
+    if (_recurringExpenses.length == before) return;
+    await _save();
+    notifyListeners();
+  }
+
+  /// Every due date from [from] to [to] across all fixed expenses, earliest
+  /// first, each with its payment if one has been filed.
+  List<FixedOccurrence> fixedOccurrencesBetween(DateTime from, DateTime to) {
+    final payments = _fixedPaymentsByOccurrence();
+    final result =
+        [
+          for (final expense in _recurringExpenses)
+            for (final date in expense.occurrencesBetween(from, to))
+              _fixedOccurrence(expense, date, payments),
+        ]..sort((a, b) {
+          final byDate = a.date.compareTo(b.date);
+          return byDate != 0
+              ? byDate
+              : a.expense.name.compareTo(b.expense.name);
+        });
+    return List.unmodifiable(result);
+  }
+
+  /// The due dates that fall in [month]'s calendar month.
+  ///
+  /// By month rather than by pay cycle: rent and bills are thought of per
+  /// month, and a fixed expense has nothing to do with the budget's cycle.
+  List<FixedOccurrence> fixedOccurrencesInMonth(DateTime month) =>
+      fixedOccurrencesBetween(
+        DateTime(month.year, month.month, 1),
+        DateTime(month.year, month.month + 1, 0),
+      );
+
+  /// How many days past its due date an unpaid occurrence still asks on Inicio.
+  ///
+  /// After that it stays marked in the budget tab and stops following the
+  /// user around. Reminding is the job; nagging is not.
+  static const fixedOverdueDaysOnHome = 2;
+
+  /// Whether Inicio's fixed-expense card was put off for today.
+  bool get isFixedHomeCardSnoozed => _fixedHomeSnoozedDay == todayKey;
+
+  /// Hides Inicio's fixed-expense card until tomorrow.
+  Future<void> snoozeFixedHomeCard() async {
+    _fixedHomeSnoozedDay = todayKey;
+    await _save();
+    notifyListeners();
+  }
+
+  /// Unpaid occurrences Inicio should ask about: due today or a little late.
+  List<FixedOccurrence> get fixedDueOnHome {
+    final from = DateTime(
+      today.year,
+      today.month,
+      today.day - fixedOverdueDaysOnHome,
+    );
+    return fixedOccurrencesBetween(
+      from,
+      today,
+    ).where((occurrence) => !occurrence.isPaid).toList();
+  }
+
+  /// The due date a payment of [expense] made today should settle.
+  ///
+  /// The most recent date that has arrived, if it is still unpaid; otherwise
+  /// the first unpaid one after today, so paying early settles the next bill.
+  /// Anything older than the most recent date is taken as dealt with outside
+  /// Sobra — asking about last year's rent would help nobody.
+  FixedOccurrence? nextUnpaidOccurrence(RecurringExpense expense) {
+    final payments = _fixedPaymentsByOccurrence();
+    final latest = expense.lastOccurrenceOnOrBefore(today);
+    if (latest != null &&
+        !payments.containsKey(_occurrenceKey(expense.id, latest))) {
+      return _fixedOccurrence(expense, latest, payments);
+    }
+    final tomorrow = DateTime(today.year, today.month, today.day + 1);
+    final horizon = DateTime(today.year + 2, today.month, today.day);
+    for (final date in expense.occurrencesBetween(tomorrow, horizon)) {
+      if (!payments.containsKey(_occurrenceKey(expense.id, date))) {
+        return _fixedOccurrence(expense, date, payments);
+      }
+    }
+    return null;
+  }
+
+  /// Files the payment of one due date of a fixed expense.
+  ///
+  /// The payment lands in the ledger and, when it was cash, comes out of the
+  /// expected cash — the money did leave the wallet. It stays out of every
+  /// budget figure; see [ExpenseEntry.isFixedPayment].
+  ///
+  /// A date that already has a payment returns that payment instead of filing
+  /// a second one, so a double tap cannot pay the rent twice. A variable bill
+  /// takes the amount paid as its next estimate.
+  Future<ExpenseEntry> recordFixedPayment({
+    required String recurringId,
+    required DateTime occurrenceDate,
+    required int amountCentavos,
+    PaymentMethod? paymentMethod,
+    DateTime? paidAt,
+  }) async {
+    final expense = recurringExpenseById(recurringId);
+    if (expense == null) {
+      throw ArgumentError.value(recurringId, 'recurringId');
+    }
+    final dueDate = dateOnly(occurrenceDate);
+    if (!expense.isOccurrence(dueDate)) {
+      throw ArgumentError.value(occurrenceDate, 'occurrenceDate');
+    }
+    final existing =
+        _fixedPaymentsByOccurrence()[_occurrenceKey(recurringId, dueDate)];
+    if (existing != null) return existing;
+
+    final moment = paidAt ?? currentMoment;
+    _validateMovement(amountCentavos, moment);
+    final entry = ExpenseEntry(
+      id: _newId('expense'),
+      amountCentavos: amountCentavos,
+      category: expense.category,
+      note: expense.name,
+      occurredAt: moment,
+      paymentMethod: paymentMethod ?? expense.paymentMethod,
+      recurringId: recurringId,
+      occurrenceDate: dueDate,
+    );
+    _transactions.add(entry);
+    if (_affectsCurrentCash(entry)) expectedCashCentavos -= amountCentavos;
+    if (expense.isVariable && expense.amountCentavos != amountCentavos) {
+      final index = _recurringExpenses.indexOf(expense);
+      _recurringExpenses[index] = expense.copyWith(
+        amountCentavos: amountCentavos,
+      );
+    }
+    await _save();
+    notifyListeners();
+    return entry;
+  }
+
+  Map<String, ExpenseEntry> _fixedPaymentsByOccurrence() => {
+    for (final entry in _transactions)
+      if (entry.recurringId != null && entry.occurrenceDate != null)
+        _occurrenceKey(entry.recurringId!, entry.occurrenceDate!): entry,
+  };
+
+  String _occurrenceKey(String recurringId, DateTime date) =>
+      '$recurringId|${_cycleKey(date)}';
+
+  FixedOccurrence _fixedOccurrence(
+    RecurringExpense expense,
+    DateTime date,
+    Map<String, ExpenseEntry> payments,
+  ) {
+    final payment = payments[_occurrenceKey(expense.id, date)];
+    return FixedOccurrence(
+      expense: expense,
+      date: date,
+      payment: payment,
+      status: FixedOccurrence.statusFor(
+        date: date,
+        today: today,
+        paid: payment != null,
+      ),
+    );
   }
 
   /// Removes an income, reporting whether it was allowed to go.
@@ -1316,7 +1584,35 @@ class SobraStore extends ChangeNotifier {
     return entry.unlockMethod == CatalogUnlockMethod.included ||
         CatalogPreviewData.isUnlockedAtLevel(entry, xpProgress.level) ||
         _ownedCatalogIds.contains(entry.id) ||
-        (productId != null && _ownedCatalogIds.contains(productId));
+        (productId != null && _ownedCatalogIds.contains(productId)) ||
+        (_debugPaidCharacters &&
+            entry.kind == CatalogKind.character &&
+            (entry.unlockMethod == CatalogUnlockMethod.purchase ||
+                entry.unlockMethod == CatalogUnlockMethod.bundle));
+  }
+
+  /// Debug builds only: paid and pack characters read as owned, unpaid.
+  ///
+  /// Answered in [ownsCatalogEntry] rather than written into the owned set.
+  /// A grant there would be taken back by the launch revocation the moment
+  /// Play reports the test account owns nothing, and turning the switch off
+  /// would have to guess which ids were real purchases.
+  bool _debugPaidCharacters = false;
+
+  bool get debugPaidCharactersUnlocked => _debugPaidCharacters;
+
+  Future<void> setDebugPaidCharactersUnlocked(bool unlocked) async {
+    if (!kDebugMode || unlocked == _debugPaidCharacters) return;
+    _debugPaidCharacters = unlocked;
+    await _preferences.setBool(_debugPaidCharactersKey, unlocked);
+    final selected = CatalogPreviewData.characters
+        .where((entry) => entry.id == characterId)
+        .firstOrNull;
+    if (selected != null && !ownsCatalogEntry(selected)) {
+      characterId = 'michi';
+      await _save();
+    }
+    notifyListeners();
   }
 
   /// Whether general (native) ads should stay off.
@@ -1588,6 +1884,44 @@ class SobraStore extends ChangeNotifier {
   /// silently revoke something the user paid for.
   Future<void> grantCatalogEntry(String id) => grantCatalogEntries({id});
 
+  /// Delivers both launch decorations in one write. Someone who started in
+  /// time still receives them when first opening a later update.
+  Future<bool> maybeGrantLaunchGift() async {
+    final started = firstStartedAt;
+    if (!hasCompletedOnboarding ||
+        started == null ||
+        !LaunchGiftCampaign.active(today) ||
+        !LaunchGiftCampaign.eligible(started)) {
+      return false;
+    }
+    final added = LaunchGiftCampaign.itemIds.difference(_ownedCatalogIds);
+    if (added.isEmpty) return false;
+    _ownedCatalogIds.addAll(added);
+    launchGiftNoticePending = true;
+    try {
+      await _save();
+    } on Object {
+      _ownedCatalogIds.removeAll(added);
+      launchGiftNoticePending = false;
+      rethrow;
+    }
+    notifyListeners();
+    return true;
+  }
+
+  Future<bool> takeLaunchGiftNotice() async {
+    if (!launchGiftNoticePending) return false;
+    launchGiftNoticePending = false;
+    try {
+      await _save();
+    } on Object {
+      launchGiftNoticePending = true;
+      rethrow;
+    }
+    notifyListeners();
+    return true;
+  }
+
   /// Records that every id in [ids] was acquired, in one write.
   ///
   /// What a bundle needs: granting its contents one at a time would save once
@@ -1724,8 +2058,10 @@ class SobraStore extends ChangeNotifier {
     // asked the opening question again.
     hasAnsweredLoginOffer = true;
     xpTrackingStartedAt ??= today;
+    firstStartedAt ??= today;
     await _save();
     notifyListeners();
+    await maybeGrantLaunchGift();
   }
 
   bool get hasRecoverableBackup {
@@ -1824,6 +2160,7 @@ class SobraStore extends ChangeNotifier {
     _cashReconciliations.clear();
     _xpEvents.clear();
     _cycleRecords.clear();
+    _recurringExpenses.clear();
     _cycleBudgetExtras.clear();
     _baseBudgetCentavos = 600000;
     _hasBudget = true;
@@ -1839,6 +2176,7 @@ class SobraStore extends ChangeNotifier {
     _nativeAdInstallDay = todayKey;
     _nativeAdDay = null;
     _nativeAdImpressionsOnDay = 0;
+    _fixedHomeSnoozedDay = null;
     countedCashCentavos = 0;
     expectedCashCentavos = 0;
     reducedMotion = false;
@@ -1852,9 +2190,26 @@ class SobraStore extends ChangeNotifier {
     pendingPayScheduleEffectiveAt = null;
     payScheduleEffectiveFloor = null;
     xpTrackingStartedAt = null;
+    firstStartedAt = today;
+    launchGiftNoticePending = false;
     lastSettledCycleEnd = null;
     _pendingXpNotice = null;
     categoryLimits = _categoryLimitsForBudget(_baseBudgetCentavos);
+  }
+
+  Future<void> _ensureFirstStartedAt() async {
+    if (firstStartedAt != null) return;
+    // Existing testers did not have this field. Use the earliest start date
+    // already in their saved state before falling back to this update day.
+    final candidates = <DateTime>[
+      ?xpTrackingStartedAt,
+      if (_nativeAdInstallDay != null)
+        DateTime.tryParse(_nativeAdInstallDay!) ?? today,
+    ];
+    firstStartedAt = candidates.isEmpty
+        ? today
+        : candidates.reduce((a, b) => a.isBefore(b) ? a : b);
+    await _save();
   }
 
   Future<void> _ensureNativeAdInstallDay() async {
@@ -1900,6 +2255,9 @@ class SobraStore extends ChangeNotifier {
     _cycleRecords
       ..clear()
       ..addAll(other._cycleRecords);
+    _recurringExpenses
+      ..clear()
+      ..addAll(other._recurringExpenses);
     _cycleBudgetExtras
       ..clear()
       ..addAll(other._cycleBudgetExtras);
@@ -1917,6 +2275,7 @@ class SobraStore extends ChangeNotifier {
     _nativeAdInstallDay = other._nativeAdInstallDay;
     _nativeAdDay = other._nativeAdDay;
     _nativeAdImpressionsOnDay = other._nativeAdImpressionsOnDay;
+    _fixedHomeSnoozedDay = other._fixedHomeSnoozedDay;
     _baseBudgetCentavos = other._baseBudgetCentavos;
     _hasBudget = other._hasBudget;
     characterId = other.characterId;
@@ -1944,6 +2303,8 @@ class SobraStore extends ChangeNotifier {
     pendingPayScheduleEffectiveAt = other.pendingPayScheduleEffectiveAt;
     payScheduleEffectiveFloor = other.payScheduleEffectiveFloor;
     xpTrackingStartedAt = other.xpTrackingStartedAt;
+    firstStartedAt = other.firstStartedAt;
+    launchGiftNoticePending = other.launchGiftNoticePending;
     lastSettledCycleEnd = other.lastSettledCycleEnd;
     _pendingXpNotice = other._pendingXpNotice;
     categoryLimits = Map.of(other.categoryLimits);
@@ -1984,6 +2345,14 @@ class SobraStore extends ChangeNotifier {
       ..addAll(
         (json['cycleRecords'] as List<dynamic>? ?? const []).map(
           (entry) => CycleRecord.fromJson(entry as Map<String, dynamic>),
+        ),
+      );
+    // Absent from every state written before fixed expenses existed.
+    _recurringExpenses
+      ..clear()
+      ..addAll(
+        (json['recurringExpenses'] as List<dynamic>? ?? const []).map(
+          (entry) => RecurringExpense.fromJson(entry as Map<String, dynamic>),
         ),
       );
     _baseBudgetCentavos =
@@ -2065,6 +2434,7 @@ class SobraStore extends ChangeNotifier {
     _nativeAdDay = json['nativeAdDay'] as String?;
     _nativeAdImpressionsOnDay =
         (json['nativeAdImpressionsOnDay'] as num?)?.toInt() ?? 0;
+    _fixedHomeSnoozedDay = json['fixedHomeSnoozedDay'] as String?;
     countedCashCentavos = (json['countedCashCentavos'] as num).toInt();
     expectedCashCentavos = (json['expectedCashCentavos'] as num).toInt();
     reducedMotion = json['reducedMotion'] as bool? ?? false;
@@ -2105,6 +2475,9 @@ class SobraStore extends ChangeNotifier {
     xpTrackingStartedAt = trackingStarted == null
         ? null
         : DateTime.parse(trackingStarted);
+    final firstStarted = json['firstStartedAt'] as String?;
+    firstStartedAt = firstStarted == null ? null : DateTime.parse(firstStarted);
+    launchGiftNoticePending = json['launchGiftNoticePending'] as bool? ?? false;
     final settledEnd = json['lastSettledCycleEnd'] as String?;
     lastSettledCycleEnd = settledEnd == null
         ? null
@@ -2124,7 +2497,7 @@ class SobraStore extends ChangeNotifier {
   }
 
   Map<String, Object?> _toJson() => {
-    'schemaVersion': 8,
+    'schemaVersion': 9,
     'transactions': _transactions.map((entry) => entry.toJson()).toList(),
     'incomes': _incomes.map((entry) => entry.toJson()).toList(),
     'cashReconciliations': _cashReconciliations
@@ -2132,6 +2505,9 @@ class SobraStore extends ChangeNotifier {
         .toList(),
     'xpEvents': _xpEvents.map((entry) => entry.toJson()).toList(),
     'cycleRecords': _cycleRecords.map((entry) => entry.toJson()).toList(),
+    'recurringExpenses': _recurringExpenses
+        .map((entry) => entry.toJson())
+        .toList(),
     'baseBudgetCentavos': _baseBudgetCentavos,
     'totalBudgetCentavos': _baseBudgetCentavos,
     'hasBudget': _hasBudget,
@@ -2156,6 +2532,7 @@ class SobraStore extends ChangeNotifier {
     'nativeAdInstallDay': _nativeAdInstallDay,
     'nativeAdDay': _nativeAdDay,
     'nativeAdImpressionsOnDay': _nativeAdImpressionsOnDay,
+    'fixedHomeSnoozedDay': _fixedHomeSnoozedDay,
     'cycleBudgetExtras': _cycleBudgetExtras,
     'countedCashCentavos': countedCashCentavos,
     'expectedCashCentavos': expectedCashCentavos,
@@ -2174,6 +2551,8 @@ class SobraStore extends ChangeNotifier {
         ?.toIso8601String(),
     'payScheduleEffectiveFloor': payScheduleEffectiveFloor?.toIso8601String(),
     'xpTrackingStartedAt': xpTrackingStartedAt?.toIso8601String(),
+    'firstStartedAt': firstStartedAt?.toIso8601String(),
+    'launchGiftNoticePending': launchGiftNoticePending,
     'lastSettledCycleEnd': lastSettledCycleEnd?.toIso8601String(),
     'categoryLimits': {
       for (final entry in categoryLimits.entries) entry.key.name: entry.value,
@@ -2222,7 +2601,8 @@ class SobraStore extends ChangeNotifier {
       _transactions.any((entry) => entry.id == id) ||
       _incomes.any((entry) => entry.id == id) ||
       _cashReconciliations.any((entry) => entry.id == id) ||
-      _xpEvents.any((entry) => entry.id == id);
+      _xpEvents.any((entry) => entry.id == id) ||
+      _recurringExpenses.any((entry) => entry.id == id);
   String _cycleKey(DateTime date) => dateOnly(date).toIso8601String();
   bool _isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;

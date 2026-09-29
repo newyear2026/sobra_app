@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
+import '../models/recurring_expense.dart';
 import '../models/room_design.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
+import '../widgets/fixed_expenses.dart';
 import '../widgets/gamification_ui.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/room_scene.dart';
@@ -53,7 +55,9 @@ class _BudgetQuest extends StatelessWidget {
 }
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.active = true});
+
+  final bool active;
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +82,9 @@ class HomeScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final currency = store.currency;
     final textTheme = Theme.of(context).textTheme;
+    final fixedDue = store.isFixedHomeCardSnoozed
+        ? const <FixedOccurrence>[]
+        : store.fixedDueOnHome;
 
     return SafeArea(
       bottom: false,
@@ -161,8 +168,16 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                 ],
+                if (fixedDue.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  FixedDueCard(
+                    occurrences: fixedDue,
+                    onSeeAll: () => shell.select(AppTab.budget),
+                  ),
+                ],
                 const SizedBox(height: 18),
                 _HomeRoomCard(
+                  active: active,
                   message: onTrack ? l10n.homeGoingWell : l10n.homeAdjustCalmly,
                   roomId: store.equippedRoomId,
                   placements: store.roomDecorationsFor(),
@@ -175,7 +190,11 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 18),
                 LevelStrip(
                   level: xp.level,
-                  title: xpLevelTitle(l10n, xp.level),
+                  title: xpLevelTitle(
+                    l10n,
+                    xp.level,
+                    CharacterCatalog.resolve(store.characterId).displayName,
+                  ),
                   subtitle: l10n.xpTotal(xp.totalXp),
                   currentXp: xp.currentLevelXp,
                   targetXp: xp.targetLevelXp,
@@ -371,6 +390,7 @@ class HomeScreen extends StatelessWidget {
 
 class _HomeRoomCard extends StatelessWidget {
   const _HomeRoomCard({
+    required this.active,
     required this.message,
     required this.roomId,
     required this.placements,
@@ -378,6 +398,8 @@ class _HomeRoomCard extends StatelessWidget {
     required this.catLoop,
     required this.onTap,
   });
+
+  final bool active;
 
   final String message;
   final String roomId;
@@ -428,6 +450,7 @@ class _HomeRoomCard extends StatelessWidget {
               aspectRatio: 2,
               child: RoomScene(
                 variant: RoomSceneVariant.preview,
+                animateItems: active,
                 roomId: roomId,
                 placements: placements,
                 message: message,

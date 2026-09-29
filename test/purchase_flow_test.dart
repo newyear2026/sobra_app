@@ -17,12 +17,12 @@ void main() {
   late FakeBackend backend;
   late SobraPurchases purchases;
 
-  const productId = 'sobra.character.07';
+  const productId = 'sobra.character.capybara';
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
     store = await SobraStore.load(now: () => DateTime(2026, 9, 14, 11));
-    backend = FakeBackend()..catalogue = [productFor(productId, r'MX$ 79')];
+    backend = FakeBackend()..catalogue = [productFor(productId, r'MX$ 39')];
     purchases = SobraPurchases(
       backend: backend,
       store: store,
@@ -72,10 +72,10 @@ void main() {
   Finder inDialog(String text) =>
       find.descendant(of: find.byType(AlertDialog), matching: find.text(text));
 
-  Future<void> openPersonaje7(WidgetTester tester) async {
-    await tester.ensureVisible(find.text('Personaje 7'));
+  Future<void> openTranqui(WidgetTester tester) async {
+    await tester.ensureVisible(find.text('Tranqui'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Personaje 7'));
+    await tester.tap(find.text('Tranqui'));
     await tester.pumpAndSettle();
   }
 
@@ -84,10 +84,9 @@ void main() {
 
     await pump(tester, const CollectionScreen());
 
-    expect(find.text(r'MX$ 79'), findsOneWidget);
-    // The preview source priced six entries. Only the one the fake store
+    // The preview source prices Lana the same. Only the one the fake store
     // actually listed may carry a price now.
-    expect(find.text(r'MX$ 39'), findsNothing);
+    expect(find.text(r'MX$ 39'), findsOneWidget);
   });
 
   testWidgets('buying from the dialog reaches the store and then unlocks', (
@@ -96,7 +95,7 @@ void main() {
     await purchases.start();
     await pump(tester, const CollectionScreen());
 
-    await openPersonaje7(tester);
+    await openTranqui(tester);
     await tester.tap(inDialog('COMPRAR'));
     await tester.pumpAndSettle();
 
@@ -107,7 +106,7 @@ void main() {
 
     // The catalog answers for itself once the store confirms — no reload, no
     // second trip through the screen.
-    await openPersonaje7(tester);
+    await openTranqui(tester);
     expect(inDialog('OBTENIDO'), findsOneWidget);
     expect(inDialog('COMPRAR'), findsNothing);
   });
@@ -125,7 +124,7 @@ void main() {
 
     expect(find.text('COMPRANDO…'), findsOneWidget);
     // Still locked: the money has not moved yet.
-    await openPersonaje7(tester);
+    await openTranqui(tester);
     expect(inDialog('EQUIPAR'), findsNothing);
   });
 
@@ -137,7 +136,7 @@ void main() {
     await purchases.start();
     await pump(tester, const CollectionScreen());
 
-    await openPersonaje7(tester);
+    await openTranqui(tester);
     await tester.tap(inDialog('COMPRAR'));
     await tester.pumpAndSettle();
     expect(
@@ -162,7 +161,7 @@ void main() {
     await purchases.start();
     await pump(tester, const CollectionScreen());
 
-    await openPersonaje7(tester);
+    await openTranqui(tester);
     await tester.tap(inDialog('COMPRAR'));
     await tester.pumpAndSettle();
     expect(find.text('COMPRANDO…'), findsOneWidget);
@@ -182,8 +181,8 @@ void main() {
 
     await pump(tester, const CollectionScreen());
 
-    expect(find.text('Personaje 7'), findsOneWidget);
-    expect(find.text(r'MX$ 79'), findsNothing);
+    expect(find.text('Tranqui'), findsOneWidget);
+    expect(find.text(r'MX$ 39'), findsNothing);
     expect(find.text('COMPRAR'), findsWidgets);
   });
 
@@ -200,7 +199,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pumpAndSettle();
 
-    expect(store.ownedCatalogIds, {'character-07'});
+    expect(store.ownedCatalogIds, {'capybara'});
     expect(find.text('Listo. Tus compras volvieron.'), findsOneWidget);
   });
 

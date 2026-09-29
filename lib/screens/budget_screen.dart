@@ -7,6 +7,7 @@ import '../models/expense_entry.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
+import '../widgets/fixed_expenses.dart';
 import '../widgets/pixel_ui.dart';
 import 'cycle_history_screen.dart';
 
@@ -50,6 +51,40 @@ class BudgetScreen extends StatelessWidget {
       currency: SobraScope.of(context).currency,
     ),
   );
+
+  Future<void> _editTotalBudget(
+    BuildContext context,
+    SobraStore store,
+    AppLocalizations l10n,
+  ) async {
+    final value = await _requestAmount(
+      context,
+      title: l10n.budgetTotal,
+      currentCentavos: store.totalBudgetCentavos,
+    );
+    if (value != null && context.mounted) {
+      if (value <= store.cycleBudgetExtrasCentavos) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              l10n.budgetTooLow(
+                formatMoney(store.currency, store.cycleBudgetExtrasCentavos),
+              ),
+            ),
+          ),
+        );
+        return;
+      }
+      final adjust = await _requestCategoryPolicy(context);
+      if (adjust != null && context.mounted) {
+        await guardStoreWrite(
+          ScaffoldMessenger.of(context),
+          l10n,
+          () => store.setTotalBudget(value, adjustCategoryLimits: adjust),
+        );
+      }
+    }
+  }
 
   Widget _budgetPrompt(
     BuildContext context,
@@ -129,41 +164,7 @@ class BudgetScreen extends StatelessWidget {
             const SizedBox(height: 8),
             PixelCard(
               elevation: PixelElevation.hero,
-              onTap: () async {
-                final value = await _requestAmount(
-                  context,
-                  title: l10n.budgetTotal,
-                  currentCentavos: store.totalBudgetCentavos,
-                );
-                if (value != null && context.mounted) {
-                  if (value <= store.cycleBudgetExtrasCentavos) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          l10n.budgetTooLow(
-                            formatMoney(
-                              currency,
-                              store.cycleBudgetExtrasCentavos,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                    return;
-                  }
-                  final adjust = await _requestCategoryPolicy(context);
-                  if (adjust != null && context.mounted) {
-                    await guardStoreWrite(
-                      ScaffoldMessenger.of(context),
-                      l10n,
-                      () => store.setTotalBudget(
-                        value,
-                        adjustCategoryLimits: adjust,
-                      ),
-                    );
-                  }
-                }
-              },
+              onTap: () => _editTotalBudget(context, store, l10n),
               child: Row(
                 children: [
                   Expanded(
@@ -195,6 +196,10 @@ class BudgetScreen extends StatelessWidget {
                 child: CycleHistorySummary(records: store.cycleRecords),
               ),
             ],
+            const SizedBox(height: 24),
+            FixedExpensesSection(
+              onAdjustBudget: () => _editTotalBudget(context, store, l10n),
+            ),
             const SizedBox(height: 24),
             Text(
               l10n.budgetByCategory,

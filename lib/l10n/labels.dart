@@ -6,6 +6,7 @@ import '../models/income_entry.dart';
 import '../models/money_movement.dart';
 import '../models/language.dart';
 import '../models/pay_schedule.dart';
+import '../models/recurring_expense.dart';
 import '../models/store_failure.dart';
 import '../services/purchase_service.dart';
 import '../models/xp_event.dart';
@@ -119,6 +120,14 @@ String movementSubtitle(AppLocalizations l10n, MoneyMovement movement) {
         expense.paymentMethod.label(l10n),
       );
     }
+    // The name is the headline, so the line says what sets the row apart:
+    // this money paid a fixed expense and sits outside the budget.
+    if (expense.isFixedPayment) {
+      return l10n.movementSubtitle(
+        l10n.fixedBadge,
+        expense.paymentMethod.label(l10n),
+      );
+    }
     // Without a note the headline is already the category, and repeating it
     // here gives a row that reads "Comida / Comida · Efectivo". The line
     // drops to what the headline is not saying.
@@ -212,19 +221,21 @@ extension DailyMissionKindL10n on DailyMissionKind {
   };
 }
 
-/// The name of a level, from 1 up to [XpProgress.levelCount].
-String xpLevelTitle(AppLocalizations l10n, int level) => switch (level) {
-  1 => l10n.xpLevelTitle1,
-  2 => l10n.xpLevelTitle2,
-  3 => l10n.xpLevelTitle3,
-  4 => l10n.xpLevelTitle4,
-  5 => l10n.xpLevelTitle5,
-  6 => l10n.xpLevelTitle6,
-  7 => l10n.xpLevelTitle7,
-  8 => l10n.xpLevelTitle8,
-  9 => l10n.xpLevelTitle9,
-  _ => l10n.xpLevelTitle10,
-};
+/// The name of a level, from 1 up to [XpProgress.levelCount], worn by the
+/// companion called [name].
+String xpLevelTitle(AppLocalizations l10n, int level, String name) =>
+    switch (level) {
+      1 => l10n.xpLevelTitle1(name),
+      2 => l10n.xpLevelTitle2(name),
+      3 => l10n.xpLevelTitle3(name),
+      4 => l10n.xpLevelTitle4(name),
+      5 => l10n.xpLevelTitle5(name),
+      6 => l10n.xpLevelTitle6(name),
+      7 => l10n.xpLevelTitle7(name),
+      8 => l10n.xpLevelTitle8(name),
+      9 => l10n.xpLevelTitle9(name),
+      _ => l10n.xpLevelTitle10(name),
+    };
 
 String xpNoticeTitle(AppLocalizations l10n, XpNotice notice) =>
     switch (notice.kind) {
@@ -295,18 +306,22 @@ String monthAbbreviation(AppLocalizations l10n, int month) => switch (month) {
   _ => l10n.monthAbbr12,
 };
 
-/// A date the way Sobra writes one: day, then the month by name.
+/// A date the way Sobra writes one: the day and the month by name.
 ///
-/// Spelling the month out is what lets the order stay put in every locale —
-/// "15 sep" cannot be misread the way "09/15" and "15/09" can.
+/// Spelling the month out is what keeps it unambiguous — "15 sep" cannot be
+/// misread the way "09/15" and "15/09" can. The order is the locale's, from
+/// the ARB: "15 sep" in Spanish, "9월 15일" in Korean, "9月15日" in Japanese.
 String shortCycleDate(AppLocalizations l10n, DateTime date) =>
-    '${date.day} ${monthAbbreviation(l10n, date.month)}';
+    l10n.dateShort('${date.day}', monthAbbreviation(l10n, date.month));
 
 String cycleDateRange(AppLocalizations l10n, DateTime start, DateTime end) =>
     '${shortCycleDate(l10n, start)}–${shortCycleDate(l10n, end)}';
 
-String fullDate(AppLocalizations l10n, DateTime date) =>
-    '${date.day} ${monthAbbreviation(l10n, date.month)} ${date.year}';
+String fullDate(AppLocalizations l10n, DateTime date) => l10n.dateFull(
+  '${date.day}',
+  monthAbbreviation(l10n, date.month),
+  '${date.year}',
+);
 
 extension CatMotionL10n on CatMotion {
   /// What a screen reader says the cat is doing.
@@ -361,7 +376,11 @@ extension SobraLanguageL10n on SobraLanguage {
     SobraLanguage.automatic => l10n.languageAutomatic,
     SobraLanguage.spanish => 'Español',
     SobraLanguage.english => 'English',
+    SobraLanguage.portuguese => 'Português',
+    SobraLanguage.german => 'Deutsch',
+    SobraLanguage.french => 'Français',
     SobraLanguage.korean => '한국어',
+    SobraLanguage.japanese => '日本語',
   };
 }
 
@@ -370,5 +389,45 @@ extension CurrencyRegionL10n on CurrencyRegion {
     CurrencyRegion.americas => l10n.currencyRegionAmericas,
     CurrencyRegion.europe => l10n.currencyRegionEurope,
     CurrencyRegion.asiaPacific => l10n.currencyRegionAsiaPacific,
+  };
+}
+
+extension FixedFrequencyL10n on FixedFrequency {
+  String label(AppLocalizations l10n) => switch (this) {
+    FixedFrequency.weekly => l10n.fixedFrequencyWeekly,
+    FixedFrequency.semiMonthly => l10n.fixedFrequencySemiMonthly,
+    FixedFrequency.monthly => l10n.fixedFrequencyMonthly,
+    FixedFrequency.bimonthly => l10n.fixedFrequencyBimonthly,
+  };
+}
+
+/// The short tag beside a fixed-expense row: its state, or its date while it
+/// is simply coming up.
+String fixedStatusTag(AppLocalizations l10n, FixedOccurrence occurrence) =>
+    switch (occurrence.status) {
+      FixedOccurrenceStatus.paid => l10n.fixedStatusPaid,
+      FixedOccurrenceStatus.dueToday => l10n.today,
+      FixedOccurrenceStatus.dueTomorrow => l10n.fixedStatusTomorrow,
+      FixedOccurrenceStatus.overdue => l10n.fixedStatusOverdue,
+      FixedOccurrenceStatus.upcoming => shortCycleDate(l10n, occurrence.date),
+    };
+
+/// When an occurrence is due, as a phrase.
+String fixedDueLine(AppLocalizations l10n, FixedOccurrence occurrence) =>
+    switch (occurrence.status) {
+      FixedOccurrenceStatus.dueToday => l10n.fixedDueToday,
+      FixedOccurrenceStatus.dueTomorrow => l10n.fixedDueTomorrow,
+      FixedOccurrenceStatus.overdue => l10n.fixedWasDue(
+        shortCycleDate(l10n, occurrence.date),
+      ),
+      _ => l10n.fixedDueOn(shortCycleDate(l10n, occurrence.date)),
+    };
+
+extension FixedReminderL10n on FixedReminder {
+  String label(AppLocalizations l10n) => switch (this) {
+    FixedReminder.none => l10n.fixedReminderNone,
+    FixedReminder.sameDay => l10n.fixedReminderSameDay,
+    FixedReminder.dayBefore => l10n.fixedReminderDayBefore,
+    FixedReminder.threeDaysBefore => l10n.fixedReminderThreeDaysBefore,
   };
 }

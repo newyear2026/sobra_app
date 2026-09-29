@@ -7,12 +7,12 @@ import '../l10n/catalog_labels.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/catalog_entry.dart';
+import '../models/room_design.dart';
 import '../services/purchase_service.dart';
 import '../services/rewarded_ad_service.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
-import '../widgets/character_room.dart';
 import '../widgets/pixel_ui.dart';
 
 class CollectionScreen extends StatefulWidget {
@@ -281,6 +281,12 @@ class _CollectionScreenState extends State<CollectionScreen> {
     // A second tap during a checkout cannot open a second one, so the control
     // stops looking live rather than accepting a tap and doing nothing.
     if (state.isPurchasing) return false;
+    // A paid character is only purchasable once the store has a real listing
+    // and localized price. This also covers products configured after the app.
+    if (state.entry.unlockMethod == CatalogUnlockMethod.purchase &&
+        state.localizedStorePrice == null) {
+      return false;
+    }
     // Level rewards arrive on their own, and a bundle entry is bought from the
     // row that sells the bundle. Neither has anything for this card to do.
     // Only the rules disable the button. "No ad right now" is a network
@@ -292,7 +298,8 @@ class _CollectionScreenState extends State<CollectionScreen> {
       return false;
     }
     return state.entry.unlockMethod != CatalogUnlockMethod.level &&
-        state.entry.unlockMethod != CatalogUnlockMethod.bundle;
+        state.entry.unlockMethod != CatalogUnlockMethod.bundle &&
+        state.entry.unlockMethod != CatalogUnlockMethod.gift;
   }
 
   @override
@@ -306,7 +313,11 @@ class _CollectionScreenState extends State<CollectionScreen> {
     final entries = CatalogPreviewData.forKind(_selectedKind);
     final states = [
       for (final entry in entries)
-        _stateFor(entry, store, prices, purchases?.isBuying, ads),
+        if (CatalogPreviewData.isListed(
+          entry,
+          isOwned: store.ownsCatalogEntry(entry),
+        ))
+          _stateFor(entry, store, prices, purchases?.isBuying, ads),
     ];
     final ownedCount = states.where((state) => state.isOwned).length;
 
@@ -332,6 +343,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         current: xp.currentLevelXp,
                         target: xp.targetLevelXp,
                         isMaxLevel: xp.isMaxLevel,
+                        roomId: store.equippedRoomId,
                       ),
                       const SizedBox(height: 18),
                       _CatalogTabs(
@@ -409,6 +421,7 @@ class _CollectionHeader extends StatelessWidget {
     required this.current,
     required this.target,
     required this.isMaxLevel,
+    required this.roomId,
   });
 
   final String title;
@@ -417,6 +430,10 @@ class _CollectionHeader extends StatelessWidget {
   final int current;
   final int target;
   final bool isMaxLevel;
+
+  /// The room the user has equipped, so the art matches the one they
+  /// decorated rather than always showing Casa clara.
+  final String roomId;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -459,7 +476,7 @@ class _CollectionHeader extends StatelessWidget {
                   ),
                   child: ClipRect(
                     child: Image.asset(
-                      CharacterRoom.casaClaraBackgroundAsset,
+                      RoomThemes.byId(roomId).previewAsset,
                       fit: BoxFit.cover,
                       alignment: Alignment.centerRight,
                       excludeFromSemantics: true,
@@ -685,7 +702,9 @@ class _CatalogCard extends StatelessWidget {
                         (state.entry.unlockMethod ==
                                 CatalogUnlockMethod.level ||
                             state.entry.unlockMethod ==
-                                CatalogUnlockMethod.bundle))
+                                CatalogUnlockMethod.bundle ||
+                            state.entry.unlockMethod ==
+                                CatalogUnlockMethod.gift))
                       const Positioned(
                         right: 0,
                         top: 0,
@@ -810,6 +829,9 @@ class _CatalogPreview extends StatelessWidget {
       CatalogVisual.poodle => Icons.pets,
       CatalogVisual.schnauzer => Icons.pets,
       CatalogVisual.guineaPig => Icons.pets,
+      CatalogVisual.capybara => Icons.pets,
+      CatalogVisual.alpaca => Icons.pets,
+      CatalogVisual.platypus => Icons.pets,
     };
     final tint = entry.kind == CatalogKind.character
         ? AppColors.violetSoft
@@ -1004,6 +1026,11 @@ class _CatalogTones {
         AppColors.blue,
         Icons.lock,
       ),
+      CatalogUnlockMethod.gift => const _CatalogTones(
+        AppColors.violetSoft,
+        AppColors.violet,
+        Icons.card_giftcard,
+      ),
     };
   }
 }
@@ -1025,6 +1052,7 @@ String _cardActionLabel(AppLocalizations l10n, CatalogEntryState state) {
     ),
     CatalogUnlockMethod.included => l10n.collectionOwned,
     CatalogUnlockMethod.bundle => l10n.collectionPackOnly,
+    CatalogUnlockMethod.gift => l10n.collectionGiftOnly,
   };
 }
 
@@ -1042,6 +1070,7 @@ String _dialogActionLabel(AppLocalizations l10n, CatalogEntryState state) {
     ),
     CatalogUnlockMethod.included => l10n.collectionOwned,
     CatalogUnlockMethod.bundle => l10n.collectionPackOnly,
+    CatalogUnlockMethod.gift => l10n.collectionGiftOnly,
   };
 }
 
@@ -1075,5 +1104,6 @@ String _unlockDescription(AppLocalizations l10n, CatalogEntryState state) {
       state.entry.requiredLevel!,
     ),
     CatalogUnlockMethod.bundle => l10n.collectionPackUnlock,
+    CatalogUnlockMethod.gift => l10n.collectionGiftUnlock,
   };
 }
