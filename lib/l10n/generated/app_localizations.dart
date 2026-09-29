@@ -346,65 +346,65 @@ abstract class AppLocalizations {
   /// **'Bono de una sola vez'**
   String get xpFirstSuccessfulCycleDetail;
 
-  /// No description provided for @xpLevelTitle1.
+  /// The title of level 1, worn by the chosen companion.
   ///
   /// In es, this message translates to:
-  /// **'Michi curioso'**
-  String get xpLevelTitle1;
+  /// **'{name} curioso'**
+  String xpLevelTitle1(String name);
 
-  /// No description provided for @xpLevelTitle2.
+  /// The title of level 2; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi ahorrador'**
-  String get xpLevelTitle2;
+  /// **'{name} ahorrador'**
+  String xpLevelTitle2(String name);
 
-  /// No description provided for @xpLevelTitle3.
+  /// The title of level 3; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi contador'**
-  String get xpLevelTitle3;
+  /// **'{name} contador'**
+  String xpLevelTitle3(String name);
 
-  /// No description provided for @xpLevelTitle4.
+  /// The title of level 4; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi guardián'**
-  String get xpLevelTitle4;
+  /// **'{name} guardián'**
+  String xpLevelTitle4(String name);
 
-  /// No description provided for @xpLevelTitle5.
+  /// The title of level 5; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi maestro'**
-  String get xpLevelTitle5;
+  /// **'{name} maestro'**
+  String xpLevelTitle5(String name);
 
-  /// No description provided for @xpLevelTitle6.
+  /// The title of level 6; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi experto'**
-  String get xpLevelTitle6;
+  /// **'{name} experto'**
+  String xpLevelTitle6(String name);
 
-  /// No description provided for @xpLevelTitle7.
+  /// The title of level 7; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi estratega'**
-  String get xpLevelTitle7;
+  /// **'{name} estratega'**
+  String xpLevelTitle7(String name);
 
-  /// No description provided for @xpLevelTitle8.
+  /// The title of level 8; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi próspero'**
-  String get xpLevelTitle8;
+  /// **'{name} próspero'**
+  String xpLevelTitle8(String name);
 
-  /// No description provided for @xpLevelTitle9.
+  /// The title of level 9; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi sabio'**
-  String get xpLevelTitle9;
+  /// **'{name} sabio'**
+  String xpLevelTitle9(String name);
 
-  /// No description provided for @xpLevelTitle10.
+  /// The title of level 10; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi leyenda'**
-  String get xpLevelTitle10;
+  /// **'{name} leyenda'**
+  String xpLevelTitle10(String name);
 
   /// Shown after settling closed cycles, when at least one of them earned XP.
   ///
@@ -860,12 +860,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Personajes'**
   String get collectionCharacters;
-
-  /// No description provided for @collectionGuineaPigName.
-  ///
-  /// In es, this message translates to:
-  /// **'Cobaya'**
-  String get collectionGuineaPigName;
 
   /// No description provided for @collectionItems.
   ///
@@ -3027,23 +3021,11 @@ abstract class AppLocalizations {
   /// **'Callado.\nBueno con los números.'**
   String get prologueMichiTrait;
 
-  /// No description provided for @prologuePoodleName.
-  ///
-  /// In es, this message translates to:
-  /// **'Poodle'**
-  String get prologuePoodleName;
-
   /// No description provided for @prologuePoodleTrait.
   ///
   /// In es, this message translates to:
   /// **'Puro ánimo.\nMuy atento.'**
   String get prologuePoodleTrait;
-
-  /// No description provided for @prologueSchnauzerName.
-  ///
-  /// In es, this message translates to:
-  /// **'Schnauzer'**
-  String get prologueSchnauzerName;
 
   /// No description provided for @prologueSchnauzerTrait.
   ///

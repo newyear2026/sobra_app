@@ -63,6 +63,47 @@ void main() {
     });
   }
 
+  testWidgets('the name card shows the equipped character, not Michi', (
+    tester,
+  ) async {
+    useSpanishDevice(tester);
+    final store = await _store();
+    await store.chooseCharacter('poodle');
+    await tester.pumpWidget(
+      SobraScope(
+        store: store,
+        child: MaterialApp(
+          locale: const Locale('es', 'MX'),
+          localizationsDelegates: sobraLocalizationsDelegates,
+          supportedLocales: sobraSupportedLocales,
+          home: const RoomScreen(),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text('Miru'), findsOneWidget);
+    expect(find.text('Michi'), findsNothing);
+  });
+
+  testWidgets('the level title on Inicio names the equipped character', (
+    tester,
+  ) async {
+    useSpanishDevice(tester);
+    tester.view.physicalSize = const Size(520, 1100);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final store = await _store();
+    await store.chooseCharacter('poodle');
+
+    await tester.pumpWidget(SobraApp(store: store));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Miru curioso'), findsOneWidget);
+    expect(find.text('Michi curioso'), findsNothing);
+  });
+
   testWidgets('the home room opens the immersive room and decorator', (
     tester,
   ) async {

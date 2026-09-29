@@ -141,34 +141,54 @@ class AppLocalizationsEn extends AppLocalizations {
   String get xpFirstSuccessfulCycleDetail => 'One-time bonus';
 
   @override
-  String get xpLevelTitle1 => 'Curious Michi';
+  String xpLevelTitle1(String name) {
+    return 'Curious $name';
+  }
 
   @override
-  String get xpLevelTitle2 => 'Saver Michi';
+  String xpLevelTitle2(String name) {
+    return 'Saver $name';
+  }
 
   @override
-  String get xpLevelTitle3 => 'Counter Michi';
+  String xpLevelTitle3(String name) {
+    return 'Counter $name';
+  }
 
   @override
-  String get xpLevelTitle4 => 'Guardian Michi';
+  String xpLevelTitle4(String name) {
+    return 'Guardian $name';
+  }
 
   @override
-  String get xpLevelTitle5 => 'Master Michi';
+  String xpLevelTitle5(String name) {
+    return 'Master $name';
+  }
 
   @override
-  String get xpLevelTitle6 => 'Expert Michi';
+  String xpLevelTitle6(String name) {
+    return 'Expert $name';
+  }
 
   @override
-  String get xpLevelTitle7 => 'Strategist Michi';
+  String xpLevelTitle7(String name) {
+    return 'Strategist $name';
+  }
 
   @override
-  String get xpLevelTitle8 => 'Prosperous Michi';
+  String xpLevelTitle8(String name) {
+    return 'Prosperous $name';
+  }
 
   @override
-  String get xpLevelTitle9 => 'Wise Michi';
+  String xpLevelTitle9(String name) {
+    return 'Wise $name';
+  }
 
   @override
-  String get xpLevelTitle10 => 'Legendary Michi';
+  String xpLevelTitle10(String name) {
+    return 'Legendary $name';
+  }
 
   @override
   String xpNoticeCyclesClosedTitle(int count) {
@@ -439,9 +459,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get collectionCharacters => 'Characters';
-
-  @override
-  String get collectionGuineaPigName => 'Guinea Pig';
 
   @override
   String get collectionItems => 'Items';
@@ -1738,13 +1755,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prologueMichiTrait => 'Quiet.\nGood with numbers.';
 
   @override
-  String get prologuePoodleName => 'Poodle';
-
-  @override
   String get prologuePoodleTrait => 'All energy.\nLooks after you.';
-
-  @override
-  String get prologueSchnauzerName => 'Schnauzer';
 
   @override
   String get prologueSchnauzerTrait => 'Thoughtful.\nKeeps watch.';

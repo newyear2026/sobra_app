@@ -59,16 +59,56 @@
   "xpFirstSuccessfulCycleTitle": "Primer ciclo en verde",
   "xpFirstSuccessfulCycleDetail": "Bono de una sola vez",
 
-  "xpLevelTitle1": "Michi curioso",
-  "xpLevelTitle2": "Michi ahorrador",
-  "xpLevelTitle3": "Michi contador",
-  "xpLevelTitle4": "Michi guardián",
-  "xpLevelTitle5": "Michi maestro",
-  "xpLevelTitle6": "Michi experto",
-  "xpLevelTitle7": "Michi estratega",
-  "xpLevelTitle8": "Michi próspero",
-  "xpLevelTitle9": "Michi sabio",
-  "xpLevelTitle10": "Michi leyenda",
+  "xpLevelTitle1": "{name} curioso",
+  "@xpLevelTitle1": {
+    "description": "The title of level 1, worn by the chosen companion.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle2": "{name} ahorrador",
+  "@xpLevelTitle2": {
+    "description": "The title of level 2; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle3": "{name} contador",
+  "@xpLevelTitle3": {
+    "description": "The title of level 3; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle4": "{name} guardián",
+  "@xpLevelTitle4": {
+    "description": "The title of level 4; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle5": "{name} maestro",
+  "@xpLevelTitle5": {
+    "description": "The title of level 5; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle6": "{name} experto",
+  "@xpLevelTitle6": {
+    "description": "The title of level 6; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle7": "{name} estratega",
+  "@xpLevelTitle7": {
+    "description": "The title of level 7; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle8": "{name} próspero",
+  "@xpLevelTitle8": {
+    "description": "The title of level 8; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle9": "{name} sabio",
+  "@xpLevelTitle9": {
+    "description": "The title of level 9; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "xpLevelTitle10": "{name} leyenda",
+  "@xpLevelTitle10": {
+    "description": "The title of level 10; see xpLevelTitle1.",
+    "placeholders": { "name": { "type": "String" } }
+  },
 
   "xpNoticeCyclesClosedTitle": "{count, plural, =1{Ciclo cerrado} other{{count} ciclos cerrados}}",
   "@xpNoticeCyclesClosedTitle": {
@@ -204,7 +244,6 @@
   "collectionTitle": "Colección",
   "collectionSettingsValue": "Ver",
   "collectionCharacters": "Personajes",
-  "collectionGuineaPigName": "Cobaya",
   "collectionItems": "Objetos",
   "collectionLevel": "NIVEL {level}",
   "@collectionLevel": {
@@ -719,9 +758,7 @@
   "prologueDriedOff": "Secos, los dos se calmaron. Afuera seguía lloviendo.",
   "prologueWhoSits": "¿Quién se sienta contigo?",
   "prologueMichiTrait": "Callado.\nBueno con los números.",
-  "prologuePoodleName": "Poodle",
   "prologuePoodleTrait": "Puro ánimo.\nMuy atento.",
-  "prologueSchnauzerName": "Schnauzer",
   "prologueSchnauzerTrait": "Observador.\nSiempre atento.",
   "prologueLockedName": "???",
   "prologueLockedTrait": "Puro ánimo.\nMuy atento.",

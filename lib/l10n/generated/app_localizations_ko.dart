@@ -139,34 +139,54 @@ class AppLocalizationsKo extends AppLocalizations {
   String get xpFirstSuccessfulCycleDetail => '한 번만 주는 보너스';
 
   @override
-  String get xpLevelTitle1 => '호기심 많은 미치';
+  String xpLevelTitle1(String name) {
+    return '호기심 많은 $name';
+  }
 
   @override
-  String get xpLevelTitle2 => '알뜰한 미치';
+  String xpLevelTitle2(String name) {
+    return '알뜰한 $name';
+  }
 
   @override
-  String get xpLevelTitle3 => '계산하는 미치';
+  String xpLevelTitle3(String name) {
+    return '계산하는 $name';
+  }
 
   @override
-  String get xpLevelTitle4 => '지키는 미치';
+  String xpLevelTitle4(String name) {
+    return '지키는 $name';
+  }
 
   @override
-  String get xpLevelTitle5 => '마스터 미치';
+  String xpLevelTitle5(String name) {
+    return '마스터 $name';
+  }
 
   @override
-  String get xpLevelTitle6 => '전문가 미치';
+  String xpLevelTitle6(String name) {
+    return '전문가 $name';
+  }
 
   @override
-  String get xpLevelTitle7 => '전략가 미치';
+  String xpLevelTitle7(String name) {
+    return '전략가 $name';
+  }
 
   @override
-  String get xpLevelTitle8 => '성장하는 미치';
+  String xpLevelTitle8(String name) {
+    return '성장하는 $name';
+  }
 
   @override
-  String get xpLevelTitle9 => '현명한 미치';
+  String xpLevelTitle9(String name) {
+    return '현명한 $name';
+  }
 
   @override
-  String get xpLevelTitle10 => '전설의 미치';
+  String xpLevelTitle10(String name) {
+    return '전설의 $name';
+  }
 
   @override
   String xpNoticeCyclesClosedTitle(int count) {
@@ -424,9 +444,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get collectionCharacters => '캐릭터';
-
-  @override
-  String get collectionGuineaPigName => '기니피그';
 
   @override
   String get collectionItems => '아이템';
@@ -1672,13 +1689,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get prologueMichiTrait => '조용하다.\n셈이 빠르다.';
 
   @override
-  String get prologuePoodleName => '푸들';
-
-  @override
   String get prologuePoodleTrait => '기운이 넘친다.\n잘 챙긴다.';
-
-  @override
-  String get prologueSchnauzerName => '슈나우저';
 
   @override
   String get prologueSchnauzerTrait => '차분하다.\n꼼꼼히 살핀다.';

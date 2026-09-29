@@ -187,7 +187,11 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 18),
                 LevelStrip(
                   level: xp.level,
-                  title: xpLevelTitle(l10n, xp.level),
+                  title: xpLevelTitle(
+                    l10n,
+                    xp.level,
+                    CharacterCatalog.resolve(store.characterId).displayName,
+                  ),
                   subtitle: l10n.xpTotal(xp.totalXp),
                   currentXp: xp.currentLevelXp,
                   targetXp: xp.targetLevelXp,

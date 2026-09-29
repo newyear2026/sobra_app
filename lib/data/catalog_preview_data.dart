@@ -18,7 +18,7 @@ abstract final class CatalogPreviewData {
     ),
     CatalogEntry(
       id: 'poodle',
-      name: 'Poodle',
+      name: 'Miru',
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.included,
       visual: CatalogVisual.poodle,
@@ -30,7 +30,7 @@ abstract final class CatalogPreviewData {
     // no payment on the account.
     CatalogEntry(
       id: 'schnauzer',
-      name: 'Schnauzer',
+      name: 'Yoshi',
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.schnauzer,
@@ -39,7 +39,7 @@ abstract final class CatalogPreviewData {
     ),
     CatalogEntry(
       id: 'guinea-pig',
-      name: 'Guinea Pig',
+      name: 'Cookie',
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.guineaPig,

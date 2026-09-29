@@ -206,7 +206,7 @@ abstract final class CharacterCatalog {
 
   static const poodle = CharacterDefinition(
     id: 'poodle',
-    displayName: 'Poodle',
+    displayName: 'Miru',
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
         assetFileName: 'idle-8.png',
@@ -276,7 +276,7 @@ abstract final class CharacterCatalog {
 
   static const schnauzer = CharacterDefinition(
     id: 'schnauzer',
-    displayName: 'Schnauzer',
+    displayName: 'Yoshi',
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
         assetFileName: 'idle-8.png',
@@ -343,7 +343,7 @@ abstract final class CharacterCatalog {
 
   static const guineaPig = CharacterDefinition(
     id: 'guinea-pig',
-    displayName: 'Guinea Pig',
+    displayName: 'Cookie',
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
         assetFileName: 'idle-8.png',

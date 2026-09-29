@@ -762,7 +762,13 @@ class _ProfileCard extends StatelessWidget {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            xpLevelTitle(l10n, xp.level),
+                            xpLevelTitle(
+                              l10n,
+                              xp.level,
+                              CharacterCatalog.resolve(
+                                store.characterId,
+                              ).displayName,
+                            ),
                             style: pixelText(size: 17, bold: true),
                           ),
                         ),

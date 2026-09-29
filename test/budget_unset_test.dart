@@ -277,7 +277,7 @@ void main() {
         findsNothing,
       );
       await tap('¿Acabas de hablar?');
-      await tap('Poodle');
+      await tap('Miru');
       await tap('Que se queden');
 
       expect(store.characterId, 'poodle');
@@ -295,8 +295,8 @@ void main() {
 
       await tap('Ir a ver');
       await tap('¿Acabas de hablar?');
-      expect(find.text('Schnauzer'), findsNothing);
-      expect(find.text('Poodle'), findsOneWidget);
+      expect(find.text('Yoshi'), findsNothing);
+      expect(find.text('Miru'), findsOneWidget);
       await tap('Que se queden');
 
       expect(store.characterId, 'michi');

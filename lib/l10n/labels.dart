@@ -221,19 +221,21 @@ extension DailyMissionKindL10n on DailyMissionKind {
   };
 }
 
-/// The name of a level, from 1 up to [XpProgress.levelCount].
-String xpLevelTitle(AppLocalizations l10n, int level) => switch (level) {
-  1 => l10n.xpLevelTitle1,
-  2 => l10n.xpLevelTitle2,
-  3 => l10n.xpLevelTitle3,
-  4 => l10n.xpLevelTitle4,
-  5 => l10n.xpLevelTitle5,
-  6 => l10n.xpLevelTitle6,
-  7 => l10n.xpLevelTitle7,
-  8 => l10n.xpLevelTitle8,
-  9 => l10n.xpLevelTitle9,
-  _ => l10n.xpLevelTitle10,
-};
+/// The name of a level, from 1 up to [XpProgress.levelCount], worn by the
+/// companion called [name].
+String xpLevelTitle(AppLocalizations l10n, int level, String name) =>
+    switch (level) {
+      1 => l10n.xpLevelTitle1(name),
+      2 => l10n.xpLevelTitle2(name),
+      3 => l10n.xpLevelTitle3(name),
+      4 => l10n.xpLevelTitle4(name),
+      5 => l10n.xpLevelTitle5(name),
+      6 => l10n.xpLevelTitle6(name),
+      7 => l10n.xpLevelTitle7(name),
+      8 => l10n.xpLevelTitle8(name),
+      9 => l10n.xpLevelTitle9(name),
+      _ => l10n.xpLevelTitle10(name),
+    };
 
 String xpNoticeTitle(AppLocalizations l10n, XpNotice notice) =>
     switch (notice.kind) {

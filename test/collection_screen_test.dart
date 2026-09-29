@@ -81,6 +81,23 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  // The header art is a picture of a room, so it has to be the user's room:
+  // pinned to Casa clara it went stale the moment another one was equipped.
+  testWidgets('the header shows the equipped room', (tester) async {
+    final store = await loadStore();
+    await store.saveRoomSelection(
+      roomId: RoomThemes.casaJardinId,
+      placementsByRoom: const {},
+    );
+    await pump(tester, store);
+
+    final art = tester.widgetList<Image>(find.byType(Image)).map(
+      (image) => (image.image as AssetImage).assetName,
+    );
+    expect(art, contains(RoomThemes.casaJardin.previewAsset));
+    expect(art, isNot(contains(RoomThemes.casaClara.previewAsset)));
+  });
+
   // The screen used to hold ownership in its own State, so what it offered was
   // the same two ids for everybody regardless of what the user had done.
   // Owning it ends the collection's business with it: not for sale any more,
@@ -378,7 +395,7 @@ void main() {
       initialEntryId: 'guinea-pig',
     );
 
-    expect(find.text('Cobaya'), findsWidgets);
+    expect(find.text('Cookie'), findsWidgets);
     expect(inDialog('Mira anuncios de recompensa · 0/2'), findsOneWidget);
     expect(inDialog('VER ANUNCIO'), findsOneWidget);
     expect(store.ownsCatalogEntry(entry), isFalse);
@@ -388,13 +405,13 @@ void main() {
     expect(store.rewardedAdProgressFor(entry.id), 1);
     expect(store.ownsCatalogEntry(entry), isFalse);
 
-    await tester.tap(find.text('Cobaya'));
+    await tester.tap(find.text('Cookie'));
     await tester.pumpAndSettle();
     expect(inDialog('Mira anuncios de recompensa · 1/2'), findsOneWidget);
     await tester.tap(inDialog('VER ANUNCIO'));
     await tester.pumpAndSettle();
     expect(store.ownsCatalogEntry(entry), isTrue);
-    expect(find.text('¡Cobaya es tuyo!'), findsOneWidget);
+    expect(find.text('¡Cookie es tuyo!'), findsOneWidget);
   });
 
   // The fetch in front of the ad is a network round trip. Before the card said
