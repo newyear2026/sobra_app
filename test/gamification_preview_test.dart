@@ -76,6 +76,8 @@ void main() {
       cashCentavos: 124000,
     );
     await store.completeOnboarding();
+    // The launch gift dialog would otherwise cover the screen under test.
+    await store.takeLaunchGiftNotice();
 
     await tester.pumpWidget(SobraApp(store: store));
     await tester.tap(find.text('Mi Sobrita'));

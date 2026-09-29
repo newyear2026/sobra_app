@@ -67,8 +67,10 @@ void main() {
     });
 
     test('a cycle shorter than the minimum has no average', () {
-      expect(recordOf(spentCentavos: 10000, days: 2).averageSpentPerDayCentavos,
-          isNull);
+      expect(
+        recordOf(spentCentavos: 10000, days: 2).averageSpentPerDayCentavos,
+        isNull,
+      );
     });
   });
 

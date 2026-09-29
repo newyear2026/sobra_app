@@ -21,7 +21,10 @@ Future<void> _loadGoldenFonts() async {
   await Future.wait([pixelify.load(), materialIcons.load()]);
 }
 
-Future<Widget> _screen(Widget child, {Locale locale = const Locale('es')}) async {
+Future<Widget> _screen(
+  Widget child, {
+  Locale locale = const Locale('es'),
+}) async {
   return MaterialApp(
     locale: locale,
     // The app's theme, not Material's: half of Sobra's type comes through
@@ -47,7 +50,8 @@ void main() {
         expect(
           releaseNotes[i].releasedOn.isAfter(releaseNotes[i - 1].releasedOn),
           isFalse,
-          reason: 'v${releaseNotes[i].version} is newer than the entry above '
+          reason:
+              'v${releaseNotes[i].version} is newer than the entry above '
               'it; the screen renders this list in order.',
         );
       }
@@ -184,8 +188,7 @@ void main() {
     ) async {
       await tester.pumpWidget(
         await settings(
-          () async =>
-              const AppVersion(version: '1.0.0', buildNumber: '1'),
+          () async => const AppVersion(version: '1.0.0', buildNumber: '1'),
         ),
       );
       await tester.pumpAndSettle();
@@ -209,8 +212,7 @@ void main() {
     testWidgets('opens the notes from the Novedades row', (tester) async {
       await tester.pumpWidget(
         await settings(
-          () async =>
-              const AppVersion(version: '1.0.0', buildNumber: '1'),
+          () async => const AppVersion(version: '1.0.0', buildNumber: '1'),
         ),
       );
       await tester.pumpAndSettle();

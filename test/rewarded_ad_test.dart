@@ -30,8 +30,7 @@ void main() {
   CatalogEntry entryById(String id) =>
       CatalogPreviewData.all.firstWhere((entry) => entry.id == id);
 
-  RewardedAds adsFor(SobraStore store) =>
-      RewardedAds(port: port, store: store);
+  RewardedAds adsFor(SobraStore store) => RewardedAds(port: port, store: store);
 
   /// An item: one view and it is owned.
   final item = entryById('item-03');
@@ -67,7 +66,8 @@ void main() {
         expect(
           target,
           lessThan(3),
-          reason: '${entry.id} costs $target of a cap of three, which would '
+          reason:
+              '${entry.id} costs $target of a cap of three, which would '
               'leave nothing to pair it with',
         );
       }
@@ -154,10 +154,7 @@ void main() {
 
       expect(store.rewardedAdsWatchedToday, 3);
       expect(store.rewardedAdsLeftToday, isNull);
-      expect(
-        ads.availabilityFor(character),
-        RewardedAdAvailability.available,
-      );
+      expect(ads.availabilityFor(character), RewardedAdAvailability.available);
       expect(await ads.watch(character), RewardedAdOutcome.counted);
       expect(store.rewardedAdsWatchedToday, 4);
     });
@@ -313,10 +310,7 @@ void main() {
       await ads.watch(item);
       expect(store.ownsCatalogEntry(item), isTrue);
 
-      expect(
-        ads.availabilityFor(item),
-        RewardedAdAvailability.alreadyOwned,
-      );
+      expect(ads.availabilityFor(item), RewardedAdAvailability.alreadyOwned);
       expect(await ads.watch(item), RewardedAdOutcome.notAllowed);
       expect(store.rewardedAdsWatchedToday, 1);
     });
@@ -335,42 +329,46 @@ void main() {
   // broken is not the port: it is busyEntryId, and with it every card on the
   // collection, until the process is killed.
   group('a silent network still ends the run', () {
-    test('a request that never answers gives up and frees the screen',
-        () async {
-      final store = await loadStore();
-      final ads = RewardedAds(
-        port: port,
-        store: store,
-        loadTimeout: const Duration(milliseconds: 40),
-      );
-      port.answers = false;
+    test(
+      'a request that never answers gives up and frees the screen',
+      () async {
+        final store = await loadStore();
+        final ads = RewardedAds(
+          port: port,
+          store: store,
+          loadTimeout: const Duration(milliseconds: 40),
+        );
+        port.answers = false;
 
-      final outcome = await ads.watch(character);
+        final outcome = await ads.watch(character);
 
-      expect(outcome, RewardedAdOutcome.unavailable);
-      expect(ads.isBusy, isFalse);
-      expect(ads.busyEntryId, isNull);
-      expect(store.rewardedAdProgressFor(character.id), 0);
-    });
+        expect(outcome, RewardedAdOutcome.unavailable);
+        expect(ads.isBusy, isFalse);
+        expect(ads.busyEntryId, isNull);
+        expect(store.rewardedAdProgressFor(character.id), 0);
+      },
+    );
 
-    test('an ad that never reports back gives up and frees the screen',
-        () async {
-      final store = await loadStore();
-      final ads = RewardedAds(
-        port: port,
-        store: store,
-        showTimeout: const Duration(milliseconds: 40),
-      );
-      await ads.prepare();
-      port.answers = false;
+    test(
+      'an ad that never reports back gives up and frees the screen',
+      () async {
+        final store = await loadStore();
+        final ads = RewardedAds(
+          port: port,
+          store: store,
+          showTimeout: const Duration(milliseconds: 40),
+        );
+        await ads.prepare();
+        port.answers = false;
 
-      final outcome = await ads.watch(character);
+        final outcome = await ads.watch(character);
 
-      expect(outcome, RewardedAdOutcome.unavailable);
-      expect(ads.isBusy, isFalse);
-      // Nothing was confirmed, so nothing is credited.
-      expect(store.rewardedAdProgressFor(character.id), 0);
-    });
+        expect(outcome, RewardedAdOutcome.unavailable);
+        expect(ads.isBusy, isFalse);
+        // Nothing was confirmed, so nothing is credited.
+        expect(store.rewardedAdProgressFor(character.id), 0);
+      },
+    );
 
     test('the next run works after one was abandoned', () async {
       final store = await loadStore();

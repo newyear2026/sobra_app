@@ -367,10 +367,7 @@ void main() {
   group('the dialog', () {
     testWidgets('offers the store and remembers "later"', (tester) async {
       final port = _FakePort(available: v7);
-      final updates = AppUpdates(
-        port: port,
-        preferences: await _preferences(),
-      );
+      final updates = AppUpdates(port: port, preferences: await _preferences());
       await updates.refresh();
 
       await tester.pumpWidget(await _harness(const SizedBox.shrink()));
@@ -393,10 +390,7 @@ void main() {
 
     testWidgets('hands over to the store on Actualizar', (tester) async {
       final port = _FakePort(available: v7);
-      final updates = AppUpdates(
-        port: port,
-        preferences: await _preferences(),
-      );
+      final updates = AppUpdates(port: port, preferences: await _preferences());
       await updates.refresh();
 
       await tester.pumpWidget(await _harness(const SizedBox.shrink()));
@@ -416,10 +410,7 @@ void main() {
 
     testWidgets('says so when no store would open', (tester) async {
       final port = _FakePort(available: v7, storeOpens: false);
-      final updates = AppUpdates(
-        port: port,
-        preferences: await _preferences(),
-      );
+      final updates = AppUpdates(port: port, preferences: await _preferences());
       await updates.refresh();
 
       await tester.pumpWidget(await _harness(const SizedBox.shrink()));
@@ -440,10 +431,7 @@ void main() {
 
       await tester.pumpWidget(
         await _harness(
-          UpdateBanner(
-            onUpdate: () => updated++,
-            onDismiss: () => dismissed++,
-          ),
+          UpdateBanner(onUpdate: () => updated++, onDismiss: () => dismissed++),
         ),
       );
 

@@ -353,26 +353,29 @@ void main() {
     expect(restored.cycleEnd, fresh.cycleEnd);
   });
 
-  test('a file saved before the budget could be skipped reads as budgeted', () async {
-    // The flag is absent from every state written before onboarding could
-    // leave the budget unanswered, and those users did answer it. Reading a
-    // missing flag as "not set" would blank the figures of everyone who
-    // already has a budget.
-    SharedPreferences.setMockInitialValues({
-      'sobra_state_v2': jsonEncode({
-        'transactions': <Object?>[],
-        'totalBudgetCentavos': 600000,
-        'countedCashCentavos': 0,
-        'expectedCashCentavos': 0,
-        'hasCompletedOnboarding': true,
-      }),
-    });
+  test(
+    'a file saved before the budget could be skipped reads as budgeted',
+    () async {
+      // The flag is absent from every state written before onboarding could
+      // leave the budget unanswered, and those users did answer it. Reading a
+      // missing flag as "not set" would blank the figures of everyone who
+      // already has a budget.
+      SharedPreferences.setMockInitialValues({
+        'sobra_state_v2': jsonEncode({
+          'transactions': <Object?>[],
+          'totalBudgetCentavos': 600000,
+          'countedCashCentavos': 0,
+          'expectedCashCentavos': 0,
+          'hasCompletedOnboarding': true,
+        }),
+      });
 
-    final restored = await loadStore();
+      final restored = await loadStore();
 
-    expect(restored.hasBudget, isTrue);
-    expect(restored.totalBudgetCentavos, 600000);
-  });
+      expect(restored.hasBudget, isTrue);
+      expect(restored.totalBudgetCentavos, 600000);
+    },
+  );
 
   test('an unanswered budget reports zero rather than a deficit', () async {
     SharedPreferences.setMockInitialValues({

@@ -93,7 +93,9 @@ void main() {
     expect(store.rewardedAdProgressFor('character-03'), 1);
   });
 
-  testWidgets('the card is hidden when nothing can be unlocked', (tester) async {
+  testWidgets('the card is hidden when nothing can be unlocked', (
+    tester,
+  ) async {
     final store = await loadStore();
     for (final entry in CatalogPreviewData.all.where(
       (entry) => entry.unlockMethod == CatalogUnlockMethod.rewardedAd,

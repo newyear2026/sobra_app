@@ -307,6 +307,7 @@ class _AppShellState extends State<AppShell> {
       final placeNow = await showLaunchGiftDialog(context);
       if (!mounted) return;
       await store.takeLaunchGiftNotice();
+      if (!mounted) return;
       if (placeNow) {
         await Navigator.of(context).push(
           MaterialPageRoute<void>(builder: (_) => const RoomDecorateScreen()),

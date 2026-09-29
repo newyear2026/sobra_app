@@ -116,28 +116,30 @@ void main() {
   // The ad becomes visible exactly as the user taps another tab. Google has
   // billed the impression either way; dropping it locally is what lets the
   // next visit serve past the daily limit.
-  test('an impression arriving after the visit ends is still counted',
-      () async {
-    final store = await loadStore();
-    final ads = NativeAds(store: store, graceDays: 0)..setSdkReady(true);
+  test(
+    'an impression arriving after the visit ends is still counted',
+    () async {
+      final store = await loadStore();
+      final ads = NativeAds(store: store, graceDays: 0)..setSdkReady(true);
 
-    ads.startVisit();
-    expect(ads.canOffer, isTrue);
-    ads.endVisit();
-    ads.recordImpression();
-    await pumpEventQueue();
+      ads.startVisit();
+      expect(ads.canOffer, isTrue);
+      ads.endVisit();
+      ads.recordImpression();
+      await pumpEventQueue();
 
-    expect(store.nativeAdImpressionsToday, 1);
+      expect(store.nativeAdImpressionsToday, 1);
 
-    // And the day's second slot is the last one, not the third.
-    ads.startVisit();
-    ads.recordImpression();
-    await pumpEventQueue();
-    expect(store.nativeAdImpressionsToday, 2);
+      // And the day's second slot is the last one, not the third.
+      ads.startVisit();
+      ads.recordImpression();
+      await pumpEventQueue();
+      expect(store.nativeAdImpressionsToday, 2);
 
-    ads.startVisit();
-    expect(ads.canOffer, isFalse);
-  });
+      ads.startVisit();
+      expect(ads.canOffer, isFalse);
+    },
+  );
 
   test('a second callback for the same visit counts once', () async {
     final store = await loadStore();

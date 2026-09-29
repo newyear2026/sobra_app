@@ -54,7 +54,11 @@ class _MissionCard extends StatelessWidget {
               children: [
                 Text(
                   'Misión de hoy',
-                  style: pixelText(size: 10, bold: true, color: AppColors.muted),
+                  style: pixelText(
+                    size: 10,
+                    bold: true,
+                    color: AppColors.muted,
+                  ),
                 ),
                 Text(
                   'Registra un movimiento hoy',
@@ -98,7 +102,10 @@ class _HomeMock extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text('Sobrita', style: pixelText(size: 19, bold: true)),
+                  child: Text(
+                    'Sobrita',
+                    style: pixelText(size: 19, bold: true),
+                  ),
                 ),
                 const Icon(Icons.settings, size: 28, color: AppColors.ink),
               ],
@@ -196,17 +203,12 @@ class _HomeMock extends StatelessWidget {
             const SizedBox(height: 6),
             PixelCard(
               elevation: PixelElevation.none,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 10,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               child: Row(
                 children: [
                   const Icon(Icons.lunch_dining, size: 20),
                   const SizedBox(width: 10),
-                  Expanded(
-                    child: Text('Comida', style: pixelText(size: 13)),
-                  ),
+                  Expanded(child: Text('Comida', style: pixelText(size: 13))),
                   Text('-\$85.00', style: pixelText(size: 13, bold: true)),
                 ],
               ),
@@ -220,8 +222,11 @@ class _HomeMock extends StatelessWidget {
               message: placement == _Placement.atCharacterRoom
                   ? '¿Registramos hoy?'
                   : 'Vas muy bien',
-              characterBuilder: (width) =>
-                  CatSprite(motion: CatMotion.idle, width: width, animate: false),
+              characterBuilder: (width) => CatSprite(
+                motion: CatMotion.idle,
+                width: width,
+                animate: false,
+              ),
             ),
           ],
         ),

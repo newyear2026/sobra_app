@@ -49,7 +49,11 @@ class _SampleNativeBody extends StatelessWidget {
               children: [
                 Text(
                   'ANUNCIO',
-                  style: pixelText(size: 10, bold: true, color: AppColors.muted),
+                  style: pixelText(
+                    size: 10,
+                    bold: true,
+                    color: AppColors.muted,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(

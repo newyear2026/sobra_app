@@ -46,7 +46,8 @@ void main() {
       expect(
         actual.difference(expected),
         isEmpty,
-        reason: 'app_$locale.arb has keys app_$template.arb does not — a '
+        reason:
+            'app_$locale.arb has keys app_$template.arb does not — a '
             'typo, or a string the template lost',
       );
     }

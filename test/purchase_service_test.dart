@@ -106,21 +106,24 @@ void main() {
     expect(purchases.takeFailure(), isNull);
   });
 
-  test('Platypus uses its own product and becomes owned after purchase', () async {
-    const platypusProductId = 'sobra.character.platypus';
-    backend.catalogue.add(productFor(platypusProductId, r'MX$ 42'));
-    final purchases = await started();
-    final platypus = entryById('platypus');
+  test(
+    'Platypus uses its own product and becomes owned after purchase',
+    () async {
+      const platypusProductId = 'sobra.character.platypus';
+      backend.catalogue.add(productFor(platypusProductId, r'MX$ 42'));
+      final purchases = await started();
+      final platypus = entryById('platypus');
 
-    expect(purchases.localizedPriceFor(platypusProductId), r'MX$ 42');
-    await purchases.buy(platypus);
-    backend.emit([detailsFor(platypusProductId, PurchaseStatus.purchased)]);
-    await pumpEventQueue();
+      expect(purchases.localizedPriceFor(platypusProductId), r'MX$ 42');
+      await purchases.buy(platypus);
+      backend.emit([detailsFor(platypusProductId, PurchaseStatus.purchased)]);
+      await pumpEventQueue();
 
-    expect(backend.bought, contains(platypusProductId));
-    expect(store.ownsCatalogEntry(platypus), isTrue);
-    expect(store.ownedCatalogIds, contains('platypus'));
-  });
+      expect(backend.bought, contains(platypusProductId));
+      expect(store.ownsCatalogEntry(platypus), isTrue);
+      expect(store.ownedCatalogIds, contains('platypus'));
+    },
+  );
 
   test(
     'the entitlement is stored under the catalog id, not the product id',

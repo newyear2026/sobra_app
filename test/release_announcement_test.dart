@@ -29,8 +29,8 @@ final _notes = <ReleaseNote>[
   ),
 ];
 
-AppVersionLoader _reports(String? version, {String build = '1'}) => () async =>
-    version == null
+AppVersionLoader _reports(String? version, {String build = '1'}) =>
+    () async => version == null
     ? null
     : AppVersion(version: version, buildNumber: build);
 
@@ -74,9 +74,7 @@ Widget _harness(Widget child) => MaterialApp(
 void main() {
   group('the first launch', () {
     test('announces nothing, because nothing changed for this user', () async {
-      final announcements = await _started(
-        preferences: await _preferences(),
-      );
+      final announcements = await _started(preferences: await _preferences());
 
       expect(announcements.shouldAnnounce, isFalse);
       expect(
@@ -220,9 +218,7 @@ void main() {
 
       await tester.pumpWidget(_harness(const SizedBox.shrink()));
       final context = tester.element(find.byType(SizedBox));
-      unawaited(
-        showReleaseAnnouncement(context, announcements: announcements),
-      );
+      unawaited(showReleaseAnnouncement(context, announcements: announcements));
       await tester.pumpAndSettle();
 
       expect(find.text('Novedades'), findsOneWidget);
@@ -249,9 +245,7 @@ void main() {
 
       await tester.pumpWidget(_harness(const SizedBox.shrink()));
       final context = tester.element(find.byType(SizedBox));
-      unawaited(
-        showReleaseAnnouncement(context, announcements: announcements),
-      );
+      unawaited(showReleaseAnnouncement(context, announcements: announcements));
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Ver todo'));
@@ -278,9 +272,7 @@ void main() {
 
       await tester.pumpWidget(_harness(const SizedBox.shrink()));
       final context = tester.element(find.byType(SizedBox));
-      unawaited(
-        showReleaseAnnouncement(context, announcements: announcements),
-      );
+      unawaited(showReleaseAnnouncement(context, announcements: announcements));
       await tester.pumpAndSettle();
 
       expect(find.text('v${releaseNotes.first.version}'), findsOneWidget);
