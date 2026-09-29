@@ -476,4 +476,26 @@ void main() {
 
     expect(store.recommendedRewardedAdEntry, isNull);
   });
+
+  test('the debug switch lends paid characters without buying them', () async {
+    final capybara = entryById('capybara');
+    final packOnly = entryById('character-02');
+    final adEarned = entryById('schnauzer');
+    final store = await loadStore();
+
+    await store.setDebugPaidCharactersUnlocked(true);
+    await store.chooseCharacter(capybara.id);
+
+    expect(store.ownsCatalogEntry(capybara), isTrue);
+    expect(store.ownsCatalogEntry(packOnly), isTrue);
+    expect(store.ownsCatalogEntry(adEarned), isFalse);
+    // Lent, not granted: nothing a revocation or a backup would read.
+    expect(store.ownedCatalogIds, isEmpty);
+    expect((await loadStore()).characterId, capybara.id);
+
+    await store.setDebugPaidCharactersUnlocked(false);
+
+    expect(store.ownsCatalogEntry(capybara), isFalse);
+    expect(store.characterId, 'michi');
+  });
 }

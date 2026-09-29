@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -66,6 +67,10 @@ class SobraStore extends ChangeNotifier {
   static const _defaultPaySchedule = PaySchedule.semiMonthly();
 
   static const _storageKey = 'sobra_state_v2';
+
+  /// Kept apart from [_storageKey] so the switch never enters a backup, an
+  /// export, or the owned set the store's revocation reads.
+  static const _debugPaidCharactersKey = 'sobra_debug_paid_characters';
   static const _backupKey = 'sobra_state_backup_v2';
   static const _corruptArchiveKey = 'sobra_state_corrupt_v2';
 
@@ -231,6 +236,9 @@ class SobraStore extends ChangeNotifier {
     // One-time migration for states written before native ads existed. Saving
     // now matters: if the missing value were only filled in memory, every
     // restart would begin a fresh configured grace period forever.
+    store._debugPaidCharacters =
+        kDebugMode &&
+        (preferences.getBool(_debugPaidCharactersKey) ?? false);
     await store._ensureFirstStartedAt();
     await store._ensureNativeAdInstallDay();
     // A character that was previously bundled for free can become a paid
@@ -1576,7 +1584,35 @@ class SobraStore extends ChangeNotifier {
     return entry.unlockMethod == CatalogUnlockMethod.included ||
         CatalogPreviewData.isUnlockedAtLevel(entry, xpProgress.level) ||
         _ownedCatalogIds.contains(entry.id) ||
-        (productId != null && _ownedCatalogIds.contains(productId));
+        (productId != null && _ownedCatalogIds.contains(productId)) ||
+        (_debugPaidCharacters &&
+            entry.kind == CatalogKind.character &&
+            (entry.unlockMethod == CatalogUnlockMethod.purchase ||
+                entry.unlockMethod == CatalogUnlockMethod.bundle));
+  }
+
+  /// Debug builds only: paid and pack characters read as owned, unpaid.
+  ///
+  /// Answered in [ownsCatalogEntry] rather than written into the owned set.
+  /// A grant there would be taken back by the launch revocation the moment
+  /// Play reports the test account owns nothing, and turning the switch off
+  /// would have to guess which ids were real purchases.
+  bool _debugPaidCharacters = false;
+
+  bool get debugPaidCharactersUnlocked => _debugPaidCharacters;
+
+  Future<void> setDebugPaidCharactersUnlocked(bool unlocked) async {
+    if (!kDebugMode || unlocked == _debugPaidCharacters) return;
+    _debugPaidCharacters = unlocked;
+    await _preferences.setBool(_debugPaidCharactersKey, unlocked);
+    final selected = CatalogPreviewData.characters
+        .where((entry) => entry.id == characterId)
+        .firstOrNull;
+    if (selected != null && !ownsCatalogEntry(selected)) {
+      characterId = 'michi';
+      await _save();
+    }
+    notifyListeners();
   }
 
   /// Whether general (native) ads should stay off.

@@ -538,6 +538,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
             ),
+            // Not translated: a debug build is the only place it exists.
+            _SettingsRow(
+              icon: Icons.lock_open,
+              iconColor: AppColors.violet,
+              label: 'Paid characters (test)',
+              value: store.debugPaidCharactersUnlocked ? 'ON' : 'OFF',
+              onTap: () => store.setDebugPaidCharactersUnlocked(
+                !store.debugPaidCharactersUnlocked,
+              ),
+            ),
           ],
           const SizedBox(height: 18),
           Text(
