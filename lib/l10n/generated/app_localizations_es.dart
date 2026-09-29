@@ -2018,11 +2018,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsRateApp => 'Calificar Sobrita';
 
   @override
-  String get settingsOurApps => 'Más apps nuestras';
+  String get settingsOurApps => 'Apps recomendadas';
 
   @override
-  String get ourAppsIntro =>
-      'Las hacemos las mismas personas que hacemos Sobrita.';
+  String get ourAppsIntro => 'Hechas por el equipo de Sobrita.';
 
   @override
   String get ourAppsOpen => 'Ver en Google Play';

@@ -138,13 +138,13 @@ void main() {
       await openSettings(tester, play: false);
 
       await tester.scrollUntilVisible(find.text('ACERCA DE'), 200);
-      expect(find.text('Más apps nuestras'), findsNothing);
+      expect(find.text('Apps recomendadas'), findsNothing);
     });
 
     testWidgets('leads to the list of apps', (tester) async {
       await openSettings(tester, play: true);
 
-      final row = find.text('Más apps nuestras');
+      final row = find.text('Apps recomendadas');
       await tester.scrollUntilVisible(row, 200);
       await tester.tap(row);
       await tester.pumpAndSettle();

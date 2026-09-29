@@ -1939,10 +1939,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsRateApp => '앱 평가하기';
 
   @override
-  String get settingsOurApps => '우리가 만든 다른 앱';
+  String get settingsOurApps => '추천 앱';
 
   @override
-  String get ourAppsIntro => 'Sobrita를 만든 사람들이 만든 앱이에요.';
+  String get ourAppsIntro => 'Sobrita 팀이 만든 앱이에요.';
 
   @override
   String get ourAppsOpen => 'Google Play에서 보기';

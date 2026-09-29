@@ -901,11 +901,11 @@
   "@settingsRateApp": {
     "description": "Ajustes row that opens the app's Google Play listing so the user can leave a rating."
   },
-  "settingsOurApps": "Más apps nuestras",
+  "settingsOurApps": "Apps recomendadas",
   "@settingsOurApps": {
-    "description": "Ajustes row, under Acerca de, that opens the list of the team's other apps. Also the title of that screen."
+    "description": "Ajustes row, under Acerca de, that opens the list of the team's other apps. Also the title of that screen. Kept neutral on purpose: the screen's intro line says who made them."
   },
-  "ourAppsIntro": "Las hacemos las mismas personas que hacemos Sobrita.",
+  "ourAppsIntro": "Hechas por el equipo de Sobrita.",
   "@ourAppsIntro": {
     "description": "One line under the title of the other-apps screen, saying who made them."
   },

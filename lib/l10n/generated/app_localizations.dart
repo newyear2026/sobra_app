@@ -3471,16 +3471,16 @@ abstract class AppLocalizations {
   /// **'Calificar Sobrita'**
   String get settingsRateApp;
 
-  /// Ajustes row, under Acerca de, that opens the list of the team's other apps. Also the title of that screen.
+  /// Ajustes row, under Acerca de, that opens the list of the team's other apps. Also the title of that screen. Kept neutral on purpose: the screen's intro line says who made them.
   ///
   /// In es, this message translates to:
-  /// **'Más apps nuestras'**
+  /// **'Apps recomendadas'**
   String get settingsOurApps;
 
   /// One line under the title of the other-apps screen, saying who made them.
   ///
   /// In es, this message translates to:
-  /// **'Las hacemos las mismas personas que hacemos Sobrita.'**
+  /// **'Hechas por el equipo de Sobrita.'**
   String get ourAppsIntro;
 
   /// Button on each card of the other-apps screen; opens that app's Google Play listing.
