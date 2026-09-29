@@ -158,7 +158,7 @@ void main() {
     expect(buyButton.onPressed, isNull);
   });
 
-  testWidgets('Pico appears in the collection with its price pending', (
+  testWidgets('Pico appears in the collection at the single price', (
     tester,
   ) async {
     final store = await loadStore();
@@ -166,13 +166,20 @@ void main() {
 
     expect(inDialog('Pico'), findsOneWidget);
     expect(inDialog('COMPRAR'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.textContaining(r'MX$ 39'),
+      ),
+      findsOneWidget,
+    );
     final buyButton = tester.widget<FilledButton>(
       find.descendant(
         of: find.byType(AlertDialog),
         matching: find.byType(FilledButton),
       ),
     );
-    expect(buyButton.onPressed, isNull);
+    expect(buyButton.onPressed, isNotNull);
   });
 
   testWidgets('a stored ad count is what the card counts from', (tester) async {

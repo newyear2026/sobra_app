@@ -461,6 +461,7 @@ final class PreviewCatalogPriceSource implements CatalogPriceSource {
   String? localizedPriceFor(String storeProductId) => switch (storeProductId) {
     'sobra.character.capybara' => r'MX$ 39',
     'sobra.character.alpaca' => r'MX$ 39',
+    'sobra.character.platypus' => r'MX$ 39',
     CatalogPreviewData.packProductId => r'MX$ 89',
     CatalogPreviewData.removeAdsProductId => r'MX$ 49',
     _ => null,

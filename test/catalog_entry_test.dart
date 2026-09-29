@@ -70,14 +70,8 @@ void main() {
       CatalogPreviewData.storeProductIds,
       contains(platypus.storeProductId),
     );
-    expect(
-      const PreviewCatalogPriceSource().localizedPriceFor(
-        platypus.storeProductId!,
-      ),
-      isNull,
-    );
     // Every single character is one flat price.
-    for (final paid in [capybara, alpaca]) {
+    for (final paid in [capybara, alpaca, platypus]) {
       expect(
         const PreviewCatalogPriceSource().localizedPriceFor(
           paid.storeProductId!,
