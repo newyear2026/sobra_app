@@ -306,18 +306,22 @@ String monthAbbreviation(AppLocalizations l10n, int month) => switch (month) {
   _ => l10n.monthAbbr12,
 };
 
-/// A date the way Sobra writes one: day, then the month by name.
+/// A date the way Sobra writes one: the day and the month by name.
 ///
-/// Spelling the month out is what lets the order stay put in every locale —
-/// "15 sep" cannot be misread the way "09/15" and "15/09" can.
+/// Spelling the month out is what keeps it unambiguous — "15 sep" cannot be
+/// misread the way "09/15" and "15/09" can. The order is the locale's, from
+/// the ARB: "15 sep" in Spanish, "9월 15일" in Korean, "9月15日" in Japanese.
 String shortCycleDate(AppLocalizations l10n, DateTime date) =>
-    '${date.day} ${monthAbbreviation(l10n, date.month)}';
+    l10n.dateShort('${date.day}', monthAbbreviation(l10n, date.month));
 
 String cycleDateRange(AppLocalizations l10n, DateTime start, DateTime end) =>
     '${shortCycleDate(l10n, start)}–${shortCycleDate(l10n, end)}';
 
-String fullDate(AppLocalizations l10n, DateTime date) =>
-    '${date.day} ${monthAbbreviation(l10n, date.month)} ${date.year}';
+String fullDate(AppLocalizations l10n, DateTime date) => l10n.dateFull(
+  '${date.day}',
+  monthAbbreviation(l10n, date.month),
+  '${date.year}',
+);
 
 extension CatMotionL10n on CatMotion {
   /// What a screen reader says the cat is doing.
@@ -372,7 +376,11 @@ extension SobraLanguageL10n on SobraLanguage {
     SobraLanguage.automatic => l10n.languageAutomatic,
     SobraLanguage.spanish => 'Español',
     SobraLanguage.english => 'English',
+    SobraLanguage.portuguese => 'Português',
+    SobraLanguage.german => 'Deutsch',
+    SobraLanguage.french => 'Français',
     SobraLanguage.korean => '한국어',
+    SobraLanguage.japanese => '日本語',
   };
 }
 

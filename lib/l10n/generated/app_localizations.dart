@@ -5,9 +5,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
+import 'app_localizations_fr.dart';
+import 'app_localizations_ja.dart';
 import 'app_localizations_ko.dart';
+import 'app_localizations_pt.dart';
 
 // ignore_for_file: type=lint
 
@@ -95,9 +99,13 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
+    Locale('de'),
     Locale('en'),
     Locale('es'),
+    Locale('fr'),
+    Locale('ja'),
     Locale('ko'),
+    Locale('pt'),
   ];
 
   /// No description provided for @categoryFood.
@@ -711,6 +719,18 @@ abstract class AppLocalizations {
   /// **'dic'**
   String get monthAbbr12;
 
+  /// A day and a month, as Sobra writes a date. {month} is one of the monthAbbr strings; the order is the locale's.
+  ///
+  /// In es, this message translates to:
+  /// **'{day} {month}'**
+  String dateShort(String day, String month);
+
+  /// No description provided for @dateFull.
+  ///
+  /// In es, this message translates to:
+  /// **'{day} {month} {year}'**
+  String dateFull(String day, String month, String year);
+
   /// No description provided for @back.
   ///
   /// In es, this message translates to:
@@ -999,6 +1019,18 @@ abstract class AppLocalizations {
   /// **'Llega con Michi y sus amigos. No se vende por separado.'**
   String get collectionPackUnlock;
 
+  /// No description provided for @collectionGiftOnly.
+  ///
+  /// In es, this message translates to:
+  /// **'REGALO'**
+  String get collectionGiftOnly;
+
+  /// No description provided for @collectionGiftUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'Un regalo especial. No se vende.'**
+  String get collectionGiftUnlock;
+
   /// No description provided for @collectionAdProgress.
   ///
   /// In es, this message translates to:
@@ -1238,6 +1270,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Tapete azul y crema'**
   String get roomBlueCreamRug;
+
+  /// No description provided for @roomLaunchSofa.
+  ///
+  /// In es, this message translates to:
+  /// **'Sofá de terciopelo'**
+  String get roomLaunchSofa;
+
+  /// No description provided for @roomLaunchTv.
+  ///
+  /// In es, this message translates to:
+  /// **'Tele de historias'**
+  String get roomLaunchTv;
+
+  /// No description provided for @launchGiftTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Llegó tu regalo de lanzamiento!'**
+  String get launchGiftTitle;
+
+  /// No description provided for @launchGiftBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Empezaste Sobrita a tiempo. El sofá y la tele ya son tuyos.'**
+  String get launchGiftBody;
+
+  /// No description provided for @launchGiftGoToRoom.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponerlos en mi casa'**
+  String get launchGiftGoToRoom;
+
+  /// No description provided for @launchGiftLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Después'**
+  String get launchGiftLater;
 
   /// No description provided for @roomSuggestCabinet.
   ///
@@ -3345,6 +3413,36 @@ abstract class AppLocalizations {
   /// **'Guardamos las últimas {count} versiones.'**
   String releaseNotesRetention(int count);
 
+  /// No description provided for @releaseNote104Fixed.
+  ///
+  /// In es, this message translates to:
+  /// **'Los gastos fijos van aparte del gasto diario. Aparecen en Inicio y pueden avisarte antes de vencer.'**
+  String get releaseNote104Fixed;
+
+  /// No description provided for @releaseNote104Decor.
+  ///
+  /// In es, this message translates to:
+  /// **'La casa tiene más para colocar: una cama, una repisa, un tapete, un aparador, un frasco y un puf.'**
+  String get releaseNote104Decor;
+
+  /// No description provided for @releaseNote104Names.
+  ///
+  /// In es, this message translates to:
+  /// **'Miru, Yoshi y Cookie ya tienen nombre, y el título de nivel lleva el de quien te acompaña.'**
+  String get releaseNote104Names;
+
+  /// No description provided for @releaseNote104Widget.
+  ///
+  /// In es, this message translates to:
+  /// **'El widget de inicio muestra el monto completo.'**
+  String get releaseNote104Widget;
+
+  /// No description provided for @releaseNote104Languages.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobrita ahora habla portugués, alemán, francés y japonés.'**
+  String get releaseNote104Languages;
+
   /// No description provided for @releaseNote103GuineaPig.
   ///
   /// In es, this message translates to:
@@ -3920,8 +4018,15 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'es', 'ko'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[
+    'de',
+    'en',
+    'es',
+    'fr',
+    'ja',
+    'ko',
+    'pt',
+  ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -3930,12 +4035,20 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'de':
+      return AppLocalizationsDe();
     case 'en':
       return AppLocalizationsEn();
     case 'es':
       return AppLocalizationsEs();
+    case 'fr':
+      return AppLocalizationsFr();
+    case 'ja':
+      return AppLocalizationsJa();
     case 'ko':
       return AppLocalizationsKo();
+    case 'pt':
+      return AppLocalizationsPt();
   }
 
   throw FlutterError(

@@ -28,10 +28,20 @@ String catalogEntryDisplayName(AppLocalizations l10n, CatalogEntry entry) {
   if (entry.id == CatalogPreviewData.packDecorationId) {
     return l10n.collectionPackDecoration;
   }
+  if (entry.id == RoomDecorAssets.launchSofaId) return l10n.roomLaunchSofa;
+  if (entry.id == RoomDecorAssets.launchTvId) return l10n.roomLaunchTv;
   final number = int.tryParse(entry.id.split('-').last) ?? 0;
   return entry.kind == CatalogKind.character
       ? l10n.collectionCharacterPlaceholder(number)
       : l10n.collectionItemPlaceholder(number);
 }
 
-const _namedCharacterIds = {'michi', 'poodle', 'schnauzer', 'guinea-pig'};
+const _namedCharacterIds = {
+  'michi',
+  'poodle',
+  'schnauzer',
+  'guinea-pig',
+  'capybara',
+  'alpaca',
+  'platypus',
+};

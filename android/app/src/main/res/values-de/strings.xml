@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quick_entry_channel_name">Schnelleintrag</string>
+    <string name="quick_entry_channel_description">Abkürzungen zum Eintragen von Einnahmen und Ausgaben</string>
+    <string name="fixed_channel_name">Fixkosten</string>
+    <string name="fixed_channel_description">Erinnerungen, bevor Miete und Rechnungen fällig sind</string>
+    <string name="quick_entry_question">Was möchtest du eintragen?</string>
+    <string name="quick_entry_income">Einnahme</string>
+    <string name="quick_entry_expense">Ausgabe</string>
+    <string name="widget_today_remaining">Heute hast du noch</string>
+    <string name="widget_today_remaining_short">Heute übrig</string>
+    <string name="widget_open_app">Sobrita öffnen</string>
+    <string name="widget_cycle_balance">Saldo des Zyklus</string>
+    <string name="widget_cycle_balance_short">Saldo</string>
+    <string name="widget_cycle_progress">Fortschritt des Zyklus</string>
+    <string name="widget_recent_movements">Letzte Einträge</string>
+    <string name="widget_register_expense">Ausgabe eintragen</string>
+    <string name="widget_compact_description">Sobrita: heute übriges Geld</string>
+    <string name="widget_summary_description">Sobrita: übriges Geld und Fortschritt des Zyklus</string>
+    <string name="widget_cat_description">Sobrita-Katze</string>
+    <string name="widget_poodle_description">Sobrita-Pudel</string>
+    <string name="widget_schnauzer_description">Sobrita-Schnauzer</string>
+    <string name="widget_guinea_pig_description">Sobrita-Meerschweinchen</string>
+    <!-- Sample text for the widget picker's preview only. -->
+    <string name="widget_preview_days">8 Tage</string>
+    <string name="widget_preview_register">+  Ausgabe eintragen</string>
+    <plurals name="widget_days">
+        <item quantity="one">%d Tag</item>
+        <item quantity="other">%d Tage</item>
+    </plurals>
+</resources>

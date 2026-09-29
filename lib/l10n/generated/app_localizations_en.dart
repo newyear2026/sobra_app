@@ -386,6 +386,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get monthAbbr12 => 'Dec';
 
   @override
+  String dateShort(String day, String month) {
+    return '$day $month';
+  }
+
+  @override
+  String dateFull(String day, String month, String year) {
+    return '$day $month $year';
+  }
+
+  @override
   String get back => 'Back';
 
   @override
@@ -546,6 +556,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Arrives with Michi & Friends. It is not sold separately.';
 
   @override
+  String get collectionGiftOnly => 'GIFT';
+
+  @override
+  String get collectionGiftUnlock => 'A special gift. It is not sold.';
+
+  @override
   String collectionAdProgress(int progress, int target) {
     return 'AD $progress/$target';
   }
@@ -673,6 +689,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get roomBlueCreamRug => 'Blue and cream rug';
+
+  @override
+  String get roomLaunchSofa => 'Velvet sofa';
+
+  @override
+  String get roomLaunchTv => 'Story TV';
+
+  @override
+  String get launchGiftTitle => 'Your launch gift is here!';
+
+  @override
+  String get launchGiftBody =>
+      'You started Sobrita in time. The sofa and TV are yours.';
+
+  @override
+  String get launchGiftGoToRoom => 'Place them in my home';
+
+  @override
+  String get launchGiftLater => 'Later';
 
   @override
   String get roomSuggestCabinet =>
@@ -1941,6 +1976,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String releaseNotesRetention(int count) {
     return 'We keep the last $count versions.';
   }
+
+  @override
+  String get releaseNote104Fixed =>
+      'Fixed expenses stay apart from the daily spend. They show on Home and can remind you before they are due.';
+
+  @override
+  String get releaseNote104Decor =>
+      'The house has more to place: a bed, a shelf, a rug, a cabinet, a jar and a pouf.';
+
+  @override
+  String get releaseNote104Names =>
+      'Miru, Yoshi and Cookie have names now, and the level title wears whoever sits with you.';
+
+  @override
+  String get releaseNote104Widget => 'The home widget shows the whole amount.';
+
+  @override
+  String get releaseNote104Languages =>
+      'Sobrita now speaks Portuguese, German, French and Japanese.';
 
   @override
   String get releaseNote103GuineaPig =>

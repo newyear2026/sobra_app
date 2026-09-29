@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.3+7
+version: 1.0.4+10
 
 environment:
   sdk: ^3.11.1
@@ -122,6 +122,9 @@ flutter:
     - assets/characters/poodle/
     - assets/characters/schnauzer/
     - assets/characters/guinea-pig/
+    - assets/characters/capybara/
+    - assets/characters/alpaca/
+    - assets/characters/platypus/
     - assets/login/
     - assets/rooms/casa_clara/
     - assets/rooms/casa_clara/items/
@@ -138,6 +141,11 @@ flutter:
         - asset: assets/fonts/SobraHangul.ttf
         - asset: assets/fonts/SobraHangul-Bold.ttf
           weight: 700
+    # Regular only: Galmuri draws no bold kana or kanji. See
+    # tool/build_japanese_fallback.py.
+    - family: SobraJapanese
+      fonts:
+        - asset: assets/fonts/SobraJapanese.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -385,6 +385,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get monthAbbr12 => 'dic';
 
   @override
+  String dateShort(String day, String month) {
+    return '$day $month';
+  }
+
+  @override
+  String dateFull(String day, String month, String year) {
+    return '$day $month $year';
+  }
+
+  @override
   String get back => 'Volver';
 
   @override
@@ -546,6 +556,12 @@ class AppLocalizationsEs extends AppLocalizations {
       'Llega con Michi y sus amigos. No se vende por separado.';
 
   @override
+  String get collectionGiftOnly => 'REGALO';
+
+  @override
+  String get collectionGiftUnlock => 'Un regalo especial. No se vende.';
+
+  @override
   String collectionAdProgress(int progress, int target) {
     return 'ANUNCIO $progress/$target';
   }
@@ -673,6 +689,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get roomBlueCreamRug => 'Tapete azul y crema';
+
+  @override
+  String get roomLaunchSofa => 'Sofá de terciopelo';
+
+  @override
+  String get roomLaunchTv => 'Tele de historias';
+
+  @override
+  String get launchGiftTitle => '¡Llegó tu regalo de lanzamiento!';
+
+  @override
+  String get launchGiftBody =>
+      'Empezaste Sobrita a tiempo. El sofá y la tele ya son tuyos.';
+
+  @override
+  String get launchGiftGoToRoom => 'Ponerlos en mi casa';
+
+  @override
+  String get launchGiftLater => 'Después';
 
   @override
   String get roomSuggestCabinet =>
@@ -1942,6 +1977,26 @@ class AppLocalizationsEs extends AppLocalizations {
   String releaseNotesRetention(int count) {
     return 'Guardamos las últimas $count versiones.';
   }
+
+  @override
+  String get releaseNote104Fixed =>
+      'Los gastos fijos van aparte del gasto diario. Aparecen en Inicio y pueden avisarte antes de vencer.';
+
+  @override
+  String get releaseNote104Decor =>
+      'La casa tiene más para colocar: una cama, una repisa, un tapete, un aparador, un frasco y un puf.';
+
+  @override
+  String get releaseNote104Names =>
+      'Miru, Yoshi y Cookie ya tienen nombre, y el título de nivel lleva el de quien te acompaña.';
+
+  @override
+  String get releaseNote104Widget =>
+      'El widget de inicio muestra el monto completo.';
+
+  @override
+  String get releaseNote104Languages =>
+      'Sobrita ahora habla portugués, alemán, francés y japonés.';
 
   @override
   String get releaseNote103GuineaPig =>

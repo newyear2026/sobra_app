@@ -371,6 +371,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get monthAbbr12 => '12월';
 
   @override
+  String dateShort(String day, String month) {
+    return '$month $day일';
+  }
+
+  @override
+  String dateFull(String day, String month, String year) {
+    return '$year년 $month $day일';
+  }
+
+  @override
   String get back => '뒤로';
 
   @override
@@ -529,6 +539,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get collectionPackUnlock => '미치와 친구들에 들어 있어요. 따로 판매하지 않아요.';
 
   @override
+  String get collectionGiftOnly => '선물';
+
+  @override
+  String get collectionGiftUnlock => '특별한 선물이에요. 판매하지 않아요.';
+
+  @override
   String collectionAdProgress(int progress, int target) {
     return '광고 $progress/$target';
   }
@@ -655,6 +671,24 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get roomBlueCreamRug => '블루 크림 러그';
+
+  @override
+  String get roomLaunchSofa => '벨벳 소파';
+
+  @override
+  String get roomLaunchTv => '이야기 TV';
+
+  @override
+  String get launchGiftTitle => '출시 기념 선물이 도착했어요!';
+
+  @override
+  String get launchGiftBody => '기간 안에 Sobrita를 시작하셨어요. 소파와 TV를 받았습니다.';
+
+  @override
+  String get launchGiftGoToRoom => '우리 집에 놓기';
+
+  @override
+  String get launchGiftLater => '나중에';
 
   @override
   String get roomSuggestCabinet => '벽 가까운 왼쪽 바닥에 두면 안정적이에요. 표시된 자리를 눌러요.';
@@ -1867,6 +1901,24 @@ class AppLocalizationsKo extends AppLocalizations {
   String releaseNotesRetention(int count) {
     return '최근 $count개 버전까지 보관해요.';
   }
+
+  @override
+  String get releaseNote104Fixed =>
+      '고정 지출은 하루 지출과 따로 다녀요. 홈에 보이고, 나가기 전에 알려줄 수 있어요.';
+
+  @override
+  String get releaseNote104Decor =>
+      '집에 놓을 것이 더 생겼어요. 침대, 선반, 러그, 수납장, 저금통, 푸프.';
+
+  @override
+  String get releaseNote104Names =>
+      'Miru, Yoshi, Cookie가 이름을 가졌고, 레벨 칭호에도 함께하는 친구 이름이 붙어요.';
+
+  @override
+  String get releaseNote104Widget => '홈 위젯에 금액이 잘리지 않고 전부 보여요.';
+
+  @override
+  String get releaseNote104Languages => '이제 포르투갈어, 독일어, 프랑스어, 일본어로도 쓸 수 있어요.';
 
   @override
   String get releaseNote103GuineaPig => '기니피그가 컬렉션에 들어왔어요. 짧은 광고 두 번이면 함께 지내요.';

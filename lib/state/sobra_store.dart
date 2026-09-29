@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/catalog_preview_data.dart';
+import '../data/launch_gift_campaign.dart';
 import '../models/cash_reconciliation.dart';
 import '../models/catalog_entry.dart';
 import '../models/currency.dart';
@@ -197,6 +198,8 @@ class SobraStore extends ChangeNotifier {
   DateTime? pendingPayScheduleEffectiveAt;
   DateTime? payScheduleEffectiveFloor;
   DateTime? xpTrackingStartedAt;
+  DateTime? firstStartedAt;
+  bool launchGiftNoticePending = false;
   DateTime? lastSettledCycleEnd;
   bool hasStorageError = false;
   String? corruptedStorage;
@@ -228,6 +231,7 @@ class SobraStore extends ChangeNotifier {
     // One-time migration for states written before native ads existed. Saving
     // now matters: if the missing value were only filled in memory, every
     // restart would begin a fresh configured grace period forever.
+    await store._ensureFirstStartedAt();
     await store._ensureNativeAdInstallDay();
     // A character that was previously bundled for free can become a paid
     // entry. Keep the saved choice only when its entitlement is still owned.
@@ -239,6 +243,7 @@ class SobraStore extends ChangeNotifier {
       await store._save();
     }
     await store.settleCycles();
+    await store.maybeGrantLaunchGift();
     store._lastObservedDate = store.today;
     return store;
   }
@@ -1843,6 +1848,44 @@ class SobraStore extends ChangeNotifier {
   /// silently revoke something the user paid for.
   Future<void> grantCatalogEntry(String id) => grantCatalogEntries({id});
 
+  /// Delivers both launch decorations in one write. Someone who started in
+  /// time still receives them when first opening a later update.
+  Future<bool> maybeGrantLaunchGift() async {
+    final started = firstStartedAt;
+    if (!hasCompletedOnboarding ||
+        started == null ||
+        !LaunchGiftCampaign.active(today) ||
+        !LaunchGiftCampaign.eligible(started)) {
+      return false;
+    }
+    final added = LaunchGiftCampaign.itemIds.difference(_ownedCatalogIds);
+    if (added.isEmpty) return false;
+    _ownedCatalogIds.addAll(added);
+    launchGiftNoticePending = true;
+    try {
+      await _save();
+    } on Object {
+      _ownedCatalogIds.removeAll(added);
+      launchGiftNoticePending = false;
+      rethrow;
+    }
+    notifyListeners();
+    return true;
+  }
+
+  Future<bool> takeLaunchGiftNotice() async {
+    if (!launchGiftNoticePending) return false;
+    launchGiftNoticePending = false;
+    try {
+      await _save();
+    } on Object {
+      launchGiftNoticePending = true;
+      rethrow;
+    }
+    notifyListeners();
+    return true;
+  }
+
   /// Records that every id in [ids] was acquired, in one write.
   ///
   /// What a bundle needs: granting its contents one at a time would save once
@@ -1979,8 +2022,10 @@ class SobraStore extends ChangeNotifier {
     // asked the opening question again.
     hasAnsweredLoginOffer = true;
     xpTrackingStartedAt ??= today;
+    firstStartedAt ??= today;
     await _save();
     notifyListeners();
+    await maybeGrantLaunchGift();
   }
 
   bool get hasRecoverableBackup {
@@ -2109,9 +2154,26 @@ class SobraStore extends ChangeNotifier {
     pendingPayScheduleEffectiveAt = null;
     payScheduleEffectiveFloor = null;
     xpTrackingStartedAt = null;
+    firstStartedAt = today;
+    launchGiftNoticePending = false;
     lastSettledCycleEnd = null;
     _pendingXpNotice = null;
     categoryLimits = _categoryLimitsForBudget(_baseBudgetCentavos);
+  }
+
+  Future<void> _ensureFirstStartedAt() async {
+    if (firstStartedAt != null) return;
+    // Existing testers did not have this field. Use the earliest start date
+    // already in their saved state before falling back to this update day.
+    final candidates = <DateTime>[
+      ?xpTrackingStartedAt,
+      if (_nativeAdInstallDay != null)
+        DateTime.tryParse(_nativeAdInstallDay!) ?? today,
+    ];
+    firstStartedAt = candidates.isEmpty
+        ? today
+        : candidates.reduce((a, b) => a.isBefore(b) ? a : b);
+    await _save();
   }
 
   Future<void> _ensureNativeAdInstallDay() async {
@@ -2205,6 +2267,8 @@ class SobraStore extends ChangeNotifier {
     pendingPayScheduleEffectiveAt = other.pendingPayScheduleEffectiveAt;
     payScheduleEffectiveFloor = other.payScheduleEffectiveFloor;
     xpTrackingStartedAt = other.xpTrackingStartedAt;
+    firstStartedAt = other.firstStartedAt;
+    launchGiftNoticePending = other.launchGiftNoticePending;
     lastSettledCycleEnd = other.lastSettledCycleEnd;
     _pendingXpNotice = other._pendingXpNotice;
     categoryLimits = Map.of(other.categoryLimits);
@@ -2375,6 +2439,9 @@ class SobraStore extends ChangeNotifier {
     xpTrackingStartedAt = trackingStarted == null
         ? null
         : DateTime.parse(trackingStarted);
+    final firstStarted = json['firstStartedAt'] as String?;
+    firstStartedAt = firstStarted == null ? null : DateTime.parse(firstStarted);
+    launchGiftNoticePending = json['launchGiftNoticePending'] as bool? ?? false;
     final settledEnd = json['lastSettledCycleEnd'] as String?;
     lastSettledCycleEnd = settledEnd == null
         ? null
@@ -2448,6 +2515,8 @@ class SobraStore extends ChangeNotifier {
         ?.toIso8601String(),
     'payScheduleEffectiveFloor': payScheduleEffectiveFloor?.toIso8601String(),
     'xpTrackingStartedAt': xpTrackingStartedAt?.toIso8601String(),
+    'firstStartedAt': firstStartedAt?.toIso8601String(),
+    'launchGiftNoticePending': launchGiftNoticePending,
     'lastSettledCycleEnd': lastSettledCycleEnd?.toIso8601String(),
     'categoryLimits': {
       for (final entry in categoryLimits.entries) entry.key.name: entry.value,

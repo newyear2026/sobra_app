@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Sobra · 사전 등록 선물 · 거실 세트</title>
+<style>
+@font-face{font-family:PixelifySans;src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");}
+@font-face{font-family:SobraHangul;src:url("../../assets/fonts/SobraHangul.ttf") format("truetype");font-weight:400;}
+@font-face{font-family:SobraHangul;src:url("../../assets/fonts/SobraHangul-Bold.ttf") format("truetype");font-weight:700;}
+/* Tokens copied from lib/theme/app_theme.dart. */
+:root{--paper:#F6EFE0;--paperLight:#FBF5E9;--surface:#FFFDF7;--beige:#EFE7D6;--line:#E7DDC8;
+ --ink:#202848;--inkSoft:#4E5878;--muted:#5F6885;
+ --teal:#0E7A72;--tealSoft:#D8EDEA;--tealInk:#0B6660;--cash:#C0873A;--cashSoft:#F7E9CE;--cashInk:#845A1E;
+ --violet:#6E4A8C;--violetSoft:#E7DCF0;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);font-family:PixelifySans,SobraHangul,monospace;color:var(--ink);
+ padding:32px 40px 40px;-webkit-font-smoothing:none;width:1660px}
+.head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;padding-left:6px}
+.head h1{font-size:26px;font-weight:900}
+.head span{font-size:14px;color:var(--inkSoft);font-weight:800}
+.row{display:flex;gap:26px;align-items:flex-start}
+.row+.row{margin-top:30px}
+.card{background:var(--surface);border:4px solid var(--ink);box-shadow:7px 7px 0 rgba(32,40,72,.14)}
+.cap{font-size:12.5px;color:var(--inkSoft);line-height:1.55;margin-top:10px;padding:0 4px;font-weight:800}
+.cap b{color:var(--ink)}
+img.px{image-rendering:pixelated;display:block}
+/* item close-ups */
+.items{display:flex;gap:26px;padding:22px 26px;align-items:flex-end}
+.item{display:flex;flex-direction:column;align-items:center}
+.item .stage{background:var(--paperLight);border:2.5px solid var(--line);padding:18px 22px;display:flex;align-items:flex-end;justify-content:center;height:236px}
+.item b{font-size:17px;font-weight:900;margin-top:10px}
+.item s{text-decoration:none;font-size:12.5px;font-weight:800;color:var(--muted);margin-top:2px}
+.tag{display:inline-block;font-size:11px;font-weight:900;padding:2px 7px;border:2px solid var(--violet);color:var(--violet);background:var(--violetSoft);margin-top:6px}
+.setname{padding:22px 26px 0 26px}
+.setname h2{font-size:21px;font-weight:900}
+.setname p{font-size:13px;font-weight:800;color:var(--inkSoft);margin-top:4px}
+/* rooms */
+.room{width:372px}
+.room .frame{border:4px solid var(--ink);box-shadow:7px 7px 0 rgba(32,40,72,.14);overflow:hidden;height:520px;position:relative}
+.room .frame img{width:100%;height:100%;object-fit:cover;object-position:center 30%}
+.room .lbl{position:absolute;left:10px;top:10px;background:var(--surface);border:2.5px solid var(--ink);font-size:12.5px;font-weight:900;padding:3px 8px}
+.room .lbl.before{background:var(--beige);color:var(--muted)}
+.room .lbl.gift{background:var(--violetSoft);color:var(--violet);border-color:var(--violet)}
+/* gift sheet phone */
+.phone{width:372px;height:640px;background:#7B8199;border:5px solid var(--ink);border-radius:26px;position:relative;overflow:hidden;box-shadow:7px 7px 0 rgba(32,40,72,.14)}
+.phone .dim{position:absolute;inset:0;background:url(preregistration-set/room-jardin.png) center 30%/cover;filter:brightness(.55)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-top:4px solid var(--ink);padding:14px 16px 20px}
+.sheet .grab{width:44px;height:5px;background:var(--line);margin:0 auto 12px}
+.sheet h3{font-size:19px;font-weight:900}
+.sheet .sd{font-size:12.5px;font-weight:800;color:var(--inkSoft);margin:3px 0 12px}
+.giftrow{display:flex;gap:11px;align-items:center;border:2.5px solid var(--ink);padding:9px 11px;margin-bottom:9px;background:var(--surface);box-shadow:4px 4px 0 rgba(32,40,72,.14)}
+.giftrow .ga{width:62px;height:54px;background:var(--violetSoft);border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.giftrow .ga img{max-width:52px;max-height:44px}
+.giftrow b{display:block;font-size:14.5px;font-weight:900}
+.giftrow s{display:block;text-decoration:none;font-size:12px;font-weight:800;color:var(--muted);margin-top:2px}
+.src{display:inline-block;margin-top:5px;font-size:10.5px;font-weight:900;padding:1px 6px;border:2px solid var(--blue,#39558E);color:#39558E;background:#DCE4F2}
+.btn{border:3px solid var(--ink);font-size:14px;font-weight:900;text-align:center;padding:12px;margin-top:10px}
+.btn.primary{background:var(--teal);color:#fff;box-shadow:0 5px 0 var(--ink)}
+/* notes */
+.notes{flex:1;padding:20px 24px 22px}
+.notes h2{font-size:19px;font-weight:900}
+.notes .sd{font-size:12.5px;font-weight:800;color:var(--inkSoft);margin:3px 0 14px}
+table{border-collapse:collapse;width:100%;font-size:12.5px;font-weight:800}
+th,td{text-align:left;padding:8px 8px;border-bottom:2px solid var(--line);vertical-align:top;line-height:1.5}
+th{width:132px;color:var(--muted)}
+code{font-family:monospace;background:var(--beige);padding:0 4px;font-size:12px}
+.store{margin-top:16px;border:2.5px solid var(--ink);background:var(--paperLight);padding:12px 14px}
+.store .k{font-size:11.5px;font-weight:900;color:var(--muted)}
+.store p{font-size:14px;font-weight:900;margin-top:4px;line-height:1.45}
+.store p.ko{font-size:12px;color:var(--inkSoft);font-weight:800}
+.qs{margin-top:14px;font-size:12.5px;font-weight:800;line-height:1.8;color:var(--inkSoft)}
+.qs b{color:var(--violet)}
+</style>
+</head>
+<body>
+<div class="head"><h1>Sobra · 사전 등록 선물 시안 · 거실 세트</h1>
+<span>소파 + TV 두 가지를 한 번에 — 전부 꾸미기 아이템, 돈·예산·XP에는 손대지 않는다</span></div>
+
+<div class="row">
+  <div class="card">
+    <div class="setname"><h2>Set de sala · 거실 세트</h2>
+    <p>사전 등록한 사람만 받는 한정 세트. 기존 방 3개 어디에나 놓을 수 있다.</p></div>
+    <div class="items">
+      <div class="item"><div class="stage" style="width:470px"><img class="px" src="preregistration-set/sofa.png" width="504" height="276" style="height:200px;width:auto"></div>
+        <b>Sofá de terciopelo</b><s>벨벳 소파 · 폭 약 1.7 m · 바닥, 벽 앞</s><span class="tag">사전 등록 선물</span></div>
+      <div class="item"><div class="stage" style="width:380px"><img class="px" src="preregistration-set/tv.png" width="336" height="312" style="height:200px;width:auto"></div>
+        <b>Tele del partido</b><s>TV + 수납장 일체형 · 폭 약 0.95 m · 바닥</s><span class="tag">사전 등록 선물</span></div>
+    </div>
+  </div>
+  <div class="card notes" style="align-self:stretch">
+    <h2>한 줄 요약</h2>
+    <div class="sd">방 전체를 새로 그리는 것보다 가볍고, 액자 하나보다 확실히 눈에 띈다.</div>
+    <table>
+      <tr><th>소파</th><td>앱 teal과 미치 목걸이 색으로 맞춘 벨벳 소파. 오토미 자수 쿠션 + 머스터드 쿠션으로 멕시코 느낌.</td></tr>
+      <tr><th>TV</th><td>화면에 축구 중계가 흐른다 (8프레임 반복, 공과 관중이 움직임). 방에서 유일하게 <b>움직이는 가구</b>. 수납장과 한 몸이라 다른 가구 없이도 놓인다.</td></tr>
+      <tr><th>그림 상태</th><td>지금은 <b>손으로 찍은 시안</b>. 확정되면 다른 방 아이템과 같은 방식으로 최종 그림을 다시 만든다 — 크기·배치는 이 시안 그대로.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="row">
+  <div class="room"><div class="frame"><img src="preregistration-set/room-clara-before.png"><span class="lbl before">지금 · Casa clara</span></div>
+    <div class="cap"><b>받기 전.</b> 기본 러그와 작은 화분뿐인 빈 방.</div></div>
+  <div class="room"><div class="frame"><img src="preregistration-set/room-clara.png"><span class="lbl gift">세트 · Casa clara</span></div>
+    <div class="cap"><b>받은 뒤.</b> 창 아래 소파, 왼쪽 벽에 TV. 방이 바로 "거실"이 된다.</div></div>
+  <div class="room"><div class="frame"><img src="preregistration-set/room-jardin.png"><span class="lbl gift">세트 · Casa jardín</span></div>
+    <div class="cap"><b>노란 벽에서도</b> teal 소파가 묻히지 않는다. 움직이는 버전은 <code>room-jardin.gif</code>.</div></div>
+  <div class="room"><div class="frame"><img src="preregistration-set/room-playa.png"><span class="lbl gift">세트 · Casa de playa</span></div>
+    <div class="cap"><b>밝은 해변 집에서도</b> 같은 크기·같은 자리. 한 벌로 방 3개 모두 맞는다.</div></div>
+</div>
+
+<div class="row">
+  <div>
+    <div class="phone"><div class="dim"></div>
+      <div class="sheet"><div class="grab"></div>
+        <h3>선물이 도착했어요</h3>
+        <div class="sd">먼저 와 줘서 고마워요. 컬렉션에 넣어 뒀어요.</div>
+        <div class="giftrow"><div class="ga"><img class="px" src="preregistration-set/sofa.png"></div>
+          <div><b>Sofá de terciopelo</b><s>거실 세트 · 1/2</s><span class="src">Google Play 사전 등록</span></div></div>
+        <div class="giftrow"><div class="ga"><img class="px" src="preregistration-set/tv.png"></div>
+          <div><b>Tele del partido</b><s>거실 세트 · 2/2</s><span class="src">Google Play 사전 등록</span></div></div>
+        <div class="btn primary">방에 놓으러 가기</div>
+        <div class="btn">닫기</div>
+      </div></div>
+    <div class="cap" style="width:372px"><b>첫 설치 직후 한 번.</b> 기존 시안의 선물 시트 그대로, 액자 한 줄이 두 줄이 된다.</div>
+  </div>
+  <div class="card notes">
+    <h2>규칙</h2>
+    <div class="sd">Play 상품은 하나, 앱이 두 개를 준다 — Michi &amp; Friends 팩과 같은 방식.</div>
+    <table>
+      <tr><th>받는 조건</th><td>Google Play에서 사전 등록 → 출시 후 첫 설치 (Play가 0원 구매로 전달)</td></tr>
+      <tr><th>Play 상품</th><td><code>sobra.reward.preregistration</code> 하나 그대로. 앱 안에서 이 상품 = 소파 + TV</td></tr>
+      <tr><th>이후 얻는 법</th><td>없음. 사전 등록이 끝나면 영영 못 얻고, 안 가진 사람에겐 컬렉션에서 아예 안 보인다</td></tr>
+      <tr><th>돈·XP</th><td>영향 없음. 꾸미기 전용, 한 번 받으면 절대 회수하지 않음</td></tr>
+      <tr><th>놓는 자리</th><td>TV는 기존 수납장 자리(floorCabinet)에 맞는다. 소파는 폭이 넓어 방 3개에 <b>벽 앞 넓은 자리</b>를 하나씩 새로 추가</td></tr>
+    </table>
+    <div class="store"><div class="k">Play 사전 등록 보상 설명 (es-419)</div>
+      <p>Pre-regístrate y recibe el Set de sala: un sofá de terciopelo y una tele con el partido en vivo. Solo para quienes lleguen primero.</p>
+      <p class="ko">사전 등록하면 거실 세트 — 벨벳 소파와 축구 중계가 나오는 TV. 먼저 온 사람만.</p></div>
+    <div class="qs"><b>Q1</b> 이름 — Sofá de terciopelo / Tele del partido 로 갈지<br>
+      <b>Q2</b> TV 화면 — 축구 중계로 갈지, 텔레노벨라 등 다른 장면으로 갈지<br>
+      <b>Q3</b> 소파 색 — teal 그대로 갈지, 방마다 어울리는 다른 색(테라코타 등)을 볼지</div>
+  </div>
+</div>
+</body>
+</html>

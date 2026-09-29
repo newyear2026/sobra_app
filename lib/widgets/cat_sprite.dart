@@ -408,11 +408,215 @@ abstract final class CharacterCatalog {
     },
   );
 
+  static const capybara = CharacterDefinition(
+    id: 'capybara',
+    displayName: 'Tranqui',
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.png',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 4,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 6,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 6,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.png',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 4,
+        ),
+      ),
+    },
+  );
+
+  static const alpaca = CharacterDefinition(
+    id: 'alpaca',
+    displayName: 'Lana',
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.png',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 4,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 6,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.png',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 3,
+        ),
+      ),
+    },
+  );
+
+  static const platypus = CharacterDefinition(
+    id: 'platypus',
+    displayName: 'Pico',
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.png',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 4,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 7,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 6,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.png',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 3,
+        ),
+      ),
+    },
+  );
+
   static const Map<String, CharacterDefinition> all = {
     'michi': michi,
     'poodle': poodle,
     'schnauzer': schnauzer,
     'guinea-pig': guineaPig,
+    'capybara': capybara,
+    'alpaca': alpaca,
+    'platypus': platypus,
   };
 
   /// The pack for [characterId], or Michi when there is no such pack.

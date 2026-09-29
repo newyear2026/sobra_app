@@ -236,6 +236,7 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       unawaited(widget.store.refreshForCurrentDate());
+      unawaited(widget.purchases?.refreshOnResume());
       _scheduleMidnightRefresh();
     }
   }

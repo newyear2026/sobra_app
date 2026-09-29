@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class RoomScene extends StatelessWidget {
     this.roomId = RoomThemes.casaClaraId,
     this.backgroundAsset,
     this.showSlots = false,
+    this.animateItems = true,
     this.selectedItemId,
     this.onSlotTap,
     this.onCatTap,
@@ -44,6 +46,7 @@ class RoomScene extends StatelessWidget {
   /// With nothing selected no place is lit: an empty outline everywhere read
   /// as "anything goes anywhere", and a lamp offered a spot on the wall.
   final bool showSlots;
+  final bool animateItems;
   final String? selectedItemId;
   final ValueChanged<RoomSlot>? onSlotTap;
   final VoidCallback? onCatTap;
@@ -174,7 +177,15 @@ class RoomScene extends StatelessWidget {
               for (final item in placed)
                 Positioned.fromRect(
                   rect: item.frame,
-                  child: _RoomItemImage(asset: item.asset, slot: item.slot),
+                  child: item.asset == RoomDecorAssets.launchTv
+                      ? _AnimatedTvSprite(
+                          animate:
+                              animateItems &&
+                              !showSlots &&
+                              (ModalRoute.isCurrentOf(context) ?? true) &&
+                              !reducedMotionOf(context),
+                        )
+                      : _RoomItemImage(asset: item.asset, slot: item.slot),
                 ),
               Positioned(
                 left: (size.width - catWidth) / 2,
@@ -307,6 +318,7 @@ class _RoomSceneLayout {
     RoomSlot.floorCenter: Rect.fromLTWH(.255, .57, .25, .20),
     RoomSlot.floorAccent: Rect.fromLTWH(.64, .65, .08, .136),
     RoomSlot.floorCabinet: Rect.fromLTWH(.17, .505, .18, .22),
+    RoomSlot.floorSofa: Rect.fromLTWH(.56, .505, .36, .22),
   };
 
   static const _emptyThemePreview = _RoomSceneLayout(
@@ -329,6 +341,7 @@ class _RoomSceneLayout {
     RoomSlot.floorCenter: Rect.fromLTWH(.20, .50, .28, .18),
     RoomSlot.floorAccent: Rect.fromLTWH(.63, .45, .08, .15),
     RoomSlot.floorCabinet: Rect.fromLTWH(.14, .40, .24, .15),
+    RoomSlot.floorSofa: Rect.fromLTWH(.47, .40, .46, .15),
   };
 
   static const _emptyThemeImmersive = _RoomSceneLayout(
@@ -410,6 +423,109 @@ class _RoomItemImage extends StatelessWidget {
       RoomSurface.floor || RoomSurface.tabletop => Alignment.bottomCenter,
       RoomSurface.wall || RoomSurface.rug => Alignment.center,
     },
+    excludeFromSemantics: true,
+  );
+}
+
+/// A quiet ambient loop. The screen changes by itself while the room is
+/// visible; the furniture, placement, and decoration controls never move.
+class _AnimatedTvSprite extends StatefulWidget {
+  const _AnimatedTvSprite({required this.animate});
+
+  final bool animate;
+
+  @override
+  State<_AnimatedTvSprite> createState() => _AnimatedTvSpriteState();
+}
+
+class _AnimatedTvSpriteState extends State<_AnimatedTvSprite>
+    with WidgetsBindingObserver {
+  static const _frames = <(String, Duration)>[
+    (RoomDecorAssets.launchTv, Duration(milliseconds: 3500)),
+    (RoomDecorAssets.launchTvBlink, Duration(milliseconds: 160)),
+    (RoomDecorAssets.launchTv, Duration(seconds: 6)),
+    (RoomDecorAssets.launchTvBlink, Duration(milliseconds: 160)),
+    (RoomDecorAssets.launchTv, Duration(seconds: 12)),
+    (RoomDecorAssets.launchTvBase, Duration(milliseconds: 150)),
+    (RoomDecorAssets.launchTvSoccer, Duration(milliseconds: 1500)),
+    (RoomDecorAssets.launchTvSoccerAlt, Duration(milliseconds: 1500)),
+    (RoomDecorAssets.launchTvSoccer, Duration(milliseconds: 1500)),
+    (RoomDecorAssets.launchTvSoccerAlt, Duration(milliseconds: 1500)),
+    (RoomDecorAssets.launchTvSoccer, Duration(milliseconds: 1500)),
+    (RoomDecorAssets.launchTvSoccerAlt, Duration(milliseconds: 1500)),
+    (RoomDecorAssets.launchTvSoccer, Duration(milliseconds: 1500)),
+    (RoomDecorAssets.launchTvSoccerAlt, Duration(milliseconds: 1500)),
+    (RoomDecorAssets.launchTvSoccer, Duration(milliseconds: 1500)),
+    (RoomDecorAssets.launchTvSoccerAlt, Duration(milliseconds: 1500)),
+    (RoomDecorAssets.launchTvSoccer, Duration(milliseconds: 1500)),
+    (RoomDecorAssets.launchTvSoccerAlt, Duration(milliseconds: 1500)),
+    (RoomDecorAssets.launchTvSoccer, Duration(milliseconds: 1500)),
+    (RoomDecorAssets.launchTvSoccerAlt, Duration(milliseconds: 1500)),
+    (RoomDecorAssets.launchTvBase, Duration(milliseconds: 150)),
+  ];
+
+  Timer? _timer;
+  int _frame = 0;
+  bool _inForeground = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    if (widget.animate) _schedule();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final foreground = state == AppLifecycleState.resumed;
+    if (_inForeground == foreground) return;
+    _inForeground = foreground;
+    _timer?.cancel();
+    if (foreground && widget.animate) {
+      setState(() => _frame = 0);
+      _schedule();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    for (final (asset, _) in _frames) {
+      precacheImage(AssetImage(asset), context);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant _AnimatedTvSprite oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.animate == widget.animate) return;
+    _timer?.cancel();
+    _frame = 0;
+    if (widget.animate && _inForeground) _schedule();
+  }
+
+  void _schedule() {
+    _timer = Timer(_frames[_frame].$2, () {
+      if (!mounted || !widget.animate || !_inForeground) return;
+      setState(() => _frame = (_frame + 1) % _frames.length);
+      _schedule();
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Image.asset(
+    widget.animate ? _frames[_frame].$1 : RoomDecorAssets.launchTv,
+    fit: BoxFit.contain,
+    filterQuality: FilterQuality.none,
+    alignment: Alignment.bottomCenter,
+    gaplessPlayback: true,
     excludeFromSemantics: true,
   );
 }

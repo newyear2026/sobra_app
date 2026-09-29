@@ -153,6 +153,39 @@ void main() {
     },
   );
 
+  test(
+    'Capybara requires purchase ownership before it can be equipped',
+    () async {
+      final store = await loadStore();
+      final capybara = entryById('capybara');
+
+      expect(capybara.unlockMethod, CatalogUnlockMethod.purchase);
+      expect(store.ownsCatalogEntry(capybara), isFalse);
+      expect(() => store.chooseCharacter('capybara'), throwsArgumentError);
+
+      await store.grantCatalogEntry(capybara.id);
+      await store.equipCharacter(capybara);
+      final reopened = await loadStore();
+      expect(reopened.characterId, 'capybara');
+      expect(reopened.ownsCatalogEntry(capybara), isTrue);
+    },
+  );
+
+  test('Platypus can be equipped only after purchase ownership', () async {
+    final store = await loadStore();
+    final platypus = entryById('platypus');
+
+    expect(platypus.unlockMethod, CatalogUnlockMethod.purchase);
+    expect(store.ownsCatalogEntry(platypus), isFalse);
+    expect(() => store.chooseCharacter('platypus'), throwsArgumentError);
+
+    await store.grantCatalogEntry(platypus.id);
+    await store.equipCharacter(platypus);
+    final reopened = await loadStore();
+    expect(reopened.characterId, 'platypus');
+    expect(reopened.ownsCatalogEntry(platypus), isTrue);
+  });
+
   test('an old free Schnauzer choice reverts until it is earned', () async {
     await loadStore();
     final preferences = await SharedPreferences.getInstance();

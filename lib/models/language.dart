@@ -10,6 +10,9 @@ enum SobraLanguage {
   automatic(null),
   spanish('es'),
   english('en'),
+  portuguese('pt'),
+  german('de'),
+  french('fr'),
 
   /// Korean was gated to debug builds for as long as there was no Hangul to
   /// set it in: Pixelify Sans carries none, so the text fell back to the
@@ -17,7 +20,12 @@ enum SobraLanguage {
   /// because `AppType.fallback` names a pixel Hangul face sized to Sobra's
   /// own — see `tool/build_hangul_fallback.py`. The translation was never what
   /// held it back.
-  korean('ko');
+  korean('ko'),
+
+  /// Japanese comes from its own pixel face, cut from the same Galmuri as the
+  /// Hangul (`tool/build_japanese_fallback.py`), and has no bold — see
+  /// `AppType.fallback`.
+  japanese('ja');
 
   // Nothing passes `shipped` today; see the field for why it stays.
   // ignore: unused_element_parameter
@@ -43,9 +51,9 @@ enum SobraLanguage {
   ///
   /// Order is load-bearing: Flutter falls back to the head of the list when a
   /// phone is set to none of these. That phone belongs to somebody spending
-  /// euros, reais or yen, who is likelier to read English than Spanish. A
-  /// Spanish phone of any country still matches `es` on its own, so Mexico
-  /// loses nothing to the order.
+  /// euros in Italy or the Netherlands, or yuan, who is likelier to read
+  /// English than Spanish. A Spanish phone of any country still matches `es`
+  /// on its own, so Mexico loses nothing to the order.
   static List<Locale> get supportedLocales => [
     for (final language in [english, ...available.where((l) => l != english)])
       if (language.code != null) Locale(language.code!),

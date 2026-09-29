@@ -12,6 +12,8 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
+from normalize_success_jump import rebalance_jump_frame, validate_jump_scale
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "design/characters/guinea-pig"
@@ -60,7 +62,11 @@ DURATIONS_MS = {
 
 
 def split_cells(role: str, count: int) -> list[Image.Image]:
-    sheet = Image.open(RAW / f"{role}-{count}-raw.png").convert("RGBA")
+    filename = (
+        "success-12-raw-v2.png" if role == "success"
+        else f"{role}-{count}-raw.png"
+    )
+    sheet = Image.open(RAW / filename).convert("RGBA")
     alpha = sheet.getchannel("A")
     pixels = alpha.load()
     occupancy = [
@@ -138,6 +144,10 @@ def normalize(role: str, cells: list[Image.Image]) -> list[Image.Image]:
             art,
             ((FRAME_WIDTH - art.width) // 2, BASELINE - art.height - lift),
         )
+        if role == "success" and index in {7, 8}:
+            frame = rebalance_jump_frame(
+                frame, body_size=(208, 288), lift=18
+            )
         left, top, right, bottom = frame.getchannel("A").getbbox()
         if (left < SAFE_MARGIN or top < SAFE_MARGIN or
                 right > FRAME_WIDTH - SAFE_MARGIN or
@@ -173,6 +183,10 @@ def main() -> None:
     )
     for column, (role, count) in enumerate(COUNTS.items()):
         frames = normalize(role, split_cells(role, count))
+        if role == "success":
+            validate_jump_scale(
+                frames, reference_indices=(4, 5, 6), jump_indices=(7, 8)
+            )
         all_frames[role] = frames
         sheet = Image.new("RGBA", (FRAME_WIDTH * count, FRAME_HEIGHT))
         for index, frame in enumerate(frames):

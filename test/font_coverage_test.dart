@@ -82,6 +82,7 @@ void main() {
     covered = {
       ...latin,
       ..._coverage(await rootBundle.load('assets/fonts/SobraHangul.ttf')),
+      ..._coverage(await rootBundle.load('assets/fonts/SobraJapanese.ttf')),
     };
   });
 
@@ -89,7 +90,7 @@ void main() {
   // the translation and no face to set it in, and nothing failed — the glyphs
   // came back in whatever the phone had lying around.
   test('between them the bundled fonts draw every word the app ships', () {
-    for (final locale in ['es', 'en', 'ko']) {
+    for (final locale in ['es', 'en', 'ko', 'pt', 'de', 'fr', 'ja']) {
       final missing = _charactersIn(locale).difference(covered)
         // A line break is not a glyph.
         ..remove(0x0A);
@@ -117,6 +118,20 @@ void main() {
       reason:
           'PixelifySans gained Hangul, which would make the fallback '
           'unreachable and this test meaningless',
+    );
+  });
+
+  test('kana and kanji come from Sobra own face, not the Latin one', () {
+    // Hiragana, katakana with its long-vowel mark, a kanji, and the Japanese
+    // full stop and brackets.
+    expect(
+      covered,
+      containsAll(<int>[0x3042, 0x30A2, 0x30FC, 0x65E5, 0x3002, 0x300C]),
+    );
+    expect(
+      latin,
+      isNot(contains(0x3042)),
+      reason: 'PixelifySans gained kana, which would make the fallback moot',
     );
   });
 

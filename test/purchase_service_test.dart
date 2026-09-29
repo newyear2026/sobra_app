@@ -29,8 +29,8 @@ void main() {
   late SobraStore store;
   late FakeBackend backend;
 
-  const soldProductId = 'sobra.character.07';
-  const soldEntryId = 'character-07';
+  const soldProductId = 'sobra.character.capybara';
+  const soldEntryId = 'capybara';
 
   CatalogEntry entryById(String id) =>
       CatalogPreviewData.all.firstWhere((entry) => entry.id == id);
@@ -41,7 +41,7 @@ void main() {
     backend = FakeBackend()
       ..catalogue = [
         productFor(soldProductId, r'MX$ 79'),
-        productFor('sobra.character.09', r'MX$ 99'),
+        productFor('sobra.character.alpaca', r'MX$ 99'),
       ];
   });
 
@@ -104,6 +104,22 @@ void main() {
     expect(backend.completed, [soldProductId]);
     expect(store.ownsCatalogEntry(entryById(soldEntryId)), isTrue);
     expect(purchases.takeFailure(), isNull);
+  });
+
+  test('Platypus uses its own product and becomes owned after purchase', () async {
+    const platypusProductId = 'sobra.character.platypus';
+    backend.catalogue.add(productFor(platypusProductId, r'MX$ 42'));
+    final purchases = await started();
+    final platypus = entryById('platypus');
+
+    expect(purchases.localizedPriceFor(platypusProductId), r'MX$ 42');
+    await purchases.buy(platypus);
+    backend.emit([detailsFor(platypusProductId, PurchaseStatus.purchased)]);
+    await pumpEventQueue();
+
+    expect(backend.bought, contains(platypusProductId));
+    expect(store.ownsCatalogEntry(platypus), isTrue);
+    expect(store.ownedCatalogIds, contains('platypus'));
   });
 
   test(
@@ -224,7 +240,7 @@ void main() {
     });
 
     test('leaves what is still paid for alone', () async {
-      await store.grantCatalogEntries({soldEntryId, 'character-09'});
+      await store.grantCatalogEntries({soldEntryId, 'alpaca'});
       backend.paidProductIds = {soldProductId};
 
       await started();
@@ -416,6 +432,67 @@ void main() {
     });
   });
 
+  group('the app-delivered launch gift', () {
+    test('is not queried or taken back by Play Billing', () async {
+      final gifts = CatalogPreviewData.items
+          .where((entry) => entry.unlockMethod == CatalogUnlockMethod.gift)
+          .toList();
+      await store.grantCatalogEntries(gifts.map((entry) => entry.id).toSet());
+      backend.paidProductIds = {};
+
+      await started();
+
+      for (final gift in gifts) {
+        expect(store.ownsCatalogEntry(gift), isTrue);
+      }
+    });
+  });
+
+  group('coming back to the foreground', () {
+    test('grants what was redeemed while the app was away', () async {
+      final purchases = await started();
+      expect(store.ownsCatalogEntry(entryById(soldEntryId)), isFalse);
+
+      // A promo code redeemed in the Play Store while Sobra sat behind it.
+      backend.ownedProductIds = [soldProductId];
+      await purchases.refreshOnResume();
+      await pumpEventQueue();
+
+      expect(store.ownsCatalogEntry(entryById(soldEntryId)), isTrue);
+      expect(backend.completed, [soldProductId]);
+    });
+
+    test('stays out of an open checkout', () async {
+      final purchases = await started();
+      var restores = 0;
+      backend.onRestore = () => restores++;
+
+      await purchases.buy(entryById(soldEntryId));
+      await purchases.refreshOnResume();
+
+      expect(restores, 0);
+    });
+
+    test('does not ask on an iOS-shaped install', () async {
+      final purchases = await started(restoreOnStart: false);
+      var restores = 0;
+      backend.onRestore = () => restores++;
+
+      await purchases.refreshOnResume();
+
+      expect(restores, 0);
+    });
+
+    test('says nothing when the store cannot be reached', () async {
+      final purchases = await started();
+      backend.failRestore = true;
+
+      await purchases.refreshOnResume();
+
+      expect(purchases.takeFailure(), isNull);
+    });
+  });
+
   // A sheet dismissed with a swipe, or a process killed behind it, can leave
   // nothing to arrive on the stream at all.
   test('a checkout nothing answers stops claiming the card forever', () async {
@@ -467,7 +544,10 @@ void main() {
   // of three characters, a decoration and ad removal.
   test('buying the pack delivers all of it', () async {
     const bundleId = CatalogPreviewData.packProductId;
-    backend.catalogue = [...backend.catalogue, productFor(bundleId, r'MX$ 199')];
+    backend.catalogue = [
+      ...backend.catalogue,
+      productFor(bundleId, r'MX$ 199'),
+    ];
     await started(restoreOnStart: false);
 
     backend.emit([detailsFor(bundleId, PurchaseStatus.purchased)]);
@@ -481,9 +561,7 @@ void main() {
     expect(store.ownsCatalogEntry(entryById('character-04')), isTrue);
     expect(store.ownsCatalogEntry(entryById('character-06')), isTrue);
     expect(
-      store.ownsCatalogEntry(
-        entryById(CatalogPreviewData.packDecorationId),
-      ),
+      store.ownsCatalogEntry(entryById(CatalogPreviewData.packDecorationId)),
       isTrue,
     );
     expect(
@@ -516,7 +594,10 @@ void main() {
   // charge for the whole bundle.
   test('a bundle entry cannot be bought from its own card', () async {
     const bundleId = CatalogPreviewData.packProductId;
-    backend.catalogue = [...backend.catalogue, productFor(bundleId, r'MX$ 199')];
+    backend.catalogue = [
+      ...backend.catalogue,
+      productFor(bundleId, r'MX$ 199'),
+    ];
     final purchases = await started(restoreOnStart: false);
 
     await purchases.buy(entryById(CatalogPreviewData.packDecorationId));
@@ -526,7 +607,10 @@ void main() {
 
   test('buying remove-ads grants only the entitlement', () async {
     const productId = CatalogPreviewData.removeAdsProductId;
-    backend.catalogue = [...backend.catalogue, productFor(productId, r'MX$ 89')];
+    backend.catalogue = [
+      ...backend.catalogue,
+      productFor(productId, r'MX$ 89'),
+    ];
     final purchases = await started(restoreOnStart: false);
 
     await purchases.buyProduct(productId);
@@ -538,23 +622,25 @@ void main() {
     expect(backend.completed, [productId]);
   });
 
-  test('buying remove-ads is a no-op once the pack already granted it',
-      () async {
-    const packId = CatalogPreviewData.packProductId;
-    const removeId = CatalogPreviewData.removeAdsProductId;
-    backend.catalogue = [
-      ...backend.catalogue,
-      productFor(packId, r'MX$ 199'),
-      productFor(removeId, r'MX$ 89'),
-    ];
-    final purchases = await started(restoreOnStart: false);
-    await store.grantCatalogEntries(
-      CatalogPreviewData.productEntitlements[packId]!,
-    );
+  test(
+    'buying remove-ads is a no-op once the pack already granted it',
+    () async {
+      const packId = CatalogPreviewData.packProductId;
+      const removeId = CatalogPreviewData.removeAdsProductId;
+      backend.catalogue = [
+        ...backend.catalogue,
+        productFor(packId, r'MX$ 199'),
+        productFor(removeId, r'MX$ 89'),
+      ];
+      final purchases = await started(restoreOnStart: false);
+      await store.grantCatalogEntries(
+        CatalogPreviewData.productEntitlements[packId]!,
+      );
 
-    await purchases.buyProduct(removeId);
+      await purchases.buyProduct(removeId);
 
-    expect(backend.bought, isEmpty);
-    expect(store.ownsNoAds, isTrue);
-  });
+      expect(backend.bought, isEmpty);
+      expect(store.ownsNoAds, isTrue);
+    },
+  );
 }
