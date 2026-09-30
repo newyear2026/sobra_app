@@ -30,12 +30,14 @@ CASH_SOFT = (247, 233, 206)
 VIOLET_SOFT = (231, 220, 240)
 TEAL_SOFT = (216, 237, 234)
 DANGER_SOFT = (251, 225, 218)
+BLUE_SOFT = (220, 228, 242)
 
 PRODUCTS = {
     "sobra.character.capybara": ("capybara", CASH_SOFT),
     "sobra.character.alpaca": ("alpaca", VIOLET_SOFT),
     "sobra.character.platypus": ("platypus", TEAL_SOFT),
     "sobra.character.rabbit": ("rabbit", DANGER_SOFT),
+    "sobra.character.raccoon": ("raccoon", BLUE_SOFT),
 }
 
 

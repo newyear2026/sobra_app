@@ -19,6 +19,7 @@ void main() {
     'alpaca',
     'platypus',
     'rabbit',
+    'raccoon',
   ]) {
     testWidgets('$id dialog reserves the full enlarged motion bounds', (
       tester,
@@ -354,6 +355,33 @@ void main() {
     }
     expect(
       CharacterCatalog.rabbit
+          .motionFor(CharacterMotionRole.success)
+          .playbackSpec
+          .completionFrame,
+      11,
+    );
+  });
+
+  test('Bandi owns the complete eight- and twelve-frame motion pack', () {
+    expect(
+      CharacterCatalog.all,
+      containsPair('raccoon', CharacterCatalog.raccoon),
+    );
+    expect(
+      CharacterCatalog.raccoon.motions.keys.toSet(),
+      CharacterMotionRole.values.toSet(),
+    );
+    for (final role in CharacterMotionRole.values) {
+      expect(
+        CharacterCatalog.raccoon.motionFor(role).frameCount,
+        role == CharacterMotionRole.idle || role == CharacterMotionRole.warning
+            ? 8
+            : 12,
+        reason: role.name,
+      );
+    }
+    expect(
+      CharacterCatalog.raccoon
           .motionFor(CharacterMotionRole.success)
           .playbackSpec
           .completionFrame,

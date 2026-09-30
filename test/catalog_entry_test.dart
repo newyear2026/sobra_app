@@ -8,7 +8,7 @@ void main() {
   test('Michi and Poodle are included; new companions use ads', () {
     final entries = CatalogPreviewData.characters;
 
-    expect(entries, hasLength(15));
+    expect(entries, hasLength(16));
     expect(
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.included,
@@ -19,7 +19,7 @@ void main() {
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.purchase,
       ),
-      hasLength(5),
+      hasLength(6),
     );
     expect(
       entries.where(
@@ -80,8 +80,21 @@ void main() {
       rabbit,
     );
     expect(CatalogPreviewData.storeProductIds, contains(rabbit.storeProductId));
+    final raccoon = entries.firstWhere((entry) => entry.id == 'raccoon');
+    expect(raccoon.name, 'Bandi');
+    expect(raccoon.unlockMethod, CatalogUnlockMethod.purchase);
+    expect(raccoon.storeProductId, 'sobra.character.raccoon');
+    expect(raccoon.assetPath, 'assets/characters/raccoon/idle-8.png');
+    expect(
+      CatalogPreviewData.entryForProductId(raccoon.storeProductId!),
+      same(raccoon),
+    );
+    expect(
+      CatalogPreviewData.storeProductIds,
+      contains(raccoon.storeProductId),
+    );
     // Every single character is one flat price.
-    for (final paid in [capybara, alpaca, platypus, rabbit]) {
+    for (final paid in [capybara, alpaca, platypus, rabbit, raccoon]) {
       expect(
         const PreviewCatalogPriceSource().localizedPriceFor(
           paid.storeProductId!,

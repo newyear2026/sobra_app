@@ -186,6 +186,21 @@ void main() {
     expect(reopened.ownsCatalogEntry(platypus), isTrue);
   });
 
+  test('Bandi can be equipped only after purchase ownership', () async {
+    final store = await loadStore();
+    final raccoon = entryById('raccoon');
+
+    expect(raccoon.unlockMethod, CatalogUnlockMethod.purchase);
+    expect(store.ownsCatalogEntry(raccoon), isFalse);
+    expect(() => store.chooseCharacter('raccoon'), throwsArgumentError);
+
+    await store.grantCatalogEntry(raccoon.id);
+    await store.equipCharacter(raccoon);
+    final reopened = await loadStore();
+    expect(reopened.characterId, 'raccoon');
+    expect(reopened.ownsCatalogEntry(raccoon), isTrue);
+  });
+
   test('an old free Schnauzer choice reverts until it is earned', () async {
     await loadStore();
     final preferences = await SharedPreferences.getInstance();

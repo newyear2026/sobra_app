@@ -10,6 +10,7 @@ import 'package:sobra_app/screens/collection_screen.dart';
 import 'package:sobra_app/services/rewarded_ad_service.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
+import 'package:sobra_app/widgets/cat_sprite.dart';
 
 import 'support/fake_rewarded_ad.dart';
 import 'support/localizations.dart';
@@ -207,6 +208,37 @@ void main() {
     expect(buyButton.onPressed, isNotNull);
   });
 
+  testWidgets('Bandi appears in the collection at the single price', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store, initialEntryId: 'raccoon');
+
+    expect(inDialog('Bandi'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.textContaining(r'MX$ 39'),
+      ),
+      findsOneWidget,
+    );
+    expect(inDialog('COMPRAR'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.byType(CharacterSprite),
+      ),
+      findsOneWidget,
+    );
+    final buyButton = tester.widget<FilledButton>(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.byType(FilledButton),
+      ),
+    );
+    expect(buyButton.onPressed, isNotNull);
+  });
+
   testWidgets('a stored ad count is what the card counts from', (tester) async {
     final store = await loadStore();
     await store.recordRewardedAdView(entryById('character-03'));
@@ -216,10 +248,15 @@ void main() {
     // The count is its own line now, so the button says what it does and the
     // line says how far along the run is.
     // The lazy grid builds the visible cards; later entries load on scroll.
-    expect(find.text('VER ANUNCIO'), findsAtLeastNWidgets(3));
+    await tester.scrollUntilVisible(
+      find.text('Personaje 3'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('VER ANUNCIO'), findsWidgets);
     expect(find.text('1/2'), findsOneWidget);
     // The lazy grid has not necessarily built every later character card.
-    expect(find.text('0/2'), findsAtLeastNWidgets(2));
+    expect(find.text('0/2'), findsWidgets);
   });
 
   testWidgets('an owned item offers nothing to place', (tester) async {
@@ -280,9 +317,9 @@ void main() {
 
     await pump(tester, store, ads: ads);
 
-    expect(find.text('SIN ANUNCIOS'), findsAtLeastNWidgets(3));
+    expect(find.text('SIN ANUNCIOS'), findsAtLeastNWidgets(2));
     // Blocked, but the run is still legible.
-    expect(find.text('0/2'), findsAtLeastNWidgets(3));
+    expect(find.text('0/2'), findsAtLeastNWidgets(2));
   });
 
   // No ad system above the screen at all — the design gallery, and every
@@ -294,7 +331,7 @@ void main() {
 
     await pump(tester, store);
 
-    expect(find.text('SIN ANUNCIOS'), findsAtLeastNWidgets(3));
+    expect(find.text('SIN ANUNCIOS'), findsAtLeastNWidgets(2));
   });
 
   testWidgets('a spent daily cap is what every ad card says', (tester) async {
@@ -306,7 +343,7 @@ void main() {
 
     await pump(tester, store, ads: await readyAds(store));
 
-    expect(find.text('LÍMITE DE HOY'), findsAtLeastNWidgets(3));
+    expect(find.text('LÍMITE DE HOY'), findsAtLeastNWidgets(2));
   });
 
   testWidgets('the special tier says it continues tomorrow', (tester) async {
@@ -446,7 +483,11 @@ void main() {
     final store = await loadStore();
 
     await pump(tester, store, ads: await readyAds(store));
-    await tester.ensureVisible(find.text('Personaje 3'));
+    await tester.scrollUntilVisible(
+      find.text('Personaje 3'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.text('Personaje 3'));
     await tester.pumpAndSettle();
@@ -498,6 +539,11 @@ void main() {
     final port = _SlowRewardedAdPort();
     final ads = RewardedAds(port: port, store: store);
     await pump(tester, store, ads: ads);
+    await tester.scrollUntilVisible(
+      find.text('Personaje 3'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
 
     // Not awaited: the assertion below is about what the screen shows while
     // the run is still in flight.
@@ -565,7 +611,11 @@ void main() {
     expect(store.rewardedAdsLeftToday, 0);
 
     await pump(tester, store, ads: await readyAds(store));
-    await tester.ensureVisible(find.text('Personaje 3'));
+    await tester.scrollUntilVisible(
+      find.text('Personaje 3'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.text('Personaje 3'));
     await tester.pumpAndSettle();
