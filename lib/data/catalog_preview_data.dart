@@ -73,11 +73,20 @@ abstract final class CatalogPreviewData {
       assetPath: 'assets/characters/platypus/idle-8.png',
       storeProductId: 'sobra.character.platypus',
     ),
+    CatalogEntry(
+      id: 'rabbit',
+      name: 'Bunny',
+      kind: CatalogKind.character,
+      unlockMethod: CatalogUnlockMethod.purchase,
+      visual: CatalogVisual.rabbit,
+      assetPath: 'assets/characters/rabbit/idle-8.png',
+      storeProductId: 'sobra.character.rabbit',
+    ),
     // In the pack and nowhere else, along with 04 and 06. Selling these
     // individually as well would charge twice for the overlap: a buyer who
     // takes one and later the pack pays for it in both, because
     // grantCatalogEntries drops ids already owned and no store refunds the
-    // difference. Tranqui, Lana, Pico and 10 are what single purchases
+    // difference. Tranqui, Lana, Pico, Bunny and 10 are what single purchases
     // are for, so the pack does not empty that shelf either.
     CatalogEntry(
       id: 'character-02',
@@ -462,6 +471,7 @@ final class PreviewCatalogPriceSource implements CatalogPriceSource {
     'sobra.character.capybara' => r'MX$ 39',
     'sobra.character.alpaca' => r'MX$ 39',
     'sobra.character.platypus' => r'MX$ 39',
+    'sobra.character.rabbit' => r'MX$ 39',
     CatalogPreviewData.packProductId => r'MX$ 89',
     _ => null,
   };

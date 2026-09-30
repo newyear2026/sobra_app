@@ -832,6 +832,7 @@ class _CatalogPreview extends StatelessWidget {
       CatalogVisual.capybara => Icons.pets,
       CatalogVisual.alpaca => Icons.pets,
       CatalogVisual.platypus => Icons.pets,
+      CatalogVisual.rabbit => Icons.pets,
     };
     final tint = entry.kind == CatalogKind.character
         ? AppColors.violetSoft

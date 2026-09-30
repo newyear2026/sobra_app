@@ -110,6 +110,8 @@ void main() {
     await store.grantCatalogEntry('character-02');
     await pump(tester, store);
 
+    await tester.ensureVisible(find.text('Personaje 2'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Personaje 2'));
     await tester.pumpAndSettle();
 
@@ -156,6 +158,29 @@ void main() {
       ),
     );
     expect(buyButton.onPressed, isNull);
+  });
+
+  testWidgets('Bunny appears in the collection at the single price', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store, initialEntryId: 'rabbit');
+
+    expect(inDialog('Bunny'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.textContaining(r'MX$ 39'),
+      ),
+      findsOneWidget,
+    );
+    final buyButton = tester.widget<FilledButton>(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.byType(FilledButton),
+      ),
+    );
+    expect(buyButton.onPressed, isNotNull);
   });
 
   testWidgets('Pico appears in the collection at the single price', (

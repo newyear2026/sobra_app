@@ -44,4 +44,5 @@ const _namedCharacterIds = {
   'capybara',
   'alpaca',
   'platypus',
+  'rabbit',
 };

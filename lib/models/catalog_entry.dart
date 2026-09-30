@@ -27,6 +27,7 @@ enum CatalogVisual {
   capybara,
   alpaca,
   platypus,
+  rabbit,
   characterPlaceholder,
   lamp,
   savings,

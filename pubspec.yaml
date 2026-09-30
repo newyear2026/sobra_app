@@ -125,6 +125,7 @@ flutter:
     - assets/characters/capybara/
     - assets/characters/alpaca/
     - assets/characters/platypus/
+    - assets/characters/rabbit/
     - assets/login/
     - assets/rooms/casa_clara/
     - assets/rooms/casa_clara/items/
