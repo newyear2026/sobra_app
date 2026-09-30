@@ -345,8 +345,6 @@
   "settingsDesign": "Design",
   "settingsStorageNote": "Your data is kept on this device. You don't need an account to use Sobrita.",
   "settingsSectionShop": "Store",
-  "settingsRemoveAds": "Remove general ads",
-  "settingsRemoveAdsHint": "Removes ads from the activity list. Rewarded ads stay available.",
   "settingsPackName": "Michi & Friends",
   "settingsPackHint": "3 characters + Michi's star. Also removes general ads.",
   "settingsOwned": "Owned",

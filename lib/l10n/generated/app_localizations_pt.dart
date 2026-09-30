@@ -1076,13 +1076,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsSectionShop => 'Loja';
 
   @override
-  String get settingsRemoveAds => 'Remover anúncios gerais';
-
-  @override
-  String get settingsRemoveAdsHint =>
-      'Tira os anúncios do extrato. Os anúncios premiados continuam disponíveis.';
-
-  @override
   String get settingsPackName => 'Michi e amigos';
 
   @override

@@ -27,7 +27,7 @@ AdMob → 앱 → 광고 단위별로 본다. 합산만 보면 어느 포맷이 
 
 ## 결제 프로필
 
-- **Google Play**: 인앱 결제(캐릭터, 팩, 일반 광고 제거)
+- **Google Play**: 인앱 결제(캐릭터, 팩. 광고 제거는 팩에 포함)
 - **AdMob**: 보상형·네이티브 광고 수익
 
 RFC / W-8BEN 등은 두 콘솔에 각각 있어야 한다. Play에서 끝난 일이 AdMob 지급을 켜 주지 않는다.
@@ -61,11 +61,11 @@ iOS 유닛은 아직 만들지 않는다. `AdMobConfig.isSupported`가 Android�
 
 | 상품 ID | 역할 |
 | --- | --- |
-| `sobra.supporter.bundle` | 미치와 친구들 + 일반 광고 제거 |
-| `sobra.ads.remove` | 일반 광고 제거만 |
-| `sobra.character.07` / `.09` / `.10` | 개별 캐릭터 |
+| `sobra.supporter.bundle` | 미치와 친구들 + 일반 광고 제거 (MX$89) |
+| `sobra.character.capybara` / `.alpaca` / `.platypus` | 개별 캐릭터 Tranqui·Lana·Pico (각 MX$39) |
 
-`sobra.ads.remove`는 v1.1에서 추가됐다. 콘솔에 없으면 설정 상점은 가격 대기 문구만 보여 준다.
+- `sobra.character.10`은 이름이 정해지기 전까지 등록하지 않는다. 제품 ID는 한 번 만들면 다시 쓸 수 없다.
+- `sobra.ads.remove`(일반 광고 제거 단품)는 2026-09-29 출시 전에 폐기했다. 광고 제거는 팩으로만 판다. 등록하지 않고, 이미 만들었다면 비활성화한다.
 
 ---
 

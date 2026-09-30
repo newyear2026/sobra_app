@@ -220,41 +220,29 @@ void main() {
     expect(find.text('No encontramos compras en esta cuenta.'), findsOneWidget);
   });
 
-  testWidgets('Ajustes sells remove-ads and shows owned after the pack', (
-    tester,
-  ) async {
+  testWidgets('Ajustes sells ad removal only as the pack', (tester) async {
     backend.catalogue = [
       ...backend.catalogue,
-      productFor(CatalogPreviewData.removeAdsProductId, r'MX$ 89'),
       productFor(CatalogPreviewData.packProductId, r'MX$ 149'),
     ];
     await purchases.start();
     await pump(tester, const SettingsScreen(), inScaffold: true);
 
-    expect(find.text('Quitar anuncios generales'), findsOneWidget);
+    expect(find.text('Quitar anuncios generales'), findsNothing);
     expect(find.text('Michi y sus amigos'), findsOneWidget);
-    expect(find.text(r'MX$ 89'), findsOneWidget);
+    expect(find.text(r'MX$ 149'), findsOneWidget);
 
-    await tester.tap(find.text('Quitar anuncios generales'));
+    await tester.tap(find.text('Michi y sus amigos'));
     await tester.pumpAndSettle();
-    expect(backend.bought, [CatalogPreviewData.removeAdsProductId]);
+    expect(backend.bought, [CatalogPreviewData.packProductId]);
 
     backend.emit([
-      detailsFor(
-        CatalogPreviewData.removeAdsProductId,
-        PurchaseStatus.purchased,
-      ),
+      detailsFor(CatalogPreviewData.packProductId, PurchaseStatus.purchased),
     ]);
     await tester.pumpAndSettle();
 
     expect(store.ownsNoAds, isTrue);
+    expect(store.ownsPack, isTrue);
     expect(find.text('Ya lo tienes'), findsOneWidget);
-
-    await store.grantCatalogEntries(
-      CatalogPreviewData.productEntitlements[CatalogPreviewData.packProductId]!,
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.text('Ya lo tienes'), findsNWidgets(2));
   });
 }

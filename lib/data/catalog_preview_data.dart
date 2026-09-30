@@ -338,12 +338,13 @@ abstract final class CatalogPreviewData {
   /// Ad removal, stored beside catalog ids rather than as an entry of its own.
   ///
   /// Native ads read it so a pack buyer who arrived before the placement
-  /// shipped does not have to be re-granted. The standalone product grants
-  /// the same id; owning it once is enough for both.
+  /// shipped does not have to be re-granted.
+  ///
+  /// Only the pack sells it. A standalone `sobra.ads.remove` was planned and
+  /// dropped before launch: with a few native rows being the only general
+  /// ads, removing them alone was too little to sell, and a second product
+  /// beside the pack only split the choice.
   static const noAdsEntitlement = 'entitlement.no_ads';
-
-  /// Standalone removal of general (native) ads. Rewarded ads stay optional.
-  static const removeAdsProductId = 'sobra.ads.remove';
 
   /// What one store product delivers, for products that deliver more than one
   /// thing — or one entitlement that is not a catalog entry.
@@ -359,7 +360,6 @@ abstract final class CatalogPreviewData {
       packDecorationId,
       noAdsEntitlement,
     },
-    removeAdsProductId: {noAdsEntitlement},
   };
 
   /// Everything [storeProductId] delivers, or null where it is not a bundle.
@@ -451,9 +451,9 @@ abstract interface class CatalogPriceSource {
 /// Temporary store response for the visual prototype only.
 ///
 /// Mirrors the prices meant for Play Console. Every single character is one
-/// flat price, so none reads as lesser than another. The pack costs a peso more
-/// than ad removal plus one character, which is the whole case for it: the
-/// other two characters and the star come with it.
+/// flat price, so none reads as lesser than another. The pack is the only
+/// way to remove ads, and costs less than three single characters while
+/// adding the star and ad removal on top.
 final class PreviewCatalogPriceSource implements CatalogPriceSource {
   const PreviewCatalogPriceSource();
 
@@ -463,7 +463,6 @@ final class PreviewCatalogPriceSource implements CatalogPriceSource {
     'sobra.character.alpaca' => r'MX$ 39',
     'sobra.character.platypus' => r'MX$ 39',
     CatalogPreviewData.packProductId => r'MX$ 89',
-    CatalogPreviewData.removeAdsProductId => r'MX$ 49',
     _ => null,
   };
 }

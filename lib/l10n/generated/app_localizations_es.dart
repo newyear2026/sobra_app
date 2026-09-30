@@ -1065,13 +1065,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsSectionShop => 'Tienda';
 
   @override
-  String get settingsRemoveAds => 'Quitar anuncios generales';
-
-  @override
-  String get settingsRemoveAdsHint =>
-      'Quita los anuncios del historial. Los de recompensa siguen disponibles.';
-
-  @override
   String get settingsPackName => 'Michi y sus amigos';
 
   @override

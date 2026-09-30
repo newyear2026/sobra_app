@@ -1073,13 +1073,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsSectionShop => 'Shop';
 
   @override
-  String get settingsRemoveAds => 'Allgemeine Werbung entfernen';
-
-  @override
-  String get settingsRemoveAdsHint =>
-      'Entfernt die Werbung aus dem Verlauf. Belohnungswerbung bleibt verfügbar.';
-
-  @override
   String get settingsPackName => 'Michi & Freunde';
 
   @override

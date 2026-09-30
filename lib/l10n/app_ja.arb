@@ -315,8 +315,6 @@
   "settingsDesign": "デザイン",
   "settingsStorageNote": "データはこの端末に保存されます。アカウントがなくてもSobritaを使えます。",
   "settingsSectionShop": "ショップ",
-  "settingsRemoveAds": "通常の広告をなくす",
-  "settingsRemoveAdsHint": "履歴の広告がなくなります。リワード広告はそのまま使えます。",
   "settingsPackName": "Michiと仲間たち",
   "settingsPackHint": "キャラクター3体 + Michiの星。通常の広告もなくなります。",
   "settingsOwned": "購入済み",

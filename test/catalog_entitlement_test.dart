@@ -420,31 +420,20 @@ void main() {
     expect(store.ownsCatalogEntry(decoration), isFalse);
   });
 
-  test('the remove-ads product delivers only ad removal', () {
-    expect(
-      CatalogPreviewData.productEntitlements[CatalogPreviewData
-          .removeAdsProductId],
-      {CatalogPreviewData.noAdsEntitlement},
-    );
+  test('ad removal is sold only inside the pack', () {
     expect(
       CatalogPreviewData.storeProductIds,
-      contains(CatalogPreviewData.removeAdsProductId),
+      isNot(contains('sobra.ads.remove')),
     );
     expect(
-      CatalogPreviewData.entryForProductId(
-        CatalogPreviewData.removeAdsProductId,
-      ),
-      isNull,
+      {
+        for (final entitlement
+            in CatalogPreviewData.productEntitlements.entries)
+          if (entitlement.value.contains(CatalogPreviewData.noAdsEntitlement))
+            entitlement.key,
+      },
+      {CatalogPreviewData.packProductId},
     );
-  });
-
-  test('buying remove-ads leaves the pack locked', () async {
-    final store = await loadStore();
-    await store.grantCatalogEntries({CatalogPreviewData.noAdsEntitlement});
-
-    expect(store.ownsNoAds, isTrue);
-    expect(store.ownsPack, isFalse);
-    expect(store.ownsCatalogEntry(entryById('character-02')), isFalse);
   });
 
   test(

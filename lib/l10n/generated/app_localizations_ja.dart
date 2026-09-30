@@ -1030,12 +1030,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsSectionShop => 'ショップ';
 
   @override
-  String get settingsRemoveAds => '通常の広告をなくす';
-
-  @override
-  String get settingsRemoveAdsHint => '履歴の広告がなくなります。リワード広告はそのまま使えます。';
-
-  @override
   String get settingsPackName => 'Michiと仲間たち';
 
   @override

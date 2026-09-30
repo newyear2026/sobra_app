@@ -251,23 +251,18 @@ void main() {
       expect(store.ownedCatalogIds, {soldEntryId});
     });
 
-    test(
-      'keeps ad removal while the standalone product is still paid',
-      () async {
-        const packId = CatalogPreviewData.packProductId;
-        const removeId = CatalogPreviewData.removeAdsProductId;
-        await store.grantCatalogEntries(
-          CatalogPreviewData.productEntitlements[packId]!,
-        );
-        backend.paidProductIds = {removeId};
+    test('takes ad removal back with a refunded pack', () async {
+      await store.grantCatalogEntries(
+        CatalogPreviewData.productEntitlements[CatalogPreviewData
+            .packProductId]!,
+      );
+      backend.paidProductIds = {};
 
-        await started();
+      await started();
 
-        expect(store.ownsPack, isFalse);
-        expect(store.ownsNoAds, isTrue);
-        expect(store.ownsCatalogEntry(entryById('character-02')), isFalse);
-      },
-    );
+      expect(store.ownsPack, isFalse);
+      expect(store.ownsNoAds, isFalse);
+    });
 
     test('is also found under its raw product id', () async {
       await store.grantCatalogEntry(soldProductId);
@@ -607,43 +602,4 @@ void main() {
 
     expect(backend.bought, isEmpty);
   });
-
-  test('buying remove-ads grants only the entitlement', () async {
-    const productId = CatalogPreviewData.removeAdsProductId;
-    backend.catalogue = [
-      ...backend.catalogue,
-      productFor(productId, r'MX$ 89'),
-    ];
-    final purchases = await started(restoreOnStart: false);
-
-    await purchases.buyProduct(productId);
-    backend.emit([detailsFor(productId, PurchaseStatus.purchased)]);
-    await pumpEventQueue();
-
-    expect(store.ownsNoAds, isTrue);
-    expect(store.ownsPack, isFalse);
-    expect(backend.completed, [productId]);
-  });
-
-  test(
-    'buying remove-ads is a no-op once the pack already granted it',
-    () async {
-      const packId = CatalogPreviewData.packProductId;
-      const removeId = CatalogPreviewData.removeAdsProductId;
-      backend.catalogue = [
-        ...backend.catalogue,
-        productFor(packId, r'MX$ 199'),
-        productFor(removeId, r'MX$ 89'),
-      ];
-      final purchases = await started(restoreOnStart: false);
-      await store.grantCatalogEntries(
-        CatalogPreviewData.productEntitlements[packId]!,
-      );
-
-      await purchases.buyProduct(removeId);
-
-      expect(backend.bought, isEmpty);
-      expect(store.ownsNoAds, isTrue);
-    },
-  );
 }

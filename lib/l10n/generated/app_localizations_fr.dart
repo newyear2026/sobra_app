@@ -1074,13 +1074,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsSectionShop => 'Boutique';
 
   @override
-  String get settingsRemoveAds => 'Retirer les pubs générales';
-
-  @override
-  String get settingsRemoveAdsHint =>
-      'Retire les pubs de l’activité. Les pubs récompensées restent disponibles.';
-
-  @override
   String get settingsPackName => 'Michi et ses amis';
 
   @override

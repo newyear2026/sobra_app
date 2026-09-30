@@ -1027,13 +1027,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsSectionShop => '상점';
 
   @override
-  String get settingsRemoveAds => '일반 광고 제거';
-
-  @override
-  String get settingsRemoveAdsHint =>
-      '거래 내역의 일반 광고가 사라져요. 보상형 광고는 그대로 볼 수 있어요.';
-
-  @override
   String get settingsPackName => '미치와 친구들';
 
   @override

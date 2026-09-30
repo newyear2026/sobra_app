@@ -234,24 +234,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 24),
             _SectionHeader(l10n.settingsSectionShop),
             _ShopProductRow(
-              icon: Icons.block,
-              iconColor: AppColors.teal,
-              label: l10n.settingsRemoveAds,
-              hint: l10n.settingsRemoveAdsHint,
-              owned: store.ownsNoAds,
-              price: purchases.localizedPriceFor(
-                CatalogPreviewData.removeAdsProductId,
-              ),
-              buying: purchases.isBuying(CatalogPreviewData.removeAdsProductId),
-              pendingPrice: l10n.collectionStorePricePending,
-              ownedLabel: l10n.settingsOwned,
-              buyingLabel: l10n.collectionPurchasing,
-              onBuy: () => _buyShopProduct(
-                purchases,
-                CatalogPreviewData.removeAdsProductId,
-              ),
-            ),
-            _ShopProductRow(
               icon: Icons.favorite,
               iconColor: AppColors.cash,
               label: l10n.settingsPackName,

@@ -1841,18 +1841,6 @@ abstract class AppLocalizations {
   /// **'Tienda'**
   String get settingsSectionShop;
 
-  /// No description provided for @settingsRemoveAds.
-  ///
-  /// In es, this message translates to:
-  /// **'Quitar anuncios generales'**
-  String get settingsRemoveAds;
-
-  /// No description provided for @settingsRemoveAdsHint.
-  ///
-  /// In es, this message translates to:
-  /// **'Quita los anuncios del historial. Los de recompensa siguen disponibles.'**
-  String get settingsRemoveAdsHint;
-
   /// No description provided for @settingsPackName.
   ///
   /// In es, this message translates to:
