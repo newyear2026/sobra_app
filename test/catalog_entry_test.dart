@@ -132,62 +132,41 @@ void main() {
     expect(ids.sublist(first, first + 3), CatalogPreviewData.packCharacterIds);
   });
 
-  test('item catalog keeps its rewards and includes new room decorations', () {
+  test('item catalog unlocks each decoration one way, with art for all', () {
     final entries = CatalogPreviewData.items;
+    String route(CatalogEntry entry) => switch (entry.unlockMethod) {
+      CatalogUnlockMethod.level => 'level ${entry.requiredLevel}',
+      CatalogUnlockMethod.rewardedAd => 'ad ${entry.rewardedAdTarget}',
+      final method => method.name,
+    };
 
-    // The numbered lineup keeps its unlock routes. The pack's star was
-    // dropped before launch, so no item comes in a bundle.
-    expect(entries, hasLength(25));
     expect(
-      entries.where((entry) => entry.unlockMethod == CatalogUnlockMethod.gift),
-      hasLength(2),
+      {for (final entry in entries) entry.id: route(entry)},
+      {
+        RoomDecorAssets.rattanChairId: 'included',
+        RoomDecorAssets.wallClockId: 'included',
+        RoomDecorAssets.floorLampId: 'level 2',
+        RoomDecorAssets.savingsJarId: 'level 3',
+        RoomDecorAssets.lowCabinetId: 'level 4',
+        RoomDecorAssets.petBedId: 'level 5',
+        RoomDecorAssets.roundSideTableId: 'level 6',
+        RoomDecorAssets.terracottaPoufId: 'level 7',
+        RoomDecorAssets.blueCreamRugId: 'level 8',
+        RoomDecorAssets.slimBookcaseId: 'level 9',
+        RoomDecorAssets.ivorySofaId: 'level 10',
+        'item-01': 'ad 1',
+        'item-05': 'ad 1',
+        RoomDecorAssets.bronzeLanternLampId: 'ad 1',
+        RoomDecorAssets.wallShelfId: 'ad 1',
+        RoomDecorAssets.launchSofaId: 'gift',
+        RoomDecorAssets.launchTvId: 'gift',
+      },
     );
-    expect(
-      entries.where(
-        (entry) => entry.unlockMethod == CatalogUnlockMethod.included,
-      ),
-      hasLength(13),
-    );
-    expect(
-      entries.where(
-        (entry) => entry.unlockMethod == CatalogUnlockMethod.bundle,
-      ),
-      isEmpty,
-    );
-    expect(
-      entries.where((entry) => entry.unlockMethod == CatalogUnlockMethod.level),
-      hasLength(7),
-    );
-    expect(
-      entries.where(
-        (entry) => entry.unlockMethod == CatalogUnlockMethod.rewardedAd,
-      ),
-      hasLength(3),
-    );
-    expect(
-      entries
-          .where((entry) => entry.requiredLevel != null)
-          .map((entry) => entry.requiredLevel)
-          .toSet(),
-      {1, 2, 3, 4, 5, 8, 10},
-    );
-    expect(
-      entries.firstWhere((entry) => entry.id == 'item-02').requiredLevel,
-      5,
-    );
-    expect(
-      entries.firstWhere((entry) => entry.id == 'item-04').requiredLevel,
-      8,
-    );
-    for (final id in [
-      RoomDecorAssets.slimBookcaseId,
-      RoomDecorAssets.roundSideTableId,
-      RoomDecorAssets.ivorySofaId,
-      RoomDecorAssets.bronzeLanternLampId,
-    ]) {
-      final entry = entries.firstWhere((candidate) => candidate.id == id);
-      expect(entry.unlockMethod, CatalogUnlockMethod.included);
-      expect(entry.assetPath, RoomDecorAssets.assetFor(id));
+    // A reward is an id people keep, so each one names a piece that can be
+    // drawn.
+    for (final entry in entries) {
+      expect(entry.assetPath, isNotNull, reason: entry.id);
+      expect(RoomDecorAssets.assetFor(entry.id), isNotNull, reason: entry.id);
     }
   });
 
@@ -225,20 +204,26 @@ void main() {
     final existingLevelEight = CatalogPreviewData.levelItemsUnlockedAt(
       restoredProgress.level,
     );
-    final crossedFromOneToEight = CatalogPreviewData.levelItemsUnlockedBetween(
-      previousLevel: 1,
-      currentLevel: 8,
+    final crossedFromTwoToFour = CatalogPreviewData.levelItemsUnlockedBetween(
+      previousLevel: 2,
+      currentLevel: 4,
     );
 
     expect(restoredProgress.level, 8);
-    expect(existingLevelEight, hasLength(6));
-    expect(existingLevelEight.map((entry) => entry.requiredLevel), contains(5));
-    expect(existingLevelEight.map((entry) => entry.requiredLevel), contains(8));
-    expect(
-      existingLevelEight.map((entry) => entry.requiredLevel),
-      isNot(contains(10)),
-    );
-    expect(crossedFromOneToEight, hasLength(5));
+    expect(existingLevelEight.map((entry) => entry.id), [
+      RoomDecorAssets.floorLampId,
+      RoomDecorAssets.savingsJarId,
+      RoomDecorAssets.lowCabinetId,
+      RoomDecorAssets.petBedId,
+      RoomDecorAssets.roundSideTableId,
+      RoomDecorAssets.terracottaPoufId,
+      RoomDecorAssets.blueCreamRugId,
+    ]);
+    expect(crossedFromTwoToFour.map((entry) => entry.id), [
+      RoomDecorAssets.savingsJarId,
+      RoomDecorAssets.lowCabinetId,
+    ]);
+    expect(CatalogPreviewData.levelItemsUnlockedAt(1), isEmpty);
   });
 
   test('localized price is resolved outside the static catalog entry', () {

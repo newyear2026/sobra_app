@@ -9,6 +9,7 @@ import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
 
+import 'support/decorations.dart';
 import 'support/localizations.dart';
 
 Future<void> _loadFonts() async {
@@ -23,6 +24,7 @@ Future<SobraStore> _store() async {
   SharedPreferences.setMockInitialValues({});
   final store = await SobraStore.load(now: () => DateTime(2026, 9, 14, 10));
   await store.setReducedMotion(true);
+  await ownAllDecorations(store);
   return store;
 }
 

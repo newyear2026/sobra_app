@@ -97,13 +97,10 @@ class RoomTheme {
         RoomSlot.cabinetTop =>
           itemId == RoomDecorAssets.savingsJarId && onCabinetOrBookcase,
         RoomSlot.cabinetTopRight =>
-          (itemId == RoomDecorAssets.defaultTablePlantId ||
-                  itemId == 'item-03') &&
-              onCabinetOrBookcase,
+          itemId == RoomDecorAssets.defaultTablePlantId && onCabinetOrBookcase,
         RoomSlot.sideTableTop =>
           (itemId == RoomDecorAssets.savingsJarId ||
-                  itemId == RoomDecorAssets.defaultTablePlantId ||
-                  itemId == 'item-03') &&
+                  itemId == RoomDecorAssets.defaultTablePlantId) &&
               onSideTable,
         _ => true,
       };
@@ -318,8 +315,8 @@ abstract final class RoomDecorAssets {
   };
 
   static String? assetFor(String id) => switch (id) {
-    defaultRugId || 'item-04' => rug,
-    defaultTablePlantId || 'item-03' => tablePlant,
+    defaultRugId => rug,
+    defaultTablePlantId => tablePlant,
     rattanChairId => rattanChair,
     floorLampId => floorLamp,
     wallClockId => wallClock,
@@ -347,8 +344,8 @@ abstract final class RoomDecorAssets {
   /// still show them in the drawer until the user adds the cabinet. The lamp
   /// also stays off the floor, where it read as dropped on the boards.
   static List<RoomSurface> surfacesFor(String id) => switch (id) {
-    defaultRugId || 'item-04' => const [RoomSurface.rug],
-    defaultTablePlantId || 'item-03' => const [RoomSurface.tabletop],
+    defaultRugId => const [RoomSurface.rug],
+    defaultTablePlantId => const [RoomSurface.tabletop],
     rattanChairId || floorLampId => const [RoomSurface.floor],
     wallClockId => const [RoomSurface.wall],
     lowCabinetId ||
@@ -378,7 +375,7 @@ abstract final class RoomDecorAssets {
     rattanChairId ||
     floorLampId ||
     bronzeLanternLampId => const [RoomSlot.floorLeft, RoomSlot.floorRight],
-    defaultTablePlantId || 'item-03' => const [
+    defaultTablePlantId => const [
       RoomSlot.cabinetTopRight,
       RoomSlot.sideTableTop,
       RoomSlot.tabletop,
@@ -414,7 +411,7 @@ abstract final class RoomDecorAssets {
   /// first came in at half that and read as doll's-house furniture. The
   /// Casa clara items still carry their margin and were sized with it.
   static double? stageHeightFor(String id) => switch (id) {
-    defaultTablePlantId || 'item-03' || 'item-01' => 103,
+    defaultTablePlantId || 'item-01' => 103,
     'item-05' => 128,
     rattanChairId => 255,
     floorLampId => 430,
@@ -435,8 +432,8 @@ abstract final class RoomDecorAssets {
 
   static RoomDecorCategory categoryForItemId(String id) => switch (id) {
     'item-01' => RoomDecorCategory.furniture,
-    defaultRugId || 'item-04' || 'item-05' => RoomDecorCategory.wallAndFloor,
-    defaultTablePlantId || 'item-03' => RoomDecorCategory.props,
+    defaultRugId || 'item-05' => RoomDecorCategory.wallAndFloor,
+    defaultTablePlantId => RoomDecorCategory.props,
     rattanChairId || floorLampId => RoomDecorCategory.furniture,
     wallClockId => RoomDecorCategory.wallAndFloor,
     lowCabinetId ||

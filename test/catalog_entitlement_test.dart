@@ -6,6 +6,8 @@ import 'package:sobra_app/data/catalog_preview_data.dart';
 import 'package:sobra_app/models/catalog_entry.dart';
 import 'package:sobra_app/models/expense_entry.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/models/room_design.dart';
+import 'package:sobra_app/models/xp_event.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 
 void main() {
@@ -17,6 +19,25 @@ void main() {
   });
 
   Future<SobraStore> loadStore() => SobraStore.load(now: () => now);
+
+  /// Reopens the saved state with [xp] already earned.
+  Future<SobraStore> reopenWithXp(int xp) async {
+    final preferences = await SharedPreferences.getInstance();
+    final saved =
+        jsonDecode(preferences.getString('sobra_state_v2')!)
+            as Map<String, dynamic>;
+    saved['xpEvents'] = [
+      XpEvent(
+        id: 'test-xp',
+        kind: XpEventKind.cashCount,
+        xp: xp,
+        occurredAt: now,
+        sourceKey: 'test-xp',
+      ).toJson(),
+    ];
+    await preferences.setString('sobra_state_v2', jsonEncode(saved));
+    return loadStore();
+  }
 
   CatalogEntry entryById(String id) => [
     ...CatalogPreviewData.characters,
@@ -66,7 +87,7 @@ void main() {
   );
 
   test('watching another ad after the grant changes nothing', () async {
-    final entry = entryById('item-03');
+    final entry = entryById(RoomDecorAssets.wallShelfId);
     expect(entry.rewardedAdTarget, 1);
     final store = await loadStore();
 
@@ -94,14 +115,14 @@ void main() {
     'level rewards are owned without being written to the owned set',
     () async {
       final store = await loadStore();
-      final lamp = entryById('item-01');
-      expect(lamp.requiredLevel, 1);
+      final lamp = entryById(RoomDecorAssets.floorLampId);
+      expect(lamp.requiredLevel, 2);
 
       expect(store.xpProgress.level, 1);
-      expect(store.ownsCatalogEntry(lamp), isTrue);
-      expect(store.ownedCatalogIds, isEmpty);
+      expect(store.ownsCatalogEntry(lamp), isFalse);
 
-      final reopened = await loadStore();
+      final reopened = await reopenWithXp(150);
+      expect(reopened.xpProgress.level, 2);
       expect(reopened.ownsCatalogEntry(lamp), isTrue);
       expect(reopened.ownedCatalogIds, isEmpty);
     },
@@ -225,6 +246,54 @@ void main() {
       await store.revokeCatalogEntries({'capybara'});
 
       expect(store.characterId, 'poodle');
+    });
+  });
+
+  group('decorations that used to be free', () {
+    Future<SobraStore> onboarded() async {
+      final store = await loadStore();
+      await store.chooseCharacter('michi');
+      await store.configureOnboarding(
+        budgetCentavos: 600000,
+        schedule: const PaySchedule.semiMonthly(),
+      );
+      await store.completeOnboarding();
+      return store;
+    }
+
+    test('stay owned on an install from before they were rewards', () async {
+      await onboarded();
+      final preferences = await SharedPreferences.getInstance();
+      final saved =
+          jsonDecode(preferences.getString('sobra_state_v2')!)
+              as Map<String, dynamic>;
+      saved.remove('decorRewards');
+      await preferences.setString('sobra_state_v2', jsonEncode(saved));
+
+      final reopened = await loadStore();
+
+      expect(reopened.xpProgress.level, 1);
+      for (final id in CatalogPreviewData.formerlyFreeItemIds) {
+        expect(reopened.ownsCatalogEntry(entryById(id)), isTrue, reason: id);
+      }
+      // Kept on the next save, so the marker cannot strand them.
+      await reopened.grantCatalogEntry('capybara');
+      expect(
+        (await loadStore()).ownedCatalogIds,
+        containsAll(CatalogPreviewData.formerlyFreeItemIds),
+      );
+    });
+
+    test('are earned on a new install', () async {
+      await onboarded();
+
+      final reopened = await loadStore();
+
+      expect(
+        reopened.ownsCatalogEntry(entryById(RoomDecorAssets.floorLampId)),
+        isFalse,
+      );
+      expect(reopened.ownsCatalogEntry(entryById('item-01')), isFalse);
     });
   });
 
@@ -414,8 +483,11 @@ void main() {
       expect(reopened.hasStorageError, isFalse);
       expect(reopened.ownedCatalogIds, isEmpty);
       expect(reopened.equippedIdFor(CatalogKind.item), isNull);
-      // Still theirs: nothing about the old shape changes what the level grants.
-      expect(reopened.ownsCatalogEntry(entryById('item-01')), isTrue);
+      // Still theirs: nothing about the old shape changes what is included.
+      expect(
+        reopened.ownsCatalogEntry(entryById(RoomDecorAssets.rattanChairId)),
+        isTrue,
+      );
     },
   );
 
@@ -607,7 +679,7 @@ void main() {
   test('recommended rewarded entry is hidden when the day is capped', () async {
     now = DateTime(2026, 9, 14, 11);
     final store = await SobraStore.load(now: () => now, rewardedAdsPerDay: 1);
-    await store.recordRewardedAdView(entryById('item-03'));
+    await store.recordRewardedAdView(entryById(RoomDecorAssets.wallShelfId));
 
     expect(store.recommendedRewardedAdEntry, isNull);
   });

@@ -219,8 +219,7 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
       RoomDecorAssets.lowCabinetId => l10n.roomSuggestCabinet,
       RoomDecorAssets.petBedId => l10n.roomSuggestPetBed,
       RoomDecorAssets.savingsJarId => l10n.roomSuggestSavingsJar,
-      RoomDecorAssets.defaultTablePlantId ||
-      'item-03' => l10n.roomSuggestTablePlant,
+      RoomDecorAssets.defaultTablePlantId => l10n.roomSuggestTablePlant,
       RoomDecorAssets.wallShelfId => l10n.roomSuggestWallShelf,
       RoomDecorAssets.terracottaPoufId => l10n.roomSuggestPouf,
       RoomDecorAssets.blueCreamRugId => l10n.roomSuggestBlueRug,
@@ -763,7 +762,7 @@ List<_RoomChoice> _choicesFor(
     choices.add(
       _assetChoice(
         id: entry.id,
-        label: _itemLabel(l10n, entry),
+        label: catalogEntryDisplayName(l10n, entry),
         asset: RoomDecorAssets.assetFor(entry.id)!,
         status: decorStatus(entry.id),
       ),
@@ -816,13 +815,4 @@ String _categoryLabel(AppLocalizations l10n, RoomDecorCategory category) =>
       RoomDecorCategory.wallAndFloor => l10n.roomCategoryWallFloor,
       RoomDecorCategory.props => l10n.roomCategoryProps,
       RoomDecorCategory.characters => l10n.roomCategoryCharacters,
-    };
-
-String _itemLabel(AppLocalizations l10n, CatalogEntry entry) =>
-    switch (entry.id) {
-      'item-01' => l10n.roomFloorLamp,
-      'item-03' => l10n.roomTablePlant,
-      'item-04' => l10n.roomDefaultRug,
-      'item-05' => l10n.roomWallFrame,
-      _ => catalogEntryDisplayName(l10n, entry),
     };

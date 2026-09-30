@@ -183,6 +183,8 @@ class SobraStore extends ChangeNotifier {
   /// derives those from XP every time it is asked, and writing them here too
   /// would create a second answer that can disagree with the first: an entry
   /// whose required level later moves would stay owned at the old threshold.
+  /// The one exception is [CatalogPreviewData.formerlyFreeItemIds], written
+  /// here for installs that had them before they became rewards.
   final Set<String> _ownedCatalogIds = {};
 
   /// Rewarded ads watched so far toward each entry, for runs still in progress.
@@ -2306,12 +2308,37 @@ class SobraStore extends ChangeNotifier {
   ///
   /// A slot the user emptied is absent here, even where the room has a
   /// default for it.
+  ///
+  /// A placed item the user no longer owns is left out, and the room's default
+  /// takes its slot back. That happens when a reward moves to another unlock
+  /// path. The saved placement is kept, so the item returns where it was once
+  /// it is owned again.
   Map<RoomSlot, String> roomDecorationsFor([String? roomId]) {
+    final defaults = RoomThemes.defaultPlacementsFor(roomId ?? equippedRoomId);
     final merged = {
-      ...RoomThemes.defaultPlacementsFor(roomId ?? equippedRoomId),
+      ...defaults,
       ...?_roomPlacementsByRoom[roomId ?? equippedRoomId],
     }..removeWhere((_, itemId) => itemId == RoomDecorAssets.clearedId);
+    final locked = [
+      for (final MapEntry(key: slot, value: itemId) in merged.entries)
+        if (!_ownsRoomItem(itemId)) slot,
+    ];
+    for (final slot in locked) {
+      merged.remove(slot);
+      final fallback = defaults[slot];
+      if (fallback != null && !merged.containsValue(fallback)) {
+        merged[slot] = fallback;
+      }
+    }
     return Map.unmodifiable(merged);
+  }
+
+  /// Room defaults are no catalog entry and always count as owned.
+  bool _ownsRoomItem(String itemId) {
+    final entry = CatalogPreviewData.items
+        .where((candidate) => candidate.id == itemId)
+        .firstOrNull;
+    return entry == null || ownsCatalogEntry(entry);
   }
 
   /// Saves [placements] as the whole arrangement of the equipped room.
@@ -3133,6 +3160,12 @@ class SobraStore extends ChangeNotifier {
           ? characterId
           : CatalogPreviewData.starterIds.first;
     }
+    if (hasCompletedOnboarding && json['decorRewards'] == null) {
+      // Finished onboarding while every drawn decoration was free. They stay
+      // owned rather than turning into rewards somebody already placed.
+      // Written with the next save, like the starters above.
+      _ownedCatalogIds.addAll(CatalogPreviewData.formerlyFreeItemIds);
+    }
     final settledEnd = json['lastSettledCycleEnd'] as String?;
     lastSettledCycleEnd = settledEnd == null
         ? null
@@ -3182,6 +3215,9 @@ class SobraStore extends ChangeNotifier {
     // compares against what is stored to decide whether to take a backup, and
     // set iteration order alone would make an unchanged state look changed.
     'ownedCatalogIds': _ownedCatalogIds.toList()..sort(),
+    // Marks a state written once decorations became rewards. Its absence is
+    // what tells [_restore] the install predates them.
+    'decorRewards': 1,
     'rewardedAdProgress': _rewardedAdProgress,
     'rewardedAdDay': _rewardedAdDay,
     'rewardedAdsWatchedOnDay': _rewardedAdsWatchedOnDay,

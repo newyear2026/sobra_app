@@ -100,7 +100,7 @@ void main() {
 
     expect(find.text('¡NIVEL $level!'), findsOneWidget);
     expect(find.textContaining('objetos nuevos desbloqueados'), findsOneWidget);
-    expect(find.textContaining('Objeto 7'), findsOneWidget);
+    expect(find.textContaining('Lámpara de pie'), findsOneWidget);
     expect(find.text('Seguir'), findsOneWidget);
     // The notice is consumed: the card is a one-time moment.
     expect(store.pendingXpNotice, isNull);
@@ -175,7 +175,7 @@ void main() {
 
     expect(find.text('¡NIVEL 2!'), findsOneWidget);
     expect(find.text('¡Nuevo objeto desbloqueado!'), findsOneWidget);
-    expect(find.textContaining('Objeto 7'), findsOneWidget);
+    expect(find.textContaining('Lámpara de pie'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

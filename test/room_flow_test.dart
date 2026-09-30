@@ -11,6 +11,7 @@ import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
 import 'package:sobra_app/widgets/room_scene.dart';
 
+import 'support/decorations.dart';
 import 'support/localizations.dart';
 
 Future<SobraStore> _store() async {
@@ -192,6 +193,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     final store = await _store();
+    await ownAllDecorations(store);
 
     await tester.pumpWidget(
       SobraScope(
@@ -208,6 +210,13 @@ void main() {
     await tester.pumpAndSettle();
 
     // A desk lamp's one place is the side table.
+    await tester.scrollUntilVisible(
+      find.text('Lámpara verde'),
+      150,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.ensureVisible(find.text('Lámpara verde'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Lámpara verde'));
     await tester.pump();
     await tester.tap(find.bySemanticsLabel('Mesa, lugar 1'));

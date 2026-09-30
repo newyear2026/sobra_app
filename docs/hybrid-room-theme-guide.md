@@ -130,6 +130,18 @@ A table or shelf is an item that brings its own places.
   The current prototype still lets users select all six rooms, so ownership
   checks, purchase restoration, rewarded progress, and the Play Console
   product/price must be implemented before presenting them as locked.
+- Items, as of launch: the rattan chair and wall clock are included. Levels
+  give one piece each, in the order a room fills: floor lamp at 2, savings jar
+  at 3, low cabinet at 4, pet bed at 5, round side table at 6, terracotta pouf
+  at 7, blue and cream rug at 8, slim bookcase at 9, ivory sofa at 10. One
+  rewarded ad gives the desk lamp, the frame, the bronze lantern lamp or the
+  wall shelf. Items are never sold on their own.
+- Installs that finished onboarding while every drawn decoration was free keep
+  those pieces (`CatalogPreviewData.formerlyFreeItemIds`); the save marks
+  `decorRewards` once that has been applied.
+- A placed item the user does not own is left out of the room, and the room's
+  default takes its slot back. The placement stays saved for when it is
+  theirs again.
 - Level rewards are derived from the current level, never stored. Moving an
   existing reward to a *higher* level takes it away from people already past
   the old one, so rewards only move down or are added alongside.

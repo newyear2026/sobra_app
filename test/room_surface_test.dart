@@ -8,6 +8,7 @@ import 'package:sobra_app/screens/room_decorate_screen.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
 
+import 'support/decorations.dart';
 import 'support/localizations.dart';
 
 DateTime _now() => DateTime(2026, 9, 14, 11);
@@ -16,6 +17,7 @@ Future<SobraStore> _store() async {
   SharedPreferences.setMockInitialValues({});
   final store = await SobraStore.load(now: _now);
   await store.setReducedMotion(true);
+  await ownAllDecorations(store);
   return store;
 }
 
@@ -61,6 +63,17 @@ Future<void> _tapAndSettle(WidgetTester tester, Finder finder) async {
   await tester.pumpAndSettle();
   await tester.tap(finder);
   await tester.pumpAndSettle();
+}
+
+/// Taps the drawer tile named [label], scrolling to it first: the grid
+/// builds lazily, so a tile further down is not there yet.
+Future<void> _tapTile(WidgetTester tester, String label) async {
+  await tester.scrollUntilVisible(
+    find.text(label),
+    150,
+    scrollable: find.byType(Scrollable).last,
+  );
+  await _tapAndSettle(tester, find.text(label));
 }
 
 void main() {
@@ -299,6 +312,29 @@ void main() {
       expect(room[RoomSlot.rug], RoomDecorAssets.defaultRugId);
     });
 
+    // Rewards were free once, so a tester may have placed one they now have
+    // to earn. The room leaves it out and the default takes the slot back;
+    // the placement is kept for when the item is theirs again.
+    test('a placed item that is not owned stays out of the room', () async {
+      SharedPreferences.setMockInitialValues({});
+      final fresh = await SobraStore.load(now: _now);
+      await fresh.setReducedMotion(true);
+      final store = await _reloadWithSavedRoom({
+        'rug': RoomDecorAssets.blueCreamRugId,
+        'floorCenter': RoomDecorAssets.petBedId,
+      });
+
+      var room = store.roomDecorationsFor();
+      expect(room[RoomSlot.rug], RoomDecorAssets.defaultRugId);
+      expect(room[RoomSlot.floorCenter], isNull);
+      expect(room.containsValue(RoomDecorAssets.petBedId), isFalse);
+
+      await store.grantCatalogEntry(RoomDecorAssets.blueCreamRugId);
+      room = store.roomDecorationsFor();
+      expect(room[RoomSlot.rug], RoomDecorAssets.blueCreamRugId);
+      expect(room[RoomSlot.floorCenter], isNull);
+    });
+
     test('an emptied default slot stays empty after a reload', () async {
       final store = await _store();
       await store.saveRoomDecorations({
@@ -428,13 +464,13 @@ void main() {
       expect(find.bySemanticsLabel(RegExp(r', lugar \d$')), findsNothing);
 
       // A desk lamp has one place: the side table.
-      await _tapAndSettle(tester, find.text('Lámpara verde'));
+      await _tapTile(tester, 'Lámpara verde');
       expect(find.bySemanticsLabel('Mesa, lugar 1'), findsOneWidget);
       expect(find.bySemanticsLabel(RegExp('^Pared, lugar')), findsNothing);
       expect(find.bySemanticsLabel(RegExp('^Piso, lugar')), findsNothing);
 
       await _tapAndSettle(tester, find.text('Pared y piso'));
-      await _tapAndSettle(tester, find.text('Cuadro'));
+      await _tapTile(tester, 'Cuadro');
 
       expect(find.bySemanticsLabel('Pared, lugar 1'), findsOneWidget);
       expect(find.bySemanticsLabel('Pared, lugar 2'), findsOneWidget);
@@ -452,7 +488,7 @@ void main() {
       await store.grantCatalogEntry('item-05');
       await _pumpDecorator(tester, store);
       await _tapAndSettle(tester, find.text('Pared y piso'));
-      await _tapAndSettle(tester, find.text('Cuadro'));
+      await _tapTile(tester, 'Cuadro');
 
       await _tapAndSettle(tester, find.bySemanticsLabel('Pared, lugar 1'));
       await _tapAndSettle(tester, find.bySemanticsLabel('Pared, lugar 2'));
@@ -461,9 +497,12 @@ void main() {
       expect(store.roomDecorationsFor()[RoomSlot.wallLeft], isNull);
       expect(store.roomDecorationsFor()[RoomSlot.wallCenter], 'item-05');
 
+      // Let the save's snackbar leave: it covers the drawer's second row.
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
       await _pumpDecorator(tester, store);
       await _tapAndSettle(tester, find.text('Pared y piso'));
-      await _tapAndSettle(tester, find.text('Cuadro'));
+      await _tapTile(tester, 'Cuadro');
       expect(
         find.text('Toca otro lugar para moverlo, o el suyo para quitarlo.'),
         findsOneWidget,
@@ -499,7 +538,7 @@ void main() {
       final store = await _store();
       await _pumpDecorator(tester, store);
 
-      await _tapAndSettle(tester, find.text('Lámpara verde'));
+      await _tapTile(tester, 'Lámpara verde');
       await _tapAndSettle(tester, find.bySemanticsLabel('Mesa, lugar 1'));
       await _tapAndSettle(tester, find.text('Listo'));
 

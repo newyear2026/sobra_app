@@ -273,7 +273,7 @@ void main() {
 
     await tester.tap(find.text('OBJETOS'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Objeto 1'));
+    await tester.tap(find.text('Sillón de ratán'));
     await tester.pumpAndSettle();
 
     expect(inDialog('OBTENIDO'), findsOneWidget);
@@ -346,9 +346,9 @@ void main() {
 
   testWidgets('a spent daily cap is what every ad card says', (tester) async {
     final store = await loadCappedStore();
-    await store.recordRewardedAdView(entryById('item-03'));
+    await store.recordRewardedAdView(entryById('decor-wall-shelf'));
     await store.recordRewardedAdView(entryById('item-05'));
-    await store.recordRewardedAdView(entryById('item-08'));
+    await store.recordRewardedAdView(entryById('item-01'));
     expect(store.rewardedAdsLeftToday, 0);
 
     await pump(tester, store, ads: await readyAds(store));
@@ -379,22 +379,26 @@ void main() {
 
   testWidgets('watching an ad through counts and unlocks', (tester) async {
     final store = await loadStore();
-    final item = entryById('item-03');
+    final item = entryById('decor-wall-shelf');
     expect(item.rewardedAdTarget, 1);
 
     await pump(tester, store, ads: await readyAds(store));
     await tester.tap(find.text('OBJETOS'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Objeto 3'));
+    await tester.scrollUntilVisible(
+      find.text('Repisa de pared'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Objeto 3'));
+    await tester.tap(find.text('Repisa de pared'));
     await tester.pumpAndSettle();
     await tester.tap(inDialog('VER ANUNCIO'));
     await tester.pumpAndSettle();
 
     expect(store.ownsCatalogEntry(item), isTrue);
     expect(store.rewardedAdsWatchedToday, 1);
-    expect(find.text('¡Objeto 3 es tuyo!'), findsOneWidget);
+    expect(find.text('¡Repisa de pared es tuyo!'), findsOneWidget);
   });
 
   // Acquiring is this screen's work and placing is not, so the unlock hands
@@ -413,9 +417,13 @@ void main() {
     );
     await tester.tap(find.text('OBJETOS'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Objeto 3'));
+    await tester.scrollUntilVisible(
+      find.text('Repisa de pared'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Objeto 3'));
+    await tester.tap(find.text('Repisa de pared'));
     await tester.pumpAndSettle();
     await tester.tap(inDialog('VER ANUNCIO'));
     await tester.pumpAndSettle();
@@ -431,14 +439,18 @@ void main() {
     await pump(tester, store, ads: await readyAds(store));
     await tester.tap(find.text('OBJETOS'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Objeto 3'));
+    await tester.scrollUntilVisible(
+      find.text('Repisa de pared'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Objeto 3'));
+    await tester.tap(find.text('Repisa de pared'));
     await tester.pumpAndSettle();
     await tester.tap(inDialog('VER ANUNCIO'));
     await tester.pumpAndSettle();
 
-    expect(find.text('¡Objeto 3 es tuyo!'), findsOneWidget);
+    expect(find.text('¡Repisa de pared es tuyo!'), findsOneWidget);
     expect(find.text('Colocarlo'), findsNothing);
   });
 
@@ -451,14 +463,18 @@ void main() {
     await pump(tester, store, ads: ads);
     await tester.tap(find.text('OBJETOS'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Objeto 3'));
+    await tester.scrollUntilVisible(
+      find.text('Repisa de pared'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Objeto 3'));
+    await tester.tap(find.text('Repisa de pared'));
     await tester.pumpAndSettle();
     await tester.tap(inDialog('VER ANUNCIO'));
     await tester.pumpAndSettle();
 
-    expect(store.ownsCatalogEntry(entryById('item-03')), isFalse);
+    expect(store.ownsCatalogEntry(entryById('decor-wall-shelf')), isFalse);
     expect(
       find.text('Mira el anuncio completo para que cuente.'),
       findsOneWidget,
@@ -617,17 +633,21 @@ void main() {
     await pump(tester, store, ads: ads);
     await tester.tap(find.text('OBJETOS'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Objeto 3'));
+    await tester.scrollUntilVisible(
+      find.text('Repisa de pared'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
 
     // The network recovers while the user is looking at the screen.
     port.fills = true;
-    await tester.tap(find.text('Objeto 3'));
+    await tester.tap(find.text('Repisa de pared'));
     await tester.pumpAndSettle();
     await tester.tap(inDialog('SIN ANUNCIOS'));
     await tester.pumpAndSettle();
 
-    expect(store.ownsCatalogEntry(entryById('item-03')), isTrue);
+    expect(store.ownsCatalogEntry(entryById('decor-wall-shelf')), isTrue);
   });
 
   // Opening the screen asks for one, so the common case never reaches the tap.
@@ -646,9 +666,9 @@ void main() {
   // The real rules still close the button. Only an empty network stays open.
   testWidgets('a rule-blocked card still refuses the tap', (tester) async {
     final store = await loadCappedStore();
-    await store.recordRewardedAdView(entryById('item-03'));
+    await store.recordRewardedAdView(entryById('decor-wall-shelf'));
     await store.recordRewardedAdView(entryById('item-05'));
-    await store.recordRewardedAdView(entryById('item-08'));
+    await store.recordRewardedAdView(entryById('item-01'));
     expect(store.rewardedAdsLeftToday, 0);
 
     await pump(tester, store, ads: await readyAds(store));
@@ -675,11 +695,11 @@ void main() {
     tester,
   ) async {
     final store = await loadStore();
-    await pump(tester, store, initialEntryId: 'item-03');
+    await pump(tester, store, initialEntryId: 'decor-wall-shelf');
 
     expect(find.byType(AlertDialog), findsOneWidget);
-    expect(inDialog('Objeto 3'), findsOneWidget);
-    expect(store.rewardedAdProgressFor('item-03'), 0);
+    expect(inDialog('Repisa de pared'), findsOneWidget);
+    expect(store.rewardedAdProgressFor('decor-wall-shelf'), 0);
   });
 
   testWidgets('new room items appear in Items with their own art', (

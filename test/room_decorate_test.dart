@@ -9,6 +9,7 @@ import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/room_scene.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
 
+import 'support/decorations.dart';
 import 'support/localizations.dart';
 
 void main() {
@@ -65,8 +66,7 @@ void main() {
 
     // Owned from the start, because Casa clara places it.
     expect(find.text('Planta de mesa'), findsOneWidget);
-    // item-03 is the same plant behind a rewarded ad, and item-08 a clock
-    // behind another. Neither is owned here.
+    // Items still locked behind a level or an ad stay out of the drawer.
     expect(find.text('VER ANUNCIO'), findsNothing);
     expect(find.text('COMPRAR'), findsNothing);
     expect(find.text('Ver más en la colección'), findsOneWidget);
@@ -186,8 +186,11 @@ void main() {
     });
   }
 
-  testWidgets('three starter items can be placed and saved', (tester) async {
+  testWidgets('the chair, the lamp and the clock can be placed and saved', (
+    tester,
+  ) async {
     final store = await loadStore();
+    await ownAllDecorations(store);
     await pump(tester, store);
 
     await tester.tap(find.text('Sillón de ratán'));
@@ -216,6 +219,7 @@ void main() {
 
   testWidgets('the jar sits on the cabinet and leaves with it', (tester) async {
     final store = await loadStore();
+    await ownAllDecorations(store);
     await pump(tester, store);
     await openCategory(tester, 'Casa');
     await tester.tap(find.text('Casa jardín'));
@@ -270,6 +274,7 @@ void main() {
     tester,
   ) async {
     final store = await loadStore();
+    await ownAllDecorations(store);
     await pump(tester, store);
     await openCategory(tester, 'Casa');
     await tester.tap(find.text('Casa jardín'));
@@ -288,9 +293,10 @@ void main() {
     await tester.tap(find.bySemanticsLabel('Piso, lugar 5'));
     await tester.pumpAndSettle();
 
+    // The side table comes before the bookcase, so it is back up the grid.
     await tester.scrollUntilVisible(
       find.text('Mesa auxiliar redonda'),
-      180,
+      -180,
       scrollable: find.byType(Scrollable).last,
     );
     await tester.ensureVisible(find.text('Mesa auxiliar redonda'));

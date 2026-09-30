@@ -145,25 +145,25 @@ void main() {
 
     await tester.tap(find.text('OBJETOS'));
     await tester.pump();
-    expect(find.text('Objeto 1'), findsOneWidget);
+    expect(find.text('Sillón de ratán'), findsOneWidget);
     await tester.scrollUntilVisible(
-      find.text('NIVEL 5'),
+      find.text('NIVEL 2'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
-    expect(find.text('NIVEL 5'), findsOneWidget);
+    expect(find.text('NIVEL 2'), findsOneWidget);
     await tester.scrollUntilVisible(
-      find.text('NIVEL 8'),
+      find.text('NIVEL 4'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
-    expect(find.text('NIVEL 8'), findsOneWidget);
+    expect(find.text('NIVEL 4'), findsOneWidget);
 
     await tester.drag(find.byType(Scrollable).first, const Offset(0, 1500));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Objeto 1'));
+    await tester.ensureVisible(find.text('Sillón de ratán'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Objeto 1'));
+    await tester.tap(find.text('Sillón de ratán'));
     await tester.pump();
     expect(find.text('CÓMO OBTENERLO'), findsOneWidget);
     expect(find.text('Ya forma parte de tu colección.'), findsOneWidget);
