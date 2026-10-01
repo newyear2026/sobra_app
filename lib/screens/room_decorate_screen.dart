@@ -737,12 +737,17 @@ List<_RoomChoice> _choicesFor(
 /// exists, so placeholder catalog entries remain cheap icons.
 Widget _characterPreview(CatalogEntry entry) => Center(
   child: CharacterCatalog.all.containsKey(entry.id)
-      ? CharacterSprite(
-          characterId: entry.id,
-          role: CharacterMotionRole.idle,
-          width: 72,
-          animate: false,
-          semanticLabel: entry.name,
+      ? Transform.scale(
+          key: ValueKey('decorate-character-scale-${entry.id}'),
+          scale: CharacterCatalog.require(entry.id).roomDisplayScale,
+          alignment: const Alignment(0, 2 * 344 / 360 - 1),
+          child: CharacterSprite(
+            characterId: entry.id,
+            role: CharacterMotionRole.idle,
+            width: 72,
+            animate: false,
+            semanticLabel: entry.name,
+          ),
         )
       : const Icon(Icons.pets_outlined, size: 34, color: AppColors.muted),
 );

@@ -538,10 +538,30 @@ class AppLocalizationsJa extends AppLocalizations {
   String get collectionPackOnly => 'パック';
 
   @override
-  String get collectionPackDecoration => 'Michiの星';
+  String get collectionPackUnlock => '「Michiの仲間たち」パックに入っています。単品では売っていません。';
 
   @override
-  String get collectionPackUnlock => '「Michiと仲間たち」に入っています。単品では売っていません。';
+  String get collectionSeePack => 'パックを見る';
+
+  @override
+  String get packFriendNames => 'Tranqui、Lana、Bandi';
+
+  @override
+  String get packIncludes => '内容';
+
+  @override
+  String get packFriendsLine => 'お部屋の仲間3体';
+
+  @override
+  String get packNoAdsLine => '通常の広告なし';
+
+  @override
+  String get packOnceLine => '一度の購入でずっと';
+
+  @override
+  String packBuy(String price) {
+    return '購入 · $price';
+  }
 
   @override
   String get collectionGiftOnly => 'ギフト';
@@ -1030,10 +1050,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsSectionShop => 'ショップ';
 
   @override
-  String get settingsPackName => 'Michiと仲間たち';
+  String get settingsPackName => 'Michiの仲間たち';
 
   @override
-  String get settingsPackHint => 'キャラクター3体 + Michiの星。通常の広告もなくなります。';
+  String get settingsPackHint => 'Tranqui、Lana、Bandi。通常の広告もなくなります。';
 
   @override
   String get settingsOwned => '購入済み';

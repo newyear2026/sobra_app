@@ -7,6 +7,7 @@ import 'package:sobra_app/models/room_design.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/room_scene.dart';
+import 'package:sobra_app/widgets/cat_sprite.dart';
 
 import 'support/localizations.dart';
 
@@ -165,6 +166,35 @@ void main() {
   });
 
   group('characters', () {
+    testWidgets('room and drawer give the rabbit the same optical scale', (
+      tester,
+    ) async {
+      final store = await loadStore();
+      await store.grantCatalogEntry('rabbit');
+      await pump(tester, store);
+      await openCategory(tester, 'Personajes');
+      await tester.scrollUntilVisible(
+        find.text('Bunny'),
+        180,
+        scrollable: find.byType(Scrollable).last,
+      );
+      await tester.pumpAndSettle();
+
+      final previewScale = tester.widget<Transform>(
+        find.byKey(const ValueKey('decorate-character-scale-rabbit')),
+      );
+      expect(
+        previewScale.transform.entry(0, 0),
+        closeTo(CharacterCatalog.rabbit.roomDisplayScale, .001),
+      );
+      await tester.tap(find.text('Bunny'));
+      await tester.pumpAndSettle();
+      final sceneScale = tester.widget<Transform>(
+        find.byKey(const ValueKey('room-character-scale')),
+      );
+      expect(sceneScale.transform.entry(0, 0), closeTo(1.38, .001));
+    });
+
     testWidgets('the category lists only what is owned', (tester) async {
       final store = await loadStore();
       await store.grantCatalogEntry('capybara');

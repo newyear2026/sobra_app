@@ -237,8 +237,7 @@ class SobraStore extends ChangeNotifier {
     // now matters: if the missing value were only filled in memory, every
     // restart would begin a fresh configured grace period forever.
     store._debugPaidCharacters =
-        kDebugMode &&
-        (preferences.getBool(_debugPaidCharactersKey) ?? false);
+        kDebugMode && (preferences.getBool(_debugPaidCharactersKey) ?? false);
     await store._ensureFirstStartedAt();
     await store._ensureNativeAdInstallDay();
     // A character that was previously bundled for free can become a paid
@@ -1622,12 +1621,12 @@ class SobraStore extends ChangeNotifier {
   bool get ownsNoAds =>
       _ownedCatalogIds.contains(CatalogPreviewData.noAdsEntitlement);
 
-  /// Whether the Michi & Friends pack has been delivered.
+  /// Whether Los amigos de Michi has been delivered.
   ///
-  /// The decoration is pack-only, so it is a cheaper signal than asking for
-  /// every character the bundle lists.
+  /// Read from its characters, which are sold nowhere else. Ad removal alone
+  /// would not do: it is an entitlement, not proof of the pack.
   bool get ownsPack =>
-      _ownedCatalogIds.contains(CatalogPreviewData.packDecorationId);
+      CatalogPreviewData.packCharacterIds.every(_ownedCatalogIds.contains);
 
   /// The rewarded-ad entry a settlement card should open, or null when the
   /// card must be hidden.

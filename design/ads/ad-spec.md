@@ -20,7 +20,7 @@
 ### 수익 모델에 대한 의사결정
 
 > Sobra의 광고는 직접적인 주 수익원이 아니라 무료 사용자의 운영비 보조 수단이다.
-> 주 수익원은 캐릭터 IAP와 `미치와 친구들` 팩이며,
+> 주 수익원은 캐릭터 IAP와 `Los amigos de Michi` 팩이며,
 > 유지율과 금융 데이터에 대한 신뢰를 광고 노출량보다 우선한다.
 
 이 구성의 광고 매출은 의도적으로 낮습니다. 사고가 아니라 결정입니다.
@@ -32,7 +32,7 @@
 ### v1
 
 - 보상형 광고 (컬렉션)
-- `미치와 친구들` 팩
+- `Los amigos de Michi` 팩
 - 구매 복원
 - 네이티브 광고 **없음**
 - `일반 광고 제거` 상품 **없음**
@@ -233,7 +233,7 @@
 
 ```
 상점
-  - 미치와 친구들        (광고 제거 포함)
+  - Los amigos de Michi  (광고 제거 포함, 누르면 팩 창)
   - 구매 복원
 
 개인정보
@@ -244,13 +244,18 @@
 
 ## 5. 상품과 권리
 
-### 미치와 친구들 (v1)
+### Los amigos de Michi (미치네 친구들)
 
 ```
-미치와 친구들
-캐릭터 3종 + 미치의 별
-1회 결제
+Los amigos de Michi
+Tranqui · Lana · Bandi + 일반 광고 제거
+1회 결제 · MX$89
 ```
+
+- 2026-09-30에 구성을 바꿨습니다. 임시 캐릭터 02·04·06과 `미치의 별`을 빼고, 이미 그림이 있는 Tranqui(카피바라)·Lana(알파카)·Bandi(라쿤)를 팩 전용으로 옮겼습니다. 이름도 `Michi y sus amigos`에서 `Los amigos de Michi`로 바꿨습니다. Michi는 팩에 들어 있지 않으므로 "미치와 친구들"은 Michi가 포함된 것처럼 읽혔습니다.
+- 세 캐릭터의 단품 `sobra.character.capybara` / `.alpaca` / `.raccoon`은 출시 전에 Play에서 비활성화합니다. 다시 켜면 겹쳐 사는 경로가 생깁니다.
+- 팩은 **사기 전에 먼저 보여 줍니다.** Ajustes 상점의 팩 줄과 컬렉션의 팩 캐릭터(`VER PAQUETE`)는 모두 팩 창(`pack_offer_dialog.dart`)을 열고, 결제는 그 창의 버튼에서만 시작됩니다. 창 위쪽은 세 친구가 함께 있는 그림(`assets/pack/los-amigos-de-michi.webp`, 원본 `design/michi-friends-pack-art-v2.png`)입니다.
+- 별 같은 보너스는 나중에 `productEntitlements`에 추가하면 기존 구매자에게도 다음 실행 때 지급됩니다. 시작할 때 구매를 다시 받아 팩 구성대로 지급하기 때문입니다.
 
 - 상품명은 **파는 것을 그대로 서술합니다.** 재화를 전달하는 판매를 `후원`이라 부르지 않습니다. 순수 기부는 IAP로 받을 수 없고, 내용물을 앞세우는 것이 그 선을 지키는 방법이기도 합니다.
 - **현재 존재하지 않는 광고 제거를 상품명이나 핵심 가치로 앞세우지 않습니다.**
@@ -259,17 +264,16 @@
 
 ### 일반 광고 제거 단품 (폐기)
 
-v1.1에서 `sobra.ads.remove`로 계획했으나 **2026-09-29 출시 전에 폐기**했습니다. 일반 광고가 거래 내역의 네이티브 광고 몇 줄뿐이라 단품으로는 살 이유가 약하고, 팩 옆에 상품이 하나 더 있으면 선택만 나뉩니다. 광고 제거는 `미치와 친구들`로만 팝니다.
+v1.1에서 `sobra.ads.remove`로 계획했으나 **2026-09-29 출시 전에 폐기**했습니다. 일반 광고가 거래 내역의 네이티브 광고 몇 줄뿐이라 단품으로는 살 이유가 약하고, 팩 옆에 상품이 하나 더 있으면 선택만 나뉩니다. 광고 제거는 `Los amigos de Michi` 팩으로만 팝니다.
 
 ### 권리 매핑
 
 ```dart
 const productEntitlements = {
   'sobra.supporter.bundle': {
-    'character-02',
-    'character-04',
-    'character-06',
-    'supporter-decoration',
+    'capybara',
+    'alpaca',
+    'raccoon',
     'entitlement.no_ads',
   },
 };
@@ -278,7 +282,7 @@ const productEntitlements = {
 **필수 구현 사항:**
 
 1. **`productEntitlements` 검사가 `CatalogPreviewData.entryForProductId()`보다 먼저**여야 합니다.
-   `entryForProductId`(`catalog_preview_data.dart:192`)는 `storeProductId`가 일치하는 **첫 엔트리 하나만** 반환합니다. 번들 ID를 가진 엔트리가 먼저 잡히면 팩 구매가 그 하나만 지급하고 끝납니다. 팩 전용 캐릭터도 같은 ID를 지니게 되었으므로 이제 먼저 잡히는 것은 `character-02`입니다.
+   `entryForProductId`(`catalog_preview_data.dart:192`)는 `storeProductId`가 일치하는 **첫 엔트리 하나만** 반환합니다. 번들 ID를 가진 엔트리가 먼저 잡히면 팩 구매가 그 하나만 지급하고 끝납니다. 팩 전용 캐릭터도 같은 ID를 지니므로 지금 먼저 잡히는 것은 `capybara`입니다.
 
 2. **일괄 지급 메서드**가 필요합니다. 하나씩 저장하면 일부만 지급된 상태가 남습니다.
 
@@ -309,23 +313,21 @@ const productEntitlements = {
 | 엔트리 | 해금 |
 | --- | --- |
 | 보상형 전용 캐릭터 | 광고로만 |
-| 팩 전용 캐릭터 | 미치와 친구들로만 (02 · 04 · 06) |
-| 구매 전용 캐릭터 | 개별 구매로만 (07 · 09 · 10) |
+| 팩 전용 캐릭터 | Los amigos de Michi로만 (Tranqui · Lana · Bandi) |
+| 구매 전용 캐릭터 | 개별 구매로만 (Pico · Bunny · 10) |
 | 레벨 전용 아이템 | 레벨로만 |
 
 - 보상형 전용 캐릭터에 현금 우회 구매는 **제공하지 않습니다.** `CatalogUnlockMethod`(`catalog_entry.dart:7`)가 엔트리당 하나이므로 모델 재설계가 필요하고, 초기 버전에는 불필요합니다.
-- 캐릭터를 개별 구매해도 **일반 광고는 제거되지 않습니다.** 광고 제거는 `미치와 친구들`에만 따라옵니다.
+- 캐릭터를 개별 구매해도 **일반 광고는 제거되지 않습니다.** 광고 제거는 `Los amigos de Michi`에만 따라옵니다.
 - **한 캐릭터가 두 경로로 팔리지 않습니다.** 팩에 든 것을 개별로도 팔면, 하나를 사고 팩을 산 사람이 같은 캐릭터를 두 번 결제합니다. `grantCatalogEntries`는 이미 가진 id를 조용히 버리고 스토어는 그 차액을 환불하지 않습니다. `catalog_entitlement_test.dart`가 이 규칙을 지킵니다.
 
-### `supporter-decoration`(미치의 별) 표시 규칙
+### 팩 전용 캐릭터 표시 규칙
 
-카탈로그에 추가하는 순간 `CollectionScreen`(`collection_screen.dart:155`)이 카탈로그를 순회하므로 **미구매자에게도 보입니다.**
+- 컬렉션에서 잠김 상태로 보이고, 카드 버튼은 `PAQUETE`, 상세 창 버튼은 `VER PAQUETE`입니다. 캐릭터 하나 옆에 팩 전체 가격을 붙이지 않습니다.
+- 세 캐릭터는 카탈로그에서 연달아 놓여 한 묶음으로 보입니다.
+- `미치의 별`(`supporter-decoration`)은 그림도 놓을 자리도 없어 2026-09-30에 뺐습니다.
 
-- 잠김 상태로 노출하되, 개별 구매 버튼 대신 `미치와 친구들에 들어 있어요` 안내만 표시합니다.
-- 장식 하나 옆에 팩 전체 가격이 붙는 상황을 피합니다.
-- 같은 규칙이 팩 전용 캐릭터 3종에도 적용됩니다. `collection_screen.dart`가 가격과 구매 버튼을 `unlockMethod`로 막으므로 별도 처리는 필요 없습니다.
-
-> `supporter-decoration`과 `sobra.supporter.bundle`이라는 **문자열 값은 이름이 바뀐 뒤에도 그대로 둡니다.** 전자는 이미 저장된 소유 집합의 키이고, 후자는 스토어 콘솔에 등록되면 재사용이 불가능합니다. 값을 바꾸는 것은 편집이 아니라 마이그레이션입니다.
+> `sobra.supporter.bundle`이라는 **문자열 값은 팩 이름이 바뀌어도 그대로 둡니다.** 스토어 콘솔에 등록되면 재사용이 불가능합니다.
 
 > 참고: `entitlement.no_ads`처럼 카탈로그에 없는 문자열을 소유 집합에 넣는 것은 안전합니다.
 > 컬렉션은 소유 집합이 아니라 카탈로그를 순회하므로 유령 항목이 생기지 않습니다.

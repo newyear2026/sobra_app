@@ -533,10 +533,30 @@ class AppLocalizationsKo extends AppLocalizations {
   String get collectionPackOnly => '팩 전용';
 
   @override
-  String get collectionPackDecoration => '미치의 별';
+  String get collectionPackUnlock => '미치네 친구들 팩에 들어 있어요. 따로 판매하지 않아요.';
 
   @override
-  String get collectionPackUnlock => '미치와 친구들에 들어 있어요. 따로 판매하지 않아요.';
+  String get collectionSeePack => '팩 보기';
+
+  @override
+  String get packFriendNames => 'Tranqui, Lana, Bandi';
+
+  @override
+  String get packIncludes => '포함된 것';
+
+  @override
+  String get packFriendsLine => '방에 함께할 친구 3명';
+
+  @override
+  String get packNoAdsLine => '일반 광고 제거';
+
+  @override
+  String get packOnceLine => '한 번 결제로 계속';
+
+  @override
+  String packBuy(String price) {
+    return '구매 · $price';
+  }
 
   @override
   String get collectionGiftOnly => '선물';
@@ -1027,10 +1047,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsSectionShop => '상점';
 
   @override
-  String get settingsPackName => '미치와 친구들';
+  String get settingsPackName => '미치네 친구들';
 
   @override
-  String get settingsPackHint => '캐릭터 3종 + 미치의 별. 일반 광고도 함께 제거돼요.';
+  String get settingsPackHint => 'Tranqui, Lana, Bandi. 일반 광고도 함께 제거돼요.';
 
   @override
   String get settingsOwned => '보유 중';

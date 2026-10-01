@@ -19,6 +19,7 @@ import '../services/sobra_quick_entry.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
+import '../widgets/pack_offer_dialog.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/update_prompt.dart';
 import 'collection_screen.dart';
@@ -111,6 +112,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _buyShopProduct(SobraPurchases purchases, String productId) {
     _awaitingShopPurchase = true;
     unawaited(purchases.buyProduct(productId));
+  }
+
+  /// Shows the pack first, and starts its checkout only if the user asks.
+  Future<void> _offerPack(SobraPurchases purchases) async {
+    if (!await showPackOfferDialog(context) || !mounted) return;
+    _buyShopProduct(purchases, CatalogPreviewData.packProductId);
   }
 
   Future<void> _loadVersion() async {
@@ -246,8 +253,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               pendingPrice: l10n.collectionStorePricePending,
               ownedLabel: l10n.settingsOwned,
               buyingLabel: l10n.collectionPurchasing,
-              onBuy: () =>
-                  _buyShopProduct(purchases, CatalogPreviewData.packProductId),
+              onBuy: () => _offerPack(purchases),
             ),
             _SettingsRow(
               icon: Icons.restore,

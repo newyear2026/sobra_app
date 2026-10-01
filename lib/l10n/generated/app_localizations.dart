@@ -1007,17 +1007,53 @@ abstract class AppLocalizations {
   /// **'PAQUETE'**
   String get collectionPackOnly;
 
-  /// No description provided for @collectionPackDecoration.
-  ///
-  /// In es, this message translates to:
-  /// **'Estrella de Michi'**
-  String get collectionPackDecoration;
-
   /// No description provided for @collectionPackUnlock.
   ///
   /// In es, this message translates to:
-  /// **'Llega con Michi y sus amigos. No se vende por separado.'**
+  /// **'Viene en el paquete Los amigos de Michi. No se vende por separado.'**
   String get collectionPackUnlock;
+
+  /// No description provided for @collectionSeePack.
+  ///
+  /// In es, this message translates to:
+  /// **'VER PAQUETE'**
+  String get collectionSeePack;
+
+  /// No description provided for @packFriendNames.
+  ///
+  /// In es, this message translates to:
+  /// **'Tranqui, Lana y Bandi'**
+  String get packFriendNames;
+
+  /// No description provided for @packIncludes.
+  ///
+  /// In es, this message translates to:
+  /// **'INCLUYE'**
+  String get packIncludes;
+
+  /// No description provided for @packFriendsLine.
+  ///
+  /// In es, this message translates to:
+  /// **'3 amigos para tu cuarto'**
+  String get packFriendsLine;
+
+  /// No description provided for @packNoAdsLine.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin anuncios generales'**
+  String get packNoAdsLine;
+
+  /// No description provided for @packOnceLine.
+  ///
+  /// In es, this message translates to:
+  /// **'Pago único, para siempre'**
+  String get packOnceLine;
+
+  /// No description provided for @packBuy.
+  ///
+  /// In es, this message translates to:
+  /// **'COMPRAR · {price}'**
+  String packBuy(String price);
 
   /// No description provided for @collectionGiftOnly.
   ///
@@ -1844,13 +1880,13 @@ abstract class AppLocalizations {
   /// No description provided for @settingsPackName.
   ///
   /// In es, this message translates to:
-  /// **'Michi y sus amigos'**
+  /// **'Los amigos de Michi'**
   String get settingsPackName;
 
   /// No description provided for @settingsPackHint.
   ///
   /// In es, this message translates to:
-  /// **'3 personajes + la estrella de Michi. También quita los anuncios generales.'**
+  /// **'Tranqui, Lana y Bandi. También quita los anuncios generales.'**
   String get settingsPackHint;
 
   /// No description provided for @settingsOwned.

@@ -13,6 +13,7 @@ import '../services/rewarded_ad_service.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
+import '../widgets/pack_offer_dialog.dart';
 import '../widgets/pixel_ui.dart';
 
 class CollectionScreen extends StatefulWidget {
@@ -198,6 +199,15 @@ class _CollectionScreenState extends State<CollectionScreen> {
       await _watchAd(ads, store, state.entry);
       return;
     }
+    // A pack character is sold as the whole pack, so the pack is what opens:
+    // the three friends together, and its price. Only a yes there buys.
+    if (state.entry.unlockMethod == CatalogUnlockMethod.bundle) {
+      if (!await showPackOfferDialog(context) || !mounted) return;
+      if (purchases != null) {
+        await purchases.buyProduct(CatalogPreviewData.packProductId);
+        return;
+      }
+    }
     // A purchase with no store, or an ad with no network, above this screen
     // is the design gallery rather than the app.
     _showNotice(l10n.collectionPreviewActionNotice);
@@ -287,8 +297,8 @@ class _CollectionScreenState extends State<CollectionScreen> {
         state.localizedStorePrice == null) {
       return false;
     }
-    // Level rewards arrive on their own, and a bundle entry is bought from the
-    // row that sells the bundle. Neither has anything for this card to do.
+    // Level rewards arrive on their own, and gifts are given, never sold.
+    // Neither has anything for this card to do. A bundle entry opens the pack.
     // Only the rules disable the button. "No ad right now" is a network
     // condition that can end a second later, and treating it like a rule is
     // what made it permanent: the card stopped accepting the tap that is the
@@ -298,7 +308,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
       return false;
     }
     return state.entry.unlockMethod != CatalogUnlockMethod.level &&
-        state.entry.unlockMethod != CatalogUnlockMethod.bundle &&
         state.entry.unlockMethod != CatalogUnlockMethod.gift;
   }
 
@@ -1071,7 +1080,7 @@ String _dialogActionLabel(AppLocalizations l10n, CatalogEntryState state) {
       state.entry.requiredLevel!,
     ),
     CatalogUnlockMethod.included => l10n.collectionOwned,
-    CatalogUnlockMethod.bundle => l10n.collectionPackOnly,
+    CatalogUnlockMethod.bundle => l10n.collectionSeePack,
     CatalogUnlockMethod.gift => l10n.collectionGiftOnly,
   };
 }

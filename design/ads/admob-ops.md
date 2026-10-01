@@ -61,8 +61,9 @@ iOS 유닛은 아직 만들지 않는다. `AdMobConfig.isSupported`가 Android�
 
 | 상품 ID | 역할 |
 | --- | --- |
-| `sobra.supporter.bundle` | 미치와 친구들 + 일반 광고 제거 (MX$89) |
-| `sobra.character.capybara` / `.alpaca` / `.platypus` | 개별 캐릭터 Tranqui·Lana·Pico (각 MX$39) |
+| `sobra.supporter.bundle` | Los amigos de Michi: Tranqui·Lana·Bandi + 일반 광고 제거 (MX$89) |
+| `sobra.character.platypus` / `.rabbit` | 개별 캐릭터 Pico·Bunny (각 MX$39) |
+| `sobra.character.capybara` / `.alpaca` / `.raccoon` | **비활성화.** 팩 전용이 되어 단품으로 팔지 않는다 |
 
 - `sobra.character.10`은 이름이 정해지기 전까지 등록하지 않는다. 제품 ID는 한 번 만들면 다시 쓸 수 없다.
 - `sobra.ads.remove`(일반 광고 제거 단품)는 2026-09-29 출시 전에 폐기했다. 광고 제거는 팩으로만 판다. 등록하지 않고, 이미 만들었다면 비활성화한다.

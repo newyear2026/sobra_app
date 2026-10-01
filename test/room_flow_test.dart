@@ -27,6 +27,51 @@ Future<SobraStore> _store() async {
 }
 
 void main() {
+  for (final (characterId, expectedScale) in [
+    ('poodle', 1.0),
+    ('alpaca', 1.28),
+    ('platypus', 1.24),
+    ('rabbit', 1.38),
+    ('raccoon', 1.0),
+  ]) {
+    testWidgets('$characterId uses its optical size in the room', (
+      tester,
+    ) async {
+      final store = await _store();
+      if (characterId != 'poodle') {
+        await store.grantCatalogEntry(characterId);
+      }
+      await store.chooseCharacter(characterId);
+      await tester.pumpWidget(
+        SobraScope(
+          store: store,
+          child: MaterialApp(
+            localizationsDelegates: sobraLocalizationsDelegates,
+            supportedLocales: sobraSupportedLocales,
+            home: const RoomScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final scale = tester.widget<Transform>(
+        find.byKey(const ValueKey('room-character-scale')),
+      );
+      expect(scale.transform.entry(0, 0), closeTo(expectedScale, .001));
+      expect(
+        tester
+            .widget<CatSprite>(
+              find.descendant(
+                of: find.byType(RoomScene),
+                matching: find.byType(CatSprite),
+              ),
+            )
+            .characterId,
+        characterId,
+      );
+    });
+  }
+
   for (final characterId in ['michi', 'poodle', 'schnauzer']) {
     testWidgets('$characterId finishes celebrating before returning to idle', (
       tester,

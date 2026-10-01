@@ -1,4 +1,3 @@
-import '../data/catalog_preview_data.dart';
 import '../models/catalog_entry.dart';
 import '../models/room_design.dart';
 import 'generated/app_localizations.dart';
@@ -22,11 +21,6 @@ String catalogEntryDisplayName(AppLocalizations l10n, CatalogEntry entry) {
   }
   if (entry.id == RoomDecorAssets.blueCreamRugId) {
     return l10n.roomBlueCreamRug;
-  }
-  // Named rather than numbered, like the companions. Parsing a number out of this id
-  // would answer zero and put "Item 0" on the card.
-  if (entry.id == CatalogPreviewData.packDecorationId) {
-    return l10n.collectionPackDecoration;
   }
   if (entry.id == RoomDecorAssets.launchSofaId) return l10n.roomLaunchSofa;
   if (entry.id == RoomDecorAssets.launchTvId) return l10n.roomLaunchTv;

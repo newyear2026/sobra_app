@@ -160,6 +160,13 @@ class RoomScene extends StatelessWidget {
               catWidth *
               CharacterAnimationStandard.frameHeight /
               CharacterAnimationStandard.frameWidth;
+          final sceneCharacterId =
+              characterId ??
+              SobraScope.maybeOf(context)?.characterId ??
+              CharacterCatalog.defaultId;
+          final roomDisplayScale = CharacterCatalog.resolve(
+            sceneCharacterId,
+          ).roomDisplayScale;
 
           return Stack(
             fit: StackFit.expand,
@@ -197,15 +204,22 @@ class RoomScene extends StatelessWidget {
                   onTap: onCatTap,
                   child: Semantics(
                     button: onCatTap != null,
-                    child: CatSprite(
-                      motion: reacting
-                          ? CatMotion.celebrate
-                          : catMotion ?? CatMotion.idle,
-                      characterId: characterId,
-                      width: catWidth,
-                      animate: !reducedMotionOf(context),
-                      loop: reacting ? false : catLoop,
-                      onComplete: reacting ? onReactionComplete : null,
+                    child: Transform.scale(
+                      key: const ValueKey('room-character-scale'),
+                      scale: roomDisplayScale,
+                      // Keep the paws on the same floor line as Michi and
+                      // Miru while the smaller painted silhouettes grow.
+                      alignment: const Alignment(0, 2 * 344 / 360 - 1),
+                      child: CatSprite(
+                        motion: reacting
+                            ? CatMotion.celebrate
+                            : catMotion ?? CatMotion.idle,
+                        characterId: sceneCharacterId,
+                        width: catWidth,
+                        animate: !reducedMotionOf(context),
+                        loop: reacting ? false : catLoop,
+                        onComplete: reacting ? onReactionComplete : null,
+                      ),
                     ),
                   ),
                 ),

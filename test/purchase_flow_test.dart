@@ -8,6 +8,7 @@ import 'package:sobra_app/screens/settings_screen.dart';
 import 'package:sobra_app/services/purchase_service.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
+import 'package:sobra_app/widgets/pack_offer_dialog.dart';
 
 import 'support/fake_purchase_backend.dart';
 import 'support/localizations.dart';
@@ -17,7 +18,7 @@ void main() {
   late FakeBackend backend;
   late SobraPurchases purchases;
 
-  const productId = 'sobra.character.capybara';
+  const productId = 'sobra.character.platypus';
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
@@ -72,10 +73,10 @@ void main() {
   Finder inDialog(String text) =>
       find.descendant(of: find.byType(AlertDialog), matching: find.text(text));
 
-  Future<void> openTranqui(WidgetTester tester) async {
-    await tester.ensureVisible(find.text('Tranqui'));
+  Future<void> openPico(WidgetTester tester) async {
+    await tester.ensureVisible(find.text('Pico'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Tranqui'));
+    await tester.tap(find.text('Pico'));
     await tester.pumpAndSettle();
   }
 
@@ -84,7 +85,7 @@ void main() {
 
     await pump(tester, const CollectionScreen());
 
-    // The preview source prices Lana the same. Only the one the fake store
+    // The preview source prices Bunny the same. Only the one the fake store
     // actually listed may carry a price now.
     expect(find.text(r'MX$ 39'), findsOneWidget);
   });
@@ -95,7 +96,7 @@ void main() {
     await purchases.start();
     await pump(tester, const CollectionScreen());
 
-    await openTranqui(tester);
+    await openPico(tester);
     await tester.tap(inDialog('COMPRAR'));
     await tester.pumpAndSettle();
 
@@ -106,7 +107,7 @@ void main() {
 
     // The catalog answers for itself once the store confirms — no reload, no
     // second trip through the screen.
-    await openTranqui(tester);
+    await openPico(tester);
     expect(inDialog('OBTENIDO'), findsOneWidget);
     expect(inDialog('COMPRAR'), findsNothing);
   });
@@ -124,7 +125,7 @@ void main() {
 
     expect(find.text('COMPRANDO…'), findsOneWidget);
     // Still locked: the money has not moved yet.
-    await openTranqui(tester);
+    await openPico(tester);
     expect(inDialog('EQUIPAR'), findsNothing);
   });
 
@@ -136,7 +137,7 @@ void main() {
     await purchases.start();
     await pump(tester, const CollectionScreen());
 
-    await openTranqui(tester);
+    await openPico(tester);
     await tester.tap(inDialog('COMPRAR'));
     await tester.pumpAndSettle();
     expect(
@@ -161,7 +162,7 @@ void main() {
     await purchases.start();
     await pump(tester, const CollectionScreen());
 
-    await openTranqui(tester);
+    await openPico(tester);
     await tester.tap(inDialog('COMPRAR'));
     await tester.pumpAndSettle();
     expect(find.text('COMPRANDO…'), findsOneWidget);
@@ -199,7 +200,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pumpAndSettle();
 
-    expect(store.ownedCatalogIds, {'capybara'});
+    expect(store.ownedCatalogIds, {'platypus'});
     expect(find.text('Listo. Tus compras volvieron.'), findsOneWidget);
   });
 
@@ -220,7 +221,7 @@ void main() {
     expect(find.text('No encontramos compras en esta cuenta.'), findsOneWidget);
   });
 
-  testWidgets('Ajustes sells ad removal only as the pack', (tester) async {
+  testWidgets('Ajustes shows the pack before selling it', (tester) async {
     backend.catalogue = [
       ...backend.catalogue,
       productFor(CatalogPreviewData.packProductId, r'MX$ 149'),
@@ -229,10 +230,19 @@ void main() {
     await pump(tester, const SettingsScreen(), inScaffold: true);
 
     expect(find.text('Quitar anuncios generales'), findsNothing);
-    expect(find.text('Michi y sus amigos'), findsOneWidget);
+    expect(find.text('Los amigos de Michi'), findsOneWidget);
     expect(find.text(r'MX$ 149'), findsOneWidget);
 
-    await tester.tap(find.text('Michi y sus amigos'));
+    // The row opens the pack, not the checkout: nothing is charged for a
+    // look at what it holds.
+    await tester.tap(find.text('Los amigos de Michi'));
+    await tester.pumpAndSettle();
+    expect(backend.bought, isEmpty);
+    expect(find.byType(PackOfferDialog), findsOneWidget);
+    expect(find.text('Tranqui, Lana y Bandi'), findsOneWidget);
+    expect(find.text('Sin anuncios generales'), findsOneWidget);
+
+    await tester.tap(find.text(r'COMPRAR · MX$ 149'));
     await tester.pumpAndSettle();
     expect(backend.bought, [CatalogPreviewData.packProductId]);
 
@@ -244,5 +254,68 @@ void main() {
     expect(store.ownsNoAds, isTrue);
     expect(store.ownsPack, isTrue);
     expect(find.text('Ya lo tienes'), findsOneWidget);
+  });
+
+  testWidgets('closing the pack buys nothing', (tester) async {
+    backend.catalogue = [
+      ...backend.catalogue,
+      productFor(CatalogPreviewData.packProductId, r'MX$ 89'),
+    ];
+    await purchases.start();
+    await pump(tester, const SettingsScreen(), inScaffold: true);
+
+    await tester.tap(find.text('Los amigos de Michi'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Cancelar'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PackOfferDialog), findsNothing);
+    expect(backend.bought, isEmpty);
+  });
+
+  // A pack character's card was a dead end: it said the character came in
+  // the pack and offered no way to buy it.
+  testWidgets('a pack character opens the pack and buys it', (tester) async {
+    backend.catalogue = [
+      ...backend.catalogue,
+      productFor(CatalogPreviewData.packProductId, r'MX$ 89'),
+    ];
+    await purchases.start();
+    await pump(tester, const CollectionScreen());
+
+    await tester.ensureVisible(find.text('Lana'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Lana'));
+    await tester.pumpAndSettle();
+    expect(
+      inDialog(
+        'Viene en el paquete Los amigos de Michi. No se vende por '
+        'separado.',
+      ),
+      findsOneWidget,
+    );
+
+    await tester.tap(inDialog('VER PAQUETE'));
+    await tester.pumpAndSettle();
+    expect(find.byType(PackOfferDialog), findsOneWidget);
+
+    await tester.tap(find.text(r'COMPRAR · MX$ 89'));
+    await tester.pumpAndSettle();
+    expect(backend.bought, [CatalogPreviewData.packProductId]);
+
+    backend.emit([
+      detailsFor(CatalogPreviewData.packProductId, PurchaseStatus.purchased),
+    ]);
+    await tester.pumpAndSettle();
+
+    for (final id in CatalogPreviewData.packCharacterIds) {
+      expect(
+        store.ownsCatalogEntry(
+          CatalogPreviewData.all.firstWhere((entry) => entry.id == id),
+        ),
+        isTrue,
+        reason: id,
+      );
+    }
   });
 }

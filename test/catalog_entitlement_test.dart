@@ -27,7 +27,7 @@ void main() {
   test(
     'a purchased entry is still owned after the store is reloaded',
     () async {
-      final purchased = entryById('character-02');
+      final purchased = entryById('capybara');
       final store = await loadStore();
       expect(store.ownsCatalogEntry(purchased), isFalse);
 
@@ -80,7 +80,7 @@ void main() {
     final store = await loadStore();
 
     expect(
-      () => store.recordRewardedAdView(entryById('character-02')),
+      () => store.recordRewardedAdView(entryById('capybara')),
       throwsArgumentError,
     );
   });
@@ -153,23 +153,20 @@ void main() {
     },
   );
 
-  test(
-    'Capybara requires purchase ownership before it can be equipped',
-    () async {
-      final store = await loadStore();
-      final capybara = entryById('capybara');
+  test('Tranqui requires the pack before it can be equipped', () async {
+    final store = await loadStore();
+    final capybara = entryById('capybara');
 
-      expect(capybara.unlockMethod, CatalogUnlockMethod.purchase);
-      expect(store.ownsCatalogEntry(capybara), isFalse);
-      expect(() => store.chooseCharacter('capybara'), throwsArgumentError);
+    expect(capybara.unlockMethod, CatalogUnlockMethod.bundle);
+    expect(store.ownsCatalogEntry(capybara), isFalse);
+    expect(() => store.chooseCharacter('capybara'), throwsArgumentError);
 
-      await store.grantCatalogEntry(capybara.id);
-      await store.equipCharacter(capybara);
-      final reopened = await loadStore();
-      expect(reopened.characterId, 'capybara');
-      expect(reopened.ownsCatalogEntry(capybara), isTrue);
-    },
-  );
+    await store.grantCatalogEntry(capybara.id);
+    await store.equipCharacter(capybara);
+    final reopened = await loadStore();
+    expect(reopened.characterId, 'capybara');
+    expect(reopened.ownsCatalogEntry(capybara), isTrue);
+  });
 
   test('Platypus can be equipped only after purchase ownership', () async {
     final store = await loadStore();
@@ -186,11 +183,11 @@ void main() {
     expect(reopened.ownsCatalogEntry(platypus), isTrue);
   });
 
-  test('Bandi can be equipped only after purchase ownership', () async {
+  test('Bandi can be equipped only after the pack', () async {
     final store = await loadStore();
     final raccoon = entryById('raccoon');
 
-    expect(raccoon.unlockMethod, CatalogUnlockMethod.purchase);
+    expect(raccoon.unlockMethod, CatalogUnlockMethod.bundle);
     expect(store.ownsCatalogEntry(raccoon), isFalse);
     expect(() => store.chooseCharacter('raccoon'), throwsArgumentError);
 
@@ -217,7 +214,7 @@ void main() {
 
   test('an equipped character is remembered', () async {
     final store = await loadStore();
-    final character = entryById('character-04');
+    final character = entryById('alpaca');
     await store.grantCatalogEntry(character.id);
 
     await store.equipCharacter(character);
@@ -231,7 +228,7 @@ void main() {
     final store = await loadStore();
 
     expect(
-      () => store.equipCharacter(entryById('character-02')),
+      () => store.equipCharacter(entryById('capybara')),
       throwsArgumentError,
     );
     expect(store.equippedIdFor(CatalogKind.character), 'michi');
@@ -263,7 +260,7 @@ void main() {
     'state written before the collection was persisted still opens',
     () async {
       final store = await loadStore();
-      await store.grantCatalogEntry('character-02');
+      await store.grantCatalogEntry('capybara');
       final preferences = await SharedPreferences.getInstance();
       final saved =
           jsonDecode(preferences.getString('sobra_state_v2')!)
@@ -344,38 +341,37 @@ void main() {
     for (final id in delivered) {
       expect(store.ownedCatalogIds, contains(id));
     }
-    expect(store.ownsCatalogEntry(entryById('character-02')), isTrue);
-    expect(store.ownsCatalogEntry(entryById('character-04')), isTrue);
-    expect(store.ownsCatalogEntry(entryById('character-06')), isTrue);
-    expect(
-      store.ownsCatalogEntry(entryById(CatalogPreviewData.packDecorationId)),
-      isTrue,
-    );
+    expect(store.ownsCatalogEntry(entryById('capybara')), isTrue);
+    expect(store.ownsCatalogEntry(entryById('alpaca')), isTrue);
+    expect(store.ownsCatalogEntry(entryById('raccoon')), isTrue);
+    expect(store.ownsNoAds, isTrue);
+    expect(store.ownsPack, isTrue);
     expect((await loadStore()).ownedCatalogIds, containsAll(delivered));
   });
 
-  // Somebody who already bought one of the characters separately still gets
-  // the rest. The overlap is not refunded, and the purchase sheet says so.
+  // Nothing sells a pack character separately any more, but an id can still
+  // be in the owned set already — the debug switch's tests, or a tester's
+  // purchase from before the singles were retired. The rest still arrives.
   test('a bundle skips what is already owned and delivers the rest', () async {
     final store = await loadStore();
-    await store.grantCatalogEntry('character-04');
+    await store.grantCatalogEntry('alpaca');
 
     await store.grantCatalogEntries(
       CatalogPreviewData.productEntitlements[CatalogPreviewData.packProductId]!,
     );
 
-    expect(store.ownsCatalogEntry(entryById('character-02')), isTrue);
-    expect(store.ownsCatalogEntry(entryById('character-04')), isTrue);
-    expect(store.ownsCatalogEntry(entryById('character-06')), isTrue);
+    expect(store.ownsCatalogEntry(entryById('capybara')), isTrue);
+    expect(store.ownsCatalogEntry(entryById('alpaca')), isTrue);
+    expect(store.ownsCatalogEntry(entryById('raccoon')), isTrue);
   });
 
   test('granting nothing new writes nothing', () async {
     final store = await loadStore();
-    await store.grantCatalogEntry('character-02');
+    await store.grantCatalogEntry('capybara');
 
-    await store.grantCatalogEntries({'character-02', ''});
+    await store.grantCatalogEntries({'capybara', ''});
 
-    expect(store.ownedCatalogIds, {'character-02'});
+    expect(store.ownedCatalogIds, {'capybara'});
   });
 
   // Rewarded progress is dropped for granted ids, the same way a single grant
@@ -387,7 +383,7 @@ void main() {
     await store.recordRewardedAdView(started);
     expect(store.rewardedAdProgressFor(started.id), 1);
 
-    await store.grantCatalogEntries({started.id, 'character-02'});
+    await store.grantCatalogEntries({started.id, 'capybara'});
 
     expect(store.ownsCatalogEntry(started), isTrue);
     expect(store.rewardedAdProgressFor(started.id), 0);
@@ -395,10 +391,10 @@ void main() {
 
   // The collision the grant path has to resolve in the right order. Every
   // entry the pack delivers exclusively carries its product id, so the
-  // single-entry lookup answers for the pack too — with one of five, and it
-  // is a character now rather than the decoration it used to be. Which one it
-  // reaches first is an accident of catalog order and is deliberately not
-  // pinned here; that it is never the whole delivery is the point.
+  // single-entry lookup answers for the pack too — with one of its
+  // characters. Which one it reaches first is an accident of catalog order
+  // and is deliberately not pinned here; that it is never the whole delivery
+  // is the point.
   test('the pack product id also resolves to a single entry', () {
     final single = CatalogPreviewData.entryForProductId(
       CatalogPreviewData.packProductId,
@@ -426,13 +422,21 @@ void main() {
     }
   });
 
-  test('the pack decoration is locked and not sold on its own', () async {
+  // Ad removal alone is an entitlement, not proof of the pack. Ajustes reads
+  // ownsPack to mark the row as owned.
+  test('the pack counts as owned only with all three friends', () async {
     final store = await loadStore();
-    final decoration = entryById(CatalogPreviewData.packDecorationId);
+    await store.grantCatalogEntries({
+      'capybara',
+      'alpaca',
+      CatalogPreviewData.noAdsEntitlement,
+    });
 
-    expect(decoration.unlockMethod, CatalogUnlockMethod.bundle);
-    expect(decoration.storeProductId, CatalogPreviewData.packProductId);
-    expect(store.ownsCatalogEntry(decoration), isFalse);
+    expect(store.ownsPack, isFalse);
+
+    await store.grantCatalogEntry('raccoon');
+
+    expect(store.ownsPack, isTrue);
   });
 
   test('ad removal is sold only inside the pack', () {
@@ -482,24 +486,24 @@ void main() {
   });
 
   test('the debug switch lends paid characters without buying them', () async {
-    final capybara = entryById('capybara');
-    final packOnly = entryById('character-02');
+    final single = entryById('platypus');
+    final packOnly = entryById('capybara');
     final adEarned = entryById('schnauzer');
     final store = await loadStore();
 
     await store.setDebugPaidCharactersUnlocked(true);
-    await store.chooseCharacter(capybara.id);
+    await store.chooseCharacter(single.id);
 
-    expect(store.ownsCatalogEntry(capybara), isTrue);
+    expect(store.ownsCatalogEntry(single), isTrue);
     expect(store.ownsCatalogEntry(packOnly), isTrue);
     expect(store.ownsCatalogEntry(adEarned), isFalse);
     // Lent, not granted: nothing a revocation or a backup would read.
     expect(store.ownedCatalogIds, isEmpty);
-    expect((await loadStore()).characterId, capybara.id);
+    expect((await loadStore()).characterId, single.id);
 
     await store.setDebugPaidCharactersUnlocked(false);
 
-    expect(store.ownsCatalogEntry(capybara), isFalse);
+    expect(store.ownsCatalogEntry(single), isFalse);
     expect(store.characterId, 'michi');
   });
 }

@@ -320,7 +320,7 @@ void main() {
     final store = await loadStore();
 
     expect(
-      () => store.recordRewardedAdView(entryById('character-02')),
+      () => store.recordRewardedAdView(entryById('capybara')),
       throwsArgumentError,
     );
   });

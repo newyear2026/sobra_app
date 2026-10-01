@@ -8,7 +8,7 @@ void main() {
   test('Michi and Poodle are included; new companions use ads', () {
     final entries = CatalogPreviewData.characters;
 
-    expect(entries, hasLength(16));
+    expect(entries, hasLength(13));
     expect(
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.included,
@@ -19,7 +19,7 @@ void main() {
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.purchase,
       ),
-      hasLength(6),
+      hasLength(3),
     );
     expect(
       entries.where(
@@ -39,24 +39,6 @@ void main() {
     expect(guineaPig.rewardedAdOncePerDay, isFalse);
     expect(guineaPig.storeProductId, isNull);
     expect(guineaPig.assetPath, 'assets/characters/guinea-pig/idle-8.png');
-    final capybara = entries.firstWhere((entry) => entry.id == 'capybara');
-    expect(capybara.unlockMethod, CatalogUnlockMethod.purchase);
-    expect(capybara.storeProductId, 'sobra.character.capybara');
-    expect(capybara.assetPath, 'assets/characters/capybara/idle-8.png');
-    expect(
-      CatalogPreviewData.entryForProductId(capybara.storeProductId!),
-      same(capybara),
-    );
-    expect(
-      CatalogPreviewData.storeProductIds,
-      contains(capybara.storeProductId),
-    );
-    expect(capybara.name, 'Tranqui');
-    final alpaca = entries.firstWhere((entry) => entry.id == 'alpaca');
-    expect(alpaca.name, 'Lana');
-    expect(alpaca.unlockMethod, CatalogUnlockMethod.purchase);
-    expect(alpaca.storeProductId, 'sobra.character.alpaca');
-    expect(alpaca.assetPath, 'assets/characters/alpaca/idle-8.png');
     final platypus = entries.firstWhere((entry) => entry.id == 'platypus');
     expect(platypus.name, 'Pico');
     expect(platypus.unlockMethod, CatalogUnlockMethod.purchase);
@@ -80,21 +62,8 @@ void main() {
       rabbit,
     );
     expect(CatalogPreviewData.storeProductIds, contains(rabbit.storeProductId));
-    final raccoon = entries.firstWhere((entry) => entry.id == 'raccoon');
-    expect(raccoon.name, 'Bandi');
-    expect(raccoon.unlockMethod, CatalogUnlockMethod.purchase);
-    expect(raccoon.storeProductId, 'sobra.character.raccoon');
-    expect(raccoon.assetPath, 'assets/characters/raccoon/idle-8.png');
-    expect(
-      CatalogPreviewData.entryForProductId(raccoon.storeProductId!),
-      same(raccoon),
-    );
-    expect(
-      CatalogPreviewData.storeProductIds,
-      contains(raccoon.storeProductId),
-    );
     // Every single character is one flat price.
-    for (final paid in [capybara, alpaca, platypus, rabbit, raccoon]) {
+    for (final paid in [platypus, rabbit]) {
       expect(
         const PreviewCatalogPriceSource().localizedPriceFor(
           paid.storeProductId!,
@@ -102,20 +71,64 @@ void main() {
         r'MX$ 39',
       );
     }
-    // The three the pack delivers, which are sold no other way.
+  });
+
+  test('Los amigos de Michi holds Tranqui, Lana and Bandi and nothing '
+      'else sells them', () {
+    final entries = CatalogPreviewData.characters;
+    final pack = [
+      for (final id in CatalogPreviewData.packCharacterIds)
+        entries.firstWhere((entry) => entry.id == id),
+    ];
+
+    expect(
+      [for (final entry in pack) entry.name],
+      ['Tranqui', 'Lana', 'Bandi'],
+    );
     expect(
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.bundle,
       ),
-      hasLength(3),
+      pack,
     );
+    for (final entry in pack) {
+      expect(entry.unlockMethod, CatalogUnlockMethod.bundle);
+      expect(entry.storeProductId, CatalogPreviewData.packProductId);
+      expect(entry.assetPath, 'assets/characters/${entry.id}/idle-8.png');
+    }
+    expect(
+      CatalogPreviewData.productEntitlements[CatalogPreviewData.packProductId],
+      {
+        ...CatalogPreviewData.packCharacterIds,
+        CatalogPreviewData.noAdsEntitlement,
+      },
+    );
+    // Their old single products were deactivated in Play before launch. The
+    // app must neither price them nor treat them as its own.
+    for (final retired in [
+      'sobra.character.capybara',
+      'sobra.character.alpaca',
+      'sobra.character.raccoon',
+    ]) {
+      expect(CatalogPreviewData.storeProductIds, isNot(contains(retired)));
+      expect(CatalogPreviewData.entryForProductId(retired), isNull);
+      expect(
+        const PreviewCatalogPriceSource().localizedPriceFor(retired),
+        isNull,
+      );
+    }
+    // Grouped, so the collection shows the pack as one run of cards.
+    final ids = [for (final entry in entries) entry.id];
+    final first = ids.indexOf('capybara');
+    expect(ids.sublist(first, first + 3), CatalogPreviewData.packCharacterIds);
   });
 
   test('item catalog keeps its rewards and includes new room decorations', () {
     final entries = CatalogPreviewData.items;
 
-    // The numbered lineup and pack decoration keep their unlock routes.
-    expect(entries, hasLength(22));
+    // The numbered lineup keeps its unlock routes. The pack's star was
+    // dropped before launch, so no item comes in a bundle.
+    expect(entries, hasLength(21));
     expect(
       entries.where((entry) => entry.unlockMethod == CatalogUnlockMethod.gift),
       hasLength(2),
@@ -130,7 +143,7 @@ void main() {
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.bundle,
       ),
-      hasLength(1),
+      isEmpty,
     );
     expect(
       entries.where((entry) => entry.unlockMethod == CatalogUnlockMethod.level),
@@ -212,7 +225,7 @@ void main() {
   test('localized price is resolved outside the static catalog entry', () {
     const source = PreviewCatalogPriceSource();
     final paid = CatalogPreviewData.characters.firstWhere(
-      (entry) => entry.id == 'alpaca',
+      (entry) => entry.id == 'platypus',
     );
 
     expect(paid.storeProductId, isNotEmpty);

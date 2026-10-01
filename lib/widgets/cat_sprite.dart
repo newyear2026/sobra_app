@@ -109,12 +109,18 @@ class CharacterDefinition {
     required this.id,
     required this.displayName,
     required this.motions,
+    this.roomDisplayScale = 1,
   }) : assert(id != ''),
-       assert(displayName != '');
+       assert(displayName != ''),
+       assert(roomDisplayScale > 0);
 
   final String id;
   final String displayName;
   final Map<CharacterMotionRole, CharacterMotionSpec> motions;
+
+  /// Optical size in room scenes and the decorate character drawer only.
+  /// Sprite sheets share a frame size but not the same painted silhouette.
+  final double roomDisplayScale;
 
   CharacterMotionSpec motionFor(CharacterMotionRole role) {
     final motion = motions[role];
@@ -478,6 +484,7 @@ abstract final class CharacterCatalog {
   static const alpaca = CharacterDefinition(
     id: 'alpaca',
     displayName: 'Lana',
+    roomDisplayScale: 1.28,
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
         assetFileName: 'idle-8.png',
@@ -545,6 +552,7 @@ abstract final class CharacterCatalog {
   static const platypus = CharacterDefinition(
     id: 'platypus',
     displayName: 'Pico',
+    roomDisplayScale: 1.24,
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
         assetFileName: 'idle-8.png',
@@ -612,6 +620,7 @@ abstract final class CharacterCatalog {
   static const rabbit = CharacterDefinition(
     id: 'rabbit',
     displayName: 'Bunny',
+    roomDisplayScale: 1.38,
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
         assetFileName: 'idle-8.png',

@@ -65,9 +65,29 @@ def build(product_id: str, character: str, field: tuple[int, int, int]) -> Path:
     return path
 
 
+# The pack's icon is cut from its illustration rather than built from
+# sprites, so the store shows the same three friends the pack dialog does.
+PACK_PRODUCT = "sobra.supporter.bundle"
+PACK_ART = ROOT / "design/michi-friends-pack-art-v2.png"
+PACK_CROP = (420, 171, 1190, 941)  # square, around the three friends
+
+
+def build_pack() -> Path:
+    # Play rejects a 24-bit PNG here. An opaque alpha channel makes it 32-bit.
+    art = Image.open(PACK_ART).convert("RGBA")
+    icon = art.crop(PACK_CROP).resize((SIZE, SIZE), Image.Resampling.LANCZOS)
+    path = OUTPUT / f"{PACK_PRODUCT}-512.png"
+    icon.save(path, optimize=True)
+    return path
+
+
 def main() -> None:
-    for product_id, (character, field) in PRODUCTS.items():
-        path = build(product_id, character, field)
+    paths = [
+        build(product_id, character, field)
+        for product_id, (character, field) in PRODUCTS.items()
+    ]
+    paths.append(build_pack())
+    for path in paths:
         print(f"{path.relative_to(ROOT)}  {path.stat().st_size // 1024} KB")
 
 

@@ -108,12 +108,12 @@ void main() {
     tester,
   ) async {
     final store = await loadStore();
-    await store.grantCatalogEntry('character-02');
+    await store.grantCatalogEntry('capybara');
     await pump(tester, store);
 
-    await tester.ensureVisible(find.text('Personaje 2'));
+    await tester.ensureVisible(find.text('Tranqui'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Personaje 2'));
+    await tester.tap(find.text('Tranqui'));
     await tester.pumpAndSettle();
 
     expect(inDialog('OBTENIDO'), findsOneWidget);
@@ -208,9 +208,9 @@ void main() {
     expect(buyButton.onPressed, isNotNull);
   });
 
-  testWidgets('Bandi appears in the collection at the single price', (
-    tester,
-  ) async {
+  // A pack character is never priced on its own: the pack's price on one
+  // character's card would read as that character's price.
+  testWidgets('Bandi comes in the pack and points to it', (tester) async {
     final store = await loadStore();
     await pump(tester, store, initialEntryId: 'raccoon');
 
@@ -218,11 +218,10 @@ void main() {
     expect(
       find.descendant(
         of: find.byType(AlertDialog),
-        matching: find.textContaining(r'MX$ 39'),
+        matching: find.textContaining(r'MX$'),
       ),
-      findsOneWidget,
+      findsNothing,
     );
-    expect(inDialog('COMPRAR'), findsOneWidget);
     expect(
       find.descendant(
         of: find.byType(AlertDialog),
@@ -230,13 +229,14 @@ void main() {
       ),
       findsOneWidget,
     );
-    final buyButton = tester.widget<FilledButton>(
+    final seePack = tester.widget<FilledButton>(
       find.descendant(
         of: find.byType(AlertDialog),
         matching: find.byType(FilledButton),
       ),
     );
-    expect(buyButton.onPressed, isNotNull);
+    expect(seePack.onPressed, isNotNull);
+    expect(inDialog('VER PAQUETE'), findsOneWidget);
   });
 
   testWidgets('a stored ad count is what the card counts from', (tester) async {
@@ -275,34 +275,36 @@ void main() {
   // The decoration carries the pack's product id so the store can price the
   // pack. If the card followed that id instead of the unlock method it would
   // offer COMPRAR, and one room object would charge for the whole pack.
-  testWidgets('the pack decoration is shown locked, with no price', (
+  testWidgets('pack characters sit together, locked, with no price', (
     tester,
   ) async {
     final store = await loadStore();
     await pump(tester, store);
 
-    await tester.tap(find.text('OBJETOS'));
-    await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
-      find.text('Estrella de Michi'),
+      find.text('Bandi'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
-
-    expect(find.text('PAQUETE'), findsOneWidget);
-    expect(find.text('COMPRAR'), findsNothing);
-
-    await tester.ensureVisible(find.text('Estrella de Michi'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Estrella de Michi'));
     await tester.pumpAndSettle();
 
-    // Says where it comes from, and offers nothing to tap.
-    expect(
-      inDialog('Llega con Michi y sus amigos. No se vende por separado.'),
-      findsOneWidget,
-    );
-    expect(inDialog('COMPRAR'), findsNothing);
+    expect(find.text('PAQUETE'), findsNWidgets(3));
+    // Tranqui and Lana share a row, and Bandi starts the next one.
+    final tranqui = tester.getTopLeft(find.text('Tranqui'));
+    final lana = tester.getTopLeft(find.text('Lana'));
+    final bandi = tester.getTopLeft(find.text('Bandi'));
+    expect(lana.dy, tranqui.dy);
+    expect(bandi.dy, greaterThan(tranqui.dy));
+  });
+
+  testWidgets('the star decoration is gone from the items', (tester) async {
+    final store = await loadStore();
+    await pump(tester, store);
+
+    await tester.tap(find.text('OBJETOS'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('PAQUETE'), findsNothing);
   });
 
   // The progress lives on the button, so a blocked run replaces it. The

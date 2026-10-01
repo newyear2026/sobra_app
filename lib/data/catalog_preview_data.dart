@@ -46,23 +46,39 @@ abstract final class CatalogPreviewData {
       assetPath: 'assets/characters/guinea-pig/idle-8.png',
       rewardedAdTarget: 2,
     ),
+    // Los amigos de Michi: these three come in the pack and nowhere else.
+    // Selling them individually as well would charge twice for the overlap:
+    // a buyer who takes one and later the pack pays for it in both, because
+    // grantCatalogEntries drops ids already owned and no store refunds the
+    // difference. Their old single products (sobra.character.capybara,
+    // .alpaca and .raccoon) were deactivated in Play before launch and must
+    // not come back. Pico, Bunny and 10 are what single purchases are for.
     CatalogEntry(
       id: 'capybara',
       name: 'Tranqui',
       kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.purchase,
+      unlockMethod: CatalogUnlockMethod.bundle,
       visual: CatalogVisual.capybara,
       assetPath: 'assets/characters/capybara/idle-8.png',
-      storeProductId: 'sobra.character.capybara',
+      storeProductId: packProductId,
     ),
     CatalogEntry(
       id: 'alpaca',
       name: 'Lana',
       kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.purchase,
+      unlockMethod: CatalogUnlockMethod.bundle,
       visual: CatalogVisual.alpaca,
       assetPath: 'assets/characters/alpaca/idle-8.png',
-      storeProductId: 'sobra.character.alpaca',
+      storeProductId: packProductId,
+    ),
+    CatalogEntry(
+      id: 'raccoon',
+      name: 'Bandi',
+      kind: CatalogKind.character,
+      unlockMethod: CatalogUnlockMethod.bundle,
+      visual: CatalogVisual.raccoon,
+      assetPath: 'assets/characters/raccoon/idle-8.png',
+      storeProductId: packProductId,
     ),
     CatalogEntry(
       id: 'platypus',
@@ -83,29 +99,6 @@ abstract final class CatalogPreviewData {
       storeProductId: 'sobra.character.rabbit',
     ),
     CatalogEntry(
-      id: 'raccoon',
-      name: 'Bandi',
-      kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.purchase,
-      visual: CatalogVisual.raccoon,
-      assetPath: 'assets/characters/raccoon/idle-8.png',
-      storeProductId: 'sobra.character.raccoon',
-    ),
-    // In the pack and nowhere else, along with 04 and 06. Selling these
-    // individually as well would charge twice for the overlap: a buyer who
-    // takes one and later the pack pays for it in both, because
-    // grantCatalogEntries drops ids already owned and no store refunds the
-    // difference. Tranqui, Lana, Pico, Bunny, Bandi and 10 are what single
-    // purchases are for, so the pack does not empty that shelf either.
-    CatalogEntry(
-      id: 'character-02',
-      name: 'Personaje 02',
-      kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.bundle,
-      visual: CatalogVisual.characterPlaceholder,
-      storeProductId: packProductId,
-    ),
-    CatalogEntry(
       id: 'character-03',
       name: 'Personaje 03',
       kind: CatalogKind.character,
@@ -114,28 +107,12 @@ abstract final class CatalogPreviewData {
       rewardedAdTarget: 2,
     ),
     CatalogEntry(
-      id: 'character-04',
-      name: 'Personaje 04',
-      kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.bundle,
-      visual: CatalogVisual.characterPlaceholder,
-      storeProductId: packProductId,
-    ),
-    CatalogEntry(
       id: 'character-05',
       name: 'Personaje 05',
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.characterPlaceholder,
       rewardedAdTarget: 2,
-    ),
-    CatalogEntry(
-      id: 'character-06',
-      name: 'Personaje 06',
-      kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.bundle,
-      visual: CatalogVisual.characterPlaceholder,
-      storeProductId: packProductId,
     ),
     CatalogEntry(
       id: 'character-08',
@@ -266,14 +243,6 @@ abstract final class CatalogPreviewData {
       visual: CatalogVisual.cushion,
       requiredLevel: 4,
     ),
-    CatalogEntry(
-      id: packDecorationId,
-      name: 'Estrella',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.bundle,
-      visual: CatalogVisual.trophy,
-      storeProductId: packProductId,
-    ),
     // New room art follows the original reward lineup, preserving the order
     // of existing catalog cards and their established navigation positions.
     CatalogEntry(
@@ -344,14 +313,21 @@ abstract final class CatalogPreviewData {
     ),
   ];
 
-  /// Michi & Friends: three characters, one decoration, and ad removal.
+  /// Los amigos de Michi: Tranqui, Lana and Bandi, and ad removal.
   ///
-  /// Both values outlive the name in front of them. The product id is what
-  /// the store console registers and can never be reused once it is live;
-  /// the decoration id is a key already written into saved owned sets.
-  /// Renaming either is a migration, not an edit.
+  /// The product id outlives the name in front of it. It is what the store
+  /// console registers and can never be reused once it is live, so renaming
+  /// the pack is a copy change, never a new id.
   static const packProductId = 'sobra.supporter.bundle';
-  static const packDecorationId = 'supporter-decoration';
+
+  /// The characters the pack delivers, in the order the pack shows them.
+  ///
+  /// A "Estrella de Michi" decoration was planned beside them and dropped
+  /// before launch for having no art and nowhere in the room to go. A later
+  /// bonus can still be added to [productEntitlements]: the launch restore
+  /// replays the pack on every start and grants whatever it now lists, so
+  /// people who already bought it receive the addition too.
+  static const packCharacterIds = ['capybara', 'alpaca', 'raccoon'];
 
   /// Ad removal, stored beside catalog ids rather than as an entry of its own.
   ///
@@ -371,13 +347,7 @@ abstract final class CatalogPreviewData {
   /// catalog entry is resolved by [entryForProductId] instead, and listing it
   /// twice would give the same purchase two answers.
   static const productEntitlements = <String, Set<String>>{
-    packProductId: {
-      'character-02',
-      'character-04',
-      'character-06',
-      packDecorationId,
-      noAdsEntitlement,
-    },
+    packProductId: {...packCharacterIds, noAdsEntitlement},
   };
 
   /// Everything [storeProductId] delivers, or null where it is not a bundle.
@@ -470,18 +440,15 @@ abstract interface class CatalogPriceSource {
 ///
 /// Mirrors the prices meant for Play Console. Every single character is one
 /// flat price, so none reads as lesser than another. The pack is the only
-/// way to remove ads, and costs less than three single characters while
-/// adding the star and ad removal on top.
+/// way to remove ads, and costs less than three single characters would
+/// while adding ad removal on top.
 final class PreviewCatalogPriceSource implements CatalogPriceSource {
   const PreviewCatalogPriceSource();
 
   @override
   String? localizedPriceFor(String storeProductId) => switch (storeProductId) {
-    'sobra.character.capybara' => r'MX$ 39',
-    'sobra.character.alpaca' => r'MX$ 39',
     'sobra.character.platypus' => r'MX$ 39',
     'sobra.character.rabbit' => r'MX$ 39',
-    'sobra.character.raccoon' => r'MX$ 39',
     CatalogPreviewData.packProductId => r'MX$ 89',
     _ => null,
   };

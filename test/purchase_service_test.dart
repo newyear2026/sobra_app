@@ -29,8 +29,8 @@ void main() {
   late SobraStore store;
   late FakeBackend backend;
 
-  const soldProductId = 'sobra.character.capybara';
-  const soldEntryId = 'capybara';
+  const soldProductId = 'sobra.character.platypus';
+  const soldEntryId = 'platypus';
 
   CatalogEntry entryById(String id) =>
       CatalogPreviewData.all.firstWhere((entry) => entry.id == id);
@@ -41,7 +41,7 @@ void main() {
     backend = FakeBackend()
       ..catalogue = [
         productFor(soldProductId, r'MX$ 79'),
-        productFor('sobra.character.alpaca', r'MX$ 99'),
+        productFor('sobra.character.rabbit', r'MX$ 99'),
       ];
   });
 
@@ -243,7 +243,7 @@ void main() {
     });
 
     test('leaves what is still paid for alone', () async {
-      await store.grantCatalogEntries({soldEntryId, 'alpaca'});
+      await store.grantCatalogEntries({soldEntryId, 'rabbit'});
       backend.paidProductIds = {soldProductId};
 
       await started();
@@ -555,13 +555,10 @@ void main() {
       store.ownedCatalogIds,
       containsAll(CatalogPreviewData.productEntitlements[bundleId]!),
     );
-    expect(store.ownsCatalogEntry(entryById('character-02')), isTrue);
-    expect(store.ownsCatalogEntry(entryById('character-04')), isTrue);
-    expect(store.ownsCatalogEntry(entryById('character-06')), isTrue);
-    expect(
-      store.ownsCatalogEntry(entryById(CatalogPreviewData.packDecorationId)),
-      isTrue,
-    );
+    for (final id in CatalogPreviewData.packCharacterIds) {
+      expect(store.ownsCatalogEntry(entryById(id)), isTrue, reason: id);
+    }
+    expect(store.ownsPack, isTrue);
     expect(
       store.ownedCatalogIds,
       contains(CatalogPreviewData.noAdsEntitlement),
@@ -587,9 +584,9 @@ void main() {
     );
   });
 
-  // The decoration carries the bundle's product id so the store can price the
-  // bundle. Its card must not turn that into a checkout: one room object would
-  // charge for the whole bundle.
+  // A pack character carries the bundle's product id so the store can price
+  // the bundle. buy() must not turn that into a checkout of its own: the
+  // pack is bought from the pack dialog, which says what the money buys.
   test('a bundle entry cannot be bought from its own card', () async {
     const bundleId = CatalogPreviewData.packProductId;
     backend.catalogue = [
@@ -598,7 +595,7 @@ void main() {
     ];
     final purchases = await started(restoreOnStart: false);
 
-    await purchases.buy(entryById(CatalogPreviewData.packDecorationId));
+    await purchases.buy(entryById('capybara'));
 
     expect(backend.bought, isEmpty);
   });

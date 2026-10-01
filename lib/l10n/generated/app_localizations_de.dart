@@ -554,11 +554,31 @@ class AppLocalizationsDe extends AppLocalizations {
   String get collectionPackOnly => 'PAKET';
 
   @override
-  String get collectionPackDecoration => 'Michis Stern';
+  String get collectionPackUnlock =>
+      'Kommt im Paket „Michis Freunde“. Nicht einzeln erhältlich.';
 
   @override
-  String get collectionPackUnlock =>
-      'Kommt mit Michi & Freunde. Nicht einzeln erhältlich.';
+  String get collectionSeePack => 'PAKET ANSEHEN';
+
+  @override
+  String get packFriendNames => 'Tranqui, Lana und Bandi';
+
+  @override
+  String get packIncludes => 'ENTHÄLT';
+
+  @override
+  String get packFriendsLine => '3 Freunde für dein Zimmer';
+
+  @override
+  String get packNoAdsLine => 'Keine allgemeine Werbung';
+
+  @override
+  String get packOnceLine => 'Einmal zahlen, für immer';
+
+  @override
+  String packBuy(String price) {
+    return 'KAUFEN · $price';
+  }
 
   @override
   String get collectionGiftOnly => 'GESCHENK';
@@ -1073,11 +1093,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsSectionShop => 'Shop';
 
   @override
-  String get settingsPackName => 'Michi & Freunde';
+  String get settingsPackName => 'Michis Freunde';
 
   @override
   String get settingsPackHint =>
-      '3 Figuren + Michis Stern. Entfernt auch die allgemeine Werbung.';
+      'Tranqui, Lana und Bandi. Entfernt auch die allgemeine Werbung.';
 
   @override
   String get settingsOwned => 'Gekauft';

@@ -549,11 +549,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get collectionPackOnly => 'PACK';
 
   @override
-  String get collectionPackDecoration => 'Michi\'s star';
+  String get collectionPackUnlock =>
+      'Comes in the Michi\'s Friends pack. Not sold separately.';
 
   @override
-  String get collectionPackUnlock =>
-      'Arrives with Michi & Friends. It is not sold separately.';
+  String get collectionSeePack => 'SEE PACK';
+
+  @override
+  String get packFriendNames => 'Tranqui, Lana and Bandi';
+
+  @override
+  String get packIncludes => 'INCLUDES';
+
+  @override
+  String get packFriendsLine => '3 friends for your room';
+
+  @override
+  String get packNoAdsLine => 'No general ads';
+
+  @override
+  String get packOnceLine => 'One payment, yours for good';
+
+  @override
+  String packBuy(String price) {
+    return 'BUY · $price';
+  }
 
   @override
   String get collectionGiftOnly => 'GIFT';
@@ -1065,11 +1085,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSectionShop => 'Store';
 
   @override
-  String get settingsPackName => 'Michi & Friends';
+  String get settingsPackName => 'Michi\'s Friends';
 
   @override
   String get settingsPackHint =>
-      '3 characters + Michi\'s star. Also removes general ads.';
+      'Tranqui, Lana and Bandi. Also removes general ads.';
 
   @override
   String get settingsOwned => 'Owned';
