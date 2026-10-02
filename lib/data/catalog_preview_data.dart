@@ -262,6 +262,22 @@ abstract final class CatalogPreviewData {
       assetPath: RoomDecorAssets.petBed,
     ),
     CatalogEntry(
+      id: RoomDecorAssets.slimBookcaseId,
+      name: 'Slim bookcase',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.shelf,
+      assetPath: RoomDecorAssets.slimBookcase,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.roundSideTableId,
+      name: 'Round side table',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.shelf,
+      assetPath: RoomDecorAssets.roundSideTable,
+    ),
+    CatalogEntry(
       id: RoomDecorAssets.savingsJarId,
       name: 'Savings jar',
       kind: CatalogKind.item,

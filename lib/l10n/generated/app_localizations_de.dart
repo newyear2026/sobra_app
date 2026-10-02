@@ -725,6 +725,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get roomBlueCreamRug => 'Blau-cremefarbener Teppich';
 
   @override
+  String get roomSlimBookcase => 'Schmales Bücherregal';
+
+  @override
+  String get roomRoundSideTable => 'Runder Beistelltisch';
+
+  @override
   String get roomLaunchSofa => 'Samtsofa';
 
   @override
@@ -753,7 +759,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get roomSuggestSavingsJar =>
-      'Probier den Tisch oder die kleine Bodenecke. Tippe auf eine markierte Stelle.';
+      'Stell das Sparglas auf die Fensterbank oder ein Möbelstück. Stell bei Bedarf erst ein Möbelstück auf.';
+
+  @override
+  String get roomSuggestTablePlant =>
+      'Stell die Pflanze auf die Fensterbank oder ein Möbelstück. Stell bei Bedarf erst ein Möbelstück auf.';
 
   @override
   String get roomSuggestWallShelf =>

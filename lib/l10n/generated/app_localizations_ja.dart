@@ -707,6 +707,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get roomBlueCreamRug => '青とクリームのラグ';
 
   @override
+  String get roomSlimBookcase => 'スリム本棚';
+
+  @override
+  String get roomRoundSideTable => '丸いサイドテーブル';
+
+  @override
   String get roomLaunchSofa => 'ベルベットソファ';
 
   @override
@@ -731,7 +737,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get roomSuggestPetBed => '仲間の左下に置きましょう。光っている場所をタップ。';
 
   @override
-  String get roomSuggestSavingsJar => 'テーブルか床のすみがおすすめ。光っている場所をタップ。';
+  String get roomSuggestSavingsJar => '貯金びんは窓辺か家具の上に置けます。場所がなければ先に家具を置いてください。';
+
+  @override
+  String get roomSuggestTablePlant => '鉢植えは窓辺か家具の上に置けます。場所がなければ先に家具を置いてください。';
 
   @override
   String get roomSuggestWallShelf => '空いている壁に掛けましょう。光っている場所をタップ。';

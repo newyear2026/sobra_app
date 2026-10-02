@@ -1325,6 +1325,18 @@ abstract class AppLocalizations {
   /// **'Tapete azul y crema'**
   String get roomBlueCreamRug;
 
+  /// No description provided for @roomSlimBookcase.
+  ///
+  /// In es, this message translates to:
+  /// **'Estantería estrecha'**
+  String get roomSlimBookcase;
+
+  /// No description provided for @roomRoundSideTable.
+  ///
+  /// In es, this message translates to:
+  /// **'Mesa auxiliar redonda'**
+  String get roomRoundSideTable;
+
   /// No description provided for @roomLaunchSofa.
   ///
   /// In es, this message translates to:
@@ -1376,8 +1388,14 @@ abstract class AppLocalizations {
   /// No description provided for @roomSuggestSavingsJar.
   ///
   /// In es, this message translates to:
-  /// **'Prueba la mesa o el rincón del piso. Toca un lugar marcado.'**
+  /// **'Pon el frasco en el alféizar o sobre un mueble. Añade un mueble si hace falta.'**
   String get roomSuggestSavingsJar;
+
+  /// No description provided for @roomSuggestTablePlant.
+  ///
+  /// In es, this message translates to:
+  /// **'Pon la planta en el alféizar o sobre un mueble. Añade un mueble si hace falta.'**
+  String get roomSuggestTablePlant;
 
   /// No description provided for @roomSuggestWallShelf.
   ///

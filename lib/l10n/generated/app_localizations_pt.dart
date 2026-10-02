@@ -723,6 +723,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get roomBlueCreamRug => 'Tapete azul e creme';
 
   @override
+  String get roomSlimBookcase => 'Estante estreita';
+
+  @override
+  String get roomRoundSideTable => 'Mesa lateral redonda';
+
+  @override
   String get roomLaunchSofa => 'Sofá de veludo';
 
   @override
@@ -751,7 +757,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get roomSuggestSavingsJar =>
-      'Tente a mesa ou o cantinho do piso. Toque num lugar marcado.';
+      'Coloque o pote no peitoril ou sobre um móvel. Adicione um móvel se precisar.';
+
+  @override
+  String get roomSuggestTablePlant =>
+      'Coloque a planta no peitoril ou sobre um móvel. Adicione um móvel se precisar.';
 
   @override
   String get roomSuggestWallShelf =>

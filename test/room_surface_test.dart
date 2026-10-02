@@ -118,7 +118,7 @@ void main() {
       final placements = <RoomSlot, String>{
         RoomSlot.floorCabinet: RoomDecorAssets.lowCabinetId,
         RoomSlot.floorCenter: RoomDecorAssets.petBedId,
-        RoomSlot.floorAccent: RoomDecorAssets.savingsJarId,
+        RoomSlot.cabinetTop: RoomDecorAssets.savingsJarId,
         RoomSlot.wallLeft: RoomDecorAssets.wallShelfId,
         RoomSlot.floorRight: RoomDecorAssets.terracottaPoufId,
         RoomSlot.rug: RoomDecorAssets.blueCreamRugId,
@@ -129,12 +129,39 @@ void main() {
         expect(RoomDecorAssets.assetFor(placement.value), isNotNull);
       }
       expect(garden.slotsForItem(RoomDecorAssets.savingsJarId), [
-        RoomSlot.floorAccent,
+        RoomSlot.cabinetTop,
+        RoomSlot.sideTableTop,
       ]);
       expect(RoomThemes.casaClara.slotsForItem(RoomDecorAssets.savingsJarId), [
+        RoomSlot.cabinetTop,
+        RoomSlot.sideTableTop,
         RoomSlot.tabletop,
-        RoomSlot.floorAccent,
       ]);
+      expect(
+        garden.slotsForItem(RoomDecorAssets.savingsJarId, placements: {}),
+        isEmpty,
+      );
+      expect(
+        garden.slotsForItem(
+          RoomDecorAssets.defaultTablePlantId,
+          placements: {},
+        ),
+        isEmpty,
+      );
+      expect(
+        garden.slotsForItem(
+          RoomDecorAssets.savingsJarId,
+          placements: placements,
+        ),
+        [RoomSlot.cabinetTop],
+      );
+      expect(
+        garden.slotsForItem(
+          RoomDecorAssets.defaultTablePlantId,
+          placements: placements,
+        ),
+        [RoomSlot.cabinetTopRight],
+      );
 
       await store.saveRoomSelection(
         roomId: garden.id,
@@ -145,6 +172,84 @@ void main() {
         equals(placements),
       );
     });
+
+    test('bookcase and side table support separate movable props', () async {
+      final store = await _store();
+      final room = RoomThemes.casaJardin;
+      final placements = <RoomSlot, String>{
+        RoomSlot.floorCabinet: RoomDecorAssets.slimBookcaseId,
+        RoomSlot.floorRight: RoomDecorAssets.roundSideTableId,
+        RoomSlot.cabinetTop: RoomDecorAssets.savingsJarId,
+        RoomSlot.sideTableTop: RoomDecorAssets.defaultTablePlantId,
+      };
+      expect(room.slotsForItem(RoomDecorAssets.slimBookcaseId), [
+        RoomSlot.floorCabinet,
+      ]);
+      expect(room.slotsForItem(RoomDecorAssets.roundSideTableId), [
+        RoomSlot.floorRight,
+      ]);
+      expect(
+        room.slotsForItem(RoomDecorAssets.savingsJarId, placements: placements),
+        [RoomSlot.cabinetTop, RoomSlot.sideTableTop],
+      );
+      expect(
+        room.slotsForItem(
+          RoomDecorAssets.defaultTablePlantId,
+          placements: placements,
+        ),
+        [RoomSlot.cabinetTopRight, RoomSlot.sideTableTop],
+      );
+      await store.saveRoomSelection(
+        roomId: room.id,
+        placementsByRoom: {room.id: placements},
+      );
+      expect(
+        store.roomDecorationsFor(room.id),
+        containsPair(
+          RoomSlot.sideTableTop,
+          RoomDecorAssets.defaultTablePlantId,
+        ),
+      );
+      await expectLater(
+        store.saveRoomSelection(
+          roomId: room.id,
+          placementsByRoom: {
+            room.id: {
+              ...placements,
+              RoomSlot.floorRight: RoomDecorAssets.terracottaPoufId,
+            },
+          },
+        ),
+        throwsArgumentError,
+      );
+    });
+
+    test(
+      'the jar needs a cabinet and an old floor jar moves onto it',
+      () async {
+        final store = await _store();
+        await expectLater(
+          store.saveRoomSelection(
+            roomId: RoomThemes.casaJardinId,
+            placementsByRoom: {
+              RoomThemes.casaJardinId: {
+                RoomSlot.cabinetTop: RoomDecorAssets.savingsJarId,
+              },
+            },
+          ),
+          throwsArgumentError,
+        );
+
+        final migrated = await _reloadWithSavedRoom({
+          'floorCabinet': RoomDecorAssets.lowCabinetId,
+          'floorAccent': RoomDecorAssets.savingsJarId,
+        });
+        final room = migrated.roomDecorationsFor();
+        expect(room[RoomSlot.floorAccent], isNull);
+        expect(room[RoomSlot.cabinetTop], RoomDecorAssets.savingsJarId);
+        expect(room[RoomSlot.floorCabinet], RoomDecorAssets.lowCabinetId);
+      },
+    );
 
     // The lamp is a desk lamp. It used to be saved on the floor by the
     // window, which is exactly what looked wrong; it now belongs on the table.
@@ -187,6 +292,12 @@ void main() {
       );
       expect(
         () => store.saveRoomDecorations({
+          RoomSlot.floorLeft: RoomDecorAssets.defaultTablePlantId,
+        }),
+        throwsArgumentError,
+      );
+      expect(
+        () => store.saveRoomDecorations({
           RoomSlot.wallLeft: 'item-05',
           RoomSlot.wallCenter: 'item-05',
         }),
@@ -201,7 +312,9 @@ void main() {
         placementsByRoom: {
           RoomThemes.casaJardinId: {
             RoomSlot.rug: RoomDecorAssets.defaultRugId,
-            RoomSlot.floorRight: RoomDecorAssets.defaultTablePlantId,
+            RoomSlot.floorCabinet: RoomDecorAssets.lowCabinetId,
+            RoomSlot.cabinetTopRight: RoomDecorAssets.defaultTablePlantId,
+            RoomSlot.floorRight: RoomDecorAssets.terracottaPoufId,
           },
         },
       );
@@ -210,7 +323,9 @@ void main() {
         placementsByRoom: {
           RoomThemes.casaDePlayaId: {
             RoomSlot.rug: RoomDecorAssets.defaultRugId,
-            RoomSlot.floorLeft: RoomDecorAssets.defaultTablePlantId,
+            RoomSlot.floorCabinet: RoomDecorAssets.lowCabinetId,
+            RoomSlot.cabinetTopRight: RoomDecorAssets.defaultTablePlantId,
+            RoomSlot.wallLeft: RoomDecorAssets.wallShelfId,
           },
         },
       );
@@ -221,13 +336,13 @@ void main() {
         reloaded.roomDecorationsFor(
           RoomThemes.casaJardinId,
         )[RoomSlot.floorRight],
-        RoomDecorAssets.defaultTablePlantId,
+        RoomDecorAssets.terracottaPoufId,
       );
       expect(
         reloaded.roomDecorationsFor(
           RoomThemes.casaDePlayaId,
-        )[RoomSlot.floorLeft],
-        RoomDecorAssets.defaultTablePlantId,
+        )[RoomSlot.wallLeft],
+        RoomDecorAssets.wallShelfId,
       );
     });
   });
@@ -290,8 +405,7 @@ void main() {
       expect(store.roomDecorationsFor().containsValue('item-05'), isFalse);
     });
 
-    // A room without a table still needs somewhere for the starter plant.
-    testWidgets('the small plant can go on the table or the floor', (
+    testWidgets('the table plant is offered only on a supporting surface', (
       tester,
     ) async {
       final store = await _store();
@@ -300,14 +414,13 @@ void main() {
       await _tapAndSettle(tester, find.text('Planta de mesa'));
 
       expect(find.bySemanticsLabel('Mesa, lugar 1'), findsOneWidget);
-      expect(find.bySemanticsLabel('Piso, lugar 1'), findsOneWidget);
-      expect(find.bySemanticsLabel('Piso, lugar 2'), findsOneWidget);
+      expect(find.bySemanticsLabel(RegExp('^Piso, lugar')), findsNothing);
 
-      await _tapAndSettle(tester, find.bySemanticsLabel('Piso, lugar 2'));
+      await _tapAndSettle(tester, find.bySemanticsLabel('Mesa, lugar 1'));
       await _tapAndSettle(tester, find.text('Listo'));
 
       final room = (await SobraStore.load(now: _now)).roomDecorationsFor();
-      expect(room[RoomSlot.floorRight], RoomDecorAssets.defaultTablePlantId);
+      expect(room[RoomSlot.floorRight], isNull);
       expect(room[RoomSlot.tabletop], isNull);
     });
 

@@ -131,10 +131,7 @@ void main() {
 
     expect(store.equippedRoomId, RoomThemes.casaDePlayaId);
     expect((await loadStore()).equippedRoomId, RoomThemes.casaDePlayaId);
-    expect(
-      store.roomDecorationsFor()[RoomSlot.floorLeft],
-      RoomDecorAssets.defaultTablePlantId,
-    );
+    expect(store.roomDecorationsFor()[RoomSlot.floorLeft], isNull);
   });
 
   testWidgets('panoramic room can be selected and saved', (tester) async {
@@ -215,6 +212,130 @@ void main() {
     expect(saved[RoomSlot.floorLeft], RoomDecorAssets.rattanChairId);
     expect(saved[RoomSlot.floorRight], RoomDecorAssets.floorLampId);
     expect(saved[RoomSlot.wallLeft], RoomDecorAssets.wallClockId);
+  });
+
+  testWidgets('the jar sits on the cabinet and leaves with it', (tester) async {
+    final store = await loadStore();
+    await pump(tester, store);
+    await openCategory(tester, 'Casa');
+    await tester.tap(find.text('Casa jardín'));
+    await tester.pumpAndSettle();
+    await openCategory(tester, 'Muebles');
+    await tester.tap(find.text('Aparador bajo'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Piso, lugar 5'));
+    await tester.pumpAndSettle();
+
+    await openCategory(tester, 'Adornos');
+    await tester.tap(find.text('Planta de mesa'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Aparador bajo, lugar 2'), findsOneWidget);
+    await tester.tap(find.bySemanticsLabel('Aparador bajo, lugar 2'));
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<RoomScene>(find.byType(RoomScene)).placements,
+      containsPair(
+        RoomSlot.cabinetTopRight,
+        RoomDecorAssets.defaultTablePlantId,
+      ),
+    );
+
+    await tester.tap(find.text('Frasco de ahorros'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Aparador bajo, lugar 1'), findsOneWidget);
+    await tester.tap(find.bySemanticsLabel('Aparador bajo, lugar 1'));
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<RoomScene>(find.byType(RoomScene)).placements,
+      containsPair(RoomSlot.cabinetTop, RoomDecorAssets.savingsJarId),
+    );
+
+    await openCategory(tester, 'Muebles');
+    await tester.tap(find.text('Aparador bajo'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Piso, lugar 5'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Listo'));
+    await tester.pumpAndSettle();
+
+    final saved = (await loadStore()).roomDecorationsFor(
+      RoomThemes.casaJardinId,
+    );
+    expect(saved[RoomSlot.floorCabinet], isNull);
+    expect(saved[RoomSlot.cabinetTop], isNull);
+    expect(saved[RoomSlot.cabinetTopRight], isNull);
+  });
+
+  testWidgets('bookcase and side table take props in distinct places', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store);
+    await openCategory(tester, 'Casa');
+    await tester.tap(find.text('Casa jardín'));
+    await tester.pumpAndSettle();
+    await openCategory(tester, 'Muebles');
+
+    await tester.scrollUntilVisible(
+      find.text('Estantería estrecha'),
+      180,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.ensureVisible(find.text('Estantería estrecha'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Estantería estrecha'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Piso, lugar 5'));
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(
+      find.text('Mesa auxiliar redonda'),
+      180,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.ensureVisible(find.text('Mesa auxiliar redonda'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Mesa auxiliar redonda'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Piso, lugar 2'));
+    await tester.pumpAndSettle();
+
+    await openCategory(tester, 'Adornos');
+    await tester.tap(find.text('Frasco de ahorros'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Estantería estrecha, lugar 1'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Planta de mesa'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Mesa auxiliar redonda, lugar 1'));
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<RoomScene>(find.byType(RoomScene)).placements,
+      containsPair(RoomSlot.sideTableTop, RoomDecorAssets.defaultTablePlantId),
+    );
+
+    await openCategory(tester, 'Muebles');
+    await tester.scrollUntilVisible(
+      find.text('Mesa auxiliar redonda'),
+      180,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.ensureVisible(find.text('Mesa auxiliar redonda'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Mesa auxiliar redonda'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Piso, lugar 2'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Listo'));
+    await tester.pumpAndSettle();
+
+    final saved = (await loadStore()).roomDecorationsFor(
+      RoomThemes.casaJardinId,
+    );
+    expect(saved[RoomSlot.floorCabinet], RoomDecorAssets.slimBookcaseId);
+    expect(saved[RoomSlot.cabinetTop], RoomDecorAssets.savingsJarId);
+    expect(saved[RoomSlot.floorRight], isNull);
+    expect(saved[RoomSlot.sideTableTop], isNull);
   });
 
   group('characters', () {

@@ -109,7 +109,7 @@ class RoomScene extends StatelessWidget {
               ? null
               : RoomDecorAssets.assetFor(selected);
           final targets = showSlots && selected != null
-              ? room.slotsForItem(selected)
+              ? room.slotsForItem(selected, placements: placements)
               : const <RoomSlot>[];
           final imageSize = variant == RoomSceneVariant.preview
               ? room.previewSize
@@ -120,7 +120,55 @@ class RoomScene extends StatelessWidget {
             floorFocus: layout.floorFocus,
           );
           final stageScale = background.height / imageSize.height;
+          late Rect Function(RoomSlot, String) itemFrame;
           Rect slotFrame(RoomSlot slot) {
+            if (slot == RoomSlot.cabinetTop ||
+                slot == RoomSlot.cabinetTopRight) {
+              final supportId =
+                  placements[RoomSlot.floorCabinet] ==
+                      RoomDecorAssets.slimBookcaseId
+                  ? RoomDecorAssets.slimBookcaseId
+                  : RoomDecorAssets.lowCabinetId;
+              final cabinet = itemFrame(RoomSlot.floorCabinet, supportId);
+              final height = cabinet.height;
+              if (supportId == RoomDecorAssets.slimBookcaseId) {
+                // The jar rests inside the open middle shelf; the plant
+                // stands on the top board. Both are separate movable sprites.
+                final bottom =
+                    cabinet.top +
+                    height * (slot == RoomSlot.cabinetTop ? .69 : .20);
+                return Rect.fromLTWH(
+                  cabinet.center.dx - height * .20,
+                  bottom - height * .16,
+                  height * .40,
+                  height * .16,
+                );
+              }
+              // Both small props follow the cabinet top as it moves and
+              // scales between the Home card and the portrait room.
+              return Rect.fromLTWH(
+                cabinet.center.dx +
+                    height * (slot == RoomSlot.cabinetTop ? -.52 : .06),
+                // Both sprites have transparent pixels below their visible
+                // bases; overlap the wood slightly so neither looks afloat.
+                cabinet.top + height * .04,
+                height * .5,
+                height * .4,
+              );
+            }
+            if (slot == RoomSlot.sideTableTop) {
+              final table = itemFrame(
+                RoomSlot.floorRight,
+                RoomDecorAssets.roundSideTableId,
+              );
+              final height = table.height;
+              return Rect.fromLTWH(
+                table.center.dx - height * .28,
+                table.top + height * .29,
+                height * .56,
+                height * .18,
+              );
+            }
             final rect = layout.slotRects[slot]!;
             final frame = slot.surface == RoomSurface.rug
                 ? Offset.zero & size
@@ -136,7 +184,7 @@ class RoomScene extends StatelessWidget {
           /// Where [itemId] is drawn in [slot]: its own stage height, standing
           /// on the slot's bottom edge or hung on its centre. The box is wider
           /// than any item so the image keeps its own shape inside it.
-          Rect itemFrame(RoomSlot slot, String itemId) {
+          itemFrame = (RoomSlot slot, String itemId) {
             final spot = slotFrame(slot);
             final stageHeight = RoomDecorAssets.stageHeightFor(itemId);
             if (stageHeight == null) return spot;
@@ -151,10 +199,17 @@ class RoomScene extends StatelessWidget {
             final height =
                 stageHeight * stageScale * layout.itemScale * (1 + depth * .6);
             final width = height * 3;
+            // These two generated sprites have transparent canvas beneath
+            // their feet. Align the opaque feet with the room's floor anchor.
+            final footInset = switch (itemId) {
+              RoomDecorAssets.slimBookcaseId => .08,
+              RoomDecorAssets.roundSideTableId => .15,
+              _ => 0.0,
+            };
             return switch (slot.surface) {
               RoomSurface.floor || RoomSurface.tabletop => Rect.fromLTWH(
                 spot.center.dx - width / 2,
-                spot.bottom - height,
+                spot.bottom - height + height * footInset,
                 width,
                 height,
               ),
@@ -164,24 +219,45 @@ class RoomScene extends StatelessWidget {
                 height: height,
               ),
             };
-          }
+          };
 
           // The rug lies under everything; the rest overlap by where they
           // stand, so something lower on screen — nearer the viewer — is
           // drawn over what stands behind it.
+          bool hasSupport(RoomSlot slot) => switch (slot) {
+            RoomSlot.cabinetTop || RoomSlot.cabinetTopRight =>
+              placements[RoomSlot.floorCabinet] ==
+                      RoomDecorAssets.lowCabinetId ||
+                  placements[RoomSlot.floorCabinet] ==
+                      RoomDecorAssets.slimBookcaseId,
+            RoomSlot.sideTableTop =>
+              placements[RoomSlot.floorRight] ==
+                  RoomDecorAssets.roundSideTableId,
+            _ => true,
+          };
           final placed =
               [
                 for (final slot in room.slots)
                   if (placements[slot] case final itemId?)
-                    if (RoomDecorAssets.assetFor(itemId) case final asset?)
-                      (
-                        slot: slot,
-                        asset: asset,
-                        frame: itemFrame(slot, itemId),
-                      ),
+                    if (hasSupport(slot))
+                      if (RoomDecorAssets.assetFor(itemId) case final asset?)
+                        (
+                          slot: slot,
+                          asset: asset,
+                          frame: itemFrame(slot, itemId),
+                        ),
               ]..sort((a, b) {
                 if (a.slot.surface == RoomSurface.rug) return -1;
                 if (b.slot.surface == RoomSurface.rug) return 1;
+                final atopA =
+                    a.slot == RoomSlot.cabinetTop ||
+                    a.slot == RoomSlot.cabinetTopRight ||
+                    a.slot == RoomSlot.sideTableTop;
+                final atopB =
+                    b.slot == RoomSlot.cabinetTop ||
+                    b.slot == RoomSlot.cabinetTopRight ||
+                    b.slot == RoomSlot.sideTableTop;
+                if (atopA != atopB) return atopA ? 1 : -1;
                 return a.frame.bottom.compareTo(b.frame.bottom);
               });
 
@@ -346,7 +422,23 @@ class RoomScene extends StatelessWidget {
               for (final slot in targets)
                 _RoomSlotTarget(
                   slot: slot,
-                  number: room.slotsFor(slot.surface).indexOf(slot) + 1,
+                  number: switch (slot) {
+                    RoomSlot.cabinetTop => 1,
+                    RoomSlot.cabinetTopRight => 2,
+                    RoomSlot.sideTableTop => 1,
+                    _ => room.slotsFor(slot.surface).indexOf(slot) + 1,
+                  },
+                  supportLabel: switch (slot) {
+                    RoomSlot.cabinetTop || RoomSlot.cabinetTopRight =>
+                      placements[RoomSlot.floorCabinet] ==
+                              RoomDecorAssets.slimBookcaseId
+                          ? AppLocalizations.of(context).roomSlimBookcase
+                          : AppLocalizations.of(context).roomLowCabinet,
+                    RoomSlot.sideTableTop => AppLocalizations.of(
+                      context,
+                    ).roomRoundSideTable,
+                    _ => null,
+                  },
                   frame: slotFrame(slot),
                   ghostFrame: itemFrame(slot, selected!),
                   holdsSelection: placements[slot] == selected,
@@ -695,6 +787,7 @@ class _RoomSlotTarget extends StatelessWidget {
   const _RoomSlotTarget({
     required this.slot,
     required this.number,
+    required this.supportLabel,
     required this.frame,
     required this.ghostFrame,
     required this.holdsSelection,
@@ -704,6 +797,7 @@ class _RoomSlotTarget extends StatelessWidget {
 
   final RoomSlot slot;
   final int number;
+  final String? supportLabel;
   final Rect frame;
 
   /// Where the item would be drawn, in the scene's coordinates like [frame].
@@ -715,12 +809,14 @@ class _RoomSlotTarget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final surface = switch (slot.surface) {
-      RoomSurface.wall => l10n.roomSurfaceWall,
-      RoomSurface.floor => l10n.roomSurfaceFloor,
-      RoomSurface.tabletop => l10n.roomSurfaceTabletop,
-      RoomSurface.rug => l10n.roomSurfaceRug,
-    };
+    final surface =
+        supportLabel ??
+        switch (slot.surface) {
+          RoomSurface.wall => l10n.roomSurfaceWall,
+          RoomSurface.floor => l10n.roomSurfaceFloor,
+          RoomSurface.tabletop => l10n.roomSurfaceTabletop,
+          RoomSurface.rug => l10n.roomSurfaceRug,
+        };
     final markSize = math.min(frame.width * .3, 22.0);
     return Positioned.fromRect(
       rect: frame,
