@@ -564,6 +564,14 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get collectionAlsoInPack => '「Michiの仲間たち」パックにも入っています';
+
+  @override
+  String packAlreadyOwned(String names) {
+    return 'すでに持っている仲間：$names。パックの価格は変わりません。';
+  }
+
+  @override
   String get collectionGiftOnly => 'ギフト';
 
   @override
@@ -692,6 +700,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get roomLowCabinet => 'ローキャビネット';
 
   @override
+  String get roomSlimBookcase => 'スリム本棚';
+
+  @override
+  String get roomRoundSideTable => '丸いサイドテーブル';
+
+  @override
   String get roomPetBed => 'ペットベッド';
 
   @override
@@ -707,16 +721,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get roomBlueCreamRug => '青とクリームのラグ';
 
   @override
-  String get roomSlimBookcase => 'スリム本棚';
-
-  @override
-  String get roomRoundSideTable => '丸いサイドテーブル';
-
-  @override
   String get roomLaunchSofa => 'ベルベットソファ';
 
   @override
   String get roomLaunchTv => 'おはなしテレビ';
+
+  @override
+  String get roomIvorySofa => 'アイボリーソファ';
+
+  @override
+  String get roomBronzeLanternLamp => 'ブロンズのランタンランプ';
 
   @override
   String get launchGiftTitle => 'リリース記念プレゼントが届きました！';
@@ -1771,10 +1785,60 @@ class AppLocalizationsJa extends AppLocalizations {
   String get prologueLockedSoon => 'イラスト準備中';
 
   @override
-  String get prologueOtherStays => 'もう一匹も一緒に暮らします。仲間はあとから変えられます。';
+  String get prologueLiveTogether => '一緒に暮らす';
 
   @override
-  String get prologueLiveTogether => '一緒に暮らす';
+  String prologueOtherWaits(String name) {
+    return '$nameは恥ずかしがってドアのそばに残りました。記録した日が3日になると来てくれます。広告2回ですぐ呼ぶこともできます。';
+  }
+
+  @override
+  String homeStarterWaiting(String name) {
+    return '$nameがドアのそばで待っています';
+  }
+
+  @override
+  String homeStarterDays(int target) {
+    return '記録した日が$target日で来てくれます';
+  }
+
+  @override
+  String homeStarterCallNow(int target, int progress) {
+    return '広告$target回ですぐ呼ぶ · $progress/$target';
+  }
+
+  @override
+  String starterArrivalKicker(int days) {
+    return '記録した日 $days日';
+  }
+
+  @override
+  String starterArrivalTitle(String name) {
+    return '$nameが来てくれました！';
+  }
+
+  @override
+  String get starterArrivalLine => '「毎日つけてるの、見てたよ。ぼくも手伝いたい！」';
+
+  @override
+  String starterArrivalKeep(String name) {
+    return '今は$nameといっしょに';
+  }
+
+  @override
+  String starterArrivalSwitch(String name) {
+    return '$nameと暮らす';
+  }
+
+  @override
+  String collectionStarterUnlock(
+    int days,
+    int daysTarget,
+    int ads,
+    int adsTarget,
+  ) {
+    return '記録した日 $days/$daysTarget日、または広告 $ads/$adsTarget回。先に届いたほうで来てくれます。';
+  }
 
   @override
   String prologueGreeting(String name) {
@@ -1789,6 +1853,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get onboardingPromise => '今日いくら使えるか、お知らせします。';
+
+  @override
+  String get onboardingNoAccount => 'アカウント不要。データはあなたのスマホに残ります。';
 
   @override
   String get onboardingHowPaid => 'お金はどう入ってきますか？';

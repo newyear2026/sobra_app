@@ -11,9 +11,11 @@ import '../widgets/fixed_expenses.dart';
 import '../widgets/gamification_ui.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/room_scene.dart';
+import '../widgets/starter_friend.dart';
 import '../widgets/transaction_row.dart';
 import 'app_shell.dart';
 import 'cash_count_screen.dart';
+import 'collection_screen.dart';
 import 'daily_mission_screen.dart';
 import 'room_screen.dart';
 import 'xp_history_screen.dart';
@@ -222,6 +224,24 @@ class HomeScreen extends StatelessWidget {
                       builder: (_) => const DailyMissionScreen(),
                     ),
                   ),
+                  footer: switch (store.waitingStarter) {
+                    final waiting? => StarterWaitingRow(
+                      characterId: waiting.id,
+                      recordedDays: store.recordedDayCount,
+                      recordedToday: store.recordedToday,
+                      adProgress: store.rewardedAdProgressFor(waiting.id),
+                      adTarget: waiting.rewardedAdTarget!,
+                      // The collection is where rewarded ads play; this only
+                      // opens the starter's card there.
+                      onCallWithAds: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) =>
+                              CollectionScreen(initialEntryId: waiting.id),
+                        ),
+                      ),
+                    ),
+                    null => null,
+                  },
                 ),
                 const SizedBox(height: 20),
                 Row(

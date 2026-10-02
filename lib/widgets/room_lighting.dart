@@ -96,6 +96,13 @@ const _windowGlass = Rect.fromLTRB(424, 168, 673, 490);
 Offset roomLampLight(Rect frame, {required bool floorLamp}) =>
     Offset(frame.center.dx, frame.top + frame.height * (floorLamp ? .19 : .23));
 
+/// The hanging lantern sits to the right of its bronze stem. These fractions
+/// are measured on the transparent sprite, including the canvas margin.
+Offset roomBronzeLampLight(Rect frame) => Offset(
+  frame.center.dx + frame.height * .046,
+  frame.top + frame.height * .188,
+);
+
 /// Laid over the background, under furniture and the character.
 class RoomAmbientTint extends CustomPainter {
   const RoomAmbientTint({required this.phase, required this.background});
@@ -186,17 +193,18 @@ class RoomLampGlow extends CustomPainter {
     required this.background,
     required this.floorLamps,
     required this.tableLamps,
+    this.bronzeLamps = const [],
   });
 
   final Rect background;
   final List<Rect> floorLamps;
   final List<Rect> tableLamps;
+  final List<Rect> bronzeLamps;
 
   @override
   void paint(Canvas canvas, Size size) {
     final floorY = background.top + background.height * (782 / 1536);
-    for (final lamp in floorLamps) {
-      final shade = roomLampLight(lamp, floorLamp: true);
+    void paintFloorLamp(Offset shade, Offset feet) {
       canvas.save();
       canvas.clipRect(Rect.fromLTRB(0, 0, size.width, floorY));
       _glow(
@@ -211,12 +219,28 @@ class RoomLampGlow extends CustomPainter {
       canvas.clipRect(Rect.fromLTRB(0, floorY, size.width, size.height));
       _glow(
         canvas,
-        Offset(lamp.center.dx, lamp.bottom + background.height * .013),
+        feet,
         background.width * .25,
         background.height * .07,
         const Color(0x8CF6B868),
       );
       canvas.restore();
+    }
+
+    for (final lamp in floorLamps) {
+      paintFloorLamp(
+        roomLampLight(lamp, floorLamp: true),
+        Offset(lamp.center.dx, lamp.bottom + background.height * .013),
+      );
+    }
+    for (final lamp in bronzeLamps) {
+      paintFloorLamp(
+        roomBronzeLampLight(lamp),
+        Offset(
+          lamp.center.dx - lamp.height * .033,
+          lamp.top + lamp.height * .954 + background.height * .013,
+        ),
+      );
     }
     for (final lamp in tableLamps) {
       _glow(
@@ -233,14 +257,16 @@ class RoomLampGlow extends CustomPainter {
   bool shouldRepaint(RoomLampGlow oldDelegate) =>
       oldDelegate.background != background ||
       oldDelegate.floorLamps != floorLamps ||
-      oldDelegate.tableLamps != tableLamps;
+      oldDelegate.tableLamps != tableLamps ||
+      oldDelegate.bronzeLamps != bronzeLamps;
 }
 
 /// The bright bloom on a floor lamp's shade, drawn over the lamp itself.
 class RoomLampShades extends CustomPainter {
-  const RoomLampShades({required this.floorLamps});
+  const RoomLampShades({required this.floorLamps, this.bronzeLamps = const []});
 
   final List<Rect> floorLamps;
+  final List<Rect> bronzeLamps;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -253,11 +279,21 @@ class RoomLampShades extends CustomPainter {
         const Color(0xAFFFE6A5),
       );
     }
+    for (final lamp in bronzeLamps) {
+      _glow(
+        canvas,
+        roomBronzeLampLight(lamp),
+        lamp.height * .055,
+        lamp.height * .075,
+        const Color(0xAFFFE6A5),
+      );
+    }
   }
 
   @override
   bool shouldRepaint(RoomLampShades oldDelegate) =>
-      oldDelegate.floorLamps != floorLamps;
+      oldDelegate.floorLamps != floorLamps ||
+      oldDelegate.bronzeLamps != bronzeLamps;
 }
 
 void _glow(

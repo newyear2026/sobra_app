@@ -9,6 +9,102 @@ import 'package:sobra_app/widgets/room_scene.dart';
 import 'support/localizations.dart';
 
 void main() {
+  testWidgets('lamps clear large furniture and the pouf sits in front', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1024, 2048);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load(now: () => DateTime(2026, 9, 14, 10));
+    await store.setReducedMotion(true);
+
+    for (final variant in RoomSceneVariant.values) {
+      Future<void> show(Map<RoomSlot, String> placements) async {
+        await tester.pumpWidget(
+          SobraScope(
+            store: store,
+            child: MaterialApp(
+              localizationsDelegates: sobraLocalizationsDelegates,
+              supportedLocales: sobraSupportedLocales,
+              home: Center(
+                child: SizedBox(
+                  width: 1000,
+                  height: variant == RoomSceneVariant.preview ? 500 : 1400,
+                  child: RoomScene(
+                    variant: variant,
+                    roomId: RoomThemes.casaMontanaId,
+                    placements: placements,
+                    message: '',
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pump();
+      }
+
+      Rect frame(String asset) => tester.getRect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Image &&
+              widget.image is AssetImage &&
+              (widget.image as AssetImage).assetName == asset,
+        ),
+      );
+
+      await show(const {
+        RoomSlot.floorCabinet: RoomDecorAssets.launchTvId,
+        RoomSlot.floorSofa: RoomDecorAssets.launchSofaId,
+        RoomSlot.floorLeft: RoomDecorAssets.floorLampId,
+        RoomSlot.floorRight: RoomDecorAssets.terracottaPoufId,
+      });
+      final background = frame(
+        variant == RoomSceneVariant.preview
+            ? RoomThemes.casaMontana.previewAsset
+            : RoomThemes.casaMontana.portraitAsset,
+      );
+      final lamp = frame(RoomDecorAssets.floorLamp);
+      final tv = frame(RoomDecorAssets.launchTv);
+      final sofa = frame(RoomDecorAssets.launchSofa);
+      final pouf = frame(RoomDecorAssets.terracottaPouf);
+      // The shade can extend horizontally above the TV. Its stem must
+      // clear the unit and the shade must finish above the screen.
+      final lampStemRight = lamp.center.dx + lamp.height * .025;
+      final tvLeft = tv.center.dx - tv.height * (520 / 465) / 2;
+      expect(lampStemRight, lessThan(tvLeft));
+      expect(lamp.top + lamp.height * .28, lessThan(tv.top));
+      expect(pouf.top, greaterThan(sofa.center.dy));
+      expect(pouf.bottom, greaterThan(sofa.bottom));
+
+      await show(const {
+        RoomSlot.floorCabinet: RoomDecorAssets.launchTvId,
+        RoomSlot.floorSofa: RoomDecorAssets.launchSofaId,
+        RoomSlot.floorRight: RoomDecorAssets.floorLampId,
+      });
+      expect(
+        frame(RoomDecorAssets.floorLamp).center.dx,
+        greaterThan(background.left + background.width * .9),
+      );
+      final images = tester
+          .widgetList<Image>(
+            find.descendant(
+              of: find.byType(RoomScene),
+              matching: find.byType(Image),
+            ),
+          )
+          .where((image) => image.image is AssetImage)
+          .map((image) => (image.image as AssetImage).assetName)
+          .toList();
+      expect(
+        images.indexOf(RoomDecorAssets.floorLamp),
+        lessThan(images.indexOf(RoomDecorAssets.launchSofa)),
+      );
+    }
+  });
+
   testWidgets(
     'Home and room decor align to the same wall and floor landmarks',
     (tester) async {
@@ -162,7 +258,10 @@ void main() {
           baseboard: portraitBaseboard,
           wall: wall,
         );
-        if (item != 'bed') {
+        // Foreground seats are pulled into the shorter viewport so their
+        // feet remain visible. Back-row furniture and wall decor retain
+        // their position relative to the room landmarks.
+        if (!const ['chair', 'pouf', 'bed'].contains(item)) {
           expect(
             (previewDepth - portraitDepth).abs(),
             lessThan(.04),
@@ -197,21 +296,25 @@ void main() {
             portrait[item]!.height /
             portrait['background']!.height /
             (portraitBaseboard - portraitWindow);
-        expect(
-          (previewHeight - portraitHeight).abs(),
-          lessThan(.02),
-          reason: '$item height',
-        );
+        if (item != 'bed') {
+          expect(
+            (previewHeight - portraitHeight).abs(),
+            lessThan(.02),
+            reason: '$item height',
+          );
+        }
       }
 
-      // The short Home card needs a shallower floor position than the room
-      // view. Its pet bed must finish above the character's feet and tuck
-      // partly behind the character, instead of reading as a foreground prop.
+      // The pet bed sits beside the character, with its visible base above
+      // the paws and a size that stays readable in the short Home crop.
       for (final scene in [preview, portrait]) {
         final cat = scene['cat']!;
         final bed = scene['bed']!;
-        expect(bed.bottom, lessThan(cat.bottom - cat.height * .15));
-        expect(cat.center.dx - bed.center.dx, lessThan(cat.width * .65));
+        final visibleBottom = bed.top + bed.height * (943 / 1024);
+        final visibleWidth = bed.height * (1218 / 1024);
+        expect(visibleBottom, lessThan(cat.bottom - cat.height * .12));
+        expect(visibleWidth, lessThanOrEqualTo(cat.width * .851));
+        expect(cat.center.dx - bed.center.dx, closeTo(cat.width * .85, 1));
       }
     },
   );

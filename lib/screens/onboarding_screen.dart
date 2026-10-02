@@ -379,11 +379,9 @@ class _TitlePage extends StatelessWidget {
           _Prose(l10n.prologueRainNoEnd),
           _Prose(l10n.prologueRentPaid),
           _Prose(l10n.prologueSoundAtDoor),
-          // No reassurance about accounts here any more. The screen before
-          // this one is where that belongs now: it says what is stored and
-          // offers "start without an account" as a button the user presses.
-          // Repeating "no account needed" one page later told somebody who
-          // had just chosen to connect one the opposite of what they did.
+          // No reassurance about accounts here. The welcome screen before
+          // this one says it, beside the button that leads here; saying it
+          // again one page later is the story stopping to repeat itself.
           const Spacer(),
         ],
       ),
@@ -586,7 +584,18 @@ class _CharacterPickPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          PixelHint(tone: PixelHintTone.neutral, text: l10n.prologueOtherStays),
+          // Said before the choice is confirmed, so picking one is not read as
+          // giving the other up.
+          PixelHint(
+            tone: PixelHintTone.neutral,
+            text: l10n.prologueOtherWaits(
+              CharacterCatalog.resolve(
+                selectedCharacterId == CharacterCatalog.michi.id
+                    ? CharacterCatalog.poodle.id
+                    : CharacterCatalog.michi.id,
+              ).displayName,
+            ),
+          ),
           const Spacer(),
         ],
       ),

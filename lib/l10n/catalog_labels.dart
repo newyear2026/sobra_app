@@ -28,6 +28,10 @@ String catalogEntryDisplayName(AppLocalizations l10n, CatalogEntry entry) {
   }
   if (entry.id == RoomDecorAssets.launchSofaId) return l10n.roomLaunchSofa;
   if (entry.id == RoomDecorAssets.launchTvId) return l10n.roomLaunchTv;
+  if (entry.id == RoomDecorAssets.ivorySofaId) return l10n.roomIvorySofa;
+  if (entry.id == RoomDecorAssets.bronzeLanternLampId) {
+    return l10n.roomBronzeLanternLamp;
+  }
   final number = int.tryParse(entry.id.split('-').last) ?? 0;
   return entry.kind == CatalogKind.character
       ? l10n.collectionCharacterPlaceholder(number)
@@ -39,6 +43,7 @@ const _namedCharacterIds = {
   'poodle',
   'schnauzer',
   'guinea-pig',
+  'quokka',
   'capybara',
   'alpaca',
   'platypus',

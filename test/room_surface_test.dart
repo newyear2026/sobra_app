@@ -65,6 +65,38 @@ Future<void> _tapAndSettle(WidgetTester tester, Finder finder) async {
 
 void main() {
   group('saved rooms', () {
+    test(
+      'ivory sofa and bronze lamp stay placed after reload in all rooms',
+      () async {
+        final store = await _store();
+        for (final room in RoomThemes.all) {
+          await store.saveRoomSelection(
+            roomId: room.id,
+            placementsByRoom: {
+              room.id: {
+                RoomSlot.floorSofa: RoomDecorAssets.ivorySofaId,
+                RoomSlot.floorLeft: RoomDecorAssets.bronzeLanternLampId,
+              },
+            },
+          );
+        }
+        final reloaded = await SobraStore.load(now: _now);
+        for (final room in RoomThemes.all) {
+          expect(
+            reloaded.roomDecorationsFor(room.id),
+            containsPair(RoomSlot.floorSofa, RoomDecorAssets.ivorySofaId),
+          );
+          expect(
+            reloaded.roomDecorationsFor(room.id),
+            containsPair(
+              RoomSlot.floorLeft,
+              RoomDecorAssets.bronzeLanternLampId,
+            ),
+          );
+        }
+      },
+    );
+
     test('launch sofa and TV can stand together in every room', () async {
       final store = await _store();
       await store.grantCatalogEntries({
@@ -348,6 +380,43 @@ void main() {
   });
 
   group('decorating by surface', () {
+    testWidgets('tower furniture is selectable and saved from the drawer', (
+      tester,
+    ) async {
+      final store = await _store();
+      await store.saveRoomSelection(
+        roomId: RoomThemes.casaTorreId,
+        placementsByRoom: const {},
+      );
+      await _pumpDecorator(tester, store);
+
+      Future<void> select(String name) async {
+        await tester.scrollUntilVisible(
+          find.text(name),
+          100,
+          scrollable: find.byType(Scrollable).last,
+        );
+        await _tapAndSettle(tester, find.text(name));
+      }
+
+      await select('Sofá marfil');
+      expect(find.bySemanticsLabel('Piso, lugar 6'), findsOneWidget);
+      await _tapAndSettle(tester, find.bySemanticsLabel('Piso, lugar 6'));
+      await select('Lámpara de bronce');
+      expect(find.bySemanticsLabel('Piso, lugar 2'), findsOneWidget);
+      await _tapAndSettle(tester, find.bySemanticsLabel('Piso, lugar 1'));
+      await _tapAndSettle(tester, find.text('Listo'));
+      final reloaded = await SobraStore.load(now: _now);
+      expect(
+        reloaded.roomDecorationsFor(RoomThemes.casaTorreId),
+        containsPair(RoomSlot.floorSofa, RoomDecorAssets.ivorySofaId),
+      );
+      expect(
+        reloaded.roomDecorationsFor(RoomThemes.casaTorreId),
+        containsPair(RoomSlot.floorLeft, RoomDecorAssets.bronzeLanternLampId),
+      );
+    });
+
     testWidgets('only the places of the chosen item\'s surface are lit', (
       tester,
     ) async {

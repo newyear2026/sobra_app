@@ -17,6 +17,7 @@ import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/gamification_ui.dart';
 import '../widgets/launch_gift_dialog.dart';
+import '../widgets/starter_friend.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/release_announcement.dart';
 import '../widgets/update_prompt.dart';
@@ -90,6 +91,8 @@ class _AppShellState extends State<AppShell> {
   bool _xpNoticeScheduled = false;
   bool _launchGiftScheduled = false;
   bool _launchGiftPresenting = false;
+  bool _starterArrivalScheduled = false;
+  bool _starterArrivalPresenting = false;
   bool _updatePromptScheduled = false;
   bool _announcementScheduled = false;
   String? _runningVersion;
@@ -150,6 +153,7 @@ class _AppShellState extends State<AppShell> {
     );
     _scheduleXpNotice();
     _scheduleLaunchGiftNotice();
+    _scheduleStarterArrival();
   }
 
   @override
@@ -191,6 +195,7 @@ class _AppShellState extends State<AppShell> {
   void _onStoreChanged() {
     _scheduleXpNotice();
     _scheduleLaunchGiftNotice();
+    _scheduleStarterArrival();
   }
 
   void _onUpdatesChanged() {
@@ -203,6 +208,7 @@ class _AppShellState extends State<AppShell> {
     setState(() {});
     _scheduleAnnouncement();
     _scheduleLaunchGiftNotice();
+    _scheduleStarterArrival();
   }
 
   /// Says what the update they already installed changed.
@@ -215,6 +221,7 @@ class _AppShellState extends State<AppShell> {
         announcements == null ||
         !announcements.shouldAnnounce ||
         (_store?.launchGiftNoticePending ?? false) ||
+        _store?.starterArrivalId != null ||
         _store?.pendingXpNotice != null) {
       return;
     }
@@ -240,6 +247,7 @@ class _AppShellState extends State<AppShell> {
         !updates.shouldPrompt ||
         _store?.pendingXpNotice != null ||
         (_store?.launchGiftNoticePending ?? false) ||
+        _store?.starterArrivalId != null ||
         (_announcements?.shouldAnnounce ?? false)) {
       return;
     }
@@ -280,7 +288,12 @@ class _AppShellState extends State<AppShell> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _xpNoticeScheduled = false;
       if (!mounted) return;
-      unawaited(_presentXpNotice().whenComplete(_scheduleLaunchGiftNotice));
+      unawaited(
+        _presentXpNotice().whenComplete(() {
+          _scheduleLaunchGiftNotice();
+          _scheduleStarterArrival();
+        }),
+      );
     });
   }
 
@@ -317,6 +330,53 @@ class _AppShellState extends State<AppShell> {
       // If saving the seen state fails, it remains pending for the next open.
     } finally {
       _launchGiftPresenting = false;
+      if (mounted) {
+        _scheduleStarterArrival();
+        _scheduleAnnouncement();
+        _scheduleUpdatePrompt();
+      }
+    }
+  }
+
+  /// Shows the starter that came over by recorded days, once, after anything
+  /// already queued: the XP notice from the very record that brought it, and
+  /// the launch gift.
+  void _scheduleStarterArrival() {
+    final store = _store;
+    if (_starterArrivalScheduled ||
+        _starterArrivalPresenting ||
+        _launchGiftPresenting ||
+        store == null ||
+        store.starterArrivalId == null ||
+        store.pendingXpNotice != null ||
+        store.launchGiftNoticePending) {
+      return;
+    }
+    _starterArrivalScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _starterArrivalScheduled = false;
+      if (mounted) unawaited(_presentStarterArrival());
+    });
+  }
+
+  Future<void> _presentStarterArrival() async {
+    final store = _store;
+    final arrived = store?.starterArrivalId;
+    if (_starterArrivalPresenting || store == null || arrived == null) return;
+    _starterArrivalPresenting = true;
+    try {
+      final switchTo = await showStarterArrivalDialog(
+        context,
+        arrivedId: arrived,
+        currentId: store.characterId,
+      );
+      if (!mounted) return;
+      await store.takeStarterArrival();
+      if (switchTo) await store.chooseCharacter(arrived);
+    } on Object {
+      // A failed save leaves the arrival pending, and it shows again.
+    } finally {
+      _starterArrivalPresenting = false;
       if (mounted) {
         _scheduleAnnouncement();
         _scheduleUpdatePrompt();

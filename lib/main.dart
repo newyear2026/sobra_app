@@ -12,7 +12,7 @@ import 'l10n/labels.dart';
 import 'models/language.dart';
 import 'models/money_movement.dart';
 import 'screens/app_shell.dart';
-import 'screens/login_screen.dart';
+import 'screens/welcome_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/recovery_screen.dart';
 import 'services/app_review_service.dart';
@@ -373,14 +373,13 @@ class _StartupRouter extends StatelessWidget {
   Widget build(BuildContext context) {
     final store = SobraScope.of(context);
     // Order matters. A ledger that will not open is more urgent than anything
-    // else here, so recovery comes before the account offer rather than behind
-    // it: somebody whose data is unreadable should not be asked about backups
-    // first.
+    // else here, so recovery comes before the welcome rather than behind it:
+    // somebody whose data is unreadable should not be greeted first.
     //
-    // The offer is read from the store rather than held in this widget. It
-    // used to live in State, so "start without an account" lasted until the
-    // process died and every cold start asked again — including of people who
-    // had been using Sobra for months.
+    // Whether the welcome has been passed is read from the store rather than
+    // held in this widget. The account offer that stood here before kept it
+    // in State, so its answer lasted until the process died and every cold
+    // start asked again — including of people who had used Sobra for months.
     return AnimatedSwitcher(
       duration: reducedMotionOf(context)
           ? Duration.zero
@@ -388,10 +387,9 @@ class _StartupRouter extends StatelessWidget {
       child: store.hasStorageError
           ? const RecoveryScreen(key: ValueKey('recovery'))
           : !store.hasAnsweredLoginOffer
-          ? LoginScreen(
-              key: const ValueKey('login'),
-              onGoogleContinue: () => unawaited(store.answerLoginOffer()),
-              onGuestContinue: () => unawaited(store.answerLoginOffer()),
+          ? WelcomeScreen(
+              key: const ValueKey('welcome'),
+              onStart: () => unawaited(store.answerLoginOffer()),
             )
           : store.hasCompletedOnboarding
           ? const AppShell(key: ValueKey('app'))

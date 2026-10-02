@@ -6,9 +6,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
-import 'package:sobra_app/screens/login_screen.dart';
 import 'package:sobra_app/screens/onboarding_screen.dart';
 import 'package:sobra_app/screens/recovery_screen.dart';
+import 'package:sobra_app/screens/welcome_screen.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 
 import 'support/localizations.dart';
@@ -77,25 +77,33 @@ void main() {
     expect(reopened.hasAnsweredLoginOffer, isTrue);
   });
 
-  testWidgets('a new install is offered the account once', (tester) async {
+  testWidgets('a new install is welcomed, without being asked to sign in', (
+    tester,
+  ) async {
     final store = await loadStore();
 
     await pumpApp(tester, store);
 
-    expect(find.byType(LoginScreen), findsOneWidget);
+    expect(find.byType(WelcomeScreen), findsOneWidget);
+    expect(
+      find.text('Sin cuenta. Tus datos se quedan contigo.'),
+      findsOneWidget,
+    );
+    // The offer this replaced had a Google button that signed nobody in.
+    expect(find.textContaining('Google'), findsNothing);
   });
 
-  testWidgets('answering it moves on, and a cold start does not ask again', (
+  testWidgets('starting moves on, and a cold start does not welcome again', (
     tester,
   ) async {
     final store = await loadStore();
     await pumpApp(tester, store);
 
-    await tester.tap(find.text('Empezar sin cuenta'));
+    await tester.tap(find.text('Empezar'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
 
-    expect(find.byType(LoginScreen), findsNothing);
+    expect(find.byType(WelcomeScreen), findsNothing);
     expect(find.byType(OnboardingScreen), findsOneWidget);
 
     // The cold start the old build failed: same data, a brand new process.
@@ -103,21 +111,19 @@ void main() {
     await tester.pumpWidget(SobraApp(store: restarted));
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.byType(LoginScreen), findsNothing);
+    expect(find.byType(WelcomeScreen), findsNothing);
     expect(find.byType(OnboardingScreen), findsOneWidget);
   });
 
-  testWidgets('unreadable data is handled before the account question', (
-    tester,
-  ) async {
+  testWidgets('unreadable data is handled before the welcome', (tester) async {
     SharedPreferences.setMockInitialValues({'sobra_state_v2': 'not json'});
     final store = await loadStore();
     expect(store.hasStorageError, isTrue);
 
     await pumpApp(tester, store);
 
-    // A ledger that will not open outranks a question about backups.
+    // A ledger that will not open outranks a greeting.
     expect(find.byType(RecoveryScreen), findsOneWidget);
-    expect(find.byType(LoginScreen), findsNothing);
+    expect(find.byType(WelcomeScreen), findsNothing);
   });
 }

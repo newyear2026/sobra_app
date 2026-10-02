@@ -150,6 +150,7 @@ abstract final class RoomThemes {
     RoomSlot.sideTableTop,
   ];
   // Broad windows and glass walls leave no clear wall for hanging decorations.
+  // Cabinets and side tables still bring their own places for small props.
   static const panoramicRoomSlots = <RoomSlot>[
     RoomSlot.rug,
     RoomSlot.floorLeft,
@@ -158,6 +159,9 @@ abstract final class RoomThemes {
     RoomSlot.floorAccent,
     RoomSlot.floorCabinet,
     RoomSlot.floorSofa,
+    RoomSlot.cabinetTop,
+    RoomSlot.cabinetTopRight,
+    RoomSlot.sideTableTop,
   ];
 
   static const casaClara = RoomTheme(
@@ -263,6 +267,8 @@ abstract final class RoomDecorAssets {
   static const blueCreamRugId = 'decor-blue-cream-rug';
   static const launchSofaId = 'launch-sofa';
   static const launchTvId = 'launch-tv';
+  static const ivorySofaId = 'decor-ivory-sofa';
+  static const bronzeLanternLampId = 'decor-bronze-lantern-lamp';
 
   /// Saved in place of an item for a slot the user emptied.
   ///
@@ -288,6 +294,9 @@ abstract final class RoomDecorAssets {
   static const terracottaPouf = 'assets/rooms/shared_items/terracotta_pouf.png';
   static const blueCreamRug = 'assets/rooms/shared_items/blue_cream_rug.png';
   static const launchSofa = 'assets/rooms/shared_items/launch_sofa.png';
+  static const ivorySofa = 'assets/rooms/shared_items/ivory_sofa.png';
+  static const bronzeLanternLamp =
+      'assets/rooms/shared_items/bronze_lantern_lamp.png';
   static const launchTvBase = 'assets/rooms/shared_items/launch_tv_base.png';
   static const launchTv = 'assets/rooms/shared_items/launch_tv_telenovela.png';
   static const launchTvBlink =
@@ -324,6 +333,8 @@ abstract final class RoomDecorAssets {
     blueCreamRugId => blueCreamRug,
     launchSofaId => launchSofa,
     launchTvId => launchTv,
+    ivorySofaId => ivorySofa,
+    bronzeLanternLampId => bronzeLanternLamp,
     'item-01' => lamp,
     'item-05' => wallFrame,
     _ => null,
@@ -345,7 +356,10 @@ abstract final class RoomDecorAssets {
     roundSideTableId ||
     petBedId ||
     terracottaPoufId => const [RoomSurface.floor],
-    launchSofaId || launchTvId => const [RoomSurface.floor],
+    launchSofaId ||
+    launchTvId ||
+    ivorySofaId ||
+    bronzeLanternLampId => const [RoomSurface.floor],
     savingsJarId => const [RoomSurface.tabletop],
     wallShelfId => const [RoomSurface.wall],
     blueCreamRugId => const [RoomSurface.rug],
@@ -359,10 +373,11 @@ abstract final class RoomDecorAssets {
 
   /// Each new decoration lights only the places where its proportions make
   /// sense. A jar rests on Casa clara's sill or on a placed cabinet, never
-  /// directly on the floor. A pet bed stays behind the character.
+  /// directly on the floor. A pet bed sits beside the character.
   static List<RoomSlot>? suggestedSlotsFor(String id) => switch (id) {
     rattanChairId ||
-    floorLampId => const [RoomSlot.floorLeft, RoomSlot.floorRight],
+    floorLampId ||
+    bronzeLanternLampId => const [RoomSlot.floorLeft, RoomSlot.floorRight],
     defaultTablePlantId || 'item-03' => const [
       RoomSlot.cabinetTopRight,
       RoomSlot.sideTableTop,
@@ -371,7 +386,7 @@ abstract final class RoomDecorAssets {
     lowCabinetId => const [RoomSlot.floorCabinet],
     slimBookcaseId => const [RoomSlot.floorCabinet],
     roundSideTableId => const [RoomSlot.floorRight],
-    launchSofaId => const [RoomSlot.floorSofa],
+    launchSofaId || ivorySofaId => const [RoomSlot.floorSofa],
     launchTvId => const [RoomSlot.floorCabinet],
     petBedId => const [RoomSlot.floorCenter],
     savingsJarId => const [
@@ -413,6 +428,8 @@ abstract final class RoomDecorAssets {
     terracottaPoufId => 170,
     launchSofaId => 285,
     launchTvId => 285,
+    ivorySofaId => 240,
+    bronzeLanternLampId => 480,
     _ => null,
   };
 
@@ -427,11 +444,19 @@ abstract final class RoomDecorAssets {
     roundSideTableId ||
     petBedId ||
     terracottaPoufId => RoomDecorCategory.furniture,
-    launchSofaId || launchTvId => RoomDecorCategory.furniture,
+    launchSofaId ||
+    launchTvId ||
+    ivorySofaId ||
+    bronzeLanternLampId => RoomDecorCategory.furniture,
     savingsJarId => RoomDecorCategory.props,
     wallShelfId || blueCreamRugId => RoomDecorCategory.wallAndFloor,
     _ => RoomDecorCategory.props,
   };
+
+  static bool isSofa(String? id) => id == launchSofaId || id == ivorySofaId;
+
+  static bool isFloorLamp(String? id) =>
+      id == floorLampId || id == bronzeLanternLampId;
 }
 
 /// Puts every item in [placements] somewhere [room] lets it stand.

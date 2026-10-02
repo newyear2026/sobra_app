@@ -42,6 +42,15 @@ class PackOfferDialog extends StatelessWidget {
     final owned = store.ownsPack;
     final buying = purchases?.isBuying(productId) ?? false;
     final price = purchases?.localizedPriceFor(productId);
+    // The friends are also sold one by one, and Play refunds no overlap. Said
+    // here, before the money moves, rather than discovered afterwards.
+    final alreadyOwned = owned
+        ? const <String>[]
+        : [
+            for (final id in CatalogPreviewData.packCharacterIds)
+              for (final entry in CatalogPreviewData.characters)
+                if (entry.id == id && store.ownsCatalogEntry(entry)) entry.name,
+          ];
     final buyLabel = owned
         ? l10n.settingsOwned
         : buying
@@ -122,6 +131,40 @@ class PackOfferDialog extends StatelessWidget {
                       icon: Icons.all_inclusive,
                       text: l10n.packOnceLine,
                     ),
+                    if (alreadyOwned.isNotEmpty) ...[
+                      const SizedBox(height: 6),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.cashSoft,
+                          border: Border.all(
+                            color: AppColors.cashInk,
+                            width: 2,
+                          ),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              Icons.info_outline,
+                              size: 18,
+                              color: AppColors.cashInk,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                l10n.packAlreadyOwned(alreadyOwned.join(', ')),
+                                style: pixelText(
+                                  size: 13,
+                                  bold: true,
+                                  color: AppColors.cashInk,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),

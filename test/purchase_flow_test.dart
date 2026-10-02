@@ -273,9 +273,8 @@ void main() {
     expect(backend.bought, isEmpty);
   });
 
-  // A pack character's card was a dead end: it said the character came in
-  // the pack and offered no way to buy it.
-  testWidgets('a pack character opens the pack and buys it', (tester) async {
+  // A friend's card leads to the pack as well as to its own price.
+  testWidgets('a pack friend opens the pack and buys it', (tester) async {
     backend.catalogue = [
       ...backend.catalogue,
       productFor(CatalogPreviewData.packProductId, r'MX$ 89'),
@@ -287,15 +286,8 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Lana'));
     await tester.pumpAndSettle();
-    expect(
-      inDialog(
-        'Viene en el paquete Los amigos de Michi. No se vende por '
-        'separado.',
-      ),
-      findsOneWidget,
-    );
 
-    await tester.tap(inDialog('VER PAQUETE'));
+    await tester.tap(find.text('También viene en Los amigos de Michi'));
     await tester.pumpAndSettle();
     expect(find.byType(PackOfferDialog), findsOneWidget);
 
@@ -308,14 +300,26 @@ void main() {
     ]);
     await tester.pumpAndSettle();
 
-    for (final id in CatalogPreviewData.packCharacterIds) {
-      expect(
-        store.ownsCatalogEntry(
-          CatalogPreviewData.all.firstWhere((entry) => entry.id == id),
-        ),
-        isTrue,
-        reason: id,
-      );
-    }
+    expect(store.ownsPack, isTrue);
+  });
+
+  // Play refunds no overlap, so the dialog says what is already owned before
+  // anything is charged.
+  testWidgets('the pack names the friends already bought', (tester) async {
+    backend.catalogue = [
+      ...backend.catalogue,
+      productFor(CatalogPreviewData.packProductId, r'MX$ 89'),
+    ];
+    await store.grantCatalogEntry('alpaca');
+    await purchases.start();
+    await pump(tester, const SettingsScreen(), inScaffold: true);
+
+    await tester.tap(find.text('Los amigos de Michi'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Ya tienes a Lana. El paquete cuesta lo mismo.'),
+      findsOneWidget,
+    );
   });
 }

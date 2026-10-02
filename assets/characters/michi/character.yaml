@@ -2,6 +2,8 @@ schemaVersion: 3
 character:
   id: michi
   displayName: Michi
+  artVersion: 2
+  source: design/characters/michi/base-v2.png
 
 sprite:
   frameWidth: 320
@@ -31,7 +33,6 @@ roles:
     frameCount: 12
     sheetWidth: 3840
     durationMs: 1800
-    frameOffsetsY: [22, 23, 21, 23, 47, 48, 48, 46, 75, 72, 72, 72]
     playback: loop
     playRange: [0, 11]
     posterFrame: 0
@@ -41,7 +42,6 @@ roles:
     frameCount: 12
     sheetWidth: 3840
     durationMs: 3600
-    frameOffsetsY: [4, 4, 4, 4, 23, 23, 23, 24, 49, 49, 49, 49]
     playback: loop
     playRange: [0, 11]
     posterFrame: 7
@@ -51,7 +51,6 @@ roles:
     frameCount: 12
     sheetWidth: 3840
     durationMs: 4000
-    frameOffsetsY: [4, 4, 4, 4, 20, 20, 20, 21, 45, 45, 45, 45]
     playback: loop
     playRange: [0, 11]
     posterFrame: 8
@@ -61,8 +60,6 @@ roles:
     frameCount: 12
     sheetWidth: 3840
     durationMs: 2200
-    frameOffsetsY: [14, 15, 14, -5, -15, -8, 8, 12, 64, 67, 64, 64]
-    displayScale: 1.45
     playback: once-hold
     playRange: [0, 11]
     posterFrame: 5

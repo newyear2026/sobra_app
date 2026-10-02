@@ -24,6 +24,7 @@ enum CatalogVisual {
   poodle,
   schnauzer,
   guineaPig,
+  quokka,
   capybara,
   alpaca,
   platypus,
@@ -135,6 +136,7 @@ class CatalogEntryState {
     this.isPurchasing = false,
     this.rewardedAdBlock,
     this.isWatchingAd = false,
+    this.starterRecordedDays,
   }) : assert(
          !isWatchingAd ||
              (!isOwned && entry.unlockMethod == CatalogUnlockMethod.rewardedAd),
@@ -156,6 +158,10 @@ class CatalogEntryState {
   final CatalogEntry entry;
   final bool isOwned;
   final int rewardedAdProgress;
+
+  /// Recorded days toward a waiting starter, which comes over by those as
+  /// well as by ads. Null for every other entry.
+  final int? starterRecordedDays;
 
   /// Presentation-only price received from a store price source.
   final String? localizedStorePrice;

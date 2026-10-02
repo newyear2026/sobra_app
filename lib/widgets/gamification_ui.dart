@@ -24,6 +24,7 @@ class LevelStrip extends StatelessWidget {
     this.missionXpLabel,
     this.missionCompletedCount,
     this.onMissionTap,
+    this.footer,
   });
 
   final int level;
@@ -39,6 +40,10 @@ class LevelStrip extends StatelessWidget {
   final String? missionXpLabel;
   final int? missionCompletedCount;
   final VoidCallback? onMissionTap;
+
+  /// A third section under the mission row, for something that belongs to
+  /// the same daily habit. Drawn only alongside the mission row.
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
@@ -186,6 +191,10 @@ class LevelStrip extends StatelessWidget {
               ),
             ),
           ),
+          if (footer != null) ...[
+            Container(height: 2.5, color: foreground),
+            footer!,
+          ],
         ],
       ),
     );

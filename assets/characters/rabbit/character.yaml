@@ -24,7 +24,7 @@ roles:
     sheetWidth: 2560
     durationMs: 2800
     playback: loop
-    playRange: [0, 7]
+    playRange: [0, 0]
     posterFrame: 0
   activity:
     asset: activity-12.png

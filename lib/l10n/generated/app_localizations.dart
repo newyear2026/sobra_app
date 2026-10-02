@@ -1055,6 +1055,18 @@ abstract class AppLocalizations {
   /// **'COMPRAR · {price}'**
   String packBuy(String price);
 
+  /// No description provided for @collectionAlsoInPack.
+  ///
+  /// In es, this message translates to:
+  /// **'También viene en Los amigos de Michi'**
+  String get collectionAlsoInPack;
+
+  /// No description provided for @packAlreadyOwned.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tienes a {names}. El paquete cuesta lo mismo.'**
+  String packAlreadyOwned(String names);
+
   /// No description provided for @collectionGiftOnly.
   ///
   /// In es, this message translates to:
@@ -1295,6 +1307,18 @@ abstract class AppLocalizations {
   /// **'Aparador bajo'**
   String get roomLowCabinet;
 
+  /// No description provided for @roomSlimBookcase.
+  ///
+  /// In es, this message translates to:
+  /// **'Estantería estrecha'**
+  String get roomSlimBookcase;
+
+  /// No description provided for @roomRoundSideTable.
+  ///
+  /// In es, this message translates to:
+  /// **'Mesa auxiliar redonda'**
+  String get roomRoundSideTable;
+
   /// No description provided for @roomPetBed.
   ///
   /// In es, this message translates to:
@@ -1325,18 +1349,6 @@ abstract class AppLocalizations {
   /// **'Tapete azul y crema'**
   String get roomBlueCreamRug;
 
-  /// No description provided for @roomSlimBookcase.
-  ///
-  /// In es, this message translates to:
-  /// **'Estantería estrecha'**
-  String get roomSlimBookcase;
-
-  /// No description provided for @roomRoundSideTable.
-  ///
-  /// In es, this message translates to:
-  /// **'Mesa auxiliar redonda'**
-  String get roomRoundSideTable;
-
   /// No description provided for @roomLaunchSofa.
   ///
   /// In es, this message translates to:
@@ -1348,6 +1360,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Tele de historias'**
   String get roomLaunchTv;
+
+  /// No description provided for @roomIvorySofa.
+  ///
+  /// In es, this message translates to:
+  /// **'Sofá marfil'**
+  String get roomIvorySofa;
+
+  /// No description provided for @roomBronzeLanternLamp.
+  ///
+  /// In es, this message translates to:
+  /// **'Lámpara de bronce'**
+  String get roomBronzeLanternLamp;
 
   /// No description provided for @launchGiftTitle.
   ///
@@ -3179,17 +3203,76 @@ abstract class AppLocalizations {
   /// **'Arte en camino'**
   String get prologueLockedSoon;
 
-  /// No description provided for @prologueOtherStays.
-  ///
-  /// In es, this message translates to:
-  /// **'El otro también se queda. Puedes cambiar de compañero más adelante.'**
-  String get prologueOtherStays;
-
   /// No description provided for @prologueLiveTogether.
   ///
   /// In es, this message translates to:
   /// **'Que se queden'**
   String get prologueLiveTogether;
+
+  /// No description provided for @prologueOtherWaits.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} se quedó en la puerta, con timidez. Llega tras 3 días con registros, o al momento con 2 anuncios.'**
+  String prologueOtherWaits(String name);
+
+  /// No description provided for @homeStarterWaiting.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} espera en la puerta'**
+  String homeStarterWaiting(String name);
+
+  /// No description provided for @homeStarterDays.
+  ///
+  /// In es, this message translates to:
+  /// **'Llega con {target} días con registros'**
+  String homeStarterDays(int target);
+
+  /// No description provided for @homeStarterCallNow.
+  ///
+  /// In es, this message translates to:
+  /// **'Llamar ya con {target} anuncios · {progress}/{target}'**
+  String homeStarterCallNow(int target, int progress);
+
+  /// No description provided for @starterArrivalKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'{days} días con registros'**
+  String starterArrivalKicker(int days);
+
+  /// No description provided for @starterArrivalTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¡{name} se acercó!'**
+  String starterArrivalTitle(String name);
+
+  /// No description provided for @starterArrivalLine.
+  ///
+  /// In es, this message translates to:
+  /// **'«Te vi anotar cada día. Yo también quiero ayudar.»'**
+  String get starterArrivalLine;
+
+  /// No description provided for @starterArrivalKeep.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguir con {name}'**
+  String starterArrivalKeep(String name);
+
+  /// No description provided for @starterArrivalSwitch.
+  ///
+  /// In es, this message translates to:
+  /// **'Vivir con {name}'**
+  String starterArrivalSwitch(String name);
+
+  /// No description provided for @collectionStarterUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'{days}/{daysTarget} días con registros, o {ads}/{adsTarget} anuncios. Lo que llegue primero.'**
+  String collectionStarterUnlock(
+    int days,
+    int daysTarget,
+    int ads,
+    int adsTarget,
+  );
 
   /// The chosen character introducing itself, right after it is picked.
   ///
@@ -3214,6 +3297,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Te decimos cuánto puedes gastar hoy.'**
   String get onboardingPromise;
+
+  /// Welcome screen, beside a lock icon. Sobrita has no account and no server. Do not say the data stays only on the phone: Android may back it up to the user's own Google account.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin cuenta. Tus datos se quedan contigo.'**
+  String get onboardingNoAccount;
 
   /// No description provided for @onboardingHowPaid.
   ///

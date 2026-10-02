@@ -9,8 +9,9 @@ user can place.
 Status: surfaces, slots, and six selectable themes are live. Casa jardín,
 Casa de playa, Casa torre, Casa montaña, and Casa invernadero use empty
 backgrounds with a separate default rug and floor plant. The last three
-rooms have wide windows, so they offer floor slots but no wall slots. Host
-furniture remains planned below.
+rooms have wide windows, so they offer floor and furniture-supported tabletop
+slots but no wall slots. A placed cabinet or side table supplies its own
+tabletop slot.
 
 ## The shared stage
 
@@ -31,8 +32,21 @@ background against it; window shape may change.
 
 Mi casa shows the portrait's full height and crops its sides, to about
 x 63–961 on a common phone. Decorate is wide and short, so it crops top and
-bottom instead, holding the floor line two thirds of the way down: roughly
-y 260–1050. Keep what matters inside both bands.
+bottom instead. Its floor focus shifts with the viewport height to leave
+enough floor for foreground seats and the character.
+
+Floor contact and viewport fitting use each sprite's opaque outline rather
+than its transparent canvas. Secondary chairs, poufs and side tables move
+forward when a sofa or cabinet occupies the back row. Bookcases leave space
+for a lamp beside them. The rug follows the character's paws, and the pet bed
+sits to their left. Short views may pull foreground items back into view;
+tabletop props and placement previews follow the resulting furniture frame.
+
+The ivory sofa and bronze lantern lamp are separate transparent sprites,
+available as included furniture in every room. The sofa uses `floorSofa`;
+the lantern uses either `floorLeft` or `floorRight`. Its night light follows
+the hanging shade to the right of the stem. Art prompts and opaque bounds
+are recorded in `design/rooms/furniture-concepts/casa-torre-asset-generation.json`.
 
 **Scale.** The stage is about 300 px to the metre at the wall: Casa clara's
 painted armchair, some 85 cm tall, is 250 px. Size items to it — a chair

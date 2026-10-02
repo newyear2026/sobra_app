@@ -76,8 +76,12 @@ Michi와 Poodle만 온보딩 선택 화면에 등록되어 있다. Schnauzer는 
 향후 다섯 종 팩을 등록하기 전 누락 역할의 대체 표시를 구현해야 한다.
 계산·저축 반복 사이 휴지 시간과 화면별 재생 정책도 계속 검수한다.
 
-현재 12프레임 Michi는 코드의 세로 보정으로 바닥선을 맞추며, 원본 시트 자체가 정렬된 것은 아니다.
-저축 소품 연결 등 원화 연속성은 추가 검수 대상이다.
+Michi v2는 선택한 정교화 시안(`design/characters/michi/base-v2.png`)을 기준으로 여섯 동작을 다시 제작했다.
+프레임 자체를 바닥선 y=344에 정렬했으며, 점프 높이도 축하 시트 안에 포함된다.
+이전 Michi의 코드 세로 보정과 축하 1.45배 확대는 제거했다. 축하 마지막 프레임은 대기 첫 자세와 같다.
+저축은 동전을 든 채 저금통을 보여 주는 반복 동작으로, 반복 경계에서 동전이 새로 생기지 않도록 연결했다.
+현재 Michi 미리보기는 `design/characters/michi/previews/`와 `motion-preview.gif`이며,
+후자는 역할별 실제 재생 길이와 축하·걱정 마지막 자세 유지를 반영한 4.2초 비교 영상이다.
 `docs/motion-previews/*.gif`는 속도·위치 보정 이전 자료이므로 최신 동작 승인 자료로 사용하지 않는다.
 
 ## 관리 위치
@@ -89,6 +93,8 @@ Michi와 Poodle만 온보딩 선택 화면에 등록되어 있다. Schnauzer는 
 - Schnauzer 원화와 자세: `design/characters/schnauzer/`
 - Schnauzer 프레임별 원본: `design/characters/schnauzer/generated-v2/`
 - Schnauzer 8·12프레임 시트 정렬 및 미리보기 생성: `tool/build_schnauzer_motion.py`
+- Michi v2 원화·생성 프롬프트: `design/characters/michi/generated-v2/`
+- Michi v2 8·12프레임 시트 정렬·검증 및 미리보기 생성: `tool/build_michi_motion.py`
 
 현재 앱은 YAML을 런타임에 읽지 않는다. Dart와 YAML, 이 문서의 현재 설정 표를 함께 갱신한다.
 YAML의 `frameOffsetsY`는 Dart의 `frameOffsets`에 대응하는 원본 픽셀 단위 세로 보정이다.

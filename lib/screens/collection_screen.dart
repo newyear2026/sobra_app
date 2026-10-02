@@ -153,6 +153,9 @@ class _CollectionScreenState extends State<CollectionScreen> {
           ? _adBlockFor(entry, store, ads)
           : null,
       isWatchingAd: !isOwned && ads?.busyEntryId == entry.id,
+      starterRecordedDays: !isOwned && store.waitingStarter?.id == entry.id
+          ? store.recordedDayCount
+          : null,
     );
   }
 
@@ -199,14 +202,11 @@ class _CollectionScreenState extends State<CollectionScreen> {
       await _watchAd(ads, store, state.entry);
       return;
     }
-    // A pack character is sold as the whole pack, so the pack is what opens:
-    // the three friends together, and its price. Only a yes there buys.
+    // An entry sold only inside a pack opens the pack: everything in it, and
+    // its price. Only a yes there buys.
     if (state.entry.unlockMethod == CatalogUnlockMethod.bundle) {
-      if (!await showPackOfferDialog(context) || !mounted) return;
-      if (purchases != null) {
-        await purchases.buyProduct(CatalogPreviewData.packProductId);
-        return;
-      }
+      await _offerPack();
+      return;
     }
     // A purchase with no store, or an ad with no network, above this screen
     // is the design gallery rather than the app.
@@ -268,6 +268,9 @@ class _CollectionScreenState extends State<CollectionScreen> {
   }
 
   Future<void> _openDetails(CatalogEntryState state) async {
+    final inUnownedPack =
+        CatalogPreviewData.packCharacterIds.contains(state.entry.id) &&
+        !SobraScope.of(context).ownsPack;
     await showDialog<void>(
       context: context,
       builder: (dialogContext) => _CatalogDetailDialog(
@@ -278,8 +281,30 @@ class _CollectionScreenState extends State<CollectionScreen> {
                 _performPrimaryAction(state);
               }
             : null,
+        onSeePack: inUnownedPack
+            ? () {
+                Navigator.pop(dialogContext);
+                unawaited(_offerPack());
+              }
+            : null,
       ),
     );
+  }
+
+  /// Opens the pack, and buys it only on a yes there.
+  Future<void> _offerPack() async {
+    // Read before the await, for the same reason _performPrimaryAction does.
+    final l10n = AppLocalizations.of(context);
+    final purchases = PurchaseScope.maybeOf(context);
+    if (!await showPackOfferDialog(context) || !mounted) return;
+    if (purchases == null) {
+      // The design gallery has no store to sell from.
+      _showNotice(l10n.collectionPreviewActionNotice);
+      return;
+    }
+    // What the store answers arrives on the stream; _onPurchasesChanged
+    // reports a failure.
+    await purchases.buyProduct(CatalogPreviewData.packProductId);
   }
 
   bool _canAct(CatalogEntryState state) {
@@ -838,6 +863,7 @@ class _CatalogPreview extends StatelessWidget {
       CatalogVisual.poodle => Icons.pets,
       CatalogVisual.schnauzer => Icons.pets,
       CatalogVisual.guineaPig => Icons.pets,
+      CatalogVisual.quokka => Icons.pets,
       CatalogVisual.capybara => Icons.pets,
       CatalogVisual.alpaca => Icons.pets,
       CatalogVisual.platypus => Icons.pets,
@@ -946,10 +972,18 @@ class _AdProgressLine extends StatelessWidget {
 }
 
 class _CatalogDetailDialog extends StatelessWidget {
-  const _CatalogDetailDialog({required this.state, required this.onPrimary});
+  const _CatalogDetailDialog({
+    required this.state,
+    required this.onPrimary,
+    this.onSeePack,
+  });
 
   final CatalogEntryState state;
   final VoidCallback? onPrimary;
+
+  /// Set for a friend that also comes in Los amigos de Michi, while the pack
+  /// is still to buy.
+  final VoidCallback? onSeePack;
 
   @override
   Widget build(BuildContext context) {
@@ -985,6 +1019,43 @@ class _CatalogDetailDialog extends StatelessWidget {
               _unlockDescription(l10n, state),
               style: pixelText(size: 15, bold: true),
             ),
+            if (onSeePack != null) ...[
+              const SizedBox(height: 10),
+              InkWell(
+                onTap: onSeePack,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.blueSoft,
+                    border: Border.all(color: AppColors.blue, width: 2),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.pets, size: 18, color: AppColors.blue),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          l10n.collectionAlsoInPack,
+                          style: pixelText(
+                            size: 13,
+                            bold: true,
+                            color: AppColors.blue,
+                          ),
+                        ),
+                      ),
+                      const Icon(
+                        Icons.chevron_right,
+                        size: 20,
+                        color: AppColors.blue,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -1101,6 +1172,16 @@ String _unlockDescription(AppLocalizations l10n, CatalogEntryState state) {
     ),
     // The card can only fit "내일 이어서", which says the entry is waiting
     // without ever saying why. This is the one place the rule is written out.
+    CatalogUnlockMethod.rewardedAd when state.starterRecordedDays != null =>
+      l10n.collectionStarterUnlock(
+        state.starterRecordedDays!.clamp(
+          0,
+          CatalogPreviewData.starterRecordedDaysTarget,
+        ),
+        CatalogPreviewData.starterRecordedDaysTarget,
+        state.rewardedAdProgress,
+        state.entry.rewardedAdTarget!,
+      ),
     CatalogUnlockMethod.rewardedAd =>
       state.entry.rewardedAdOncePerDay
           ? l10n.collectionAdUnlockDaily(

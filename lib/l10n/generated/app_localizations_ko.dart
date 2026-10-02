@@ -559,6 +559,14 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get collectionAlsoInPack => '미치네 친구들 팩에도 들어 있어요';
+
+  @override
+  String packAlreadyOwned(String names) {
+    return '이미 가진 친구: $names. 팩 가격은 그대로예요.';
+  }
+
+  @override
   String get collectionGiftOnly => '선물';
 
   @override
@@ -687,6 +695,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get roomLowCabinet => '낮은 수납장';
 
   @override
+  String get roomSlimBookcase => '슬림 책장';
+
+  @override
+  String get roomRoundSideTable => '원형 협탁';
+
+  @override
   String get roomPetBed => '반려동물 침대';
 
   @override
@@ -702,16 +716,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get roomBlueCreamRug => '블루 크림 러그';
 
   @override
-  String get roomSlimBookcase => '슬림 책장';
-
-  @override
-  String get roomRoundSideTable => '원형 협탁';
-
-  @override
   String get roomLaunchSofa => '벨벳 소파';
 
   @override
   String get roomLaunchTv => '이야기 TV';
+
+  @override
+  String get roomIvorySofa => '아이보리 소파';
+
+  @override
+  String get roomBronzeLanternLamp => '브론즈 랜턴 램프';
 
   @override
   String get launchGiftTitle => '출시 기념 선물이 도착했어요!';
@@ -1771,10 +1785,60 @@ class AppLocalizationsKo extends AppLocalizations {
   String get prologueLockedSoon => '아트 준비 중';
 
   @override
-  String get prologueOtherStays => '다른 친구도 함께 지내요. 나중에 언제든 바꿀 수 있어요.';
+  String get prologueLiveTogether => '같이 지내자';
 
   @override
-  String get prologueLiveTogether => '같이 지내자';
+  String prologueOtherWaits(String name) {
+    return '$name는 수줍어서 문가에 남았어요. 기록한 날 3일이면 다가오고, 광고 2번이면 바로 불러올 수 있어요.';
+  }
+
+  @override
+  String homeStarterWaiting(String name) {
+    return '$name가 문가에서 기다려요';
+  }
+
+  @override
+  String homeStarterDays(int target) {
+    return '기록한 날 $target일이면 다가와요';
+  }
+
+  @override
+  String homeStarterCallNow(int target, int progress) {
+    return '광고 $target번 보고 바로 부르기 · $progress/$target';
+  }
+
+  @override
+  String starterArrivalKicker(int days) {
+    return '기록한 날 $days일';
+  }
+
+  @override
+  String starterArrivalTitle(String name) {
+    return '$name가 다가왔어요!';
+  }
+
+  @override
+  String get starterArrivalLine => '\"매일 적는 거 봤어. 나도 같이 챙길래!\"';
+
+  @override
+  String starterArrivalKeep(String name) {
+    return '지금은 $name와 계속';
+  }
+
+  @override
+  String starterArrivalSwitch(String name) {
+    return '$name랑 지내기';
+  }
+
+  @override
+  String collectionStarterUnlock(
+    int days,
+    int daysTarget,
+    int ads,
+    int adsTarget,
+  ) {
+    return '기록한 날 $days/$daysTarget일, 또는 광고 $ads/$adsTarget번. 먼저 되는 쪽으로 와요.';
+  }
 
   @override
   String prologueGreeting(String name) {
@@ -1789,6 +1853,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onboardingPromise => '오늘 얼마나 쓸 수 있는지 알려드려요.';
+
+  @override
+  String get onboardingNoAccount => '계정이 필요 없어요. 기록은 내 휴대폰에 남아요.';
 
   @override
   String get onboardingHowPaid => '수입을 어떻게 받나요?';

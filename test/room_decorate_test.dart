@@ -370,12 +370,13 @@ void main() {
 
     testWidgets('the category lists only what is owned', (tester) async {
       final store = await loadStore();
-      await store.grantCatalogEntry('capybara');
+      await store.grantCatalogEntries({'poodle', 'capybara'});
       await pump(tester, store);
 
       await openCategory(tester, 'Personajes');
 
-      expect(find.text('Michi'), findsOneWidget);
+      // Michi is the other starter here, still waiting at the door.
+      expect(find.text('Michi'), findsNothing);
       expect(find.text('Miru'), findsOneWidget);
       expect(find.text('Yoshi'), findsNothing);
       expect(find.text('Tranqui'), findsOneWidget);

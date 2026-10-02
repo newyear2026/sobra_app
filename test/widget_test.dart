@@ -8,7 +8,7 @@ import 'package:sobra_app/state/sobra_store.dart';
 import 'support/localizations.dart';
 
 void main() {
-  testWidgets('Google login continues into onboarding', (tester) async {
+  testWidgets('the welcome continues into onboarding', (tester) async {
     tester.platformDispatcher
       ..localeTestValue = const Locale('ko')
       ..localesTestValue = const <Locale>[Locale('ko')];
@@ -22,20 +22,17 @@ void main() {
     final store = await SobraStore.load();
     await store.setReducedMotion(true);
 
-    // A fresh store has not answered the account offer, which is what puts
-    // the login screen first. The app no longer takes a flag for it: the
-    // stored answer is the only thing that decides.
+    // A fresh store has not passed the welcome, which is what puts it first.
+    // The app takes no flag for it: the stored answer is the only thing that
+    // decides.
     await tester.pumpWidget(SobraApp(store: store));
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.text('내 기록,\n어디서든 그대로'), findsOneWidget);
-    expect(find.text('Google로 계속하기'), findsOneWidget);
-    expect(find.text('계정 없이 시작하기'), findsOneWidget);
+    expect(find.text('오늘 얼마나 쓸 수 있는지 알려드려요.'), findsOneWidget);
+    expect(find.text('계정이 필요 없어요. 기록은 내 휴대폰에 남아요.'), findsOneWidget);
 
-    await tester.tap(find.text('Google로 계속하기'));
+    await tester.tap(find.text('시작하기'));
     await tester.pump();
-    expect(find.text('Google에 연결하는 중…'), findsOneWidget);
-    await tester.pump(const Duration(milliseconds: 700));
     await tester.pump(const Duration(milliseconds: 300));
 
     expect(find.text('Sobrita'), findsOneWidget);
@@ -54,8 +51,8 @@ void main() {
     final store = await SobraStore.load();
     // The sprites loop, so nothing would ever settle otherwise.
     await store.setReducedMotion(true);
-    // Past the account offer, which now opens the app. The test above covers
-    // that screen; this one is about what follows it.
+    // Past the welcome, which opens the app. The test above covers that
+    // screen; this one is about what follows it.
     await store.answerLoginOffer();
 
     await tester.pumpWidget(SobraApp(store: store));
@@ -131,8 +128,9 @@ void main() {
 
     expect(find.text('Colección'), findsOneWidget);
     expect(find.text('PERSONAJES'), findsOneWidget);
-    // Only Michi and Poodle ship owned; the two new pets need rewarded ads.
-    expect(find.text('OBTENIDO'), findsNWidgets(2));
+    // Only the starter picked in onboarding ships owned; Miru waits at the
+    // door, and the other pets need rewarded ads.
+    expect(find.text('OBTENIDO'), findsOneWidget);
     expect(find.text('Yoshi'), findsOneWidget);
     expect(find.text('Cookie'), findsOneWidget);
     await tester.scrollUntilVisible(

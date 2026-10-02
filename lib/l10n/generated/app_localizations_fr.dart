@@ -581,6 +581,14 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get collectionAlsoInPack => 'Aussi dans le pack Les amis de Michi';
+
+  @override
+  String packAlreadyOwned(String names) {
+    return 'Tu as déjà $names. Le pack coûte le même prix.';
+  }
+
+  @override
   String get collectionGiftOnly => 'CADEAU';
 
   @override
@@ -712,6 +720,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get roomLowCabinet => 'Buffet bas';
 
   @override
+  String get roomSlimBookcase => 'Bibliothèque étroite';
+
+  @override
+  String get roomRoundSideTable => 'Guéridon rond';
+
+  @override
   String get roomPetBed => 'Panier pour animal';
 
   @override
@@ -727,16 +741,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get roomBlueCreamRug => 'Tapis bleu et crème';
 
   @override
-  String get roomSlimBookcase => 'Bibliothèque étroite';
-
-  @override
-  String get roomRoundSideTable => 'Guéridon rond';
-
-  @override
   String get roomLaunchSofa => 'Canapé en velours';
 
   @override
   String get roomLaunchTv => 'Télé des histoires';
+
+  @override
+  String get roomIvorySofa => 'Canapé ivoire';
+
+  @override
+  String get roomBronzeLanternLamp => 'Lampadaire en bronze';
 
   @override
   String get launchGiftTitle => 'Votre cadeau de lancement est arrivé !';
@@ -1854,11 +1868,61 @@ class AppLocalizationsFr extends AppLocalizations {
   String get prologueLockedSoon => 'Dessin en route';
 
   @override
-  String get prologueOtherStays =>
-      'L’autre reste aussi. Tu pourras changer de compagnon plus tard.';
+  String get prologueLiveTogether => 'Ils peuvent rester';
 
   @override
-  String get prologueLiveTogether => 'Ils peuvent rester';
+  String prologueOtherWaits(String name) {
+    return '$name est resté près de la porte, intimidé. Il arrive après 3 jours avec des saisies, ou tout de suite avec 2 pubs.';
+  }
+
+  @override
+  String homeStarterWaiting(String name) {
+    return '$name attend à la porte';
+  }
+
+  @override
+  String homeStarterDays(int target) {
+    return 'Arrive après $target jours avec des saisies';
+  }
+
+  @override
+  String homeStarterCallNow(int target, int progress) {
+    return 'Appeler avec $target pubs · $progress/$target';
+  }
+
+  @override
+  String starterArrivalKicker(int days) {
+    return '$days jours avec des saisies';
+  }
+
+  @override
+  String starterArrivalTitle(String name) {
+    return '$name s’est approché !';
+  }
+
+  @override
+  String get starterArrivalLine =>
+      '« Je t’ai vu noter chaque jour. Moi aussi, je veux aider. »';
+
+  @override
+  String starterArrivalKeep(String name) {
+    return 'Rester avec $name';
+  }
+
+  @override
+  String starterArrivalSwitch(String name) {
+    return 'Vivre avec $name';
+  }
+
+  @override
+  String collectionStarterUnlock(
+    int days,
+    int daysTarget,
+    int ads,
+    int adsTarget,
+  ) {
+    return '$days/$daysTarget jours avec des saisies, ou $ads/$adsTarget pubs. Le premier des deux.';
+  }
 
   @override
   String prologueGreeting(String name) {
@@ -1874,6 +1938,10 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get onboardingPromise =>
       'On te dit combien tu peux dépenser aujourd’hui.';
+
+  @override
+  String get onboardingNoAccount =>
+      'Pas de compte. Tes données restent avec toi.';
 
   @override
   String get onboardingHowPaid => 'Comment es-tu payé ?';

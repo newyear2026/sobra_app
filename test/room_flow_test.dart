@@ -22,6 +22,9 @@ Future<SobraStore> _store() async {
     cashCentavos: 124000,
   );
   await store.completeOnboarding();
+  // Both starters, as on an install from before they were split: Inicio
+  // then has no waiting row, which is not what this test is about.
+  await store.grantCatalogEntries({'michi', 'poodle'});
   await store.setReducedMotion(true);
   return store;
 }
@@ -33,6 +36,7 @@ void main() {
     ('platypus', 1.24),
     ('rabbit', 1.38),
     ('raccoon', 1.0),
+    ('quokka', 1.0),
   ]) {
     testWidgets('$characterId uses its optical size in the room', (
       tester,

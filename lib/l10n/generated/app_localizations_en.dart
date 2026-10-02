@@ -576,6 +576,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get collectionAlsoInPack => 'Also in the Michi\'s Friends pack';
+
+  @override
+  String packAlreadyOwned(String names) {
+    return 'You already have $names. The pack costs the same.';
+  }
+
+  @override
   String get collectionGiftOnly => 'GIFT';
 
   @override
@@ -705,6 +713,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roomLowCabinet => 'Low cabinet';
 
   @override
+  String get roomSlimBookcase => 'Slim bookcase';
+
+  @override
+  String get roomRoundSideTable => 'Round side table';
+
+  @override
   String get roomPetBed => 'Pet bed';
 
   @override
@@ -720,16 +734,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roomBlueCreamRug => 'Blue and cream rug';
 
   @override
-  String get roomSlimBookcase => 'Slim bookcase';
-
-  @override
-  String get roomRoundSideTable => 'Round side table';
-
-  @override
   String get roomLaunchSofa => 'Velvet sofa';
 
   @override
   String get roomLaunchTv => 'Story TV';
+
+  @override
+  String get roomIvorySofa => 'Ivory sofa';
+
+  @override
+  String get roomBronzeLanternLamp => 'Bronze lantern lamp';
 
   @override
   String get launchGiftTitle => 'Your launch gift is here!';
@@ -1837,11 +1851,61 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prologueLockedSoon => 'Art on the way';
 
   @override
-  String get prologueOtherStays =>
-      'The other one stays too. You can switch companions later.';
+  String get prologueLiveTogether => 'They can stay';
 
   @override
-  String get prologueLiveTogether => 'They can stay';
+  String prologueOtherWaits(String name) {
+    return '$name stayed by the door, feeling shy. It comes over after 3 days with records, or right away with 2 ads.';
+  }
+
+  @override
+  String homeStarterWaiting(String name) {
+    return '$name is waiting at the door';
+  }
+
+  @override
+  String homeStarterDays(int target) {
+    return 'Comes over after $target days with records';
+  }
+
+  @override
+  String homeStarterCallNow(int target, int progress) {
+    return 'Call now with $target ads · $progress/$target';
+  }
+
+  @override
+  String starterArrivalKicker(int days) {
+    return '$days days with records';
+  }
+
+  @override
+  String starterArrivalTitle(String name) {
+    return '$name came over!';
+  }
+
+  @override
+  String get starterArrivalLine =>
+      '\"I saw you write it down every day. I want to help too.\"';
+
+  @override
+  String starterArrivalKeep(String name) {
+    return 'Stay with $name';
+  }
+
+  @override
+  String starterArrivalSwitch(String name) {
+    return 'Live with $name';
+  }
+
+  @override
+  String collectionStarterUnlock(
+    int days,
+    int daysTarget,
+    int ads,
+    int adsTarget,
+  ) {
+    return '$days/$daysTarget days with records, or $ads/$adsTarget ads. Whichever comes first.';
+  }
 
   @override
   String prologueGreeting(String name) {
@@ -1856,6 +1920,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingPromise => 'We tell you how much you can spend today.';
+
+  @override
+  String get onboardingNoAccount => 'No account. Your data stays with you.';
 
   @override
   String get onboardingHowPaid => 'How do you get paid?';

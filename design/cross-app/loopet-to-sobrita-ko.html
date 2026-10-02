@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>LOOPET → Sobrita 지출 연결 시안</title>
+<style>
+@font-face{font-family:PixelifySans;src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");}
+@font-face{font-family:SobraHangul;src:url("../../assets/fonts/SobraHangul.ttf") format("truetype");font-weight:400;}
+@font-face{font-family:SobraHangul;src:url("../../assets/fonts/SobraHangul-Bold.ttf") format("truetype");font-weight:700;}
+/* Sobrita tokens from lib/theme/app_theme.dart; LOOPET tokens from routine_app app_colors.dart. */
+:root{--paper:#F6EFE0;--surface:#FFFDF7;--line:#E7DDC8;--ink:#202848;--inkSoft:#4E5878;--muted:#5F6885;
+ --teal:#0E7A72;--tealSoft:#D8EDEA;--tealInk:#0B6660;--cash:#C0873A;--cashSoft:#F7E9CE;--violet:#6E4A8C;--violetSoft:#E7DCF0;
+ --lpBg:#F5EEDA;--lpInk:#221C42;--lpMuted:#6A6489;--lpPrimary:#6744F4;--lpDial:#F3EDF9;--lpHalo:#E4DCFB;--lpBtn:#A996E6;--lpBorder:#E5DCC8;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:PixelifySans,SobraHangul,monospace;-webkit-font-smoothing:none;width:2100px;padding:32px 40px 40px}
+.head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;padding-left:6px}
+.head h1{font-size:26px;font-weight:900}
+.head span{font-size:14px;color:var(--inkSoft);font-weight:800}
+.row{display:flex;gap:16px;align-items:flex-start}
+.col{width:360px;flex:0 0 360px}
+.arrow{flex:0 0 18px;align-self:center;font-size:26px;font-weight:900;color:var(--inkSoft);margin-top:-80px}
+.tag{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:900;margin:0 0 9px 4px}
+.tag img{width:22px;height:22px;image-rendering:pixelated;border-radius:5px}
+.cap{font-size:12.5px;color:var(--inkSoft);line-height:1.55;margin-top:12px;padding:0 4px;font-weight:800}
+.cap b{color:var(--ink)}
+.phone{width:360px;height:740px;border:5px solid var(--ink);border-radius:26px;overflow:hidden;position:relative;box-shadow:7px 7px 0 rgba(32,40,72,.14)}
+.status{display:flex;justify-content:space-between;font-size:12px;font-weight:900;padding:10px 18px 4px}
+/* ---------- LOOPET ---------- */
+.lp{background:var(--lpBg);color:var(--lpInk);font-family:-apple-system,"Apple SD Gothic Neo",Roboto,sans-serif}
+.lp .px{border:3px solid var(--lpInk);box-shadow:3px 3px 0 rgba(148,131,98,.3);background:#fff}
+.lp .date{font-size:13px;color:var(--lpMuted);margin:18px 22px 2px}
+.lp h2{font-size:24px;font-weight:800;margin:0 22px 14px}
+.lp .next{margin:0 18px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+.lp .next .k{font-size:11px;font-weight:800;color:var(--lpPrimary);letter-spacing:.5px}
+.lp .next .t{font-size:19px;font-weight:800;display:flex;align-items:center;gap:7px}
+.lp .next .t img{width:22px;height:22px;image-rendering:pixelated}
+.lp .next .r{text-align:right;font-size:12px;color:var(--lpMuted);line-height:1.5}
+.dial{width:228px;height:228px;margin:16px auto 12px;border-radius:50%;background:var(--lpDial);border:3px solid var(--lpInk);position:relative}
+.dial::before{content:"";position:absolute;inset:22px;border-radius:50%;border:9px solid var(--lpHalo)}
+.dial .core{position:absolute;inset:58px;border-radius:50%;background:#fff;border:2px solid var(--lpBorder);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dial .core b{font-family:PixelifySans;font-size:30px}
+.dial .core s{text-decoration:none;font-size:11px;background:#EFE7D6;border:1px solid var(--lpBorder);padding:1px 8px;margin-top:3px}
+.seg{position:absolute;width:20px;height:11px;border-radius:2px}
+.lp .done{margin:4px 18px 0;background:var(--lpBtn);color:#fff;font-weight:800;font-size:16px;text-align:center;padding:13px;border:3px solid #7f72b0}
+.lp .two{display:flex;gap:10px;margin:10px 18px 0}
+.lp .two div{flex:1;text-align:center;padding:10px;font-size:14px;font-weight:700;color:var(--lpMuted)}
+.lp .two .later{border:3px solid #8f8aa6;background:#FAF6EC}
+/* the new cross-app chip, drawn in Sobrita's colours so it reads as "the other app" */
+.sobchip{margin:12px 18px 0;display:flex;align-items:center;gap:10px;background:var(--tealSoft);border:3px solid var(--teal);padding:9px 11px;box-shadow:3px 3px 0 rgba(14,122,114,.25)}
+.sobchip img{width:30px;height:30px;border-radius:7px;image-rendering:pixelated}
+.sobchip .tx{flex:1;font-size:12px;color:var(--tealInk);font-weight:700;line-height:1.35}
+.sobchip .tx b{display:block;font-size:14.5px;color:var(--ink)}
+.sobchip .go{font-family:PixelifySans;font-size:15px;font-weight:900;color:#fff;background:var(--teal);padding:6px 9px;border:2px solid var(--ink)}
+.tapring{position:absolute;width:46px;height:46px;border-radius:50%;border:4px solid rgba(255,255,255,.95);box-shadow:0 0 0 3px rgba(32,40,72,.55)}
+.nav{position:absolute;left:0;right:0;bottom:0;height:62px;border-top:3px solid var(--lpInk);background:#fff;display:flex}
+.nav div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:var(--lpMuted);gap:2px}
+.nav div.on{background:#F1EDFD;color:var(--lpPrimary);border-top:3px solid var(--lpPrimary);margin-top:-3px}
+.nav i{font-style:normal;font-size:16px}
+/* LOOPET edit screen */
+.edit .bar{display:flex;align-items:center;gap:10px;margin:14px 18px 14px;font-size:18px;font-weight:800}
+.field{margin:0 18px 10px;padding:10px 12px}
+.field .l{font-size:11.5px;color:var(--lpMuted);margin-bottom:3px}
+.field .v{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+.field .v img{width:22px;height:22px;image-rendering:pixelated}
+.link{margin:4px 18px 0;border:3px solid var(--teal);background:#fff;box-shadow:3px 3px 0 rgba(14,122,114,.25)}
+.link .top{display:flex;align-items:center;gap:10px;padding:11px 12px;border-bottom:2px dashed #b7d9d4}
+.link .top img{width:30px;height:30px;border-radius:7px}
+.link .top .tx{flex:1;font-size:12px;color:var(--muted);line-height:1.35}
+.link .top .tx b{display:block;font-size:14.5px;color:var(--ink)}
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--teal);position:relative;border:2px solid var(--ink)}
+.toggle::after{content:"";position:absolute;right:2px;top:2px;width:16px;height:16px;border-radius:50%;background:#fff}
+.link .opt{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;font-size:13.5px;border-bottom:1px solid #e9efe9}
+.link .opt:last-child{border-bottom:none}
+.link .opt span{color:var(--muted);font-size:12.5px}
+.link .opt b{font-weight:800}
+.hint{margin:10px 22px 0;font-size:11.5px;color:var(--lpMuted);line-height:1.5}
+/* ---------- Sobrita ---------- */
+.sb{background:var(--surface);font-family:PixelifySans,SobraHangul,monospace}
+.sb .brand{display:flex;justify-content:space-between;align-items:center;margin:12px 18px 10px}
+.sb .brand b{font-size:24px;font-weight:900}
+.sb .lbl{font-size:13px;font-weight:900;color:var(--inkSoft);margin:0 18px}
+.sb .big{font-size:40px;font-weight:900;color:var(--teal);margin:2px 18px 2px;line-height:1.1}
+.sb .big small{font-size:19px}
+.sb .sub{font-size:11.5px;font-weight:800;color:var(--muted);margin:0 18px 12px}
+.room{margin:0 14px;border:3px solid var(--ink);height:178px;background:url(assets/sobra-room.png) center/cover;position:relative}
+.bubble{position:absolute;left:50%;top:22px;transform:translateX(-50%);background:#fff;border:3px solid var(--ink);font-size:13px;font-weight:900;padding:5px 10px;white-space:nowrap}
+.dim{position:absolute;inset:0;background:rgba(32,40,72,.52)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-top:4px solid var(--ink);padding:12px 16px 18px}
+.sheet .grab{width:44px;height:5px;background:var(--line);margin:0 auto 10px}
+.sheet h3{font-size:19px;font-weight:900;display:flex;align-items:center;justify-content:space-between}
+.from{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:900;color:var(--lpPrimary);background:#F1EDFD;border:2px solid var(--lpPrimary);padding:2px 7px}
+.from img{width:16px;height:16px;border-radius:3px}
+.amt{margin:12px 0 10px;border:3px solid var(--ink);padding:10px 12px;display:flex;align-items:baseline;gap:6px;background:#fff}
+.amt b{font-size:34px;font-weight:900;color:var(--ink)}
+.amt span{font-size:15px;font-weight:900;color:var(--muted)}
+.amt em{margin-left:auto;font-style:normal;font-size:11px;font-weight:900;color:var(--cash);background:var(--cashSoft);padding:2px 6px}
+.cats{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.cats div{border:2.5px solid var(--line);padding:6px 9px;font-size:12.5px;font-weight:900;color:var(--inkSoft);background:#fff}
+.cats div.on{border-color:var(--ink);background:var(--tealSoft);color:var(--ink)}
+.note{border:2.5px solid var(--line);padding:9px 11px;font-size:13.5px;font-weight:800;background:#fff;margin-bottom:6px}
+.note s{display:block;text-decoration:none;font-size:10.5px;color:var(--muted);margin-bottom:2px}
+.after{font-size:11.5px;font-weight:800;color:var(--inkSoft);margin:6px 2px 4px;line-height:1.5}
+.after b{color:var(--teal)}
+.btnp{border:3px solid var(--ink);background:var(--teal);color:#fff;font-size:15px;font-weight:900;text-align:center;padding:12px;margin-top:8px;box-shadow:0 5px 0 var(--ink)}
+.btng{border:3px solid var(--ink);font-size:14px;font-weight:900;text-align:center;padding:10px;margin-top:12px;background:#fff}
+.toast{position:absolute;left:14px;right:14px;bottom:78px;background:var(--ink);color:#fff;font-size:12.5px;font-weight:900;padding:11px 13px;display:flex;justify-content:space-between;align-items:center;border:3px solid var(--ink)}
+.toast u{text-decoration:none;color:#9fe3da;display:inline-flex;align-items:center;gap:5px}
+.toast u img{width:16px;height:16px;border-radius:3px}
+.mv{margin:12px 14px 0;border:3px solid var(--ink)}
+.mv .h{font-size:12px;font-weight:900;color:var(--inkSoft);padding:7px 10px;border-bottom:2px solid var(--line);background:var(--paper)}
+.mv .r{display:flex;align-items:center;gap:9px;padding:9px 10px;border-bottom:1px solid var(--line);font-size:13px;font-weight:900}
+.mv .r:last-child{border-bottom:none}
+.mv .r .ic{width:26px;height:26px;background:var(--cashSoft);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:13px}
+.mv .r .n{flex:1}
+.mv .r .n s{display:block;text-decoration:none;font-size:10.5px;color:var(--muted);font-weight:800}
+.mv .r .a{color:#A63A25}
+.mv .r.new{background:#FFF9E8}
+.sbnav{position:absolute;left:0;right:0;bottom:0;height:62px;border-top:3px solid var(--ink);background:#fff;display:flex}
+.sbnav div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;font-weight:900;gap:2px}
+.sbnav div.on{background:var(--teal);color:#fff}
+.sbnav div.plus{flex:0 0 66px;margin:5px 4px;background:var(--teal);color:#fff;border:3px solid var(--ink);font-size:24px}
+/* Play store */
+.ps{background:#fff;font-family:-apple-system,Roboto,sans-serif;color:#1f1f1f}
+.ps .top{display:flex;gap:14px;padding:18px 18px 10px}
+.ps .top img{width:72px;height:72px;border-radius:16px}
+.ps .top b{display:block;font-size:19px;font-weight:600;line-height:1.25}
+.ps .top s{text-decoration:none;font-size:13px;color:#0b57d0}
+.ps .meta{display:flex;justify-content:space-around;padding:6px 10px 12px;font-size:12px;color:#444;text-align:center}
+.ps .meta b{display:block;font-size:14px;color:#1f1f1f}
+.ps .inst{margin:0 18px;background:#0b57d0;color:#fff;text-align:center;font-size:14.5px;font-weight:600;padding:11px;border-radius:20px}
+.ps .shots{display:flex;gap:8px;padding:14px 18px;overflow:hidden}
+.ps .shots div{flex:0 0 112px;height:200px;border-radius:10px;background:var(--surface);border:1px solid #ddd;position:relative;overflow:hidden}
+.ps .shots div.r{background:url(assets/sobra-room.png) center/cover}
+.ps .shots div.m{display:flex;align-items:center;justify-content:center;background:var(--tealSoft)}
+.ps .shots div.m img{width:84px;image-rendering:pixelated}
+.ps .shots div.t{display:flex;flex-direction:column;justify-content:center;padding:10px;font-family:PixelifySans;font-weight:900;color:var(--teal);font-size:26px;line-height:1}
+.ps .shots div.t small{font-size:10px;color:var(--ink);margin-bottom:6px}
+.ps .about{padding:0 18px;font-size:13px;line-height:1.5;color:#444}
+.ps .about b{color:#1f1f1f;font-size:15px;display:block;margin-bottom:4px}
+.ref{margin:14px 18px 0;border:2px dashed #b9c4d6;background:#F5F8FF;padding:9px 11px;font-family:monospace;font-size:11px;color:#3b4a68;line-height:1.5}
+/* notes */
+.notes{margin-top:30px;display:flex;gap:22px}
+.card{flex:1;background:var(--surface);border:4px solid var(--ink);box-shadow:7px 7px 0 rgba(32,40,72,.14);padding:18px 20px}
+.card h2{font-size:18px;font-weight:900;margin-bottom:10px}
+.card table{border-collapse:collapse;width:100%;font-size:12.5px;font-weight:800}
+.card th,.card td{text-align:left;padding:7px 6px;border-bottom:2px solid var(--line);vertical-align:top;line-height:1.5}
+.card th{color:var(--muted);width:120px}
+.card code{font-family:monospace;background:#EFE7D6;padding:0 4px;font-size:11.5px}
+.card ol{padding-left:18px;font-size:12.5px;font-weight:800;line-height:1.8;color:var(--inkSoft)}
+.card ol b{color:var(--ink)}
+.flow{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:900;margin-bottom:12px;flex-wrap:wrap}
+.flow span{border:2.5px solid var(--ink);padding:5px 9px;background:#fff}
+.flow span.lp{background:#F1EDFD;border-color:var(--lpPrimary);color:var(--lpPrimary)}
+.flow span.sb{background:var(--tealSoft);border-color:var(--teal);color:var(--tealInk)}
+</style>
+</head>
+<body>
+<div class="head"><h1>LOOPET → Sobrita · 루틴에서 바로 지출 기록</h1>
+<span>점심 루틴이 끝나면 버튼 하나로 Sobrita의 채워진 입력이 열린다 — 저장은 항상 사용자가 누른다</span></div>
+
+<div class="row">
+  <!-- 1. LOOPET routine setting -->
+  <div class="col">
+    <div class="tag"><img src="assets/loopet-icon.png">LOOPET · 루틴 편집</div>
+    <div class="phone lp edit">
+      <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="bar">‹ &nbsp;Editar rutina</div>
+      <div class="field px"><div class="l">Nombre</div><div class="v"><img src="assets/utensils.png">Almuerzo</div></div>
+      <div class="field px"><div class="l">Horario</div><div class="v">13:00 – 14:00 · L a V</div></div>
+      <div class="link">
+        <div class="top"><img src="assets/sobra-icon.png"><div class="tx"><b>Anotar en Sobrita</b>Al terminar, te ofrece anotar el gasto</div><div class="toggle"></div></div>
+        <div class="opt"><span>Monto habitual</span><b>$80 MXN</b></div>
+        <div class="opt"><span>Categoría</span><b>🍔 Comida</b></div>
+      </div>
+      <div class="hint">LOOPET no guarda tus gastos. Solo abre Sobrita con estos datos para que tú confirmes.</div>
+      <div class="nav"><div><i>⌂</i>Inicio</div><div><i>▮▮</i>Progreso</div><div class="on"><i>☰</i>Rutinas</div><div><i>⚙</i>Ajustes</div></div>
+    </div>
+    <div class="cap"><b>① 한 번만 설정.</b> 식사·커피·교통 같은 루틴에 "Sobrita에 기록"을 켜고 평소 금액과 카테고리를 정해 둔다. 기본은 꺼짐 — 사용자가 켠 루틴에만 버튼이 생긴다.</div>
+  </div>
+  <div class="arrow">›</div>
+
+  <!-- 2. LOOPET home with chip -->
+  <div class="col">
+    <div class="tag"><img src="assets/loopet-icon.png">LOOPET · 홈</div>
+    <div class="phone lp">
+      <div class="status"><span>14:02</span><span>●●● ▮</span></div>
+      <div class="date">jue 15 de oct</div>
+      <h2>Tu ritmo de hoy</h2>
+      <div class="next px"><div><div class="k">AHORA</div><div class="t"><img src="assets/utensils.png">Almuerzo</div></div><div class="r">13:00–14:00<br>¡Completado! ✓</div></div>
+      <div class="dial">
+        <div class="seg" style="background:#6744F4;left:104px;top:11px"></div>
+        <div class="seg" style="background:#FF8A3D;left:104px;top:206px"></div>
+        <div class="seg" style="background:#FFAD3D;left:172px;top:172px;transform:rotate(-45deg)"></div>
+        <div class="seg" style="background:#5BC489;left:6px;top:96px;transform:rotate(90deg)"></div>
+        <div class="core"><b>14:02</b><s>Ahora</s></div>
+      </div>
+      <div class="done">✓ Almuerzo completado</div>
+      <div class="sobchip"><img src="assets/sobra-icon.png"><div class="tx"><b>¿Anotar el almuerzo?</b>Abre Sobrita con $80 · Comida</div><div class="go">$80 ›</div></div>
+      <div class="tapring" style="left:262px;top:500px"></div>
+      <div class="nav"><div class="on"><i>⌂</i>Inicio</div><div><i>▮▮</i>Progreso</div><div><i>☰</i>Rutinas</div><div><i>⚙</i>Ajustes</div></div>
+    </div>
+    <div class="cap"><b>② 루틴을 끝내면 제안.</b> 완료 버튼 아래에 Sobrita 색(teal)의 작은 카드가 뜬다. 다른 앱으로 넘어간다는 게 색으로 보인다. 무시해도 아무 일도 없다.</div>
+  </div>
+  <div class="arrow">›</div>
+
+  <!-- 3. Sobrita prefilled sheet -->
+  <div class="col">
+    <div class="tag"><img src="assets/sobra-icon.png">Sobrita · 채워진 빠른 입력</div>
+    <div class="phone sb">
+      <div class="status"><span>14:02</span><span>●●● ▮</span></div>
+      <div class="brand"><b>Sobra</b><span>⚙</span></div>
+      <div class="lbl">Te queda hoy</div>
+      <div class="big">$186 <small>MXN</small></div>
+      <div class="sub">límite $220 · quedan $4,120</div>
+      <div class="room"><div class="bubble">¿Qué comiste?</div></div>
+      <div class="dim"></div>
+      <div class="sheet"><div class="grab"></div>
+        <h3>Nuevo gasto <span class="from"><img src="assets/loopet-icon.png">Desde LOOPET</span></h3>
+        <div class="amt"><b>$80</b><span>MXN</span><em>monto habitual</em></div>
+        <div class="cats"><div class="on">🍔 Comida</div><div>☕ Café</div><div>🚌 Transporte</div><div>＋</div></div>
+        <div class="note"><s>Nota</s>Almuerzo</div>
+        <div class="after">Después te quedarían <b>$106</b> hoy.</div>
+        <div class="btnp">Guardar gasto</div>
+      </div>
+    </div>
+    <div class="cap"><b>③ Sobrita가 열리고 내용이 채워져 있다.</b> 금액·카테고리·메모가 들어와 있고 "Desde LOOPET" 표시가 붙는다. 금액은 고칠 수 있고, <b>저장은 사용자가 누른다</b> — 자동 저장 없음.</div>
+  </div>
+  <div class="arrow">›</div>
+
+  <!-- 4. Sobrita saved -->
+  <div class="col">
+    <div class="tag"><img src="assets/sobra-icon.png">Sobrita · 저장 후</div>
+    <div class="phone sb">
+      <div class="status"><span>14:02</span><span>●●● ▮</span></div>
+      <div class="brand"><b>Sobra</b><span>⚙</span></div>
+      <div class="lbl">Te queda hoy</div>
+      <div class="big">$106 <small>MXN</small></div>
+      <div class="sub">límite $220 · quedan $4,040</div>
+      <div class="room"><div class="bubble">¡Anotado! Buen provecho</div></div>
+      <div class="mv"><div class="h">Hoy</div>
+        <div class="r new"><div class="ic">🍔</div><div class="n">Almuerzo<s>Comida · desde LOOPET</s></div><div class="a">−$80</div></div>
+        <div class="r"><div class="ic">☕</div><div class="n">Café<s>Café</s></div><div class="a">−$34</div></div>
+      </div>
+      <div class="toast">Gasto guardado <u><img src="assets/loopet-icon.png">Volver a LOOPET ›</u></div>
+      <div class="sbnav"><div class="on">⌂<span>Inicio</span></div><div>▤<span>Movim.</span></div><div class="plus">+</div><div>▮▮<span>Presup.</span></div><div>⚙<span>Yo</span></div></div>
+    </div>
+    <div class="cap"><b>④ 평소 지출과 똑같이 처리.</b> 오늘 남은 돈이 $186 → $106. 내역에 "desde LOOPET"가 남고, 아래 알림의 "Volver a LOOPET"로 원래 앱에 바로 돌아간다. XP·미션도 평소 기록과 같다.</div>
+  </div>
+  <div class="arrow" style="opacity:.35">·</div>
+
+  <!-- 5. Not installed -->
+  <div class="col">
+    <div class="tag">Sobrita가 없을 때 · Play 스토어</div>
+    <div class="phone ps">
+      <div class="status"><span>14:02</span><span>●●● ▮</span></div>
+      <div class="top"><img src="assets/sobra-icon.png"><div><b>Sobrita - Gastos y amiguitos</b><s>Finanzas personales</s></div></div>
+      <div class="meta"><div><b>Nuevo</b>Lanzamiento</div><div><b>E</b>Para todos</div><div><b>Gratis</b>Compras en app</div></div>
+      <div class="inst">Instalar</div>
+      <div class="shots"><div class="t"><small>Te queda hoy</small>$186</div><div class="r"></div><div class="m"><img src="assets/michi.png"></div></div>
+      <div class="about"><b>Acerca de esta app</b>Divide tu quincena en un monto diario y mira cómo crece lo que te sobra.</div>
+      <div class="ref">play.google.com/store/apps/details<br>?id=…sobra_app<br>&amp;referrer=utm_source%3Dloopet<br>%26utm_medium%3Droutine_chip</div>
+    </div>
+    <div class="cap"><b>⑤ 설치 안 됐으면 스토어로.</b> 같은 카드가 "Sobrita로 지출 기록하기 — 무료"로 바뀌고, 누르면 Sobrita 스토어 페이지. 출처 표시(utm)로 <b>LOOPET에서 온 설치 수</b>를 Play 콘솔에서 따로 본다.</div>
+  </div>
+</div>
+
+<div class="notes">
+  <div class="card">
+    <h2>데이터는 이렇게만 움직인다</h2>
+    <div class="flow"><span class="lp">LOOPET 루틴 완료</span>›<span>사용자가 카드를 탭</span>›<span class="sb">Sobrita 입력 화면 (채워짐)</span>›<span>사용자가 Guardar</span>›<span class="sb">평소 지출로 저장</span></div>
+    <table>
+      <tr><th>넘기는 값</th><td>금액 · 카테고리 · 메모 · 출처(loopet) — 이 네 가지뿐. 루틴 목록이나 기록은 넘기지 않는다</td></tr>
+      <tr><th>링크 형식</th><td><code>sobrita://gasto?monto=80&amp;categoria=comida&amp;nota=Almuerzo&amp;origen=loopet</code></td></tr>
+      <tr><th>서버 · 계정</th><td>없음. 폰 안에서 앱끼리 한 번 넘겨줄 뿐, 두 앱 모두 지금처럼 로컬 전용</td></tr>
+      <tr><th>반대 방향</th><td>나중에: Sobrita 고정 지출 마감 전날 → "LOOPET에 'Pagar luz' 루틴 추가" 버튼</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h2>안전장치 · 출시 순서</h2>
+    <ol>
+      <li><b>자동 저장 절대 없음.</b> 어떤 앱이든 이 링크를 보낼 수 있으니, Sobrita는 항상 확인 화면만 연다</li>
+      <li><b>값 검증.</b> 금액 범위 · 알려진 카테고리 · 메모 길이를 넘으면 빈 입력 화면으로</li>
+      <li><b>"오늘 남은 돈" 규칙 그대로.</b> 고정 지출처럼 따로 처리하지 않는다 — 평소 지출 한 건</li>
+      <li><b>Sobrita 먼저 출시</b> (링크 받기) → 그다음 LOOPET (버튼). 버튼이 먼저 나가 링크를 못 알아듣는 일을 막는다</li>
+      <li><b>설치 보상은 주지 않는다.</b> "둘 다 설치하면 선물"은 Play 정책상 위험</li>
+    </ol>
+  </div>
+</div>
+</body>
+</html>

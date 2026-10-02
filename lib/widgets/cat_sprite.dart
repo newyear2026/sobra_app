@@ -153,7 +153,6 @@ abstract final class CharacterCatalog {
         assetFileName: 'activity-12.png',
         frameCount: 12,
         duration: Duration(milliseconds: 1800),
-        frameOffsets: [22, 23, 21, 23, 47, 48, 48, 46, 75, 72, 72, 72],
         defaultLoop: true,
         playbackSpec: CharacterPlaybackSpec(
           playRange: CharacterFrameRange(0, 11),
@@ -164,7 +163,6 @@ abstract final class CharacterCatalog {
         assetFileName: 'processing-12.png',
         frameCount: 12,
         duration: Duration(milliseconds: 3600),
-        frameOffsets: [4, 4, 4, 4, 23, 23, 23, 24, 49, 49, 49, 49],
         defaultLoop: true,
         playbackSpec: CharacterPlaybackSpec(
           playRange: CharacterFrameRange(0, 11),
@@ -175,7 +173,6 @@ abstract final class CharacterCatalog {
         assetFileName: 'positive-12.png',
         frameCount: 12,
         duration: Duration(milliseconds: 4000),
-        frameOffsets: [4, 4, 4, 4, 20, 20, 20, 21, 45, 45, 45, 45],
         defaultLoop: true,
         playbackSpec: CharacterPlaybackSpec(
           playRange: CharacterFrameRange(0, 11),
@@ -186,10 +183,7 @@ abstract final class CharacterCatalog {
         assetFileName: 'success-12.png',
         frameCount: 12,
         duration: Duration(milliseconds: 2200),
-        // Grounded frames share a baseline; the middle frames retain a jump.
-        frameOffsets: [14, 15, 14, -5, -15, -8, 8, 12, 64, 67, 64, 64],
-        // Settled pose: 205 source pixels tall versus idle's 298.
-        displayScale: 1.45,
+        // V2 art includes jump height and lands on the idle pose at full size.
         defaultLoop: false,
         playbackSpec: CharacterPlaybackSpec(
           playRange: CharacterFrameRange(0, 11),
@@ -628,7 +622,10 @@ abstract final class CharacterCatalog {
         duration: Duration(milliseconds: 2800),
         defaultLoop: true,
         playbackSpec: CharacterPlaybackSpec(
-          playRange: CharacterFrameRange(0, 7),
+          // The generated contact strip overlaps neighboring poses. Frame 0
+          // has complete cheeks and tail; later poses lose pixels at the
+          // split boundaries, so keep the intact resting pose on screen.
+          playRange: CharacterFrameRange(0, 0),
           posterFrame: 0,
         ),
       ),
@@ -752,6 +749,73 @@ abstract final class CharacterCatalog {
     },
   );
 
+  static const quokka = CharacterDefinition(
+    id: 'quokka',
+    displayName: 'Quokka',
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.png',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 6,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 3,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 3,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.png',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 3,
+        ),
+      ),
+    },
+  );
+
   static const Map<String, CharacterDefinition> all = {
     'michi': michi,
     'poodle': poodle,
@@ -762,6 +826,7 @@ abstract final class CharacterCatalog {
     'platypus': platypus,
     'rabbit': rabbit,
     'raccoon': raccoon,
+    'quokka': quokka,
   };
 
   /// The pack for [characterId], or Michi when there is no such pack.

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>첫 실행 정리 시안</title>
+<style>
+:root{--ink:#1f2340;--soft:#5b6077;--teal:#0f7b70;--tealsoft:#dff1ee;--red:#b4443a;--redsoft:#f8e3df;--bg:#f6f3ea;--card:#fffdf6;--line:#d9d3c3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+.wrap{width:1240px;margin:0 auto;padding:40px 40px 48px}
+h1{font-size:28px;margin:0 0 6px}
+.sub{color:var(--soft);margin:0 0 28px}
+.row{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:22px 26px 26px;margin-bottom:22px}
+.tag{display:inline-block;font-weight:700;font-size:13px;padding:3px 10px;border-radius:999px;margin-bottom:6px}
+.now .tag{background:var(--redsoft);color:var(--red)}
+.next .tag{background:var(--tealsoft);color:var(--teal)}
+.row h2{font-size:19px;margin:0 0 16px}
+.flow{display:flex;align-items:flex-start;gap:18px}
+.screen{width:252px;flex:none}
+.screen img{width:252px;display:block;border:3px solid var(--ink);border-radius:22px;background:#fff}
+.cap{font-size:13px;color:var(--soft);margin-top:8px;text-align:center}
+.cap b{color:var(--ink)}
+.arrow{align-self:center;font-size:30px;color:var(--soft);padding:0 2px}
+.x{position:relative}
+.x::after{content:"";position:absolute;inset:0 0 auto 0;height:539px;border-radius:22px;background:rgba(180,68,58,.10);border:3px solid var(--red)}
+.x .stamp{position:absolute;top:150px;left:50%;transform:translate(-50%,0) rotate(-8deg);background:var(--red);color:#fff;font-weight:800;padding:6px 14px;border-radius:8px;z-index:2;white-space:nowrap}
+.notes{flex:1;min-width:0;padding-left:8px}
+.notes ul{margin:0;padding-left:18px}
+.notes li{margin-bottom:9px}
+.hl{position:relative}
+.hl .ring{position:absolute;left:12px;right:12px;top:458px;height:26px;border:3px solid #e2a400;border-radius:10px;z-index:2}
+.hl .pin{position:absolute;top:430px;right:-6px;background:#e2a400;color:#fff;font-weight:800;font-size:12px;padding:2px 8px;border-radius:6px;z-index:3}
+.mini{display:flex;gap:18px;margin-top:20px}
+.ajustes{flex:1;border:2px dashed var(--line);border-radius:12px;padding:14px 16px;background:#fff}
+.ajustes h3{margin:0 0 10px;font-size:15px}
+.set{display:flex;align-items:center;gap:10px;border:2px solid var(--ink);border-radius:8px;padding:9px 12px;margin-bottom:8px;background:var(--card);font-size:14px}
+.set .v{margin-left:auto;color:var(--soft)}
+.set.gone{opacity:.45;text-decoration:line-through;border-style:dashed}
+.foot{color:var(--soft);font-size:13px;margin-top:6px}
+</style></head><body><div class="wrap">
+<h1>첫 실행 정리 시안: 로그인 화면 없이 바로 시작</h1>
+<p class="sub">화면은 모두 지금 앱 코드로 직접 그린 실제 화면입니다(스페인어). 아래 "제안"의 한 줄만 임시로 넣어서 그렸어요.</p>
+
+<div class="row now">
+  <span class="tag">지금</span>
+  <h2>첫 실행에서 화면 두 장을 지나야 이야기가 시작돼요</h2>
+  <div class="flow">
+    <div class="screen x"><img src="assets/login-es.png" alt=""><span class="stamp">빠짐</span>
+      <div class="cap"><b>① 로그인 권유</b><br>Google 버튼이 실제로는 아무 일도 안 함</div></div>
+    <div class="arrow">→</div>
+    <div class="screen"><img src="assets/title-before-es.png" alt="">
+      <div class="cap"><b>② 온보딩 첫 장</b><br>앱 이름 · 한 줄 소개 · 이야기 시작</div></div>
+    <div class="notes">
+      <ul>
+        <li>①의 "Continuar con Google"은 0.65초 기다린 뒤 그냥 넘어갑니다. 기록은 어디에도 연결되지 않아요.</li>
+        <li>①의 "Tus registros, siempre contigo"(어디서든 그대로)는 지킬 수 없는 약속이에요.</li>
+        <li>①의 그림 안 앱 이름이 아직 <b>"Sobra"</b>예요.</li>
+        <li>①에 "시작하기" 버튼만 남기면, 바로 뒤의 ②와 같은 역할을 하는 시작 화면이 두 번 연달아 나옵니다.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row next">
+  <span class="tag">제안</span>
+  <h2>바로 온보딩 첫 장으로. 계정이 필요 없다는 건 한 줄로</h2>
+  <div class="flow">
+    <div class="screen hl"><img src="assets/title-after-es.png" alt=""><span class="ring"></span><span class="pin">되살림</span>
+      <div class="cap"><b>첫 화면 = 온보딩 첫 장</b><br>🔒 Sin cuenta. Tus datos se quedan contigo.</div></div>
+    <div class="screen hl"><img src="assets/title-after-ko.png" alt=""><span class="ring"></span><span class="pin">되살림</span>
+      <div class="cap"><b>같은 화면, 한국어</b><br>🔒 계정이 필요 없어요. 데이터는 기기에만 남아요.</div></div>
+    <div class="notes">
+      <ul>
+        <li><b>첫 실행 화면이 하나 줄어요.</b> 앱을 열면 바로 Sobrita 이름과 이야기가 나옵니다.</li>
+        <li><b>되살리는 한 줄은 원래 있던 문구예요.</b> 9/14에 로그인 화면이 생기면서 "앞 화면과 말이 엇갈린다"는 이유로 뺐던 것이라, 로그인 화면이 빠지면 다시 맞는 말이 됩니다. 7개 언어 번역도 git 기록에 남아 있어요.</li>
+        <li>문구는 사실 그대로입니다. 서버도 계정도 없고, 기록은 폰 안에만 있어요.</li>
+        <li>로그인 화면 코드와 미치 이사 그림은 지우지 않아요. 출시 후 <b>Ajustes → Respaldo en Google Drive</b> 화면에서 다시 씁니다(그림 속 "Sobra" 글자는 그때 수정).</li>
+      </ul>
+      <div class="mini">
+        <div class="ajustes">
+          <h3>Ajustes: 계정 행 숨김</h3>
+          <div class="set gone">👤 Cuenta <span class="v">Conectar ›</span></div>
+          <div class="set">💾 Respaldo de datos <span class="v">›</span></div>
+          <div class="foot">출시 빌드에서는 계정 행을 숨기고, 바로 아래 백업 행은 그대로 둡니다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div></body></html>

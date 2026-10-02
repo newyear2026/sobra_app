@@ -23,7 +23,6 @@ import '../widgets/pack_offer_dialog.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/update_prompt.dart';
 import 'collection_screen.dart';
-import 'login_screen.dart';
 import 'cycle_settings_screen.dart';
 import 'our_apps_screen.dart';
 import 'gamification_preview_screen.dart';
@@ -168,22 +167,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(l10n.updateStoreFailed)));
-  }
-
-  Future<void> _openAccountOffer() async {
-    final navigator = Navigator.of(context);
-    await navigator.push(
-      MaterialPageRoute<void>(
-        builder: (routeContext) => LoginScreen(
-          isInitialOffer: false,
-          // Both close the screen for now. Connecting an account is still a
-          // stub: there is no Google client configured, so a row that claimed
-          // to sign somebody in would be lying to them.
-          onGoogleContinue: () => Navigator.of(routeContext).pop(),
-          onGuestContinue: () => Navigator.of(routeContext).pop(),
-        ),
-      ),
-    );
   }
 
   Future<void> _restorePurchases(SobraPurchases purchases) async {
@@ -418,16 +401,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               l10n.receiptBackupNote,
               style: Theme.of(context).textTheme.bodySmall,
             ),
-          ),
-          // The offer is made once, at first launch, and then never again on
-          // its own. This row is the only way back to it — without it,
-          // declining at the start would be a decision with no undo.
-          _SettingsRow(
-            icon: Icons.account_circle_outlined,
-            iconColor: AppColors.blue,
-            label: l10n.settingsAccount,
-            value: l10n.settingsAccountConnect,
-            onTap: _openAccountOffer,
           ),
           if (adConsent?.privacyOptionsRequired == true) ...[
             const SizedBox(height: 10),

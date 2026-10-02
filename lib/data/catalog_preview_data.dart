@@ -8,21 +8,27 @@ import '../models/room_design.dart';
 /// are ready.
 abstract final class CatalogPreviewData {
   static const characters = <CatalogEntry>[
+    // The two starters. Onboarding hands over the one the user picks; the
+    // other waits at the door until three recorded days or two rewarded ads,
+    // whichever comes first. Ad-unlocked for everyone else's sake: the card,
+    // the progress and the revocation rules are the rewarded-ad ones.
     CatalogEntry(
       id: 'michi',
       name: 'Michi',
       kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.included,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.michi,
       assetPath: 'assets/characters/michi/idle-8.png',
+      rewardedAdTarget: 2,
     ),
     CatalogEntry(
       id: 'poodle',
       name: 'Miru',
       kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.included,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.poodle,
       assetPath: 'assets/characters/poodle/idle-8.png',
+      rewardedAdTarget: 2,
     ),
     // Earned with ads, and for good. Turning it into a purchase later would
     // make the launch revocation take it back from everyone who watched for
@@ -46,39 +52,37 @@ abstract final class CatalogPreviewData {
       assetPath: 'assets/characters/guinea-pig/idle-8.png',
       rewardedAdTarget: 2,
     ),
-    // Los amigos de Michi: these three come in the pack and nowhere else.
-    // Selling them individually as well would charge twice for the overlap:
-    // a buyer who takes one and later the pack pays for it in both, because
-    // grantCatalogEntries drops ids already owned and no store refunds the
-    // difference. Their old single products (sobra.character.capybara,
-    // .alpaca and .raccoon) were deactivated in Play before launch and must
-    // not come back. Pico, Bunny and 10 are what single purchases are for.
+    // Los amigos de Michi: sold one by one and together in the pack.
+    // Somebody who owns one and then buys the pack pays for that one twice —
+    // grantCatalogEntries drops ids already owned and Play refunds nothing —
+    // so the pack dialog names what the buyer already has before they pay.
+    // Kept together so the collection reads them as one set.
     CatalogEntry(
       id: 'capybara',
       name: 'Tranqui',
       kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.bundle,
+      unlockMethod: CatalogUnlockMethod.purchase,
       visual: CatalogVisual.capybara,
       assetPath: 'assets/characters/capybara/idle-8.png',
-      storeProductId: packProductId,
+      storeProductId: 'sobra.character.capybara',
     ),
     CatalogEntry(
       id: 'alpaca',
       name: 'Lana',
       kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.bundle,
+      unlockMethod: CatalogUnlockMethod.purchase,
       visual: CatalogVisual.alpaca,
       assetPath: 'assets/characters/alpaca/idle-8.png',
-      storeProductId: packProductId,
+      storeProductId: 'sobra.character.alpaca',
     ),
     CatalogEntry(
       id: 'raccoon',
       name: 'Bandi',
       kind: CatalogKind.character,
-      unlockMethod: CatalogUnlockMethod.bundle,
+      unlockMethod: CatalogUnlockMethod.purchase,
       visual: CatalogVisual.raccoon,
       assetPath: 'assets/characters/raccoon/idle-8.png',
-      storeProductId: packProductId,
+      storeProductId: 'sobra.character.raccoon',
     ),
     CatalogEntry(
       id: 'platypus',
@@ -97,6 +101,15 @@ abstract final class CatalogPreviewData {
       visual: CatalogVisual.rabbit,
       assetPath: 'assets/characters/rabbit/idle-8.png',
       storeProductId: 'sobra.character.rabbit',
+    ),
+    CatalogEntry(
+      id: 'quokka',
+      name: 'Quokka',
+      kind: CatalogKind.character,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
+      visual: CatalogVisual.quokka,
+      assetPath: 'assets/characters/quokka/idle-8.png',
+      rewardedAdTarget: 2,
     ),
     CatalogEntry(
       id: 'character-03',
@@ -254,14 +267,6 @@ abstract final class CatalogPreviewData {
       assetPath: RoomDecorAssets.lowCabinet,
     ),
     CatalogEntry(
-      id: RoomDecorAssets.petBedId,
-      name: 'Pet bed',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.included,
-      visual: CatalogVisual.cushion,
-      assetPath: RoomDecorAssets.petBed,
-    ),
-    CatalogEntry(
       id: RoomDecorAssets.slimBookcaseId,
       name: 'Slim bookcase',
       kind: CatalogKind.item,
@@ -276,6 +281,14 @@ abstract final class CatalogPreviewData {
       unlockMethod: CatalogUnlockMethod.included,
       visual: CatalogVisual.shelf,
       assetPath: RoomDecorAssets.roundSideTable,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.petBedId,
+      name: 'Pet bed',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.cushion,
+      assetPath: RoomDecorAssets.petBed,
     ),
     CatalogEntry(
       id: RoomDecorAssets.savingsJarId,
@@ -327,7 +340,37 @@ abstract final class CatalogPreviewData {
       visual: CatalogVisual.shelf,
       assetPath: RoomDecorAssets.launchTv,
     ),
+    CatalogEntry(
+      id: RoomDecorAssets.ivorySofaId,
+      name: 'Sofá marfil',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.cushion,
+      assetPath: RoomDecorAssets.ivorySofa,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.bronzeLanternLampId,
+      name: 'Lámpara de bronce',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.lamp,
+      assetPath: RoomDecorAssets.bronzeLanternLamp,
+    ),
   ];
+
+  /// The companions offered at onboarding, in the order the cards appear.
+  ///
+  /// Saved ids: the starter a user picked is stored by these, so renaming one
+  /// is a migration.
+  static const starterIds = ['michi', 'poodle'];
+
+  /// Days with something recorded that bring the waiting starter over.
+  ///
+  /// Counted, not consecutive: a missed day in the first week must not send
+  /// somebody back to zero before they have formed the habit this is for.
+  static const starterRecordedDaysTarget = 3;
+
+  static bool isStarter(String id) => starterIds.contains(id);
 
   /// Los amigos de Michi: Tranqui, Lana and Bandi, and ad removal.
   ///
@@ -368,10 +411,10 @@ abstract final class CatalogPreviewData {
 
   /// Everything [storeProductId] delivers, or null where it is not a bundle.
   ///
-  /// Callers must consult this *before* [entryForProductId]. Every entry the
-  /// pack delivers exclusively carries its product id, so the single-entry
-  /// lookup answers for the pack too — with whichever one it reaches first,
-  /// while reporting that the delivery succeeded.
+  /// Callers must consult this *before* [entryForProductId]. No entry
+  /// carries the pack's id today, but one sold only inside a pack would, and
+  /// the single-entry lookup would then answer for the pack with whichever
+  /// one it reached first — while reporting that the delivery succeeded.
   static Set<String>? entitlementsForProductId(String storeProductId) =>
       productEntitlements[storeProductId];
 
@@ -463,6 +506,9 @@ final class PreviewCatalogPriceSource implements CatalogPriceSource {
 
   @override
   String? localizedPriceFor(String storeProductId) => switch (storeProductId) {
+    'sobra.character.capybara' => r'MX$ 39',
+    'sobra.character.alpaca' => r'MX$ 39',
+    'sobra.character.raccoon' => r'MX$ 39',
     'sobra.character.platypus' => r'MX$ 39',
     'sobra.character.rabbit' => r'MX$ 39',
     CatalogPreviewData.packProductId => r'MX$ 89',

@@ -39,6 +39,9 @@ void main() {
       schedule: const PaySchedule.semiMonthly(),
     );
     await store.completeOnboarding();
+    // Both starters, as on an install from before they were split: Inicio
+    // then has no waiting row, which is not what this test is about.
+    await store.grantCatalogEntries({'michi', 'poodle'});
     await store.addExpense(
       amountCentavos: 800000,
       category: ExpenseCategory.transport,

@@ -144,6 +144,98 @@ void main() {
     expect(roomShade(RoomTimeOfDay.day), isNull);
   });
 
+  testWidgets(
+    'bronze lantern lights its shade and warms the ivory sofa at night',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final store = await SobraStore.load(now: () => DateTime(2026, 10, 2, 21));
+      await store.setReducedMotion(true);
+      Future<void> show({required bool lamp}) async {
+        await tester.pumpWidget(
+          SobraScope(
+            store: store,
+            child: MaterialApp(
+              localizationsDelegates: sobraLocalizationsDelegates,
+              supportedLocales: sobraSupportedLocales,
+              home: SizedBox(
+                width: 360,
+                height: 560,
+                child: RoomScene(
+                  variant: RoomSceneVariant.immersive,
+                  roomId: RoomThemes.casaTorreId,
+                  timeOfDay: RoomTimeOfDay.night,
+                  placements: {
+                    RoomSlot.floorSofa: RoomDecorAssets.ivorySofaId,
+                    if (lamp)
+                      RoomSlot.floorLeft: RoomDecorAssets.bronzeLanternLampId,
+                  },
+                  message: '',
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pump();
+      }
+
+      final sofa = find.ancestor(
+        of: find.byWidgetPredicate(
+          (widget) =>
+              widget is Image &&
+              widget.image is AssetImage &&
+              (widget.image as AssetImage).assetName ==
+                  RoomDecorAssets.ivorySofa,
+        ),
+        matching: find.byType(RoomSubjectLight),
+      );
+      await show(lamp: true);
+      final glow =
+          tester
+                  .widget<CustomPaint>(
+                    find.byWidgetPredicate(
+                      (widget) =>
+                          widget is CustomPaint &&
+                          widget.painter is RoomLampGlow,
+                    ),
+                  )
+                  .painter!
+              as RoomLampGlow;
+      expect(glow.bronzeLamps, hasLength(1));
+      expect(
+        find.byWidgetPredicate(
+          (widget) => widget is CustomPaint && widget.painter is RoomLampShades,
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: sofa, matching: find.byType(ShaderMask)),
+        findsOneWidget,
+      );
+      final light = tester.widget<RoomSubjectLight>(sofa).lamps.single;
+      final lamp = glow.bronzeLamps.single;
+      // The hanging paper lantern is right of the stem, well above the base.
+      expect(light.dx, greaterThan(lamp.center.dx));
+      expect(
+        light.dy,
+        inExclusiveRange(
+          lamp.top + lamp.height * .12,
+          lamp.top + lamp.height * .28,
+        ),
+      );
+      await show(lamp: false);
+      expect(
+        find.descendant(of: sofa, matching: find.byType(ShaderMask)),
+        findsNothing,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (widget) => widget is CustomPaint && widget.painter is RoomLampShades,
+        ),
+        findsNothing,
+      );
+    },
+  );
+
   testWidgets('a placed lamp warms nearby furniture; without one it is flat', (
     tester,
   ) async {

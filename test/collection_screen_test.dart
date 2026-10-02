@@ -208,9 +208,7 @@ void main() {
     expect(buyButton.onPressed, isNotNull);
   });
 
-  // A pack character is never priced on its own: the pack's price on one
-  // character's card would read as that character's price.
-  testWidgets('Bandi comes in the pack and points to it', (tester) async {
+  testWidgets('Bandi is sold singly and points to the pack', (tester) async {
     final store = await loadStore();
     await pump(tester, store, initialEntryId: 'raccoon');
 
@@ -218,9 +216,9 @@ void main() {
     expect(
       find.descendant(
         of: find.byType(AlertDialog),
-        matching: find.textContaining(r'MX$'),
+        matching: find.textContaining(r'MX$ 39'),
       ),
-      findsNothing,
+      findsOneWidget,
     );
     expect(
       find.descendant(
@@ -229,14 +227,24 @@ void main() {
       ),
       findsOneWidget,
     );
-    final seePack = tester.widget<FilledButton>(
+    final buy = tester.widget<FilledButton>(
       find.descendant(
         of: find.byType(AlertDialog),
         matching: find.byType(FilledButton),
       ),
     );
-    expect(seePack.onPressed, isNotNull);
-    expect(inDialog('VER PAQUETE'), findsOneWidget);
+    expect(buy.onPressed, isNotNull);
+    expect(inDialog('COMPRAR'), findsOneWidget);
+    expect(inDialog('También viene en Los amigos de Michi'), findsOneWidget);
+  });
+
+  // Pico is not in the pack, so its card has nothing to say about it.
+  testWidgets('a single outside the pack does not mention it', (tester) async {
+    final store = await loadStore();
+    await pump(tester, store, initialEntryId: 'platypus');
+
+    expect(inDialog('Pico'), findsOneWidget);
+    expect(inDialog('También viene en Los amigos de Michi'), findsNothing);
   });
 
   testWidgets('a stored ad count is what the card counts from', (tester) async {
@@ -275,7 +283,7 @@ void main() {
   // The decoration carries the pack's product id so the store can price the
   // pack. If the card followed that id instead of the unlock method it would
   // offer COMPRAR, and one room object would charge for the whole pack.
-  testWidgets('pack characters sit together, locked, with no price', (
+  testWidgets('the pack friends sit together, each with its price', (
     tester,
   ) async {
     final store = await loadStore();
@@ -288,7 +296,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('PAQUETE'), findsNWidgets(3));
+    expect(find.text('PAQUETE'), findsNothing);
     // Tranqui and Lana share a row, and Bandi starts the next one.
     final tranqui = tester.getTopLeft(find.text('Tranqui'));
     final lana = tester.getTopLeft(find.text('Lana'));
@@ -530,6 +538,37 @@ void main() {
     await tester.pumpAndSettle();
     expect(store.ownsCatalogEntry(entry), isTrue);
     expect(find.text('¡Cookie es tuyo!'), findsOneWidget);
+  });
+
+  testWidgets('Quokka unlocks in the collection after two ads', (tester) async {
+    final store = await loadStore();
+    final entry = entryById('quokka');
+    await pump(
+      tester,
+      store,
+      ads: await readyAds(store),
+      initialEntryId: 'quokka',
+    );
+
+    expect(find.text('Quokka'), findsWidgets);
+    expect(inDialog('Mira anuncios de recompensa · 0/2'), findsOneWidget);
+    expect(inDialog('VER ANUNCIO'), findsOneWidget);
+    expect(store.ownsCatalogEntry(entry), isFalse);
+
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+    expect(store.rewardedAdProgressFor(entry.id), 1);
+    expect(store.ownsCatalogEntry(entry), isFalse);
+
+    await tester.ensureVisible(find.text('Quokka'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Quokka'));
+    await tester.pumpAndSettle();
+    expect(inDialog('Mira anuncios de recompensa · 1/2'), findsOneWidget);
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+    expect(store.ownsCatalogEntry(entry), isTrue);
+    expect(find.text('¡Quokka es tuyo!'), findsOneWidget);
   });
 
   // The fetch in front of the ad is a network round trip. Before the card said

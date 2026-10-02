@@ -85,6 +85,7 @@ class RoomScene extends StatelessWidget {
               room.id == RoomThemes.casaTorreId ||
               room.id == RoomThemes.casaMontanaId ||
               room.id == RoomThemes.casaInvernaderoId;
+          final isPanoramic = usesPaintedLight;
           final roomPhase = variant == RoomSceneVariant.immersive
               ? timeOfDay
               : null;
@@ -117,9 +118,29 @@ class RoomScene extends StatelessWidget {
           final background = _coverRect(
             size,
             imageSize.aspectRatio,
-            floorFocus: layout.floorFocus,
+            floorFocus: layout.floorFocus == null
+                ? null
+                : math.min(
+                    layout.floorFocus!,
+                    .52 + .1 * size.height / size.width,
+                  ),
           );
           final stageScale = background.height / imageSize.height;
+          final catAspect =
+              CharacterAnimationStandard.frameHeight /
+              CharacterAnimationStandard.frameWidth;
+          final catWidth = math.min(
+            size.width * layout.catWidth,
+            size.height * (.96 - layout.catTop) / catAspect,
+          );
+          final catHeight = catWidth * catAspect;
+          final catFrame = Rect.fromLTWH(
+            (size.width - catWidth) / 2,
+            size.height * layout.catTop,
+            catWidth,
+            catHeight,
+          );
+          final catPaws = catFrame.top + catFrame.height * 344 / 360;
           late Rect Function(RoomSlot, String) itemFrame;
           Rect slotFrame(RoomSlot slot) {
             if (slot == RoomSlot.cabinetTop ||
@@ -181,35 +202,149 @@ class RoomScene extends StatelessWidget {
             );
           }
 
+          // Furniture shares a back row; secondary seats and low tables
+          // move forward when that row is occupied. Depth is measured from
+          // the floor line so Home and the portrait retain the same grouping.
+          Rect itemSpot(RoomSlot slot, String itemId) {
+            final spot = slotFrame(slot);
+            final preview = variant == RoomSceneVariant.preview;
+            final wallSpan = preview ? .535 : .434;
+            Rect at(double x, double depth) {
+              final bottom = layout.floorLine + depth * wallSpan;
+              return Rect.fromLTWH(
+                background.left + (x - .08) * background.width,
+                background.top + bottom * background.height - spot.height,
+                background.width * .16,
+                spot.height,
+              );
+            }
+
+            if (slot == RoomSlot.rug) {
+              // The rug follows the paws in every crop, including the short
+              // decorator, instead of staying behind the character.
+              final height = catWidth * 2.15 / 3;
+              final bodyBottom = itemId == RoomDecorAssets.blueCreamRugId
+                  ? 592 / 724
+                  : 511 / 724;
+              final top = math.min(
+                catPaws - height * .53,
+                size.height - 4 - height * bodyBottom,
+              );
+              return Rect.fromLTWH(
+                catFrame.center.dx - height * 1.5,
+                top,
+                height * 3,
+                height,
+              );
+            }
+            if (itemId == RoomDecorAssets.petBedId) {
+              return Rect.fromLTWH(
+                catFrame.center.dx - catWidth * .85 - spot.width / 2,
+                catPaws - catWidth * .15 - spot.height,
+                spot.width,
+                spot.height,
+              );
+            }
+            final cabinetId = placements[RoomSlot.floorCabinet];
+            final hasCabinet =
+                cabinetId != null && cabinetId != RoomDecorAssets.clearedId;
+            final hasSofa = RoomDecorAssets.isSofa(
+              placements[RoomSlot.floorSofa],
+            );
+            final hasLeftChair =
+                placements[RoomSlot.floorLeft] == RoomDecorAssets.rattanChairId;
+            if (slot == RoomSlot.floorCabinet &&
+                itemId == RoomDecorAssets.slimBookcaseId) {
+              return at(isPanoramic ? .15 : .18, .09);
+            }
+            if (slot == RoomSlot.floorLeft && hasCabinet) {
+              final bookcase = cabinetId == RoomDecorAssets.slimBookcaseId;
+              if (RoomDecorAssets.isFloorLamp(itemId)) {
+                return at(bookcase ? .33 : .06, .09);
+              }
+              if (itemId == RoomDecorAssets.rattanChairId) {
+                return at(bookcase ? .32 : .13, .36);
+              }
+            }
+            if (slot == RoomSlot.floorRight) {
+              if (hasSofa) {
+                return switch (itemId) {
+                  RoomDecorAssets.rattanChairId => at(.84, .34),
+                  RoomDecorAssets.roundSideTableId => at(.82, .28),
+                  RoomDecorAssets.terracottaPoufId => at(.82, .30),
+                  RoomDecorAssets.floorLampId ||
+                  RoomDecorAssets.bronzeLanternLampId => at(.94, .09),
+                  _ => spot,
+                };
+              }
+              if (hasLeftChair) {
+                final nearChair = hasCabinet ? .31 : .38;
+                if (itemId == RoomDecorAssets.roundSideTableId) {
+                  return at(nearChair, hasCabinet ? .28 : .10);
+                }
+                if (itemId == RoomDecorAssets.terracottaPoufId) {
+                  return at(nearChair, .28);
+                }
+              }
+            }
+            return spot;
+          }
+
           /// Where [itemId] is drawn in [slot]: its own stage height, standing
           /// on the slot's bottom edge or hung on its centre. The box is wider
           /// than any item so the image keeps its own shape inside it.
           itemFrame = (RoomSlot slot, String itemId) {
-            final spot = slotFrame(slot);
+            final spot = itemSpot(slot, itemId);
             final stageHeight = RoomDecorAssets.stageHeightFor(itemId);
             if (stageHeight == null) return spot;
             // The same object grows gently as its floor contact moves toward
             // the viewer. Wall and tabletop decorations keep a fixed scale.
             final depth = slot.surface == RoomSurface.floor
-                ? (layout.slotRects[slot]!.bottom - layout.floorLine).clamp(
-                    0.0,
-                    .45,
-                  )
+                ? ((spot.bottom - background.top) / background.height -
+                          layout.floorLine)
+                      .clamp(0.0, .45)
                 : 0.0;
-            final height =
+            var height =
                 stageHeight * stageScale * layout.itemScale * (1 + depth * .6);
+            final body = _floorSpriteBody(itemId);
+            if (slot.surface == RoomSurface.floor && body != null) {
+              final padding = size.width * .025;
+              height = math.min(
+                height,
+                (size.height - padding * 2) / body.height,
+              );
+              height = math.min(
+                height,
+                (size.width - padding * 2) / body.width,
+              );
+              if (itemId == RoomDecorAssets.petBedId) {
+                height = math.min(height, catWidth * .85 / body.width);
+              }
+              var frame = Rect.fromLTWH(
+                spot.center.dx - height * 1.5,
+                spot.bottom - height * body.bottom,
+                height * 3,
+                height,
+              );
+              final visible = _floorSpriteRect(frame, itemId);
+              final dx = visible.left < padding
+                  ? padding - visible.left
+                  : visible.right > size.width - padding
+                  ? size.width - padding - visible.right
+                  : 0.0;
+              final dy = visible.bottom > size.height - padding
+                  ? size.height - padding - visible.bottom
+                  : visible.top < padding
+                  ? padding - visible.top
+                  : 0.0;
+              frame = frame.shift(Offset(dx, dy));
+              return frame;
+            }
             final width = height * 3;
-            // These two generated sprites have transparent canvas beneath
-            // their feet. Align the opaque feet with the room's floor anchor.
-            final footInset = switch (itemId) {
-              RoomDecorAssets.slimBookcaseId => .08,
-              RoomDecorAssets.roundSideTableId => .15,
-              _ => 0.0,
-            };
             return switch (slot.surface) {
               RoomSurface.floor || RoomSurface.tabletop => Rect.fromLTWH(
                 spot.center.dx - width / 2,
-                spot.bottom - height + height * footInset,
+                spot.bottom - height,
                 width,
                 height,
               ),
@@ -220,6 +355,19 @@ class RoomScene extends StatelessWidget {
               ),
             };
           };
+
+          Rect targetFrame(RoomSlot slot, String itemId) {
+            final spot = itemSpot(slot, itemId);
+            if (slot.surface != RoomSurface.floor) return spot;
+            final frame = itemFrame(slot, itemId);
+            final visible = _floorSpriteRect(frame, itemId);
+            return spot.shift(
+              Offset(
+                frame.center.dx - spot.center.dx,
+                visible.bottom - spot.bottom,
+              ),
+            );
+          }
 
           // The rug lies under everything; the rest overlap by where they
           // stand, so something lower on screen — nearer the viewer — is
@@ -243,12 +391,25 @@ class RoomScene extends StatelessWidget {
                       if (RoomDecorAssets.assetFor(itemId) case final asset?)
                         (
                           slot: slot,
+                          itemId: itemId,
                           asset: asset,
                           frame: itemFrame(slot, itemId),
                         ),
               ]..sort((a, b) {
                 if (a.slot.surface == RoomSurface.rug) return -1;
                 if (b.slot.surface == RoomSurface.rug) return 1;
+                // The sofa and TV hide the lamp stem where it stands behind
+                // them. A pouf belongs in front of the sofa's lower edge.
+                if (RoomDecorAssets.isFloorLamp(a.itemId) &&
+                    (RoomDecorAssets.isSofa(b.itemId) ||
+                        b.itemId == RoomDecorAssets.launchTvId)) {
+                  return -1;
+                }
+                if (RoomDecorAssets.isFloorLamp(b.itemId) &&
+                    (RoomDecorAssets.isSofa(a.itemId) ||
+                        a.itemId == RoomDecorAssets.launchTvId)) {
+                  return 1;
+                }
                 final atopA =
                     a.slot == RoomSlot.cabinetTop ||
                     a.slot == RoomSlot.cabinetTopRight ||
@@ -261,11 +422,6 @@ class RoomScene extends StatelessWidget {
                 return a.frame.bottom.compareTo(b.frame.bottom);
               });
 
-          final catWidth = size.width * layout.catWidth;
-          final catHeight =
-              catWidth *
-              CharacterAnimationStandard.frameHeight /
-              CharacterAnimationStandard.frameWidth;
           final sceneCharacterId =
               characterId ??
               SobraScope.maybeOf(context)?.characterId ??
@@ -274,12 +430,6 @@ class RoomScene extends StatelessWidget {
             sceneCharacterId,
           ).roomDisplayScale;
 
-          final catFrame = Rect.fromLTWH(
-            (size.width - catWidth) / 2,
-            size.height * layout.catTop,
-            catWidth,
-            catHeight,
-          );
           final floorLamps = [
             for (final item in placed)
               if (item.asset == RoomDecorAssets.floorLamp) item.frame,
@@ -288,8 +438,14 @@ class RoomScene extends StatelessWidget {
             for (final item in placed)
               if (item.asset == RoomDecorAssets.lamp) item.frame,
           ];
+          final bronzeLamps = [
+            for (final item in placed)
+              if (item.itemId == RoomDecorAssets.bronzeLanternLampId)
+                item.frame,
+          ];
           final lampLights = [
             for (final lamp in floorLamps) roomLampLight(lamp, floorLamp: true),
+            for (final lamp in bronzeLamps) roomBronzeLampLight(lamp),
             for (final lamp in tableLamps)
               roomLampLight(lamp, floorLamp: false),
           ];
@@ -349,6 +505,7 @@ class RoomScene extends StatelessWidget {
                           background: background,
                           floorLamps: floorLamps,
                           tableLamps: tableLamps,
+                          bronzeLamps: bronzeLamps,
                         ),
                       ),
                     ),
@@ -400,11 +557,15 @@ class RoomScene extends StatelessWidget {
                   ),
                 ),
               ),
-              if (roomPhase == RoomTimeOfDay.night && floorLamps.isNotEmpty)
+              if (roomPhase == RoomTimeOfDay.night &&
+                  (floorLamps.isNotEmpty || bronzeLamps.isNotEmpty))
                 Positioned.fill(
                   child: IgnorePointer(
                     child: CustomPaint(
-                      painter: RoomLampShades(floorLamps: floorLamps),
+                      painter: RoomLampShades(
+                        floorLamps: floorLamps,
+                        bronzeLamps: bronzeLamps,
+                      ),
                     ),
                   ),
                 ),
@@ -439,8 +600,8 @@ class RoomScene extends StatelessWidget {
                     ).roomRoundSideTable,
                     _ => null,
                   },
-                  frame: slotFrame(slot),
-                  ghostFrame: itemFrame(slot, selected!),
+                  frame: targetFrame(slot, selected!),
+                  ghostFrame: itemFrame(slot, selected),
                   holdsSelection: placements[slot] == selected,
                   ghostAsset: selectedAsset,
                   onTap: onSlotTap == null ? null : () => onSlotTap!(slot),
@@ -451,6 +612,81 @@ class RoomScene extends StatelessWidget {
       ),
     );
   }
+}
+
+// Main opaque outlines measured on the sprite canvases. X is relative to
+// the canvas centre and every coordinate is in units of canvas height.
+// Transparent padding and baked glows must not determine floor contact or
+// whether a piece fits inside the viewport.
+Rect? _floorSpriteBody(String itemId) => switch (itemId) {
+  RoomDecorAssets.ivorySofaId => const Rect.fromLTRB(
+    -1.1961,
+    .0757,
+    1.1961,
+    .9433,
+  ),
+  RoomDecorAssets.bronzeLanternLampId => const Rect.fromLTRB(
+    -.1045,
+    .0614,
+    .0968,
+    .9540,
+  ),
+  RoomDecorAssets.rattanChairId => const Rect.fromLTRB(-.485, .004, .484, .996),
+  RoomDecorAssets.floorLampId => const Rect.fromLTRB(
+    -.1413,
+    .0028,
+    .142,
+    .9908,
+  ),
+  RoomDecorAssets.launchSofaId => const Rect.fromLTRB(
+    -.9688,
+    .0075,
+    .9713,
+    .9625,
+  ),
+  RoomDecorAssets.launchTvId => const Rect.fromLTRB(
+    -.5505,
+    .0086,
+    .5527,
+    .9892,
+  ),
+  RoomDecorAssets.lowCabinetId => const Rect.fromLTRB(
+    -.5508,
+    .3135,
+    .5518,
+    .9375,
+  ),
+  RoomDecorAssets.slimBookcaseId => const Rect.fromLTRB(
+    -.1823,
+    .0938,
+    .1829,
+    .9193,
+  ),
+  RoomDecorAssets.roundSideTableId => const Rect.fromLTRB(
+    -.3654,
+    .2144,
+    .3654,
+    .8474,
+  ),
+  RoomDecorAssets.petBedId => const Rect.fromLTRB(-.5947, .1182, .5947, .9209),
+  RoomDecorAssets.terracottaPoufId => const Rect.fromLTRB(
+    -.4572,
+    .2077,
+    .4572,
+    .8957,
+  ),
+  _ => null,
+};
+
+Rect _floorSpriteRect(Rect frame, String itemId) {
+  final body = _floorSpriteBody(itemId);
+  if (body == null) return frame;
+  return Rect.fromLTRB(
+    frame.center.dx + frame.height * body.left,
+    frame.top + frame.height * body.top,
+    frame.center.dx + frame.height * body.right,
+    frame.top + frame.height * body.bottom,
+  );
 }
 
 /// Where a [BoxFit.cover] image of [aspectRatio] lands in [size].

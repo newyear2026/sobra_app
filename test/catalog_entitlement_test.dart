@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/data/catalog_preview_data.dart';
 import 'package:sobra_app/models/catalog_entry.dart';
+import 'package:sobra_app/models/expense_entry.dart';
+import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 
 void main() {
@@ -105,11 +107,125 @@ void main() {
     },
   );
 
-  test('michi is owned without being granted', () async {
-    final store = await loadStore();
+  group('the starters', () {
+    Future<SobraStore> onboarded({String pick = 'michi'}) async {
+      final store = await loadStore();
+      await store.chooseCharacter(pick);
+      await store.configureOnboarding(
+        budgetCentavos: 600000,
+        schedule: const PaySchedule.semiMonthly(),
+      );
+      await store.completeOnboarding();
+      return store;
+    }
 
-    expect(store.ownsCatalogEntry(entryById('michi')), isTrue);
-    expect(store.ownedCatalogIds, isEmpty);
+    Future<void> recordToday(SobraStore store, {DateTime? dated}) =>
+        store.addExpense(
+          amountCentavos: 5000,
+          category: ExpenseCategory.food,
+          note: '',
+          occurredAt: dated ?? now,
+          paymentMethod: PaymentMethod.cash,
+        );
+
+    test('neither is owned until onboarding hands one over', () async {
+      final store = await loadStore();
+
+      expect(store.ownsCatalogEntry(entryById('michi')), isFalse);
+      expect(store.ownsCatalogEntry(entryById('poodle')), isFalse);
+      expect(store.waitingStarter, isNull);
+    });
+
+    test('onboarding hands over only the one picked', () async {
+      final store = await onboarded(pick: 'poodle');
+
+      expect(store.characterId, 'poodle');
+      expect(store.ownsCatalogEntry(entryById('poodle')), isTrue);
+      expect(store.ownsCatalogEntry(entryById('michi')), isFalse);
+      expect(store.waitingStarter?.id, 'michi');
+      expect(() => store.chooseCharacter('michi'), throwsArgumentError);
+    });
+
+    test('three recorded days bring the other one over', () async {
+      final store = await onboarded();
+      final miru = entryById('poodle');
+
+      await recordToday(store);
+      // A second record the same day is still one day.
+      await recordToday(store);
+      now = DateTime(2026, 9, 16, 11);
+      await recordToday(store);
+      expect(store.recordedDayCount, 2);
+      expect(store.ownsCatalogEntry(miru), isFalse);
+
+      now = DateTime(2026, 9, 17, 11);
+      await recordToday(store);
+
+      expect(store.ownsCatalogEntry(miru), isTrue);
+      expect(store.waitingStarter, isNull);
+      expect(store.starterArrivalId, 'poodle');
+      // Coming over does not swap out the companion of three days.
+      expect(store.characterId, 'michi');
+      final reopened = await loadStore();
+      expect(reopened.ownsCatalogEntry(miru), isTrue);
+      expect(reopened.starterArrivalId, 'poodle');
+
+      expect(await reopened.takeStarterArrival(), 'poodle');
+      expect(reopened.starterArrivalId, isNull);
+    });
+
+    test('a backdated record does not count as a day', () async {
+      final store = await onboarded();
+
+      await recordToday(store, dated: DateTime(2026, 9, 13, 20));
+
+      expect(store.recordedDayCount, 0);
+    });
+
+    test('two rewarded ads bring the other one over as well', () async {
+      final store = await onboarded();
+      final miru = entryById('poodle');
+
+      await store.recordRewardedAdView(miru);
+      expect(store.waitingStarter?.id, 'poodle');
+      await store.recordRewardedAdView(miru);
+
+      expect(store.ownsCatalogEntry(miru), isTrue);
+      expect(store.waitingStarter, isNull);
+      // The collection that played the ads announces the unlock itself.
+      expect(store.starterArrivalId, isNull);
+    });
+
+    test('an install that finished onboarding before keeps both', () async {
+      final store = await onboarded(pick: 'poodle');
+      await store.grantCatalogEntry('capybara');
+      final preferences = await SharedPreferences.getInstance();
+      final saved =
+          jsonDecode(preferences.getString('sobra_state_v2')!)
+              as Map<String, dynamic>;
+      saved
+        ..remove('starterCharacterId')
+        ..remove('recordedDays')
+        ..['ownedCatalogIds'] = ['capybara'];
+      await preferences.setString('sobra_state_v2', jsonEncode(saved));
+
+      final reopened = await loadStore();
+
+      expect(reopened.ownsCatalogEntry(entryById('michi')), isTrue);
+      expect(reopened.ownsCatalogEntry(entryById('poodle')), isTrue);
+      expect(reopened.starterCharacterId, 'poodle');
+      expect(reopened.waitingStarter, isNull);
+    });
+
+    test('a refunded character falls back to the picked starter', () async {
+      final store = await onboarded(pick: 'poodle');
+      await store.grantCatalogEntry('capybara');
+      await store.equipCharacter(entryById('capybara'));
+
+      await store.revokeCatalogEntries({'capybara'});
+
+      expect(store.characterId, 'poodle');
+    });
   });
 
   test('Schnauzer takes two rewarded views in one sitting', () async {
@@ -153,11 +269,33 @@ void main() {
     },
   );
 
-  test('Tranqui requires the pack before it can be equipped', () async {
+  test('Quokka takes two rewarded views and can then be equipped', () async {
+    final store = await loadStore();
+    final quokka = entryById('quokka');
+
+    expect(store.ownsCatalogEntry(quokka), isFalse);
+    expect(() => store.chooseCharacter('quokka'), throwsArgumentError);
+    expect(await store.recordRewardedAdView(quokka), isTrue);
+    expect(store.rewardedAdProgressFor(quokka.id), 1);
+    expect(store.ownsCatalogEntry(quokka), isFalse);
+
+    final reopenedAfterFirstAd = await loadStore();
+    expect(reopenedAfterFirstAd.rewardedAdProgressFor(quokka.id), 1);
+    expect(await reopenedAfterFirstAd.recordRewardedAdView(quokka), isTrue);
+    expect(reopenedAfterFirstAd.ownsCatalogEntry(quokka), isTrue);
+    expect(reopenedAfterFirstAd.rewardedAdProgressFor(quokka.id), 0);
+
+    await reopenedAfterFirstAd.equipCharacter(quokka);
+    final reopened = await loadStore();
+    expect(reopened.characterId, 'quokka');
+    expect(reopened.ownsCatalogEntry(quokka), isTrue);
+  });
+
+  test('Tranqui requires a purchase before it can be equipped', () async {
     final store = await loadStore();
     final capybara = entryById('capybara');
 
-    expect(capybara.unlockMethod, CatalogUnlockMethod.bundle);
+    expect(capybara.unlockMethod, CatalogUnlockMethod.purchase);
     expect(store.ownsCatalogEntry(capybara), isFalse);
     expect(() => store.chooseCharacter('capybara'), throwsArgumentError);
 
@@ -183,11 +321,11 @@ void main() {
     expect(reopened.ownsCatalogEntry(platypus), isTrue);
   });
 
-  test('Bandi can be equipped only after the pack', () async {
+  test('Bandi can be equipped only after purchase ownership', () async {
     final store = await loadStore();
     final raccoon = entryById('raccoon');
 
-    expect(raccoon.unlockMethod, CatalogUnlockMethod.bundle);
+    expect(raccoon.unlockMethod, CatalogUnlockMethod.purchase);
     expect(store.ownsCatalogEntry(raccoon), isFalse);
     expect(() => store.chooseCharacter('raccoon'), throwsArgumentError);
 
@@ -289,7 +427,8 @@ void main() {
     final bundled = CatalogPreviewData.all
         .where((entry) => entry.unlockMethod == CatalogUnlockMethod.bundle)
         .toList();
-    expect(bundled, isNotEmpty);
+    // None today: the pack's friends are sold singly too. The rule is kept
+    // for the next entry that is sold only inside a pack.
 
     for (final entry in bundled) {
       final delivered =
@@ -349,9 +488,9 @@ void main() {
     expect((await loadStore()).ownedCatalogIds, containsAll(delivered));
   });
 
-  // Nothing sells a pack character separately any more, but an id can still
-  // be in the owned set already — the debug switch's tests, or a tester's
-  // purchase from before the singles were retired. The rest still arrives.
+  // Somebody who already bought one of the friends separately still gets the
+  // rest. The overlap is not refunded; the pack dialog says so before they
+  // pay.
   test('a bundle skips what is already owned and delivers the rest', () async {
     final store = await loadStore();
     await store.grantCatalogEntry('alpaca');
@@ -389,55 +528,54 @@ void main() {
     expect(store.rewardedAdProgressFor(started.id), 0);
   });
 
-  // The collision the grant path has to resolve in the right order. Every
-  // entry the pack delivers exclusively carries its product id, so the
-  // single-entry lookup answers for the pack too — with one of its
-  // characters. Which one it reaches first is an accident of catalog order
-  // and is deliberately not pinned here; that it is never the whole delivery
-  // is the point.
-  test('the pack product id also resolves to a single entry', () {
-    final single = CatalogPreviewData.entryForProductId(
-      CatalogPreviewData.packProductId,
+  // No entry carries the pack's id, so only the mapping can answer for it.
+  // Falling back to a single entry here is how a pack once delivered one
+  // item of five while reporting success.
+  test('the pack is delivered by its mapping, never by one entry', () {
+    expect(
+      CatalogPreviewData.entryForProductId(CatalogPreviewData.packProductId),
+      isNull,
     );
-    final everything = CatalogPreviewData
-        .productEntitlements[CatalogPreviewData.packProductId]!;
-
-    expect(single, isNotNull);
-    expect(everything, contains(single!.id));
-    expect(everything.length, greaterThan(1));
+    expect(
+      CatalogPreviewData.entitlementsForProductId(
+        CatalogPreviewData.packProductId,
+      ),
+      {
+        ...CatalogPreviewData.packCharacterIds,
+        CatalogPreviewData.noAdsEntitlement,
+      },
+    );
   });
 
-  // What stops the overlap the pack name no longer papers over: a character
-  // in the pack cannot also be bought on its own, so nobody pays twice for
-  // the same cat and then finds grantCatalogEntries dropping the duplicate.
-  test('no entry is sold both inside the pack and on its own', () {
-    final inPack = CatalogPreviewData
-        .productEntitlements[CatalogPreviewData.packProductId]!;
-
-    for (final entry in CatalogPreviewData.all.where(
-      (entry) => inPack.contains(entry.id),
-    )) {
-      expect(entry.unlockMethod, CatalogUnlockMethod.bundle, reason: entry.id);
-      expect(entry.storeProductId, CatalogPreviewData.packProductId);
+  // Sold both ways on purpose. The overlap is not refunded, which is why the
+  // pack dialog names what the buyer already owns before they pay.
+  test('the pack friends are also sold one by one', () {
+    for (final id in CatalogPreviewData.packCharacterIds) {
+      final entry = entryById(id);
+      expect(entry.unlockMethod, CatalogUnlockMethod.purchase, reason: id);
+      expect(entry.storeProductId, 'sobra.character.$id');
+      expect(
+        CatalogPreviewData.storeProductIds,
+        contains(entry.storeProductId),
+      );
     }
   });
 
-  // Ad removal alone is an entitlement, not proof of the pack. Ajustes reads
-  // ownsPack to mark the row as owned.
-  test('the pack counts as owned only with all three friends', () async {
-    final store = await loadStore();
-    await store.grantCatalogEntries({
-      'capybara',
-      'alpaca',
-      CatalogPreviewData.noAdsEntitlement,
-    });
+  // Ajustes reads ownsPack to mark the row as owned. Buying all three
+  // friends singly must not: ad removal is still only in the pack.
+  test(
+    'the pack counts as owned only with its friends and ad removal',
+    () async {
+      final store = await loadStore();
+      await store.grantCatalogEntries({...CatalogPreviewData.packCharacterIds});
 
-    expect(store.ownsPack, isFalse);
+      expect(store.ownsPack, isFalse);
 
-    await store.grantCatalogEntry('raccoon');
+      await store.grantCatalogEntry(CatalogPreviewData.noAdsEntitlement);
 
-    expect(store.ownsPack, isTrue);
-  });
+      expect(store.ownsPack, isTrue);
+    },
+  );
 
   test('ad removal is sold only inside the pack', () {
     expect(

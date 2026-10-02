@@ -1,0 +1,35 @@
+{
+  "tool": "built-in image_gen",
+  "reference": "casa-torre-furniture-reference.png",
+  "transparent_background": true,
+  "assets": [
+    {
+      "path": "assets/rooms/shared_items/ivory_sofa.png",
+      "canvas": [
+        1983,
+        793
+      ],
+      "opaque_bounds": [
+        43,
+        60,
+        1940,
+        748
+      ],
+      "prompt": "Use case: background-extraction. Asset type: transparent PNG furniture sprite for the existing Sobrita pixel-art room. Input image: edit target showing a curved window room; extract ONLY the ivory sofa at the lower right. Preserve the sofa design, camera perspective, proportions and pixel-art style faithfully: a low rounded ivory boucle two-seat sofa, two broad back cushions, two seat cushions, soft thick curved armrests, dark walnut base, short bronze feet, subtle beige pixel texture and charcoal outlines. Show the whole sofa including every foot, viewed from the same nearly frontal slightly elevated camera as the source. Remove the entire room, window, floor, lamp and all other objects. Reconstruct any tiny obstructed edge cleanly. Use a tightly framed wide canvas approximately 2.5:1, with a small even transparent margin around the sofa and no excessive empty canvas. The object should nearly fill the canvas. True alpha transparency, no white background, no checkerboard baked into the image, no cast shadow outside the sofa, no external glow, no labels or text. Keep crisp discrete pixel clusters and the existing game illustration look. One sofa only."
+    },
+    {
+      "path": "assets/rooms/shared_items/bronze_lantern_lamp.png",
+      "canvas": [
+        754,
+        2086
+      ],
+      "opaque_bounds": [
+        159,
+        128,
+        579,
+        1990
+      ],
+      "prompt": "Use case: background-extraction. Asset type: transparent PNG furniture sprite for the existing Sobrita pixel-art room. Input image: edit target showing a curved window room. Extract ONLY the tall slim bronze lantern floor lamp to the left of the sofa. Preserve its distinctive design and perspective faithfully: a narrow vertical dark bronze squared metal stem, a small inverted squared hook curving to the right at the top, a hanging small rectangular parchment lantern in warm ivory/amber, and a low oval round dark bronze base. It is a tall elegant modern lamp, not a conventional conical-shade floor lamp. Match the original nearly frontal slightly elevated camera, crisp pixel clusters, muted bronze palette and charcoal edges. The parchment lantern should be creamy amber with a softly bright center as in the reference, with no glow beyond its silhouette; night room lighting will be added in the app. Show the whole lamp from upper hook to base, no cropped parts. Remove the entire room, glass, wall columns, floor, sofa and all other objects. Use a tightly framed tall narrow canvas around 1:4, with a small transparent margin and no excessive empty canvas. True alpha transparency, no white or checkerboard background, no external cast shadow or glow, no text. One lamp only."
+    }
+  ]
+}

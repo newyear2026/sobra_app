@@ -184,16 +184,17 @@ class SobraStore extends ChangeNotifier {
   String? languageCode;
   bool hasCompletedOnboarding = false;
 
-  /// Whether the user has answered the one-time offer to connect an account.
+  /// Whether the user has passed the welcome screen.
   ///
-  /// True once they have chosen either way, which is the whole point: the
-  /// offer used to live in a widget's State, so "start without an account"
-  /// lasted until the process died and every cold start asked again. Somebody
-  /// who declined is entitled to have that remembered.
+  /// The name is older than the screen: the first launch used to offer a
+  /// Google account, and this recorded the answer. The offer is gone — it
+  /// promised a sign-in that never existed — but the key is in every saved
+  /// ledger, so it keeps its name and now means "has pressed Empezar".
   ///
-  /// Not the same as being signed in. Nothing here says an account exists —
-  /// only that Sobra has stopped asking on its own. Ajustes is where it can
-  /// be picked up later.
+  /// It used to live in a widget's State, so passing it lasted until the
+  /// process died and every cold start asked again. That is why it is here.
+  ///
+  /// Not the same as being signed in. Nothing here says an account exists.
   bool hasAnsweredLoginOffer = false;
   bool categoryLimitsCustomized = false;
   int successfulCycles = 0;
@@ -205,6 +206,22 @@ class SobraStore extends ChangeNotifier {
   DateTime? xpTrackingStartedAt;
   DateTime? firstStartedAt;
   bool launchGiftNoticePending = false;
+
+  /// The starter picked at onboarding, or null before onboarding ends.
+  ///
+  /// What the app falls back to when the shown character stops being owned —
+  /// not always Michi any more, since somebody who picked Miru has no Michi
+  /// until the second starter comes over.
+  String? starterCharacterId;
+
+  /// The starter that just came over by recorded days, until its arrival has
+  /// been shown. Null the rest of the time, and after an ad unlock, which the
+  /// collection announces itself.
+  String? starterArrivalId;
+
+  /// Local days (`yyyy-mm-dd`) on which the user recorded something dated
+  /// that same day. Only what counts toward the waiting starter reads it.
+  final Set<String> _recordedDayKeys = {};
   DateTime? lastSettledCycleEnd;
   bool hasStorageError = false;
   String? corruptedStorage;
@@ -242,11 +259,18 @@ class SobraStore extends ChangeNotifier {
     await store._ensureNativeAdInstallDay();
     // A character that was previously bundled for free can become a paid
     // entry. Keep the saved choice only when its entitlement is still owned.
+    // A starter picked mid-onboarding owns nothing yet and is left alone:
+    // resetting it would undo the choice before it is handed over.
     final selectedEntry = CatalogPreviewData.characters
         .where((entry) => entry.id == store.characterId)
         .firstOrNull;
-    if (selectedEntry != null && !store.ownsCatalogEntry(selectedEntry)) {
-      store.characterId = 'michi';
+    final pickingStarter =
+        !store.hasCompletedOnboarding &&
+        CatalogPreviewData.isStarter(store.characterId);
+    if (selectedEntry != null &&
+        !pickingStarter &&
+        !store.ownsCatalogEntry(selectedEntry)) {
+      store.characterId = store._fallbackCharacterId;
       await store._save();
     }
     await store.settleCycles();
@@ -920,6 +944,7 @@ class SobraStore extends ChangeNotifier {
       note: entry.note,
       receiptFileName: receiptFileName,
     );
+    _noteRecordedDay(occurredAt);
     await _save();
     notifyListeners();
     return entry;
@@ -946,6 +971,7 @@ class SobraStore extends ChangeNotifier {
     _incomes.add(entry);
     _applyIncome(entry, 1);
     _awardDailyMissionsForMovement(occurredAt, note: entry.note);
+    _noteRecordedDay(occurredAt);
     await _save();
     notifyListeners();
     return entry;
@@ -1240,6 +1266,7 @@ class SobraStore extends ChangeNotifier {
         amountCentavos: amountCentavos,
       );
     }
+    _noteRecordedDay(moment);
     await _save();
     notifyListeners();
     return entry;
@@ -1559,7 +1586,11 @@ class SobraStore extends ChangeNotifier {
     final entry = CatalogPreviewData.characters
         .where((candidate) => candidate.id == id)
         .firstOrNull;
-    if (entry != null && !ownsCatalogEntry(entry)) {
+    // Onboarding picks a starter before owning it; [completeOnboarding] is
+    // what hands it over.
+    final pickingStarter =
+        !hasCompletedOnboarding && CatalogPreviewData.isStarter(id);
+    if (entry != null && !pickingStarter && !ownsCatalogEntry(entry)) {
       throw ArgumentError.value(id, 'id', 'character not owned');
     }
     if (id == characterId) return;
@@ -1608,7 +1639,7 @@ class SobraStore extends ChangeNotifier {
         .where((entry) => entry.id == characterId)
         .firstOrNull;
     if (selected != null && !ownsCatalogEntry(selected)) {
-      characterId = 'michi';
+      characterId = _fallbackCharacterId;
       await _save();
     }
     notifyListeners();
@@ -1623,9 +1654,11 @@ class SobraStore extends ChangeNotifier {
 
   /// Whether Los amigos de Michi has been delivered.
   ///
-  /// Read from its characters, which are sold nowhere else. Ad removal alone
-  /// would not do: it is an entitlement, not proof of the pack.
+  /// Needs ad removal as well as the three friends. The friends are also
+  /// sold one by one, so somebody who bought all three still lacks what only
+  /// the pack gives, and the pack must stay on offer to them.
   bool get ownsPack =>
+      _ownedCatalogIds.contains(CatalogPreviewData.noAdsEntitlement) &&
       CatalogPreviewData.packCharacterIds.every(_ownedCatalogIds.contains);
 
   /// The rewarded-ad entry a settlement card should open, or null when the
@@ -1963,7 +1996,7 @@ class SobraStore extends ChangeNotifier {
       return entry == null || ownsCatalogEntry(entry);
     }
 
-    if (!stillOwned(characterId)) characterId = 'michi';
+    if (!stillOwned(characterId)) characterId = _fallbackCharacterId;
     for (final placements in _roomPlacementsByRoom.values) {
       placements.removeWhere((_, itemId) => !stillOwned(itemId));
     }
@@ -2041,7 +2074,7 @@ class SobraStore extends ChangeNotifier {
     await chooseCharacter(entry.id);
   }
 
-  /// Records that the account offer has been answered, whichever way.
+  /// Records that the welcome screen has been passed.
   Future<void> answerLoginOffer() async {
     if (hasAnsweredLoginOffer) return;
     hasAnsweredLoginOffer = true;
@@ -2051,17 +2084,87 @@ class SobraStore extends ChangeNotifier {
 
   Future<void> completeOnboarding() async {
     hasCompletedOnboarding = true;
-    // Onboarding sits behind the account offer, so reaching the end of it is
-    // proof the offer was answered. Recording that here keeps the two from
-    // ever disagreeing — an install that finished onboarding can never be
-    // asked the opening question again.
+    // Onboarding sits behind the welcome, so reaching the end of it is proof
+    // the welcome was passed. Recording that here keeps the two from ever
+    // disagreeing — an install that finished onboarding can never be sent
+    // back to the doorstep.
     hasAnsweredLoginOffer = true;
     xpTrackingStartedAt ??= today;
     firstStartedAt ??= today;
+    final starter =
+        starterCharacterId ??
+        (CatalogPreviewData.isStarter(characterId)
+            ? characterId
+            : CatalogPreviewData.starterIds.first);
+    starterCharacterId = starter;
+    _ownedCatalogIds.add(starter);
+    characterId = starter;
     await _save();
     notifyListeners();
     await maybeGrantLaunchGift();
   }
+
+  /// The starter still waiting at the door, or null when there is none.
+  ///
+  /// None before onboarding ends, and none once it has come over — by
+  /// recorded days, by ads, or because the install predates starters.
+  CatalogEntry? get waitingStarter {
+    final chosen = starterCharacterId;
+    if (!hasCompletedOnboarding || chosen == null) return null;
+    for (final entry in CatalogPreviewData.characters) {
+      if (CatalogPreviewData.isStarter(entry.id) &&
+          entry.id != chosen &&
+          !ownsCatalogEntry(entry)) {
+        return entry;
+      }
+    }
+    return null;
+  }
+
+  /// Days with a record dated that day, toward [waitingStarter].
+  int get recordedDayCount => _recordedDayKeys.length;
+
+  /// Whether today already counts toward [waitingStarter].
+  bool get recordedToday => _recordedDayKeys.contains(todayKey);
+
+  /// Counts today if [occurredAt] is today, and brings the waiting starter
+  /// over on the day that reaches the target. The caller saves.
+  ///
+  /// Dated today, not merely entered today: three backdated expenses typed on
+  /// one evening are one day of the habit, not three.
+  void _noteRecordedDay(DateTime occurredAt) {
+    if (!_isSameDay(dateOnly(occurredAt), today)) return;
+    if (!_recordedDayKeys.add(todayKey)) return;
+    final waiting = waitingStarter;
+    if (waiting == null ||
+        _recordedDayKeys.length <
+            CatalogPreviewData.starterRecordedDaysTarget) {
+      return;
+    }
+    _ownedCatalogIds.add(waiting.id);
+    _rewardedAdProgress.remove(waiting.id);
+    starterArrivalId = waiting.id;
+  }
+
+  /// Clears the arrival once it has been shown, answering which starter it
+  /// was.
+  Future<String?> takeStarterArrival() async {
+    final arrived = starterArrivalId;
+    if (arrived == null) return null;
+    starterArrivalId = null;
+    try {
+      await _save();
+    } on Object {
+      starterArrivalId = arrived;
+      rethrow;
+    }
+    notifyListeners();
+    return arrived;
+  }
+
+  /// Where the shown character goes back to when it stops being owned.
+  String get _fallbackCharacterId =>
+      starterCharacterId ?? CatalogPreviewData.starterIds.first;
 
   bool get hasRecoverableBackup {
     final raw = _preferences.getString(_backupKey);
@@ -2191,6 +2294,9 @@ class SobraStore extends ChangeNotifier {
     xpTrackingStartedAt = null;
     firstStartedAt = today;
     launchGiftNoticePending = false;
+    starterCharacterId = null;
+    starterArrivalId = null;
+    _recordedDayKeys.clear();
     lastSettledCycleEnd = null;
     _pendingXpNotice = null;
     categoryLimits = _categoryLimitsForBudget(_baseBudgetCentavos);
@@ -2304,6 +2410,11 @@ class SobraStore extends ChangeNotifier {
     xpTrackingStartedAt = other.xpTrackingStartedAt;
     firstStartedAt = other.firstStartedAt;
     launchGiftNoticePending = other.launchGiftNoticePending;
+    starterCharacterId = other.starterCharacterId;
+    starterArrivalId = other.starterArrivalId;
+    _recordedDayKeys
+      ..clear()
+      ..addAll(other._recordedDayKeys);
     lastSettledCycleEnd = other.lastSettledCycleEnd;
     _pendingXpNotice = other._pendingXpNotice;
     categoryLimits = Map.of(other.categoryLimits);
@@ -2477,6 +2588,22 @@ class SobraStore extends ChangeNotifier {
     final firstStarted = json['firstStartedAt'] as String?;
     firstStartedAt = firstStarted == null ? null : DateTime.parse(firstStarted);
     launchGiftNoticePending = json['launchGiftNoticePending'] as bool? ?? false;
+    starterCharacterId = json['starterCharacterId'] as String?;
+    starterArrivalId = json['starterArrivalId'] as String?;
+    _recordedDayKeys
+      ..clear()
+      ..addAll(
+        (json['recordedDays'] as List<dynamic>? ?? const []).cast<String>(),
+      );
+    if (hasCompletedOnboarding && starterCharacterId == null) {
+      // Finished onboarding before starters existed, when both came free.
+      // Nothing already given is taken back. Held in memory and written with
+      // the next save; until then every load reaches the same answer.
+      _ownedCatalogIds.addAll(CatalogPreviewData.starterIds);
+      starterCharacterId = CatalogPreviewData.isStarter(characterId)
+          ? characterId
+          : CatalogPreviewData.starterIds.first;
+    }
     final settledEnd = json['lastSettledCycleEnd'] as String?;
     lastSettledCycleEnd = settledEnd == null
         ? null
@@ -2552,6 +2679,9 @@ class SobraStore extends ChangeNotifier {
     'xpTrackingStartedAt': xpTrackingStartedAt?.toIso8601String(),
     'firstStartedAt': firstStartedAt?.toIso8601String(),
     'launchGiftNoticePending': launchGiftNoticePending,
+    'starterCharacterId': starterCharacterId,
+    'starterArrivalId': starterArrivalId,
+    'recordedDays': _recordedDayKeys.toList()..sort(),
     'lastSettledCycleEnd': lastSettledCycleEnd?.toIso8601String(),
     'categoryLimits': {
       for (final entry in categoryLimits.entries) entry.key.name: entry.value,
