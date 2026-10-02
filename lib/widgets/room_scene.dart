@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../models/room_design.dart';
+import '../models/room_time_of_day.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import 'cat_sprite.dart';
+import 'room_lighting.dart';
 
 enum RoomSceneVariant { preview, immersive }
 
@@ -23,6 +25,7 @@ class RoomScene extends StatelessWidget {
     required this.message,
     this.roomId = RoomThemes.casaClaraId,
     this.backgroundAsset,
+    this.timeOfDay,
     this.showSlots = false,
     this.animateItems = true,
     this.selectedItemId,
@@ -40,6 +43,9 @@ class RoomScene extends StatelessWidget {
   final String message;
   final String roomId;
   final String? backgroundAsset;
+
+  /// Time-of-day art is available in the immersive version of every room.
+  final RoomTimeOfDay? timeOfDay;
 
   /// Lights the places [selectedItemId] can go, and only those.
   ///
@@ -73,6 +79,30 @@ class RoomScene extends StatelessWidget {
         builder: (context, constraints) {
           final size = constraints.biggest;
           final room = _room;
+          // These scenes paint their own full-width window light. The shared
+          // small-window rays and mask would cross their glass and frames.
+          final usesPaintedLight =
+              room.id == RoomThemes.casaTorreId ||
+              room.id == RoomThemes.casaMontanaId ||
+              room.id == RoomThemes.casaInvernaderoId;
+          final roomPhase = variant == RoomSceneVariant.immersive
+              ? timeOfDay
+              : null;
+          final assetDirectory = room.portraitAsset.substring(
+            0,
+            room.portraitAsset.lastIndexOf('/'),
+          );
+          final sceneAsset =
+              backgroundAsset ??
+              switch (roomPhase) {
+                RoomTimeOfDay.dawn || RoomTimeOfDay.sunset =>
+                  '$assetDirectory/background_portrait_sunset_unlit.png',
+                RoomTimeOfDay.night =>
+                  '$assetDirectory/background_portrait_night_unlit.png',
+                RoomTimeOfDay.day =>
+                  '$assetDirectory/background_portrait_unlit.png',
+                null => _asset,
+              };
           final layout = _RoomSceneLayout.of(room.id, variant);
           final selected = selectedItemId;
           final selectedAsset = selected == null
@@ -168,37 +198,104 @@ class RoomScene extends StatelessWidget {
             sceneCharacterId,
           ).roomDisplayScale;
 
+          final catFrame = Rect.fromLTWH(
+            (size.width - catWidth) / 2,
+            size.height * layout.catTop,
+            catWidth,
+            catHeight,
+          );
+          final floorLamps = [
+            for (final item in placed)
+              if (item.asset == RoomDecorAssets.floorLamp) item.frame,
+          ];
+          final tableLamps = [
+            for (final item in placed)
+              if (item.asset == RoomDecorAssets.lamp) item.frame,
+          ];
+          final lampLights = [
+            for (final lamp in floorLamps) roomLampLight(lamp, floorLamp: true),
+            for (final lamp in tableLamps)
+              roomLampLight(lamp, floorLamp: false),
+          ];
+          Widget lit(Rect frame, Widget child) => roomPhase == null
+              ? child
+              : RoomSubjectLight(
+                  phase: roomPhase,
+                  frame: frame,
+                  lamps: lampLights,
+                  reach: background.width * .75,
+                  child: child,
+                );
+
           return Stack(
             fit: StackFit.expand,
             children: [
               Positioned.fromRect(
                 rect: background,
                 child: Image.asset(
-                  _asset,
+                  sceneAsset,
                   fit: BoxFit.fill,
                   excludeFromSemantics: true,
                   errorBuilder: (_, _, _) =>
                       const ColoredBox(color: AppColors.paperLight),
                 ),
               ),
+              if (roomPhase != null) ...[
+                if (!usesPaintedLight) ...[
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: CustomPaint(
+                        painter: RoomSunbeams(
+                          background: background,
+                          phase: roomPhase,
+                        ),
+                      ),
+                    ),
+                  ),
+                  // The room darkens under the furniture and the character,
+                  // which take their own, lighter shade below.
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: CustomPaint(
+                        painter: RoomAmbientTint(
+                          phase: roomPhase,
+                          background: background,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+                if (roomPhase == RoomTimeOfDay.night)
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: CustomPaint(
+                        painter: RoomLampGlow(
+                          background: background,
+                          floorLamps: floorLamps,
+                          tableLamps: tableLamps,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
               for (final item in placed)
                 Positioned.fromRect(
                   rect: item.frame,
-                  child: item.asset == RoomDecorAssets.launchTv
-                      ? _AnimatedTvSprite(
-                          animate:
-                              animateItems &&
-                              !showSlots &&
-                              (ModalRoute.isCurrentOf(context) ?? true) &&
-                              !reducedMotionOf(context),
-                        )
-                      : _RoomItemImage(asset: item.asset, slot: item.slot),
+                  child: lit(
+                    item.frame,
+                    item.asset == RoomDecorAssets.launchTv
+                        ? _AnimatedTvSprite(
+                            animate:
+                                animateItems &&
+                                !showSlots &&
+                                (ModalRoute.isCurrentOf(context) ?? true) &&
+                                !reducedMotionOf(context),
+                          )
+                        : _RoomItemImage(asset: item.asset, slot: item.slot),
+                  ),
                 ),
-              Positioned(
-                left: (size.width - catWidth) / 2,
-                top: size.height * layout.catTop,
-                width: catWidth,
-                height: catHeight,
+              Positioned.fromRect(
+                rect: catFrame,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: onCatTap,
@@ -210,20 +307,31 @@ class RoomScene extends StatelessWidget {
                       // Keep the paws on the same floor line as Michi and
                       // Miru while the smaller painted silhouettes grow.
                       alignment: const Alignment(0, 2 * 344 / 360 - 1),
-                      child: CatSprite(
-                        motion: reacting
-                            ? CatMotion.celebrate
-                            : catMotion ?? CatMotion.idle,
-                        characterId: sceneCharacterId,
-                        width: catWidth,
-                        animate: !reducedMotionOf(context),
-                        loop: reacting ? false : catLoop,
-                        onComplete: reacting ? onReactionComplete : null,
+                      child: lit(
+                        catFrame,
+                        CatSprite(
+                          motion: reacting
+                              ? CatMotion.celebrate
+                              : catMotion ?? CatMotion.idle,
+                          characterId: sceneCharacterId,
+                          width: catWidth,
+                          animate: !reducedMotionOf(context),
+                          loop: reacting ? false : catLoop,
+                          onComplete: reacting ? onReactionComplete : null,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
+              if (roomPhase == RoomTimeOfDay.night && floorLamps.isNotEmpty)
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: CustomPaint(
+                      painter: RoomLampShades(floorLamps: floorLamps),
+                    ),
+                  ),
+                ),
               _RelativePositioned(
                 rect: layout.speechRect,
                 size: size,
@@ -404,6 +512,18 @@ class _RoomSceneLayout {
       immersive: _emptyThemeImmersive,
     ),
     RoomThemes.casaDePlayaId: (
+      preview: _emptyThemePreview,
+      immersive: _emptyThemeImmersive,
+    ),
+    RoomThemes.casaTorreId: (
+      preview: _emptyThemePreview,
+      immersive: _emptyThemeImmersive,
+    ),
+    RoomThemes.casaMontanaId: (
+      preview: _emptyThemePreview,
+      immersive: _emptyThemeImmersive,
+    ),
+    RoomThemes.casaInvernaderoId: (
       preview: _emptyThemePreview,
       immersive: _emptyThemeImmersive,
     ),

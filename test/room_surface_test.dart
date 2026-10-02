@@ -65,7 +65,7 @@ Future<void> _tapAndSettle(WidgetTester tester, Finder finder) async {
 
 void main() {
   group('saved rooms', () {
-    test('launch sofa and TV can stand together in all three rooms', () async {
+    test('launch sofa and TV can stand together in every room', () async {
       final store = await _store();
       await store.grantCatalogEntries({
         RoomDecorAssets.launchSofaId,
@@ -94,6 +94,21 @@ void main() {
           store.roomDecorationsFor(theme.id),
           containsPair(RoomSlot.floorCabinet, RoomDecorAssets.launchTvId),
         );
+      }
+    });
+
+    test('scenic rooms keep their views clear of wall decorations', () {
+      for (final room in [
+        RoomThemes.casaTorre,
+        RoomThemes.casaMontana,
+        RoomThemes.casaInvernadero,
+      ]) {
+        expect(room.slotsFor(RoomSurface.wall), isEmpty);
+        expect(room.slotsForItem(RoomDecorAssets.wallClockId), isEmpty);
+        expect(room.slotsForItem(RoomDecorAssets.floorLampId), [
+          RoomSlot.floorLeft,
+          RoomSlot.floorRight,
+        ]);
       }
     });
 

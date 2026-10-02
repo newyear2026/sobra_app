@@ -647,6 +647,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get roomThemeCasaDePlaya => 'Strandhaus';
 
   @override
+  String get roomThemeCasaTorre => 'Panorama-Apartment';
+
+  @override
+  String get roomThemeCasaMontana => 'Berghütte';
+
+  @override
+  String get roomThemeCasaInvernadero => 'Wintergarten';
+
+  @override
   String get roomChooseTheme => 'Wähl den Stil deines Zuhauses.';
 
   @override

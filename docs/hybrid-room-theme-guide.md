@@ -1,14 +1,16 @@
 # Sobra hybrid room theme guide
 
 A room is an empty, finished pixel-art stage — walls, floor, window, light —
-that the user furnishes with items they earn. Every room shares the same
-stage geometry, so one item sprite fits every room, and the room itself never
-contains the character or anything the user can place.
+that the user furnishes with items they earn. Every room shares the same floor
+and character geometry, so one item sprite fits every room. Window geometry
+may differ, and the room itself never contains the character or anything the
+user can place.
 
-Status: surfaces, slots, and three selectable themes are live. Casa jardín
-and Casa de playa use empty backgrounds with a separate default rug and floor
-plant. Host furniture, the empty Casa clara background, and furniture as
-items remain planned below.
+Status: surfaces, slots, and six selectable themes are live. Casa jardín,
+Casa de playa, Casa torre, Casa montaña, and Casa invernadero use empty
+backgrounds with a separate default rug and floor plant. The last three
+rooms have wide windows, so they offer floor slots but no wall slots. Host
+furniture remains planned below.
 
 ## The shared stage
 
@@ -19,13 +21,13 @@ window and the room's own identity pieces change between rooms.
 | --- | --- | --- |
 | Top of baseboard | y = 750 | Wall ends here |
 | Floor starts | y = 782 | Floor items stand below this line |
-| Window with curtains | x 352–748, y 108–530 | Same opening in every room |
+| Window with curtains | x 352–748, y 108–530 | First three rooms; Casa torre, Casa montaña, and Casa invernadero use wider windows |
 | Character | x 358–666, y 815–1161 | Keep the floor clear here |
-| Light | from the upper left | Diagonal beams across wall and floor |
+| Light | from the upper left | First three rooms use separate diagonal beams; the three scenic rooms use daylight painted into their backgrounds |
 
 `design/rooms/generation/room-stage-guide.png` draws these lines over the
-empty Casa clara reference. Check every new background against it; a few
-pixels of drift are fine.
+empty Casa clara reference. Check the floor and character space in every new
+background against it; window shape may change.
 
 Mi casa shows the portrait's full height and crops its sides, to about
 x 63–961 on a common phone. Decorate is wide and short, so it crops top and
@@ -64,7 +66,8 @@ surfaces, each with a faint preview of the item.
   a table; the desk lamp only on a table, because a desk lamp on the floor is
   what started this.
 - The included rattan chair and floor lamp use floor slots; the included wall
-  clock uses a wall slot. Their shared transparent sprites work in all themes.
+  clock needs a wall slot and therefore does not appear in Casa torre,
+  Casa montaña, or Casa invernadero.
 - Within one room an item is in one place at a time; placing it elsewhere
   moves it, and tapping its own place takes it out.
 - Across rooms an item is independent: the same picture can hang in every
@@ -101,12 +104,18 @@ A table or shelf is an item that brings its own places.
 
 ## Rooms and unlocking
 
-- Casa clara, Casa jardín and Casa de playa are selectable in Decorate → Room.
-  Switching keeps each room's saved arrangement. All three are currently
-  included; they are not catalog purchases or level rewards.
-- Planned: rooms become catalog entries, owned and unlocked like characters
-  and items. Casa jardín would unlock at level 3 and Casa de playa at level 5.
-  Each would share its level with the item reward already there.
+- Casa clara, Casa jardín, Casa de playa, Casa torre, Casa montaña, and
+  Casa invernadero are selectable in Decorate → Room. Switching keeps each
+  room's saved arrangement. All six are currently included; they are not
+  catalog purchases or level rewards.
+- Post-launch monetization decision: keep Casa clara, Casa jardín, and
+  Casa de playa included. Unlock Casa montaña and Casa invernadero permanently
+  after two user-chosen rewarded ads each. Sell Casa torre as a permanent,
+  non-consumable room for **MX$19 in Mexico**. The store must supply the
+  localized price shown in the app; do not hard-code pesos into the checkout.
+  The current prototype still lets users select all six rooms, so ownership
+  checks, purchase restoration, rewarded progress, and the Play Console
+  product/price must be implemented before presenting them as locked.
 - Level rewards are derived from the current level, never stored. Moving an
   existing reward to a *higher* level takes it away from people already past
   the old one, so rewards only move down or are added alongside.
@@ -124,8 +133,7 @@ A table or shelf is an item that brings its own places.
 1. A 2:3 portrait background, 1024×1536, empty, on the shared stage.
 2. A landscape preview for Home, the same room, empty. The Home card is 2:1;
    a 3:2 source is center-cropped by the app.
-3. A small thumbnail for the room picker.
-4. Transparent PNGs for any furniture the room introduces, with no baked-in
+3. Transparent PNGs for any furniture the room introduces, with no baked-in
    floor and their own soft shadow, cropped to the object with a couple of
    pixels to spare. A wide transparent margin under an item makes it float
    above the floor line by that margin.
@@ -142,7 +150,7 @@ lines get painted in.
    their pixel sizes, the slots it offers, and default placements.
 2. Add its layout in `lib/widgets/room_scene.dart`. On the shared stage an
    empty room reuses the empty-theme rects as they are.
-3. Add its name to the three ARB files.
+3. Add its name to all seven ARB files and regenerate localization code.
 
 ## Layer order
 

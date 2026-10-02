@@ -137,6 +137,58 @@ void main() {
     );
   });
 
+  testWidgets('panoramic room can be selected and saved', (tester) async {
+    final store = await loadStore();
+    await pump(tester, store);
+    await openCategory(tester, 'Casa');
+
+    final choice = find.text('Casa torre');
+    await tester.scrollUntilVisible(
+      choice,
+      160,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(choice);
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<RoomScene>(find.byType(RoomScene)).roomId,
+      RoomThemes.casaTorreId,
+    );
+
+    await tester.tap(find.text('Listo'));
+    await tester.pumpAndSettle();
+    expect(store.equippedRoomId, RoomThemes.casaTorreId);
+    expect((await loadStore()).equippedRoomId, RoomThemes.casaTorreId);
+  });
+
+  for (final (roomId, label) in [
+    (RoomThemes.casaMontanaId, 'Casa montaña'),
+    (RoomThemes.casaInvernaderoId, 'Casa invernadero'),
+  ]) {
+    testWidgets('$label can be selected and saved', (tester) async {
+      final store = await loadStore();
+      await pump(tester, store);
+      await openCategory(tester, 'Casa');
+
+      final choice = find.text(label);
+      await tester.scrollUntilVisible(
+        choice,
+        160,
+        scrollable: find.byType(Scrollable).last,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(choice);
+      await tester.pumpAndSettle();
+      expect(tester.widget<RoomScene>(find.byType(RoomScene)).roomId, roomId);
+
+      await tester.tap(find.text('Listo'));
+      await tester.pumpAndSettle();
+      expect(store.equippedRoomId, roomId);
+      expect((await loadStore()).equippedRoomId, roomId);
+    });
+  }
+
   testWidgets('three starter items can be placed and saved', (tester) async {
     final store = await loadStore();
     await pump(tester, store);

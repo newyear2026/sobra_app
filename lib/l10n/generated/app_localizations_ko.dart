@@ -624,6 +624,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get roomThemeCasaDePlaya => '해변 방';
 
   @override
+  String get roomThemeCasaTorre => '타워팰리스 방';
+
+  @override
+  String get roomThemeCasaMontana => '산속 별장';
+
+  @override
+  String get roomThemeCasaInvernadero => '온실 방';
+
+  @override
   String get roomChooseTheme => '방 테마를 골라주세요.';
 
   @override

@@ -6,6 +6,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../l10n/room_labels.dart';
 import '../models/catalog_entry.dart';
 import '../models/room_design.dart';
+import '../models/room_time_of_day.dart';
 import '../state/sobra_store.dart';
 import 'collection_screen.dart';
 import '../theme/app_theme.dart';
@@ -14,14 +15,38 @@ import '../widgets/pixel_ui.dart';
 import '../widgets/room_scene.dart';
 
 class RoomDecorateScreen extends StatefulWidget {
-  const RoomDecorateScreen({super.key});
+  const RoomDecorateScreen({super.key, this.previewTimeOfDay});
+
+  /// Debug preview follows the source room's selected time when supplied.
+  final RoomTimeOfDay? previewTimeOfDay;
 
   @override
   State<RoomDecorateScreen> createState() => _RoomDecorateScreenState();
 }
 
-class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
+class _RoomDecorateScreenState extends State<RoomDecorateScreen>
+    with WidgetsBindingObserver {
   RoomDecorCategory _category = RoomDecorCategory.furniture;
+  DateTime? _localTime;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && mounted) {
+      setState(() => _localTime = SobraScope.of(context).currentMoment);
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   /// Nothing to begin with: a preselected item lit its places before the
   /// user had chosen anything, and the room opened looking mid-edit.
@@ -242,6 +267,11 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
                       child: RoomScene(
                         variant: RoomSceneVariant.immersive,
                         roomId: room.id,
+                        timeOfDay:
+                            widget.previewTimeOfDay ??
+                            RoomTimeOfDay.fromLocal(
+                              _localTime ?? store.currentMoment,
+                            ),
                         placements: _draft,
                         message: l10n.homeGoingWell,
                         showSlots: true,
@@ -653,7 +683,7 @@ List<_RoomChoice> _choicesFor(
       placements.containsValue(id) ? l10n.roomPlaced : l10n.collectionOwned;
 
   if (category == RoomDecorCategory.rooms) {
-    // All three themes are available from the start. Each has its own saved
+    // Each theme has its own saved
     // arrangement, so switching the draft room does not move its furniture.
     return [
       for (final room in RoomThemes.all)

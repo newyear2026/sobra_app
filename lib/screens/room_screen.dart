@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../data/catalog_preview_data.dart';
 import '../l10n/catalog_labels.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/room_labels.dart';
+import '../models/room_time_of_day.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
@@ -20,12 +22,38 @@ class RoomScreen extends StatefulWidget {
   State<RoomScreen> createState() => _RoomScreenState();
 }
 
-class _RoomScreenState extends State<RoomScreen> {
+class _RoomScreenState extends State<RoomScreen> with WidgetsBindingObserver {
   bool _reacting = false;
   Timer? _reactionTimer;
+  DateTime? _localTime;
+  int _debugPreviewIndex = -1;
+
+  RoomTimeOfDay get _phase => _debugPreviewIndex < 0
+      ? RoomTimeOfDay.fromLocal(
+          _localTime ?? SobraScope.of(context).currentMoment,
+        )
+      : RoomTimeOfDay.values[_debugPreviewIndex];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _refreshTime();
+  }
+
+  void _refreshTime() {
+    if (mounted) {
+      setState(() => _localTime = SobraScope.of(context).currentMoment);
+    }
+  }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _reactionTimer?.cancel();
     super.dispose();
   }
@@ -47,10 +75,15 @@ class _RoomScreenState extends State<RoomScreen> {
     if (mounted && _reacting) setState(() => _reacting = false);
   }
 
-  void _openDecorator() {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute<void>(builder: (_) => const RoomDecorateScreen()));
+  Future<void> _openDecorator() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => RoomDecorateScreen(
+          previewTimeOfDay: _debugPreviewIndex < 0 ? null : _phase,
+        ),
+      ),
+    );
+    _refreshTime();
   }
 
   @override
@@ -74,6 +107,26 @@ class _RoomScreenState extends State<RoomScreen> {
                   child: PixelTopBar(
                     title: l10n.roomTitle,
                     onBack: () => Navigator.of(context).pop(),
+                    trailing: kDebugMode
+                        ? PopupMenuButton<int>(
+                            key: const Key('room-time-preview'),
+                            tooltip: 'Preview room lighting',
+                            initialValue: _debugPreviewIndex,
+                            icon: const Icon(Icons.schedule),
+                            onSelected: (index) =>
+                                setState(() => _debugPreviewIndex = index),
+                            itemBuilder: (_) => const [
+                              PopupMenuItem(
+                                value: -1,
+                                child: Text('Local time'),
+                              ),
+                              PopupMenuItem(value: 0, child: Text('Dawn')),
+                              PopupMenuItem(value: 1, child: Text('Day')),
+                              PopupMenuItem(value: 2, child: Text('Sunset')),
+                              PopupMenuItem(value: 3, child: Text('Night')),
+                            ],
+                          )
+                        : null,
                   ),
                 ),
                 Expanded(
@@ -82,6 +135,7 @@ class _RoomScreenState extends State<RoomScreen> {
                     child: RoomScene(
                       variant: RoomSceneVariant.immersive,
                       roomId: store.equippedRoomId,
+                      timeOfDay: _phase,
                       placements: store.roomDecorationsFor(),
                       message: _reacting
                           ? l10n.roomCatReaction

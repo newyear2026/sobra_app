@@ -1169,6 +1169,24 @@ abstract class AppLocalizations {
   /// **'Casa de playa'**
   String get roomThemeCasaDePlaya;
 
+  /// No description provided for @roomThemeCasaTorre.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa torre'**
+  String get roomThemeCasaTorre;
+
+  /// No description provided for @roomThemeCasaMontana.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa montaña'**
+  String get roomThemeCasaMontana;
+
+  /// No description provided for @roomThemeCasaInvernadero.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa invernadero'**
+  String get roomThemeCasaInvernadero;
+
   /// No description provided for @roomChooseTheme.
   ///
   /// In es, this message translates to:

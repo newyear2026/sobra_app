@@ -133,6 +133,9 @@ flutter:
     - assets/rooms/casa_clara/items/
     - assets/rooms/casa_jardin/
     - assets/rooms/casa_de_playa/
+    - assets/rooms/casa_torre/
+    - assets/rooms/casa_montana/
+    - assets/rooms/casa_invernadero/
     - assets/rooms/shared_items/
 
   fonts:

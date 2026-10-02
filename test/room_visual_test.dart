@@ -53,6 +53,13 @@ Future<void> _pump(WidgetTester tester, SobraStore store, Widget screen) async {
         const AssetImage(RoomThemes.casaClaraPortraitAsset),
         tester.element(find.byType(screen.runtimeType)),
       ),
+      // The injected 10:00 clock selects the new daylight background.
+      precacheImage(
+        const AssetImage(
+          'assets/rooms/casa_clara/background_portrait_unlit.png',
+        ),
+        tester.element(find.byType(screen.runtimeType)),
+      ),
       precacheImage(
         const AssetImage(RoomDecorAssets.rug),
         tester.element(find.byType(screen.runtimeType)),

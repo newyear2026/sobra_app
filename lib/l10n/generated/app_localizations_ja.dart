@@ -629,6 +629,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get roomThemeCasaDePlaya => '海辺の家';
 
   @override
+  String get roomThemeCasaTorre => 'タワーの部屋';
+
+  @override
+  String get roomThemeCasaMontana => '山の別荘';
+
+  @override
+  String get roomThemeCasaInvernadero => '温室の部屋';
+
+  @override
   String get roomChooseTheme => 'お部屋の雰囲気を選んでください。';
 
   @override

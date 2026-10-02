@@ -96,6 +96,9 @@ abstract final class RoomThemes {
   static const casaClaraId = 'casa-clara';
   static const casaJardinId = 'casa-jardin';
   static const casaDePlayaId = 'casa-de-playa';
+  static const casaTorreId = 'casa-torre';
+  static const casaMontanaId = 'casa-montana';
+  static const casaInvernaderoId = 'casa-invernadero';
   static const casaClaraPreviewAsset =
       'assets/rooms/casa_clara/background_preview_empty.png';
   static const casaClaraPortraitAsset =
@@ -104,6 +107,16 @@ abstract final class RoomThemes {
     RoomSlot.rug,
     RoomSlot.wallLeft,
     RoomSlot.wallCenter,
+    RoomSlot.floorLeft,
+    RoomSlot.floorRight,
+    RoomSlot.floorCenter,
+    RoomSlot.floorAccent,
+    RoomSlot.floorCabinet,
+    RoomSlot.floorSofa,
+  ];
+  // Broad windows and glass walls leave no clear wall for hanging decorations.
+  static const panoramicRoomSlots = <RoomSlot>[
+    RoomSlot.rug,
     RoomSlot.floorLeft,
     RoomSlot.floorRight,
     RoomSlot.floorCenter,
@@ -142,11 +155,52 @@ abstract final class RoomThemes {
     defaultPlacements: RoomDecorAssets.emptyRoomDefaults,
   );
 
-  static const all = <RoomTheme>[casaClara, casaJardin, casaDePlaya];
+  static const casaTorre = RoomTheme(
+    id: casaTorreId,
+    previewAsset: 'assets/rooms/casa_torre/background_preview.png',
+    previewSize: Size(1536, 1024),
+    portraitAsset: 'assets/rooms/casa_torre/background_portrait_unlit.png',
+    portraitSize: Size(1024, 1536),
+    slots: panoramicRoomSlots,
+    defaultPlacements: RoomDecorAssets.emptyRoomDefaults,
+  );
+
+  static const casaMontana = RoomTheme(
+    id: casaMontanaId,
+    previewAsset: 'assets/rooms/casa_montana/background_preview.png',
+    previewSize: Size(1536, 1024),
+    portraitAsset: 'assets/rooms/casa_montana/background_portrait_unlit.png',
+    portraitSize: Size(1024, 1536),
+    slots: panoramicRoomSlots,
+    defaultPlacements: RoomDecorAssets.emptyRoomDefaults,
+  );
+
+  static const casaInvernadero = RoomTheme(
+    id: casaInvernaderoId,
+    previewAsset: 'assets/rooms/casa_invernadero/background_preview.png',
+    previewSize: Size(1536, 1024),
+    portraitAsset:
+        'assets/rooms/casa_invernadero/background_portrait_unlit.png',
+    portraitSize: Size(1024, 1536),
+    slots: panoramicRoomSlots,
+    defaultPlacements: RoomDecorAssets.emptyRoomDefaults,
+  );
+
+  static const all = <RoomTheme>[
+    casaClara,
+    casaJardin,
+    casaDePlaya,
+    casaTorre,
+    casaMontana,
+    casaInvernadero,
+  ];
   static const _all = {
     casaClaraId: casaClara,
     casaJardinId: casaJardin,
     casaDePlayaId: casaDePlaya,
+    casaTorreId: casaTorre,
+    casaMontanaId: casaMontana,
+    casaInvernaderoId: casaInvernadero,
   };
 
   static bool contains(String roomId) => _all.containsKey(roomId);
