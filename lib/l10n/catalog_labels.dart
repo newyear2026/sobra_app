@@ -13,6 +13,10 @@ String catalogEntryDisplayName(AppLocalizations l10n, CatalogEntry entry) {
   if (entry.id == RoomDecorAssets.floorLampId) return l10n.roomStandingLamp;
   if (entry.id == RoomDecorAssets.wallClockId) return l10n.roomWallClock;
   if (entry.id == RoomDecorAssets.lowCabinetId) return l10n.roomLowCabinet;
+  if (entry.id == RoomDecorAssets.slimBookcaseId) return l10n.roomSlimBookcase;
+  if (entry.id == RoomDecorAssets.roundSideTableId) {
+    return l10n.roomRoundSideTable;
+  }
   if (entry.id == RoomDecorAssets.petBedId) return l10n.roomPetBed;
   if (entry.id == RoomDecorAssets.savingsJarId) return l10n.roomSavingsJar;
   if (entry.id == RoomDecorAssets.wallShelfId) return l10n.roomWallShelf;

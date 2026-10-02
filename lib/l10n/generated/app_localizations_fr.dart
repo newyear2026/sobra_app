@@ -710,6 +710,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get roomWallShelf => 'Étagère murale';
+  @override
+  String get roomSlimBookcase => 'Bibliothèque étroite';
+
+  @override
+  String get roomRoundSideTable => 'Guéridon rond';
+
 
   @override
   String get roomTerracottaPouf => 'Pouf terracotta';
@@ -746,7 +752,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get roomSuggestSavingsJar =>
-      'Essaie la table ou le petit coin au sol. Touche un endroit en surbrillance.';
+      'Pose le bocal sur le rebord ou sur un meuble. Ajoute un meuble si besoin.';
+
+  @override
+  String get roomSuggestTablePlant =>
+      'Pose la plante sur le rebord ou sur un meuble. Ajoute un meuble si besoin.';
 
   @override
   String get roomSuggestWallShelf =>

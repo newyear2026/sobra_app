@@ -703,6 +703,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get roomWallShelf => 'Wall shelf';
+  @override
+  String get roomSlimBookcase => 'Slim bookcase';
+
+  @override
+  String get roomRoundSideTable => 'Round side table';
+
 
   @override
   String get roomTerracottaPouf => 'Terracotta pouf';
@@ -739,7 +745,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get roomSuggestSavingsJar =>
-      'Try the table or the small floor nook. Tap a highlighted spot.';
+      'Place the jar on a sill or furniture top. Add furniture if needed.';
+
+  @override
+  String get roomSuggestTablePlant =>
+      'Place the plant on a sill or furniture top. Add furniture if needed.';
 
   @override
   String get roomSuggestWallShelf =>

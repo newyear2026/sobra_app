@@ -128,7 +128,7 @@ void main() {
 
     // The numbered lineup keeps its unlock routes. The pack's star was
     // dropped before launch, so no item comes in a bundle.
-    expect(entries, hasLength(21));
+    expect(entries, hasLength(23));
     expect(
       entries.where((entry) => entry.unlockMethod == CatalogUnlockMethod.gift),
       hasLength(2),
@@ -137,7 +137,7 @@ void main() {
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.included,
       ),
-      hasLength(9),
+      hasLength(11),
     );
     expect(
       entries.where(
@@ -173,6 +173,14 @@ void main() {
   });
 
   group('the launch gift', () {
+    for (final id in [
+      RoomDecorAssets.slimBookcaseId,
+      RoomDecorAssets.roundSideTableId,
+    ]) {
+      final entry = entries.firstWhere((candidate) => candidate.id == id);
+      expect(entry.unlockMethod, CatalogUnlockMethod.included);
+      expect(entry.assetPath, RoomDecorAssets.assetFor(id));
+    }
     final gifts = CatalogPreviewData.items
         .where((entry) => entry.unlockMethod == CatalogUnlockMethod.gift)
         .toList();

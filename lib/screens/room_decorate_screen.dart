@@ -153,11 +153,20 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
   void _place(RoomSlot slot) {
     final itemId = _selectedItemId;
     if (itemId == null ||
-        !RoomThemes.byId(_draftRoomId!).slotsForItem(itemId).contains(slot)) {
+        !RoomThemes.byId(
+          _draftRoomId!,
+        ).slotsForItem(itemId, placements: _draft).contains(slot)) {
       return;
     }
     setState(() {
       _pushHistory();
+      if (slot == RoomSlot.floorCabinet) {
+        _draft.remove(RoomSlot.cabinetTop);
+        _draft.remove(RoomSlot.cabinetTopRight);
+      }
+      if (slot == RoomSlot.floorRight) {
+        _draft.remove(RoomSlot.sideTableTop);
+      }
       if (_draft[slot] == itemId) {
         _draft.remove(slot);
         return;
@@ -177,7 +186,7 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
         ? const <RoomSurface>[]
         : RoomDecorAssets.surfacesFor(itemId);
     if (surfaces.isEmpty) return l10n.roomInstruction;
-    final count = room.slotsForItem(itemId!).length;
+    final count = room.slotsForItem(itemId!, placements: _draft).length;
     if (_draft.containsValue(itemId)) {
       return count > 1 ? l10n.roomMoveOrRemove : l10n.roomTapToRemove;
     }
@@ -185,6 +194,8 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen> {
       RoomDecorAssets.lowCabinetId => l10n.roomSuggestCabinet,
       RoomDecorAssets.petBedId => l10n.roomSuggestPetBed,
       RoomDecorAssets.savingsJarId => l10n.roomSuggestSavingsJar,
+      RoomDecorAssets.defaultTablePlantId ||
+      'item-03' => l10n.roomSuggestTablePlant,
       RoomDecorAssets.wallShelfId => l10n.roomSuggestWallShelf,
       RoomDecorAssets.terracottaPoufId => l10n.roomSuggestPouf,
       RoomDecorAssets.blueCreamRugId => l10n.roomSuggestBlueRug,
