@@ -4155,6 +4155,102 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{amount} · {method}. Cuando pagues, anótalo en Sobrita.'**
   String fixedReminderBody(String amount, String method);
+
+  /// No description provided for @backupImportTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar respaldo'**
+  String get backupImportTitle;
+
+  /// No description provided for @backupImportHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Pega aquí el respaldo JSON que copiaste desde Sobrita.'**
+  String get backupImportHint;
+
+  /// No description provided for @backupPaste.
+  ///
+  /// In es, this message translates to:
+  /// **'Pegar respaldo'**
+  String get backupPaste;
+
+  /// No description provided for @backupPreview.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisar respaldo'**
+  String get backupPreview;
+
+  /// No description provided for @backupReplaceWarning.
+  ///
+  /// In es, this message translates to:
+  /// **'Este respaldo reemplazará tus registros y ajustes actuales. Guardaremos una copia de los datos actuales antes de continuar.'**
+  String get backupReplaceWarning;
+
+  /// No description provided for @backupSummary.
+  ///
+  /// In es, this message translates to:
+  /// **'{expenses} gastos · {incomes} ingresos · {fixed} gastos fijos'**
+  String backupSummary(int expenses, int incomes, int fixed);
+
+  /// No description provided for @backupRestore.
+  ///
+  /// In es, this message translates to:
+  /// **'Restaurar este respaldo'**
+  String get backupRestore;
+
+  /// No description provided for @backupImportSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Respaldo restaurado.'**
+  String get backupImportSuccess;
+
+  /// No description provided for @backupInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'No es un respaldo válido de Sobrita. Revisa que hayas copiado todo el texto.'**
+  String get backupInvalid;
+
+  /// No description provided for @backupNewer.
+  ///
+  /// In es, this message translates to:
+  /// **'Este respaldo necesita una versión más reciente de Sobrita. Actualiza la app primero.'**
+  String get backupNewer;
+
+  /// No description provided for @backupPurchaseNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Las compras se recuperan con Restaurar compras usando la misma cuenta de la tienda.'**
+  String get backupPurchaseNote;
+
+  /// No description provided for @shopRetry.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a cargar precios'**
+  String get shopRetry;
+
+  /// No description provided for @shopLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando precios…'**
+  String get shopLoading;
+
+  /// No description provided for @shopRefreshed.
+  ///
+  /// In es, this message translates to:
+  /// **'Precios actualizados.'**
+  String get shopRefreshed;
+
+  /// No description provided for @shopRetryFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar los precios. Revisa tu conexión y vuelve a intentarlo.'**
+  String get shopRetryFailed;
+
+  /// No description provided for @backupPrevious.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisar datos anteriores a la importación'**
+  String get backupPrevious;
 }
 
 class _AppLocalizationsDelegate

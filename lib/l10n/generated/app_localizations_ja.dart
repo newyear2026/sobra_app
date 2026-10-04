@@ -2351,4 +2351,55 @@ class AppLocalizationsJa extends AppLocalizations {
   String fixedReminderBody(String amount, String method) {
     return '$amount · $method。払ったらSobritaで記録しましょう。';
   }
+
+  @override
+  String get backupImportTitle => 'バックアップを読み込む';
+
+  @override
+  String get backupImportHint => 'SobritaからコピーしたJSONバックアップを貼り付けてください。';
+
+  @override
+  String get backupPaste => 'バックアップを貼り付け';
+
+  @override
+  String get backupPreview => '内容を確認';
+
+  @override
+  String get backupReplaceWarning =>
+      'このバックアップで現在の記録と設定を置き換えます。続行する前に現在のデータを保存します。';
+
+  @override
+  String backupSummary(int expenses, int incomes, int fixed) {
+    return '支出$expenses件 · 収入$incomes件 · 固定費$fixed件';
+  }
+
+  @override
+  String get backupRestore => 'このバックアップを復元';
+
+  @override
+  String get backupImportSuccess => 'バックアップを復元しました。';
+
+  @override
+  String get backupInvalid => '有効なSobritaのバックアップではありません。全文をコピーしたか確認してください。';
+
+  @override
+  String get backupNewer => 'このバックアップには新しいバージョンのSobritaが必要です。先にアプリを更新してください。';
+
+  @override
+  String get backupPurchaseNote => '購入した商品は、同じストアアカウントで「購入を復元」から復元できます。';
+
+  @override
+  String get shopRetry => '価格を再読み込み';
+
+  @override
+  String get shopLoading => '価格を読み込み中…';
+
+  @override
+  String get shopRefreshed => '価格を更新しました。';
+
+  @override
+  String get shopRetryFailed => '価格を読み込めませんでした。接続を確認して再試行してください。';
+
+  @override
+  String get backupPrevious => '読み込み前のデータを確認';
 }

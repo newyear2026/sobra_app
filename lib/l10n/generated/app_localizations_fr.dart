@@ -2463,4 +2463,60 @@ class AppLocalizationsFr extends AppLocalizations {
   String fixedReminderBody(String amount, String method) {
     return '$amount · $method. Note-le dans Sobrita une fois payé.';
   }
+
+  @override
+  String get backupImportTitle => 'Importer une sauvegarde';
+
+  @override
+  String get backupImportHint =>
+      'Colle ici la sauvegarde JSON copiée depuis Sobrita.';
+
+  @override
+  String get backupPaste => 'Coller la sauvegarde';
+
+  @override
+  String get backupPreview => 'Vérifier la sauvegarde';
+
+  @override
+  String get backupReplaceWarning =>
+      'Cette sauvegarde remplacera tes données et réglages actuels. Nous en conserverons une copie avant de continuer.';
+
+  @override
+  String backupSummary(int expenses, int incomes, int fixed) {
+    return '$expenses dépenses · $incomes revenus · $fixed charges fixes';
+  }
+
+  @override
+  String get backupRestore => 'Restaurer cette sauvegarde';
+
+  @override
+  String get backupImportSuccess => 'Sauvegarde restaurée.';
+
+  @override
+  String get backupInvalid =>
+      'Cette sauvegarde Sobrita est invalide. Vérifie que tu as copié tout le texte.';
+
+  @override
+  String get backupNewer =>
+      'Cette sauvegarde nécessite une version plus récente de Sobrita. Mets d’abord l’application à jour.';
+
+  @override
+  String get backupPurchaseNote =>
+      'Récupère tes achats avec Restaurer les achats en utilisant le même compte de la boutique.';
+
+  @override
+  String get shopRetry => 'Recharger les prix';
+
+  @override
+  String get shopLoading => 'Chargement des prix…';
+
+  @override
+  String get shopRefreshed => 'Prix actualisés.';
+
+  @override
+  String get shopRetryFailed =>
+      'Impossible de charger les prix. Vérifie ta connexion et réessaie.';
+
+  @override
+  String get backupPrevious => 'Vérifier les données avant importation';
 }

@@ -11,6 +11,10 @@ class FakeBackend implements PurchaseBackend {
   bool available = true;
   bool failBuy = false;
   bool failRestore = false;
+  bool failPrices = false;
+  int availabilityChecks = 0;
+  int priceQueries = 0;
+  Future<void> Function()? beforePriceQuery;
   List<ProductDetails> catalogue = [];
   List<String> notFound = [];
 
@@ -32,17 +36,24 @@ class FakeBackend implements PurchaseBackend {
   Stream<List<PurchaseDetails>> get purchaseStream => _controller.stream;
 
   @override
-  Future<bool> isAvailable() async => available;
+  Future<bool> isAvailable() async {
+    availabilityChecks++;
+    return available;
+  }
 
   @override
-  Future<ProductDetailsResponse> queryProductDetails(Set<String> ids) async =>
-      ProductDetailsResponse(
-        productDetails: [
-          for (final product in catalogue)
-            if (ids.contains(product.id)) product,
-        ],
-        notFoundIDs: notFound,
-      );
+  Future<ProductDetailsResponse> queryProductDetails(Set<String> ids) async {
+    priceQueries++;
+    await beforePriceQuery?.call();
+    if (failPrices) throw StateError('prices unavailable');
+    return ProductDetailsResponse(
+      productDetails: [
+        for (final product in catalogue)
+          if (ids.contains(product.id)) product,
+      ],
+      notFoundIDs: notFound,
+    );
+  }
 
   @override
   Future<void> buyNonConsumable(ProductDetails product) async {

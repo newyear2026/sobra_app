@@ -23,14 +23,15 @@ int? averagePerDayCentavos(int spentCentavos, int days) {
   return (perDay / 100).round() * 100;
 }
 
-/// What one closed cycle came to, written down when it closed.
+/// A closed cycle's original budget and boundaries, with its ledger totals.
 ///
 /// This exists because the past cannot be recomputed. Cycle boundaries come
 /// from the current pay schedule and the budget from the current total, so
 /// asking today "what were September's cycles?" re-cuts September with rules
 /// that may have been adopted in October — producing windows the user never
 /// lived and figures they never saw. Settling is the one moment all four
-/// numbers are true at once, so that is where they get kept.
+/// numbers are true at once, so that is where its budget and dates get kept.
+/// Spending is refreshed within those saved dates when a past entry changes.
 ///
 /// Amounts stay a plain count of minor units with no currency attached.
 /// Switching currency relabels the whole ledger rather than converting it, and

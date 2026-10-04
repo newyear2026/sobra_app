@@ -2456,4 +2456,60 @@ class AppLocalizationsPt extends AppLocalizations {
   String fixedReminderBody(String amount, String method) {
     return '$amount · $method. Quando pagar, anote no Sobrita.';
   }
+
+  @override
+  String get backupImportTitle => 'Importar backup';
+
+  @override
+  String get backupImportHint =>
+      'Cole aqui o backup JSON que você copiou do Sobrita.';
+
+  @override
+  String get backupPaste => 'Colar backup';
+
+  @override
+  String get backupPreview => 'Conferir backup';
+
+  @override
+  String get backupReplaceWarning =>
+      'Este backup substituirá seus registros e ajustes atuais. Salvaremos uma cópia dos dados atuais antes de continuar.';
+
+  @override
+  String backupSummary(int expenses, int incomes, int fixed) {
+    return '$expenses despesas · $incomes receitas · $fixed despesas fixas';
+  }
+
+  @override
+  String get backupRestore => 'Restaurar este backup';
+
+  @override
+  String get backupImportSuccess => 'Backup restaurado.';
+
+  @override
+  String get backupInvalid =>
+      'Este não é um backup válido do Sobrita. Confira se você copiou todo o texto.';
+
+  @override
+  String get backupNewer =>
+      'Este backup precisa de uma versão mais recente do Sobrita. Atualize o app primeiro.';
+
+  @override
+  String get backupPurchaseNote =>
+      'Recupere suas compras em Restaurar compras usando a mesma conta da loja.';
+
+  @override
+  String get shopRetry => 'Recarregar preços';
+
+  @override
+  String get shopLoading => 'Carregando preços…';
+
+  @override
+  String get shopRefreshed => 'Preços atualizados.';
+
+  @override
+  String get shopRetryFailed =>
+      'Não foi possível carregar os preços. Confira sua conexão e tente novamente.';
+
+  @override
+  String get backupPrevious => 'Conferir dados anteriores à importação';
 }

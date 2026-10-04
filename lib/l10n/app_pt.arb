@@ -720,5 +720,21 @@
   "fixedReminderTitleToday": "{name} vence hoje",
   "fixedReminderTitleTomorrow": "{name} vence amanhã",
   "fixedReminderTitleInDays": "{name} vence em {days} dias",
-  "fixedReminderBody": "{amount} · {method}. Quando pagar, anote no Sobrita."
+  "fixedReminderBody": "{amount} · {method}. Quando pagar, anote no Sobrita.",
+  "backupImportTitle": "Importar backup",
+  "backupImportHint": "Cole aqui o backup JSON que você copiou do Sobrita.",
+  "backupPaste": "Colar backup",
+  "backupPreview": "Conferir backup",
+  "backupReplaceWarning": "Este backup substituirá seus registros e ajustes atuais. Salvaremos uma cópia dos dados atuais antes de continuar.",
+  "backupSummary": "{expenses} despesas · {incomes} receitas · {fixed} despesas fixas",
+  "backupRestore": "Restaurar este backup",
+  "backupImportSuccess": "Backup restaurado.",
+  "backupInvalid": "Este não é um backup válido do Sobrita. Confira se você copiou todo o texto.",
+  "backupNewer": "Este backup precisa de uma versão mais recente do Sobrita. Atualize o app primeiro.",
+  "backupPurchaseNote": "Recupere suas compras em Restaurar compras usando a mesma conta da loja.",
+  "shopRetry": "Recarregar preços",
+  "shopLoading": "Carregando preços…",
+  "shopRefreshed": "Preços atualizados.",
+  "shopRetryFailed": "Não foi possível carregar os preços. Confira sua conexão e tente novamente.",
+  "backupPrevious": "Conferir dados anteriores à importação"
 }

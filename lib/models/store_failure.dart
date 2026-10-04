@@ -8,6 +8,9 @@
 /// Programmer errors — an amount that should never have reached the store —
 /// stay as plain [ArgumentError]s. They are bugs, not messages.
 enum StoreFailure {
+  /// The original ledger must be recovered before ordinary writes can resume.
+  recoveryRequired,
+
   /// The new total is at or below the income already booked to this cycle.
   budgetBelowCycleIncome,
 

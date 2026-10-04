@@ -15,6 +15,7 @@ import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
 import '../widgets/pack_offer_dialog.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/store_refresh_button.dart';
 
 class CollectionScreen extends StatefulWidget {
   const CollectionScreen({
@@ -380,6 +381,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         roomId: store.equippedRoomId,
                       ),
                       const SizedBox(height: 18),
+                      if (purchases != null) const StoreRefreshButton(),
                       _CatalogTabs(
                         selected: _selectedKind,
                         onChanged: (kind) {

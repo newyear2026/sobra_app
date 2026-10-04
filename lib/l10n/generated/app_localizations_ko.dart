@@ -2353,4 +2353,55 @@ class AppLocalizationsKo extends AppLocalizations {
   String fixedReminderBody(String amount, String method) {
     return '$amount · $method. 낸 뒤에 Sobrita에 기록해 주세요.';
   }
+
+  @override
+  String get backupImportTitle => '백업 가져오기';
+
+  @override
+  String get backupImportHint => 'Sobrita에서 복사한 JSON 백업을 여기에 붙여넣으세요.';
+
+  @override
+  String get backupPaste => '백업 붙여넣기';
+
+  @override
+  String get backupPreview => '백업 내용 확인';
+
+  @override
+  String get backupReplaceWarning =>
+      '이 백업으로 현재 기록과 설정을 교체합니다. 진행하기 전에 현재 데이터를 백업해 둡니다.';
+
+  @override
+  String backupSummary(int expenses, int incomes, int fixed) {
+    return '지출 $expenses건 · 수입 $incomes건 · 고정 지출 $fixed건';
+  }
+
+  @override
+  String get backupRestore => '이 백업으로 복원';
+
+  @override
+  String get backupImportSuccess => '백업을 복원했어요.';
+
+  @override
+  String get backupInvalid => '유효한 Sobrita 백업이 아닙니다. 전체 내용을 복사했는지 확인해 주세요.';
+
+  @override
+  String get backupNewer => '더 최신 버전의 Sobrita가 필요한 백업입니다. 앱을 먼저 업데이트해 주세요.';
+
+  @override
+  String get backupPurchaseNote => '구매한 상품은 같은 스토어 계정으로 구매 복원에서 복구할 수 있어요.';
+
+  @override
+  String get shopRetry => '상점 가격 다시 불러오기';
+
+  @override
+  String get shopLoading => '가격을 불러오는 중…';
+
+  @override
+  String get shopRefreshed => '가격을 새로 불러왔어요.';
+
+  @override
+  String get shopRetryFailed => '가격을 불러오지 못했어요. 연결을 확인하고 다시 시도해 주세요.';
+
+  @override
+  String get backupPrevious => '가져오기 전 데이터 확인';
 }

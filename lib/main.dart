@@ -52,7 +52,7 @@ Future<void> main() async {
   await SobraQuickEntry.initialize();
   SobraFixedReminders.initialize(store);
   final receipts = ReceiptStore.forPlatform();
-  await _prepareReceipts(receipts, store);
+  await prepareReceipts(receipts, store);
   final purchasePlatform =
       !kIsWeb &&
       (defaultTargetPlatform == TargetPlatform.android ||
@@ -141,11 +141,14 @@ Future<void> main() async {
 /// Both steps are best-effort. A phone that will not hand over its documents
 /// directory is a reason to show the ledger without photos, never a reason to
 /// refuse to start.
-Future<void> _prepareReceipts(ReceiptStore receipts, SobraStore store) async {
+@visibleForTesting
+Future<void> prepareReceipts(ReceiptStore receipts, SobraStore store) async {
   if (receipts is! FileReceiptStore) return;
   try {
     await receipts.warmUp();
-    await receipts.sweepOrphans(store.referencedReceipts);
+    if (!store.hasStorageError) {
+      await receipts.sweepOrphans(store.referencedReceipts);
+    }
   } on Object catch (error) {
     debugPrint('Receipts unavailable: $error');
   }
@@ -384,6 +387,16 @@ class _StartupRouter extends StatelessWidget {
       duration: reducedMotionOf(context)
           ? Duration.zero
           : const Duration(milliseconds: 280),
+      // Recovery and the restored home briefly share this route. Keep the
+      // outgoing Scaffold out of Hero discovery so their shared success
+      // SnackBar does not register the same Hero twice when import pops.
+      layoutBuilder: (current, previous) => Stack(
+        alignment: Alignment.center,
+        children: [
+          for (final child in previous) HeroMode(enabled: false, child: child),
+          ?current,
+        ],
+      ),
       child: store.hasStorageError
           ? const RecoveryScreen(key: ValueKey('recovery'))
           : !store.hasAnsweredLoginOffer

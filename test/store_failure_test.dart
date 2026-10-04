@@ -182,6 +182,21 @@ void main() {
       isEmpty,
       reason: 'the message is true: nothing reached the disk',
     );
+    expect(store.transactions, isEmpty);
+
+    preferences.writesFail = false;
+    await tester.tap(find.text('Guardar'));
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+    expect(store.transactions, hasLength(1));
+    expect(store.transactions.single.amountCentavos, 18000);
+    final retried =
+        jsonDecode(
+              (await preferences.getAll())['flutter.sobra_state_v2']! as String,
+            )
+            as Map<String, dynamic>;
+    expect(retried['transactions'], hasLength(1));
 
     ScaffoldMessenger.of(
       tester.element(find.byType(Scaffold).first),

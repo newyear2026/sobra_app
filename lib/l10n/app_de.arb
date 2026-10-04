@@ -720,5 +720,21 @@
   "fixedReminderTitleToday": "{name} ist heute fällig",
   "fixedReminderTitleTomorrow": "{name} ist morgen fällig",
   "fixedReminderTitleInDays": "{name} ist in {days} Tagen fällig",
-  "fixedReminderBody": "{amount} · {method}. Markier es in Sobrita als bezahlt, sobald du zahlst."
+  "fixedReminderBody": "{amount} · {method}. Markier es in Sobrita als bezahlt, sobald du zahlst.",
+  "backupImportTitle": "Sicherung importieren",
+  "backupImportHint": "Füge hier die JSON-Sicherung ein, die du aus Sobrita kopiert hast.",
+  "backupPaste": "Sicherung einfügen",
+  "backupPreview": "Sicherung prüfen",
+  "backupReplaceWarning": "Diese Sicherung ersetzt deine aktuellen Einträge und Einstellungen. Zuvor speichern wir eine Kopie deiner aktuellen Daten.",
+  "backupSummary": "{expenses} Ausgaben · {incomes} Einnahmen · {fixed} Fixkosten",
+  "backupRestore": "Diese Sicherung wiederherstellen",
+  "backupImportSuccess": "Sicherung wiederhergestellt.",
+  "backupInvalid": "Dies ist keine gültige Sobrita-Sicherung. Prüfe, ob du den gesamten Text kopiert hast.",
+  "backupNewer": "Diese Sicherung benötigt eine neuere Version von Sobrita. Aktualisiere zuerst die App.",
+  "backupPurchaseNote": "Stelle Käufe über Käufe wiederherstellen mit demselben Store-Konto wieder her.",
+  "shopRetry": "Preise neu laden",
+  "shopLoading": "Preise werden geladen…",
+  "shopRefreshed": "Preise aktualisiert.",
+  "shopRetryFailed": "Preise konnten nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.",
+  "backupPrevious": "Daten vor dem Import prüfen"
 }

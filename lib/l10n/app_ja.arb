@@ -721,5 +721,21 @@
   "fixedReminderTitleToday": "今日は{name}の支払い日です",
   "fixedReminderTitleTomorrow": "明日は{name}の支払い日です",
   "fixedReminderTitleInDays": "{name}の支払いまであと{days}日",
-  "fixedReminderBody": "{amount} · {method}。払ったらSobritaで記録しましょう。"
+  "fixedReminderBody": "{amount} · {method}。払ったらSobritaで記録しましょう。",
+  "backupImportTitle": "バックアップを読み込む",
+  "backupImportHint": "SobritaからコピーしたJSONバックアップを貼り付けてください。",
+  "backupPaste": "バックアップを貼り付け",
+  "backupPreview": "内容を確認",
+  "backupReplaceWarning": "このバックアップで現在の記録と設定を置き換えます。続行する前に現在のデータを保存します。",
+  "backupSummary": "支出{expenses}件 · 収入{incomes}件 · 固定費{fixed}件",
+  "backupRestore": "このバックアップを復元",
+  "backupImportSuccess": "バックアップを復元しました。",
+  "backupInvalid": "有効なSobritaのバックアップではありません。全文をコピーしたか確認してください。",
+  "backupNewer": "このバックアップには新しいバージョンのSobritaが必要です。先にアプリを更新してください。",
+  "backupPurchaseNote": "購入した商品は、同じストアアカウントで「購入を復元」から復元できます。",
+  "shopRetry": "価格を再読み込み",
+  "shopLoading": "価格を読み込み中…",
+  "shopRefreshed": "価格を更新しました。",
+  "shopRetryFailed": "価格を読み込めませんでした。接続を確認して再試行してください。",
+  "backupPrevious": "読み込み前のデータを確認"
 }

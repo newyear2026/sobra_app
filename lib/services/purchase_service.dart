@@ -136,8 +136,12 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
     this.restoreOnStart = true,
     this.restoreGrace = const Duration(seconds: 6),
     this.checkoutTimeout = const Duration(minutes: 3),
+    this.connectionTimeout = const Duration(seconds: 20),
   }) : _backend = backend,
-       _store = store;
+       _store = store {
+    _wasRecovering = store.hasStorageError;
+    _store.addListener(_resumeAfterRecovery);
+  }
 
   final PurchaseBackend _backend;
   final SobraStore _store;
@@ -174,6 +178,7 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   /// Only checkouts expire. A purchase Play has actually taken and is holding
   /// is tracked separately and waits as long as Play does.
   final Duration checkoutTimeout;
+  final Duration connectionTimeout;
   StreamSubscription<List<PurchaseDetails>>? _subscription;
   final Map<String, ProductDetails> _products = {};
 
@@ -188,6 +193,18 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   PurchaseFailure? _pendingFailure;
   bool _restoreGrantedSomething = false;
   bool _refreshing = false;
+  Future<void>? _refreshFuture;
+  bool _disposed = false;
+  bool _wasRecovering = false;
+
+  void _resumeAfterRecovery() {
+    final recovered = _wasRecovering && !_store.hasStorageError;
+    _wasRecovering = _store.hasStorageError;
+    if (recovered && !_disposed) unawaited(refresh());
+  }
+
+  bool get isRefreshing => _refreshing;
+  bool get hasPrices => _products.isNotEmpty;
 
   /// Ids the store delivered since launch, which a revocation must not touch.
   ///
@@ -229,64 +246,58 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   /// Never throws. A store that cannot be reached leaves the catalog showing
   /// its entries without prices, which is a worse screen than the one with
   /// them and a far better one than no app at all.
-  Future<void> start() async {
+  Future<void> start() => _refreshStore(checkRevocations: true);
+
+  /// Retries availability and prices without requiring the app to restart.
+  /// Android also silently restores purchases; other platforms only load prices.
+  Future<void> refresh() => _refreshStore();
+
+  Future<void> refreshOnResume() => refresh();
+
+  Future<void> _refreshStore({bool checkRevocations = false}) {
+    if (_disposed || _checkingOut.isNotEmpty) return Future<void>.value();
+    if (_refreshing) return _refreshFuture ?? Future<void>.value();
+    _refreshing = true;
     _subscription ??= _backend.purchaseStream.listen(
       _handlePurchases,
       onError: (Object _) => _report(PurchaseFailure.purchaseRejected),
     );
-    bool available;
-    try {
-      available = await _backend.isAvailable();
-    } on Object {
-      available = false;
-    }
-    if (!available) {
-      _readiness = StoreReadiness.unavailable;
-      notifyListeners();
-      return;
-    }
-    _readiness = StoreReadiness.ready;
-    await _loadPrices();
-    if (restoreOnStart) {
-      // Deliberately not surfacing "nothing to restore" here: at launch the
-      // user did not ask, and most launches legitimately restore nothing.
-      try {
-        await _backend.restorePurchases();
-      } on Object {
-        // A launch restore that fails changes nothing the user can see. The
-        // Ajustes row is where a restore reports on itself.
-      }
-      await _takeBackWhatIsNoLongerPaid();
-    }
     notifyListeners();
+    return _refreshFuture = _connect(checkRevocations: checkRevocations);
   }
 
-  /// Replays purchases again when the app comes back to the foreground.
-  ///
-  /// Catches what was bought outside the app while it sat in the background:
-  /// for example, a promo code redeemed in the Play Store. Play does not
-  /// announce it to a running app, so without asking it would
-  /// wait for the next cold start — which can be days on a phone that keeps
-  /// the app alive.
-  ///
-  /// Only replays; the revocation stays a launch-time check. Silent like the
-  /// launch restore, and skipped while a checkout is open: the Play sheet is
-  /// itself a trip to the background, and the purchase it returns with is
-  /// already on its way down the stream.
-  Future<void> refreshOnResume() async {
-    if (!restoreOnStart ||
-        _readiness != StoreReadiness.ready ||
-        _checkingOut.isNotEmpty ||
-        _refreshing) {
-      return;
-    }
-    _refreshing = true;
+  Future<void> _connect({required bool checkRevocations}) async {
     try {
-      await _backend.restorePurchases();
+      final available = await _backend.isAvailable().timeout(connectionTimeout);
+      if (_disposed) return;
+      if (!available) {
+        _readiness = StoreReadiness.unavailable;
+        _products.clear();
+        return;
+      }
+      _readiness = StoreReadiness.ready;
+      await _loadPrices();
+      if (_disposed) return;
+      if (restoreOnStart && !_store.hasStorageError) {
+        try {
+          await _backend.restorePurchases().timeout(connectionTimeout);
+        } on Object {
+          // A manual purchase restore reports its own outcome. Reconnecting
+          // the shop should remain quiet when only this background call fails.
+        }
+        if (checkRevocations && !_disposed) {
+          await _takeBackWhatIsNoLongerPaid();
+        }
+      }
     } on Object {
-      // Nothing the user asked for failed. The next resume asks again.
+      if (!_disposed) {
+        _readiness = StoreReadiness.unavailable;
+        _products.clear();
+      }
     } finally {
       _refreshing = false;
+      _refreshFuture = null;
+      if (!_disposed) notifyListeners();
     }
   }
 
@@ -306,13 +317,13 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   Future<void> _takeBackWhatIsNoLongerPaid() async {
     Set<String>? paid;
     try {
-      paid = await _backend.queryPaidProductIds();
+      paid = await _backend.queryPaidProductIds().timeout(connectionTimeout);
     } on Object {
       paid = null;
     }
     // No answer is not an empty answer. Taking purchases back on a failed
     // query would strip a paying user every time they launched offline.
-    if (paid == null) return;
+    if (paid == null || _disposed || _store.hasStorageError) return;
     final stillPaidFor = {
       for (final productId in paid) ..._deliveredBy(productId),
     };
@@ -364,7 +375,14 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
     final ids = CatalogPreviewData.storeProductIds;
     if (ids.isEmpty) return;
     try {
-      final response = await _backend.queryProductDetails(ids);
+      final response = await _backend
+          .queryProductDetails(ids)
+          .timeout(connectionTimeout);
+      if (_disposed) return;
+      if (response.error != null) {
+        _products.clear();
+        return;
+      }
       _products
         ..clear()
         ..addEntries(
@@ -379,6 +397,7 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
         debugPrint('Sobra: store has no listing for ${response.notFoundIDs}');
       }
     } on Object catch (error) {
+      if (!_disposed) _products.clear();
       debugPrint('Sobra: could not load prices: $error');
     }
   }
@@ -409,6 +428,10 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   /// Returns without doing anything when every entitlement is already owned
   /// or a checkout for the same id is already open.
   Future<void> buyProduct(String productId) async {
+    if (_store.hasStorageError) {
+      _report(PurchaseFailure.deliveryNotSaved);
+      return;
+    }
     if (_alreadyOwnsProduct(productId) || isBuying(productId)) return;
     final product = _products[productId];
     if (product == null) {
@@ -452,6 +475,7 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   /// result is worth saying here: this one the user asked for, and a button
   /// that answers nothing at all reads as broken.
   Future<PurchaseFailure?> restore() async {
+    if (_store.hasStorageError) return PurchaseFailure.deliveryNotSaved;
     _restoreGrantedSomething = false;
     // Opened before the request, not after it. The replay can reach the stream
     // while `restorePurchases` is still returning, and a window opened
@@ -474,6 +498,9 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
 
   Future<void> _handlePurchases(List<PurchaseDetails> purchases) async {
     for (final purchase in purchases) {
+      // A replay may already be in flight when loading the ledger fails.
+      // Leave it unacknowledged until explicit recovery makes writes safe.
+      if (_disposed || _store.hasStorageError) return;
       switch (purchase.status) {
         case PurchaseStatus.pending:
           // Play has the payment and has not cleared it. The entry stays
@@ -518,7 +545,7 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
         await _backend.completePurchase(purchase);
       }
     }
-    notifyListeners();
+    if (!_disposed) notifyListeners();
   }
 
   /// Writes the entitlement, under the catalog ids where they are known.
@@ -534,10 +561,8 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   /// no longer ships survives in the saved state. [SobraStore.ownsCatalogEntry]
   /// matches on both, so a later build that restores the entry finds it owned.
   ///
-  /// Returns whether the write landed. The in-memory state is left as the
-  /// store put it rather than rolled back — every other mutation in the app
-  /// is optimistic the same way, and here the optimism turns out to be right:
-  /// an undelivered purchase is replayed and granted on the next launch.
+  /// Returns whether the write landed. A failed write rolls back ownership,
+  /// so even a replay in the same session must persist before acknowledgement.
   ///
   /// Only a grant that came from a restore answers [restore], so a purchase
   /// completing while a restore happens to be waiting cannot make an account
@@ -546,6 +571,8 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
     final ids =
         CatalogPreviewData.entitlementsForProductId(productId) ??
         {CatalogPreviewData.entryForProductId(productId)?.id ?? productId};
+    // Protect this live delivery from an older paid-products query even
+    // while its queued disk write is still in flight.
     _deliveredThisRun.addAll(ids);
     try {
       await _store.grantCatalogEntries(ids);
@@ -567,6 +594,8 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
 
   @override
   void dispose() {
+    _disposed = true;
+    _store.removeListener(_resumeAfterRecovery);
     unawaited(_subscription?.cancel());
     _subscription = null;
     for (final timer in _checkingOut.values) {

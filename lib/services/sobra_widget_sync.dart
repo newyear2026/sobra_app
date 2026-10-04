@@ -274,7 +274,7 @@ abstract final class SobraWidgetSync {
 
   static Future<void> _sync() async {
     final store = _store;
-    if (store == null) return;
+    if (store == null || store.hasStorageError) return;
     try {
       await _channel.invokeMethod<void>(
         'updateWidgets',

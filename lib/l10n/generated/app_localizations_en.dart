@@ -2438,4 +2438,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String fixedReminderBody(String amount, String method) {
     return '$amount · $method. Mark it paid in Sobrita once you pay.';
   }
+
+  @override
+  String get backupImportTitle => 'Import backup';
+
+  @override
+  String get backupImportHint =>
+      'Paste the JSON backup you copied from Sobrita here.';
+
+  @override
+  String get backupPaste => 'Paste backup';
+
+  @override
+  String get backupPreview => 'Preview backup';
+
+  @override
+  String get backupReplaceWarning =>
+      'This backup will replace your current records and settings. We will save a copy of your current data before continuing.';
+
+  @override
+  String backupSummary(int expenses, int incomes, int fixed) {
+    return '$expenses expenses · $incomes income entries · $fixed fixed expenses';
+  }
+
+  @override
+  String get backupRestore => 'Restore this backup';
+
+  @override
+  String get backupImportSuccess => 'Backup restored.';
+
+  @override
+  String get backupInvalid =>
+      'This is not a valid Sobrita backup. Make sure you copied all of the text.';
+
+  @override
+  String get backupNewer =>
+      'This backup needs a newer version of Sobrita. Update the app first.';
+
+  @override
+  String get backupPurchaseNote =>
+      'Recover purchases with Restore purchases using the same store account.';
+
+  @override
+  String get shopRetry => 'Reload prices';
+
+  @override
+  String get shopLoading => 'Loading prices…';
+
+  @override
+  String get shopRefreshed => 'Prices updated.';
+
+  @override
+  String get shopRetryFailed =>
+      'We could not load prices. Check your connection and try again.';
+
+  @override
+  String get backupPrevious => 'Review data from before the import';
 }

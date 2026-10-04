@@ -26,7 +26,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    await store.setReducedMotion(true);
+    if (!store.hasStorageError) await store.setReducedMotion(true);
     await tester.pumpWidget(SobraApp(store: store));
     await tester.pump(const Duration(milliseconds: 100));
   }

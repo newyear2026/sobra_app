@@ -21,8 +21,10 @@ import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
 import '../widgets/pack_offer_dialog.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/store_refresh_button.dart';
 import '../widgets/update_prompt.dart';
 import 'collection_screen.dart';
+import 'backup_import_screen.dart';
 import 'cycle_settings_screen.dart';
 import 'our_apps_screen.dart';
 import 'gamification_preview_screen.dart';
@@ -223,6 +225,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           if (purchases != null) ...[
             const SizedBox(height: 24),
             _SectionHeader(l10n.settingsSectionShop),
+            const StoreRefreshButton(),
             _ShopProductRow(
               icon: Icons.favorite,
               iconColor: AppColors.cash,
@@ -389,6 +392,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SnackBar(content: Text(l10n.settingsBackupCopied)),
               );
             },
+          ),
+          _SettingsRow(
+            icon: Icons.file_download_outlined,
+            iconColor: AppColors.teal,
+            label: l10n.backupImportTitle,
+            value: l10n.settingsRestore,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<bool>(
+                builder: (_) => const BackupImportScreen(),
+              ),
+            ),
           ),
           // The backup is a JSON string on the clipboard, so receipt photos —
           // which live as files outside it — cannot travel with it. Saying so

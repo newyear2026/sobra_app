@@ -756,5 +756,21 @@
   "fixedReminderTitleToday": "{name} is due today",
   "fixedReminderTitleTomorrow": "{name} is due tomorrow",
   "fixedReminderTitleInDays": "{name} is due in {days} days",
-  "fixedReminderBody": "{amount} · {method}. Mark it paid in Sobrita once you pay."
+  "fixedReminderBody": "{amount} · {method}. Mark it paid in Sobrita once you pay.",
+  "backupImportTitle": "Import backup",
+  "backupImportHint": "Paste the JSON backup you copied from Sobrita here.",
+  "backupPaste": "Paste backup",
+  "backupPreview": "Preview backup",
+  "backupReplaceWarning": "This backup will replace your current records and settings. We will save a copy of your current data before continuing.",
+  "backupSummary": "{expenses} expenses · {incomes} income entries · {fixed} fixed expenses",
+  "backupRestore": "Restore this backup",
+  "backupImportSuccess": "Backup restored.",
+  "backupInvalid": "This is not a valid Sobrita backup. Make sure you copied all of the text.",
+  "backupNewer": "This backup needs a newer version of Sobrita. Update the app first.",
+  "backupPurchaseNote": "Recover purchases with Restore purchases using the same store account.",
+  "shopRetry": "Reload prices",
+  "shopLoading": "Loading prices…",
+  "shopRefreshed": "Prices updated.",
+  "shopRetryFailed": "We could not load prices. Check your connection and try again.",
+  "backupPrevious": "Review data from before the import"
 }

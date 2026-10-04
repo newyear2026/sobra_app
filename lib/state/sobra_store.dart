@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart' show kDebugMode;
@@ -6,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/catalog_preview_data.dart';
 import '../data/launch_gift_campaign.dart';
+import '../models/backup_summary.dart';
 import '../models/cash_reconciliation.dart';
 import '../models/catalog_entry.dart';
 import '../models/currency.dart';
@@ -72,10 +74,96 @@ class SobraStore extends ChangeNotifier {
   /// export, or the owned set the store's revocation reads.
   static const _debugPaidCharactersKey = 'sobra_debug_paid_characters';
   static const _backupKey = 'sobra_state_backup_v2';
+  static const _beforeImportKey = 'sobra_before_import_v2';
   static const _corruptArchiveKey = 'sobra_state_corrupt_v2';
 
   final SharedPreferences _preferences;
   final NowProvider _now;
+  // SharedPreferences can retain a failed write in its cache. Keep the last
+  // confirmed disk value independently, including when cache reload fails.
+  String? _persistedJson;
+  final Object _writeZoneKey = Object();
+  Future<void>? _writeTail;
+  Object? _writeToken;
+
+  /// Serializes whole mutations, including their guards, so a retry cannot see
+  /// a failed purchase or fixed payment as already saved. Nested operations
+  /// share one commit; listeners only see a successfully persisted change.
+  Future<T> _write<T>(
+    Future<T> Function() action, {
+    bool allowRecovery = false,
+  }) {
+    final current = Zone.current[_writeZoneKey];
+    if (current is _StoreMutation && current.active) return action();
+    final previous = _writeTail;
+    final token = Object();
+    _writeToken = token;
+    Future<T> execute() async {
+      // Yield in the caller's zone. Do not retain a completed tail from a
+      // different async context (for example startup versus a widget test).
+      await Future<void>.value();
+      try {
+        if (hasStorageError && !allowRecovery) {
+          throw const SobraStoreException(StoreFailure.recoveryRequired);
+        }
+        final before = SobraStore._(_preferences, _now, rewardedAdsPerDay)
+          .._copyFrom(this);
+        final hadStorageError = hasStorageError;
+        final original = corruptedStorage;
+        final observedDate = _lastObservedDate;
+        final debugPaid = _debugPaidCharacters;
+        final mutation = _StoreMutation();
+        late T value;
+        try {
+          value = await runZoned(() async {
+            final value = await action();
+            if (mutation.dirty) await _persist();
+            return value;
+          }, zoneValues: {_writeZoneKey: mutation});
+        } on Object {
+          _copyFrom(before);
+          hasStorageError = hadStorageError;
+          corruptedStorage = original;
+          _lastObservedDate = observedDate;
+          _debugPaidCharacters = debugPaid;
+          // SharedPreferences updates its cache before the platform confirms
+          // the write. A retry must back up disk data, never that failed cache.
+          try {
+            await _preferences.reload();
+          } on Object {
+            // Retain the original failure; the in-memory rollback still holds.
+          }
+          rethrow;
+        } finally {
+          mutation.active = false;
+        }
+        if (mutation.notify) super.notifyListeners();
+        return value;
+      } finally {
+        if (identical(_writeToken, token)) _writeTail = null;
+      }
+    }
+
+    final result = previous == null
+        ? execute()
+        : previous.then((_) => execute());
+    _writeTail = result.then<void>(
+      (_) {},
+      onError: (Object _, StackTrace _) {},
+    );
+    return result;
+  }
+
+  @override
+  void notifyListeners() {
+    final mutation = Zone.current[_writeZoneKey];
+    if (mutation is _StoreMutation && mutation.active) {
+      mutation.notify = true;
+    } else {
+      super.notifyListeners();
+    }
+  }
+
   final List<ExpenseEntry> _transactions = [];
   final List<IncomeEntry> _incomes = [];
   final List<CashReconciliationEntry> _cashReconciliations = [];
@@ -204,6 +292,9 @@ class SobraStore extends ChangeNotifier {
   DateTime? pendingPayScheduleEffectiveAt;
   DateTime? payScheduleEffectiveFloor;
   DateTime? xpTrackingStartedAt;
+
+  /// Budget rewards only measure time after an actual budget was chosen.
+  DateTime? budgetTrackingStartedAt;
   DateTime? firstStartedAt;
   bool launchGiftNoticePending = false;
 
@@ -241,6 +332,7 @@ class SobraStore extends ChangeNotifier {
       rewardedAdsPerDay,
     );
     final saved = preferences.getString(_storageKey);
+    store._persistedJson = saved;
     if (saved == null) {
       store._initializeNewUser();
       await store._save();
@@ -250,6 +342,9 @@ class SobraStore extends ChangeNotifier {
         ..hasStorageError = true
         ..corruptedStorage = saved;
     }
+    // An unreadable ledger stays byte-for-byte intact until explicit recovery.
+    // No migrations, settlement, gifts or other background writes may run.
+    if (store.hasStorageError) return store;
     // One-time migration for states written before native ads existed. Saving
     // now matters: if the missing value were only filled in memory, every
     // restart would begin a fresh configured grace period forever.
@@ -412,9 +507,33 @@ class SobraStore extends ChangeNotifier {
     return List.unmodifiable(result);
   }
 
-  /// Closed cycles, most recent first.
+  /// Closed cycles keep their original budget and boundaries. Spending follows
+  /// the ledger, including late entries, edits, deletions and undo operations.
+  /// XP already awarded at settlement is not granted or taken back by an edit.
   List<CycleRecord> get cycleRecords =>
-      List.unmodifiable(_cycleRecords.reversed);
+      List.unmodifiable(_cycleRecords.reversed.map(_recordWithCurrentSpending));
+
+  CycleRecord _recordWithCurrentSpending(CycleRecord record) {
+    final bounds = CycleBounds(start: record.start, end: record.end);
+    var spent = 0;
+    var fixedPaid = 0;
+    for (final entry in _transactions) {
+      if (!bounds.contains(entry.occurredAt)) continue;
+      if (entry.isFixedPayment) {
+        fixedPaid += entry.amountCentavos;
+      } else {
+        spent += entry.amountCentavos;
+      }
+    }
+    return CycleRecord(
+      start: record.start,
+      end: record.end,
+      budgetCentavos: record.budgetCentavos,
+      cycleType: record.cycleType,
+      spentCentavos: spent,
+      fixedPaidCentavos: fixedPaid,
+    );
+  }
 
   /// Everyday spending: every expense except fixed-expense payments.
   ///
@@ -502,11 +621,20 @@ class SobraStore extends ChangeNotifier {
       .fold(0, (total, entry) => total + entry.amountCentavos);
 
   Future<void> refreshForCurrentDate() async {
-    await settleCycles();
-    final currentDate = today;
-    if (_lastObservedDate == currentDate) return;
-    _lastObservedDate = currentDate;
-    notifyListeners();
+    if (hasStorageError) return;
+    try {
+      await _write(() async {
+        await settleCycles();
+        final currentDate = today;
+        if (_lastObservedDate == currentDate) return;
+        _lastObservedDate = currentDate;
+        notifyListeners();
+      });
+    } on Object catch (error) {
+      // Lifecycle/timer callers have no save form to report from. The rollback
+      // keeps this date eligible for retry on the next resume or midnight.
+      debugPrint('Sobra: date refresh was not saved: $error');
+    }
   }
 
   /// Closes every elapsed budget cycle exactly once.
@@ -514,7 +642,7 @@ class SobraStore extends ChangeNotifier {
   /// A pending pay-schedule change splits the run in two: old cycles are
   /// settled up to its effective date, then the new schedule is applied and
   /// any later cycles are evaluated with the new boundaries.
-  Future<void> settleCycles() async {
+  Future<void> settleCycles() => _write(() async {
     final trackingStarted = _startXpTrackingIfNeeded();
     final levelBefore = xpProgress.level;
     var run = const _SettlementRun();
@@ -545,25 +673,37 @@ class SobraStore extends ChangeNotifier {
     if (run.closedCycles > 0 || scheduleChanged || trackingStarted) {
       notifyListeners();
     }
-  }
+  });
 
   bool _startXpTrackingIfNeeded() {
-    if (!hasCompletedOnboarding || xpTrackingStartedAt != null) return false;
+    if (!hasCompletedOnboarding) return false;
     // Existing installs begin with the day this schema first sees them. A
     // partial cycle can earn daily XP, but not the full-cycle reward.
-    xpTrackingStartedAt = today;
-    return true;
+    var changed = false;
+    if (xpTrackingStartedAt == null) {
+      xpTrackingStartedAt = today;
+      if (_hasBudget) budgetTrackingStartedAt = today;
+      changed = true;
+    }
+    if (_hasBudget && budgetTrackingStartedAt == null) {
+      budgetTrackingStartedAt = today;
+      changed = true;
+    }
+    return changed;
   }
 
   _SettlementRun _settleClosedCycles({required DateTime untilExclusive}) {
-    final trackingStart = xpTrackingStartedAt;
-    if (!hasCompletedOnboarding || trackingStart == null) {
+    final trackingStart = budgetTrackingStartedAt;
+    if (!_hasBudget || !hasCompletedOnboarding || trackingStart == null) {
       return const _SettlementRun();
     }
 
     var cursor =
         lastSettledCycleEnd?.add(const Duration(days: 1)) ??
         dateOnly(trackingStart);
+    if (cursor.isBefore(dateOnly(trackingStart))) {
+      cursor = dateOnly(trackingStart);
+    }
     var closedCycles = 0;
     var awardedXp = 0;
 
@@ -894,18 +1034,30 @@ class SobraStore extends ChangeNotifier {
           .where((entry) => _isSameDay(dateOnly(entry.occurredAt), today))
           .length;
 
-  /// Marks the budget tab as seen for today.
-  ///
-  /// Called when the user selects the tab, not when IndexedStack first
-  /// builds it offstage.
-  /// Every receipt photo the ledger still points at.
+  /// Every receipt photo the ledger or the pre-import recovery copy needs.
   ///
   /// The input to `ReceiptStore.sweepOrphans`; anything on disk and not in
   /// here belongs to no expense.
-  Iterable<String> get referencedReceipts =>
-      _transactions.map((entry) => entry.receiptFileName).whereType<String>();
+  Iterable<String> get referencedReceipts sync* {
+    yield* _transactions
+        .map((entry) => entry.receiptFileName)
+        .whereType<String>();
+    final previous = backupBeforeImportJson;
+    if (previous == null) return;
+    try {
+      final json = jsonDecode(previous) as Map<String, dynamic>;
+      for (final entry in json['transactions'] as List<dynamic>) {
+        final name = (entry as Map<String, dynamic>)['receiptFileName'];
+        if (name is String) yield name;
+      }
+    } on Object {
+      // An unreadable recovery copy cannot provide receipt references.
+    }
+  }
 
-  Future<void> noteBudgetReviewed() async {
+  /// Marks the budget tab as seen when the user selects it.
+  Future<void> noteBudgetReviewed() => _write(() async {
+    if (!_hasBudget) return;
     final moment = currentMoment;
     final levelBefore = xpProgress.level;
     final awarded = _awardDailyMission(DailyMissionKind.reviewBudget, moment);
@@ -917,7 +1069,7 @@ class SobraStore extends ChangeNotifier {
     );
     await _save();
     notifyListeners();
-  }
+  });
 
   Future<ExpenseEntry> addExpense({
     required int amountCentavos,
@@ -926,7 +1078,7 @@ class SobraStore extends ChangeNotifier {
     required DateTime occurredAt,
     required PaymentMethod paymentMethod,
     String? receiptFileName,
-  }) async {
+  }) => _write(() async {
     _validateMovement(amountCentavos, occurredAt);
     final entry = ExpenseEntry(
       id: _newId('expense'),
@@ -948,7 +1100,7 @@ class SobraStore extends ChangeNotifier {
     await _save();
     notifyListeners();
     return entry;
-  }
+  });
 
   Future<IncomeEntry> addIncome({
     required int amountCentavos,
@@ -957,7 +1109,7 @@ class SobraStore extends ChangeNotifier {
     required DateTime occurredAt,
     required PaymentMethod destination,
     required IncomeAllocation allocation,
-  }) async {
+  }) => _write(() async {
     _validateMovement(amountCentavos, occurredAt);
     final entry = IncomeEntry(
       id: _newId('income'),
@@ -975,9 +1127,9 @@ class SobraStore extends ChangeNotifier {
     await _save();
     notifyListeners();
     return entry;
-  }
+  });
 
-  Future<void> updateExpense(ExpenseEntry updated) async {
+  Future<void> updateExpense(ExpenseEntry updated) => _write(() async {
     _validateMovement(updated.amountCentavos, updated.occurredAt);
     final index = _transactions.indexWhere((entry) => entry.id == updated.id);
     if (index == -1) return;
@@ -1016,14 +1168,14 @@ class SobraStore extends ChangeNotifier {
     }
     await _save();
     notifyListeners();
-  }
+  });
 
   Future<void> classifyPendingCashExpense({
     required String expenseId,
     required ExpenseCategory category,
     required String note,
     String? receiptFileName,
-  }) async {
+  }) => _write(() async {
     final index = _transactions.indexWhere((entry) => entry.id == expenseId);
     if (index == -1 || !_transactions[index].isPendingCashAdjustment) return;
     final previous = _transactions[index];
@@ -1038,7 +1190,7 @@ class SobraStore extends ChangeNotifier {
     );
     await _save();
     notifyListeners();
-  }
+  });
 
   /// Removes an expense, reporting whether it was allowed to go.
   ///
@@ -1046,7 +1198,7 @@ class SobraStore extends ChangeNotifier {
   /// from the wallet, so deleting the row would hand the budget back cash the
   /// user does not have, and the count that recorded it would be left pointing
   /// at nothing. Recounting the cash is the way to correct one of these.
-  Future<bool> deleteExpense(String id) async {
+  Future<bool> deleteExpense(String id) => _write(() async {
     final index = _transactions.indexWhere((entry) => entry.id == id);
     if (index == -1) return false;
     if (_transactions[index].isLinkedToCashCount) return false;
@@ -1057,9 +1209,9 @@ class SobraStore extends ChangeNotifier {
     await _save();
     notifyListeners();
     return true;
-  }
+  });
 
-  Future<void> restoreExpense(ExpenseEntry entry) async {
+  Future<void> restoreExpense(ExpenseEntry entry) => _write(() async {
     if (_transactions.any((existing) => existing.id == entry.id)) return;
     _transactions.add(entry);
     if (_affectsCurrentCash(entry)) {
@@ -1067,7 +1219,7 @@ class SobraStore extends ChangeNotifier {
     }
     await _save();
     notifyListeners();
-  }
+  });
 
   /// Fixed expenses in the order they were added.
   List<RecurringExpense> get recurringExpenses =>
@@ -1085,7 +1237,7 @@ class SobraStore extends ChangeNotifier {
     required DateTime firstDueDate,
     bool isVariable = false,
     FixedReminder? reminder,
-  }) async {
+  }) => _write(() async {
     if (amountCentavos <= 0) {
       throw ArgumentError.value(amountCentavos, 'amountCentavos');
     }
@@ -1105,7 +1257,7 @@ class SobraStore extends ChangeNotifier {
     await _save();
     notifyListeners();
     return expense;
-  }
+  });
 
   /// Replaces a fixed expense with [updated], matched by id.
   ///
@@ -1113,30 +1265,31 @@ class SobraStore extends ChangeNotifier {
   /// schedule can leave one of them pointing at a date the new schedule does
   /// not have; it stays a fixed payment all the same, and the new date simply
   /// reads as unpaid until the user files it.
-  Future<void> updateRecurringExpense(RecurringExpense updated) async {
-    if (updated.amountCentavos <= 0) {
-      throw ArgumentError.value(updated.amountCentavos, 'amountCentavos');
-    }
-    final index = _recurringExpenses.indexWhere(
-      (entry) => entry.id == updated.id,
-    );
-    if (index == -1) return;
-    _recurringExpenses[index] = updated;
-    await _save();
-    notifyListeners();
-  }
+  Future<void> updateRecurringExpense(RecurringExpense updated) =>
+      _write(() async {
+        if (updated.amountCentavos <= 0) {
+          throw ArgumentError.value(updated.amountCentavos, 'amountCentavos');
+        }
+        final index = _recurringExpenses.indexWhere(
+          (entry) => entry.id == updated.id,
+        );
+        if (index == -1) return;
+        _recurringExpenses[index] = updated;
+        await _save();
+        notifyListeners();
+      });
 
   /// Stops tracking a fixed expense.
   ///
   /// Its past payments stay exactly as they are — still in the ledger, still
   /// out of the budget. Only the future dates and their reminders go.
-  Future<void> deleteRecurringExpense(String id) async {
+  Future<void> deleteRecurringExpense(String id) => _write(() async {
     final before = _recurringExpenses.length;
     _recurringExpenses.removeWhere((entry) => entry.id == id);
     if (_recurringExpenses.length == before) return;
     await _save();
     notifyListeners();
-  }
+  });
 
   /// Every due date from [from] to [to] across all fixed expenses, earliest
   /// first, each with its payment if one has been filed.
@@ -1176,11 +1329,11 @@ class SobraStore extends ChangeNotifier {
   bool get isFixedHomeCardSnoozed => _fixedHomeSnoozedDay == todayKey;
 
   /// Hides Inicio's fixed-expense card until tomorrow.
-  Future<void> snoozeFixedHomeCard() async {
+  Future<void> snoozeFixedHomeCard() => _write(() async {
     _fixedHomeSnoozedDay = todayKey;
     await _save();
     notifyListeners();
-  }
+  });
 
   /// Unpaid occurrences Inicio should ask about: due today or a little late.
   List<FixedOccurrence> get fixedDueOnHome {
@@ -1233,7 +1386,7 @@ class SobraStore extends ChangeNotifier {
     required int amountCentavos,
     PaymentMethod? paymentMethod,
     DateTime? paidAt,
-  }) async {
+  }) => _write(() async {
     final expense = recurringExpenseById(recurringId);
     if (expense == null) {
       throw ArgumentError.value(recurringId, 'recurringId');
@@ -1270,7 +1423,7 @@ class SobraStore extends ChangeNotifier {
     await _save();
     notifyListeners();
     return entry;
-  }
+  });
 
   Map<String, ExpenseEntry> _fixedPaymentsByOccurrence() => {
     for (final entry in _transactions)
@@ -1306,7 +1459,7 @@ class SobraStore extends ChangeNotifier {
   /// wallet and the count that recorded it hides its own row in favour of
   /// this one, so deleting it would erase the count from the ledger while
   /// the counted cash figure kept the money. Recounting is the way out.
-  Future<bool> deleteIncome(String id) async {
+  Future<bool> deleteIncome(String id) => _write(() async {
     final index = _incomes.indexWhere((entry) => entry.id == id);
     if (index == -1) return false;
     if (_incomes[index].isLinkedToCashCount) return false;
@@ -1315,20 +1468,20 @@ class SobraStore extends ChangeNotifier {
     await _save();
     notifyListeners();
     return true;
-  }
+  });
 
-  Future<void> restoreIncome(IncomeEntry entry) async {
+  Future<void> restoreIncome(IncomeEntry entry) => _write(() async {
     if (_incomes.any((existing) => existing.id == entry.id)) return;
     _incomes.add(entry);
     _applyIncome(entry, 1);
     await _save();
     notifyListeners();
-  }
+  });
 
   Future<void> setTotalBudget(
     int centavos, {
     bool adjustCategoryLimits = false,
-  }) async {
+  }) => _write(() async {
     if (centavos <= 0) throw ArgumentError.value(centavos, 'centavos');
     // The budget screen edits the total the user can see. Income allocated to
     // this cycle is already included in that figure, so keeping it in the base
@@ -1338,6 +1491,9 @@ class SobraStore extends ChangeNotifier {
       throw const SobraStoreException(StoreFailure.budgetBelowCycleIncome);
     }
     _baseBudgetCentavos = nextBaseBudget;
+    if (!_hasBudget) {
+      budgetTrackingStartedAt = today;
+    }
     _hasBudget = true;
     if (adjustCategoryLimits) {
       // Scale what is there rather than reinstating the stock split: somebody
@@ -1348,7 +1504,7 @@ class SobraStore extends ChangeNotifier {
     }
     await _save();
     notifyListeners();
-  }
+  });
 
   /// The current limits restretched to add up to [budget], keeping each
   /// category's share of the plan.
@@ -1381,13 +1537,14 @@ class SobraStore extends ChangeNotifier {
     return scaled;
   }
 
-  Future<void> setCategoryLimit(ExpenseCategory category, int centavos) async {
-    if (centavos < 0) throw ArgumentError.value(centavos, 'centavos');
-    categoryLimits = {...categoryLimits, category: centavos};
-    categoryLimitsCustomized = true;
-    await _save();
-    notifyListeners();
-  }
+  Future<void> setCategoryLimit(ExpenseCategory category, int centavos) =>
+      _write(() async {
+        if (centavos < 0) throw ArgumentError.value(centavos, 'centavos');
+        categoryLimits = {...categoryLimits, category: centavos};
+        categoryLimitsCustomized = true;
+        await _save();
+        notifyListeners();
+      });
 
   Future<CashReconciliationEntry?> reconcileCashCount({
     required int actualCentavos,
@@ -1395,7 +1552,7 @@ class SobraStore extends ChangeNotifier {
     ExpenseCategory? category,
     String note = '',
     IncomeAllocation incomeAllocation = IncomeAllocation.savings,
-  }) async {
+  }) => _write(() async {
     if (actualCentavos < 0) {
       throw ArgumentError.value(actualCentavos, 'actualCentavos');
     }
@@ -1494,9 +1651,9 @@ class SobraStore extends ChangeNotifier {
     await _save();
     notifyListeners();
     return reconciliation;
-  }
+  });
 
-  Future<void> queuePayScheduleChange(PaySchedule schedule) async {
+  Future<void> queuePayScheduleChange(PaySchedule schedule) => _write(() async {
     final effectiveAt = cycleEnd.add(const Duration(days: 1));
     pendingPaySchedule = schedule.type == PayCycleType.irregular
         ? schedule.copyWith(irregularCycleStart: effectiveAt)
@@ -1504,24 +1661,24 @@ class SobraStore extends ChangeNotifier {
     pendingPayScheduleEffectiveAt = effectiveAt;
     await _save();
     notifyListeners();
-  }
+  });
 
-  Future<void> setReducedMotion(bool value) async {
+  Future<void> setReducedMotion(bool value) => _write(() async {
     reducedMotion = value;
     await _save();
     notifyListeners();
-  }
+  });
 
   /// Moves the day a cash-count week turns over.
   ///
   /// Weeks already awarded keep their XP: the award is keyed on the week it
   /// fell in, and changing the boundary cannot reach back and un-earn one.
-  Future<void> setCashCountWeekday(int weekday) async {
+  Future<void> setCashCountWeekday(int weekday) => _write(() async {
     if (cashCountWeekday == weekday) return;
     cashCountWeekday = weekday;
     await _save();
     notifyListeners();
-  }
+  });
 
   /// How many days [day] sits past the start of its cash-count week.
   @visibleForTesting
@@ -1533,23 +1690,254 @@ class SobraStore extends ChangeNotifier {
   /// Nothing is converted: 20000 stays 20000 minor units and only the code
   /// beside it changes. That is the honest behaviour for a ledger of what the
   /// user actually counted, and the screen says so before calling this.
-  Future<void> setCurrency(Currency value) async {
+  Future<void> setCurrency(Currency value) => _write(() async {
     if (currency == value) return;
     currency = value;
     await _save();
     notifyListeners();
-  }
+  });
 
   /// Picks the language, or passes null to go back to following the phone.
-  Future<void> setLanguageCode(String? value) async {
+  Future<void> setLanguageCode(String? value) => _write(() async {
     if (languageCode == value) return;
     languageCode = value;
     await _save();
     notifyListeners();
-  }
+  });
 
   String exportJson() => const JsonEncoder.withIndent('  ').convert(_toJson());
   String? get exportCorruptedJson => corruptedStorage;
+  String? get backupBeforeImportJson =>
+      _preferences.getString(_beforeImportKey);
+
+  BackupSummary inspectBackup(String raw) {
+    final candidate = _readBackup(raw);
+    return BackupSummary(
+      expenses: candidate._transactions.length,
+      incomes: candidate._incomes.length,
+      fixedExpenses: candidate._recurringExpenses.length,
+      currency: candidate.currency,
+      budgetCentavos: candidate.hasBudget ? candidate.baseBudgetCentavos : null,
+    );
+  }
+
+  /// Parses into a separate store so even a partly invalid file changes nothing.
+  SobraStore _readBackup(String raw) {
+    if (raw.length > 10 * 1024 * 1024) {
+      throw const FormatException('Backup is too large');
+    }
+    final Object? decoded;
+    try {
+      decoded = jsonDecode(raw);
+    } on Object {
+      throw const FormatException('Invalid backup');
+    }
+    if (decoded is! Map<String, dynamic>) {
+      throw const FormatException('Invalid backup');
+    }
+    final version = decoded['schemaVersion'];
+    if (version != null && (version is! int || version < 1)) {
+      throw const FormatException('Invalid backup version');
+    }
+    if (version is int && version > 10) {
+      throw UnsupportedError('Backup requires a newer app');
+    }
+    try {
+      _validateBackupJson(decoded);
+      final candidate = SobraStore._(_preferences, _now, rewardedAdsPerDay);
+      candidate._restore(decoded);
+      candidate._validateBackup();
+      return candidate;
+    } on Object {
+      throw const FormatException('Invalid backup');
+    }
+  }
+
+  void _validateBackupJson(Object? value, [String key = '']) {
+    // Exported numeric fields are integers. Reject fractions and values that
+    // would lose precision rather than silently truncating them in fromJson.
+    if (value is num && (value is! int || value.abs() > 9007199254740991)) {
+      throw const FormatException('Invalid backup number');
+    }
+    const dateKeys = {
+      'occurredAt',
+      'occurrenceDate',
+      'anchorDate',
+      'start',
+      'end',
+      'lastCashCountAt',
+      'firstStartedAt',
+      'xpTrackingStartedAt',
+      'budgetTrackingStartedAt',
+      'lastSettledCycleEnd',
+      'pendingPayScheduleEffectiveAt',
+      'payScheduleEffectiveFloor',
+      'irregularCycleStart',
+      'biweeklyAnchor',
+      'nativeAdInstallDay',
+      'nativeAdDay',
+      'rewardedAdDay',
+      'fixedHomeSnoozedDay',
+      'recordedDays',
+    };
+    if (value is String && dateKeys.contains(key)) {
+      final parts = RegExp(
+        r'^(\d{4})-(\d{2})-(\d{2})(?:$|T)',
+      ).firstMatch(value);
+      if (parts == null || DateTime.tryParse(value) == null) {
+        throw const FormatException('Invalid backup date');
+      }
+      final year = int.parse(parts[1]!);
+      final month = int.parse(parts[2]!);
+      final day = int.parse(parts[3]!);
+      final date = DateTime.utc(year, month, day);
+      if (year < 1900 ||
+          date.year != year ||
+          date.month != month ||
+          date.day != day) {
+        throw const FormatException('Invalid backup date');
+      }
+    }
+    if (value is Map<String, dynamic>) {
+      for (final entry in value.entries) {
+        _validateBackupJson(entry.value, entry.key);
+      }
+    } else if (value is List) {
+      for (final item in value) {
+        _validateBackupJson(item, key);
+      }
+    }
+  }
+
+  void _validateBackup() {
+    void require(bool valid) {
+      if (!valid) throw const FormatException('Invalid backup value');
+    }
+
+    void schedule(PaySchedule value) {
+      require(value.firstPayDay >= 0 && value.firstPayDay <= 31);
+      require(value.secondPayDay >= 0 && value.secondPayDay <= 31);
+      require(value.monthlyPayDay >= 0 && value.monthlyPayDay <= 31);
+      require(value.weeklyPayDay >= 1 && value.weeklyPayDay <= 7);
+      require(
+        value.planningHorizonDays >= 1 && value.planningHorizonDays <= 365,
+      );
+      require(
+        value.type != PayCycleType.biweekly || value.biweeklyAnchor != null,
+      );
+      require(
+        value.type != PayCycleType.irregular ||
+            value.irregularCycleStart != null,
+      );
+    }
+
+    require(_baseBudgetCentavos >= 0 && countedCashCentavos >= 0);
+    require(cashCountWeekday >= 1 && cashCountWeekday <= 7);
+    require(successfulCycles >= 0);
+    require(categoryLimits.values.every((amount) => amount >= 0));
+    require(_rewardedAdProgress.values.every((count) => count >= 0));
+    require(_rewardedAdsWatchedOnDay >= 0 && _nativeAdImpressionsOnDay >= 0);
+    schedule(paySchedule);
+    if (pendingPaySchedule != null) schedule(pendingPaySchedule!);
+    require(
+      (pendingPaySchedule == null) == (pendingPayScheduleEffectiveAt == null),
+    );
+    final ids = <String>{};
+    void id(String value) => require(value.isNotEmpty && ids.add(value));
+    for (final entry in _transactions) {
+      id(entry.id);
+      require(entry.amountCentavos > 0);
+      require((entry.recurringId == null) == (entry.occurrenceDate == null));
+      final photo = entry.receiptFileName;
+      require(
+        photo == null ||
+            (photo.isNotEmpty &&
+                photo != '.' &&
+                photo != '..' &&
+                !photo.contains('/') &&
+                !photo.contains('\\')),
+      );
+    }
+    for (final entry in _incomes) {
+      id(entry.id);
+      require(entry.amountCentavos > 0);
+    }
+    for (final entry in _cashReconciliations) {
+      id(entry.id);
+      require(entry.actualCentavos >= 0);
+    }
+    for (final entry in _xpEvents) {
+      id(entry.id);
+      require(entry.xp >= 0);
+    }
+    for (final bill in _recurringExpenses) {
+      id(bill.id);
+      require(bill.name.trim().isNotEmpty && bill.amountCentavos > 0);
+      require(bill.interval >= 1 && bill.interval <= 120);
+    }
+    final cycleStarts = <DateTime>{};
+    for (final record in _cycleRecords) {
+      require(!record.end.isBefore(record.start));
+      require(cycleStarts.add(record.start));
+      require(
+        record.budgetCentavos >= 0 &&
+            record.spentCentavos >= 0 &&
+            record.fixedPaidCentavos >= 0,
+      );
+    }
+    require(
+      starterCharacterId == null ||
+          CatalogPreviewData.isStarter(starterCharacterId!),
+    );
+  }
+
+  /// Imports only after validation and durable storage. A failed write keeps
+  /// the current in-memory ledger, and the previous disk state becomes backup.
+  /// Paid entitlements come from this install's store, never from pasted JSON.
+  Future<void> importBackup(String raw) => _write(() async {
+    final candidate = _readBackup(raw);
+    final portableIds = {
+      for (final entry in CatalogPreviewData.all)
+        if (entry.unlockMethod != CatalogUnlockMethod.purchase &&
+            entry.unlockMethod != CatalogUnlockMethod.bundle)
+          entry.id,
+    };
+    candidate._ownedCatalogIds
+      ..retainAll(portableIds)
+      ..addAll(_ownedCatalogIds);
+    final selected = CatalogPreviewData.characters
+        .where((entry) => entry.id == candidate.characterId)
+        .firstOrNull;
+    if (selected != null && !candidate.ownsCatalogEntry(selected)) {
+      candidate.characterId = candidate._fallbackCharacterId;
+    }
+    for (final placements in candidate._roomPlacementsByRoom.values) {
+      placements.removeWhere((_, id) {
+        final entry = CatalogPreviewData.all
+            .where((item) => item.id == id)
+            .firstOrNull;
+        return entry != null && !candidate.ownsCatalogEntry(entry);
+      });
+    }
+    candidate._nativeAdInstallDay ??= _nativeAdInstallDay ?? todayKey;
+    candidate.firstStartedAt ??= firstStartedAt ?? today;
+    candidate._updateEquippedItem(
+      candidate.roomDecorationsFor(candidate.equippedRoomId),
+    );
+    // Unlike the rotating save backup, this copy survives later edits.
+    final beforeImport = _persistedJson ?? exportJson();
+    if (!await _preferences.setString(_beforeImportKey, beforeImport)) {
+      throw const SobraStoreException(StoreFailure.backupNotSaved);
+    }
+    await _archiveCorruptedOriginal();
+    _copyFrom(candidate);
+    hasStorageError = false;
+    corruptedStorage = null;
+    await _save();
+    _pendingXpNotice = null;
+    _lastObservedDate = today;
+    notifyListeners();
+  }, allowRecovery: true);
 
   /// Writes the answers onboarding collected.
   ///
@@ -1561,9 +1949,10 @@ class SobraStore extends ChangeNotifier {
     required int? budgetCentavos,
     required PaySchedule schedule,
     int? cashCentavos,
-  }) async {
+  }) => _write(() async {
     _baseBudgetCentavos = budgetCentavos ?? 600000;
     _hasBudget = budgetCentavos != null;
+    budgetTrackingStartedAt = _hasBudget ? today : null;
     paySchedule =
         schedule.type == PayCycleType.irregular &&
             schedule.irregularCycleStart == null
@@ -1579,9 +1968,9 @@ class SobraStore extends ChangeNotifier {
     categoryLimitsCustomized = false;
     await _save();
     notifyListeners();
-  }
+  });
 
-  Future<void> chooseCharacter(String id) async {
+  Future<void> chooseCharacter(String id) => _write(() async {
     if (id.isEmpty) return;
     final entry = CatalogPreviewData.characters
         .where((candidate) => candidate.id == id)
@@ -1597,7 +1986,7 @@ class SobraStore extends ChangeNotifier {
     characterId = id;
     await _save();
     notifyListeners();
-  }
+  });
 
   /// Whether [entry] is available to the user right now.
   ///
@@ -1631,19 +2020,20 @@ class SobraStore extends ChangeNotifier {
 
   bool get debugPaidCharactersUnlocked => _debugPaidCharacters;
 
-  Future<void> setDebugPaidCharactersUnlocked(bool unlocked) async {
-    if (!kDebugMode || unlocked == _debugPaidCharacters) return;
-    _debugPaidCharacters = unlocked;
-    await _preferences.setBool(_debugPaidCharactersKey, unlocked);
-    final selected = CatalogPreviewData.characters
-        .where((entry) => entry.id == characterId)
-        .firstOrNull;
-    if (selected != null && !ownsCatalogEntry(selected)) {
-      characterId = _fallbackCharacterId;
-      await _save();
-    }
-    notifyListeners();
-  }
+  Future<void> setDebugPaidCharactersUnlocked(bool unlocked) =>
+      _write(() async {
+        if (!kDebugMode || unlocked == _debugPaidCharacters) return;
+        _debugPaidCharacters = unlocked;
+        await _preferences.setBool(_debugPaidCharactersKey, unlocked);
+        final selected = CatalogPreviewData.characters
+            .where((entry) => entry.id == characterId)
+            .firstOrNull;
+        if (selected != null && !ownsCatalogEntry(selected)) {
+          characterId = _fallbackCharacterId;
+          await _save();
+        }
+        notifyListeners();
+      });
 
   /// Whether general (native) ads should stay off.
   ///
@@ -1772,15 +2162,17 @@ class SobraStore extends ChangeNotifier {
   ///
   /// The day and cap are checked again here so two callbacks racing one
   /// another cannot both spend the last slot.
-  Future<bool> recordNativeAdImpression({int maxPerDay = 2}) async {
-    if (maxPerDay <= 0 || nativeAdImpressionsToday >= maxPerDay) return false;
-    final count = nativeAdImpressionsToday;
-    _nativeAdDay = todayKey;
-    _nativeAdImpressionsOnDay = count + 1;
-    await _save();
-    notifyListeners();
-    return true;
-  }
+  Future<bool> recordNativeAdImpression({int maxPerDay = 2}) => _write(
+    () async {
+      if (maxPerDay <= 0 || nativeAdImpressionsToday >= maxPerDay) return false;
+      final count = nativeAdImpressionsToday;
+      _nativeAdDay = todayKey;
+      _nativeAdImpressionsOnDay = count + 1;
+      await _save();
+      notifyListeners();
+      return true;
+    },
+  );
 
   /// Whether a rewarded view would count toward [entry] right now.
   ///
@@ -1825,24 +2217,25 @@ class SobraStore extends ChangeNotifier {
   /// Takes what the room should show, the same shape [roomDecorationsFor]
   /// returns. A default slot left out of it was emptied on purpose, so it is
   /// written down as cleared rather than let the default come back.
-  Future<void> saveRoomDecorations(Map<RoomSlot, String> placements) async {
-    final room = RoomThemes.byId(equippedRoomId);
-    _validateRoomDecorations(room, placements);
-    _roomPlacementsByRoom[equippedRoomId] = _storedRoomDecorations(
-      room,
-      placements,
-    );
-    _updateEquippedItem(placements);
-    await _save();
-    notifyListeners();
-  }
+  Future<void> saveRoomDecorations(Map<RoomSlot, String> placements) =>
+      _write(() async {
+        final room = RoomThemes.byId(equippedRoomId);
+        _validateRoomDecorations(room, placements);
+        _roomPlacementsByRoom[equippedRoomId] = _storedRoomDecorations(
+          room,
+          placements,
+        );
+        _updateEquippedItem(placements);
+        await _save();
+        notifyListeners();
+      });
 
   /// Commits a staged room switch and any rooms edited in the same session.
   /// Each room keeps its own arrangement when the user switches themes.
   Future<void> saveRoomSelection({
     required String roomId,
     required Map<String, Map<RoomSlot, String>> placementsByRoom,
-  }) async {
+  }) => _write(() async {
     if (!RoomThemes.contains(roomId)) {
       throw ArgumentError.value(roomId, 'roomId', 'unknown room');
     }
@@ -1866,7 +2259,7 @@ class SobraStore extends ChangeNotifier {
     _updateEquippedItem(roomDecorationsFor(roomId));
     await _save();
     notifyListeners();
-  }
+  });
 
   Map<RoomSlot, String> _storedRoomDecorations(
     RoomTheme room,
@@ -1918,7 +2311,7 @@ class SobraStore extends ChangeNotifier {
 
   /// Delivers both launch decorations in one write. Someone who started in
   /// time still receives them when first opening a later update.
-  Future<bool> maybeGrantLaunchGift() async {
+  Future<bool> maybeGrantLaunchGift() => _write(() async {
     final started = firstStartedAt;
     if (!hasCompletedOnboarding ||
         started == null ||
@@ -1939,9 +2332,9 @@ class SobraStore extends ChangeNotifier {
     }
     notifyListeners();
     return true;
-  }
+  });
 
-  Future<bool> takeLaunchGiftNotice() async {
+  Future<bool> takeLaunchGiftNotice() => _write(() async {
     if (!launchGiftNoticePending) return false;
     launchGiftNoticePending = false;
     try {
@@ -1952,7 +2345,7 @@ class SobraStore extends ChangeNotifier {
     }
     notifyListeners();
     return true;
-  }
+  });
 
   /// Records that every id in [ids] was acquired, in one write.
   ///
@@ -1965,7 +2358,7 @@ class SobraStore extends ChangeNotifier {
   /// overlaps something the user bought separately still delivers the rest.
   /// Nothing is refunded for the overlap; the purchase sheet says so before
   /// the user pays.
-  Future<void> grantCatalogEntries(Set<String> ids) async {
+  Future<void> grantCatalogEntries(Set<String> ids) => _write(() async {
     final added = ids.where((id) => id.isNotEmpty).toSet()
       ..removeAll(_ownedCatalogIds);
     if (added.isEmpty) return;
@@ -1973,7 +2366,7 @@ class SobraStore extends ChangeNotifier {
     _rewardedAdProgress.removeWhere((id, _) => added.contains(id));
     await _save();
     notifyListeners();
-  }
+  });
 
   /// Takes back every id in [ids] the user holds, in one write.
   ///
@@ -1985,7 +2378,7 @@ class SobraStore extends ChangeNotifier {
   ///
   /// Checked against [ownsCatalogEntry] afterwards rather than against [ids],
   /// so an entry that is still owned some other way stays where it was.
-  Future<void> revokeCatalogEntries(Set<String> ids) async {
+  Future<void> revokeCatalogEntries(Set<String> ids) => _write(() async {
     final removed = ids.intersection(_ownedCatalogIds);
     if (removed.isEmpty) return;
     _ownedCatalogIds.removeAll(removed);
@@ -2005,7 +2398,7 @@ class SobraStore extends ChangeNotifier {
     }
     await _save();
     notifyListeners();
-  }
+  });
 
   /// Counts one watched ad toward [entry], granting it once the run completes.
   ///
@@ -2019,7 +2412,7 @@ class SobraStore extends ChangeNotifier {
   /// The progress, the daily count and the per-entry date are one write. A
   /// view that advanced the run but left the daily count behind would hand
   /// back a free ad on every restart.
-  Future<bool> recordRewardedAdView(CatalogEntry entry) async {
+  Future<bool> recordRewardedAdView(CatalogEntry entry) => _write(() async {
     final target = entry.rewardedAdTarget;
     if (target == null) {
       throw ArgumentError.value(entry.id, 'entry', 'not a rewarded-ad entry');
@@ -2046,7 +2439,7 @@ class SobraStore extends ChangeNotifier {
     await _save();
     notifyListeners();
     return true;
-  }
+  });
 
   /// Shows [entry] in the room.
   ///
@@ -2064,7 +2457,7 @@ class SobraStore extends ChangeNotifier {
   /// [chooseCharacter]: the chosen character is drawn on the register screen
   /// and in every celebration, so an unowned one here would give away what
   /// the catalog is still selling.
-  Future<void> equipCharacter(CatalogEntry entry) async {
+  Future<void> equipCharacter(CatalogEntry entry) => _write(() async {
     if (entry.kind != CatalogKind.character) {
       throw ArgumentError.value(entry.id, 'entry', 'not a character');
     }
@@ -2072,17 +2465,17 @@ class SobraStore extends ChangeNotifier {
       throw ArgumentError.value(entry.id, 'entry', 'not owned');
     }
     await chooseCharacter(entry.id);
-  }
+  });
 
   /// Records that the welcome screen has been passed.
-  Future<void> answerLoginOffer() async {
+  Future<void> answerLoginOffer() => _write(() async {
     if (hasAnsweredLoginOffer) return;
     hasAnsweredLoginOffer = true;
     await _save();
     notifyListeners();
-  }
+  });
 
-  Future<void> completeOnboarding() async {
+  Future<void> completeOnboarding() => _write(() async {
     hasCompletedOnboarding = true;
     // Onboarding sits behind the welcome, so reaching the end of it is proof
     // the welcome was passed. Recording that here keeps the two from ever
@@ -2090,6 +2483,7 @@ class SobraStore extends ChangeNotifier {
     // back to the doorstep.
     hasAnsweredLoginOffer = true;
     xpTrackingStartedAt ??= today;
+    if (_hasBudget) budgetTrackingStartedAt ??= today;
     firstStartedAt ??= today;
     final starter =
         starterCharacterId ??
@@ -2102,7 +2496,7 @@ class SobraStore extends ChangeNotifier {
     await _save();
     notifyListeners();
     await maybeGrantLaunchGift();
-  }
+  });
 
   /// The starter still waiting at the door, or null when there is none.
   ///
@@ -2148,7 +2542,7 @@ class SobraStore extends ChangeNotifier {
 
   /// Clears the arrival once it has been shown, answering which starter it
   /// was.
-  Future<String?> takeStarterArrival() async {
+  Future<String?> takeStarterArrival() => _write(() async {
     final arrived = starterArrivalId;
     if (arrived == null) return null;
     starterArrivalId = null;
@@ -2160,7 +2554,7 @@ class SobraStore extends ChangeNotifier {
     }
     notifyListeners();
     return arrived;
-  }
+  });
 
   /// Where the shown character goes back to when it stops being owned.
   String get _fallbackCharacterId =>
@@ -2171,43 +2565,55 @@ class SobraStore extends ChangeNotifier {
     return raw != null && _isPlausibleState(raw);
   }
 
-  Future<bool> retryRestore() async {
+  Future<bool> retryRestore() => _write(() async {
+    await _preferences.reload();
     final raw = _preferences.getString(_storageKey);
-    if (raw == null || !_tryRestore(raw)) return false;
+    if (raw == null) return false;
+    final candidate = SobraStore._(_preferences, _now, rewardedAdsPerDay);
+    if (!candidate._tryRestore(raw)) return false;
+    _persistedJson = raw;
+    await _archiveCorruptedOriginal();
+    _copyFrom(candidate);
     hasStorageError = false;
     corruptedStorage = null;
+    await _ensureFirstStartedAt();
     await _ensureNativeAdInstallDay();
     await settleCycles();
     notifyListeners();
     return true;
-  }
+  }, allowRecovery: true);
 
-  Future<bool> restoreBackup() async {
+  Future<bool> restoreBackup() => _write(() async {
     final raw = _preferences.getString(_backupKey);
-    if (raw == null || !_tryRestore(raw)) return false;
+    if (raw == null) return false;
+    final candidate = SobraStore._(_preferences, _now, rewardedAdsPerDay);
+    if (!candidate._tryRestore(raw)) return false;
+    await _archiveCorruptedOriginal();
+    _copyFrom(candidate);
     hasStorageError = false;
     corruptedStorage = null;
-    final saved = await _preferences.setString(_storageKey, raw);
-    if (!saved) throw const SobraStoreException(StoreFailure.restoreFailed);
+    await _save();
+    await _ensureFirstStartedAt();
     await _ensureNativeAdInstallDay();
     await settleCycles();
     notifyListeners();
     return true;
-  }
+  }, allowRecovery: true);
 
-  Future<void> startFreshAfterCorruption() async {
-    final raw = corruptedStorage;
-    if (raw != null) {
-      final archived = await _preferences.setString(_corruptArchiveKey, raw);
-      if (!archived) {
-        throw const SobraStoreException(StoreFailure.originalNotKept);
-      }
-    }
+  Future<void> startFreshAfterCorruption() => _write(() async {
+    await _archiveCorruptedOriginal();
     _initializeNewUser();
     hasStorageError = false;
     corruptedStorage = null;
     await _save();
     notifyListeners();
+  }, allowRecovery: true);
+
+  Future<void> _archiveCorruptedOriginal() async {
+    final raw = corruptedStorage;
+    if (raw != null && !await _preferences.setString(_corruptArchiveKey, raw)) {
+      throw const SobraStoreException(StoreFailure.originalNotKept);
+    }
   }
 
   void _validateMovement(int amountCentavos, DateTime occurredAt) {
@@ -2292,6 +2698,7 @@ class SobraStore extends ChangeNotifier {
     pendingPayScheduleEffectiveAt = null;
     payScheduleEffectiveFloor = null;
     xpTrackingStartedAt = null;
+    budgetTrackingStartedAt = null;
     firstStartedAt = today;
     launchGiftNoticePending = false;
     starterCharacterId = null;
@@ -2408,6 +2815,7 @@ class SobraStore extends ChangeNotifier {
     pendingPayScheduleEffectiveAt = other.pendingPayScheduleEffectiveAt;
     payScheduleEffectiveFloor = other.payScheduleEffectiveFloor;
     xpTrackingStartedAt = other.xpTrackingStartedAt;
+    budgetTrackingStartedAt = other.budgetTrackingStartedAt;
     firstStartedAt = other.firstStartedAt;
     launchGiftNoticePending = other.launchGiftNoticePending;
     starterCharacterId = other.starterCharacterId;
@@ -2585,6 +2993,12 @@ class SobraStore extends ChangeNotifier {
     xpTrackingStartedAt = trackingStarted == null
         ? null
         : DateTime.parse(trackingStarted);
+    final budgetStarted = json['budgetTrackingStartedAt'] as String?;
+    budgetTrackingStartedAt = !_hasBudget
+        ? null
+        : budgetStarted == null
+        ? xpTrackingStartedAt
+        : DateTime.parse(budgetStarted);
     final firstStarted = json['firstStartedAt'] as String?;
     firstStartedAt = firstStarted == null ? null : DateTime.parse(firstStarted);
     launchGiftNoticePending = json['launchGiftNoticePending'] as bool? ?? false;
@@ -2623,14 +3037,16 @@ class SobraStore extends ChangeNotifier {
   }
 
   Map<String, Object?> _toJson() => {
-    'schemaVersion': 9,
+    'schemaVersion': 10,
     'transactions': _transactions.map((entry) => entry.toJson()).toList(),
     'incomes': _incomes.map((entry) => entry.toJson()).toList(),
     'cashReconciliations': _cashReconciliations
         .map((entry) => entry.toJson())
         .toList(),
     'xpEvents': _xpEvents.map((entry) => entry.toJson()).toList(),
-    'cycleRecords': _cycleRecords.map((entry) => entry.toJson()).toList(),
+    'cycleRecords': _cycleRecords
+        .map((entry) => _recordWithCurrentSpending(entry).toJson())
+        .toList(),
     'recurringExpenses': _recurringExpenses
         .map((entry) => entry.toJson())
         .toList(),
@@ -2677,6 +3093,7 @@ class SobraStore extends ChangeNotifier {
         ?.toIso8601String(),
     'payScheduleEffectiveFloor': payScheduleEffectiveFloor?.toIso8601String(),
     'xpTrackingStartedAt': xpTrackingStartedAt?.toIso8601String(),
+    'budgetTrackingStartedAt': budgetTrackingStartedAt?.toIso8601String(),
     'firstStartedAt': firstStartedAt?.toIso8601String(),
     'launchGiftNoticePending': launchGiftNoticePending,
     'starterCharacterId': starterCharacterId,
@@ -2689,8 +3106,20 @@ class SobraStore extends ChangeNotifier {
   };
 
   Future<void> _save() async {
+    final mutation = Zone.current[_writeZoneKey];
+    if (mutation is _StoreMutation && mutation.active) {
+      mutation.dirty = true;
+      return;
+    }
+    await _persist();
+  }
+
+  Future<void> _persist() async {
+    if (hasStorageError) {
+      throw const SobraStoreException(StoreFailure.recoveryRequired);
+    }
     final next = jsonEncode(_toJson());
-    final current = _preferences.getString(_storageKey);
+    final current = _persistedJson;
     if (current != null && current != next && _isPlausibleState(current)) {
       final backupSaved = await _preferences.setString(_backupKey, current);
       if (!backupSaved) {
@@ -2699,6 +3128,7 @@ class SobraStore extends ChangeNotifier {
     }
     final saved = await _preferences.setString(_storageKey, next);
     if (!saved) throw const SobraStoreException(StoreFailure.saveFailed);
+    _persistedJson = next;
   }
 
   bool _isPlausibleState(String raw) {
@@ -2707,7 +3137,8 @@ class SobraStore extends ChangeNotifier {
       if (json is! Map<String, dynamic>) return false;
       return json['transactions'] is List &&
           (json['baseBudgetCentavos'] is num ||
-              json['totalBudgetCentavos'] is num);
+              json['totalBudgetCentavos'] is num) &&
+          SobraStore._(_preferences, _now, rewardedAdsPerDay)._tryRestore(raw);
     } on Object {
       return false;
     }
@@ -2748,6 +3179,12 @@ class SobraStore extends ChangeNotifier {
     ExpenseCategory.pets: (budget * .04).round(),
     ExpenseCategory.other: (budget * .03).round(),
   };
+}
+
+class _StoreMutation {
+  bool active = true;
+  bool dirty = false;
+  bool notify = false;
 }
 
 class _SettlementRun {

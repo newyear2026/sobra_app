@@ -267,6 +267,7 @@ String describeStoreFailure(AppLocalizations l10n, Object error) =>
         StoreFailure.budgetBelowCycleIncome =>
           l10n.storeFailureBudgetBelowCycleIncome,
         StoreFailure.futureMovement => l10n.storeFailureFutureMovement,
+        StoreFailure.recoveryRequired => l10n.recoveryOriginalKept,
         StoreFailure.restoreFailed => l10n.storeFailureRestoreFailed,
         StoreFailure.originalNotKept => l10n.storeFailureOriginalNotKept,
         StoreFailure.backupNotSaved => l10n.storeFailureBackupNotSaved,

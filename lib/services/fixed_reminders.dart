@@ -190,7 +190,7 @@ abstract final class SobraFixedReminders {
   static Future<void> _sync() async {
     final store = _store;
     final l10n = _l10n;
-    if (store == null || l10n == null) return;
+    if (store == null || l10n == null || store.hasStorageError) return;
     final plan = planFixedReminders(store: store, l10n: l10n);
     if (listEquals(plan, _pushed)) return;
     _pushed = plan;

@@ -1100,5 +1100,34 @@
   "fixedReminderTitleInDays": "{name} vence en {days} días",
   "@fixedReminderTitleInDays": {"placeholders": {"name": {"type": "String"}, "days": {"type": "int"}}},
   "fixedReminderBody": "{amount} · {method}. Cuando pagues, anótalo en Sobrita.",
-  "@fixedReminderBody": {"description": "Notification body. The payment is never recorded automatically.", "placeholders": {"amount": {"type": "String"}, "method": {"type": "String"}}}
+  "@fixedReminderBody": {"description": "Notification body. The payment is never recorded automatically.", "placeholders": {"amount": {"type": "String"}, "method": {"type": "String"}}},
+  "backupImportTitle": "Importar respaldo",
+  "backupImportHint": "Pega aquí el respaldo JSON que copiaste desde Sobrita.",
+  "backupPaste": "Pegar respaldo",
+  "backupPreview": "Revisar respaldo",
+  "backupReplaceWarning": "Este respaldo reemplazará tus registros y ajustes actuales. Guardaremos una copia de los datos actuales antes de continuar.",
+  "backupSummary": "{expenses} gastos · {incomes} ingresos · {fixed} gastos fijos",
+  "backupRestore": "Restaurar este respaldo",
+  "backupImportSuccess": "Respaldo restaurado.",
+  "backupInvalid": "No es un respaldo válido de Sobrita. Revisa que hayas copiado todo el texto.",
+  "backupNewer": "Este respaldo necesita una versión más reciente de Sobrita. Actualiza la app primero.",
+  "backupPurchaseNote": "Las compras se recuperan con Restaurar compras usando la misma cuenta de la tienda.",
+  "shopRetry": "Volver a cargar precios",
+  "shopLoading": "Cargando precios…",
+  "shopRefreshed": "Precios actualizados.",
+  "shopRetryFailed": "No pudimos cargar los precios. Revisa tu conexión y vuelve a intentarlo.",
+  "@backupSummary": {
+    "placeholders": {
+      "expenses": {
+        "type": "int"
+      },
+      "incomes": {
+        "type": "int"
+      },
+      "fixed": {
+        "type": "int"
+      }
+    }
+  },
+  "backupPrevious": "Revisar datos anteriores a la importación"
 }

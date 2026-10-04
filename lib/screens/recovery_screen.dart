@@ -6,6 +6,7 @@ import '../l10n/labels.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/pixel_ui.dart';
+import 'backup_import_screen.dart';
 
 class RecoveryScreen extends StatefulWidget {
   const RecoveryScreen({super.key});
@@ -147,6 +148,19 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
                       ? null
                       : () => _run(store.restoreBackup),
                   color: AppColors.blue,
+                ),
+                const SizedBox(height: 10),
+                PixelButton(
+                  label: l10n.backupImportTitle,
+                  icon: Icons.file_download_outlined,
+                  variant: PixelButtonVariant.secondary,
+                  onPressed: _working
+                      ? null
+                      : () => Navigator.of(context).push(
+                          MaterialPageRoute<bool>(
+                            builder: (_) => const BackupImportScreen(),
+                          ),
+                        ),
                 ),
                 const SizedBox(height: 10),
                 PixelButton(
