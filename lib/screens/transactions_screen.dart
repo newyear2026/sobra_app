@@ -439,7 +439,7 @@ class _DailyChartCard extends StatelessWidget {
     // passes. A cycle with no budget has no daily share to draw either.
     final perDay = !store.hasBudget || bounds.lengthInDays <= 0
         ? 0
-        : store.baseBudgetCentavos ~/ bounds.lengthInDays;
+        : store.cycleBaseBudgetCentavos ~/ bounds.lengthInDays;
     final cycleIncome = store.cycleIncomes.fold<int>(
       0,
       (sum, entry) => sum + entry.amountCentavos,

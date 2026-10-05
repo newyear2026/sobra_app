@@ -294,6 +294,12 @@ class SobraStore extends ChangeNotifier {
   PaySchedule paySchedule = _defaultPaySchedule;
   PaySchedule? pendingPaySchedule;
   DateTime? pendingPayScheduleEffectiveAt;
+
+  /// The budget [pendingPaySchedule] starts with, when the user took the
+  /// figure converted for a cycle of a different length. Null keeps the
+  /// current budget. Applied with the schedule, so the cycle in progress
+  /// keeps the budget it started with.
+  int? pendingBaseBudgetCentavos;
   DateTime? payScheduleEffectiveFloor;
   DateTime? xpTrackingStartedAt;
 
@@ -391,11 +397,38 @@ class SobraStore extends ChangeNotifier {
   CycleBounds boundsFor(DateTime date) {
     final day = dateOnly(date);
     final bounds = paySchedule.boundsFor(day);
-    final floor = payScheduleEffectiveFloor;
+    final saved = payScheduleEffectiveFloor;
+    final floor = saved == null ? null : dateOnly(saved);
     if (floor != null && !day.isBefore(floor) && bounds.start.isBefore(floor)) {
       return CycleBounds(start: floor, end: bounds.end);
     }
     return bounds;
+  }
+
+  /// How much of a full cycle [bounds] is, as (its days, the full cycle's), or
+  /// null when it is a full cycle.
+  ///
+  /// Only the first cycle after a schedule change is ever short: it starts on
+  /// the day the change took effect rather than on a payday of the new
+  /// schedule. Switching from a quincena to Friday paydays can leave a single
+  /// Thursday between the two, and that day is not a week.
+  (int, int)? _shortCycleShare(CycleBounds bounds) {
+    final saved = payScheduleEffectiveFloor;
+    if (saved == null) return null;
+    final floor = dateOnly(saved);
+    if (dateOnly(bounds.start) != floor) return null;
+    final full = paySchedule.boundsFor(floor);
+    if (!full.start.isBefore(floor)) return null;
+    return (bounds.lengthInDays, full.lengthInDays);
+  }
+
+  /// The budget [bounds] plans with before extra income: the cycle budget, or
+  /// for a short first cycle its share by days. Otherwise a one-day cycle got
+  /// a whole cycle's money to spend on that one day.
+  int _baseBudgetFor(CycleBounds bounds) {
+    final share = _shortCycleShare(bounds);
+    if (share == null) return _baseBudgetCentavos;
+    return (_baseBudgetCentavos * share.$1 / share.$2).round();
   }
 
   CycleBounds get cycleBounds => boundsFor(today);
@@ -412,11 +445,16 @@ class SobraStore extends ChangeNotifier {
   /// them, the way the cash figures are gated on [hasCashBaseline].
   bool get hasBudget => _hasBudget;
 
+  /// The budget for a full cycle, as the user set it.
   int get baseBudgetCentavos => _baseBudgetCentavos;
+
+  /// What the current cycle plans with before extra income — the
+  /// [baseBudgetCentavos], or its share by days in a short first cycle.
+  int get cycleBaseBudgetCentavos => _baseBudgetFor(cycleBounds);
   int get cycleBudgetExtrasCentavos =>
       _cycleBudgetExtras[_cycleKey(cycleStart)] ?? 0;
   int get totalBudgetCentavos =>
-      _baseBudgetCentavos + cycleBudgetExtrasCentavos;
+      cycleBaseBudgetCentavos + cycleBudgetExtrasCentavos;
 
   int get daysRemaining {
     if (today.isAfter(cycleEnd)) return 0;
@@ -728,7 +766,7 @@ class SobraStore extends ChangeNotifier {
 
   int _settleCycle(CycleBounds bounds, DateTime trackingStart) {
     final cycleKey = _cycleKey(bounds.start);
-    final budget = _baseBudgetCentavos + (_cycleBudgetExtras[cycleKey] ?? 0);
+    final budget = _baseBudgetFor(bounds) + (_cycleBudgetExtras[cycleKey] ?? 0);
     final spent = _spending
         .where((entry) => bounds.contains(entry.occurredAt))
         .fold(0, (sum, entry) => sum + entry.amountCentavos);
@@ -1492,11 +1530,16 @@ class SobraStore extends ChangeNotifier {
     // The budget screen edits the total the user can see. Income allocated to
     // this cycle is already included in that figure, so keeping it in the base
     // as well would add the same money twice on the next read.
-    final nextBaseBudget = centavos - cycleBudgetExtrasCentavos;
-    if (nextBaseBudget <= 0) {
+    final planned = centavos - cycleBudgetExtrasCentavos;
+    if (planned <= 0) {
       throw const SobraStoreException(StoreFailure.budgetBelowCycleIncome);
     }
-    _baseBudgetCentavos = nextBaseBudget;
+    // In a short first cycle the total on screen is that cycle's share, so the
+    // figure typed is too; the full-cycle budget is what it is a share of.
+    final share = _shortCycleShare(cycleBounds);
+    _baseBudgetCentavos = share == null
+        ? planned
+        : (planned * share.$2 / share.$1).round();
     if (!_hasBudget) {
       budgetTrackingStartedAt = today;
     }
@@ -1659,12 +1702,42 @@ class SobraStore extends ChangeNotifier {
     return reconciliation;
   });
 
-  Future<void> queuePayScheduleChange(PaySchedule schedule) => _write(() async {
+  /// The budget that keeps today's pace of spending under [next], or null when
+  /// the current one already does.
+  ///
+  /// The budget is per cycle, so moving from quincenas to weeks without
+  /// changing it would double what there is to spend each day. Within a tenth
+  /// either way is left alone: a quincena and a fortnight are both "about two
+  /// weeks", and offering 6,920 for 7,000 would be noise.
+  int? suggestedBudgetFor(PaySchedule next) {
+    if (!_hasBudget) return null;
+    final ratio = next.typicalLengthInDays / paySchedule.typicalLengthInDays;
+    if (ratio > 0.9 && ratio < 1.1) return null;
+    final exact = _baseBudgetCentavos * ratio;
+    // Whole tens of the currency once there are thousands of it, whole units
+    // below that: a figure the user would have typed themselves.
+    final step = exact >= 1000 * Currency.minorUnitsPerUnit
+        ? 10 * Currency.minorUnitsPerUnit
+        : Currency.minorUnitsPerUnit;
+    final rounded = (exact / step).round() * step;
+    return rounded > 0 ? rounded : step;
+  }
+
+  /// Switches to [schedule] once the current cycle ends, starting it with
+  /// [baseBudgetCentavos] when given — see [suggestedBudgetFor].
+  Future<void> queuePayScheduleChange(
+    PaySchedule schedule, {
+    int? baseBudgetCentavos,
+  }) => _write(() async {
+    if (baseBudgetCentavos != null && baseBudgetCentavos <= 0) {
+      throw ArgumentError.value(baseBudgetCentavos, 'baseBudgetCentavos');
+    }
     final effectiveAt = addDays(cycleEnd, 1);
     pendingPaySchedule = schedule.type == PayCycleType.irregular
         ? schedule.copyWith(irregularCycleStart: effectiveAt)
         : schedule;
     pendingPayScheduleEffectiveAt = effectiveAt;
+    pendingBaseBudgetCentavos = baseBudgetCentavos;
     await _save();
     notifyListeners();
   });
@@ -1851,6 +1924,10 @@ class SobraStore extends ChangeNotifier {
     require(
       (pendingPaySchedule == null) == (pendingPayScheduleEffectiveAt == null),
     );
+    require(
+      pendingBaseBudgetCentavos == null ||
+          (pendingPaySchedule != null && pendingBaseBudgetCentavos! > 0),
+    );
     final ids = <String>{};
     void id(String value) => require(value.isNotEmpty && ids.add(value));
     for (final entry in _transactions) {
@@ -1984,6 +2061,7 @@ class SobraStore extends ChangeNotifier {
         : schedule;
     pendingPaySchedule = null;
     pendingPayScheduleEffectiveAt = null;
+    pendingBaseBudgetCentavos = null;
     payScheduleEffectiveFloor = null;
     countedCashCentavos = cashCentavos ?? 0;
     expectedCashCentavos = cashCentavos ?? 0;
@@ -2682,6 +2760,13 @@ class SobraStore extends ChangeNotifier {
     pendingPaySchedule = null;
     pendingPayScheduleEffectiveAt = null;
     payScheduleEffectiveFloor = effectiveAt;
+    final budget = pendingBaseBudgetCentavos;
+    pendingBaseBudgetCentavos = null;
+    if (budget != null) {
+      // The limits are per cycle too, and keep the shape the user gave them.
+      categoryLimits = _scaledCategoryLimits(budget);
+      _baseBudgetCentavos = budget;
+    }
     await _save();
     return true;
   }
@@ -2720,6 +2805,7 @@ class SobraStore extends ChangeNotifier {
     paySchedule = _defaultPaySchedule;
     pendingPaySchedule = null;
     pendingPayScheduleEffectiveAt = null;
+    pendingBaseBudgetCentavos = null;
     payScheduleEffectiveFloor = null;
     xpTrackingStartedAt = null;
     budgetTrackingStartedAt = null;
@@ -2837,6 +2923,7 @@ class SobraStore extends ChangeNotifier {
     paySchedule = other.paySchedule;
     pendingPaySchedule = other.pendingPaySchedule;
     pendingPayScheduleEffectiveAt = other.pendingPayScheduleEffectiveAt;
+    pendingBaseBudgetCentavos = other.pendingBaseBudgetCentavos;
     payScheduleEffectiveFloor = other.payScheduleEffectiveFloor;
     xpTrackingStartedAt = other.xpTrackingStartedAt;
     budgetTrackingStartedAt = other.budgetTrackingStartedAt;
@@ -3007,6 +3094,10 @@ class SobraStore extends ChangeNotifier {
     pendingPaySchedule = pendingJson == null
         ? null
         : PaySchedule.fromJson(pendingJson);
+    // Absent from every state written before the budget could follow a
+    // schedule change, which kept the budget as it was.
+    pendingBaseBudgetCentavos = (json['pendingBaseBudgetCentavos'] as num?)
+        ?.toInt();
     final effective = json['pendingPayScheduleEffectiveAt'] as String?;
     pendingPayScheduleEffectiveAt = effective == null
         ? null
@@ -3115,6 +3206,7 @@ class SobraStore extends ChangeNotifier {
     'pendingPaySchedule': pendingPaySchedule?.toJson(),
     'pendingPayScheduleEffectiveAt': pendingPayScheduleEffectiveAt
         ?.toIso8601String(),
+    'pendingBaseBudgetCentavos': pendingBaseBudgetCentavos,
     'payScheduleEffectiveFloor': payScheduleEffectiveFloor?.toIso8601String(),
     'xpTrackingStartedAt': xpTrackingStartedAt?.toIso8601String(),
     'budgetTrackingStartedAt': budgetTrackingStartedAt?.toIso8601String(),

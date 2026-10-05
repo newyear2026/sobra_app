@@ -563,6 +563,11 @@
   "cycleChangeAppliesRepeating": "변경은 다음 주기부터 적용되고, 이후 {days}일마다 반복돼요.",
   "cycleChangeApplies": "변경은 다음 주기부터 적용돼요.",
   "cycleSaveChange": "변경 저장",
+  "cycleShortFirst": "첫 주기는 {days, plural, other{{days}일}}뿐이라서 그 기간만큼의 예산을 받아요.",
+  "cycleBudgetTitle": "예산은 주기마다 정해져요",
+  "cycleBudgetBody": "지금은 주기마다 {current}예요. 새 주기에서는 주기마다 약 {suggested}로 하면 같은 속도로 쓸 수 있어요. 변경은 다음 주기부터 적용돼요.",
+  "cycleBudgetUse": "{amount}로 바꾸기",
+  "cycleBudgetKeep": "{amount} 유지",
 
   "onboardingBudgetAboveZero": "0보다 큰 예산을 입력해 주세요.",
   "onboardingCashOrSkip": "현금을 입력하거나 “나중에”를 선택해 주세요.",

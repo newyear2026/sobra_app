@@ -528,6 +528,11 @@
   "cycleChangeAppliesRepeating": "変更は次のサイクルから適用され、その後は{days}日ごとにくり返します。",
   "cycleChangeApplies": "変更は次のサイクルから適用されます。",
   "cycleSaveChange": "変更を保存",
+  "cycleShortFirst": "最初のサイクルは{days, plural, other{{days}日}}だけなので、その日数分の予算になります。",
+  "cycleBudgetTitle": "予算はサイクルごとです",
+  "cycleBudgetBody": "今はサイクルごとに{current}です。新しい頻度では、サイクルごとに約{suggested}にすると同じペースで使えます。変更は次のサイクルから適用されます。",
+  "cycleBudgetUse": "{amount}にする",
+  "cycleBudgetKeep": "{amount}のまま",
 
   "onboardingBudgetAboveZero": "0より大きい予算を入力してください。",
   "onboardingCashOrSkip": "現金の額を入力するか、「あとで」を選んでください。",

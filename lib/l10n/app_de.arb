@@ -528,6 +528,11 @@
   "cycleChangeAppliesRepeating": "Die Änderung gilt ab dem nächsten Zyklus und wiederholt sich danach alle {days} Tage.",
   "cycleChangeApplies": "Die Änderung gilt ab dem nächsten Zyklus.",
   "cycleSaveChange": "Änderung speichern",
+  "cycleShortFirst": "Der erste Zyklus dauert {days, plural, =1{nur 1 Tag} other{nur {days} Tage}}, deshalb bekommt er seinen Anteil am Budget.",
+  "cycleBudgetTitle": "Dein Budget gilt pro Zyklus",
+  "cycleBudgetBody": "Im Moment sind es {current} pro Zyklus. Mit dem neuen Rhythmus halten etwa {suggested} pro Zyklus das gleiche Ausgabentempo. Die Änderung gilt ab dem nächsten Zyklus.",
+  "cycleBudgetUse": "{amount} verwenden",
+  "cycleBudgetKeep": "{amount} behalten",
 
   "onboardingBudgetAboveZero": "Gib ein Budget über null ein.",
   "onboardingCashOrSkip": "Gib dein Bargeld ein oder wähl „Jetzt nicht“.",

@@ -63,6 +63,9 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
     final effectiveAt = addDays(store.cycleEnd, 1);
     final draft = _draft(effectiveAt);
     final preview = draft.boundsFor(effectiveAt);
+    // The first cycle runs from the change to the new schedule's next payday,
+    // which can be a few days rather than a whole cycle.
+    final firstCycleDays = daysBetween(effectiveAt, preview.end) + 1;
     return Scaffold(
       backgroundColor: AppColors.surface,
       body: SafeArea(
@@ -219,6 +222,14 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
                       ? l10n.cycleChangeAppliesRepeating(_horizon)
                       : l10n.cycleChangeApplies,
                 ),
+                if (store.hasBudget &&
+                    firstCycleDays < preview.lengthInDays) ...[
+                  const SizedBox(height: 10),
+                  PixelHint(
+                    tone: PixelHintTone.cash,
+                    text: l10n.cycleShortFirst(firstCycleDays),
+                  ),
+                ],
                 const SizedBox(height: 24),
                 PixelButton(
                   label: _saving ? l10n.saving : l10n.cycleSaveChange,
@@ -226,11 +237,27 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
                       ? null
                       : () async {
                           final messenger = ScaffoldMessenger.of(context);
+                          final suggested = store.suggestedBudgetFor(draft);
+                          int? budget;
+                          if (suggested != null) {
+                            final choice = await _askBudget(
+                              context,
+                              store,
+                              suggested,
+                            );
+                            // Dismissed: nothing was decided, so nothing is
+                            // saved and the choice stays on screen.
+                            if (choice == null || !context.mounted) return;
+                            budget = choice ? suggested : null;
+                          }
                           setState(() => _saving = true);
                           final saved = await guardStoreWrite(
                             messenger,
                             l10n,
-                            () => store.queuePayScheduleChange(draft),
+                            () => store.queuePayScheduleChange(
+                              draft,
+                              baseBudgetCentavos: budget,
+                            ),
                           );
                           if (!context.mounted) return;
                           setState(() => _saving = false);
@@ -246,6 +273,35 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
       ),
     );
   }
+}
+
+/// Asks whether the new schedule starts with [suggested] (true) or keeps the
+/// current budget (false). Null when dismissed.
+Future<bool?> _askBudget(
+  BuildContext context,
+  SobraStore store,
+  int suggested,
+) {
+  final l10n = AppLocalizations.of(context);
+  final current = formatMoney(store.currency, store.baseBudgetCentavos);
+  final proposed = formatMoney(store.currency, suggested);
+  return showDialog<bool>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: Text(l10n.cycleBudgetTitle),
+      content: Text(l10n.cycleBudgetBody(current, proposed)),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(dialogContext, false),
+          child: Text(l10n.cycleBudgetKeep(current)),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(dialogContext, true),
+          child: Text(l10n.cycleBudgetUse(proposed)),
+        ),
+      ],
+    ),
+  );
 }
 
 class _NumberDropdown extends StatelessWidget {

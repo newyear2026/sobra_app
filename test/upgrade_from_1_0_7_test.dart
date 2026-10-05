@@ -65,7 +65,21 @@ void main() {
 
   test('a 1.0.7 ledger settles its cycles the way 1.0.7 did', () async {
     final store = await SobraStore.load(now: () => DateTime(2026, 10, 20, 9));
-    expect(_shown(store), fixture['later']);
+    final expected = Map<String, dynamic>.of(
+      fixture['later'] as Map<String, dynamic>,
+    );
+    // The one intended difference: the queued switch to weekly left Oct 15 as
+    // a one-day cycle, which 1.0.7 gave the whole 7,000. It now gets its
+    // seventh. See schedule_change_budget_test.dart.
+    expect(
+      (expected['cycleRecords'] as List).first,
+      '2026-10-15T00:00:00.000|2026-10-15T00:00:00.000|700000|0|0',
+    );
+    expected['cycleRecords'] = [
+      '2026-10-15T00:00:00.000|2026-10-15T00:00:00.000|100000|0|0',
+      ...(expected['cycleRecords'] as List).skip(1),
+    ];
+    expect(_shown(store), expected);
   });
 
   test('the save 1.0.7 kept as its backup still restores', () async {

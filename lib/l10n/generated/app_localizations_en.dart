@@ -1773,6 +1773,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cycleSaveChange => 'Save change';
 
   @override
+  String cycleShortFirst(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'only $days days',
+      one: 'only 1 day',
+    );
+    return 'The first cycle lasts $_temp0, so it gets its share of the budget.';
+  }
+
+  @override
+  String get cycleBudgetTitle => 'Your budget is per cycle';
+
+  @override
+  String cycleBudgetBody(String current, String suggested) {
+    return 'Right now it\'s $current per cycle. With the new frequency, about $suggested per cycle keeps the same pace of spending. The change starts with the next cycle.';
+  }
+
+  @override
+  String cycleBudgetUse(String amount) {
+    return 'Use $amount';
+  }
+
+  @override
+  String cycleBudgetKeep(String amount) {
+    return 'Keep $amount';
+  }
+
+  @override
   String get onboardingBudgetAboveZero => 'Enter a budget above zero.';
 
   @override

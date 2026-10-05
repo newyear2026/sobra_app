@@ -3059,6 +3059,36 @@ abstract class AppLocalizations {
   /// **'Guardar cambio'**
   String get cycleSaveChange;
 
+  /// No description provided for @cycleShortFirst.
+  ///
+  /// In es, this message translates to:
+  /// **'El primer ciclo dura {days, plural, =1{solo 1 día} other{solo {days} días}}, así que recibe la parte del presupuesto que le corresponde.'**
+  String cycleShortFirst(int days);
+
+  /// No description provided for @cycleBudgetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu presupuesto es por ciclo'**
+  String get cycleBudgetTitle;
+
+  /// No description provided for @cycleBudgetBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora son {current} por ciclo. Con la nueva frecuencia, unos {suggested} por ciclo mantienen el mismo ritmo de gasto. El cambio empieza con el próximo ciclo.'**
+  String cycleBudgetBody(String current, String suggested);
+
+  /// No description provided for @cycleBudgetUse.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar {amount}'**
+  String cycleBudgetUse(String amount);
+
+  /// No description provided for @cycleBudgetKeep.
+  ///
+  /// In es, this message translates to:
+  /// **'Mantener {amount}'**
+  String cycleBudgetKeep(String amount);
+
   /// No description provided for @onboardingBudgetAboveZero.
   ///
   /// In es, this message translates to:

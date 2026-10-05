@@ -1711,6 +1711,34 @@ class AppLocalizationsKo extends AppLocalizations {
   String get cycleSaveChange => '변경 저장';
 
   @override
+  String cycleShortFirst(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days일',
+    );
+    return '첫 주기는 $_temp0뿐이라서 그 기간만큼의 예산을 받아요.';
+  }
+
+  @override
+  String get cycleBudgetTitle => '예산은 주기마다 정해져요';
+
+  @override
+  String cycleBudgetBody(String current, String suggested) {
+    return '지금은 주기마다 $current예요. 새 주기에서는 주기마다 약 $suggested로 하면 같은 속도로 쓸 수 있어요. 변경은 다음 주기부터 적용돼요.';
+  }
+
+  @override
+  String cycleBudgetUse(String amount) {
+    return '$amount로 바꾸기';
+  }
+
+  @override
+  String cycleBudgetKeep(String amount) {
+    return '$amount 유지';
+  }
+
+  @override
   String get onboardingBudgetAboveZero => '0보다 큰 예산을 입력해 주세요.';
 
   @override

@@ -558,6 +558,11 @@
   "cycleChangeAppliesRepeating": "The change applies to the next cycle, and after that it renews every {days} days.",
   "cycleChangeApplies": "The change applies to the next cycle.",
   "cycleSaveChange": "Save change",
+  "cycleShortFirst": "The first cycle lasts {days, plural, =1{only 1 day} other{only {days} days}}, so it gets its share of the budget.",
+  "cycleBudgetTitle": "Your budget is per cycle",
+  "cycleBudgetBody": "Right now it's {current} per cycle. With the new frequency, about {suggested} per cycle keeps the same pace of spending. The change starts with the next cycle.",
+  "cycleBudgetUse": "Use {amount}",
+  "cycleBudgetKeep": "Keep {amount}",
 
   "onboardingBudgetAboveZero": "Enter a budget above zero.",
   "onboardingCashOrSkip": "Enter your cash or choose “Not now”.",

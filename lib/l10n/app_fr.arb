@@ -528,6 +528,11 @@
   "cycleChangeAppliesRepeating": "Le changement s’applique au cycle suivant, puis se renouvelle tous les {days} jours.",
   "cycleChangeApplies": "Le changement s’applique au cycle suivant.",
   "cycleSaveChange": "Enregistrer le changement",
+  "cycleShortFirst": "Le premier cycle dure {days, plural, =1{seulement 1 jour} other{seulement {days} jours}}, il reçoit donc sa part du budget.",
+  "cycleBudgetTitle": "Ton budget est par cycle",
+  "cycleBudgetBody": "Pour l’instant, c’est {current} par cycle. Avec la nouvelle fréquence, environ {suggested} par cycle gardent le même rythme de dépenses. Le changement commence au prochain cycle.",
+  "cycleBudgetUse": "Utiliser {amount}",
+  "cycleBudgetKeep": "Garder {amount}",
 
   "onboardingBudgetAboveZero": "Saisis un budget supérieur à zéro.",
   "onboardingCashOrSkip": "Saisis ton liquide ou choisis «\u00a0Plus tard\u00a0».",

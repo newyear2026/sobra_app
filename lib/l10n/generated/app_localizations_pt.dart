@@ -1788,6 +1788,35 @@ class AppLocalizationsPt extends AppLocalizations {
   String get cycleSaveChange => 'Salvar mudança';
 
   @override
+  String cycleShortFirst(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'só $days dias',
+      one: 'só 1 dia',
+    );
+    return 'O primeiro ciclo dura $_temp0, então recebe a parte do orçamento que lhe cabe.';
+  }
+
+  @override
+  String get cycleBudgetTitle => 'Seu orçamento é por ciclo';
+
+  @override
+  String cycleBudgetBody(String current, String suggested) {
+    return 'Agora são $current por ciclo. Com a nova frequência, cerca de $suggested por ciclo mantêm o mesmo ritmo de gastos. A mudança começa no próximo ciclo.';
+  }
+
+  @override
+  String cycleBudgetUse(String amount) {
+    return 'Usar $amount';
+  }
+
+  @override
+  String cycleBudgetKeep(String amount) {
+    return 'Manter $amount';
+  }
+
+  @override
   String get onboardingBudgetAboveZero => 'Digite um orçamento maior que zero.';
 
   @override

@@ -528,6 +528,11 @@
   "cycleChangeAppliesRepeating": "A mudança vale a partir do próximo ciclo e depois se renova a cada {days} dias.",
   "cycleChangeApplies": "A mudança vale a partir do próximo ciclo.",
   "cycleSaveChange": "Salvar mudança",
+  "cycleShortFirst": "O primeiro ciclo dura {days, plural, =1{só 1 dia} other{só {days} dias}}, então recebe a parte do orçamento que lhe cabe.",
+  "cycleBudgetTitle": "Seu orçamento é por ciclo",
+  "cycleBudgetBody": "Agora são {current} por ciclo. Com a nova frequência, cerca de {suggested} por ciclo mantêm o mesmo ritmo de gastos. A mudança começa no próximo ciclo.",
+  "cycleBudgetUse": "Usar {amount}",
+  "cycleBudgetKeep": "Manter {amount}",
 
   "onboardingBudgetAboveZero": "Digite um orçamento maior que zero.",
   "onboardingCashOrSkip": "Digite o dinheiro ou escolha “Agora não”.",

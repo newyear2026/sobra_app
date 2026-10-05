@@ -1784,6 +1784,35 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cycleSaveChange => 'Änderung speichern';
 
   @override
+  String cycleShortFirst(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'nur $days Tage',
+      one: 'nur 1 Tag',
+    );
+    return 'Der erste Zyklus dauert $_temp0, deshalb bekommt er seinen Anteil am Budget.';
+  }
+
+  @override
+  String get cycleBudgetTitle => 'Dein Budget gilt pro Zyklus';
+
+  @override
+  String cycleBudgetBody(String current, String suggested) {
+    return 'Im Moment sind es $current pro Zyklus. Mit dem neuen Rhythmus halten etwa $suggested pro Zyklus das gleiche Ausgabentempo. Die Änderung gilt ab dem nächsten Zyklus.';
+  }
+
+  @override
+  String cycleBudgetUse(String amount) {
+    return '$amount verwenden';
+  }
+
+  @override
+  String cycleBudgetKeep(String amount) {
+    return '$amount behalten';
+  }
+
+  @override
   String get onboardingBudgetAboveZero => 'Gib ein Budget über null ein.';
 
   @override

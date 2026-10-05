@@ -114,6 +114,16 @@ class PaySchedule {
     };
   }
 
+  /// How long a cycle runs on average, for comparing budgets across
+  /// schedules. A quincena is 15.2 days and a month 30.4, not 15 and 30.
+  double get typicalLengthInDays => switch (type) {
+    PayCycleType.semiMonthly => 365.25 / 24,
+    PayCycleType.monthly => 365.25 / 12,
+    PayCycleType.biweekly => 14,
+    PayCycleType.weekly => 7,
+    PayCycleType.irregular => planningHorizonDays.toDouble(),
+  };
+
   PaySchedule copyWith({
     PayCycleType? type,
     int? firstPayDay,
