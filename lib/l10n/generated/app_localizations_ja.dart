@@ -1039,6 +1039,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsBackupCopied => 'バックアップをクリップボードにコピーしました。';
 
   @override
+  String get settingsBackupCopyFailed => 'バックアップをコピーできませんでした。もう一度お試しください。';
+
+  @override
   String get settingsRestorePurchases => '購入を復元';
 
   @override

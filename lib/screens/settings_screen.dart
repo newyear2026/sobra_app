@@ -386,10 +386,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
             label: l10n.settingsBackup,
             value: l10n.settingsCopy,
             onTap: () async {
-              await Clipboard.setData(ClipboardData(text: store.exportJson()));
+              // Android throws for a clip it will not carry, and a tap that
+              // silently does nothing reads like a backup that worked.
+              var copied = true;
+              try {
+                await Clipboard.setData(
+                  ClipboardData(text: store.exportJson()),
+                );
+              } on Object {
+                copied = false;
+              }
               if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.settingsBackupCopied)),
+                SnackBar(
+                  content: Text(
+                    copied
+                        ? l10n.settingsBackupCopied
+                        : l10n.settingsBackupCopyFailed,
+                  ),
+                ),
               );
             },
           ),

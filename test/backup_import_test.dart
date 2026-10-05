@@ -183,6 +183,59 @@ void main() {
   }
 
   test(
+    'a second import in a row still keeps the ledger from before the first',
+    () async {
+      Map<String, dynamic> withNote(String note) {
+        final copy = jsonDecode(jsonEncode(incoming)) as Map<String, dynamic>;
+        copy['transactions'][0]['note'] = note;
+        return copy;
+      }
+
+      await store.importBackup(jsonEncode(withNote('Wrong file')));
+      await store.importBackup(jsonEncode(withNote('Another wrong file')));
+      final reopened = await SobraStore.load(now: () => now);
+      final previous =
+          jsonDecode(reopened.backupBeforeImportJson!) as Map<String, dynamic>;
+      expect(previous['transactions'][0]['note'], 'Current');
+    },
+  );
+
+  test(
+    'an import after the user records something keeps that ledger instead',
+    () async {
+      await store.importBackup(jsonEncode(incoming));
+      await store.addExpense(
+        amountCentavos: 500,
+        category: ExpenseCategory.food,
+        note: 'After import',
+        occurredAt: now,
+        paymentMethod: PaymentMethod.card,
+      );
+      await store.importBackup(original);
+      final previous =
+          jsonDecode(store.backupBeforeImportJson!) as Map<String, dynamic>;
+      expect(
+        (previous['transactions'] as List).map((entry) => entry['note']),
+        containsAll(['Imported', 'After import']),
+      );
+    },
+  );
+
+  test(
+    'cycles that ended after the backup was taken close on import',
+    () async {
+      // [original] was exported on Oct 4, before any cycle had closed.
+      final later = await SobraStore.load(now: () => DateTime(2026, 11, 2, 9));
+      await later.importBackup(original);
+      expect(later.cycleRecords, isNotEmpty);
+      expect(
+        later.cycleRecords.every((r) => r.end.isBefore(later.cycleStart)),
+        isTrue,
+      );
+    },
+  );
+
+  test(
     'older exported schemas are migrated before preview and import',
     () async {
       incoming.remove('schemaVersion');

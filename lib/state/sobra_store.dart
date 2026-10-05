@@ -75,6 +75,10 @@ class SobraStore extends ChangeNotifier {
   static const _debugPaidCharactersKey = 'sobra_debug_paid_characters';
   static const _backupKey = 'sobra_state_backup_v2';
   static const _beforeImportKey = 'sobra_before_import_v2';
+
+  /// [_ledgerFingerprint] of the records the last import wrote, so the next
+  /// import can tell an untouched import from the user's own ledger.
+  static const _importedLedgerKey = 'sobra_imported_ledger_v2';
   static const _corruptArchiveKey = 'sobra_state_corrupt_v2';
 
   final SharedPreferences _preferences;
@@ -1705,7 +1709,10 @@ class SobraStore extends ChangeNotifier {
     notifyListeners();
   });
 
-  String exportJson() => const JsonEncoder.withIndent('  ').convert(_toJson());
+  /// Compact rather than indented: the backup travels through the clipboard,
+  /// and Android refuses a clip past roughly half a megabyte. Indentation
+  /// nearly doubled the size and brought a daily user there within months.
+  String exportJson() => jsonEncode(_toJson());
   String? get exportCorruptedJson => corruptedStorage;
   String? get backupBeforeImportJson =>
       _preferences.getString(_beforeImportKey);
@@ -1924,16 +1931,31 @@ class SobraStore extends ChangeNotifier {
     candidate._updateEquippedItem(
       candidate.roomDecorationsFor(candidate.equippedRoomId),
     );
-    // Unlike the rotating save backup, this copy survives later edits.
-    final beforeImport = _persistedJson ?? exportJson();
-    if (!await _preferences.setString(_beforeImportKey, beforeImport)) {
-      throw const SobraStoreException(StoreFailure.backupNotSaved);
+    // Unlike the rotating save backup, this copy survives later edits. A
+    // ledger that is still exactly what the last import wrote is not the
+    // user's own, though: replacing the copy with it would leave a second
+    // import in a row with no way back to the ledger from before the first.
+    final untouchedImport =
+        _preferences.getString(_beforeImportKey) != null &&
+        !hasStorageError &&
+        _preferences.getString(_importedLedgerKey) == _ledgerFingerprint();
+    if (!untouchedImport) {
+      final beforeImport = _persistedJson ?? exportJson();
+      if (!await _preferences.setString(_beforeImportKey, beforeImport)) {
+        throw const SobraStoreException(StoreFailure.backupNotSaved);
+      }
     }
     await _archiveCorruptedOriginal();
     _copyFrom(candidate);
     hasStorageError = false;
     corruptedStorage = null;
+    // Best-effort: without it the next import only falls back to replacing
+    // the copy, which is what every import did before this key existed.
+    await _preferences.setString(_importedLedgerKey, _ledgerFingerprint());
     await _save();
+    // As after any other restore: cycles that ended since the backup was
+    // taken close now, not on the next resume.
+    await settleCycles();
     _pendingXpNotice = null;
     _lastObservedDate = today;
     notifyListeners();
@@ -3129,6 +3151,24 @@ class SobraStore extends ChangeNotifier {
     final saved = await _preferences.setString(_storageKey, next);
     if (!saved) throw const SobraStoreException(StoreFailure.saveFailed);
     _persistedJson = next;
+  }
+
+  /// Identifies the records the user entered, leaving out what settlement and
+  /// loading rewrite on their own. A hash rather than the records themselves,
+  /// so remembering it does not store the ledger a fourth time.
+  String _ledgerFingerprint() {
+    final text = jsonEncode([
+      for (final entry in _transactions) entry.toJson(),
+      for (final entry in _incomes) entry.toJson(),
+      for (final entry in _recurringExpenses) entry.toJson(),
+      for (final entry in _cashReconciliations) entry.toJson(),
+    ]);
+    // FNV-1a, 32-bit.
+    var hash = 0x811c9dc5;
+    for (final unit in text.codeUnits) {
+      hash = ((hash ^ unit) * 0x01000193) & 0xffffffff;
+    }
+    return '${text.length}:$hash';
   }
 
   bool _isPlausibleState(String raw) {

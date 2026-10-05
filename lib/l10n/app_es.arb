@@ -497,6 +497,7 @@
   "settingsBackup": "Respaldo de datos",
   "settingsCopy": "Copiar",
   "settingsBackupCopied": "Respaldo copiado al portapapeles.",
+  "settingsBackupCopyFailed": "No se pudo copiar el respaldo. Vuelve a intentarlo.",
   "settingsRestorePurchases": "Restaurar compras",
   "settingsAccount": "Cuenta de Google",
   "settingsAccountConnect": "Conectar",

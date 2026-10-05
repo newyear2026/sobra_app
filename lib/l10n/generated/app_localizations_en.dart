@@ -1071,6 +1071,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsBackupCopied => 'Backup copied to the clipboard.';
 
   @override
+  String get settingsBackupCopyFailed =>
+      'We couldn\'t copy the backup. Please try again.';
+
+  @override
   String get settingsRestorePurchases => 'Restore purchases';
 
   @override

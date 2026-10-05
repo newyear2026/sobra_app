@@ -317,6 +317,7 @@
   "settingsBackup": "データのバックアップ",
   "settingsCopy": "コピー",
   "settingsBackupCopied": "バックアップをクリップボードにコピーしました。",
+  "settingsBackupCopyFailed": "バックアップをコピーできませんでした。もう一度お試しください。",
   "settingsRestorePurchases": "購入を復元",
   "settingsAccount": "Googleアカウント",
   "settingsAccountConnect": "連携する",

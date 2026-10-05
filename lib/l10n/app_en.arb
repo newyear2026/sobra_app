@@ -347,6 +347,7 @@
   "settingsBackup": "Data backup",
   "settingsCopy": "Copy",
   "settingsBackupCopied": "Backup copied to the clipboard.",
+  "settingsBackupCopyFailed": "We couldn't copy the backup. Please try again.",
   "settingsRestorePurchases": "Restore purchases",
   "settingsAccount": "Google account",
   "settingsAccountConnect": "Connect",

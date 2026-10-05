@@ -317,6 +317,7 @@
   "settingsBackup": "Sauvegarde des données",
   "settingsCopy": "Copier",
   "settingsBackupCopied": "Sauvegarde copiée dans le presse-papiers.",
+  "settingsBackupCopyFailed": "Impossible de copier la sauvegarde. Réessaie.",
   "settingsRestorePurchases": "Restaurer les achats",
   "settingsAccount": "Compte Google",
   "settingsAccountConnect": "Connecter",

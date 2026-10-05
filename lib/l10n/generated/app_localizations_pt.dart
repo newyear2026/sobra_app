@@ -1082,6 +1082,10 @@ class AppLocalizationsPt extends AppLocalizations {
       'Backup copiado para a área de transferência.';
 
   @override
+  String get settingsBackupCopyFailed =>
+      'Não conseguimos copiar o backup. Tente de novo.';
+
+  @override
   String get settingsRestorePurchases => 'Restaurar compras';
 
   @override

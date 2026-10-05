@@ -1080,6 +1080,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Sauvegarde copiée dans le presse-papiers.';
 
   @override
+  String get settingsBackupCopyFailed =>
+      'Impossible de copier la sauvegarde. Réessaie.';
+
+  @override
   String get settingsRestorePurchases => 'Restaurer les achats';
 
   @override

@@ -1079,6 +1079,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsBackupCopied => 'Sicherung in die Zwischenablage kopiert.';
 
   @override
+  String get settingsBackupCopyFailed =>
+      'Die Sicherung konnte nicht kopiert werden. Versuch es noch einmal.';
+
+  @override
   String get settingsRestorePurchases => 'Käufe wiederherstellen';
 
   @override

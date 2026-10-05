@@ -1071,6 +1071,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsBackupCopied => 'Respaldo copiado al portapapeles.';
 
   @override
+  String get settingsBackupCopyFailed =>
+      'No se pudo copiar el respaldo. Vuelve a intentarlo.';
+
+  @override
   String get settingsRestorePurchases => 'Restaurar compras';
 
   @override

@@ -317,6 +317,7 @@
   "settingsBackup": "Datensicherung",
   "settingsCopy": "Kopieren",
   "settingsBackupCopied": "Sicherung in die Zwischenablage kopiert.",
+  "settingsBackupCopyFailed": "Die Sicherung konnte nicht kopiert werden. Versuch es noch einmal.",
   "settingsRestorePurchases": "Käufe wiederherstellen",
   "settingsAccount": "Google-Konto",
   "settingsAccountConnect": "Verbinden",

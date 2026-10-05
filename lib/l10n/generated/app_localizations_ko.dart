@@ -1036,6 +1036,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsBackupCopied => '백업을 클립보드에 복사했어요.';
 
   @override
+  String get settingsBackupCopyFailed => '백업을 복사하지 못했어요. 다시 시도해 주세요.';
+
+  @override
   String get settingsRestorePurchases => '구매 복원';
 
   @override

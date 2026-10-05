@@ -9,15 +9,18 @@ import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/screens/backup_import_screen.dart';
 import 'package:sobra_app/screens/recovery_screen.dart';
+import 'package:sobra_app/screens/settings_screen.dart';
 import 'package:sobra_app/services/purchase_service.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
+import 'package:sobra_app/widgets/pixel_ui.dart';
 import 'package:sobra_app/widgets/store_refresh_button.dart';
 
 import 'support/fake_purchase_backend.dart';
 import 'support/localizations.dart';
 
 void main() {
+  _settingsCopyTests();
   late SobraStore store;
   late String backup;
   setUp(() async {
@@ -207,4 +210,78 @@ void main() {
     expect(purchases.localizedPriceFor('sobra.character.platypus'), 'MX 39');
     expect(find.text('Precios actualizados.'), findsOneWidget);
   });
+}
+
+void _settingsCopyTests() {
+  for (final fails in [false, true]) {
+    testWidgets(
+      fails
+          ? 'a backup Android will not copy says so'
+          : 'a copied backup says it was copied',
+      (tester) async {
+        tester.view.physicalSize = const Size(400, 900);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        SharedPreferences.setMockInitialValues({});
+        final store = await tester.runAsync(
+          () => SobraStore.load(now: () => DateTime(2026, 10, 4, 12)),
+        );
+        String? copied;
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          (call) async {
+            if (call.method != 'Clipboard.setData') return null;
+            if (fails) throw PlatformException(code: 'error');
+            copied = (call.arguments as Map)['text'] as String;
+            return null;
+          },
+        );
+        addTearDown(
+          () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+            SystemChannels.platform,
+            null,
+          ),
+        );
+        await tester.pumpWidget(
+          SobraScope(
+            store: store!,
+            child: MaterialApp(
+              locale: const Locale('es'),
+              theme: buildSobraTheme(),
+              localizationsDelegates: sobraLocalizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: const Scaffold(body: SettingsScreen()),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.scrollUntilVisible(
+          find.text('Respaldo de datos'),
+          120,
+          scrollable: find.byType(Scrollable).first,
+        );
+        // The row is a PixelCard, and only the card takes a tap.
+        final row = find
+            .ancestor(
+              of: find.text('Respaldo de datos'),
+              matching: find.byType(PixelCard),
+            )
+            .first;
+        await tester.ensureVisible(row);
+        await tester.pumpAndSettle();
+        await tester.tap(row);
+        await tester.pumpAndSettle();
+        expect(
+          find.text(
+            fails
+                ? 'No se pudo copiar el respaldo. Vuelve a intentarlo.'
+                : 'Respaldo copiado al portapapeles.',
+          ),
+          findsOneWidget,
+        );
+        expect(copied == null, fails);
+      },
+    );
+  }
 }

@@ -1853,6 +1853,12 @@ abstract class AppLocalizations {
   /// **'Respaldo copiado al portapapeles.'**
   String get settingsBackupCopied;
 
+  /// No description provided for @settingsBackupCopyFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo copiar el respaldo. Vuelve a intentarlo.'**
+  String get settingsBackupCopyFailed;
+
   /// No description provided for @settingsRestorePurchases.
   ///
   /// In es, this message translates to:
