@@ -8,6 +8,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/room_design.dart';
 import '../models/xp_event.dart';
 import '../services/app_review_service.dart';
+import '../services/app_telemetry.dart';
 import '../services/app_update_service.dart';
 import '../services/app_version_service.dart';
 import '../services/native_ad_service.dart';
@@ -103,6 +104,7 @@ class _AppShellState extends State<AppShell> {
   @override
   void initState() {
     super.initState();
+    unawaited(AppTelemetry.instance.screen(TelemetryScreen.home));
     SobraWidgetSync.destination.addListener(_onWidgetDestination);
     WidgetsBinding.instance.addPostFrameCallback((_) => _onWidgetDestination());
     _versionReady = _loadRunningVersion();
@@ -440,6 +442,9 @@ class _AppShellState extends State<AppShell> {
 
   void _changeSelection(AppTab tab) {
     if (tab == _selected) return;
+    unawaited(
+      AppTelemetry.instance.screen(TelemetryScreen.values.byName(tab.name)),
+    );
     _noteTabTransition(tab);
     setState(() => _selected = tab);
   }

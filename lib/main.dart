@@ -16,6 +16,8 @@ import 'screens/welcome_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/recovery_screen.dart';
 import 'services/app_review_service.dart';
+import 'services/app_telemetry.dart';
+import 'services/firebase_telemetry.dart';
 import 'services/app_update_service.dart';
 import 'services/play_review_port.dart';
 import 'services/play_update_port.dart';
@@ -35,6 +37,7 @@ import 'theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeFirebaseTelemetry();
   // Nothing in the app uses an AppBar, so Flutter never sets an overlay style
   // of its own and the status bar can end up with light icons over Sobra's
   // near-white paper.
@@ -212,6 +215,7 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
   /// language changes. [MaterialApp] sits above the scope that would otherwise
   /// notify it, and rebuilding it on every saved expense would be wasteful.
   String? _languageCode;
+  TelemetryScreen? _startupScreen;
 
   @override
   void initState() {
@@ -219,6 +223,7 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _languageCode = widget.store.languageCode;
     widget.store.addListener(_onStoreChanged);
+    _trackStartupScreen();
     _scheduleMidnightRefresh();
   }
 
@@ -231,8 +236,23 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
   }
 
   void _onStoreChanged() {
+    _trackStartupScreen();
     if (widget.store.languageCode == _languageCode) return;
     setState(() => _languageCode = widget.store.languageCode);
+  }
+
+  void _trackStartupScreen() {
+    final store = widget.store;
+    final screen = store.hasStorageError
+        ? TelemetryScreen.recovery
+        : !store.hasAnsweredLoginOffer
+        ? TelemetryScreen.welcome
+        : !store.hasCompletedOnboarding
+        ? TelemetryScreen.onboarding
+        : null;
+    if (screen == _startupScreen) return;
+    _startupScreen = screen;
+    if (screen != null) unawaited(AppTelemetry.instance.screen(screen));
   }
 
   @override

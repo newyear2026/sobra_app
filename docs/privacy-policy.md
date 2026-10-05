@@ -13,7 +13,7 @@
 > 기준 문서: 이 Markdown 파일이 정책 원본입니다. `privacy-policy.html`은 스토어에 제출할 공개 웹페이지입니다.
 
 - 시행일 / Fecha de entrada en vigor / Effective date: 2026-09-15
-- 최종 업데이트 / Última actualización / Last updated: 2026-09-15
+- 최종 업데이트 / Última actualización / Last updated: 2026-10-04
 - 앱 / Aplicación / App: **Sobrita** (`com.sobra.app.sobra_app`)
 
 ---
@@ -71,6 +71,12 @@ Google은 이 정보를 광고 제공·측정·개인화(허용된 경우), 분�
 
 자세한 내용은 [Google 개인정보처리방침](https://policies.google.com/privacy), [Google 파트너 사이트 또는 앱의 정보 사용 방식](https://policies.google.com/technologies/partner-sites), [Google Mobile Ads SDK 데이터 공개 안내](https://developers.google.com/admob/android/privacy/play-data-disclosure)를 확인하세요.
 
+### 3.1. 사용 통계와 오류 진단
+
+Android 버전은 Google Analytics for Firebase와 Firebase Crashlytics를 사용합니다. 앱 실행·세션, 화면 방문, 온보딩 완료, 입력 화면의 지출·수입 저장 여부와 앱 버전, 운영체제·기기 정보, 앱 인스턴스 또는 설치 식별자, 오류 유형·스택과 비정상 종료 진단 정보를 Google이 처리할 수 있습니다. 목적은 사용 현황 파악과 안정성 개선입니다.
+
+개발자가 보내는 분석 이벤트에는 거래 금액, 예산, 메모, 영수증 사진 또는 사용자 식별자를 넣지 않습니다. Dart 오류는 원문 메시지 대신 오류 유형과 스택을 전송합니다. Analytics의 광고 ID 수집과 광고 개인화 신호는 비활성화하며, AdMob의 동의 처리는 별도로 유지합니다. 이 설정이 모든 분석·진단 식별자의 수집을 끄는 것은 아닙니다. 수집 데이터의 보관·삭제는 Firebase·Google Analytics의 설정과 Google 정책을 따릅니다. 자세한 내용은 [Firebase 데이터 공개 안내](https://firebase.google.com/docs/android/play-data-disclosure)를 확인하세요.
+
 ### 4. 앱 내 구매
 
 유료 아이템을 구매하거나 복원할 때 결제는 Google Play 또는 Apple App Store가 처리합니다. Sobrita는 카드번호나 은행계좌 정보를 직접 수집하지 않습니다. 앱은 상품 제공과 복원을 위해 상품 ID, 구매 상태, 구매 식별자 또는 검증 정보와 같은 결제 결과를 앱 마켓에서 받을 수 있습니다. 앱 마켓의 정보 처리는 각 제공자의 개인정보처리방침을 따릅니다.
@@ -80,13 +86,13 @@ Google은 이 정보를 광고 제공·측정·개인화(허용된 경우), 분�
 - **카메라 및 사진:** 사용자가 영수증 사진을 직접 촬영하거나 선택할 때만 사용합니다.
 - **알림:** 사용자가 빠른 지출 입력 알림을 켰을 때 사용합니다. 기기 설정에서 언제든 끌 수 있습니다.
 - **부팅 완료:** 사용자가 켜 둔 빠른 입력 알림을 재부팅 후 복원하는 데 사용합니다.
-- **인터넷:** 광고·동의 메시지 및 앱 마켓 구매 기능에 사용합니다.
+- **인터넷:** 광고·동의 메시지, 앱 마켓 구매, 사용 통계 및 오류 진단에 사용합니다.
 
 ### 6. 제3자 제공, 판매 및 국외 처리
 
 개발자는 사용자의 가계부 원문이나 영수증 사진을 판매하지 않습니다. 기능 제공에 필요한 범위에서 다음 제3자가 정보를 처리할 수 있습니다.
 
-- Google: AdMob 광고, UMP 동의 관리, Google Play 결제 및 Android 백업
+- Google: Firebase Analytics·Crashlytics, AdMob 광고, UMP 동의 관리, Google Play 결제 및 Android 백업
 - Apple: App Store 결제 및 기기 백업(해당 플랫폼에서 사용하는 경우)
 
 Google과 Apple은 사용자의 거주 국가 밖에서 정보를 처리할 수 있습니다. 구체적인 처리 장소와 보호조치는 각 회사의 정책을 따릅니다. 법률상 의무, 법적 절차, 권리·안전 보호를 위해 필요한 경우에도 법이 허용하는 범위에서 정보를 공개할 수 있습니다.
@@ -180,6 +186,12 @@ Cuando sea aplicable, UMP solicita las decisiones de consentimiento necesarias. 
 
 Para más información, consulta la [Política de Privacidad de Google](https://policies.google.com/privacy), [cómo usa Google la información de sitios o aplicaciones que utilizan sus servicios](https://policies.google.com/technologies/partner-sites) y la [divulgación de datos de Google Mobile Ads SDK](https://developers.google.com/admob/android/privacy/play-data-disclosure).
 
+### 3.1. Estadísticas de uso y diagnóstico
+
+La versión Android utiliza Google Analytics for Firebase y Firebase Crashlytics. Google puede tratar inicios y sesiones, visitas a pantallas, finalización de la introducción, registros de gastos o ingresos realizados desde el formulario, versión de la aplicación, datos del sistema y del dispositivo, identificadores de instancia o instalación, tipos de errores, trazas y diagnósticos de fallos. Se utilizan para conocer el uso y mejorar la estabilidad.
+
+Los eventos definidos por el desarrollador no incluyen importes, presupuestos, notas, fotografías ni identificadores de usuario. Los errores Dart se envían como tipo y traza, sin el mensaje original. La recopilación del ID publicitario y las señales de personalización publicitaria de Analytics están desactivadas; AdMob mantiene su propio flujo de consentimiento. Esto no desactiva todos los identificadores analíticos o de diagnóstico. La conservación y eliminación dependen de la configuración de Firebase y Google Analytics y de las políticas de Google. Consulta la [información de datos de Firebase](https://firebase.google.com/docs/android/play-data-disclosure).
+
 ### 4. Compras dentro de la Aplicación
 
 Google Play o Apple App Store procesan el pago y la restauración de artículos de pago. Sobrita no recibe directamente números de tarjeta ni datos bancarios. Para entregar y restaurar una compra, la Aplicación puede recibir de la tienda el ID del producto, el estado de compra, un identificador de compra o información de verificación. El tratamiento de la tienda se rige por la política de privacidad de su proveedor.
@@ -189,13 +201,13 @@ Google Play o Apple App Store procesan el pago y la restauración de artículos 
 - **Cámara y fotos:** se utilizan únicamente cuando la persona usuaria toma o selecciona una foto de un recibo.
 - **Notificaciones:** se utilizan si la persona usuaria habilita la notificación de acceso rápido. Pueden deshabilitarse en los ajustes del dispositivo.
 - **Inicio del dispositivo:** permite restaurar la notificación de acceso rápido que la persona usuaria dejó habilitada.
-- **Internet:** se utiliza para publicidad, mensajes de consentimiento y compras de la tienda.
+- **Internet:** se utiliza para publicidad, mensajes de consentimiento, compras de la tienda, estadísticas de uso y diagnóstico de errores.
 
 ### 6. Terceros, venta y transferencias internacionales
 
 El responsable no vende el contenido de los registros financieros ni las fotografías de recibos. Para prestar las funciones descritas, los siguientes terceros pueden tratar información:
 
-- Google: AdMob, UMP, compras de Google Play y respaldo de Android.
+- Google: Firebase Analytics y Crashlytics, AdMob, UMP, compras de Google Play y respaldo de Android.
 - Apple: compras de App Store y respaldo del dispositivo, cuando corresponda.
 
 Google y Apple pueden tratar información fuera del país de residencia de la persona usuaria. Las ubicaciones y salvaguardas concretas se rigen por sus respectivas políticas. También podrán comunicarse datos cuando sea necesario para cumplir una obligación legal, un proceso jurídico o proteger derechos y seguridad, dentro de lo permitido por la ley.
@@ -289,6 +301,12 @@ Where applicable, UMP requests the necessary consent choices. When required, use
 
 For more information, see the [Google Privacy Policy](https://policies.google.com/privacy), [how Google uses information from sites or apps that use its services](https://policies.google.com/technologies/partner-sites), and the [Google Mobile Ads SDK data-disclosure guidance](https://developers.google.com/admob/android/privacy/play-data-disclosure).
 
+### 3.1. Usage analytics and diagnostics
+
+The Android version uses Google Analytics for Firebase and Firebase Crashlytics. Google may process app launches and sessions, screen visits, onboarding completion, expense/income saves from the entry form, app version, operating system and device information, app-instance or installation identifiers, error types, stack traces and crash diagnostics. These support usage measurement and reliability improvements.
+
+Developer-defined events do not include financial amounts, budgets, notes, receipt photos or user identifiers. Dart errors are reported as an error type and stack without the original exception message. Analytics advertising-ID collection and ad-personalization signals are disabled; AdMob retains its separate consent flow. This does not disable all analytics or diagnostic identifiers. Retention and deletion follow Firebase and Google Analytics settings and Google's policies. See [Firebase data-disclosure guidance](https://firebase.google.com/docs/android/play-data-disclosure).
+
 ### 4. In-app purchases
 
 Google Play or the Apple App Store processes payments and purchase restoration. Sobrita does not directly receive card numbers or bank account details. To deliver or restore an item, the App may receive a product ID, purchase status, purchase identifier, or verification information from the store. The store's processing is governed by its provider's privacy policy.
@@ -298,13 +316,13 @@ Google Play or the Apple App Store processes payments and purchase restoration. 
 - **Camera and photos:** used only when the user takes or selects a receipt photo.
 - **Notifications:** used if the user enables the quick-entry notification; it can be disabled in device settings.
 - **Boot completed:** used to restore the quick-entry notification the user left enabled.
-- **Internet:** used for ads, consent messages, and app-store purchases.
+- **Internet:** used for ads, consent messages, app-store purchases, analytics and diagnostics.
 
 ### 6. Third parties, sale, and international processing
 
 The controller does not sell the contents of users' financial records or receipt photos. To provide the described features, the following third parties may process information:
 
-- Google: AdMob advertising, UMP consent management, Google Play purchases, and Android backup.
+- Google: Firebase Analytics and Crashlytics, AdMob advertising, UMP consent management, Google Play purchases, and Android backup.
 - Apple: App Store purchases and device backup, where applicable.
 
 Google and Apple may process information outside the user's country of residence. The specific locations and safeguards are governed by their respective policies. Information may also be disclosed where required to comply with law or legal process or to protect rights and safety, as permitted by law.

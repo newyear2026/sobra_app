@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/xp_event.dart';
 import '../models/pay_schedule.dart';
+import '../services/app_telemetry.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
@@ -164,7 +167,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Future<void> _finish(SobraStore store) => guardStoreWrite(
     ScaffoldMessenger.of(context),
     AppLocalizations.of(context),
-    store.completeOnboarding,
+    () async {
+      await store.completeOnboarding();
+      unawaited(AppTelemetry.instance.event(TelemetryEvent.onboardingCompleted));
+    },
   );
 
   @override

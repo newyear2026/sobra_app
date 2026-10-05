@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/expense_entry.dart';
+import '../services/app_telemetry.dart';
 import '../models/income_entry.dart';
 import '../models/pay_schedule.dart';
 import '../state/sobra_store.dart';
@@ -166,7 +167,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
     // Nothing was written, and guardStoreWrite has already said so. Celebrating
     // and clearing the form here would throw the entry away twice over.
-    if (!saved || !mounted) return;
+    if (!saved) return;
+    if (!usePending) {
+      unawaited(
+        AppTelemetry.instance.event(
+          _mode == RegisterMode.expense
+              ? TelemetryEvent.expenseRecorded
+              : TelemetryEvent.incomeRecorded,
+        ),
+      );
+    }
+    if (!mounted) return;
     // The dialog closes itself on a timer. Awaiting a dialog that something
     // else has to pop deadlocks: the await only finishes once the route is
     // gone, so the line that pops it never runs.
