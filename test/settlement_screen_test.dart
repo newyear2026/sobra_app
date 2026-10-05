@@ -73,7 +73,7 @@ void main() {
   ) async {
     final store = await loadStore();
     final started = CatalogPreviewData.all.firstWhere(
-      (entry) => entry.id == 'character-03',
+      (entry) => entry.id == 'quokka',
     );
     await store.recordRewardedAdView(started);
     await pump(tester, store);
@@ -86,11 +86,11 @@ void main() {
     expect(
       find.descendant(
         of: find.byType(AlertDialog),
-        matching: find.text('Personaje 3'),
+        matching: find.text('Quokka'),
       ),
       findsOneWidget,
     );
-    expect(store.rewardedAdProgressFor('character-03'), 1);
+    expect(store.rewardedAdProgressFor('quokka'), 1);
   });
 
   testWidgets('the card is hidden when nothing can be unlocked', (

@@ -2165,6 +2165,7 @@ class SobraStore extends ChangeNotifier {
     final candidates = [
       for (final entry in catalog)
         if (entry.unlockMethod == CatalogUnlockMethod.rewardedAd &&
+            !entry.isPlaceholder &&
             rewardedAdAvailabilityFor(entry) ==
                 RewardedAdAvailability.available)
           entry,
@@ -2519,7 +2520,8 @@ class SobraStore extends ChangeNotifier {
     if (target == null) {
       throw ArgumentError.value(entry.id, 'entry', 'not a rewarded-ad entry');
     }
-    if (rewardedAdAvailabilityFor(entry) != RewardedAdAvailability.available) {
+    if (entry.isPlaceholder ||
+        rewardedAdAvailabilityFor(entry) != RewardedAdAvailability.available) {
       return false;
     }
     final today = todayKey;

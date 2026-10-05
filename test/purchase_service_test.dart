@@ -342,7 +342,7 @@ void main() {
     });
 
     test('never touches what was earned with ads', () async {
-      final adEntry = entryById('character-03');
+      final adEntry = entryById('quokka');
       for (var view = 0; view < adEntry.rewardedAdTarget!; view++) {
         await store.recordRewardedAdView(adEntry);
       }

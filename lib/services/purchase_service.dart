@@ -415,6 +415,7 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   Future<void> buy(CatalogEntry entry) async {
     final productId = entry.storeProductId;
     if (entry.unlockMethod != CatalogUnlockMethod.purchase) return;
+    if (entry.isPlaceholder) return;
     if (productId == null || _store.ownsCatalogEntry(entry)) return;
     await buyProduct(productId);
   }

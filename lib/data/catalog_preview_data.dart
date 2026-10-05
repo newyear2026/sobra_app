@@ -450,7 +450,8 @@ abstract final class CatalogPreviewData {
   static Set<String> get storeProductIds => {
     for (final entry in all)
       if (entry.storeProductId != null &&
-          entry.unlockMethod != CatalogUnlockMethod.gift)
+          entry.unlockMethod != CatalogUnlockMethod.gift &&
+          !entry.isPlaceholder)
         entry.storeProductId!,
     ...productEntitlements.keys,
   };
@@ -461,7 +462,8 @@ abstract final class CatalogPreviewData {
   /// A gift nobody can still get is not shown locked. Everything else is,
   /// because each locked card says how to unlock it.
   static bool isListed(CatalogEntry entry, {required bool isOwned}) =>
-      isOwned || entry.unlockMethod != CatalogUnlockMethod.gift;
+      isOwned ||
+      (entry.unlockMethod != CatalogUnlockMethod.gift && !entry.isPlaceholder);
 
   static bool isUnlockedAtLevel(CatalogEntry entry, int playerLevel) =>
       entry.unlockMethod == CatalogUnlockMethod.level &&

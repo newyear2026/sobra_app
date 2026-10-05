@@ -59,6 +59,7 @@ void main() {
     RewardedAds? ads,
     bool openedFromDecorate = false,
     String? initialEntryId,
+    CatalogPriceSource prices = const PreviewCatalogPriceSource(),
   }) async {
     tester.view.physicalSize = const Size(520, 1400);
     tester.view.devicePixelRatio = 1;
@@ -74,6 +75,7 @@ void main() {
         home: CollectionScreen(
           openedFromDecorate: openedFromDecorate,
           initialEntryId: initialEntryId,
+          priceSource: prices,
         ),
       ),
     );
@@ -129,28 +131,33 @@ void main() {
     await pump(tester, store);
 
     await tester.scrollUntilVisible(
-      find.text('Personaje 10'),
+      find.text('Bunny'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Personaje 10'));
+    await tester.tap(find.text('Bunny'));
     await tester.pumpAndSettle();
 
     expect(inDialog('COMPRAR'), findsOneWidget);
     expect(inDialog('EQUIPAR'), findsNothing);
   });
 
-  // Slot 10 has no product in Play until it has a name, so nothing quotes it.
+  // Without a price from Play there is nothing to charge, so nothing is sold.
   testWidgets('a paid character with no price cannot be bought', (
     tester,
   ) async {
     final store = await loadStore();
-    final unpriced = entryById('character-10');
+    final unpriced = entryById('rabbit');
     expect(store.ownsCatalogEntry(unpriced), isFalse);
-    await pump(tester, store, initialEntryId: 'character-10');
+    await pump(
+      tester,
+      store,
+      initialEntryId: 'rabbit',
+      prices: const _NoPrices(),
+    );
 
-    expect(inDialog('Personaje 10'), findsOneWidget);
+    expect(inDialog('Bunny'), findsOneWidget);
     expect(inDialog('COMPRAR'), findsOneWidget);
     final buyButton = tester.widget<FilledButton>(
       find.descendant(
@@ -249,7 +256,7 @@ void main() {
 
   testWidgets('a stored ad count is what the card counts from', (tester) async {
     final store = await loadStore();
-    await store.recordRewardedAdView(entryById('character-03'));
+    await store.recordRewardedAdView(entryById('quokka'));
 
     await pump(tester, store, ads: await readyAds(store));
 
@@ -257,7 +264,7 @@ void main() {
     // line says how far along the run is.
     // The lazy grid builds the visible cards; later entries load on scroll.
     await tester.scrollUntilVisible(
-      find.text('Personaje 3'),
+      find.text('Quokka'),
       150,
       scrollable: find.byType(Scrollable).first,
     );
@@ -356,27 +363,6 @@ void main() {
     expect(find.text('LÍMITE DE HOY'), findsAtLeastNWidgets(2));
   });
 
-  testWidgets('the special tier says it continues tomorrow', (tester) async {
-    final store = await loadStore();
-    final special = entryById('character-08');
-    await store.recordRewardedAdView(special);
-
-    await pump(tester, store, ads: await readyAds(store));
-
-    await tester.scrollUntilVisible(
-      find.text('Personaje 8'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-
-    expect(find.text('SIGUE MAÑANA'), findsOneWidget);
-    // The count stays on screen through the wait. Seeing 1/3 is the reason to
-    // come back tomorrow; a card that only says "later" is a locked card.
-    expect(find.text('1/3'), findsOneWidget);
-    // The others are untouched: one entry's day does not spend anybody else's.
-    expect(find.text('0/2'), findsWidgets);
-  });
-
   testWidgets('watching an ad through counts and unlocks', (tester) async {
     final store = await loadStore();
     final item = entryById('item-03');
@@ -465,41 +451,17 @@ void main() {
     );
   });
 
-  // "SIGUE MAÑANA" says an entry is waiting without ever saying why. The card
-  // has no room for the rule, so the dialog is where it is written out.
-  testWidgets('the dialog explains the once-a-day rule', (tester) async {
-    final store = await loadStore();
-    final special = entryById('character-08');
-    expect(special.rewardedAdOncePerDay, isTrue);
-    await store.recordRewardedAdView(special);
-
-    await pump(tester, store, ads: await readyAds(store));
-    await tester.scrollUntilVisible(
-      find.text('Personaje 8'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Personaje 8'));
-    await tester.pumpAndSettle();
-
-    expect(
-      inDialog('Mira anuncios de recompensa · 1/3 · uno por día'),
-      findsOneWidget,
-    );
-  });
-
   testWidgets('an ordinary entry is not told it is once a day', (tester) async {
     final store = await loadStore();
 
     await pump(tester, store, ads: await readyAds(store));
     await tester.scrollUntilVisible(
-      find.text('Personaje 3'),
+      find.text('Quokka'),
       150,
       scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Personaje 3'));
+    await tester.tap(find.text('Quokka'));
     await tester.pumpAndSettle();
 
     expect(inDialog('Mira anuncios de recompensa · 0/2'), findsOneWidget);
@@ -581,14 +543,14 @@ void main() {
     final ads = RewardedAds(port: port, store: store);
     await pump(tester, store, ads: ads);
     await tester.scrollUntilVisible(
-      find.text('Personaje 3'),
+      find.text('Quokka'),
       150,
       scrollable: find.byType(Scrollable).first,
     );
 
     // Not awaited: the assertion below is about what the screen shows while
     // the run is still in flight.
-    final run = ads.watch(entryById('character-03'));
+    final run = ads.watch(entryById('quokka'));
     await tester.pump();
 
     expect(find.text('PREPARANDO'), findsOneWidget);
@@ -598,7 +560,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('PREPARANDO'), findsNothing);
-    expect(store.rewardedAdProgressFor('character-03'), 1);
+    expect(store.rewardedAdProgressFor('quokka'), 1);
   });
 
   // The dead end found on a device: one empty answer at launch left every
@@ -653,12 +615,12 @@ void main() {
 
     await pump(tester, store, ads: await readyAds(store));
     await tester.scrollUntilVisible(
-      find.text('Personaje 3'),
+      find.text('Quokka'),
       150,
       scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Personaje 3'));
+    await tester.tap(find.text('Quokka'));
     await tester.pumpAndSettle();
 
     // Asserted by behaviour rather than by widget type: pressing it must not
@@ -667,7 +629,7 @@ void main() {
     await tester.tap(inDialog('LÍMITE DE HOY'), warnIfMissed: false);
     await tester.pumpAndSettle();
 
-    expect(store.rewardedAdProgressFor('character-03'), 0);
+    expect(store.rewardedAdProgressFor('quokka'), 0);
     expect(store.rewardedAdsLeftToday, 0);
   });
 
@@ -733,4 +695,12 @@ class _SlowRewardedAdPort implements RewardedAdPort {
     _ready = false;
     return RewardedAdResult.earned;
   }
+}
+
+/// A store that has not answered, or has no listing: no price for anything.
+final class _NoPrices implements CatalogPriceSource {
+  const _NoPrices();
+
+  @override
+  String? localizedPriceFor(String storeProductId) => null;
 }

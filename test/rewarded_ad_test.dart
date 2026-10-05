@@ -36,10 +36,21 @@ void main() {
   final item = entryById('item-03');
 
   /// An ordinary character: two views, on any days.
-  final character = entryById('character-03');
+  final character = entryById('quokka');
 
   /// The special tier: three views, and never two on the same day.
-  final special = entryById('character-08');
+  ///
+  /// Nothing in the shipped lineup uses it since the placeholder that did was
+  /// hidden, so the rule is held to with an entry of its own.
+  const special = CatalogEntry(
+    id: 'special-tier',
+    name: 'Especial',
+    kind: CatalogKind.character,
+    unlockMethod: CatalogUnlockMethod.rewardedAd,
+    visual: CatalogVisual.quokka,
+    rewardedAdTarget: 3,
+    rewardedAdOncePerDay: true,
+  );
 
   group('the tiers match the spec', () {
     test('an item costs one view', () {

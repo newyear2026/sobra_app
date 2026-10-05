@@ -43,7 +43,7 @@ void main() {
   test(
     'rewarded-ad progress survives a reload and grants at the target',
     () async {
-      final entry = entryById('character-03');
+      final entry = entryById('quokka');
       expect(entry.rewardedAdTarget, 2);
       final store = await loadStore();
 
@@ -518,7 +518,7 @@ void main() {
   // through must not leave a stale count behind.
   test('a bundle clears rewarded progress for what it grants', () async {
     final store = await loadStore();
-    final started = entryById('character-03');
+    final started = entryById('quokka');
     await store.recordRewardedAdView(started);
     expect(store.rewardedAdProgressFor(started.id), 1);
 
@@ -597,7 +597,7 @@ void main() {
     'recommended rewarded entry prefers progress, then fewer views',
     () async {
       final store = await loadStore();
-      final started = entryById('character-03');
+      final started = entryById('quokka');
       await store.recordRewardedAdView(started);
 
       expect(store.recommendedRewardedAdEntry?.id, started.id);
@@ -643,5 +643,46 @@ void main() {
 
     expect(store.ownsCatalogEntry(single), isFalse);
     expect(store.characterId, 'michi');
+  });
+
+  group('placeholder characters', () {
+    final placeholders = CatalogPreviewData.characters
+        .where((entry) => entry.isPlaceholder)
+        .toList();
+
+    test('are the numbered slots with no art', () {
+      expect(placeholders.map((entry) => entry.id), [
+        'character-03',
+        'character-05',
+        'character-08',
+        'character-10',
+      ]);
+    });
+
+    test('are not listed unless somebody already has one', () {
+      for (final entry in placeholders) {
+        expect(CatalogPreviewData.isListed(entry, isOwned: false), isFalse);
+        expect(CatalogPreviewData.isListed(entry, isOwned: true), isTrue);
+      }
+    });
+
+    test('are never priced, recommended or advanced by an ad', () async {
+      expect(
+        CatalogPreviewData.storeProductIds,
+        isNot(contains('sobra.character.10')),
+      );
+      final store = await loadStore();
+      // Own every real rewarded entry, so only placeholders would be left.
+      await store.grantCatalogEntries({
+        for (final entry in CatalogPreviewData.all)
+          if (entry.unlockMethod == CatalogUnlockMethod.rewardedAd &&
+              !entry.isPlaceholder)
+            entry.id,
+      });
+      expect(store.recommendedRewardedAdEntry, isNull);
+      final slot = entryById('character-03');
+      expect(await store.recordRewardedAdView(slot), isFalse);
+      expect(store.rewardedAdProgressFor(slot.id), 0);
+    });
   });
 }

@@ -100,6 +100,14 @@ class CatalogEntry {
   /// it is the only reason [SobraStore] remembers a date per entry at all.
   final bool rewardedAdOncePerDay;
   final String? storeProductId;
+
+  /// A slot kept for a character that has no art yet.
+  ///
+  /// Never offered: no listing, no ad run, no checkout. The early collection
+  /// preview showed these as numbered paw icons, and shipped as they were
+  /// they let two ads buy a paw print and put a buy button on a product the
+  /// store does not sell. One that somebody already earned stays theirs.
+  bool get isPlaceholder => visual == CatalogVisual.characterPlaceholder;
 }
 
 /// Why a rewarded view cannot start for an entry right now.

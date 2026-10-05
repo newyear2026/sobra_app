@@ -134,11 +134,11 @@ void main() {
     expect(find.text('Yoshi'), findsOneWidget);
     expect(find.text('Cookie'), findsOneWidget);
     await tester.scrollUntilVisible(
-      find.text('Personaje 3'),
+      find.text('Quokka'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
-    expect(find.text('Personaje 3'), findsOneWidget);
+    expect(find.text('Quokka'), findsOneWidget);
 
     await tester.drag(find.byType(Scrollable).first, const Offset(0, 1500));
     await tester.pumpAndSettle();
@@ -197,11 +197,11 @@ void main() {
 
     expect(find.text('Colección'), findsOneWidget);
     await tester.scrollUntilVisible(
-      find.text('Personaje 3'),
+      find.text('Quokka'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
-    expect(find.text('Personaje 3'), findsOneWidget);
+    expect(find.text('Quokka'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
