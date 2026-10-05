@@ -225,8 +225,7 @@ void main() {
       final placements = <RoomSlot, String>{
         RoomSlot.floorCabinet: RoomDecorAssets.slimBookcaseId,
         RoomSlot.floorRight: RoomDecorAssets.roundSideTableId,
-        RoomSlot.cabinetTop: RoomDecorAssets.savingsJarId,
-        RoomSlot.sideTableTop: RoomDecorAssets.defaultTablePlantId,
+        RoomSlot.sideTableTop: RoomDecorAssets.savingsJarId,
       };
       expect(room.slotsForItem(RoomDecorAssets.slimBookcaseId), [
         RoomSlot.floorCabinet,
@@ -251,10 +250,20 @@ void main() {
       );
       expect(
         store.roomDecorationsFor(room.id),
-        containsPair(
-          RoomSlot.sideTableTop,
-          RoomDecorAssets.defaultTablePlantId,
+        containsPair(RoomSlot.sideTableTop, RoomDecorAssets.savingsJarId),
+      );
+      // The plant still fits the bookcase; it is only withheld for now.
+      await expectLater(
+        store.saveRoomSelection(
+          roomId: room.id,
+          placementsByRoom: {
+            room.id: {
+              ...placements,
+              RoomSlot.cabinetTopRight: RoomDecorAssets.defaultTablePlantId,
+            },
+          },
         ),
+        throwsArgumentError,
       );
       await expectLater(
         store.saveRoomSelection(
@@ -382,7 +391,6 @@ void main() {
           RoomThemes.casaJardinId: {
             RoomSlot.rug: RoomDecorAssets.defaultRugId,
             RoomSlot.floorCabinet: RoomDecorAssets.lowCabinetId,
-            RoomSlot.cabinetTopRight: RoomDecorAssets.defaultTablePlantId,
             RoomSlot.floorRight: RoomDecorAssets.terracottaPoufId,
           },
         },
@@ -393,7 +401,6 @@ void main() {
           RoomThemes.casaDePlayaId: {
             RoomSlot.rug: RoomDecorAssets.defaultRugId,
             RoomSlot.floorCabinet: RoomDecorAssets.lowCabinetId,
-            RoomSlot.cabinetTopRight: RoomDecorAssets.defaultTablePlantId,
             RoomSlot.wallLeft: RoomDecorAssets.wallShelfId,
           },
         },
@@ -514,23 +521,12 @@ void main() {
       expect(store.roomDecorationsFor().containsValue('item-05'), isFalse);
     });
 
-    testWidgets('the table plant is offered only on a supporting surface', (
-      tester,
-    ) async {
+    testWidgets('the table plant is not offered', (tester) async {
       final store = await _store();
       await _pumpDecorator(tester, store);
       await _tapAndSettle(tester, find.text('Adornos'));
-      await _tapAndSettle(tester, find.text('Planta de mesa'));
 
-      expect(find.bySemanticsLabel('Mesa, lugar 1'), findsOneWidget);
-      expect(find.bySemanticsLabel(RegExp('^Piso, lugar')), findsNothing);
-
-      await _tapAndSettle(tester, find.bySemanticsLabel('Mesa, lugar 1'));
-      await _tapAndSettle(tester, find.text('Listo'));
-
-      final room = (await SobraStore.load(now: _now)).roomDecorationsFor();
-      expect(room[RoomSlot.floorRight], isNull);
-      expect(room[RoomSlot.tabletop], RoomDecorAssets.defaultTablePlantId);
+      expect(find.text('Planta de mesa'), findsNothing);
     });
 
     testWidgets('Casa clara starts with nothing on the windowsill', (
@@ -543,12 +539,15 @@ void main() {
       });
     });
 
-    testWidgets('the lamp takes the sill from the plant', (tester) async {
-      final store = await _store();
-      await store.saveRoomDecorations({
-        ...store.roomDecorationsFor(),
-        RoomSlot.tabletop: RoomDecorAssets.defaultTablePlantId,
+    testWidgets('a plant saved before it was withheld leaves the sill free', (
+      tester,
+    ) async {
+      await _store();
+      final store = await _reloadWithSavedRoom({
+        'rug': RoomDecorAssets.defaultRugId,
+        'tabletop': RoomDecorAssets.defaultTablePlantId,
       });
+      expect(store.roomDecorationsFor()[RoomSlot.tabletop], isNull);
       await _pumpDecorator(tester, store);
 
       await _tapTile(tester, 'Lámpara verde');
@@ -556,12 +555,6 @@ void main() {
       await _tapAndSettle(tester, find.text('Listo'));
 
       expect(store.roomDecorationsFor()[RoomSlot.tabletop], 'item-01');
-      expect(
-        store.roomDecorationsFor().containsValue(
-          RoomDecorAssets.defaultTablePlantId,
-        ),
-        isFalse,
-      );
     });
   });
 }

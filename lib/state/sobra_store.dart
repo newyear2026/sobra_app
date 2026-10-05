@@ -2371,8 +2371,10 @@ class SobraStore extends ChangeNotifier {
     return Map.unmodifiable(merged);
   }
 
-  /// Room defaults are no catalog entry and always count as owned.
+  /// Room defaults are no catalog entry and always count as owned, apart
+  /// from what [RoomDecorAssets.withheldIds] holds back.
   bool _ownsRoomItem(String itemId) {
+    if (RoomDecorAssets.withheldIds.contains(itemId)) return false;
     final entry = CatalogPreviewData.items
         .where((candidate) => candidate.id == itemId)
         .firstOrNull;
@@ -2459,7 +2461,8 @@ class SobraStore extends ChangeNotifier {
       final entry = CatalogPreviewData.items
           .where((candidate) => candidate.id == itemId)
           .firstOrNull;
-      if (entry != null && !ownsCatalogEntry(entry)) {
+      if ((entry != null && !ownsCatalogEntry(entry)) ||
+          RoomDecorAssets.withheldIds.contains(itemId)) {
         throw ArgumentError.value(itemId, 'placements', 'item not owned');
       }
       if (!room.slotsForItem(itemId, placements: placements).contains(slot)) {

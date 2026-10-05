@@ -32,27 +32,23 @@ void main() {
     final store = await SobraStore.load(now: () => DateTime(2026, 9, 14, 10));
     await store.setReducedMotion(true);
     await ownAllDecorations(store);
-    Future<void> place({required bool plantOnBookcase}) async {
-      final plantSlot = plantOnBookcase
-          ? RoomSlot.cabinetTopRight
-          : RoomSlot.sideTableTop;
-      final jarSlot = plantOnBookcase
-          ? RoomSlot.sideTableTop
-          : RoomSlot.cabinetTop;
+    // The jar is the one prop either piece takes while the table plant is
+    // withheld, so it moves between them.
+    Future<void> place({required bool jarOnBookcase}) async {
       await store.saveRoomSelection(
         roomId: RoomThemes.casaJardinId,
         placementsByRoom: {
           RoomThemes.casaJardinId: {
             RoomSlot.floorCabinet: RoomDecorAssets.slimBookcaseId,
             RoomSlot.floorRight: RoomDecorAssets.roundSideTableId,
-            plantSlot: RoomDecorAssets.defaultTablePlantId,
-            jarSlot: RoomDecorAssets.savingsJarId,
+            jarOnBookcase ? RoomSlot.cabinetTop : RoomSlot.sideTableTop:
+                RoomDecorAssets.savingsJarId,
           },
         },
       );
     }
 
-    await place(plantOnBookcase: false);
+    await place(jarOnBookcase: true);
     await tester.pumpWidget(
       SobraScope(
         store: store,
@@ -72,7 +68,6 @@ void main() {
           RoomDecorAssets.slimBookcase,
           RoomDecorAssets.roundSideTable,
           RoomDecorAssets.savingsJar,
-          RoomDecorAssets.tablePlant,
         ])
           precacheImage(
             AssetImage(asset),
@@ -86,7 +81,7 @@ void main() {
       matchesGoldenFile('../design/rooms/sobra-room-bookcase-side-table.png'),
     );
 
-    await place(plantOnBookcase: true);
+    await place(jarOnBookcase: false);
     await tester.pump();
     await expectLater(
       find.byType(Scaffold),
@@ -153,7 +148,6 @@ void main() {
           RoomSlot.floorCabinet: RoomDecorAssets.lowCabinetId,
           RoomSlot.floorCenter: RoomDecorAssets.petBedId,
           RoomSlot.cabinetTop: RoomDecorAssets.savingsJarId,
-          RoomSlot.cabinetTopRight: RoomDecorAssets.defaultTablePlantId,
           RoomSlot.wallLeft: RoomDecorAssets.wallShelfId,
           RoomSlot.floorRight: RoomDecorAssets.terracottaPoufId,
           RoomSlot.rug: RoomDecorAssets.blueCreamRugId,
@@ -183,7 +177,6 @@ void main() {
           RoomDecorAssets.lowCabinet,
           RoomDecorAssets.petBed,
           RoomDecorAssets.savingsJar,
-          RoomDecorAssets.tablePlant,
           RoomDecorAssets.wallShelf,
           RoomDecorAssets.terracottaPouf,
           RoomDecorAssets.blueCreamRug,
@@ -228,7 +221,6 @@ void main() {
           RoomSlot.floorCabinet: RoomDecorAssets.lowCabinetId,
           RoomSlot.floorCenter: RoomDecorAssets.petBedId,
           RoomSlot.cabinetTop: RoomDecorAssets.savingsJarId,
-          RoomSlot.cabinetTopRight: RoomDecorAssets.defaultTablePlantId,
           RoomSlot.wallLeft: RoomDecorAssets.wallShelfId,
           RoomSlot.floorRight: RoomDecorAssets.terracottaPoufId,
           RoomSlot.rug: RoomDecorAssets.blueCreamRugId,
@@ -257,7 +249,6 @@ void main() {
           RoomDecorAssets.lowCabinet,
           RoomDecorAssets.petBed,
           RoomDecorAssets.savingsJar,
-          RoomDecorAssets.tablePlant,
           RoomDecorAssets.wallShelf,
           RoomDecorAssets.terracottaPouf,
           RoomDecorAssets.blueCreamRug,
@@ -314,24 +305,6 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Adornos'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Planta de mesa'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.bySemanticsLabel('Aparador bajo, lugar 2'));
-    await tester.pumpAndSettle();
-    await tester.runAsync(
-      () => precacheImage(
-        const AssetImage(RoomDecorAssets.tablePlant),
-        tester.element(find.byType(RoomDecorateScreen)),
-      ),
-    );
-    await tester.pump();
-    await expectLater(
-      find.byType(Scaffold),
-      matchesGoldenFile(
-        '../design/rooms/sobra-decorator-plant-selected-on-cabinet.png',
-      ),
-    );
-
     await tester.tap(find.text('Frasco de ahorros'));
     await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel('Aparador bajo, lugar 1'));
@@ -342,7 +315,6 @@ void main() {
           RoomThemes.casaJardin.portraitAsset,
           RoomDecorAssets.lowCabinet,
           RoomDecorAssets.savingsJar,
-          RoomDecorAssets.tablePlant,
         ])
           precacheImage(
             AssetImage(asset),

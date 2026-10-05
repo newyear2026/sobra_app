@@ -306,11 +306,18 @@ abstract final class RoomDecorAssets {
   /// What every room starts with: the rug, and nothing on any sill or table.
   ///
   /// Casa clara also used to put the table plant on its windowsill. It read
-  /// as part of the background rather than something the user placed, so it
-  /// now waits in the drawer like the rest; it is still free and owned.
+  /// as part of the background rather than something the user placed; see
+  /// [withheldIds] for where it went.
   static const defaultPlacements = <RoomSlot, String>{
     RoomSlot.rug: defaultRugId,
   };
+
+  /// Drawn and placeable, but given to nobody for now.
+  ///
+  /// The table plant used to be free in every room. It is held back rather
+  /// than deleted so it can return as a reward; until then it is not offered,
+  /// cannot be saved, and a room that still holds one shows the slot empty.
+  static const withheldIds = {defaultTablePlantId};
 
   static String? assetFor(String id) => switch (id) {
     defaultRugId => rug,

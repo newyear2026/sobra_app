@@ -64,8 +64,8 @@ void main() {
 
     await openCategory(tester, 'Adornos');
 
-    // Free and owned from the start, though no room places it any more.
-    expect(find.text('Planta de mesa'), findsOneWidget);
+    // The table plant is withheld for now, so nobody has it.
+    expect(find.text('Planta de mesa'), findsNothing);
     // Items still locked behind a level or an ad stay out of the drawer.
     expect(find.text('VER ANUNCIO'), findsNothing);
     expect(find.text('COMPRAR'), findsNothing);
@@ -260,19 +260,6 @@ void main() {
     await tester.pumpAndSettle();
 
     await openCategory(tester, 'Adornos');
-    await tester.tap(find.text('Planta de mesa'));
-    await tester.pumpAndSettle();
-    expect(find.bySemanticsLabel('Aparador bajo, lugar 2'), findsOneWidget);
-    await tester.tap(find.bySemanticsLabel('Aparador bajo, lugar 2'));
-    await tester.pumpAndSettle();
-    expect(
-      tester.widget<RoomScene>(find.byType(RoomScene)).placements,
-      containsPair(
-        RoomSlot.cabinetTopRight,
-        RoomDecorAssets.defaultTablePlantId,
-      ),
-    );
-
     await tester.tap(find.text('Frasco de ahorros'));
     await tester.pumpAndSettle();
     expect(find.bySemanticsLabel('Aparador bajo, lugar 1'), findsOneWidget);
@@ -296,10 +283,9 @@ void main() {
     );
     expect(saved[RoomSlot.floorCabinet], isNull);
     expect(saved[RoomSlot.cabinetTop], isNull);
-    expect(saved[RoomSlot.cabinetTopRight], isNull);
   });
 
-  testWidgets('bookcase and side table take props in distinct places', (
+  testWidgets('the jar stays on the bookcase when the side table leaves', (
     tester,
   ) async {
     final store = await loadStore();
@@ -340,14 +326,6 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel('Estantería estrecha, lugar 1'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Planta de mesa'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.bySemanticsLabel('Mesa auxiliar redonda, lugar 1'));
-    await tester.pumpAndSettle();
-    expect(
-      tester.widget<RoomScene>(find.byType(RoomScene)).placements,
-      containsPair(RoomSlot.sideTableTop, RoomDecorAssets.defaultTablePlantId),
-    );
 
     await openCategory(tester, 'Muebles');
     await tester.scrollUntilVisible(

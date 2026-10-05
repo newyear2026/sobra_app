@@ -9,7 +9,9 @@ user can place.
 Status: surfaces, slots, and six selectable themes are live. Casa jardín,
 Casa de playa, Casa torre, Casa montaña, and Casa invernadero use empty
 backgrounds with a separate default rug. Every room, Casa clara included,
-starts with only the rug; the table plant is free in the drawer. The last three
+starts with only the rug. The table plant is withheld for now
+(`RoomDecorAssets.withheldIds`): not offered, not saveable, and hidden where an
+older save placed it, so it can come back later as a reward. The last three
 rooms have wide windows, so they offer floor and furniture-supported tabletop
 slots but no wall slots. A placed cabinet or side table supplies its own
 tabletop slot.
@@ -149,7 +151,7 @@ A table or shelf is an item that brings its own places.
 
 ## Starting out *(planned)*
 
-- New users: an empty Casa clara with a rug; the small plant waits in the drawer.
+- New users: an empty Casa clara with a rug.
 - Existing users: a one-time migration grants the furniture that used to be
   painted into Casa clara and places it where it was drawn, so the room looks
   the same after the update. A lamp saved on the floor already moves to the

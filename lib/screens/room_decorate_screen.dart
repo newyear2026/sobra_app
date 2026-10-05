@@ -752,16 +752,6 @@ List<_RoomChoice> _choicesFor(
       ),
     );
   }
-  if (category == RoomDecorCategory.props) {
-    choices.add(
-      _assetChoice(
-        id: RoomDecorAssets.defaultTablePlantId,
-        label: l10n.roomTablePlant,
-        asset: RoomDecorAssets.tablePlant,
-        status: decorStatus(RoomDecorAssets.defaultTablePlantId),
-      ),
-    );
-  }
 
   for (final entry in CatalogPreviewData.items) {
     if (RoomDecorAssets.assetFor(entry.id) == null ||
