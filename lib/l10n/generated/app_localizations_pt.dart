@@ -493,6 +493,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get collectionItemsHint => 'Reúna o que vai no seu espaço';
 
   @override
+  String get collectionRooms => 'Casas';
+
+  @override
+  String get collectionRoomsHint => 'Escolha onde seu companheiro mora';
+
+  @override
   String collectionCharacterPlaceholder(int number) {
     return 'Personagem $number';
   }
@@ -542,6 +548,11 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String collectionUnlockedNotice(String name) {
     return '$name é seu!';
+  }
+
+  @override
+  String collectionRoomUnlockedNotice(String name) {
+    return 'Agora você pode se mudar para $name!';
   }
 
   @override

@@ -23,7 +23,12 @@ class CollectionScreen extends StatefulWidget {
     this.priceSource = const PreviewCatalogPriceSource(),
     this.openedFromDecorate = false,
     this.initialEntryId,
+    this.initialKind = CatalogKind.character,
   });
+
+  /// The tab shown on arrival, so the decorate screen's link lands on the
+  /// kind of thing the user was looking at. [initialEntryId] wins over it.
+  final CatalogKind initialKind;
 
   /// Whether the decorate screen is the route directly underneath.
   ///
@@ -47,7 +52,7 @@ class CollectionScreen extends StatefulWidget {
 }
 
 class _CollectionScreenState extends State<CollectionScreen> {
-  CatalogKind _selectedKind = CatalogKind.character;
+  late CatalogKind _selectedKind = widget.initialKind;
 
   /// Watched rather than polled.
   ///
@@ -231,7 +236,15 @@ class _CollectionScreenState extends State<CollectionScreen> {
       case RewardedAdOutcome.counted:
         if (store.ownsCatalogEntry(entry)) {
           _showNotice(
-            l10n.collectionUnlockedNotice(catalogEntryDisplayName(l10n, entry)),
+            // A room is somewhere to live rather than someone or something
+            // that is "yours" — and casa takes the feminine in Spanish.
+            entry.kind == CatalogKind.room
+                ? l10n.collectionRoomUnlockedNotice(
+                    catalogEntryDisplayName(l10n, entry),
+                  )
+                : l10n.collectionUnlockedNotice(
+                    catalogEntryDisplayName(l10n, entry),
+                  ),
             action: _placeItAction(l10n),
           );
         }
@@ -395,9 +408,11 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         children: [
                           Expanded(
                             child: _SummaryPanel(
-                              icon: _selectedKind == CatalogKind.character
-                                  ? Icons.pets
-                                  : Icons.chair_outlined,
+                              icon: switch (_selectedKind) {
+                                CatalogKind.character => Icons.pets,
+                                CatalogKind.item => Icons.chair_outlined,
+                                CatalogKind.room => Icons.home_outlined,
+                              },
                               text: l10n.collectionOwnedCount(
                                 ownedCount,
                                 states.length,
@@ -408,12 +423,18 @@ class _CollectionScreenState extends State<CollectionScreen> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: _SummaryPanel(
-                              icon: _selectedKind == CatalogKind.character
-                                  ? Icons.auto_awesome_outlined
-                                  : Icons.home_outlined,
-                              text: _selectedKind == CatalogKind.character
-                                  ? l10n.collectionCharactersHint
-                                  : l10n.collectionItemsHint,
+                              icon: switch (_selectedKind) {
+                                CatalogKind.character =>
+                                  Icons.auto_awesome_outlined,
+                                CatalogKind.item => Icons.home_outlined,
+                                CatalogKind.room => Icons.wb_sunny_outlined,
+                              },
+                              text: switch (_selectedKind) {
+                                CatalogKind.character =>
+                                  l10n.collectionCharactersHint,
+                                CatalogKind.item => l10n.collectionItemsHint,
+                                CatalogKind.room => l10n.collectionRoomsHint,
+                              },
                             ),
                           ),
                         ],
@@ -621,6 +642,14 @@ class _CatalogTabs extends StatelessWidget {
               label: l10n.collectionItems.toUpperCase(),
               selected: selected == CatalogKind.item,
               onTap: () => onChanged(CatalogKind.item),
+            ),
+          ),
+          Container(width: 2.5, height: 48, color: AppColors.ink),
+          Expanded(
+            child: _CatalogTab(
+              label: l10n.collectionRooms.toUpperCase(),
+              selected: selected == CatalogKind.room,
+              onTap: () => onChanged(CatalogKind.room),
             ),
           ),
         ],
@@ -836,6 +865,22 @@ class _CatalogPreview extends StatelessWidget {
         ),
       );
     }
+    // A room is a whole scene, so it fills the frame rather than sitting in
+    // the middle of it like an object.
+    if (entry.kind == CatalogKind.room && entry.assetPath != null) {
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.ink, width: 2),
+        ),
+        child: ClipRect(
+          child: Image.asset(
+            entry.assetPath!,
+            fit: BoxFit.cover,
+            excludeFromSemantics: true,
+          ),
+        ),
+      );
+    }
     if (entry.assetPath case final asset?) {
       return Center(
         child: SizedBox(
@@ -861,6 +906,7 @@ class _CatalogPreview extends StatelessWidget {
       CatalogVisual.clock => Icons.schedule,
       CatalogVisual.trophy => Icons.emoji_events_outlined,
       CatalogVisual.cushion => Icons.weekend_outlined,
+      CatalogVisual.room => Icons.home_outlined,
       CatalogVisual.michi => Icons.pets,
       CatalogVisual.poodle => Icons.pets,
       CatalogVisual.schnauzer => Icons.pets,

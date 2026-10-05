@@ -256,6 +256,13 @@ class SobraStore extends ChangeNotifier {
   String equippedRoomId = RoomThemes.casaClaraId;
   final Map<String, Map<RoomSlot, String>> _roomPlacementsByRoom = {};
 
+  /// Whether this install had every room before rooms were locked.
+  ///
+  /// A flag rather than ids in [_ownedCatalogIds]: Casa torre is sold, and
+  /// the launch revocation takes back any sold id Play does not report as
+  /// paid — which a room that came free never will be.
+  bool _keepsEveryRoom = false;
+
   int countedCashCentavos = 0;
   int expectedCashCentavos = 0;
   bool reducedMotion = false;
@@ -378,6 +385,11 @@ class SobraStore extends ChangeNotifier {
         !pickingStarter &&
         !store.ownsCatalogEntry(selectedEntry)) {
       store.characterId = store._fallbackCharacterId;
+      await store._save();
+    }
+    // The same for a room that was refunded, or is locked in this build.
+    if (!store.ownsRoom(store.equippedRoomId)) {
+      store.equippedRoomId = RoomThemes.casaClaraId;
       await store._save();
     }
     await store.settleCycles();
@@ -1993,11 +2005,24 @@ class SobraStore extends ChangeNotifier {
     candidate._ownedCatalogIds
       ..retainAll(portableIds)
       ..addAll(_ownedCatalogIds);
+    // The all-rooms flag covers Casa torre, which is sold, so it follows this
+    // install rather than the file. What the file had free that can also be
+    // earned comes along as ordinary ids.
+    if (candidate._keepsEveryRoom && !_keepsEveryRoom) {
+      candidate._ownedCatalogIds.addAll({
+        for (final room in CatalogPreviewData.rooms)
+          if (portableIds.contains(room.id)) room.id,
+      });
+    }
+    candidate._keepsEveryRoom = _keepsEveryRoom;
     final selected = CatalogPreviewData.characters
         .where((entry) => entry.id == candidate.characterId)
         .firstOrNull;
     if (selected != null && !candidate.ownsCatalogEntry(selected)) {
       candidate.characterId = candidate._fallbackCharacterId;
+    }
+    if (!candidate.ownsRoom(candidate.equippedRoomId)) {
+      candidate.equippedRoomId = RoomThemes.casaClaraId;
     }
     for (final placements in candidate._roomPlacementsByRoom.values) {
       placements.removeWhere((_, id) {
@@ -2108,6 +2133,7 @@ class SobraStore extends ChangeNotifier {
         CatalogPreviewData.isUnlockedAtLevel(entry, xpProgress.level) ||
         _ownedCatalogIds.contains(entry.id) ||
         (productId != null && _ownedCatalogIds.contains(productId)) ||
+        (_keepsEveryRoom && entry.kind == CatalogKind.room) ||
         (_debugPaidCharacters &&
             entry.kind == CatalogKind.character &&
             (entry.unlockMethod == CatalogUnlockMethod.purchase ||
@@ -2302,7 +2328,19 @@ class SobraStore extends ChangeNotifier {
   String? equippedIdFor(CatalogKind kind) => switch (kind) {
     CatalogKind.character => characterId,
     CatalogKind.item => equippedItemId,
+    CatalogKind.room => equippedRoomId,
   };
+
+  /// Whether the room [roomId] is the user's to choose.
+  ///
+  /// A room missing from the catalog counts as owned, the way room defaults
+  /// do for items: nothing sells it, so nothing can lock it.
+  bool ownsRoom(String roomId) {
+    final entry = CatalogPreviewData.rooms
+        .where((candidate) => candidate.id == roomId)
+        .firstOrNull;
+    return entry == null || ownsCatalogEntry(entry);
+  }
 
   /// What the room shows: its defaults, overlaid by what the user placed.
   ///
@@ -2367,6 +2405,9 @@ class SobraStore extends ChangeNotifier {
   }) => _write(() async {
     if (!RoomThemes.contains(roomId)) {
       throw ArgumentError.value(roomId, 'roomId', 'unknown room');
+    }
+    if (!ownsRoom(roomId)) {
+      throw ArgumentError.value(roomId, 'roomId', 'room not owned');
     }
     for (final entry in placementsByRoom.entries) {
       if (!RoomThemes.contains(entry.key)) {
@@ -2519,6 +2560,7 @@ class SobraStore extends ChangeNotifier {
     }
 
     if (!stillOwned(characterId)) characterId = _fallbackCharacterId;
+    if (!ownsRoom(equippedRoomId)) equippedRoomId = RoomThemes.casaClaraId;
     for (final placements in _roomPlacementsByRoom.values) {
       placements.removeWhere((_, itemId) => !stillOwned(itemId));
     }
@@ -2812,6 +2854,7 @@ class SobraStore extends ChangeNotifier {
     equippedItemId = null;
     equippedRoomId = RoomThemes.casaClaraId;
     _roomPlacementsByRoom.clear();
+    _keepsEveryRoom = false;
     _ownedCatalogIds.clear();
     _rewardedAdProgress.clear();
     _rewardedAdDay = null;
@@ -2930,6 +2973,7 @@ class SobraStore extends ChangeNotifier {
     characterId = other.characterId;
     equippedItemId = other.equippedItemId;
     equippedRoomId = other.equippedRoomId;
+    _keepsEveryRoom = other._keepsEveryRoom;
     _roomPlacementsByRoom
       ..clear()
       ..addAll({
@@ -3160,11 +3204,13 @@ class SobraStore extends ChangeNotifier {
           ? characterId
           : CatalogPreviewData.starterIds.first;
     }
+    _keepsEveryRoom = json['keepsEveryRoom'] as bool? ?? false;
     if (hasCompletedOnboarding && json['decorRewards'] == null) {
-      // Finished onboarding while every drawn decoration was free. They stay
-      // owned rather than turning into rewards somebody already placed.
-      // Written with the next save, like the starters above.
+      // Finished onboarding while every drawn decoration and every room was
+      // free. They stay owned rather than turning into rewards somebody
+      // already placed. Written with the next save, like the starters above.
       _ownedCatalogIds.addAll(CatalogPreviewData.formerlyFreeItemIds);
+      _keepsEveryRoom = true;
     }
     final settledEnd = json['lastSettledCycleEnd'] as String?;
     lastSettledCycleEnd = settledEnd == null
@@ -3218,6 +3264,7 @@ class SobraStore extends ChangeNotifier {
     // Marks a state written once decorations became rewards. Its absence is
     // what tells [_restore] the install predates them.
     'decorRewards': 1,
+    'keepsEveryRoom': _keepsEveryRoom,
     'rewardedAdProgress': _rewardedAdProgress,
     'rewardedAdDay': _rewardedAdDay,
     'rewardedAdsWatchedOnDay': _rewardedAdsWatchedOnDay,

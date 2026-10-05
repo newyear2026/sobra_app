@@ -137,7 +137,14 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
     if (choice.isLink) {
       Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (_) => const CollectionScreen(openedFromDecorate: true),
+          builder: (_) => CollectionScreen(
+            openedFromDecorate: true,
+            initialKind: switch (_category) {
+              RoomDecorCategory.rooms => CatalogKind.room,
+              RoomDecorCategory.characters => CatalogKind.character,
+              _ => CatalogKind.item,
+            },
+          ),
         ),
       );
       return;
@@ -695,21 +702,25 @@ List<_RoomChoice> _choicesFor(
   if (category == RoomDecorCategory.rooms) {
     // Each theme has its own saved
     // arrangement, so switching the draft room does not move its furniture.
+    // Locked rooms stay out like everything else here; the last tile goes to
+    // the collection, where they are earned or bought.
     return [
       for (final room in RoomThemes.all)
-        _RoomChoice(
-          id: room.id,
-          roomId: room.id,
-          label: roomThemeDisplayName(l10n, room.id),
-          status: room.id == chosenRoomId
-              ? l10n.collectionEquipped
-              : l10n.collectionOwned,
-          preview: Image.asset(
-            room.previewAsset,
-            fit: BoxFit.cover,
-            excludeFromSemantics: true,
+        if (store.ownsRoom(room.id))
+          _RoomChoice(
+            id: room.id,
+            roomId: room.id,
+            label: roomThemeDisplayName(l10n, room.id),
+            status: room.id == chosenRoomId
+                ? l10n.collectionEquipped
+                : l10n.collectionOwned,
+            preview: Image.asset(
+              room.previewAsset,
+              fit: BoxFit.cover,
+              excludeFromSemantics: true,
+            ),
           ),
-        ),
+      _RoomChoice.link(label: l10n.roomMoreInCollection),
     ];
   }
 

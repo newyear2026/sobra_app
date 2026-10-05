@@ -118,18 +118,18 @@ A table or shelf is an item that brings its own places.
 
 ## Rooms and unlocking
 
-- Casa clara, Casa jardín, Casa de playa, Casa torre, Casa montaña, and
-  Casa invernadero are selectable in Decorate → Room. Switching keeps each
-  room's saved arrangement. All six are currently included; they are not
-  catalog purchases or level rewards.
-- Post-launch monetization decision: keep Casa clara, Casa jardín, and
-  Casa de playa included. Unlock Casa montaña and Casa invernadero permanently
-  after two user-chosen rewarded ads each. Sell Casa torre as a permanent,
-  non-consumable room for **MX$19 in Mexico**. The store must supply the
-  localized price shown in the app; do not hard-code pesos into the checkout.
-  The current prototype still lets users select all six rooms, so ownership
-  checks, purchase restoration, rewarded progress, and the Play Console
-  product/price must be implemented before presenting them as locked.
+- Rooms are catalog entries (`CatalogPreviewData.rooms`, kind `room`) with a
+  tab of their own in the collection. Casa clara, Casa jardín and Casa de
+  playa are included. Casa montaña and Casa invernadero unlock for good after
+  two rewarded ads each. Casa torre is a non-consumable, `sobra.room.torre`,
+  at **MX$19 in Mexico**; the price shown comes from the store.
+- Decorate → Room lists only owned rooms, then a tile that opens the
+  collection on its rooms tab. A locked room left equipped opens as Casa
+  clara, and a refunded Casa torre falls back the same way.
+- Installs that finished onboarding while all six were free keep all six
+  through the `keepsEveryRoom` flag, never as owned ids: the launch
+  revocation would take a free Casa torre back as a refund. A backup carries
+  the two ad rooms over; Casa torre stays with the install that has it.
 - Items, as of launch: the rattan chair and wall clock are included. Levels
   give one piece each, in the order a room fills: floor lamp at 2, savings jar
   at 3, low cabinet at 4, pet bed at 5, round side table at 6, terracotta pouf
@@ -138,7 +138,7 @@ A table or shelf is an item that brings its own places.
   wall shelf. Items are never sold on their own.
 - Installs that finished onboarding while every drawn decoration was free keep
   those pieces (`CatalogPreviewData.formerlyFreeItemIds`); the save marks
-  `decorRewards` once that has been applied.
+  `decorRewards` once that and the room flag above have been applied.
 - A placed item the user does not own is left out of the room, and the room's
   default takes its slot back. The placement stays saved for when it is
   theirs again.

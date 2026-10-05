@@ -495,6 +495,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get collectionItemsHint => 'Sammle, was in dein Zuhause gehört';
 
   @override
+  String get collectionRooms => 'Zimmer';
+
+  @override
+  String get collectionRoomsHint => 'Wähle, wo dein Begleiter wohnt';
+
+  @override
   String collectionCharacterPlaceholder(int number) {
     return 'Figur $number';
   }
@@ -544,6 +550,11 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String collectionUnlockedNotice(String name) {
     return '$name gehört dir!';
+  }
+
+  @override
+  String collectionRoomUnlockedNotice(String name) {
+    return 'Du kannst jetzt in $name einziehen!';
   }
 
   @override

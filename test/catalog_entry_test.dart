@@ -199,6 +199,36 @@ void main() {
     });
   });
 
+  test('rooms: three free, two for two ads, Casa torre sold', () {
+    String route(CatalogEntry entry) => switch (entry.unlockMethod) {
+      CatalogUnlockMethod.rewardedAd => 'ad ${entry.rewardedAdTarget}',
+      CatalogUnlockMethod.purchase => entry.storeProductId!,
+      final method => method.name,
+    };
+
+    expect(
+      {for (final room in CatalogPreviewData.rooms) room.id: route(room)},
+      {
+        RoomThemes.casaClaraId: 'included',
+        RoomThemes.casaJardinId: 'included',
+        RoomThemes.casaDePlayaId: 'included',
+        RoomThemes.casaMontanaId: 'ad 2',
+        RoomThemes.casaInvernaderoId: 'ad 2',
+        RoomThemes.casaTorreId: 'sobra.room.torre',
+      },
+    );
+    // Every room the scene can draw has an entry, and the other way round.
+    expect(
+      {for (final room in CatalogPreviewData.rooms) room.id},
+      {for (final theme in RoomThemes.all) theme.id},
+    );
+    expect(CatalogPreviewData.storeProductIds, contains('sobra.room.torre'));
+    expect(
+      const PreviewCatalogPriceSource().localizedPriceFor('sobra.room.torre'),
+      r'MX$ 19',
+    );
+  });
+
   test('level rewards are derived for existing and multi-level users', () {
     final restoredProgress = XpProgress.fromTotal(5450);
     final existingLevelEight = CatalogPreviewData.levelItemsUnlockedAt(

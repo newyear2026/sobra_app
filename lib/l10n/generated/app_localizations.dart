@@ -911,6 +911,18 @@ abstract class AppLocalizations {
   /// **'Reúne lo que va en tu espacio'**
   String get collectionItemsHint;
 
+  /// No description provided for @collectionRooms.
+  ///
+  /// In es, this message translates to:
+  /// **'Casas'**
+  String get collectionRooms;
+
+  /// No description provided for @collectionRoomsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige dónde vive tu compañero'**
+  String get collectionRoomsHint;
+
   /// No description provided for @collectionCharacterPlaceholder.
   ///
   /// In es, this message translates to:
@@ -994,6 +1006,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'¡{name} es tuyo!'**
   String collectionUnlockedNotice(String name);
+
+  /// No description provided for @collectionRoomUnlockedNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Ya puedes mudarte a {name}!'**
+  String collectionRoomUnlockedNotice(String name);
 
   /// No description provided for @collectionAdDismissedNotice.
   ///

@@ -39,10 +39,8 @@ void main() {
     return loadStore();
   }
 
-  CatalogEntry entryById(String id) => [
-    ...CatalogPreviewData.characters,
-    ...CatalogPreviewData.items,
-  ].firstWhere((entry) => entry.id == id);
+  CatalogEntry entryById(String id) =>
+      CatalogPreviewData.all.firstWhere((entry) => entry.id == id);
 
   // The whole point of moving this out of the collection screen's State: what
   // the user acquired used to live in a StatefulWidget and was gone the moment
@@ -294,6 +292,109 @@ void main() {
         isFalse,
       );
       expect(reopened.ownsCatalogEntry(entryById('item-01')), isFalse);
+    });
+  });
+
+  group('rooms', () {
+    Future<SobraStore> onboarded() async {
+      final store = await loadStore();
+      await store.chooseCharacter('michi');
+      await store.configureOnboarding(
+        budgetCentavos: 600000,
+        schedule: const PaySchedule.semiMonthly(),
+      );
+      await store.completeOnboarding();
+      return store;
+    }
+
+    /// Rewrites the save as a build from before rooms were locked left it.
+    Future<void> forgetRoomLocks() async {
+      final preferences = await SharedPreferences.getInstance();
+      final saved =
+          jsonDecode(preferences.getString('sobra_state_v2')!)
+              as Map<String, dynamic>;
+      saved
+        ..remove('decorRewards')
+        ..remove('keepsEveryRoom');
+      await preferences.setString('sobra_state_v2', jsonEncode(saved));
+    }
+
+    test('a new install has the three free ones', () async {
+      final store = await onboarded();
+
+      expect(
+        [
+          for (final room in RoomThemes.all)
+            if (store.ownsRoom(room.id)) room.id,
+        ],
+        [
+          RoomThemes.casaClaraId,
+          RoomThemes.casaJardinId,
+          RoomThemes.casaDePlayaId,
+        ],
+      );
+      expect(
+        () => store.saveRoomSelection(
+          roomId: RoomThemes.casaTorreId,
+          placementsByRoom: const {},
+        ),
+        throwsArgumentError,
+      );
+      expect(store.equippedRoomId, RoomThemes.casaClaraId);
+    });
+
+    test('two ads open Casa montaña for good', () async {
+      final store = await onboarded();
+      final montana = entryById(RoomThemes.casaMontanaId);
+
+      await store.recordRewardedAdView(montana);
+      expect(store.ownsRoom(RoomThemes.casaMontanaId), isFalse);
+      await store.recordRewardedAdView(montana);
+
+      expect((await loadStore()).ownsRoom(RoomThemes.casaMontanaId), isTrue);
+    });
+
+    test('an install from before they were locked keeps all six', () async {
+      await onboarded();
+      await forgetRoomLocks();
+
+      final reopened = await loadStore();
+
+      for (final room in RoomThemes.all) {
+        expect(reopened.ownsRoom(room.id), isTrue, reason: room.id);
+      }
+      // Not as owned ids: the launch revocation would read a free Casa torre
+      // as a refund.
+      expect(reopened.ownedCatalogIds, isNot(contains(RoomThemes.casaTorreId)));
+      await reopened.grantCatalogEntry('capybara');
+      expect((await loadStore()).ownsRoom(RoomThemes.casaTorreId), isTrue);
+    });
+
+    test('a locked room left equipped opens as Casa clara', () async {
+      await onboarded();
+      final preferences = await SharedPreferences.getInstance();
+      final saved =
+          jsonDecode(preferences.getString('sobra_state_v2')!)
+              as Map<String, dynamic>;
+      saved['equippedRoomId'] = RoomThemes.casaTorreId;
+      await preferences.setString('sobra_state_v2', jsonEncode(saved));
+
+      expect((await loadStore()).equippedRoomId, RoomThemes.casaClaraId);
+    });
+
+    test('a backup brings the earnable rooms, never the sold one', () async {
+      await onboarded();
+      await forgetRoomLocks();
+      final oldInstall = await loadStore();
+      final raw = oldInstall.exportJson();
+      SharedPreferences.setMockInitialValues({});
+      final fresh = await onboarded();
+
+      await fresh.importBackup(raw);
+
+      expect(fresh.ownsRoom(RoomThemes.casaMontanaId), isTrue);
+      expect(fresh.ownsRoom(RoomThemes.casaInvernaderoId), isTrue);
+      expect(fresh.ownsRoom(RoomThemes.casaTorreId), isFalse);
     });
   });
 

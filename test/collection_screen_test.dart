@@ -33,10 +33,8 @@ void main() {
     rewardedAdsPerDay: 3,
   );
 
-  CatalogEntry entryById(String id) => [
-    ...CatalogPreviewData.characters,
-    ...CatalogPreviewData.items,
-  ].firstWhere((entry) => entry.id == id);
+  CatalogEntry entryById(String id) =>
+      CatalogPreviewData.all.firstWhere((entry) => entry.id == id);
 
   /// Text inside the open detail dialog.
   ///
@@ -585,6 +583,34 @@ void main() {
     await tester.pumpAndSettle();
     expect(store.ownsCatalogEntry(entry), isTrue);
     expect(find.text('¡Quokka es tuyo!'), findsOneWidget);
+  });
+
+  testWidgets('Casa montaña opens after two ads, from the rooms tab', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    final entry = entryById(RoomThemes.casaMontanaId);
+    await pump(
+      tester,
+      store,
+      ads: await readyAds(store),
+      initialEntryId: RoomThemes.casaMontanaId,
+    );
+
+    expect(inDialog('Mira anuncios de recompensa · 0/2'), findsOneWidget);
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+    expect(store.ownsRoom(entry.id), isFalse);
+
+    await tester.ensureVisible(find.text('Casa montaña'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Casa montaña'));
+    await tester.pumpAndSettle();
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+
+    expect(store.ownsRoom(entry.id), isTrue);
+    expect(find.text('¡Ya puedes mudarte a Casa montaña!'), findsOneWidget);
   });
 
   // The fetch in front of the ad is a network round trip. Before the card said

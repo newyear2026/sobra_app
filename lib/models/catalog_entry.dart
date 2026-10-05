@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
 
-/// The two families shown by the collection surface.
-enum CatalogKind { character, item }
+/// The families shown by the collection surface.
+///
+/// A room is a whole background. It is owned like the rest, but placed by
+/// choosing it in the decorate screen rather than by putting it in a slot.
+enum CatalogKind { character, item, room }
 
 /// One, and only one, route by which a catalog entry becomes available.
 ///
@@ -41,6 +44,7 @@ enum CatalogVisual {
   clock,
   trophy,
   cushion,
+  room,
 }
 
 /// Static, remotely replaceable facts about one character or room item.

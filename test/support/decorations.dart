@@ -12,3 +12,9 @@ Future<void> ownAllDecorations(SobraStore store) => store.grantCatalogEntries({
         entry.unlockMethod == CatalogUnlockMethod.rewardedAd)
       entry.id,
 });
+
+/// Owns every room, for tests about a room rather than about unlocking one.
+Future<void> ownAllRooms(SobraStore store) => store.grantCatalogEntries({
+  for (final entry in CatalogPreviewData.rooms)
+    if (!store.ownsCatalogEntry(entry)) entry.id,
+});

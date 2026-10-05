@@ -18,6 +18,7 @@ Future<SobraStore> _store() async {
   final store = await SobraStore.load(now: _now);
   await store.setReducedMotion(true);
   await ownAllDecorations(store);
+  await ownAllRooms(store);
   return store;
 }
 

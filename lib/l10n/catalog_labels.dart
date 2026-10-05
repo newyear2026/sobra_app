@@ -1,6 +1,7 @@
 import '../models/catalog_entry.dart';
 import '../models/room_design.dart';
 import 'generated/app_localizations.dart';
+import 'room_labels.dart';
 
 /// Localized display name for provisional catalog slots.
 ///
@@ -9,6 +10,9 @@ import 'generated/app_localizations.dart';
 /// the character and room-item lineup is approved.
 String catalogEntryDisplayName(AppLocalizations l10n, CatalogEntry entry) {
   if (_namedCharacterIds.contains(entry.id)) return entry.name;
+  if (entry.kind == CatalogKind.room) {
+    return roomThemeDisplayName(l10n, entry.id);
+  }
   if (entry.id == RoomDecorAssets.rattanChairId) return l10n.roomRattanChair;
   if (entry.id == 'item-01') return l10n.roomFloorLamp;
   if (entry.id == 'item-05') return l10n.roomWallFrame;

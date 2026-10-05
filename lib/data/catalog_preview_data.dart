@@ -315,6 +315,69 @@ abstract final class CatalogPreviewData {
     ),
   ];
 
+  /// The backgrounds: the free ones first, then by how they unlock.
+  ///
+  /// Ids are [RoomThemes] ids, so a saved room and its entry are one name.
+  /// Three come free so a new room has somewhere to go besides Casa clara;
+  /// two take a pair of rewarded ads, and Casa torre is sold. Installs from
+  /// before rooms were locked keep all six (see [SobraStore]).
+  static const rooms = <CatalogEntry>[
+    CatalogEntry(
+      id: RoomThemes.casaClaraId,
+      name: 'Casa clara',
+      kind: CatalogKind.room,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.room,
+      assetPath: RoomThemes.casaClaraPreviewAsset,
+    ),
+    CatalogEntry(
+      id: RoomThemes.casaJardinId,
+      name: 'Casa jardín',
+      kind: CatalogKind.room,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.room,
+      assetPath: 'assets/rooms/casa_jardin/background_preview_aligned.png',
+    ),
+    CatalogEntry(
+      id: RoomThemes.casaDePlayaId,
+      name: 'Casa de playa',
+      kind: CatalogKind.room,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.room,
+      assetPath: 'assets/rooms/casa_de_playa/background_preview_aligned.png',
+    ),
+    CatalogEntry(
+      id: RoomThemes.casaMontanaId,
+      name: 'Casa montaña',
+      kind: CatalogKind.room,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
+      visual: CatalogVisual.room,
+      assetPath: 'assets/rooms/casa_montana/background_preview.png',
+      rewardedAdTarget: 2,
+    ),
+    CatalogEntry(
+      id: RoomThemes.casaInvernaderoId,
+      name: 'Casa invernadero',
+      kind: CatalogKind.room,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
+      visual: CatalogVisual.room,
+      assetPath: 'assets/rooms/casa_invernadero/background_preview.png',
+      rewardedAdTarget: 2,
+    ),
+    // Sold once and kept: the launch revocation takes it back only when Play
+    // stops reporting the purchase, and installs that had it free hold it
+    // through a flag rather than the owned set, which that check reads.
+    CatalogEntry(
+      id: RoomThemes.casaTorreId,
+      name: 'Casa torre',
+      kind: CatalogKind.room,
+      unlockMethod: CatalogUnlockMethod.purchase,
+      visual: CatalogVisual.room,
+      assetPath: 'assets/rooms/casa_torre/background_preview.png',
+      storeProductId: 'sobra.room.torre',
+    ),
+  ];
+
   /// The companions offered at onboarding, in the order the cards appear.
   ///
   /// Saved ids: the starter a user picked is stored by these, so renaming one
@@ -395,11 +458,14 @@ abstract final class CatalogPreviewData {
   static Set<String>? entitlementsForProductId(String storeProductId) =>
       productEntitlements[storeProductId];
 
-  static List<CatalogEntry> forKind(CatalogKind kind) =>
-      kind == CatalogKind.character ? characters : items;
+  static List<CatalogEntry> forKind(CatalogKind kind) => switch (kind) {
+    CatalogKind.character => characters,
+    CatalogKind.item => items,
+    CatalogKind.room => rooms,
+  };
 
-  /// Every entry this build ships, characters first.
-  static List<CatalogEntry> get all => [...characters, ...items];
+  /// Every entry this build ships: characters, items, then rooms.
+  static List<CatalogEntry> get all => [...characters, ...items, ...rooms];
 
   /// The entry a store product id belongs to, or null where this build has
   /// none for it.
@@ -489,6 +555,7 @@ final class PreviewCatalogPriceSource implements CatalogPriceSource {
     'sobra.character.platypus' => r'MX$ 39',
     'sobra.character.rabbit' => r'MX$ 39',
     CatalogPreviewData.packProductId => r'MX$ 89',
+    'sobra.room.torre' => r'MX$ 19',
     _ => null,
   };
 }

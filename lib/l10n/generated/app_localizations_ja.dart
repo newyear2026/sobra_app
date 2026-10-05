@@ -480,6 +480,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get collectionItemsHint => 'お部屋に置くものを集めよう';
 
   @override
+  String get collectionRooms => 'お部屋';
+
+  @override
+  String get collectionRoomsHint => '一緒に暮らすお部屋を選ぼう';
+
+  @override
   String collectionCharacterPlaceholder(int number) {
     return 'キャラクター$number';
   }
@@ -529,6 +535,11 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String collectionUnlockedNotice(String name) {
     return '$nameが仲間になりました！';
+  }
+
+  @override
+  String collectionRoomUnlockedNotice(String name) {
+    return '$nameに引っ越せるようになりました！';
   }
 
   @override

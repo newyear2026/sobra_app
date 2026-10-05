@@ -99,6 +99,33 @@ void main() {
     expect(find.byType(CollectionScreen), findsOneWidget);
   });
 
+  testWidgets('the room tab lists owned rooms and leads to the rest', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store);
+    await openCategory(tester, 'Casa');
+
+    expect(find.text('Casa jardín'), findsOneWidget);
+    expect(find.text('Casa torre'), findsNothing);
+    expect(find.text('Casa montaña'), findsNothing);
+
+    await tester.ensureVisible(find.text('Ver más en la colección'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Ver más en la colección'));
+    await tester.pumpAndSettle();
+
+    // Lands on the rooms tab, where the locked ones say how to get them.
+    expect(find.byType(CollectionScreen), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Casa torre'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text(r'MX$ 19'), findsOneWidget);
+    expect(find.text('Casa montaña'), findsOneWidget);
+  });
+
   testWidgets('room themes preview, undo, and persist after Done', (
     tester,
   ) async {
@@ -136,6 +163,7 @@ void main() {
 
   testWidgets('panoramic room can be selected and saved', (tester) async {
     final store = await loadStore();
+    await ownAllRooms(store);
     await pump(tester, store);
     await openCategory(tester, 'Casa');
 
@@ -165,6 +193,7 @@ void main() {
   ]) {
     testWidgets('$label can be selected and saved', (tester) async {
       final store = await loadStore();
+      await ownAllRooms(store);
       await pump(tester, store);
       await openCategory(tester, 'Casa');
 
