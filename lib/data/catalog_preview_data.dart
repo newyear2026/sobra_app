@@ -112,6 +112,15 @@ abstract final class CatalogPreviewData {
       rewardedAdTarget: 2,
     ),
     CatalogEntry(
+      id: 'maltese',
+      name: 'Happy',
+      kind: CatalogKind.character,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
+      visual: CatalogVisual.maltese,
+      assetPath: 'assets/characters/maltese/idle-8-v2.png',
+      rewardedAdTarget: 2,
+    ),
+    CatalogEntry(
       id: 'character-03',
       name: 'Personaje 03',
       kind: CatalogKind.character,

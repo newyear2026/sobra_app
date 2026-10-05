@@ -30,6 +30,7 @@ enum CatalogVisual {
   platypus,
   rabbit,
   raccoon,
+  maltese,
   characterPlaceholder,
   lamp,
   savings,

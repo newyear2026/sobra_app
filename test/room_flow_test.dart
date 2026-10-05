@@ -37,6 +37,7 @@ void main() {
     ('rabbit', 1.38),
     ('raccoon', 1.0),
     ('quokka', 1.0),
+    ('maltese', 1.08),
   ]) {
     testWidgets('$characterId uses its optical size in the room', (
       tester,

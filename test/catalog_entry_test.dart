@@ -8,7 +8,7 @@ void main() {
   test('Michi and Miru are starters; new companions use ads', () {
     final entries = CatalogPreviewData.characters;
 
-    expect(entries, hasLength(14));
+    expect(entries, hasLength(15));
     expect(
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.included,
@@ -31,7 +31,7 @@ void main() {
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.rewardedAd,
       ),
-      hasLength(8),
+      hasLength(9),
     );
     // The ordinary character tier: two views, back to back if wanted.
     final schnauzer = entries.firstWhere((entry) => entry.id == 'schnauzer');
@@ -52,6 +52,13 @@ void main() {
     expect(quokka.rewardedAdOncePerDay, isFalse);
     expect(quokka.storeProductId, isNull);
     expect(quokka.assetPath, 'assets/characters/quokka/idle-8.png');
+    final maltese = entries.firstWhere((entry) => entry.id == 'maltese');
+    expect(maltese.name, 'Happy');
+    expect(maltese.unlockMethod, CatalogUnlockMethod.rewardedAd);
+    expect(maltese.rewardedAdTarget, 2);
+    expect(maltese.rewardedAdOncePerDay, isFalse);
+    expect(maltese.storeProductId, isNull);
+    expect(maltese.assetPath, 'assets/characters/maltese/idle-8-v2.png');
     final platypus = entries.firstWhere((entry) => entry.id == 'platypus');
     expect(platypus.name, 'Pico');
     expect(platypus.unlockMethod, CatalogUnlockMethod.purchase);

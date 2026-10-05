@@ -533,6 +533,40 @@ void main() {
     expect(find.text('¡Quokka es tuyo!'), findsOneWidget);
   });
 
+  testWidgets('Happy unlocks in the collection after two ads', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    final entry = entryById('maltese');
+    await pump(
+      tester,
+      store,
+      ads: await readyAds(store),
+      initialEntryId: 'maltese',
+    );
+
+    expect(inDialog('Happy'), findsOneWidget);
+    expect(inDialog('Mira anuncios de recompensa · 0/2'), findsOneWidget);
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+    expect(store.rewardedAdProgressFor(entry.id), 1);
+    expect(store.ownsCatalogEntry(entry), isFalse);
+
+    await tester.scrollUntilVisible(
+      find.text('Happy'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Happy'));
+    await tester.pumpAndSettle();
+    expect(inDialog('Mira anuncios de recompensa · 1/2'), findsOneWidget);
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+    expect(store.ownsCatalogEntry(entry), isTrue);
+    expect(find.text('¡Happy es tuyo!'), findsOneWidget);
+  });
+
   // The fetch in front of the ad is a network round trip. Before the card said
   // so, the only feedback for a tap was an unchanged button.
   testWidgets('the card says it is preparing while an ad is fetched', (
