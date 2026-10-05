@@ -178,7 +178,7 @@ abstract final class RoomThemes {
     portraitAsset: 'assets/rooms/casa_jardin/background_portrait.png',
     portraitSize: Size(1024, 1536),
     slots: emptyRoomSlots,
-    defaultPlacements: RoomDecorAssets.emptyRoomDefaults,
+    defaultPlacements: RoomDecorAssets.defaultPlacements,
   );
 
   static const casaDePlaya = RoomTheme(
@@ -188,7 +188,7 @@ abstract final class RoomThemes {
     portraitAsset: 'assets/rooms/casa_de_playa/background_portrait.png',
     portraitSize: Size(1024, 1536),
     slots: emptyRoomSlots,
-    defaultPlacements: RoomDecorAssets.emptyRoomDefaults,
+    defaultPlacements: RoomDecorAssets.defaultPlacements,
   );
 
   static const casaTorre = RoomTheme(
@@ -198,7 +198,7 @@ abstract final class RoomThemes {
     portraitAsset: 'assets/rooms/casa_torre/background_portrait_unlit.png',
     portraitSize: Size(1024, 1536),
     slots: panoramicRoomSlots,
-    defaultPlacements: RoomDecorAssets.emptyRoomDefaults,
+    defaultPlacements: RoomDecorAssets.defaultPlacements,
   );
 
   static const casaMontana = RoomTheme(
@@ -208,7 +208,7 @@ abstract final class RoomThemes {
     portraitAsset: 'assets/rooms/casa_montana/background_portrait_unlit.png',
     portraitSize: Size(1024, 1536),
     slots: panoramicRoomSlots,
-    defaultPlacements: RoomDecorAssets.emptyRoomDefaults,
+    defaultPlacements: RoomDecorAssets.defaultPlacements,
   );
 
   static const casaInvernadero = RoomTheme(
@@ -219,7 +219,7 @@ abstract final class RoomThemes {
         'assets/rooms/casa_invernadero/background_portrait_unlit.png',
     portraitSize: Size(1024, 1536),
     slots: panoramicRoomSlots,
-    defaultPlacements: RoomDecorAssets.emptyRoomDefaults,
+    defaultPlacements: RoomDecorAssets.defaultPlacements,
   );
 
   static const all = <RoomTheme>[
@@ -303,14 +303,12 @@ abstract final class RoomDecorAssets {
   static const launchTvSoccerAlt =
       'assets/rooms/shared_items/launch_tv_soccer_alt.png';
 
+  /// What every room starts with: the rug, and nothing on any sill or table.
+  ///
+  /// Casa clara also used to put the table plant on its windowsill. It read
+  /// as part of the background rather than something the user placed, so it
+  /// now waits in the drawer like the rest; it is still free and owned.
   static const defaultPlacements = <RoomSlot, String>{
-    RoomSlot.rug: defaultRugId,
-    RoomSlot.tabletop: defaultTablePlantId,
-  };
-
-  /// Empty themes begin without tabletop furniture. The plant remains owned
-  /// and can be placed after the user adds a cabinet.
-  static const emptyRoomDefaults = <RoomSlot, String>{
     RoomSlot.rug: defaultRugId,
   };
 

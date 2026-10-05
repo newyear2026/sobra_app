@@ -530,13 +530,25 @@ void main() {
 
       final room = (await SobraStore.load(now: _now)).roomDecorationsFor();
       expect(room[RoomSlot.floorRight], isNull);
-      expect(room[RoomSlot.tabletop], isNull);
+      expect(room[RoomSlot.tabletop], RoomDecorAssets.defaultTablePlantId);
     });
 
-    testWidgets('the lamp takes the table from the default plant', (
+    testWidgets('Casa clara starts with nothing on the windowsill', (
       tester,
     ) async {
       final store = await _store();
+
+      expect(store.roomDecorationsFor(), {
+        RoomSlot.rug: RoomDecorAssets.defaultRugId,
+      });
+    });
+
+    testWidgets('the lamp takes the sill from the plant', (tester) async {
+      final store = await _store();
+      await store.saveRoomDecorations({
+        ...store.roomDecorationsFor(),
+        RoomSlot.tabletop: RoomDecorAssets.defaultTablePlantId,
+      });
       await _pumpDecorator(tester, store);
 
       await _tapTile(tester, 'Lámpara verde');

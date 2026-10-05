@@ -64,7 +64,7 @@ void main() {
 
     await openCategory(tester, 'Adornos');
 
-    // Owned from the start, because Casa clara places it.
+    // Free and owned from the start, though no room places it any more.
     expect(find.text('Planta de mesa'), findsOneWidget);
     // Items still locked behind a level or an ad stay out of the drawer.
     expect(find.text('VER ANUNCIO'), findsNothing);

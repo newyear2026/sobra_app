@@ -251,7 +251,7 @@ class SobraStore extends ChangeNotifier {
   ///
   /// Placements are keyed by room so changing themes never destroys a room
   /// the user already arranged. A missing slot falls back to that theme's
-  /// included decoration (the Casa clara rug and tabletop plant today); one
+  /// included decoration (the rug, in every room today); one
   /// the user emptied holds [RoomDecorAssets.clearedId] instead.
   String equippedRoomId = RoomThemes.casaClaraId;
   final Map<String, Map<RoomSlot, String>> _roomPlacementsByRoom = {};
