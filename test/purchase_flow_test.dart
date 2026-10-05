@@ -176,6 +176,39 @@ void main() {
     expect(find.text('COMPRAR'), findsWidgets);
   });
 
+  testWidgets('backing out of Play checkout immediately allows another try', (
+    tester,
+  ) async {
+    await purchases.start();
+    await pump(tester, const CollectionScreen());
+
+    await openPico(tester);
+    await tester.tap(inDialog('COMPRAR'));
+    await tester.pumpAndSettle();
+    expect(find.text('COMPRANDO…'), findsOneWidget);
+
+    // This is the cancellation shape emitted by the Android plugin when the
+    // user presses back: there is no purchase from which to get a product id.
+    backend.emit([
+      detailsFor('', PurchaseStatus.canceled, needsCompleting: false),
+    ]);
+    await tester.pumpAndSettle();
+
+    expect(find.text('COMPRANDO…'), findsNothing);
+    expect(find.byType(SnackBar), findsNothing);
+    expect(store.ownedCatalogIds, isEmpty);
+
+    await openPico(tester);
+    await tester.tap(inDialog('COMPRAR'));
+    await tester.pumpAndSettle();
+    expect(backend.bought, [productId, productId]);
+
+    backend.emit([detailsFor(productId, PurchaseStatus.purchased)]);
+    await tester.pumpAndSettle();
+    expect(purchases.isBusy, isFalse);
+    expect(store.ownedCatalogIds, {'platypus'});
+  });
+
   testWidgets('an unreachable store leaves the catalog usable', (tester) async {
     backend.available = false;
     await purchases.start();

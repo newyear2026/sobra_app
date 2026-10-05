@@ -186,6 +186,74 @@ void main() {
     expect(purchases.isBuying(soldProductId), isFalse);
   });
 
+  for (final status in [PurchaseStatus.canceled, PurchaseStatus.error]) {
+    test(
+      'a $status without a product id releases checkout for retry',
+      () async {
+        final purchases = await started();
+        await purchases.buy(entryById(soldEntryId));
+        expect(purchases.isBuying(soldProductId), isTrue);
+        var notifiedIdle = false;
+        purchases.addListener(() {
+          if (!purchases.isBusy) notifiedIdle = true;
+        });
+
+        // Play sends an empty product id when checkout ends without a purchase.
+        backend.emit([detailsFor('', status, needsCompleting: false)]);
+        await pumpEventQueue();
+
+        expect(purchases.isBuying(soldProductId), isFalse);
+        expect(purchases.isBusy, isFalse);
+        expect(notifiedIdle, isTrue);
+        expect(store.ownedCatalogIds, isEmpty);
+        expect(backend.completed, isEmpty);
+        expect(
+          purchases.takeFailure(),
+          status == PurchaseStatus.error
+              ? PurchaseFailure.purchaseRejected
+              : null,
+        );
+        expect(purchases.takeFailure(), isNull);
+
+        await purchases.buy(entryById(soldEntryId));
+        expect(backend.bought, [soldProductId, soldProductId]);
+      },
+    );
+
+    test(
+      'a $status without a product id preserves a pending payment',
+      () async {
+        const pendingProductId = 'sobra.character.rabbit';
+        final purchases = await started();
+        await purchases.buy(entryById(soldEntryId));
+        backend.emit([
+          detailsFor(
+            pendingProductId,
+            PurchaseStatus.pending,
+            needsCompleting: false,
+          ),
+        ]);
+        await pumpEventQueue();
+
+        backend.emit([detailsFor('', status, needsCompleting: false)]);
+        await pumpEventQueue();
+
+        expect(purchases.isBuying(soldProductId), isFalse);
+        expect(purchases.isBuying(pendingProductId), isTrue);
+        expect(purchases.isBusy, isTrue);
+        expect(store.ownedCatalogIds, isEmpty);
+        expect(backend.completed, isEmpty);
+
+        // A late payment still delivers normally after the other checkout ends.
+        backend.emit([detailsFor(pendingProductId, PurchaseStatus.purchased)]);
+        await pumpEventQueue();
+        expect(purchases.isBusy, isFalse);
+        expect(store.ownedCatalogIds, {'rabbit'});
+        expect(backend.completed, [pendingProductId]);
+      },
+    );
+  }
+
   test('a rejected purchase reports once and then stops reporting', () async {
     final purchases = await started();
 

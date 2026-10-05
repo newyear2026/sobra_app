@@ -463,6 +463,22 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
   void _endCheckout(String productId) =>
       _checkingOut.remove(productId)?.cancel();
 
+  void _endUnsuccessfulPurchase(String productId) {
+    if (productId.isEmpty) {
+      // Play reports cancellations and errors without a product id when no
+      // purchase was created. Release checkout attempts immediately instead
+      // of waiting for their timeout. Confirmed pending payments are separate
+      // transactions and must keep waiting for their own store result.
+      for (final timer in _checkingOut.values) {
+        timer.cancel();
+      }
+      _checkingOut.clear();
+      return;
+    }
+    _endCheckout(productId);
+    _pending.remove(productId);
+  }
+
   /// Replays what this store account already owns, answering with how it went.
   ///
   /// Returns its outcome rather than leaving it in [takeFailure], so that the
@@ -526,15 +542,13 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
             continue;
           }
         case PurchaseStatus.error:
-          _endCheckout(purchase.productID);
-          _pending.remove(purchase.productID);
+          _endUnsuccessfulPurchase(purchase.productID);
           _pendingFailure = PurchaseFailure.purchaseRejected;
         case PurchaseStatus.canceled:
           // The user backed out. That is an answer, not a fault, and saying
           // anything about it would be scolding them for using the cancel
           // button.
-          _endCheckout(purchase.productID);
-          _pending.remove(purchase.productID);
+          _endUnsuccessfulPurchase(purchase.productID);
       }
       if (purchase.pendingCompletePurchase) {
         // Strictly after the grant above. Completing first and failing to
