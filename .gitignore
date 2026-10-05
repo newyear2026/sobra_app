@@ -60,3 +60,15 @@ design/store/shots/
 design/store/fonts/
 design/store/feature-graphic-benchmark.png
 design/store/icon-vs-mascot.png
+
+# Firebase client config: the repo is public and the project is shared with
+# RandomFocus and LOOPET. Regenerate with `flutterfire configure`.
+/android/app/google-services.json
+/lib/firebase_options.dart
+
+# Large marketing renders and the renderer that writes them.
+/design/marketing/choose-buddy-en/
+/design/marketing/four-styles-en/
+/design/marketing/social-v2/
+/design/marketing/social-v2-en/
+/tool/render_promo_video_en_test.dart
