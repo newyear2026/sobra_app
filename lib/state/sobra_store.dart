@@ -421,13 +421,13 @@ class SobraStore extends ChangeNotifier {
   int get daysRemaining {
     if (today.isAfter(cycleEnd)) return 0;
     if (today.isBefore(cycleStart)) return cycleBounds.lengthInDays;
-    return cycleEnd.difference(today).inDays + 1;
+    return daysBetween(today, cycleEnd) + 1;
   }
 
   int get elapsedDays {
     if (today.isBefore(cycleStart)) return 0;
     if (today.isAfter(cycleEnd)) return cycleBounds.lengthInDays;
-    return today.difference(cycleStart).inDays + 1;
+    return daysBetween(cycleStart, today) + 1;
   }
 
   List<ExpenseEntry> get transactions {
@@ -570,7 +570,7 @@ class SobraStore extends ChangeNotifier {
   ///
   /// Counts from the cycle's start rather than from the first thing recorded,
   /// so a quiet opening week lowers the average instead of vanishing from it.
-  int get cycleElapsedDays => today.difference(cycleStart).inDays + 1;
+  int get cycleElapsedDays => daysBetween(cycleStart, today) + 1;
 
   /// What the current cycle is spending per day, or null while it is too early
   /// for that to mean anything.
@@ -703,7 +703,9 @@ class SobraStore extends ChangeNotifier {
     }
 
     var cursor =
-        lastSettledCycleEnd?.add(const Duration(days: 1)) ??
+        (lastSettledCycleEnd == null
+            ? null
+            : addDays(lastSettledCycleEnd!, 1)) ??
         dateOnly(trackingStart);
     if (cursor.isBefore(dateOnly(trackingStart))) {
       cursor = dateOnly(trackingStart);
@@ -719,7 +721,7 @@ class SobraStore extends ChangeNotifier {
       awardedXp += _settleCycle(bounds, trackingStart);
       lastSettledCycleEnd = bounds.end;
       closedCycles++;
-      cursor = bounds.end.add(const Duration(days: 1));
+      cursor = addDays(bounds.end, 1);
     }
     return _SettlementRun(closedCycles: closedCycles, awardedXp: awardedXp);
   }
@@ -817,7 +819,7 @@ class SobraStore extends ChangeNotifier {
     var successfulDays = 0;
     final firstTrackedDay = dateOnly(trackingStart);
     for (var offset = 0; offset < bounds.lengthInDays; offset++) {
-      final day = bounds.start.add(Duration(days: offset));
+      final day = addDays(bounds.start, offset);
       final remainingDays = bounds.lengthInDays - offset;
       final allowance = (budgetCentavos - spentBeforeDay) ~/ remainingDays;
       final spentToday = spentByDay[_cycleKey(day)] ?? 0;
@@ -904,7 +906,7 @@ class SobraStore extends ChangeNotifier {
       return;
     }
     final day = dateOnly(moment);
-    final weekStart = day.subtract(Duration(days: cashCountWeekOffset(day)));
+    final weekStart = addDays(day, -cashCountWeekOffset(day));
     if (_hasCashCountXpInWeek(weekStart)) return;
     final levelBefore = xpProgress.level;
     final awarded = _awardXp(
@@ -931,7 +933,7 @@ class SobraStore extends ChangeNotifier {
   /// habit would mint a new key. Looking at the dates themselves — not the
   /// keys — is what keeps one real week from paying twice.
   bool _hasCashCountXpInWeek(DateTime weekStart) {
-    final weekEnd = weekStart.add(const Duration(days: 7));
+    final weekEnd = addDays(weekStart, 7);
     return _xpEvents.any((event) {
       if (event.kind != XpEventKind.cashCount) return false;
       final at = dateOnly(event.occurredAt);
@@ -1658,7 +1660,7 @@ class SobraStore extends ChangeNotifier {
   });
 
   Future<void> queuePayScheduleChange(PaySchedule schedule) => _write(() async {
-    final effectiveAt = cycleEnd.add(const Duration(days: 1));
+    final effectiveAt = addDays(cycleEnd, 1);
     pendingPaySchedule = schedule.type == PayCycleType.irregular
         ? schedule.copyWith(irregularCycleStart: effectiveAt)
         : schedule;
@@ -2177,7 +2179,7 @@ class SobraStore extends ChangeNotifier {
     if (installed == null) return false;
     final start = DateTime.tryParse(installed);
     if (start == null) return false;
-    return today.difference(start).inDays >= days;
+    return daysBetween(start, today) >= days;
   }
 
   /// Records a native ad only after the SDK reports a real impression.

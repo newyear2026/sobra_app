@@ -6,7 +6,7 @@ class CycleBounds {
   final DateTime start;
   final DateTime end;
 
-  int get lengthInDays => end.difference(start).inDays + 1;
+  int get lengthInDays => daysBetween(start, end) + 1;
   bool contains(DateTime value) {
     final date = dateOnly(value);
     return !date.isBefore(start) && !date.isAfter(end);
@@ -162,8 +162,8 @@ class PaySchedule {
 
   CycleBounds _weeklyBounds(DateTime today) {
     final daysSinceStart = (today.weekday - weeklyPayDay + 7) % 7;
-    final start = today.subtract(Duration(days: daysSinceStart));
-    return CycleBounds(start: start, end: start.add(const Duration(days: 6)));
+    final start = addDays(today, -daysSinceStart);
+    return CycleBounds(start: start, end: addDays(start, 6));
   }
 
   /// The block of [blockDays] containing [today], counted from [anchor].
@@ -233,12 +233,9 @@ class PaySchedule {
     );
     final next = sorted.firstWhere(
       (date) => date.isAfter(today),
-      orElse: () => previous.add(const Duration(days: 30)),
+      orElse: () => addDays(previous, 30),
     );
-    return CycleBounds(
-      start: previous,
-      end: next.subtract(const Duration(days: 1)),
-    );
+    return CycleBounds(start: previous, end: addDays(next, -1));
   }
 
   static DateTime _clampedDay(int year, int month, int configuredDay) {
@@ -250,3 +247,20 @@ class PaySchedule {
 
 DateTime dateOnly(DateTime value) =>
     DateTime(value.year, value.month, value.day);
+
+/// [date]'s calendar day moved by [days], at local midnight.
+///
+/// Never `add(Duration(days: n))` for this. Where clocks change, one day a
+/// year is 23 hours long, and stepping in 24-hour blocks across it lands at
+/// 23:00 the day before: a quincena then ended a day early, and the day the
+/// clocks changed belonged to no cycle and had nothing left to spend.
+DateTime addDays(DateTime date, int days) =>
+    DateTime(date.year, date.month, date.day + days);
+
+/// Calendar days from [from] to [to], counted on UTC dates so that a 23- or
+/// 25-hour day still counts as one.
+int daysBetween(DateTime from, DateTime to) => DateTime.utc(
+  to.year,
+  to.month,
+  to.day,
+).difference(DateTime.utc(from.year, from.month, from.day)).inDays;

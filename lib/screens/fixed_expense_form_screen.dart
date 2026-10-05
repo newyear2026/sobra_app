@@ -440,7 +440,7 @@ String _followingDates(
 ) {
   final later = schedule
       .occurrencesBetween(
-        from.add(const Duration(days: 1)),
+        addDays(from, 1),
         DateTime(from.year + 1, from.month, from.day),
       )
       .take(3);

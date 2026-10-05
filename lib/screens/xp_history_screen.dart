@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/xp_event.dart';
+import '../models/pay_schedule.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
@@ -224,7 +225,7 @@ class _XpEventCard extends StatelessWidget {
   String _ruleFor(AppLocalizations l10n, XpEvent event) => switch (event.kind) {
     XpEventKind.cashCount => l10n.xpRuleCashCount,
     XpEventKind.cycleInGreen => l10n.xpRuleCycleInGreen(
-      event.cycleEnd!.difference(event.cycleStart!).inDays + 1,
+      daysBetween(event.cycleStart!, event.cycleEnd!) + 1,
     ),
     XpEventKind.daysUnderDailyLimit => l10n.xpRuleDaysUnderDailyLimit(
       event.quantity ?? 0,

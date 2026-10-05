@@ -7,6 +7,7 @@ import '../l10n/labels.dart';
 import '../models/currency.dart';
 import '../models/expense_entry.dart';
 import '../models/money_movement.dart';
+import '../models/pay_schedule.dart';
 import '../services/native_ad_service.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
@@ -30,7 +31,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   String _groupLabel(AppLocalizations l10n, DateTime date, DateTime today) {
     final day = DateTime(date.year, date.month, date.day);
     if (day == today) return l10n.today;
-    if (day == today.subtract(const Duration(days: 1))) return l10n.yesterday;
+    if (day == addDays(today, -1)) return l10n.yesterday;
     return shortCycleDate(l10n, day);
   }
 

@@ -60,7 +60,7 @@ class _CycleSettingsScreenState extends State<CycleSettingsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final store = SobraScope.of(context);
-    final effectiveAt = store.cycleEnd.add(const Duration(days: 1));
+    final effectiveAt = addDays(store.cycleEnd, 1);
     final draft = _draft(effectiveAt);
     final preview = draft.boundsFor(effectiveAt);
     return Scaffold(

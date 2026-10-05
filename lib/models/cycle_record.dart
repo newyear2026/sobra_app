@@ -62,7 +62,7 @@ class CycleRecord {
   /// rather than inside it: they never count toward [successful].
   final int fixedPaidCentavos;
 
-  int get lengthInDays => end.difference(start).inDays + 1;
+  int get lengthInDays => daysBetween(start, end) + 1;
 
   /// What this cycle spent per day, over every day it covered.
   ///

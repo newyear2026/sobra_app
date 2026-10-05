@@ -1418,7 +1418,7 @@ List<DailySpend> dailyTotals({
   final now = dateOnly(today);
   final totals = List<int>.filled(bounds.lengthInDays, 0);
   for (final amount in amounts) {
-    final index = dateOnly(amount.$1).difference(start).inDays;
+    final index = daysBetween(start, amount.$1);
     if (index >= 0 && index < totals.length) {
       totals[index] += amount.$2;
     }

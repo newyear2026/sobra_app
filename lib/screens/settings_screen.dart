@@ -8,6 +8,7 @@ import '../data/catalog_preview_data.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/language.dart';
 import '../models/currency.dart';
+import '../models/pay_schedule.dart';
 import '../l10n/labels.dart';
 import '../services/app_review_service.dart';
 import '../services/app_update_service.dart';
@@ -713,8 +714,7 @@ class _ProfileCard extends StatelessWidget {
   int _daysWithSobra() {
     final started = store.xpTrackingStartedAt;
     if (started == null) return 1;
-    final startDay = DateTime(started.year, started.month, started.day);
-    return store.today.difference(startDay).inDays + 1;
+    return daysBetween(started, store.today) + 1;
   }
 
   @override
