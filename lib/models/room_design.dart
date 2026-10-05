@@ -380,10 +380,11 @@ abstract final class RoomDecorAssets {
     rattanChairId ||
     floorLampId ||
     bronzeLanternLampId => const [RoomSlot.floorLeft, RoomSlot.floorRight],
+    // Furniture only. On Casa clara's windowsill — its `tabletop` — the plant
+    // read as part of the painted background rather than something placed.
     defaultTablePlantId => const [
       RoomSlot.cabinetTopRight,
       RoomSlot.sideTableTop,
-      RoomSlot.tabletop,
     ],
     lowCabinetId => const [RoomSlot.floorCabinet],
     slimBookcaseId => const [RoomSlot.floorCabinet],

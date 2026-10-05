@@ -219,6 +219,27 @@ void main() {
       );
     });
 
+    test('the plant never goes on Casa clara\'s windowsill', () {
+      final clara = RoomThemes.casaClara;
+
+      expect(
+        clara.slotsForItem(RoomDecorAssets.defaultTablePlantId, placements: {}),
+        isEmpty,
+      );
+      expect(
+        clara.slotsForItem(
+          RoomDecorAssets.defaultTablePlantId,
+          placements: {RoomSlot.floorCabinet: RoomDecorAssets.lowCabinetId},
+        ),
+        [RoomSlot.cabinetTopRight],
+      );
+      // The jar and the desk lamp still sit there.
+      expect(
+        clara.slotsForItem(RoomDecorAssets.savingsJarId, placements: {}),
+        contains(RoomSlot.tabletop),
+      );
+    });
+
     test('bookcase and side table support separate movable props', () async {
       final store = await _store();
       final room = RoomThemes.casaJardin;
