@@ -13,7 +13,7 @@
 > 기준 문서: 이 Markdown 파일이 정책 원본입니다. `privacy-policy.html`은 스토어에 제출할 공개 웹페이지입니다.
 
 - 시행일 / Fecha de entrada en vigor / Effective date: 2026-09-15
-- 최종 업데이트 / Última actualización / Last updated: 2026-10-04
+- 최종 업데이트 / Última actualización / Last updated: 2026-10-05
 - 앱 / Aplicación / App: **Sobrita** (`com.sobra.app.sobra_app`)
 
 ---
@@ -73,7 +73,7 @@ Google은 이 정보를 광고 제공·측정·개인화(허용된 경우), 분�
 
 ### 3.1. 사용 통계와 오류 진단
 
-Android 버전은 Google Analytics for Firebase와 Firebase Crashlytics를 사용합니다. 앱 실행·세션, 화면 방문, 온보딩 완료, 입력 화면의 지출·수입 저장 여부와 앱 버전, 운영체제·기기 정보, 앱 인스턴스 또는 설치 식별자, 오류 유형·스택과 비정상 종료 진단 정보를 Google이 처리할 수 있습니다. 목적은 사용 현황 파악과 안정성 개선입니다.
+Android 버전은 Google Analytics for Firebase와 Firebase Crashlytics를 사용합니다. 앱 실행·세션, 화면 방문, 온보딩 완료, 입력 화면의 지출·수입 저장 여부와 앱 버전, 운영체제·기기 정보, 앱 인스턴스 또는 설치 식별자, 오류 유형·스택과 비정상 종료 진단 정보, Google Play 인앱 구매 이벤트(상품 ID·상품명·가격), IP 주소에서 추정한 대략적인 위치를 Google이 처리할 수 있습니다. 목적은 사용 현황 파악과 안정성 개선입니다.
 
 개발자가 보내는 분석 이벤트에는 거래 금액, 예산, 메모, 영수증 사진 또는 사용자 식별자를 넣지 않습니다. Dart 오류는 원문 메시지 대신 오류 유형과 스택을 전송합니다. Analytics의 광고 ID 수집과 광고 개인화 신호는 비활성화하며, AdMob의 동의 처리는 별도로 유지합니다. 이 설정이 모든 분석·진단 식별자의 수집을 끄는 것은 아닙니다. 수집 데이터의 보관·삭제는 Firebase·Google Analytics의 설정과 Google 정책을 따릅니다. 자세한 내용은 [Firebase 데이터 공개 안내](https://firebase.google.com/docs/android/play-data-disclosure)를 확인하세요.
 
@@ -188,7 +188,7 @@ Para más información, consulta la [Política de Privacidad de Google](https://
 
 ### 3.1. Estadísticas de uso y diagnóstico
 
-La versión Android utiliza Google Analytics for Firebase y Firebase Crashlytics. Google puede tratar inicios y sesiones, visitas a pantallas, finalización de la introducción, registros de gastos o ingresos realizados desde el formulario, versión de la aplicación, datos del sistema y del dispositivo, identificadores de instancia o instalación, tipos de errores, trazas y diagnósticos de fallos. Se utilizan para conocer el uso y mejorar la estabilidad.
+La versión Android utiliza Google Analytics for Firebase y Firebase Crashlytics. Google puede tratar inicios y sesiones, visitas a pantallas, finalización de la introducción, registros de gastos o ingresos realizados desde el formulario, versión de la aplicación, datos del sistema y del dispositivo, identificadores de instancia o instalación, tipos de errores, trazas y diagnósticos de fallos, eventos de compras en Google Play (ID, nombre y precio del producto) y una ubicación aproximada derivada de la dirección IP. Se utilizan para conocer el uso y mejorar la estabilidad.
 
 Los eventos definidos por el desarrollador no incluyen importes, presupuestos, notas, fotografías ni identificadores de usuario. Los errores Dart se envían como tipo y traza, sin el mensaje original. La recopilación del ID publicitario y las señales de personalización publicitaria de Analytics están desactivadas; AdMob mantiene su propio flujo de consentimiento. Esto no desactiva todos los identificadores analíticos o de diagnóstico. La conservación y eliminación dependen de la configuración de Firebase y Google Analytics y de las políticas de Google. Consulta la [información de datos de Firebase](https://firebase.google.com/docs/android/play-data-disclosure).
 
@@ -303,7 +303,7 @@ For more information, see the [Google Privacy Policy](https://policies.google.co
 
 ### 3.1. Usage analytics and diagnostics
 
-The Android version uses Google Analytics for Firebase and Firebase Crashlytics. Google may process app launches and sessions, screen visits, onboarding completion, expense/income saves from the entry form, app version, operating system and device information, app-instance or installation identifiers, error types, stack traces and crash diagnostics. These support usage measurement and reliability improvements.
+The Android version uses Google Analytics for Firebase and Firebase Crashlytics. Google may process app launches and sessions, screen visits, onboarding completion, expense/income saves from the entry form, app version, operating system and device information, app-instance or installation identifiers, error types, stack traces and crash diagnostics, Google Play in-app purchase events (product ID, name and price), and approximate location derived from the IP address. These support usage measurement and reliability improvements.
 
 Developer-defined events do not include financial amounts, budgets, notes, receipt photos or user identifiers. Dart errors are reported as an error type and stack without the original exception message. Analytics advertising-ID collection and ad-personalization signals are disabled; AdMob retains its separate consent flow. This does not disable all analytics or diagnostic identifiers. Retention and deletion follow Firebase and Google Analytics settings and Google's policies. See [Firebase data-disclosure guidance](https://firebase.google.com/docs/android/play-data-disclosure).
 

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sobra_app/screens/app_shell.dart';
 import 'package:sobra_app/services/app_telemetry.dart';
 
 void main() {
@@ -55,4 +56,16 @@ void main() {
       await telemetry.reportError(Exception('offline'), StackTrace.current);
     },
   );
+
+  // Switching tabs looks its screen up by the tab's name. A tab added without
+  // a screen here would throw on every tap and the tab could not be opened.
+  test('every tab has a screen to report', () {
+    for (final tab in AppTab.values) {
+      expect(
+        () => TelemetryScreen.values.byName(tab.name),
+        returnsNormally,
+        reason: tab.name,
+      );
+    }
+  });
 }
