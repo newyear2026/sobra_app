@@ -81,12 +81,35 @@ def build_pack() -> Path:
     return path
 
 
+# A room's icon is a square from its own preview, cut close around the
+# windows: the view is what the room sells, and the icon shows small.
+ROOM_PRODUCTS = {
+    "sobra.room.torre": (
+        ROOT / "assets/rooms/casa_torre/background_preview.png",
+        (318, 0, 1218, 900),
+    ),
+}
+
+
+def build_room(product_id: str, art_path: Path, crop: tuple[int, ...]) -> Path:
+    # 32-bit for Play, as with the pack.
+    art = Image.open(art_path).convert("RGBA")
+    icon = art.crop(crop).resize((SIZE, SIZE), Image.Resampling.LANCZOS)
+    path = OUTPUT / f"{product_id}-512.png"
+    icon.save(path, optimize=True)
+    return path
+
+
 def main() -> None:
     paths = [
         build(product_id, character, field)
         for product_id, (character, field) in PRODUCTS.items()
     ]
     paths.append(build_pack())
+    paths.extend(
+        build_room(product_id, art, crop)
+        for product_id, (art, crop) in ROOM_PRODUCTS.items()
+    )
     for path in paths:
         print(f"{path.relative_to(ROOT)}  {path.stat().st_size // 1024} KB")
 
