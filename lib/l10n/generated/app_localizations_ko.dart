@@ -503,6 +503,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get collectionBuy => '구매하기';
 
   @override
+  String get collectionPricePending => '가격 확인 중';
+
+  @override
   String get collectionWatchAd => '광고 보기';
 
   @override

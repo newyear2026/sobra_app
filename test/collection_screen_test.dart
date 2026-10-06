@@ -135,7 +135,8 @@ void main() {
     await tester.tap(find.text('Personaje 10'));
     await tester.pumpAndSettle();
 
-    expect(inDialog('COMPRAR'), findsOneWidget);
+    // Not in Play yet, so it waits for a price rather than offering a buy.
+    expect(inDialog('CONSULTANDO PRECIO'), findsOneWidget);
     expect(inDialog('EQUIPAR'), findsNothing);
   });
 
@@ -149,7 +150,7 @@ void main() {
     await pump(tester, store, initialEntryId: 'character-10');
 
     expect(inDialog('Personaje 10'), findsOneWidget);
-    expect(inDialog('COMPRAR'), findsOneWidget);
+    expect(inDialog('CONSULTANDO PRECIO'), findsOneWidget);
     final buyButton = tester.widget<FilledButton>(
       find.descendant(
         of: find.byType(AlertDialog),
@@ -166,13 +167,8 @@ void main() {
     await pump(tester, store, initialEntryId: 'rabbit');
 
     expect(inDialog('Bunny'), findsOneWidget);
-    expect(
-      find.descendant(
-        of: find.byType(AlertDialog),
-        matching: find.textContaining(r'MX$ 39'),
-      ),
-      findsOneWidget,
-    );
+    // The price is on the button, as it is on the pack's.
+    expect(inDialog(r'COMPRAR · MX$ 39'), findsOneWidget);
     final buyButton = tester.widget<FilledButton>(
       find.descendant(
         of: find.byType(AlertDialog),
@@ -189,14 +185,8 @@ void main() {
     await pump(tester, store, initialEntryId: 'platypus');
 
     expect(inDialog('Pico'), findsOneWidget);
-    expect(inDialog('COMPRAR'), findsOneWidget);
-    expect(
-      find.descendant(
-        of: find.byType(AlertDialog),
-        matching: find.textContaining(r'MX$ 39'),
-      ),
-      findsOneWidget,
-    );
+    // The price is on the button, as it is on the pack's.
+    expect(inDialog(r'COMPRAR · MX$ 39'), findsOneWidget);
     final buyButton = tester.widget<FilledButton>(
       find.descendant(
         of: find.byType(AlertDialog),
@@ -211,13 +201,8 @@ void main() {
     await pump(tester, store, initialEntryId: 'raccoon');
 
     expect(inDialog('Bandi'), findsOneWidget);
-    expect(
-      find.descendant(
-        of: find.byType(AlertDialog),
-        matching: find.textContaining(r'MX$ 39'),
-      ),
-      findsOneWidget,
-    );
+    // The price is on the button, as it is on the pack's.
+    expect(inDialog(r'COMPRAR · MX$ 39'), findsOneWidget);
     expect(
       find.descendant(
         of: find.byType(AlertDialog),
@@ -232,7 +217,6 @@ void main() {
       ),
     );
     expect(buy.onPressed, isNotNull);
-    expect(inDialog('COMPRAR'), findsOneWidget);
     expect(inDialog('También viene en Los amigos de Michi'), findsOneWidget);
   });
 

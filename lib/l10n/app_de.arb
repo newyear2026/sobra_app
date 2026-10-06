@@ -164,6 +164,7 @@
   "collectionOwned": "DEINS",
   "collectionPlaceIt": "Platzieren",
   "collectionBuy": "KAUFEN",
+  "collectionPricePending": "PREIS WIRD GELADEN",
   "collectionWatchAd": "WERBUNG",
   "collectionAdLoading": "LÄDT",
   "collectionAdProgressLine": "{progress}/{target}",

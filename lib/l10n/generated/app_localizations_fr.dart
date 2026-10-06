@@ -523,6 +523,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get collectionBuy => 'ACHETER';
 
   @override
+  String get collectionPricePending => 'PRIX EN ATTENTE';
+
+  @override
   String get collectionWatchAd => 'VOIR LA PUB';
 
   @override

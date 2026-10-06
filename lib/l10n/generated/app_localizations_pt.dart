@@ -521,6 +521,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get collectionBuy => 'COMPRAR';
 
   @override
+  String get collectionPricePending => 'CONSULTANDO PREÇO';
+
+  @override
   String get collectionWatchAd => 'VER ANÚNCIO';
 
   @override

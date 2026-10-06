@@ -523,6 +523,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get collectionBuy => 'KAUFEN';
 
   @override
+  String get collectionPricePending => 'PREIS WIRD GELADEN';
+
+  @override
   String get collectionWatchAd => 'WERBUNG';
 
   @override

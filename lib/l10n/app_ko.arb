@@ -198,6 +198,7 @@
   "collectionOwned": "보유 중",
   "collectionPlaceIt": "꾸미기에서 놓기",
   "collectionBuy": "구매하기",
+  "collectionPricePending": "가격 확인 중",
   "collectionWatchAd": "광고 보기",
   "collectionAdLoading": "광고 준비 중",
   "collectionAdProgressLine": "{progress}/{target}",

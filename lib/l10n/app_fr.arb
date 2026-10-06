@@ -164,6 +164,7 @@
   "collectionOwned": "OBTENU",
   "collectionPlaceIt": "Placer",
   "collectionBuy": "ACHETER",
+  "collectionPricePending": "PRIX EN ATTENTE",
   "collectionWatchAd": "VOIR LA PUB",
   "collectionAdLoading": "CHARGEMENT",
   "collectionAdProgressLine": "{progress}/{target}",

@@ -164,6 +164,7 @@
   "collectionOwned": "入手済み",
   "collectionPlaceIt": "置く",
   "collectionBuy": "購入",
+  "collectionPricePending": "価格を確認中",
   "collectionWatchAd": "広告を見る",
   "collectionAdLoading": "準備中",
   "collectionAdProgressLine": "{progress}/{target}",

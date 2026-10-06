@@ -164,6 +164,7 @@
   "collectionOwned": "OBTIDO",
   "collectionPlaceIt": "Colocar",
   "collectionBuy": "COMPRAR",
+  "collectionPricePending": "CONSULTANDO PREÇO",
   "collectionWatchAd": "VER ANÚNCIO",
   "collectionAdLoading": "CARREGANDO",
   "collectionAdProgressLine": "{progress}/{target}",

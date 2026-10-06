@@ -97,7 +97,7 @@ void main() {
     await pump(tester, const CollectionScreen());
 
     await openPico(tester);
-    await tester.tap(inDialog('COMPRAR'));
+    await tester.tap(inDialog(r'COMPRAR · MX$ 39'));
     await tester.pumpAndSettle();
 
     expect(backend.bought, [productId]);
@@ -109,7 +109,7 @@ void main() {
     // second trip through the screen.
     await openPico(tester);
     expect(inDialog('OBTENIDO'), findsOneWidget);
-    expect(inDialog('COMPRAR'), findsNothing);
+    expect(inDialog(r'COMPRAR · MX$ 39'), findsNothing);
   });
 
   testWidgets('a purchase Play is still holding keeps saying so', (
@@ -138,7 +138,7 @@ void main() {
     await pump(tester, const CollectionScreen());
 
     await openPico(tester);
-    await tester.tap(inDialog('COMPRAR'));
+    await tester.tap(inDialog(r'COMPRAR · MX$ 39'));
     await tester.pumpAndSettle();
     expect(
       find.text('No se pudo completar la compra. No se te cobró nada.'),
@@ -163,7 +163,7 @@ void main() {
     await pump(tester, const CollectionScreen());
 
     await openPico(tester);
-    await tester.tap(inDialog('COMPRAR'));
+    await tester.tap(inDialog(r'COMPRAR · MX$ 39'));
     await tester.pumpAndSettle();
     expect(find.text('COMPRANDO…'), findsOneWidget);
 
@@ -173,7 +173,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('COMPRANDO…'), findsNothing);
-    expect(find.text('COMPRAR'), findsWidgets);
+    // The card is the price again, ready for another try.
+    expect(find.text(r'MX$ 39'), findsWidgets);
   });
 
   testWidgets('backing out of Play checkout immediately allows another try', (
@@ -183,7 +184,7 @@ void main() {
     await pump(tester, const CollectionScreen());
 
     await openPico(tester);
-    await tester.tap(inDialog('COMPRAR'));
+    await tester.tap(inDialog(r'COMPRAR · MX$ 39'));
     await tester.pumpAndSettle();
     expect(find.text('COMPRANDO…'), findsOneWidget);
 
@@ -199,7 +200,7 @@ void main() {
     expect(store.ownedCatalogIds, isEmpty);
 
     await openPico(tester);
-    await tester.tap(inDialog('COMPRAR'));
+    await tester.tap(inDialog(r'COMPRAR · MX$ 39'));
     await tester.pumpAndSettle();
     expect(backend.bought, [productId, productId]);
 
@@ -217,7 +218,7 @@ void main() {
 
     expect(find.text('Tranqui'), findsOneWidget);
     expect(find.text(r'MX$ 39'), findsNothing);
-    expect(find.text('COMPRAR'), findsWidgets);
+    expect(find.text('CONSULTANDO PRECIO'), findsWidgets);
   });
 
   testWidgets('Ajustes restores what the account owns', (tester) async {

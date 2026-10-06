@@ -194,6 +194,7 @@
   "collectionOwned": "OWNED",
   "collectionPlaceIt": "Place it",
   "collectionBuy": "BUY",
+  "collectionPricePending": "CHECKING PRICE",
   "collectionWatchAd": "WATCH AD",
   "collectionAdLoading": "LOADING",
   "collectionAdProgressLine": "{progress}/{target}",

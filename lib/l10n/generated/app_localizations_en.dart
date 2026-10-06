@@ -518,6 +518,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get collectionBuy => 'BUY';
 
   @override
+  String get collectionPricePending => 'CHECKING PRICE';
+
+  @override
   String get collectionWatchAd => 'WATCH AD';
 
   @override

@@ -959,6 +959,12 @@ abstract class AppLocalizations {
   /// **'COMPRAR'**
   String get collectionBuy;
 
+  /// No description provided for @collectionPricePending.
+  ///
+  /// In es, this message translates to:
+  /// **'CONSULTANDO PRECIO'**
+  String get collectionPricePending;
+
   /// No description provided for @collectionWatchAd.
   ///
   /// In es, this message translates to:

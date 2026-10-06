@@ -508,6 +508,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get collectionBuy => '購入';
 
   @override
+  String get collectionPricePending => '価格を確認中';
+
+  @override
   String get collectionWatchAd => '広告を見る';
 
   @override
