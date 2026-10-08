@@ -130,9 +130,9 @@ void main() {
     );
   });
 
-  testWidgets('panoramic room fills the wide home card', (tester) async {
+  testWidgets('panoramic room fills the square home card', (tester) async {
     SharedPreferences.setMockInitialValues({});
-    tester.view.physicalSize = const Size(640, 320);
+    tester.view.physicalSize = const Size(640, 640);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -169,7 +169,7 @@ void main() {
     await tester.runAsync(
       () => Future.wait([
         for (final asset in [
-          'assets/rooms/casa_torre/background_preview.png',
+          'assets/rooms/casa_torre/background_portrait_unlit.png',
           RoomDecorAssets.launchSofa,
           RoomDecorAssets.floorLamp,
           RoomDecorAssets.rug,

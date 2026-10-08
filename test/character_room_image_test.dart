@@ -187,7 +187,7 @@ void main() {
     expect(find.byType(RoomScene), findsOneWidget);
 
     final context = tester.element(find.byType(AppShell));
-    const provider = AssetImage(RoomThemes.casaClaraPreviewAsset);
+    const provider = AssetImage(RoomThemes.casaClaraPortraitAsset);
     final key = await provider.obtainKey(
       createLocalImageConfiguration(context),
     );

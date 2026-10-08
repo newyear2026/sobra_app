@@ -146,7 +146,7 @@ class _AppShellState extends State<AppShell> {
     unawaited(
       Future.wait([
         precacheImage(
-          AssetImage(RoomThemes.byId(nextStore.equippedRoomId).previewAsset),
+          AssetImage(RoomThemes.byId(nextStore.equippedRoomId).portraitAsset),
           context,
         ),
         precacheImage(const AssetImage(RoomDecorAssets.rug), context),

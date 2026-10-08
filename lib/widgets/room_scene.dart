@@ -66,19 +66,23 @@ class RoomScene extends StatelessWidget {
 
   RoomTheme get _room => RoomThemes.byId(roomId);
 
-  String get _asset =>
-      backgroundAsset ??
-      (variant == RoomSceneVariant.preview
-          ? _room.previewAsset
-          : _room.portraitAsset);
-
   @override
   Widget build(BuildContext context) {
     return ClipRect(
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final size = constraints.biggest;
           final room = _room;
+          // Home, Decorate and the full room share the portrait stage. A
+          // short viewport scales the whole room down; it never squeezes or
+          // moves individual furniture. Tall views reveal more wall/floor.
+          final width = math.min(constraints.maxWidth, constraints.maxHeight);
+          final size = Size(
+            width,
+            math.min(
+              constraints.maxHeight,
+              width / room.portraitSize.aspectRatio,
+            ),
+          );
           // These scenes paint their own full-width window light. The shared
           // small-window rays and mask would cross their glass and frames.
           final usesPaintedLight =
@@ -102,9 +106,9 @@ class RoomScene extends StatelessWidget {
                   '$assetDirectory/background_portrait_night_unlit.png',
                 RoomTimeOfDay.day =>
                   '$assetDirectory/background_portrait_unlit.png',
-                null => _asset,
+                null => room.portraitAsset,
               };
-          final layout = _RoomSceneLayout.of(room.id, variant);
+          final layout = _RoomSceneLayout.of(room.id);
           final selected = selectedItemId;
           final selectedAsset = selected == null
               ? null
@@ -112,31 +116,25 @@ class RoomScene extends StatelessWidget {
           final targets = showSlots && selected != null
               ? room.slotsForItem(selected, placements: placements)
               : const <RoomSlot>[];
-          final imageSize = variant == RoomSceneVariant.preview
-              ? room.previewSize
-              : room.portraitSize;
-          final background = _coverRect(
-            size,
-            imageSize.aspectRatio,
-            floorFocus: layout.floorFocus == null
-                ? null
-                : math.min(
-                    layout.floorFocus!,
-                    .52 + .1 * size.height / size.width,
-                  ),
+          final stageScale = size.width / room.portraitSize.width;
+          final backgroundHeight = room.portraitSize.height * stageScale;
+          final background = Rect.fromLTWH(
+            0,
+            ((size.height - size.width) / 2 - 96 * stageScale).clamp(
+              size.height - backgroundHeight,
+              0.0,
+            ),
+            size.width,
+            backgroundHeight,
           );
-          final stageScale = background.height / imageSize.height;
           final catAspect =
               CharacterAnimationStandard.frameHeight /
               CharacterAnimationStandard.frameWidth;
-          final catWidth = math.min(
-            size.width * layout.catWidth,
-            size.height * (.96 - layout.catTop) / catAspect,
-          );
+          final catWidth = background.width * .26;
           final catHeight = catWidth * catAspect;
           final catFrame = Rect.fromLTWH(
             (size.width - catWidth) / 2,
-            size.height * layout.catTop,
+            background.top + background.height * .49,
             catWidth,
             catHeight,
           );
@@ -191,9 +189,7 @@ class RoomScene extends StatelessWidget {
               );
             }
             final rect = layout.slotRects[slot]!;
-            final frame = slot.surface == RoomSurface.rug
-                ? Offset.zero & size
-                : background;
+            final frame = background;
             return Rect.fromLTWH(
               frame.left + rect.left * frame.width,
               frame.top + rect.top * frame.height,
@@ -207,10 +203,8 @@ class RoomScene extends StatelessWidget {
           // the floor line so Home and the portrait retain the same grouping.
           Rect itemSpot(RoomSlot slot, String itemId) {
             final spot = slotFrame(slot);
-            final preview = variant == RoomSceneVariant.preview;
-            final wallSpan = preview ? .535 : .434;
             Rect at(double x, double depth) {
-              final bottom = layout.floorLine + depth * wallSpan;
+              final bottom = _stageFloorLine + depth * .434;
               return Rect.fromLTWH(
                 background.left + (x - .08) * background.width,
                 background.top + bottom * background.height - spot.height,
@@ -220,16 +214,10 @@ class RoomScene extends StatelessWidget {
             }
 
             if (slot == RoomSlot.rug) {
-              // The rug follows the paws in every crop, including the short
-              // decorator, instead of staying behind the character.
+              // The rug shares the character's stage coordinates, including
+              // its foreground depth, in every viewport.
               final height = catWidth * 2.15 / 3;
-              final bodyBottom = itemId == RoomDecorAssets.blueCreamRugId
-                  ? 592 / 724
-                  : 511 / 724;
-              final top = math.min(
-                catPaws - height * .53,
-                size.height - 4 - height * bodyBottom,
-              );
+              final top = catPaws - height * .53;
               return Rect.fromLTWH(
                 catFrame.center.dx - height * 1.5,
                 top,
@@ -301,22 +289,16 @@ class RoomScene extends StatelessWidget {
             // the viewer. Wall and tabletop decorations keep a fixed scale.
             final depth = slot.surface == RoomSurface.floor
                 ? ((spot.bottom - background.top) / background.height -
-                          layout.floorLine)
+                          _stageFloorLine)
                       .clamp(0.0, .45)
                 : 0.0;
-            var height =
-                stageHeight * stageScale * layout.itemScale * (1 + depth * .6);
+            var height = stageHeight * stageScale * (1 + depth * .6);
             final body = _floorSpriteBody(itemId);
             if (slot.surface == RoomSurface.floor && body != null) {
-              final padding = size.width * .025;
-              height = math.min(
-                height,
-                (size.height - padding * 2) / body.height,
-              );
-              height = math.min(
-                height,
-                (size.width - padding * 2) / body.width,
-              );
+              // Keep opaque furniture inside the room's side walls. This
+              // uses stage bounds, not the viewport, so the same placement
+              // has exactly the same frame on Home and in Decorate.
+              final padding = background.width * .025;
               if (itemId == RoomDecorAssets.petBedId) {
                 height = math.min(height, catWidth * .85 / body.width);
               }
@@ -332,12 +314,7 @@ class RoomScene extends StatelessWidget {
                   : visible.right > size.width - padding
                   ? size.width - padding - visible.right
                   : 0.0;
-              final dy = visible.bottom > size.height - padding
-                  ? size.height - padding - visible.bottom
-                  : visible.top < padding
-                  ? padding - visible.top
-                  : 0.0;
-              frame = frame.shift(Offset(dx, dy));
+              frame = frame.shift(Offset(dx, 0));
               return frame;
             }
             final width = height * 3;
@@ -459,154 +436,170 @@ class RoomScene extends StatelessWidget {
                   child: child,
                 );
 
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              Positioned.fromRect(
-                rect: background,
-                child: Image.asset(
-                  sceneAsset,
-                  fit: BoxFit.fill,
-                  excludeFromSemantics: true,
-                  errorBuilder: (_, _, _) =>
-                      const ColoredBox(color: AppColors.paperLight),
+          return Center(
+            child: SizedBox.fromSize(
+              size: size,
+              child: ClipRect(
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Positioned.fromRect(
+                      rect: background,
+                      child: Image.asset(
+                        sceneAsset,
+                        fit: BoxFit.fill,
+                        excludeFromSemantics: true,
+                        errorBuilder: (_, _, _) =>
+                            const ColoredBox(color: AppColors.paperLight),
+                      ),
+                    ),
+                    if (roomPhase != null) ...[
+                      if (!usesPaintedLight) ...[
+                        Positioned.fill(
+                          child: IgnorePointer(
+                            child: CustomPaint(
+                              painter: RoomSunbeams(
+                                background: background,
+                                phase: roomPhase,
+                              ),
+                            ),
+                          ),
+                        ),
+                        // The room darkens under the furniture and the character,
+                        // which take their own, lighter shade below.
+                        Positioned.fill(
+                          child: IgnorePointer(
+                            child: CustomPaint(
+                              painter: RoomAmbientTint(
+                                phase: roomPhase,
+                                background: background,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                      if (roomPhase == RoomTimeOfDay.night)
+                        Positioned.fill(
+                          child: IgnorePointer(
+                            child: CustomPaint(
+                              painter: RoomLampGlow(
+                                background: background,
+                                floorLamps: floorLamps,
+                                tableLamps: tableLamps,
+                                bronzeLamps: bronzeLamps,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                    for (final item in placed)
+                      Positioned.fromRect(
+                        rect: item.frame,
+                        child: lit(
+                          item.frame,
+                          item.asset == RoomDecorAssets.launchTv
+                              ? _AnimatedTvSprite(
+                                  animate:
+                                      animateItems &&
+                                      !showSlots &&
+                                      (ModalRoute.isCurrentOf(context) ??
+                                          true) &&
+                                      !reducedMotionOf(context),
+                                )
+                              : _RoomItemImage(
+                                  asset: item.asset,
+                                  slot: item.slot,
+                                ),
+                        ),
+                      ),
+                    Positioned.fromRect(
+                      rect: catFrame,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: onCatTap,
+                        child: Semantics(
+                          button: onCatTap != null,
+                          child: Transform.scale(
+                            key: const ValueKey('room-character-scale'),
+                            scale: roomDisplayScale,
+                            // Keep the paws on the same floor line as Michi and
+                            // Miru while the smaller painted silhouettes grow.
+                            alignment: const Alignment(0, 2 * 344 / 360 - 1),
+                            child: lit(
+                              catFrame,
+                              CatSprite(
+                                motion: reacting
+                                    ? CatMotion.celebrate
+                                    : catMotion ?? CatMotion.idle,
+                                characterId: sceneCharacterId,
+                                width: catWidth,
+                                animate: !reducedMotionOf(context),
+                                loop: reacting ? false : catLoop,
+                                onComplete: reacting
+                                    ? onReactionComplete
+                                    : null,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (roomPhase == RoomTimeOfDay.night &&
+                        (floorLamps.isNotEmpty || bronzeLamps.isNotEmpty))
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          child: CustomPaint(
+                            painter: RoomLampShades(
+                              floorLamps: floorLamps,
+                              bronzeLamps: bronzeLamps,
+                            ),
+                          ),
+                        ),
+                      ),
+                    Positioned(
+                      left: catFrame.center.dx - background.width * .25,
+                      bottom: size.height - catFrame.top - catHeight * .06,
+                      width: background.width * .5,
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: _RoomSpeech(message: message),
+                      ),
+                    ),
+                    // Last, so a place the character or its speech overlaps can
+                    // still be tapped: Decorate's crop keeps more wall, and Casa
+                    // clara's table now sits beside the bubble.
+                    for (final slot in targets)
+                      _RoomSlotTarget(
+                        slot: slot,
+                        number: switch (slot) {
+                          RoomSlot.cabinetTop => 1,
+                          RoomSlot.cabinetTopRight => 2,
+                          RoomSlot.sideTableTop => 1,
+                          _ => room.slotsFor(slot.surface).indexOf(slot) + 1,
+                        },
+                        supportLabel: switch (slot) {
+                          RoomSlot.cabinetTop || RoomSlot.cabinetTopRight =>
+                            placements[RoomSlot.floorCabinet] ==
+                                    RoomDecorAssets.slimBookcaseId
+                                ? AppLocalizations.of(context).roomSlimBookcase
+                                : AppLocalizations.of(context).roomLowCabinet,
+                          RoomSlot.sideTableTop => AppLocalizations.of(
+                            context,
+                          ).roomRoundSideTable,
+                          _ => null,
+                        },
+                        frame: targetFrame(slot, selected!),
+                        ghostFrame: itemFrame(slot, selected),
+                        holdsSelection: placements[slot] == selected,
+                        ghostAsset: selectedAsset,
+                        onTap: onSlotTap == null
+                            ? null
+                            : () => onSlotTap!(slot),
+                      ),
+                  ],
                 ),
               ),
-              if (roomPhase != null) ...[
-                if (!usesPaintedLight) ...[
-                  Positioned.fill(
-                    child: IgnorePointer(
-                      child: CustomPaint(
-                        painter: RoomSunbeams(
-                          background: background,
-                          phase: roomPhase,
-                        ),
-                      ),
-                    ),
-                  ),
-                  // The room darkens under the furniture and the character,
-                  // which take their own, lighter shade below.
-                  Positioned.fill(
-                    child: IgnorePointer(
-                      child: CustomPaint(
-                        painter: RoomAmbientTint(
-                          phase: roomPhase,
-                          background: background,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-                if (roomPhase == RoomTimeOfDay.night)
-                  Positioned.fill(
-                    child: IgnorePointer(
-                      child: CustomPaint(
-                        painter: RoomLampGlow(
-                          background: background,
-                          floorLamps: floorLamps,
-                          tableLamps: tableLamps,
-                          bronzeLamps: bronzeLamps,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-              for (final item in placed)
-                Positioned.fromRect(
-                  rect: item.frame,
-                  child: lit(
-                    item.frame,
-                    item.asset == RoomDecorAssets.launchTv
-                        ? _AnimatedTvSprite(
-                            animate:
-                                animateItems &&
-                                !showSlots &&
-                                (ModalRoute.isCurrentOf(context) ?? true) &&
-                                !reducedMotionOf(context),
-                          )
-                        : _RoomItemImage(asset: item.asset, slot: item.slot),
-                  ),
-                ),
-              Positioned.fromRect(
-                rect: catFrame,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onCatTap,
-                  child: Semantics(
-                    button: onCatTap != null,
-                    child: Transform.scale(
-                      key: const ValueKey('room-character-scale'),
-                      scale: roomDisplayScale,
-                      // Keep the paws on the same floor line as Michi and
-                      // Miru while the smaller painted silhouettes grow.
-                      alignment: const Alignment(0, 2 * 344 / 360 - 1),
-                      child: lit(
-                        catFrame,
-                        CatSprite(
-                          motion: reacting
-                              ? CatMotion.celebrate
-                              : catMotion ?? CatMotion.idle,
-                          characterId: sceneCharacterId,
-                          width: catWidth,
-                          animate: !reducedMotionOf(context),
-                          loop: reacting ? false : catLoop,
-                          onComplete: reacting ? onReactionComplete : null,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              if (roomPhase == RoomTimeOfDay.night &&
-                  (floorLamps.isNotEmpty || bronzeLamps.isNotEmpty))
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: CustomPaint(
-                      painter: RoomLampShades(
-                        floorLamps: floorLamps,
-                        bronzeLamps: bronzeLamps,
-                      ),
-                    ),
-                  ),
-                ),
-              _RelativePositioned(
-                rect: layout.speechRect,
-                size: size,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: _RoomSpeech(message: message),
-                ),
-              ),
-              // Last, so a place the character or its speech overlaps can
-              // still be tapped: Decorate's crop keeps more wall, and Casa
-              // clara's table now sits beside the bubble.
-              for (final slot in targets)
-                _RoomSlotTarget(
-                  slot: slot,
-                  number: switch (slot) {
-                    RoomSlot.cabinetTop => 1,
-                    RoomSlot.cabinetTopRight => 2,
-                    RoomSlot.sideTableTop => 1,
-                    _ => room.slotsFor(slot.surface).indexOf(slot) + 1,
-                  },
-                  supportLabel: switch (slot) {
-                    RoomSlot.cabinetTop || RoomSlot.cabinetTopRight =>
-                      placements[RoomSlot.floorCabinet] ==
-                              RoomDecorAssets.slimBookcaseId
-                          ? AppLocalizations.of(context).roomSlimBookcase
-                          : AppLocalizations.of(context).roomLowCabinet,
-                    RoomSlot.sideTableTop => AppLocalizations.of(
-                      context,
-                    ).roomRoundSideTable,
-                    _ => null,
-                  },
-                  frame: targetFrame(slot, selected!),
-                  ghostFrame: itemFrame(slot, selected),
-                  holdsSelection: placements[slot] == selected,
-                  ghostAsset: selectedAsset,
-                  onTap: onSlotTap == null ? null : () => onSlotTap!(slot),
-                ),
-            ],
+            ),
           );
         },
       ),
@@ -689,100 +682,17 @@ Rect _floorSpriteRect(Rect frame, String itemId) {
   );
 }
 
-/// Where a [BoxFit.cover] image of [aspectRatio] lands in [size].
-///
-/// Slots are placed on this rather than on the widget, so a decoration stays
-/// on its patch of wall however the screen's shape crops the background.
-///
-/// Centred, unless [floorFocus] names where the stage's floor line should
-/// sit, as a fraction of [size]'s height, when the image is cropped top and
-/// bottom. Decorate is wide and short: centred, it cut the wall off above the
-/// window sill, and a clock hung where Mi casa shows it low on the wall was
-/// pushed against the top edge.
-Rect _coverRect(Size size, double aspectRatio, {double? floorFocus}) {
-  if (size.width / size.height > aspectRatio) {
-    final height = size.width / aspectRatio;
-    final top = floorFocus == null
-        ? (size.height - height) / 2
-        : (floorFocus * size.height - _stageFloorLine * height).clamp(
-            size.height - height,
-            0.0,
-          );
-    return Rect.fromLTWH(0, top, size.width, height);
-  }
-  final width = size.height * aspectRatio;
-  return Rect.fromLTWH((size.width - width) / 2, 0, width, size.height);
-}
-
-/// Where the floor meets the wall on the shared stage, as a fraction of the
-/// portrait image's height; see `docs/hybrid-room-theme-guide.md`.
+/// Floor contact on the shared 1024 × 1536 portrait stage.
 const _stageFloorLine = 782 / 1536;
 
-/// Decorate keeps the floor line two thirds of the way down: the wall up to
-/// about 1.7 m stays in view, and the character still has floor to sit on.
-const _immersiveFloorFocus = .66;
-
 class _RoomSceneLayout {
-  const _RoomSceneLayout({
-    required this.slotRects,
-    required this.speechRect,
-    required this.catTop,
-    required this.catWidth,
-    required this.floorLine,
-    this.itemScale = 1,
-    this.floorFocus,
-  });
+  const _RoomSceneLayout(this.slotRects);
 
-  /// Fractions of the background image, not of the widget — except the
-  /// rug's, which is the character's mat and follows the character, whose
-  /// place is a fraction of the widget.
+  /// Every anchor is relative to the portrait background. Preview, full
+  /// room and decorator project these same coordinates into their viewport.
   final Map<RoomSlot, Rect> slotRects;
 
-  /// The speech bubble and character are fractions of the widget.
-  final Rect speechRect;
-  final double catTop;
-  final double catWidth;
-  final double floorLine;
-
-  /// The wide empty-room paintings compress the wall vertically compared
-  /// with their portrait paintings. Keep decor the same size relative to
-  /// the window and baseboard in both views.
-  final double itemScale;
-
-  /// See [_coverRect]; null centres the background.
-  final double? floorFocus;
-
-  // The 3:2 preview art is cropped into a 2:1 Home card. Its window and
-  // baseboard are closer together than in the portrait art. Place items by
-  // those landmarks so they retain their height on the wall and their depth
-  // on the floor when the user opens the same room. The aligned preview art
-  // also puts the window at the portrait's horizontal position.
-  static const _emptyThemePreviewSlots = <RoomSlot, Rect>{
-    RoomSlot.rug: Rect.fromLTWH(.20, .73, .62, .24),
-    RoomSlot.wallLeft: Rect.fromLTWH(.17, .275, .10, .08),
-    RoomSlot.wallCenter: Rect.fromLTWH(.78, .275, .10, .08),
-    RoomSlot.floorLeft: Rect.fromLTWH(.11, .55, .16, .17),
-    RoomSlot.floorRight: Rect.fromLTWH(.74, .55, .14, .17),
-    // The Home card has much less visible floor than the portrait scene.
-    // Keep the pet bed behind the character's feet in this crop.
-    RoomSlot.floorCenter: Rect.fromLTWH(.255, .57, .25, .20),
-    RoomSlot.floorAccent: Rect.fromLTWH(.64, .65, .08, .136),
-    RoomSlot.floorCabinet: Rect.fromLTWH(.17, .505, .18, .22),
-    RoomSlot.floorSofa: Rect.fromLTWH(.56, .505, .36, .22),
-  };
-
-  static const _emptyThemePreview = _RoomSceneLayout(
-    slotRects: _emptyThemePreviewSlots,
-    speechRect: Rect.fromLTWH(.21, .27, .38, .26),
-    catTop: .47,
-    catWidth: .22,
-    floorLine: .675,
-    itemScale: .82,
-  );
-
-  // An empty room has nothing painted in to step around, so furniture stands
-  // back against the wall. Wall slots hang clear of a floor lamp's shade.
-  static const _emptyThemeImmersiveSlots = <RoomSlot, Rect>{
+  static const _slots = <RoomSlot, Rect>{
     RoomSlot.rug: Rect.fromLTWH(.05, .67, .90, .14),
     RoomSlot.wallLeft: Rect.fromLTWH(.15, .185, .14, .066),
     RoomSlot.wallCenter: Rect.fromLTWH(.76, .185, .14, .066),
@@ -794,75 +704,15 @@ class _RoomSceneLayout {
     RoomSlot.floorSofa: Rect.fromLTWH(.47, .40, .46, .15),
   };
 
-  static const _emptyThemeImmersive = _RoomSceneLayout(
-    slotRects: _emptyThemeImmersiveSlots,
-    speechRect: Rect.fromLTWH(.25, .48, .50, .14),
-    catTop: .56,
-    catWidth: .30,
-    floorLine: _stageFloorLine,
-    floorFocus: _immersiveFloorFocus,
-  );
+  static const _empty = _RoomSceneLayout(_slots);
+  // Preserve the legacy tabletop slot on Casa clara's architectural sill.
+  static const _casaClara = _RoomSceneLayout({
+    ..._slots,
+    RoomSlot.tabletop: Rect.fromLTWH(.57, .29, .08, .04),
+  });
 
-  // Casa clara now uses the same empty-room anchors. Its legacy tabletop
-  // decoration remains placeable on the architectural window sill, so a saved
-  // desk lamp or plant never floats where the painted side table used to be.
-  static const _casaClaraPreview = _RoomSceneLayout(
-    slotRects: {
-      ..._emptyThemePreviewSlots,
-      RoomSlot.tabletop: Rect.fromLTWH(.55, .42, .08, .04),
-    },
-    speechRect: Rect.fromLTWH(.21, .27, .38, .26),
-    catTop: .47,
-    catWidth: .22,
-    floorLine: .675,
-    itemScale: .82,
-  );
-
-  static const _casaClaraImmersive = _RoomSceneLayout(
-    slotRects: {
-      ..._emptyThemeImmersiveSlots,
-      RoomSlot.tabletop: Rect.fromLTWH(.57, .29, .08, .04),
-    },
-    speechRect: Rect.fromLTWH(.25, .48, .50, .14),
-    catTop: .56,
-    catWidth: .30,
-    floorLine: _stageFloorLine,
-    floorFocus: _immersiveFloorFocus,
-  );
-
-  static const _byRoom = {
-    RoomThemes.casaClaraId: (
-      preview: _casaClaraPreview,
-      immersive: _casaClaraImmersive,
-    ),
-    RoomThemes.casaJardinId: (
-      preview: _emptyThemePreview,
-      immersive: _emptyThemeImmersive,
-    ),
-    RoomThemes.casaDePlayaId: (
-      preview: _emptyThemePreview,
-      immersive: _emptyThemeImmersive,
-    ),
-    RoomThemes.casaTorreId: (
-      preview: _emptyThemePreview,
-      immersive: _emptyThemeImmersive,
-    ),
-    RoomThemes.casaMontanaId: (
-      preview: _emptyThemePreview,
-      immersive: _emptyThemeImmersive,
-    ),
-    RoomThemes.casaInvernaderoId: (
-      preview: _emptyThemePreview,
-      immersive: _emptyThemeImmersive,
-    ),
-  };
-
-  static _RoomSceneLayout of(String roomId, RoomSceneVariant variant) {
-    final layouts = _byRoom[roomId] ?? _byRoom[RoomThemes.casaClaraId]!;
-    return variant == RoomSceneVariant.preview
-        ? layouts.preview
-        : layouts.immersive;
-  }
+  static _RoomSceneLayout of(String roomId) =>
+      roomId == RoomThemes.casaClaraId ? _casaClara : _empty;
 }
 
 /// A placed decoration, set down the way its surface holds it.
@@ -989,27 +839,6 @@ class _AnimatedTvSpriteState extends State<_AnimatedTvSprite>
     alignment: Alignment.bottomCenter,
     gaplessPlayback: true,
     excludeFromSemantics: true,
-  );
-}
-
-class _RelativePositioned extends StatelessWidget {
-  const _RelativePositioned({
-    required this.rect,
-    required this.size,
-    required this.child,
-  });
-
-  final Rect rect;
-  final Size size;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) => Positioned(
-    left: rect.left * size.width,
-    top: rect.top * size.height,
-    width: rect.width * size.width,
-    height: rect.height * size.height,
-    child: child,
   );
 }
 

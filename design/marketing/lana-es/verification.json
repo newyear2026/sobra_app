@@ -1,0 +1,18 @@
+[
+  {
+    "file": "sobrita-lana-es-16s.mp4",
+    "duration": 16,
+    "frames": 480,
+    "resolution": "1080x1920",
+    "audio": true,
+    "bytes": 2068777
+  },
+  {
+    "file": "sobrita-lana-es-16s-silent.mp4",
+    "duration": 16,
+    "frames": 480,
+    "resolution": "1080x1920",
+    "audio": false,
+    "bytes": 1664526
+  }
+]

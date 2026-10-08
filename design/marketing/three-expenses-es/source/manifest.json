@@ -1,0 +1,179 @@
+{
+  "fps": 30,
+  "width": 1080,
+  "height": 2160,
+  "frame_count": 372,
+  "locale": "es-MX",
+  "demo_date": "2026-10-06",
+  "today_spent_centavos": 16000,
+  "transactions": [
+    {
+      "id": "expense-1791327600000000-4",
+      "amountCentavos": 3500,
+      "category": "food",
+      "note": "Antojo",
+      "occurredAt": "2026-10-06T17:00:00.000",
+      "paymentMethod": "cash",
+      "cashReconciliationId": null,
+      "isPendingCashAdjustment": false,
+      "receiptFileName": null,
+      "recurringId": null,
+      "occurrenceDate": null
+    },
+    {
+      "id": "expense-1791313200000000-3",
+      "amountCentavos": 8000,
+      "category": "transport",
+      "note": "Taxi",
+      "occurredAt": "2026-10-06T13:00:00.000",
+      "paymentMethod": "cash",
+      "cashReconciliationId": null,
+      "isPendingCashAdjustment": false,
+      "receiptFileName": null,
+      "recurringId": null,
+      "occurrenceDate": null
+    },
+    {
+      "id": "expense-1791298800000000-0",
+      "amountCentavos": 4500,
+      "category": "food",
+      "note": "Café",
+      "occurredAt": "2026-10-06T09:00:00.000",
+      "paymentMethod": "cash",
+      "cashReconciliationId": null,
+      "isPendingCashAdjustment": false,
+      "receiptFileName": null,
+      "recurringId": null,
+      "occurrenceDate": null
+    }
+  ],
+  "clips": [
+    {
+      "name": "coffee-empty",
+      "start": 0,
+      "count": 6
+    },
+    {
+      "name": "coffee-digit",
+      "start": 6,
+      "count": 6
+    },
+    {
+      "name": "coffee-amount",
+      "start": 12,
+      "count": 18
+    },
+    {
+      "name": "coffee-note",
+      "start": 30,
+      "count": 12
+    },
+    {
+      "name": "coffee-ready",
+      "start": 42,
+      "count": 12
+    },
+    {
+      "name": "coffee-saved",
+      "start": 54,
+      "count": 50
+    },
+    {
+      "name": "taxi-empty",
+      "start": 104,
+      "count": 6
+    },
+    {
+      "name": "taxi-digit",
+      "start": 110,
+      "count": 6
+    },
+    {
+      "name": "taxi-amount",
+      "start": 116,
+      "count": 18
+    },
+    {
+      "name": "taxi-note",
+      "start": 134,
+      "count": 12
+    },
+    {
+      "name": "taxi-ready",
+      "start": 146,
+      "count": 12
+    },
+    {
+      "name": "taxi-saved",
+      "start": 158,
+      "count": 50
+    },
+    {
+      "name": "snack-empty",
+      "start": 208,
+      "count": 6
+    },
+    {
+      "name": "snack-digit",
+      "start": 214,
+      "count": 6
+    },
+    {
+      "name": "snack-amount",
+      "start": 220,
+      "count": 18
+    },
+    {
+      "name": "snack-note",
+      "start": 238,
+      "count": 12
+    },
+    {
+      "name": "snack-ready",
+      "start": 250,
+      "count": 12
+    },
+    {
+      "name": "snack-saved",
+      "start": 262,
+      "count": 50
+    },
+    {
+      "name": "summary",
+      "start": 312,
+      "count": 60
+    }
+  ],
+  "taps": [
+    {
+      "frame": 12,
+      "x": 171.0,
+      "y": 1110.3333333333333
+    },
+    {
+      "frame": 54,
+      "x": 582.0,
+      "y": 1975.5000000000005
+    },
+    {
+      "frame": 116,
+      "x": 417.0,
+      "y": 1110.3333333333335
+    },
+    {
+      "frame": 158,
+      "x": 582.0,
+      "y": 1975.5000000000005
+    },
+    {
+      "frame": 220,
+      "x": 171.0,
+      "y": 1110.3333333333333
+    },
+    {
+      "frame": 262,
+      "x": 582.0,
+      "y": 1975.5000000000005
+    }
+  ]
+}

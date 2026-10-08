@@ -467,15 +467,25 @@ class _HomeRoomCard extends StatelessWidget {
             ),
             const Divider(height: 2.5, thickness: 2.5, color: AppColors.ink),
             AspectRatio(
-              aspectRatio: 2,
-              child: RoomScene(
-                variant: RoomSceneVariant.preview,
-                animateItems: active,
-                roomId: roomId,
-                placements: placements,
-                message: message,
-                catMotion: catMotion,
-                catLoop: catLoop,
+              aspectRatio: 1,
+              child: DecoratedBox(
+                position: DecorationPosition.foreground,
+                decoration: const BoxDecoration(
+                  border: Border(
+                    left: BorderSide(color: AppColors.ink, width: 2.5),
+                    right: BorderSide(color: AppColors.ink, width: 2.5),
+                    bottom: BorderSide(color: AppColors.ink, width: 2.5),
+                  ),
+                ),
+                child: RoomScene(
+                  variant: RoomSceneVariant.preview,
+                  animateItems: active,
+                  roomId: roomId,
+                  placements: placements,
+                  message: message,
+                  catMotion: catMotion,
+                  catLoop: catLoop,
+                ),
               ),
             ),
           ],

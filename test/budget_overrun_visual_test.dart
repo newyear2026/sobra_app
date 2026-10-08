@@ -56,7 +56,7 @@ void main() {
     await tester.runAsync(
       () => Future.wait([
         precacheImage(
-          const AssetImage(RoomThemes.casaClaraPreviewAsset),
+          const AssetImage(RoomThemes.casaClaraPortraitAsset),
           tester.element(find.byType(RoomScene)),
         ),
         precacheImage(

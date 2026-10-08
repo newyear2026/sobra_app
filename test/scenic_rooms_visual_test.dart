@@ -34,7 +34,7 @@ Future<void> _precache(
     () => Future.wait([
       for (final asset in [
         if (preview)
-          'assets/rooms/$folder/background_preview.png'
+          'assets/rooms/$folder/background_portrait_unlit.png'
         else ...[
           'assets/rooms/$folder/background_portrait_unlit.png',
           'assets/rooms/$folder/background_portrait_sunset_unlit.png',
@@ -142,8 +142,8 @@ void main() {
       );
     });
 
-    testWidgets('$slug fills the wide home card', (tester) async {
-      final store = await _store(tester, const Size(640, 320));
+    testWidgets('$slug fills the square home card', (tester) async {
+      final store = await _store(tester, const Size(640, 640));
       await tester.pumpWidget(
         SobraScope(
           store: store,

@@ -54,7 +54,7 @@ void main() {
     await tester.runAsync(
       () => Future.wait([
         precacheImage(
-          const AssetImage(RoomThemes.casaClaraPreviewAsset),
+          const AssetImage(RoomThemes.casaClaraPortraitAsset),
           tester.element(find.byType(RoomScene)),
         ),
         precacheImage(
@@ -74,6 +74,8 @@ void main() {
     await tester.pump();
 
     expect(find.byType(RoomScene), findsOneWidget);
+    final roomSize = tester.getSize(find.byType(RoomScene));
+    expect(roomSize.height, closeTo(roomSize.width, .01));
     expect(find.text('Mi casa'), findsOneWidget);
     expect(find.text('Vas muy bien'), findsOneWidget);
     expect(find.byType(CatSprite), findsOneWidget);

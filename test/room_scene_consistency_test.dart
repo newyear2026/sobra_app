@@ -31,7 +31,7 @@ void main() {
               home: Center(
                 child: SizedBox(
                   width: 1000,
-                  height: variant == RoomSceneVariant.preview ? 500 : 1400,
+                  height: variant == RoomSceneVariant.preview ? 1000 : 1400,
                   child: RoomScene(
                     variant: variant,
                     roomId: RoomThemes.casaMontanaId,
@@ -61,11 +61,7 @@ void main() {
         RoomSlot.floorLeft: RoomDecorAssets.floorLampId,
         RoomSlot.floorRight: RoomDecorAssets.terracottaPoufId,
       });
-      final background = frame(
-        variant == RoomSceneVariant.preview
-            ? RoomThemes.casaMontana.previewAsset
-            : RoomThemes.casaMontana.portraitAsset,
-      );
+      final background = frame(RoomThemes.casaMontana.portraitAsset);
       final lamp = frame(RoomDecorAssets.floorLamp);
       final tv = frame(RoomDecorAssets.launchTv);
       final sofa = frame(RoomDecorAssets.launchSofa);
@@ -105,219 +101,139 @@ void main() {
     }
   });
 
-  testWidgets(
-    'Home and room decor align to the same wall and floor landmarks',
-    (tester) async {
-      tester.view.physicalSize = const Size(1200, 1800);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-      SharedPreferences.setMockInitialValues({});
-      final store = await SobraStore.load(now: () => DateTime(2026, 9, 14, 10));
-      await store.setReducedMotion(true);
-
-      const placements = {
-        RoomSlot.wallLeft: RoomDecorAssets.wallClockId,
-        RoomSlot.wallCenter: RoomDecorAssets.wallShelfId,
-        RoomSlot.floorLeft: RoomDecorAssets.rattanChairId,
+  testWidgets('all room viewports preserve the exact shared arrangement', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(520, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load(now: () => DateTime(2026, 10, 6, 12));
+    await store.setReducedMotion(true);
+    const arrangements = [
+      {
         RoomSlot.floorCabinet: RoomDecorAssets.lowCabinetId,
+        RoomSlot.floorLeft: RoomDecorAssets.rattanChairId,
+        RoomSlot.floorRight: RoomDecorAssets.terracottaPoufId,
+        RoomSlot.floorSofa: RoomDecorAssets.ivorySofaId,
+        RoomSlot.floorCenter: RoomDecorAssets.petBedId,
         RoomSlot.cabinetTop: RoomDecorAssets.savingsJarId,
         RoomSlot.cabinetTopRight: RoomDecorAssets.defaultTablePlantId,
-        RoomSlot.floorAccent: RoomDecorAssets.floorLampId,
-        RoomSlot.floorRight: RoomDecorAssets.terracottaPoufId,
-        RoomSlot.floorCenter: RoomDecorAssets.petBedId,
-      };
-
-      Future<Map<String, Rect>> measure(RoomSceneVariant variant) async {
-        await tester.pumpWidget(
-          SobraScope(
-            store: store,
-            child: MaterialApp(
-              localizationsDelegates: sobraLocalizationsDelegates,
-              supportedLocales: sobraSupportedLocales,
-              home: Center(
-                child: SizedBox(
-                  width: 1000,
-                  height: variant == RoomSceneVariant.preview ? 500 : 1400,
-                  child: RoomScene(
-                    variant: variant,
-                    roomId: RoomThemes.casaDePlayaId,
-                    placements: placements,
-                    message: '',
+        RoomSlot.wallLeft: RoomDecorAssets.wallClockId,
+        RoomSlot.wallCenter: RoomDecorAssets.wallShelfId,
+        RoomSlot.rug: RoomDecorAssets.blueCreamRugId,
+      },
+      {
+        RoomSlot.floorCabinet: RoomDecorAssets.slimBookcaseId,
+        RoomSlot.floorLeft: RoomDecorAssets.floorLampId,
+        RoomSlot.floorRight: RoomDecorAssets.roundSideTableId,
+        RoomSlot.floorSofa: RoomDecorAssets.launchSofaId,
+        RoomSlot.cabinetTop: RoomDecorAssets.savingsJarId,
+        RoomSlot.sideTableTop: RoomDecorAssets.defaultTablePlantId,
+        RoomSlot.rug: RoomDecorAssets.defaultRugId,
+      },
+      {
+        RoomSlot.floorCabinet: RoomDecorAssets.launchTvId,
+        RoomSlot.floorLeft: RoomDecorAssets.bronzeLanternLampId,
+        RoomSlot.floorRight: RoomDecorAssets.rattanChairId,
+        RoomSlot.floorSofa: RoomDecorAssets.ivorySofaId,
+        RoomSlot.rug: RoomDecorAssets.defaultRugId,
+      },
+    ];
+    const viewports = [
+      (RoomSceneVariant.preview, Size(360, 360)),
+      (RoomSceneVariant.immersive, Size(360, 320)),
+      (RoomSceneVariant.immersive, Size(426, 430)),
+      (RoomSceneVariant.immersive, Size(360, 560)),
+      (RoomSceneVariant.immersive, Size(320, 900)),
+    ];
+    for (final room in RoomThemes.all) {
+      for (final arrangement in arrangements) {
+        final placements = {
+          for (final entry in arrangement.entries)
+            if (room.slots.contains(entry.key)) entry.key: entry.value,
+        };
+        Map<String, Rect>? baseline;
+        List<String>? baselinePaintOrder;
+        for (final (variant, size) in viewports) {
+          await tester.pumpWidget(
+            SobraScope(
+              store: store,
+              child: MaterialApp(
+                localizationsDelegates: sobraLocalizationsDelegates,
+                supportedLocales: sobraSupportedLocales,
+                home: Center(
+                  child: SizedBox.fromSize(
+                    size: size,
+                    child: RoomScene(
+                      variant: variant,
+                      roomId: room.id,
+                      placements: placements,
+                      message: '',
+                      animateItems: false,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        );
-        await tester.pump();
-        Rect imageRect(String asset) => tester.getRect(
-          find.byWidgetPredicate(
+          );
+          await tester.pump();
+          Finder image(String asset) => find.byWidgetPredicate(
             (widget) =>
                 widget is Image &&
                 widget.image is AssetImage &&
                 (widget.image as AssetImage).assetName == asset,
-          ),
-        );
-
-        return {
-          'cat': tester.getRect(find.byType(CatSprite)),
-          'background': imageRect(
-            variant == RoomSceneVariant.preview
-                ? RoomThemes.casaDePlaya.previewAsset
-                : RoomThemes.casaDePlaya.portraitAsset,
-          ),
-          'clock': imageRect(RoomDecorAssets.wallClock),
-          'shelf': imageRect(RoomDecorAssets.wallShelf),
-          'chair': imageRect(RoomDecorAssets.rattanChair),
-          'cabinet': imageRect(RoomDecorAssets.lowCabinet),
-          'jar': imageRect(RoomDecorAssets.savingsJar),
-          'plant': imageRect(RoomDecorAssets.tablePlant),
-          'lamp': imageRect(RoomDecorAssets.floorLamp),
-          'pouf': imageRect(RoomDecorAssets.terracottaPouf),
-          'bed': imageRect(RoomDecorAssets.petBed),
-        };
-      }
-
-      final preview = await measure(RoomSceneVariant.preview);
-      final portrait = await measure(RoomSceneVariant.immersive);
-
-      // The jar follows the cabinet rather than a coordinate on the room
-      // background, including in the shorter Home preview.
-      for (final scene in [preview, portrait]) {
-        final cabinet = scene['cabinet']!;
-        final jar = scene['jar']!;
-        final plant = scene['plant']!;
-        expect(jar.center.dx, lessThan(cabinet.center.dx));
-        expect(plant.center.dx, greaterThan(cabinet.center.dx));
-        expect(jar.bottom, greaterThan(cabinet.top));
-        expect(jar.bottom, lessThan(cabinet.top + cabinet.height * .45));
-        // The jar image has clear pixels below the glass. Check its visible
-        // base against the wooden top, rather than the image widget's edge.
-        final visibleJarBottom = jar.top + jar.height * (1052 / 1287);
-        expect(
-          visibleJarBottom,
-          greaterThan(cabinet.top + cabinet.height * .32),
-        );
-        final visiblePlantBottom = plant.top + plant.height * (971 / 1191);
-        expect(
-          visiblePlantBottom,
-          greaterThan(cabinet.top + cabinet.height * .32),
-        );
-      }
-      final previewJarOffset =
-          (preview['jar']!.bottom - preview['cabinet']!.top) /
-          preview['cabinet']!.height;
-      final portraitJarOffset =
-          (portrait['jar']!.bottom - portrait['cabinet']!.top) /
-          portrait['cabinet']!.height;
-      expect((previewJarOffset - portraitJarOffset).abs(), lessThan(.01));
-
-      // Coordinates measured on the two background illustrations. The window
-      // starts above the wall decor and the baseboard is the floor reference.
-      double relativeY(
-        Map<String, Rect> frames,
-        String item, {
-        required double windowTop,
-        required double baseboard,
-        bool wall = false,
-      }) {
-        final background = frames['background']!;
-        final y = wall ? frames[item]!.center.dy : frames[item]!.bottom;
-        final sourceY = (y - background.top) / background.height;
-        return (sourceY - (wall ? windowTop : baseboard)) /
-            (baseboard - windowTop);
-      }
-
-      const previewWindow = 143 / 1024;
-      const previewBaseboard = 690 / 1024;
-      const portraitWindow = 115 / 1536;
-      const portraitBaseboard = 782 / 1536;
-
-      for (final item in [
-        'clock',
-        'shelf',
-        'chair',
-        'cabinet',
-        'lamp',
-        'pouf',
-        'bed',
-      ]) {
-        final wall = item == 'clock' || item == 'shelf';
-        final previewDepth = relativeY(
-          preview,
-          item,
-          windowTop: previewWindow,
-          baseboard: previewBaseboard,
-          wall: wall,
-        );
-        final portraitDepth = relativeY(
-          portrait,
-          item,
-          windowTop: portraitWindow,
-          baseboard: portraitBaseboard,
-          wall: wall,
-        );
-        // Foreground seats are pulled into the shorter viewport so their
-        // feet remain visible. Back-row furniture and wall decor retain
-        // their position relative to the room landmarks.
-        if (!const ['chair', 'pouf', 'bed'].contains(item)) {
-          expect(
-            (previewDepth - portraitDepth).abs(),
-            lessThan(.04),
-            reason: item,
           );
-        }
-
-        // The edited wide backgrounds now center the window like the
-        // portrait art, so objects should keep the same horizontal relation
-        // to it even though the Home card shows more wall on both sides.
-        final previewX =
-            (preview[item]!.center.dx - preview['background']!.left) /
-                preview['background']!.width -
-            810 / 1536;
-        final portraitX =
-            (portrait[item]!.center.dx - portrait['background']!.left) /
-                portrait['background']!.width -
-            550 / 1024;
-        if (item != 'bed') {
-          expect(
-            (previewX - portraitX).abs(),
-            lessThan(.025),
-            reason: '$item x',
+          final background = tester.getRect(image(room.portraitAsset));
+          Rect onStage(Rect rect) => Rect.fromLTWH(
+            (rect.left - background.left) / background.width,
+            (rect.top - background.top) / background.height,
+            rect.width / background.width,
+            rect.height / background.height,
           );
-        }
-
-        final previewHeight =
-            preview[item]!.height /
-            preview['background']!.height /
-            (previewBaseboard - previewWindow);
-        final portraitHeight =
-            portrait[item]!.height /
-            portrait['background']!.height /
-            (portraitBaseboard - portraitWindow);
-        if (item != 'bed') {
-          expect(
-            (previewHeight - portraitHeight).abs(),
-            lessThan(.02),
-            reason: '$item height',
-          );
+          final frames = {
+            'character': onStage(tester.getRect(find.byType(CatSprite))),
+            for (final id in placements.values)
+              id: onStage(tester.getRect(image(RoomDecorAssets.assetFor(id)!))),
+          };
+          final paintOrder = tester
+              .widgetList<Image>(find.byType(Image))
+              .where((widget) => widget.image is AssetImage)
+              .map((widget) => (widget.image as AssetImage).assetName)
+              .toList();
+          baseline ??= frames;
+          baselinePaintOrder ??= paintOrder;
+          expect(paintOrder, baselinePaintOrder);
+          for (final entry in frames.entries) {
+            final expected = baseline[entry.key]!;
+            final reason = '${room.id} $variant $size ${entry.key}';
+            expect(
+              entry.value.left,
+              closeTo(expected.left, 1e-6),
+              reason: reason,
+            );
+            expect(
+              entry.value.top,
+              closeTo(expected.top, 1e-6),
+              reason: reason,
+            );
+            expect(
+              entry.value.width,
+              closeTo(expected.width, 1e-6),
+              reason: reason,
+            );
+            expect(
+              entry.value.height,
+              closeTo(expected.height, 1e-6),
+              reason: reason,
+            );
+          }
+          expect(tester.takeException(), isNull);
         }
       }
-
-      // The pet bed sits beside the character, with its visible base above
-      // the paws and a size that stays readable in the short Home crop.
-      for (final scene in [preview, portrait]) {
-        final cat = scene['cat']!;
-        final bed = scene['bed']!;
-        final visibleBottom = bed.top + bed.height * (943 / 1024);
-        final visibleWidth = bed.height * (1218 / 1024);
-        expect(visibleBottom, lessThan(cat.bottom - cat.height * .12));
-        expect(visibleWidth, lessThanOrEqualTo(cat.width * .851));
-        expect(cat.center.dx - bed.center.dx, closeTo(cat.width * .85, 1));
-      }
-    },
-  );
+    }
+  });
 
   testWidgets('bookcase and side table props follow both room viewports', (
     tester,
@@ -346,7 +262,7 @@ void main() {
             home: Center(
               child: SizedBox(
                 width: 1000,
-                height: variant == RoomSceneVariant.preview ? 500 : 1400,
+                height: variant == RoomSceneVariant.preview ? 1000 : 1400,
                 child: RoomScene(
                   variant: variant,
                   roomId: RoomThemes.casaJardinId,

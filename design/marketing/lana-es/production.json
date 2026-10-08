@@ -1,0 +1,16 @@
+{
+  "title": "Tu lana, con Lana",
+  "language": "es-MX",
+  "character": "Lana (alpaca)",
+  "duration_seconds": 16,
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "footage": "Existing real Spanish Flutter app footage with isolated demo data",
+  "art": "Original, unmodified alpaca sprite sheets: idle, positive and success",
+  "music": "New original synthesized instrumental and chimes",
+  "voiceover": false,
+  "release_status": "Android · En pruebas",
+  "purchase_disclosure": "Lana se vende por separado.",
+  "uploaded": false
+}

@@ -93,7 +93,7 @@ void main() {
       ),
     );
 
-    tester.view.physicalSize = const Size(426, 220);
+    tester.view.physicalSize = const Size(426, 426);
     await tester.pumpWidget(
       SobraScope(
         store: store,
@@ -113,7 +113,7 @@ void main() {
     );
     await tester.runAsync(
       () => precacheImage(
-        AssetImage(RoomThemes.casaJardin.previewAsset),
+        AssetImage(RoomThemes.casaJardin.portraitAsset),
         tester.element(find.byType(RoomScene)),
       ),
     );

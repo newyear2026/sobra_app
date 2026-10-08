@@ -1,0 +1,24 @@
+{
+  "capture_check": "flutter test tool/render_three_expenses_promo_test.dart --no-pub: passed",
+  "sum_mxn": 160,
+  "videos": [
+    {
+      "file": "sobrita-three-expenses-es-18s.mp4",
+      "duration_seconds": 18,
+      "frames": 540,
+      "width": 1080,
+      "height": 1920,
+      "audio": true,
+      "bytes": 1353026
+    },
+    {
+      "file": "sobrita-three-expenses-es-18s-silent.mp4",
+      "duration_seconds": 18,
+      "frames": 540,
+      "width": 1080,
+      "height": 1920,
+      "audio": false,
+      "bytes": 900858
+    }
+  ]
+}

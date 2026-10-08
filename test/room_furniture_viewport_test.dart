@@ -117,7 +117,7 @@ void main() {
       const viewports = [
         (RoomSceneVariant.immersive, Size(360, 560)),
         (RoomSceneVariant.immersive, Size(360, 320)),
-        (RoomSceneVariant.preview, Size(360, 180)),
+        (RoomSceneVariant.preview, Size(360, 360)),
         (RoomSceneVariant.immersive, Size(320, 900)),
       ];
       for (final room in RoomThemes.all) {

@@ -23,24 +23,31 @@ window and the room's own identity pieces change between rooms.
 | Top of baseboard | y = 750 | Wall ends here |
 | Floor starts | y = 782 | Floor items stand below this line |
 | Window with curtains | x 352–748, y 108–530 | First three rooms; Casa torre, Casa montaña, and Casa invernadero use wider windows |
-| Character | x 358–666, y 815–1161 | Keep the floor clear here |
+| Character | x 379–645, y 753–1052 | Shared anchor; paws at y 1039 |
 | Light | from the upper left | First three rooms use separate diagonal beams; the three scenic rooms use daylight painted into their backgrounds |
 
 `design/rooms/generation/room-stage-guide.png` draws these lines over the
 empty Casa clara reference. Check the floor and character space in every new
 background against it; window shape may change.
 
-Mi casa shows the portrait's full height and crops its sides, to about
-x 63–961 on a common phone. Decorate is wide and short, so it crops top and
-bottom instead. Its floor focus shifts with the viewport height to leave
-enough floor for foreground seats and the character.
+Home uses a square room card. Home, Mi casa and Decorate all draw the same
+portrait background and stage coordinates, including the character, rug,
+pet bed and furniture-supported props. There is no Home-only anchor map or
+item scale. Landscape images remain available for theme picker thumbnails.
 
-Floor contact and viewport fitting use each sprite's opaque outline rather
-than its transparent canvas. Secondary chairs, poufs and side tables move
-forward when a sofa or cabinet occupies the back row. Bookcases leave space
-for a lamp beside them. The rug follows the character's paws, and the pet bed
-sits to their left. Short views may pull foreground items back into view;
-tabletop props and placement previews follow the resulting furniture frame.
+The square view crops the portrait at y = 96–1120. Taller views reveal more
+of the same wall and floor, up to the full portrait. When the available area
+is shorter than a square, the entire scene scales down together and is
+centered; very tall areas center the full portrait. This keeps every piece
+visible without changing its position relative to another piece or the room.
+
+Floor contact uses each sprite's opaque outline rather than its transparent
+canvas. Furniture is kept inside the stage's side walls, independently of the
+viewport. Secondary chairs, poufs and side tables move forward when a sofa or
+cabinet occupies the back row. Bookcases leave space for a lamp beside them.
+The character has a fixed stage anchor, with the rug under its paws and the
+pet bed to its left. Changing screen size never moves an individual item;
+tabletop props and placement previews use the same projected furniture frame.
 
 The ivory sofa and bronze lantern lamp are separate transparent sprites,
 available as included furniture in every room. The sofa uses `floorSofa`;
@@ -98,9 +105,9 @@ change once shipped (`rug`, `floorRight`, `wallCenter` and `tabletop` predate
 surfaces). A slot the user emptied is stored as cleared so the room's default
 does not come back.
 
-Slot positions are fractions of the background image, so an item stays on its
-patch of wall however the screen crops the room. The rug is the exception: it
-is the character's mat and follows the character.
+Slot positions are fractions of the portrait background image, so an item
+stays on its patch of wall however the screen crops the room. The character
+and its rug also use this shared stage, instead of viewport coordinates.
 
 ## Host furniture *(planned)*
 
@@ -145,8 +152,8 @@ A table or shelf is an item that brings its own places.
 ## Required assets for a new room
 
 1. A 2:3 portrait background, 1024×1536, empty, on the shared stage.
-2. A landscape preview for Home, the same room, empty. The Home card is 2:1;
-   a 3:2 source is center-cropped by the app.
+2. A landscape thumbnail for the theme picker, the same room, empty.
+   Home uses the portrait artwork through the shared square room viewport.
 3. Transparent PNGs for any furniture the room introduces, with no baked-in
    floor and their own soft shadow, cropped to the object with a couple of
    pixels to spare. A wide transparent margin under an item makes it float
