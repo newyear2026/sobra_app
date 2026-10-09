@@ -1442,7 +1442,7 @@ abstract class AppLocalizations {
   /// No description provided for @roomSuggestDeskLamp.
   ///
   /// In es, this message translates to:
-  /// **'Ponla en una mesa auxiliar. Añádela primero.'**
+  /// **'Pon la lámpara en un aparador, una mesa auxiliar o una repisa de pared. Añade uno primero si hace falta.'**
   String get roomSuggestDeskLamp;
 
   /// No description provided for @roomSuggestWallShelf.

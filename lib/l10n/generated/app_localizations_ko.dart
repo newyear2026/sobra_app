@@ -763,7 +763,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get roomSuggestShelfProps => '수납장, 책장 또는 벽선반을 먼저 놓고 그 위에 소품을 올려 주세요.';
 
   @override
-  String get roomSuggestDeskLamp => '협탁 위에 두세요. 협탁을 먼저 놓아 주세요.';
+  String get roomSuggestDeskLamp =>
+      '조명은 수납장, 협탁 또는 벽선반 위에 두세요. 받침이 없다면 먼저 놓아 주세요.';
 
   @override
   String get roomSuggestWallShelf => '빈 벽에 걸어주세요. 표시된 자리를 눌러요.';

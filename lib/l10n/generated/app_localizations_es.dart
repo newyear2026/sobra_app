@@ -786,7 +786,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get roomSuggestDeskLamp =>
-      'Ponla en una mesa auxiliar. Añádela primero.';
+      'Pon la lámpara en un aparador, una mesa auxiliar o una repisa de pared. Añade uno primero si hace falta.';
 
   @override
   String get roomSuggestWallShelf =>

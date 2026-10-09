@@ -768,7 +768,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get roomSuggestShelfProps => '先に収納棚、本棚、または壁の棚を置き、その上に小物を飾ってください。';
 
   @override
-  String get roomSuggestDeskLamp => 'サイドテーブルの上に置きます。先にサイドテーブルを置いてください。';
+  String get roomSuggestDeskLamp =>
+      'ランプは収納棚、サイドテーブル、壁の棚の上に置けます。先に置き場所を用意してください。';
 
   @override
   String get roomSuggestWallShelf => '空いている壁に掛けましょう。光っている場所をタップ。';

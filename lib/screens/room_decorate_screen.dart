@@ -240,8 +240,9 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
       'item-03' => l10n.roomSuggestTablePlant,
       RoomDecorAssets.shelfBooksId ||
       RoomDecorAssets.trailingPlantId => l10n.roomSuggestShelfProps,
-      // The lamp has one place, on the side table. Without the table the
-      // generic count would read "0 places" with nothing to tap.
+      // With no cabinet, side table or wall shelf the generic count would
+      // read "0 places" with nothing to tap. Once one is there, the count
+      // says where to tap.
       'item-01' when count == 0 => l10n.roomSuggestDeskLamp,
       RoomDecorAssets.wallShelfId => l10n.roomSuggestWallShelf,
       RoomDecorAssets.terracottaPoufId => l10n.roomSuggestPouf,

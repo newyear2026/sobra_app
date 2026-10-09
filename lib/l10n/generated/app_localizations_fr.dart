@@ -793,7 +793,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get roomSuggestDeskLamp =>
-      'Pose-la sur une table d’appoint. Ajoutes-en une d’abord.';
+      'Pose la lampe sur un meuble bas, une table d’appoint ou une étagère murale. Ajoutes-en un si besoin.';
 
   @override
   String get roomSuggestWallShelf =>

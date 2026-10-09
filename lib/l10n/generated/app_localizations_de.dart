@@ -791,7 +791,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get roomSuggestDeskLamp =>
-      'Stell sie auf einen Beistelltisch. Stell zuerst einen auf.';
+      'Stell die Lampe auf den Schrank, Beistelltisch oder das Wandregal. Stelle die Ablage zuerst auf.';
 
   @override
   String get roomSuggestWallShelf =>

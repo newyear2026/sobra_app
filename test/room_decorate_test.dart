@@ -85,9 +85,10 @@ void main() {
     expect(find.text('Lámpara verde'), findsOneWidget);
   });
 
-  // The lamp goes only on the side table. Without one, the generic count read
-  // "Hay 0 lugares en la mesa" over a room with nothing to tap.
-  testWidgets('the green lamp asks for a side table until there is one', (
+  // The lamp stands on a cabinet, side table or wall shelf. Without any of
+  // them, the generic count read "Hay 0 lugares en la mesa" over a room with
+  // nothing to tap.
+  testWidgets('the green lamp asks for a support until there is one', (
     tester,
   ) async {
     final store = await loadStore();
@@ -97,7 +98,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text('Ponla en una mesa auxiliar. Añádela primero.'),
+      find.text(
+        'Pon la lámpara en un aparador, una mesa auxiliar o una repisa de '
+        'pared. Añade uno primero si hace falta.',
+      ),
       findsOneWidget,
     );
     expect(find.textContaining('Hay 0 lugares'), findsNothing);

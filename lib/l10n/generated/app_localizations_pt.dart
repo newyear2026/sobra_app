@@ -789,7 +789,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get roomSuggestDeskLamp =>
-      'Coloque-a sobre uma mesa lateral. Adicione uma primeiro.';
+      'Coloque a luminária sobre um armário, mesa lateral ou prateleira de parede. Adicione o apoio primeiro, se precisar.';
 
   @override
   String get roomSuggestWallShelf =>

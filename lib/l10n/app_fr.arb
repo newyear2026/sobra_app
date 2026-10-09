@@ -245,7 +245,7 @@
   "roomSuggestSavingsJar": "Pose le bocal sur un meuble bas, une table d’appoint ou une étagère murale. Ajoutes-en un si besoin.",
   "roomSuggestTablePlant": "Pose la plante sur un meuble bas, une table d’appoint ou une étagère murale. Ajoutes-en un si besoin.",
   "roomSuggestShelfProps": "Place d’abord un meuble bas, une bibliothèque ou une étagère murale, puis pose l’objet dessus.",
-  "roomSuggestDeskLamp": "Pose-la sur une table d’appoint. Ajoutes-en une d’abord.",
+  "roomSuggestDeskLamp": "Pose la lampe sur un meuble bas, une table d’appoint ou une étagère murale. Ajoutes-en un si besoin.",
   "roomSuggestWallShelf": "Accroche-la sur un mur libre. Touche un endroit en surbrillance.",
   "roomSuggestPouf": "Équilibre la pièce à droite. Touche l’endroit en surbrillance.",
   "roomSuggestBlueRug": "Pose-le sous ton compagnon. Touche l’endroit en surbrillance.",

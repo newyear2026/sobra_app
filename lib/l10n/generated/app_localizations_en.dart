@@ -785,7 +785,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'Place a cabinet, bookcase, or wall shelf first, then set this prop on it.';
 
   @override
-  String get roomSuggestDeskLamp => 'Put it on a side table. Add one first.';
+  String get roomSuggestDeskLamp =>
+      'Place the lamp on a cabinet, side table, or wall shelf. Add one first if needed.';
 
   @override
   String get roomSuggestWallShelf =>
