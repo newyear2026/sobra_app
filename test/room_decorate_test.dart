@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,6 +72,87 @@ void main() {
     expect(find.text('VER ANUNCIO'), findsNothing);
     expect(find.text('COMPRAR'), findsNothing);
     expect(find.text('Ver más en la colección'), findsOneWidget);
+  });
+
+  testWidgets('the green lamp appears under props, not furniture', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store);
+
+    expect(find.text('Lámpara verde'), findsNothing);
+    await openCategory(tester, 'Adornos');
+    expect(find.text('Lámpara verde'), findsOneWidget);
+  });
+
+  // The lamp goes only on the side table. Without one, the generic count read
+  // "Hay 0 lugares en la mesa" over a room with nothing to tap.
+  testWidgets('the green lamp asks for a side table until there is one', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store);
+    await openCategory(tester, 'Adornos');
+    await tester.tap(find.text('Lámpara verde'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Ponla en una mesa auxiliar. Añádela primero.'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Hay 0 lugares'), findsNothing);
+
+    await store.saveRoomSelection(
+      roomId: RoomThemes.casaClaraId,
+      placementsByRoom: {
+        RoomThemes.casaClaraId: {
+          RoomSlot.rug: RoomDecorAssets.defaultRugId,
+          RoomSlot.floorRight: RoomDecorAssets.roundSideTableId,
+        },
+      },
+    );
+    await tester.pumpWidget(const SizedBox.shrink());
+    await pump(tester, store);
+    await openCategory(tester, 'Adornos');
+    await tester.tap(find.text('Lámpara verde'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Hay un lugar en la mesa. Tócalo para ponerlo.'),
+      findsOneWidget,
+    );
+  });
+
+  // States from before rooms were saved carry only the equipped item. The
+  // lamp used to be parked on a side table that was not there: invisible, and
+  // every Listo failed with "wrong place".
+  testWidgets('a legacy lamp with no side table does not block saving', (
+    tester,
+  ) async {
+    final fresh = await loadStore();
+    await fresh.setReducedMotion(true);
+    final preferences = await SharedPreferences.getInstance();
+    final saved =
+        jsonDecode(preferences.getString('sobra_state_v2')!)
+            as Map<String, dynamic>;
+    saved
+      ..remove('roomPlacementsByRoom')
+      ..['equippedItemId'] = 'item-01';
+    await preferences.setString('sobra_state_v2', jsonEncode(saved));
+
+    final store = await loadStore();
+    expect(store.roomDecorationsFor().values, isNot(contains('item-01')));
+
+    await pump(tester, store);
+    await tester.tap(find.text('Listo'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('No pudimos guardar el cambio. Vuelve a intentarlo.'),
+      findsNothing,
+    );
+    // Only a successful save closes the screen.
+    expect(find.byType(RoomDecorateScreen), findsNothing);
   });
 
   testWidgets('an unlocked item joins the drawer', (tester) async {
@@ -221,6 +304,8 @@ void main() {
     await tester.tap(find.text('Casa jardín'));
     await tester.pumpAndSettle();
     await openCategory(tester, 'Muebles');
+    await tester.ensureVisible(find.text('Aparador bajo'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Aparador bajo'));
     await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel('Piso, lugar 5'));
@@ -251,6 +336,8 @@ void main() {
     );
 
     await openCategory(tester, 'Muebles');
+    await tester.ensureVisible(find.text('Aparador bajo'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Aparador bajo'));
     await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel('Piso, lugar 5'));
@@ -264,6 +351,108 @@ void main() {
     expect(saved[RoomSlot.floorCabinet], isNull);
     expect(saved[RoomSlot.cabinetTop], isNull);
     expect(saved[RoomSlot.cabinetTopRight], isNull);
+  });
+
+  testWidgets('books and plant stay placed when cabinet becomes bookcase', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await store.saveRoomDecorations({
+      RoomSlot.floorCabinet: RoomDecorAssets.lowCabinetId,
+    });
+    await pump(tester, store);
+
+    await openCategory(tester, 'Adornos');
+    await tester.ensureVisible(find.text('Libros'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Libros'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Aparador bajo, lugar 1'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Planta colgante'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Planta colgante'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Aparador bajo, lugar 2'));
+    await tester.pumpAndSettle();
+
+    await openCategory(tester, 'Muebles');
+    await tester.ensureVisible(find.text('Estantería estrecha'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Estantería estrecha'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Piso, lugar 5'));
+    await tester.pumpAndSettle();
+
+    final draft = tester.widget<RoomScene>(find.byType(RoomScene)).placements;
+    expect(draft[RoomSlot.floorCabinet], RoomDecorAssets.slimBookcaseId);
+    expect(draft[RoomSlot.cabinetTop], RoomDecorAssets.shelfBooksId);
+    expect(draft[RoomSlot.cabinetTopRight], RoomDecorAssets.trailingPlantId);
+    await tester.tap(find.text('Listo'));
+    await tester.pumpAndSettle();
+    expect(
+      (await loadStore()).roomDecorationsFor()[RoomSlot.cabinetTopRight],
+      RoomDecorAssets.trailingPlantId,
+    );
+  });
+
+  testWidgets('wall shelf props follow the shelf and leave with it', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await store.saveRoomDecorations({
+      RoomSlot.wallCenter: RoomDecorAssets.wallShelfId,
+    });
+    await pump(tester, store);
+
+    await openCategory(tester, 'Adornos');
+    await tester.ensureVisible(find.text('Libros'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Libros'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Repisa de pared, lugar 1'));
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<RoomScene>(find.byType(RoomScene))
+          .placements[RoomSlot.wallShelfTopLeft],
+      RoomDecorAssets.shelfBooksId,
+    );
+    await tester.ensureVisible(find.text('Planta colgante'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Planta colgante'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Repisa de pared, lugar 2'));
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<RoomScene>(find.byType(RoomScene))
+          .placements[RoomSlot.wallShelfTopRight],
+      RoomDecorAssets.trailingPlantId,
+    );
+
+    await openCategory(tester, 'Pared y piso');
+    await tester.tap(find.text('Repisa de pared'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Pared, lugar 1'));
+    await tester.pumpAndSettle();
+    var draft = tester.widget<RoomScene>(find.byType(RoomScene)).placements;
+    expect(draft[RoomSlot.wallLeft], RoomDecorAssets.wallShelfId);
+    expect(draft[RoomSlot.wallShelfTopLeft], RoomDecorAssets.shelfBooksId);
+    expect(draft[RoomSlot.wallShelfTopRight], RoomDecorAssets.trailingPlantId);
+
+    await tester.tap(find.bySemanticsLabel('Pared, lugar 1'));
+    await tester.pumpAndSettle();
+    draft = tester.widget<RoomScene>(find.byType(RoomScene)).placements;
+    expect(draft[RoomSlot.wallLeft], isNull);
+    expect(draft[RoomSlot.wallShelfTopLeft], isNull);
+    expect(draft[RoomSlot.wallShelfTopRight], isNull);
+    await tester.tap(find.text('Listo'));
+    await tester.pumpAndSettle();
+    expect(
+      (await loadStore()).roomDecorationsFor()[RoomSlot.wallShelfTopLeft],
+      isNull,
+    );
   });
 
   testWidgets('bookcase and side table take props in distinct places', (

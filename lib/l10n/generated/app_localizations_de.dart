@@ -733,6 +733,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get roomWallShelf => 'Wandregal';
 
   @override
+  String get roomShelfBooks => 'Bücher';
+
+  @override
+  String get roomTrailingPlant => 'Hängepflanze';
+
+  @override
   String get roomTerracottaPouf => 'Terrakotta-Pouf';
 
   @override
@@ -773,11 +779,19 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get roomSuggestSavingsJar =>
-      'Stell das Sparglas auf die Fensterbank oder ein Möbelstück. Stell bei Bedarf erst ein Möbelstück auf.';
+      'Stell das Sparglas auf den Schrank, Beistelltisch oder das Wandregal. Stelle die Ablage zuerst auf.';
 
   @override
   String get roomSuggestTablePlant =>
-      'Stell die Pflanze auf die Fensterbank oder ein Möbelstück. Stell bei Bedarf erst ein Möbelstück auf.';
+      'Stell die Pflanze auf den Schrank, Beistelltisch oder das Wandregal. Stelle die Ablage zuerst auf.';
+
+  @override
+  String get roomSuggestShelfProps =>
+      'Stelle zuerst einen Schrank, ein Bücherregal oder ein Wandregal auf und lege den Gegenstand darauf.';
+
+  @override
+  String get roomSuggestDeskLamp =>
+      'Stell sie auf einen Beistelltisch. Stell zuerst einen auf.';
 
   @override
   String get roomSuggestWallShelf =>

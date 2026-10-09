@@ -185,19 +185,36 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
     }
     setState(() {
       _pushHistory();
+      void clearUnsupportedWallShelfProps() {
+        if (_draft[RoomSlot.wallLeft] == RoomDecorAssets.wallShelfId ||
+            _draft[RoomSlot.wallCenter] == RoomDecorAssets.wallShelfId) {
+          return;
+        }
+        _draft.remove(RoomSlot.wallShelfTopLeft);
+        _draft.remove(RoomSlot.wallShelfTopRight);
+      }
+
       if (slot == RoomSlot.floorCabinet) {
-        _draft.remove(RoomSlot.cabinetTop);
-        _draft.remove(RoomSlot.cabinetTopRight);
+        final supportsProps =
+            itemId == RoomDecorAssets.lowCabinetId ||
+            itemId == RoomDecorAssets.slimBookcaseId;
+        final replacingSupport = supportsProps && _draft[slot] != itemId;
+        if (!replacingSupport) {
+          _draft.remove(RoomSlot.cabinetTop);
+          _draft.remove(RoomSlot.cabinetTopRight);
+        }
       }
       if (slot == RoomSlot.floorRight) {
         _draft.remove(RoomSlot.sideTableTop);
       }
       if (_draft[slot] == itemId) {
         _draft.remove(slot);
+        clearUnsupportedWallShelfProps();
         return;
       }
       _draft.removeWhere((_, placed) => placed == itemId);
       _draft[slot] = itemId;
+      clearUnsupportedWallShelfProps();
     });
   }
 
@@ -221,6 +238,11 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
       RoomDecorAssets.savingsJarId => l10n.roomSuggestSavingsJar,
       RoomDecorAssets.defaultTablePlantId ||
       'item-03' => l10n.roomSuggestTablePlant,
+      RoomDecorAssets.shelfBooksId ||
+      RoomDecorAssets.trailingPlantId => l10n.roomSuggestShelfProps,
+      // The lamp has one place, on the side table. Without the table the
+      // generic count would read "0 places" with nothing to tap.
+      'item-01' when count == 0 => l10n.roomSuggestDeskLamp,
       RoomDecorAssets.wallShelfId => l10n.roomSuggestWallShelf,
       RoomDecorAssets.terracottaPoufId => l10n.roomSuggestPouf,
       RoomDecorAssets.blueCreamRugId => l10n.roomSuggestBlueRug,

@@ -49,7 +49,6 @@ void main() {
       RoomSlot.floorLeft: RoomDecorAssets.floorLampId,
       RoomSlot.floorCabinet: RoomDecorAssets.launchTvId,
       RoomSlot.floorSofa: RoomDecorAssets.ivorySofaId,
-      RoomSlot.tabletop: RoomDecorAssets.defaultTablePlantId,
       RoomSlot.rug: RoomDecorAssets.defaultRugId,
     });
     await tester.pumpWidget(SobraApp(store: store));

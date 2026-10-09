@@ -715,6 +715,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get roomWallShelf => 'ウォールシェルフ';
 
   @override
+  String get roomShelfBooks => '本';
+
+  @override
+  String get roomTrailingPlant => 'つる植物';
+
+  @override
   String get roomTerracottaPouf => 'テラコッタのスツール';
 
   @override
@@ -751,10 +757,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get roomSuggestPetBed => '仲間の左下に置きましょう。光っている場所をタップ。';
 
   @override
-  String get roomSuggestSavingsJar => '貯金びんは窓辺か家具の上に置けます。場所がなければ先に家具を置いてください。';
+  String get roomSuggestSavingsJar =>
+      '貯金びんは収納棚、サイドテーブル、壁の棚の上に置けます。先に置き場所を用意してください。';
 
   @override
-  String get roomSuggestTablePlant => '鉢植えは窓辺か家具の上に置けます。場所がなければ先に家具を置いてください。';
+  String get roomSuggestTablePlant =>
+      '鉢植えは収納棚、サイドテーブル、壁の棚の上に置けます。先に置き場所を用意してください。';
+
+  @override
+  String get roomSuggestShelfProps => '先に収納棚、本棚、または壁の棚を置き、その上に小物を飾ってください。';
+
+  @override
+  String get roomSuggestDeskLamp => 'サイドテーブルの上に置きます。先にサイドテーブルを置いてください。';
 
   @override
   String get roomSuggestWallShelf => '空いている壁に掛けましょう。光っている場所をタップ。';

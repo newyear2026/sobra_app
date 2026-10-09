@@ -316,6 +316,22 @@ abstract final class CatalogPreviewData {
       assetPath: RoomDecorAssets.wallShelf,
     ),
     CatalogEntry(
+      id: RoomDecorAssets.shelfBooksId,
+      name: 'Shelf books',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.shelf,
+      assetPath: RoomDecorAssets.shelfBooks,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.trailingPlantId,
+      name: 'Trailing plant',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.included,
+      visual: CatalogVisual.plant,
+      assetPath: RoomDecorAssets.trailingPlant,
+    ),
+    CatalogEntry(
       id: RoomDecorAssets.terracottaPoufId,
       name: 'Terracotta pouf',
       kind: CatalogKind.item,

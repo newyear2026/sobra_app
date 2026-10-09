@@ -710,6 +710,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get roomWallShelf => '벽 선반';
 
   @override
+  String get roomShelfBooks => '책';
+
+  @override
+  String get roomTrailingPlant => '늘어지는 화분';
+
+  @override
   String get roomTerracottaPouf => '테라코타 푸프';
 
   @override
@@ -747,11 +753,17 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get roomSuggestSavingsJar =>
-      '저금통은 창턱이나 가구 위에 두세요. 자리가 없다면 가구를 먼저 놓아 주세요.';
+      '저금통은 수납장, 협탁 또는 벽선반 위에 두세요. 받침이 없다면 먼저 놓아 주세요.';
 
   @override
   String get roomSuggestTablePlant =>
-      '화분은 창턱이나 가구 위에 두세요. 자리가 없다면 가구를 먼저 놓아 주세요.';
+      '화분은 수납장, 협탁 또는 벽선반 위에 두세요. 받침이 없다면 먼저 놓아 주세요.';
+
+  @override
+  String get roomSuggestShelfProps => '수납장, 책장 또는 벽선반을 먼저 놓고 그 위에 소품을 올려 주세요.';
+
+  @override
+  String get roomSuggestDeskLamp => '협탁 위에 두세요. 협탁을 먼저 놓아 주세요.';
 
   @override
   String get roomSuggestWallShelf => '빈 벽에 걸어주세요. 표시된 자리를 눌러요.';

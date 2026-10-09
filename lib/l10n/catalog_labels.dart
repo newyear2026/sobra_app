@@ -20,6 +20,10 @@ String catalogEntryDisplayName(AppLocalizations l10n, CatalogEntry entry) {
   if (entry.id == RoomDecorAssets.petBedId) return l10n.roomPetBed;
   if (entry.id == RoomDecorAssets.savingsJarId) return l10n.roomSavingsJar;
   if (entry.id == RoomDecorAssets.wallShelfId) return l10n.roomWallShelf;
+  if (entry.id == RoomDecorAssets.shelfBooksId) return l10n.roomShelfBooks;
+  if (entry.id == RoomDecorAssets.trailingPlantId) {
+    return l10n.roomTrailingPlant;
+  }
   if (entry.id == RoomDecorAssets.terracottaPoufId) {
     return l10n.roomTerracottaPouf;
   }

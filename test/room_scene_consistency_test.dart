@@ -9,6 +9,274 @@ import 'package:sobra_app/widgets/room_scene.dart';
 import 'support/localizations.dart';
 
 void main() {
+  testWidgets('books and green lamp fit their supporting furniture', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(426, 919);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load(now: () => DateTime(2026, 9, 14, 10));
+    await store.setReducedMotion(true);
+
+    Rect frame(String asset) => tester.getRect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Image &&
+            widget.image is AssetImage &&
+            (widget.image as AssetImage).assetName == asset,
+      ),
+    );
+    Future<void> show(
+      RoomSceneVariant variant,
+      Map<RoomSlot, String> placements,
+    ) async {
+      await tester.pumpWidget(
+        SobraScope(
+          store: store,
+          child: MaterialApp(
+            localizationsDelegates: sobraLocalizationsDelegates,
+            supportedLocales: sobraSupportedLocales,
+            home: RoomScene(
+              variant: variant,
+              placements: placements,
+              message: '',
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+    }
+
+    // Bounds measured on the opaque pixels in the assets, independently of
+    // the placement anchors. A base must lie within the wooden top face.
+    void lampFits(
+      Rect lamp,
+      Rect support,
+      double top,
+      double bottom,
+      double halfWidth,
+    ) {
+      final baseY = lamp.top + lamp.height * .86;
+      final baseX = lamp.center.dx - lamp.height * .06;
+      expect(
+        baseY,
+        inInclusiveRange(
+          support.top + support.height * top,
+          support.top + support.height * bottom,
+        ),
+      );
+      expect(
+        baseX - lamp.height * .20,
+        greaterThan(support.center.dx - support.height * halfWidth),
+      );
+      expect(
+        baseX + lamp.height * .20,
+        lessThan(support.center.dx + support.height * halfWidth),
+      );
+    }
+
+    for (final variant in RoomSceneVariant.values) {
+      for (final supportId in [
+        RoomDecorAssets.lowCabinetId,
+        RoomDecorAssets.slimBookcaseId,
+        RoomDecorAssets.wallShelfId,
+      ]) {
+        final shelf = supportId == RoomDecorAssets.wallShelfId;
+        final bookcase = supportId == RoomDecorAssets.slimBookcaseId;
+        final supportSlot = shelf ? RoomSlot.wallLeft : RoomSlot.floorCabinet;
+        final lampSlot = shelf
+            ? RoomSlot.wallShelfTopLeft
+            : RoomSlot.cabinetTopRight;
+        final bookSlot = shelf
+            ? RoomSlot.wallShelfTopRight
+            : RoomSlot.cabinetTop;
+        final placements = {supportSlot: supportId, lampSlot: 'item-01'};
+        await show(variant, placements);
+        final support = frame(RoomDecorAssets.assetFor(supportId)!);
+        var lamp = frame(RoomDecorAssets.lamp);
+        lampFits(
+          lamp,
+          support,
+          shelf
+              ? .48
+              : bookcase
+              ? .117
+              : .332,
+          shelf
+              ? .515
+              : bookcase
+              ? .156
+              : .40,
+          shelf
+              ? .64
+              : bookcase
+              ? .15
+              : .50,
+        );
+        final baseX = lamp.center.dx - lamp.height * .06;
+        expect(baseX, closeTo(support.center.dx, 1));
+
+        await show(variant, {
+          ...placements,
+          bookSlot: RoomDecorAssets.shelfBooksId,
+        });
+        lamp = frame(RoomDecorAssets.lamp);
+        final books = frame(RoomDecorAssets.shelfBooks);
+        final bookTop = books.top + books.height * .199;
+        final bookBottom = books.top + books.height * .835;
+        expect(
+          bookBottom,
+          inInclusiveRange(
+            support.top +
+                support.height *
+                    (shelf
+                        ? .48
+                        : bookcase
+                        ? .56
+                        : .332),
+            support.top +
+                support.height *
+                    (shelf
+                        ? .515
+                        : bookcase
+                        ? .61
+                        : .40),
+          ),
+        );
+        // Books retain a useful visual size next to the lamp.
+        expect(books.height * .636, greaterThan(lamp.height * .685 * .60));
+        if (bookcase) {
+          expect(bookTop, greaterThan(support.top + support.height * .407));
+          expect(
+            books.center.dx - books.height * .238,
+            greaterThan(support.center.dx - support.height * .145),
+          );
+          expect(
+            books.center.dx + books.height * .215,
+            lessThan(support.center.dx + support.height * .145),
+          );
+        } else {
+          final booksLeft = books.center.dx - books.height * .238;
+          final booksRight = books.center.dx + books.height * .215;
+          final lampLeft = lamp.center.dx - lamp.height * .254;
+          final lampRight = lamp.center.dx + lamp.height * .32;
+          expect(shelf ? lampRight < booksLeft : booksRight < lampLeft, isTrue);
+        }
+
+        // The opposite saved slot order must also sit on the same surfaces.
+        await show(variant, {
+          supportSlot: supportId,
+          bookSlot: 'item-01',
+          lampSlot: RoomDecorAssets.shelfBooksId,
+        });
+        lamp = frame(RoomDecorAssets.lamp);
+        lampFits(
+          lamp,
+          support,
+          shelf
+              ? .48
+              : bookcase
+              ? .56
+              : .332,
+          shelf
+              ? .515
+              : bookcase
+              ? .61
+              : .40,
+          shelf
+              ? .64
+              : bookcase
+              ? .145
+              : .50,
+        );
+        if (bookcase) {
+          expect(
+            lamp.top + lamp.height * .175,
+            greaterThan(support.top + support.height * .407),
+          );
+        }
+      }
+      // A table moving toward the viewer also scales its lamp, preserving
+      // the physical proportion and contact in each viewport.
+      double? proportion;
+      for (final withSofa in [false, true]) {
+        await show(variant, {
+          RoomSlot.floorRight: RoomDecorAssets.roundSideTableId,
+          RoomSlot.sideTableTop: 'item-01',
+          if (withSofa) RoomSlot.floorSofa: RoomDecorAssets.ivorySofaId,
+        });
+        final table = frame(RoomDecorAssets.roundSideTable);
+        final lamp = frame(RoomDecorAssets.lamp);
+        lampFits(lamp, table, .27, .38, .35);
+        final ratio = lamp.height / table.height;
+        if (proportion != null) expect(ratio, closeTo(proportion, .001));
+        proportion = ratio;
+      }
+    }
+  });
+
+  testWidgets('left lamp keeps its position when cabinet becomes bookcase', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(426, 919);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load(now: () => DateTime(2026, 9, 14, 10));
+    await store.setReducedMotion(true);
+
+    Future<double> lampCenter(String cabinetId, String lampId) async {
+      await tester.pumpWidget(
+        SobraScope(
+          store: store,
+          child: MaterialApp(
+            localizationsDelegates: sobraLocalizationsDelegates,
+            supportedLocales: sobraSupportedLocales,
+            home: RoomScene(
+              variant: RoomSceneVariant.immersive,
+              placements: {
+                RoomSlot.floorCabinet: cabinetId,
+                RoomSlot.floorLeft: lampId,
+              },
+              message: '',
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      return tester
+          .getRect(
+            find.byWidgetPredicate(
+              (widget) =>
+                  widget is Image &&
+                  widget.image is AssetImage &&
+                  (widget.image as AssetImage).assetName ==
+                      RoomDecorAssets.assetFor(lampId),
+            ),
+          )
+          .center
+          .dx;
+    }
+
+    for (final lampId in [
+      RoomDecorAssets.floorLampId,
+      RoomDecorAssets.bronzeLanternLampId,
+    ]) {
+      final besideCabinet = await lampCenter(
+        RoomDecorAssets.lowCabinetId,
+        lampId,
+      );
+      final besideBookcase = await lampCenter(
+        RoomDecorAssets.slimBookcaseId,
+        lampId,
+      );
+      expect(besideBookcase, closeTo(besideCabinet, .01));
+    }
+  });
+
   testWidgets('lamps clear large furniture and the pouf sits in front', (
     tester,
   ) async {
@@ -308,7 +576,7 @@ void main() {
       );
       expect(
         (plantBase - table.top) / table.height,
-        inInclusiveRange(.32, .42),
+        inInclusiveRange(.32, .34),
       );
     }
     final previewShelfDepth =

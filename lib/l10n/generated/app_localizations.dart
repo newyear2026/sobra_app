@@ -1337,6 +1337,18 @@ abstract class AppLocalizations {
   /// **'Repisa de pared'**
   String get roomWallShelf;
 
+  /// No description provided for @roomShelfBooks.
+  ///
+  /// In es, this message translates to:
+  /// **'Libros'**
+  String get roomShelfBooks;
+
+  /// No description provided for @roomTrailingPlant.
+  ///
+  /// In es, this message translates to:
+  /// **'Planta colgante'**
+  String get roomTrailingPlant;
+
   /// No description provided for @roomTerracottaPouf.
   ///
   /// In es, this message translates to:
@@ -1412,14 +1424,26 @@ abstract class AppLocalizations {
   /// No description provided for @roomSuggestSavingsJar.
   ///
   /// In es, this message translates to:
-  /// **'Pon el frasco en el alféizar o sobre un mueble. Añade un mueble si hace falta.'**
+  /// **'Pon el frasco en un aparador, una mesa auxiliar o una repisa de pared. Añade uno primero si hace falta.'**
   String get roomSuggestSavingsJar;
 
   /// No description provided for @roomSuggestTablePlant.
   ///
   /// In es, this message translates to:
-  /// **'Pon la planta en el alféizar o sobre un mueble. Añade un mueble si hace falta.'**
+  /// **'Pon la planta en un aparador, una mesa auxiliar o una repisa de pared. Añade uno primero si hace falta.'**
   String get roomSuggestTablePlant;
+
+  /// No description provided for @roomSuggestShelfProps.
+  ///
+  /// In es, this message translates to:
+  /// **'Pon primero un aparador, una estantería o una repisa de pared y luego coloca el adorno encima.'**
+  String get roomSuggestShelfProps;
+
+  /// No description provided for @roomSuggestDeskLamp.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponla en una mesa auxiliar. Añádela primero.'**
+  String get roomSuggestDeskLamp;
 
   /// No description provided for @roomSuggestWallShelf.
   ///

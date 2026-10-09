@@ -3015,9 +3015,14 @@ class SobraStore extends ChangeNotifier {
       });
     if (_roomPlacementsByRoom[equippedRoomId] == null &&
         equippedItemId != null) {
-      final legacySlots = RoomThemes.byId(
-        equippedRoomId,
-      ).slotsForItem(equippedItemId!);
+      // Asked against what the room actually holds, so a prop that needs a
+      // cabinet or side table is left out rather than parked on a support
+      // that is not there, where it would be invisible and fail every save.
+      final room = RoomThemes.byId(equippedRoomId);
+      final legacySlots = room.slotsForItem(
+        equippedItemId!,
+        placements: room.defaultPlacements,
+      );
       if (legacySlots.isNotEmpty) {
         _roomPlacementsByRoom[equippedRoomId] = {
           legacySlots.first: equippedItemId!,

@@ -731,6 +731,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get roomWallShelf => 'Prateleira de parede';
 
   @override
+  String get roomShelfBooks => 'Livros';
+
+  @override
+  String get roomTrailingPlant => 'Planta pendente';
+
+  @override
   String get roomTerracottaPouf => 'Pufe terracota';
 
   @override
@@ -771,11 +777,19 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get roomSuggestSavingsJar =>
-      'Coloque o pote no peitoril ou sobre um móvel. Adicione um móvel se precisar.';
+      'Coloque o pote sobre um armário, mesa lateral ou prateleira de parede. Adicione o apoio primeiro, se precisar.';
 
   @override
   String get roomSuggestTablePlant =>
-      'Coloque a planta no peitoril ou sobre um móvel. Adicione um móvel se precisar.';
+      'Coloque a planta sobre um armário, mesa lateral ou prateleira de parede. Adicione o apoio primeiro, se precisar.';
+
+  @override
+  String get roomSuggestShelfProps =>
+      'Coloque primeiro um armário, estante ou prateleira de parede e depois ponha o objeto sobre ele.';
+
+  @override
+  String get roomSuggestDeskLamp =>
+      'Coloque-a sobre uma mesa lateral. Adicione uma primeiro.';
 
   @override
   String get roomSuggestWallShelf =>

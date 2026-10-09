@@ -181,11 +181,35 @@ class RoomScene extends StatelessWidget {
                 RoomDecorAssets.roundSideTableId,
               );
               final height = table.height;
+              // The tabletop begins at .2144, but props stand toward the
+              // middle of its ellipse rather than on the back rim.
+              final tableTop = table.top + height * .33;
               return Rect.fromLTWH(
                 table.center.dx - height * .28,
-                table.top + height * .29,
+                tableTop - height * .18,
                 height * .56,
                 height * .18,
+              );
+            }
+            if (slot == RoomSlot.wallShelfTopLeft ||
+                slot == RoomSlot.wallShelfTopRight) {
+              final shelfSlot =
+                  placements[RoomSlot.wallLeft] == RoomDecorAssets.wallShelfId
+                  ? RoomSlot.wallLeft
+                  : RoomSlot.wallCenter;
+              final shelf = itemFrame(shelfSlot, RoomDecorAssets.wallShelfId);
+              final x =
+                  shelf.center.dx +
+                  shelf.height *
+                      (slot == RoomSlot.wallShelfTopLeft ? -.28 : .28);
+              // The opaque wood starts 46.5% down the shelf sprite. Targets
+              // and prop bases meet that line, regardless of the room theme.
+              final shelfTop = shelf.top + shelf.height * .465;
+              return Rect.fromLTWH(
+                x - shelf.height * .19,
+                shelfTop - shelf.height * .18,
+                shelf.height * .38,
+                shelf.height * .18,
               );
             }
             final rect = layout.slotRects[slot]!;
@@ -203,6 +227,37 @@ class RoomScene extends StatelessWidget {
           // the floor line so Home and the portrait retain the same grouping.
           Rect itemSpot(RoomSlot slot, String itemId) {
             final spot = slotFrame(slot);
+            if (itemId == 'item-01' &&
+                slot == RoomSlot.cabinetTopRight &&
+                placements[RoomSlot.floorCabinet] ==
+                    RoomDecorAssets.lowCabinetId &&
+                (placements[RoomSlot.cabinetTop] == null ||
+                    placements[RoomSlot.cabinetTop] ==
+                        RoomDecorAssets.clearedId)) {
+              // A single lamp belongs near the middle of the wide cabinet.
+              // The right-hand spot resumes when another prop uses the left.
+              final cabinet = itemFrame(
+                RoomSlot.floorCabinet,
+                RoomDecorAssets.lowCabinetId,
+              );
+              return spot.shift(Offset(cabinet.center.dx - spot.center.dx, 0));
+            }
+            if (itemId == 'item-01' &&
+                (slot == RoomSlot.wallShelfTopLeft ||
+                    slot == RoomSlot.wallShelfTopRight)) {
+              final otherSlot = slot == RoomSlot.wallShelfTopLeft
+                  ? RoomSlot.wallShelfTopRight
+                  : RoomSlot.wallShelfTopLeft;
+              final otherItem = placements[otherSlot];
+              if (otherItem == null || otherItem == RoomDecorAssets.clearedId) {
+                final shelfSlot =
+                    placements[RoomSlot.wallLeft] == RoomDecorAssets.wallShelfId
+                    ? RoomSlot.wallLeft
+                    : RoomSlot.wallCenter;
+                final shelf = itemFrame(shelfSlot, RoomDecorAssets.wallShelfId);
+                return spot.shift(Offset(shelf.center.dx - spot.center.dx, 0));
+              }
+            }
             Rect at(double x, double depth) {
               final bottom = _stageFloorLine + depth * .434;
               return Rect.fromLTWH(
@@ -248,7 +303,7 @@ class RoomScene extends StatelessWidget {
             if (slot == RoomSlot.floorLeft && hasCabinet) {
               final bookcase = cabinetId == RoomDecorAssets.slimBookcaseId;
               if (RoomDecorAssets.isFloorLamp(itemId)) {
-                return at(bookcase ? .33 : .06, .09);
+                return at(.06, .09);
               }
               if (itemId == RoomDecorAssets.rattanChairId) {
                 return at(bookcase ? .32 : .13, .36);
@@ -258,7 +313,7 @@ class RoomScene extends StatelessWidget {
               if (hasSofa) {
                 return switch (itemId) {
                   RoomDecorAssets.rattanChairId => at(.84, .34),
-                  RoomDecorAssets.roundSideTableId => at(.82, .28),
+                  RoomDecorAssets.roundSideTableId => at(.69, .30),
                   RoomDecorAssets.terracottaPoufId => at(.82, .30),
                   RoomDecorAssets.floorLampId ||
                   RoomDecorAssets.bronzeLanternLampId => at(.94, .09),
@@ -286,7 +341,7 @@ class RoomScene extends StatelessWidget {
             final stageHeight = RoomDecorAssets.stageHeightFor(itemId);
             if (stageHeight == null) return spot;
             // The same object grows gently as its floor contact moves toward
-            // the viewer. Wall and tabletop decorations keep a fixed scale.
+            // the viewer. Tabletop props inherit their support's scale below.
             final depth = slot.surface == RoomSurface.floor
                 ? ((spot.bottom - background.top) / background.height -
                           _stageFloorLine)
@@ -316,6 +371,135 @@ class RoomScene extends StatelessWidget {
                   : 0.0;
               frame = frame.shift(Offset(dx, 0));
               return frame;
+            }
+            if ((slot == RoomSlot.cabinetTop ||
+                    slot == RoomSlot.cabinetTopRight ||
+                    slot == RoomSlot.sideTableTop ||
+                    slot == RoomSlot.wallShelfTopLeft ||
+                    slot == RoomSlot.wallShelfTopRight) &&
+                (itemId == RoomDecorAssets.shelfBooksId ||
+                    itemId == 'item-01')) {
+              late Rect support;
+              late String supportId;
+              late double contactY;
+              var contactX = spot.center.dx;
+              if (slot == RoomSlot.cabinetTop ||
+                  slot == RoomSlot.cabinetTopRight) {
+                final isBookcase =
+                    placements[RoomSlot.floorCabinet] ==
+                    RoomDecorAssets.slimBookcaseId;
+                supportId = isBookcase
+                    ? RoomDecorAssets.slimBookcaseId
+                    : RoomDecorAssets.lowCabinetId;
+                support = itemFrame(RoomSlot.floorCabinet, supportId);
+                if (isBookcase) {
+                  contactX = support.center.dx;
+                  contactY =
+                      support.top +
+                      support.height *
+                          (slot == RoomSlot.cabinetTop ? .598 : .133);
+                } else {
+                  final alone =
+                      itemId == 'item-01' &&
+                      slot == RoomSlot.cabinetTopRight &&
+                      (placements[RoomSlot.cabinetTop] == null ||
+                          placements[RoomSlot.cabinetTop] ==
+                              RoomDecorAssets.clearedId);
+                  contactX =
+                      support.center.dx +
+                      support.height *
+                          (alone
+                              ? 0
+                              : slot == RoomSlot.cabinetTop
+                              ? -.24
+                              : .24);
+                  contactY = support.top + support.height * .365;
+                }
+              } else if (slot == RoomSlot.sideTableTop) {
+                supportId = RoomDecorAssets.roundSideTableId;
+                support = itemFrame(RoomSlot.floorRight, supportId);
+                contactY = support.top + support.height * .33;
+              } else {
+                supportId = RoomDecorAssets.wallShelfId;
+                final shelfSlot = placements[RoomSlot.wallLeft] == supportId
+                    ? RoomSlot.wallLeft
+                    : RoomSlot.wallCenter;
+                support = itemFrame(shelfSlot, supportId);
+                contactY = support.top + support.height * .49;
+              }
+              // Props inherit the supporting furniture's depth scale. Their
+              // visible size stays consistent on a cabinet, table or shelf.
+              height *=
+                  support.height /
+                  (RoomDecorAssets.stageHeightFor(supportId)! * stageScale);
+              if (supportId == RoomDecorAssets.slimBookcaseId &&
+                  slot == RoomSlot.cabinetTop &&
+                  itemId == 'item-01') {
+                // A lamp tucked into the cubby sits further back and must
+                // clear the underside of the shelf above it.
+                height = math.min(height, support.height * .25);
+              }
+              // Contact points are measured on the opaque bases, excluding
+              // the canvas margins and the lamp's baked grey shadow.
+              final base = itemId == 'item-01'
+                  ? const Offset(-.06, .86)
+                  : const Offset(-.012, .835);
+              return Rect.fromLTWH(
+                contactX - height * base.dx - height * 1.5,
+                contactY - height * base.dy,
+                height * 3,
+                height,
+              );
+            }
+            if (slot == RoomSlot.wallShelfTopLeft ||
+                slot == RoomSlot.wallShelfTopRight) {
+              // Sprite canvases include transparent margins. Anchor each
+              // visible object to the wood; vines alone trail below it.
+              final opaqueBase = switch (itemId) {
+                RoomDecorAssets.trailingPlantId => .47,
+                _ => .82,
+              };
+              return Rect.fromLTWH(
+                spot.center.dx - height * 1.5,
+                spot.bottom - height * opaqueBase,
+                height * 3,
+                height,
+              );
+            }
+            if (slot == RoomSlot.sideTableTop) {
+              // These sprites carry transparent pixels below their stands.
+              // Put the visible base on the tabletop, accounting for the
+              // transparent pixels beneath each sprite's stand.
+              final opaqueBase = switch (itemId) {
+                RoomDecorAssets.savingsJarId => .819,
+                _ => .815,
+              };
+              return Rect.fromLTWH(
+                spot.center.dx - height * 1.5,
+                spot.bottom - height * opaqueBase,
+                height * 3,
+                height,
+              );
+            }
+            if (itemId == RoomDecorAssets.trailingPlantId) {
+              final isBookcase =
+                  placements[RoomSlot.floorCabinet] ==
+                  RoomDecorAssets.slimBookcaseId;
+              final cabinet = itemFrame(
+                RoomSlot.floorCabinet,
+                isBookcase
+                    ? RoomDecorAssets.slimBookcaseId
+                    : RoomDecorAssets.lowCabinetId,
+              );
+              // The plant's pot rests at the centre of the top board.
+              final supportLine =
+                  spot.bottom - cabinet.height * (isBookcase ? .09 : .12);
+              return Rect.fromLTWH(
+                spot.center.dx - height * 1.5,
+                supportLine - height * .47,
+                height * 3,
+                height,
+              );
             }
             final width = height * 3;
             return switch (slot.surface) {
@@ -358,6 +542,10 @@ class RoomScene extends StatelessWidget {
             RoomSlot.sideTableTop =>
               placements[RoomSlot.floorRight] ==
                   RoomDecorAssets.roundSideTableId,
+            RoomSlot.wallShelfTopLeft || RoomSlot.wallShelfTopRight =>
+              placements[RoomSlot.wallLeft] == RoomDecorAssets.wallShelfId ||
+                  placements[RoomSlot.wallCenter] ==
+                      RoomDecorAssets.wallShelfId,
             _ => true,
           };
           final placed =
@@ -390,11 +578,15 @@ class RoomScene extends StatelessWidget {
                 final atopA =
                     a.slot == RoomSlot.cabinetTop ||
                     a.slot == RoomSlot.cabinetTopRight ||
-                    a.slot == RoomSlot.sideTableTop;
+                    a.slot == RoomSlot.sideTableTop ||
+                    a.slot == RoomSlot.wallShelfTopLeft ||
+                    a.slot == RoomSlot.wallShelfTopRight;
                 final atopB =
                     b.slot == RoomSlot.cabinetTop ||
                     b.slot == RoomSlot.cabinetTopRight ||
-                    b.slot == RoomSlot.sideTableTop;
+                    b.slot == RoomSlot.sideTableTop ||
+                    b.slot == RoomSlot.wallShelfTopLeft ||
+                    b.slot == RoomSlot.wallShelfTopRight;
                 if (atopA != atopB) return atopA ? 1 : -1;
                 return a.frame.bottom.compareTo(b.frame.bottom);
               });
@@ -575,6 +767,8 @@ class RoomScene extends StatelessWidget {
                           RoomSlot.cabinetTop => 1,
                           RoomSlot.cabinetTopRight => 2,
                           RoomSlot.sideTableTop => 1,
+                          RoomSlot.wallShelfTopLeft => 1,
+                          RoomSlot.wallShelfTopRight => 2,
                           _ => room.slotsFor(slot.surface).indexOf(slot) + 1,
                         },
                         supportLabel: switch (slot) {
@@ -586,6 +780,10 @@ class RoomScene extends StatelessWidget {
                           RoomSlot.sideTableTop => AppLocalizations.of(
                             context,
                           ).roomRoundSideTable,
+                          RoomSlot.wallShelfTopLeft ||
+                          RoomSlot.wallShelfTopRight => AppLocalizations.of(
+                            context,
+                          ).roomWallShelf,
                           _ => null,
                         },
                         frame: targetFrame(slot, selected!),
@@ -727,16 +925,34 @@ class _RoomItemImage extends StatelessWidget {
   final RoomSlot slot;
 
   @override
-  Widget build(BuildContext context) => Image.asset(
-    asset,
-    fit: BoxFit.contain,
-    filterQuality: FilterQuality.none,
-    alignment: switch (slot.surface) {
-      RoomSurface.floor || RoomSurface.tabletop => Alignment.bottomCenter,
-      RoomSurface.wall || RoomSurface.rug => Alignment.center,
-    },
-    excludeFromSemantics: true,
-  );
+  Widget build(BuildContext context) {
+    final image = Image.asset(
+      asset,
+      fit: BoxFit.contain,
+      filterQuality: FilterQuality.none,
+      alignment: switch (slot.surface) {
+        RoomSurface.floor || RoomSurface.tabletop => Alignment.bottomCenter,
+        RoomSurface.wall || RoomSurface.rug => Alignment.center,
+      },
+      excludeFromSemantics: true,
+    );
+    return asset == RoomDecorAssets.lamp
+        ? ClipRect(clipper: const _LampBaseClipper(), child: image)
+        : image;
+  }
+}
+
+/// The sprite's grey shadow was painted for a light floor. It looks like a
+/// separate plinth on wood, so keep the lamp's navy base outline instead.
+class _LampBaseClipper extends CustomClipper<Rect> {
+  const _LampBaseClipper();
+
+  @override
+  Rect getClip(Size size) =>
+      Rect.fromLTWH(0, 0, size.width, size.height * .861);
+
+  @override
+  bool shouldReclip(_LampBaseClipper oldClipper) => false;
 }
 
 /// A quiet ambient loop. The screen changes by itself while the room is

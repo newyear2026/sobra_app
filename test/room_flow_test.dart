@@ -193,6 +193,10 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     final store = await _store();
+    await store.saveRoomDecorations({
+      RoomSlot.floorRight: RoomDecorAssets.roundSideTableId,
+      RoomSlot.rug: RoomDecorAssets.defaultRugId,
+    });
 
     await tester.pumpWidget(
       SobraScope(
@@ -208,19 +212,21 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // A desk lamp's one place is the side table.
+    // A placed side table remains one of the desk lamp's available spots.
+    await tester.tap(find.text('Adornos'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Lámpara verde'));
     await tester.pump();
-    await tester.tap(find.bySemanticsLabel('Mesa, lugar 1'));
+    await tester.tap(find.bySemanticsLabel('Mesa auxiliar redonda, lugar 1'));
     await tester.pump();
     await tester.tap(find.text('Listo'));
     await tester.pumpAndSettle();
 
-    expect(store.roomDecorationsFor()[RoomSlot.tabletop], 'item-01');
+    expect(store.roomDecorationsFor()[RoomSlot.sideTableTop], 'item-01');
     expect(
       (await SobraStore.load(
         now: () => DateTime(2026, 9, 14, 10),
-      )).roomDecorationsFor()[RoomSlot.tabletop],
+      )).roomDecorationsFor()[RoomSlot.sideTableTop],
       'item-01',
     );
   });

@@ -31,7 +31,9 @@ enum RoomSlot {
   floorSofa(RoomSurface.floor),
   cabinetTop(RoomSurface.tabletop),
   cabinetTopRight(RoomSurface.tabletop),
-  sideTableTop(RoomSurface.tabletop);
+  sideTableTop(RoomSurface.tabletop),
+  wallShelfTopLeft(RoomSurface.tabletop),
+  wallShelfTopRight(RoomSurface.tabletop);
 
   const RoomSlot(this.surface);
 
@@ -93,18 +95,39 @@ class RoomTheme {
       final onSideTable =
           placements == null ||
           placements[RoomSlot.floorRight] == RoomDecorAssets.roundSideTableId;
+      final onWallShelf =
+          placements == null ||
+          placements[RoomSlot.wallLeft] == RoomDecorAssets.wallShelfId ||
+          placements[RoomSlot.wallCenter] == RoomDecorAssets.wallShelfId;
       return switch (slot) {
         RoomSlot.cabinetTop =>
-          itemId == RoomDecorAssets.savingsJarId && onCabinetOrBookcase,
+          (itemId == RoomDecorAssets.savingsJarId ||
+                  itemId == 'item-01' ||
+                  itemId == RoomDecorAssets.shelfBooksId ||
+                  itemId == RoomDecorAssets.trailingPlantId) &&
+              onCabinetOrBookcase,
         RoomSlot.cabinetTopRight =>
           (itemId == RoomDecorAssets.defaultTablePlantId ||
-                  itemId == 'item-03') &&
+                  itemId == 'item-01' ||
+                  itemId == 'item-03' ||
+                  itemId == RoomDecorAssets.shelfBooksId ||
+                  itemId == RoomDecorAssets.trailingPlantId) &&
               onCabinetOrBookcase,
         RoomSlot.sideTableTop =>
           (itemId == RoomDecorAssets.savingsJarId ||
                   itemId == RoomDecorAssets.defaultTablePlantId ||
-                  itemId == 'item-03') &&
+                  itemId == 'item-03' ||
+                  itemId == 'item-01') &&
               onSideTable,
+        RoomSlot.wallShelfTopLeft || RoomSlot.wallShelfTopRight =>
+          (itemId == RoomDecorAssets.shelfBooksId ||
+                  itemId == RoomDecorAssets.trailingPlantId ||
+                  itemId == RoomDecorAssets.defaultTablePlantId ||
+                  itemId == 'item-03' ||
+                  itemId == 'item-01' ||
+                  itemId == RoomDecorAssets.savingsJarId) &&
+              onWallShelf,
+        RoomSlot.tabletop => false,
         _ => true,
       };
     }
@@ -148,6 +171,8 @@ abstract final class RoomThemes {
     RoomSlot.cabinetTop,
     RoomSlot.cabinetTopRight,
     RoomSlot.sideTableTop,
+    RoomSlot.wallShelfTopLeft,
+    RoomSlot.wallShelfTopRight,
   ];
   // Broad windows and glass walls leave no clear wall for hanging decorations.
   // Cabinets and side tables still bring their own places for small props.
@@ -263,6 +288,8 @@ abstract final class RoomDecorAssets {
   static const petBedId = 'decor-pet-bed';
   static const savingsJarId = 'decor-savings-jar';
   static const wallShelfId = 'decor-wall-shelf';
+  static const shelfBooksId = 'decor-shelf-books';
+  static const trailingPlantId = 'decor-trailing-plant';
   static const terracottaPoufId = 'decor-terracotta-pouf';
   static const blueCreamRugId = 'decor-blue-cream-rug';
   static const launchSofaId = 'launch-sofa';
@@ -290,7 +317,9 @@ abstract final class RoomDecorAssets {
       'assets/rooms/shared_items/round_side_table.png';
   static const petBed = 'assets/rooms/shared_items/pet_bed.png';
   static const savingsJar = 'assets/rooms/shared_items/savings_jar.png';
-  static const wallShelf = 'assets/rooms/shared_items/wall_shelf.png';
+  static const wallShelf = 'assets/rooms/shared_items/wall_shelf_empty.png';
+  static const shelfBooks = 'assets/rooms/shared_items/shelf_books.png';
+  static const trailingPlant = 'assets/rooms/shared_items/trailing_plant.png';
   static const terracottaPouf = 'assets/rooms/shared_items/terracotta_pouf.png';
   static const blueCreamRug = 'assets/rooms/shared_items/blue_cream_rug.png';
   static const launchSofa = 'assets/rooms/shared_items/launch_sofa.png';
@@ -308,7 +337,6 @@ abstract final class RoomDecorAssets {
 
   static const defaultPlacements = <RoomSlot, String>{
     RoomSlot.rug: defaultRugId,
-    RoomSlot.tabletop: defaultTablePlantId,
   };
 
   /// Empty themes begin without tabletop furniture. The plant remains owned
@@ -329,6 +357,8 @@ abstract final class RoomDecorAssets {
     petBedId => petBed,
     savingsJarId => savingsJar,
     wallShelfId => wallShelf,
+    shelfBooksId => shelfBooks,
+    trailingPlantId => trailingPlant,
     terracottaPoufId => terracottaPouf,
     blueCreamRugId => blueCreamRug,
     launchSofaId => launchSofa,
@@ -344,8 +374,8 @@ abstract final class RoomDecorAssets {
   /// room decoration.
   ///
   /// Small tabletop props need a supporting surface. A room without one can
-  /// still show them in the drawer until the user adds the cabinet. The lamp
-  /// also stays off the floor, where it read as dropped on the boards.
+  /// still show them in the drawer until the user adds furniture or a shelf.
+  /// The lamp also stays off the floor, where it read as dropped on the boards.
   static List<RoomSurface> surfacesFor(String id) => switch (id) {
     defaultRugId || 'item-04' => const [RoomSurface.rug],
     defaultTablePlantId || 'item-03' => const [RoomSurface.tabletop],
@@ -360,7 +390,9 @@ abstract final class RoomDecorAssets {
     launchTvId ||
     ivorySofaId ||
     bronzeLanternLampId => const [RoomSurface.floor],
-    savingsJarId => const [RoomSurface.tabletop],
+    savingsJarId ||
+    shelfBooksId ||
+    trailingPlantId => const [RoomSurface.tabletop],
     wallShelfId => const [RoomSurface.wall],
     blueCreamRugId => const [RoomSurface.rug],
     'item-01' => const [RoomSurface.tabletop],
@@ -371,9 +403,9 @@ abstract final class RoomDecorAssets {
   static List<RoomSurface> surfacesForCatalogEntry(CatalogEntry entry) =>
       surfacesFor(entry.id);
 
-  /// Each new decoration lights only the places where its proportions make
-  /// sense. A jar rests on Casa clara's sill or on a placed cabinet, never
-  /// directly on the floor. A pet bed sits beside the character.
+  /// Each decoration lights only the places where its proportions make sense.
+  /// Small props need a placed cabinet, side table or wall shelf; the window
+  /// stays clear.
   static List<RoomSlot>? suggestedSlotsFor(String id) => switch (id) {
     rattanChairId ||
     floorLampId ||
@@ -381,7 +413,15 @@ abstract final class RoomDecorAssets {
     defaultTablePlantId || 'item-03' => const [
       RoomSlot.cabinetTopRight,
       RoomSlot.sideTableTop,
-      RoomSlot.tabletop,
+      RoomSlot.wallShelfTopRight,
+      RoomSlot.wallShelfTopLeft,
+    ],
+    'item-01' => const [
+      RoomSlot.sideTableTop,
+      RoomSlot.cabinetTopRight,
+      RoomSlot.cabinetTop,
+      RoomSlot.wallShelfTopLeft,
+      RoomSlot.wallShelfTopRight,
     ],
     lowCabinetId => const [RoomSlot.floorCabinet],
     slimBookcaseId => const [RoomSlot.floorCabinet],
@@ -392,7 +432,20 @@ abstract final class RoomDecorAssets {
     savingsJarId => const [
       RoomSlot.cabinetTop,
       RoomSlot.sideTableTop,
-      RoomSlot.tabletop,
+      RoomSlot.wallShelfTopLeft,
+      RoomSlot.wallShelfTopRight,
+    ],
+    shelfBooksId => const [
+      RoomSlot.cabinetTop,
+      RoomSlot.cabinetTopRight,
+      RoomSlot.wallShelfTopLeft,
+      RoomSlot.wallShelfTopRight,
+    ],
+    trailingPlantId => const [
+      RoomSlot.cabinetTopRight,
+      RoomSlot.cabinetTop,
+      RoomSlot.wallShelfTopRight,
+      RoomSlot.wallShelfTopLeft,
     ],
     wallShelfId => const [RoomSlot.wallLeft, RoomSlot.wallCenter],
     terracottaPoufId => const [RoomSlot.floorRight],
@@ -414,7 +467,8 @@ abstract final class RoomDecorAssets {
   /// first came in at half that and read as doll's-house furniture. The
   /// Casa clara items still carry their margin and were sized with it.
   static double? stageHeightFor(String id) => switch (id) {
-    defaultTablePlantId || 'item-03' || 'item-01' => 103,
+    defaultTablePlantId || 'item-03' => 103,
+    'item-01' => 145,
     'item-05' => 128,
     rattanChairId => 255,
     floorLampId => 430,
@@ -424,6 +478,8 @@ abstract final class RoomDecorAssets {
     roundSideTableId => 215,
     petBedId => 170,
     savingsJarId => 105,
+    shelfBooksId => 120,
+    trailingPlantId => 135,
     wallShelfId => 175,
     terracottaPoufId => 170,
     launchSofaId => 285,
@@ -434,7 +490,7 @@ abstract final class RoomDecorAssets {
   };
 
   static RoomDecorCategory categoryForItemId(String id) => switch (id) {
-    'item-01' => RoomDecorCategory.furniture,
+    'item-01' => RoomDecorCategory.props,
     defaultRugId || 'item-04' || 'item-05' => RoomDecorCategory.wallAndFloor,
     defaultTablePlantId || 'item-03' => RoomDecorCategory.props,
     rattanChairId || floorLampId => RoomDecorCategory.furniture,
@@ -448,7 +504,7 @@ abstract final class RoomDecorAssets {
     launchTvId ||
     ivorySofaId ||
     bronzeLanternLampId => RoomDecorCategory.furniture,
-    savingsJarId => RoomDecorCategory.props,
+    savingsJarId || shelfBooksId || trailingPlantId => RoomDecorCategory.props,
     wallShelfId || blueCreamRugId => RoomDecorCategory.wallAndFloor,
     _ => RoomDecorCategory.props,
   };
