@@ -662,10 +662,8 @@
   "settingsOurApps": "Apps recommandées",
   "ourAppsIntro": "Faites par l’équipe de Sobrita.",
   "ourAppsOpen": "Voir sur Google Play",
-  "ourAppsLoopetKind": "Routines",
-  "ourAppsLoopetBlurb": "Toute ta journée dans un cercle. Vois ce qui t’attend maintenant et ensuite.",
-  "ourAppsRandomFocusKind": "Concentration",
-  "ourAppsRandomFocusBlurb": "Fais tourner la roue, laisse-la choisir la durée et concentre-toi.",
+  "ourAppsMultiCalKind": "Calculatrice",
+  "ourAppsMultiCalBlurb": "Calculatrice, pourboire, âge et unités. Partage l’addition avec une photo du ticket.",
 
   "releaseAnnouncementViewAll": "Tout voir",
   "releaseAnnouncementDone": "Terminé",

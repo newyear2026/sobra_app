@@ -698,10 +698,8 @@
   "settingsOurApps": "Recommended apps",
   "ourAppsIntro": "Made by the Sobrita team.",
   "ourAppsOpen": "View on Google Play",
-  "ourAppsLoopetKind": "Routines",
-  "ourAppsLoopetBlurb": "Your whole day in one circle. See what to do now and what comes next.",
-  "ourAppsRandomFocusKind": "Focus",
-  "ourAppsRandomFocusBlurb": "Spin the wheel to pick how long, then focus without overthinking it.",
+  "ourAppsMultiCalKind": "Calculator",
+  "ourAppsMultiCalBlurb": "Calculator, tip, age and units. Split any receipt with one photo.",
 
   "releaseAnnouncementViewAll": "See all",
   "releaseAnnouncementDone": "Done",

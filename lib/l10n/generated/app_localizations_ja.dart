@@ -2160,16 +2160,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get ourAppsOpen => 'Google Playで見る';
 
   @override
-  String get ourAppsLoopetKind => 'ルーティン';
+  String get ourAppsMultiCalKind => '電卓';
 
   @override
-  String get ourAppsLoopetBlurb => '1日24時間をひとつの円に。今やることと次にやることがひと目でわかります。';
-
-  @override
-  String get ourAppsRandomFocusKind => '集中';
-
-  @override
-  String get ourAppsRandomFocusBlurb => 'ルーレットを回して集中する時間を決めるタイマー。迷わずすぐ始められます。';
+  String get ourAppsMultiCalBlurb => '電卓、チップ、年齢、単位換算をひとつに。レシートを撮るだけで割り勘できます。';
 
   @override
   String get releaseAnnouncementViewAll => 'すべて見る';

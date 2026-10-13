@@ -2264,18 +2264,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get ourAppsOpen => 'Voir sur Google Play';
 
   @override
-  String get ourAppsLoopetKind => 'Routines';
+  String get ourAppsMultiCalKind => 'Calculatrice';
 
   @override
-  String get ourAppsLoopetBlurb =>
-      'Toute ta journée dans un cercle. Vois ce qui t’attend maintenant et ensuite.';
-
-  @override
-  String get ourAppsRandomFocusKind => 'Concentration';
-
-  @override
-  String get ourAppsRandomFocusBlurb =>
-      'Fais tourner la roue, laisse-la choisir la durée et concentre-toi.';
+  String get ourAppsMultiCalBlurb =>
+      'Calculatrice, pourboire, âge et unités. Partage l’addition avec une photo du ticket.';
 
   @override
   String get releaseAnnouncementViewAll => 'Tout voir';

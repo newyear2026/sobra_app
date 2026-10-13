@@ -1,0 +1,28 @@
+Sobrita — Google Ads US campaign copy
+
+Location: United States
+Language: English
+
+HEADLINES — enter one per field (max 30 characters)
+1. Budget with a Pixel Cat (23/30)
+2. Know What You Can Spend Today (29/30)
+3. Track Your Everyday Spending (28/30)
+4. Make Budgeting a Daily Habit (28/30)
+5. Sobrita: Your Budget Buddy (26/30)
+
+DESCRIPTIONS — enter one per field (max 90 characters)
+1. Track expenses and see what you can spend today, with a pixel cat by your side. (79/90)
+2. Set your budget, record purchases, and see how much you have left until payday. (79/90)
+3. Keep everyday spending organized by category with Sobrita, your cozy budget companion. (86/90)
+4. Make expense tracking part of your day. Build a little routine with a pixel cat. (80/90)
+5. Personalize your cat's room while keeping an eye on your budget and daily spending. (83/90)
+
+IMAGE CANDIDATES
+01-expense-entry-en.png — English expense entry screen.
+02-pixel-cat-room-en.png — English cat and room screen.
+Both are existing 1080x1920 store creatives. Use the Google Ads crop tool
+to select 4:5 and check that the headline and main subject remain visible.
+
+Google Ads specifications:
+https://support.google.com/google-ads/answer/17091671?hl=en
+

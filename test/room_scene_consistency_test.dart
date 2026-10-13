@@ -664,9 +664,10 @@ void main() {
       expect((plant.center.dx - table.center.dx).abs(), lessThan(1));
       final jarBase = jar.top + jar.height * (1052 / 1287);
       final plantBase = plant.top + plant.height * (971 / 1191);
+      // On the cubby's shelf floor, beside where the books stand.
       expect(
         (jarBase - bookcase.top) / bookcase.height,
-        inInclusiveRange(.63, .67),
+        inInclusiveRange(.58, .61),
       );
       expect(
         (plantBase - table.top) / table.height,

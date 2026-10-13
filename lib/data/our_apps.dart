@@ -38,21 +38,13 @@ const ourAppsReferrer = 'utm_source=sobrita&utm_medium=our_apps';
 /// Every card is the same size and none is marked, so the order is the only
 /// thing that could read as a preference; age is the one that says nothing.
 /// Only apps already live on Play belong here — a card whose button lands on
-/// "item not found" is worse than no card. Currency Mate joins once it ships
-/// under a real package name.
+/// "item not found" is worse than no card.
 final ourApps = <OurApp>[
   OurApp(
-    packageName: 'com.randomfocus.app',
-    name: 'RandomFocus',
-    icon: 'assets/apps/randomfocus.png',
-    kind: (l10n) => l10n.ourAppsRandomFocusKind,
-    blurb: (l10n) => l10n.ourAppsRandomFocusBlurb,
-  ),
-  OurApp(
-    packageName: 'com.dayround.app',
-    name: 'LOOPET',
-    icon: 'assets/apps/loopet.png',
-    kind: (l10n) => l10n.ourAppsLoopetKind,
-    blurb: (l10n) => l10n.ourAppsLoopetBlurb,
+    packageName: 'com.casewen.multi_calc',
+    name: 'MultiCal',
+    icon: 'assets/apps/multical.png',
+    kind: (l10n) => l10n.ourAppsMultiCalKind,
+    blurb: (l10n) => l10n.ourAppsMultiCalBlurb,
   ),
 ];

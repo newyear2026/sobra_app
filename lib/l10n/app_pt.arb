@@ -662,10 +662,8 @@
   "settingsOurApps": "Apps recomendados",
   "ourAppsIntro": "Feitos pela equipe do Sobrita.",
   "ourAppsOpen": "Ver no Google Play",
-  "ourAppsLoopetKind": "Rotinas",
-  "ourAppsLoopetBlurb": "Seu dia inteiro em um círculo. Veja o que fazer agora e o que vem depois.",
-  "ourAppsRandomFocusKind": "Foco",
-  "ourAppsRandomFocusBlurb": "Gire a roleta, deixe ela escolher o tempo e foque sem pensar demais.",
+  "ourAppsMultiCalKind": "Calculadora",
+  "ourAppsMultiCalBlurb": "Calculadora, gorjeta, idade e unidades. Divida a conta com uma foto do recibo.",
 
   "releaseAnnouncementViewAll": "Ver tudo",
   "releaseAnnouncementDone": "Pronto",

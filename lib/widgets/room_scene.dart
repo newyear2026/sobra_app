@@ -154,11 +154,12 @@ class RoomScene extends StatelessWidget {
               final cabinet = itemFrame(RoomSlot.floorCabinet, supportId);
               final height = cabinet.height;
               if (supportId == RoomDecorAssets.slimBookcaseId) {
-                // The jar rests inside the open middle shelf; the plant
-                // stands on the top board. Both are separate movable sprites.
+                // The left spot is the open middle cubby, whose shelf floor
+                // is at .598; the right one is the top board. Both are
+                // separate movable sprites.
                 final bottom =
                     cabinet.top +
-                    height * (slot == RoomSlot.cabinetTop ? .69 : .20);
+                    height * (slot == RoomSlot.cabinetTop ? .61 : .20);
                 return Rect.fromLTWH(
                   cabinet.center.dx - height * .20,
                   bottom - height * .16,
@@ -283,14 +284,6 @@ class RoomScene extends StatelessWidget {
                 height,
               );
             }
-            if (itemId == RoomDecorAssets.petBedId) {
-              return Rect.fromLTWH(
-                catFrame.center.dx - catWidth * .85 - spot.width / 2,
-                catPaws - catWidth * .15 - spot.height,
-                spot.width,
-                spot.height,
-              );
-            }
             final cabinetId = placements[RoomSlot.floorCabinet];
             final hasCabinet =
                 cabinetId != null && cabinetId != RoomDecorAssets.clearedId;
@@ -299,6 +292,41 @@ class RoomScene extends StatelessWidget {
             );
             final hasLeftChair =
                 placements[RoomSlot.floorLeft] == RoomDecorAssets.rattanChairId;
+            // The bookcase pushes the chair out to .32, where a table or pouf
+            // tucked beside it would stand right behind it; they keep their
+            // own place on the right instead.
+            final besideChair =
+                hasLeftChair &&
+                !hasSofa &&
+                cabinetId != RoomDecorAssets.slimBookcaseId;
+            if (itemId == RoomDecorAssets.petBedId) {
+              // Beside the cat on the left. A cabinet brings the chair forward
+              // (depth .36), where it hid the bed; then the bed takes the cat's
+              // right when nothing stands there, or comes forward onto the rug
+              // in front of the chair.
+              final rightItem = placements[RoomSlot.floorRight];
+              final rightFree =
+                  rightItem == null ||
+                  rightItem == RoomDecorAssets.clearedId ||
+                  (besideChair &&
+                      (rightItem == RoomDecorAssets.roundSideTableId ||
+                          rightItem == RoomDecorAssets.terracottaPoufId));
+              final chairInFront = hasLeftChair && hasCabinet;
+              final side = chairInFront && rightFree ? 1 : -1;
+              final forward = chairInFront && !rightFree ? catWidth * .30 : 0;
+              return Rect.fromLTWH(
+                catFrame.center.dx + side * catWidth * .85 - spot.width / 2,
+                catPaws - catWidth * .15 + forward - spot.height,
+                spot.width,
+                spot.height,
+              );
+            }
+            if (slot == RoomSlot.wallCenter &&
+                itemId == RoomDecorAssets.wallShelfId) {
+              // A shelf is far wider than a clock or frame; centred on the
+              // slot its left end ran into the window's right curtain.
+              return spot.shift(Offset(background.width * .03, 0));
+            }
             if (slot == RoomSlot.floorCabinet &&
                 itemId == RoomDecorAssets.slimBookcaseId) {
               // A floor lamp keeps the wall end; the bookcase steps right of
@@ -329,7 +357,7 @@ class RoomScene extends StatelessWidget {
                   _ => spot,
                 };
               }
-              if (hasLeftChair) {
+              if (besideChair) {
                 final nearChair = hasCabinet ? .31 : .38;
                 if (itemId == RoomDecorAssets.roundSideTableId) {
                   return at(nearChair, hasCabinet ? .28 : .10);
@@ -387,7 +415,14 @@ class RoomScene extends StatelessWidget {
                     slot == RoomSlot.wallShelfTopLeft ||
                     slot == RoomSlot.wallShelfTopRight) &&
                 (itemId == RoomDecorAssets.shelfBooksId ||
-                    itemId == 'item-01')) {
+                    itemId == 'item-01' ||
+                    // In the bookcase cubby the jar stands on the same
+                    // shelf floor as the books; the generic tabletop drop
+                    // buried its base in the shelf's front lip.
+                    (itemId == RoomDecorAssets.savingsJarId &&
+                        slot == RoomSlot.cabinetTop &&
+                        placements[RoomSlot.floorCabinet] ==
+                            RoomDecorAssets.slimBookcaseId))) {
               late Rect support;
               late String supportId;
               late double contactY;
@@ -450,9 +485,11 @@ class RoomScene extends StatelessWidget {
               }
               // Contact points are measured on the opaque bases, excluding
               // the canvas margins and the lamp's baked grey shadow.
-              final base = itemId == 'item-01'
-                  ? const Offset(-.06, .86)
-                  : const Offset(-.012, .835);
+              final base = switch (itemId) {
+                'item-01' => const Offset(-.06, .86),
+                RoomDecorAssets.savingsJarId => const Offset(0, .835),
+                _ => const Offset(-.012, .835),
+              };
               return Rect.fromLTWH(
                 contactX - height * base.dx - height * 1.5,
                 contactY - height * base.dy,
@@ -500,9 +537,15 @@ class RoomScene extends StatelessWidget {
                     ? RoomDecorAssets.slimBookcaseId
                     : RoomDecorAssets.lowCabinetId,
               );
-              // The plant's pot rests at the centre of the top board.
+              // The plant's pot rests at the centre of the top board, or on
+              // the cubby's shelf floor (.60) when it takes the bookcase's
+              // left spot.
               final supportLine =
-                  spot.bottom - cabinet.height * (isBookcase ? .09 : .12);
+                  spot.bottom -
+                  cabinet.height *
+                      (isBookcase
+                          ? (slot == RoomSlot.cabinetTop ? .01 : .09)
+                          : .12);
               return Rect.fromLTWH(
                 spot.center.dx - height * 1.5,
                 supportLine - height * .47,

@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 
 /// AdMob identifiers and release policy for Sobra's Android app.
 ///
-/// Debug and profile builds use Google's sample units. Play testing tracks
-/// receive no ads by default; live ads require an explicit release-build opt-in.
+/// Debug and profile builds use Google's sample units. Release builds serve
+/// live ads unless they are built with an explicit opt-out.
 abstract final class AdMobConfig {
   static const androidAppId = 'ca-app-pub-2706404530136726~6701842938';
 
@@ -15,12 +15,13 @@ abstract final class AdMobConfig {
   static const _androidNativeTest = 'ca-app-pub-3940256099942544/2247696110';
   static const _androidRewardedTest = 'ca-app-pub-3940256099942544/5224354917';
 
-  /// Set with --dart-define=SOBRA_ENABLE_LIVE_ADS=true for production, or for
-  /// a controlled test whose every device is registered as an AdMob test device.
-  /// A Play testing build is also a release build, so kReleaseMode alone must
-  /// never enable billable ads. Google's sample units are only for local builds.
-  static const _liveAdsOptIn = bool.fromEnvironment('SOBRA_ENABLE_LIVE_ADS');
-  static bool get servesLiveAds => kReleaseMode && _liveAdsOptIn;
+  /// The app is in production, so a release build serves live ads by default:
+  /// an opt-in once let 1.0.5 through 1.0.12 ship with no ads at all. Set
+  /// --dart-define=SOBRA_DISABLE_LIVE_ADS=true for an ad-free release build,
+  /// such as a testing-track build whose devices aren't registered as AdMob
+  /// test devices. Google's sample units are only for local builds.
+  static const _liveAdsOptOut = bool.fromEnvironment('SOBRA_DISABLE_LIVE_ADS');
+  static bool get servesLiveAds => kReleaseMode && !_liveAdsOptOut;
 
   /// Devices that keep receiving test ads when live ads are explicitly enabled.
   ///
@@ -34,8 +35,8 @@ abstract final class AdMobConfig {
   static const androidTestDeviceIds = <String>[];
 
   /// This set of identifiers is Android-only. iOS stays ad-free until its
-  /// own AdMob app, units, and ATT copy exist. Release builds stay ad-free
-  /// unless live ads are explicitly enabled. Mediation and AdSense are
+  /// own AdMob app, units, and ATT copy exist. Release builds serve ads
+  /// unless live ads are explicitly disabled. Mediation and AdSense are
   /// out of scope: AdSense is a website product, and a second network is
   /// not worth the fill until impressions are in the thousands per day.
   static bool get isSupported =>
