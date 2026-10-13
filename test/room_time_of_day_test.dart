@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sobra_app/main.dart';
+import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/models/room_design.dart';
 import 'package:sobra_app/models/room_time_of_day.dart';
+import 'package:sobra_app/screens/room_decorate_screen.dart';
 import 'package:sobra_app/screens/room_screen.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/widgets/room_lighting.dart';
@@ -21,6 +24,28 @@ void main() {
     expect(at(17, 29), RoomTimeOfDay.day);
     expect(at(17, 30), RoomTimeOfDay.sunset);
     expect(at(20, 0), RoomTimeOfDay.night);
+  });
+
+  test('the next change is the next phase start on the wall clock', () {
+    DateTime after(int hour, int minute) =>
+        RoomTimeOfDay.nextChangeAfter(DateTime(2026, 10, 1, hour, minute));
+
+    expect(after(3, 0), DateTime(2026, 10, 1, 5, 30));
+    expect(after(5, 30), DateTime(2026, 10, 1, 8));
+    expect(after(12, 0), DateTime(2026, 10, 1, 17, 30));
+    expect(after(17, 30), DateTime(2026, 10, 1, 20));
+    expect(after(21, 0), DateTime(2026, 10, 2, 5, 30));
+    // Every answer is a moment where the phase really does change.
+    for (var hour = 0; hour < 24; hour++) {
+      final now = DateTime(2026, 10, 1, hour, 15);
+      final next = RoomTimeOfDay.nextChangeAfter(now);
+      expect(
+        RoomTimeOfDay.fromLocal(next),
+        isNot(
+          RoomTimeOfDay.fromLocal(next.subtract(const Duration(minutes: 1))),
+        ),
+      );
+    }
   });
 
   testWidgets('all room themes select their own night and sunset art', (
@@ -344,6 +369,65 @@ void main() {
     expect(
       shows('assets/rooms/casa_clara/background_portrait_unlit.png'),
       isTrue,
+    );
+  });
+
+  // Inicio's card opens the room, so it shows the same light the room and
+  // Decorate do. It used to stay on the plain daytime art at every hour.
+  testWidgets('the Home room follows the clock like the room it opens', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    var currentMoment = DateTime(2026, 10, 1, 17, 29);
+    final store = await SobraStore.load(now: () => currentMoment);
+    await store.setReducedMotion(true);
+    await store.configureOnboarding(
+      budgetCentavos: 600000,
+      schedule: const PaySchedule.semiMonthly(),
+    );
+    await store.completeOnboarding();
+    await store.grantCatalogEntries({'michi', 'poodle'});
+    await store.takeLaunchGiftNotice();
+    store.takePendingXpNotice();
+    await tester.pumpWidget(SobraApp(store: store));
+    await tester.pump();
+
+    RoomTimeOfDay? homePhase() => tester
+        .widget<RoomScene>(
+          find.byWidgetPredicate(
+            (widget) =>
+                widget is RoomScene &&
+                widget.variant == RoomSceneVariant.preview,
+          ),
+        )
+        .timeOfDay;
+    expect(homePhase(), RoomTimeOfDay.day);
+
+    // Left open across a boundary, the card turns on its own.
+    currentMoment = DateTime(2026, 10, 1, 17, 30);
+    await tester.pump(const Duration(minutes: 1));
+    expect(homePhase(), RoomTimeOfDay.sunset);
+
+    // Back from the background hours later, it reads the clock again.
+    currentMoment = DateTime(2026, 10, 1, 22);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    expect(homePhase(), RoomTimeOfDay.night);
+
+    await tester.pumpWidget(
+      SobraScope(
+        store: store,
+        child: MaterialApp(
+          localizationsDelegates: sobraLocalizationsDelegates,
+          supportedLocales: sobraSupportedLocales,
+          home: const RoomDecorateScreen(),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(
+      tester.widget<RoomScene>(find.byType(RoomScene)).timeOfDay,
+      RoomTimeOfDay.night,
     );
   });
 }

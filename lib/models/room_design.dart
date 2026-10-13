@@ -1,6 +1,7 @@
 import 'dart:ui' show Size;
 
 import 'catalog_entry.dart';
+import 'room_time_of_day.dart';
 
 /// What a decoration stands on, hangs from or lies across.
 ///
@@ -71,6 +72,23 @@ class RoomTheme {
 
   /// Every place this room has, in the order the decorator counts them.
   final List<RoomSlot> slots;
+
+  /// The background drawn for [phase]; the plain art when there is none.
+  ///
+  /// Public so the app can warm the picture Inicio is about to ask for.
+  String sceneAssetFor(RoomTimeOfDay? phase) {
+    final directory = portraitAsset.substring(
+      0,
+      portraitAsset.lastIndexOf('/'),
+    );
+    return switch (phase) {
+      RoomTimeOfDay.dawn ||
+      RoomTimeOfDay.sunset => '$directory/background_portrait_sunset_unlit.png',
+      RoomTimeOfDay.night => '$directory/background_portrait_night_unlit.png',
+      RoomTimeOfDay.day => '$directory/background_portrait_unlit.png',
+      null => portraitAsset,
+    };
+  }
 
   /// What fills a slot the user has never touched.
   final Map<RoomSlot, String> defaultPlacements;
