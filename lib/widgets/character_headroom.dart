@@ -10,10 +10,10 @@ import 'cat_sprite.dart';
 /// map whenever a sheet changes.
 const characterTopRows = <String, Map<CharacterMotionRole, int>>{
   'michi': {
-    CharacterMotionRole.idle: 44,
+    CharacterMotionRole.idle: 71,
     CharacterMotionRole.activity: 55,
     CharacterMotionRole.processing: 44,
-    CharacterMotionRole.positive: 46,
+    CharacterMotionRole.positive: 72,
     CharacterMotionRole.success: 18,
     CharacterMotionRole.warning: 44,
   },
