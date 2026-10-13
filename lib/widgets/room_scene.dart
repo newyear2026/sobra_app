@@ -118,10 +118,13 @@ class RoomScene extends StatelessWidget {
               : const <RoomSlot>[];
           final stageScale = size.width / room.portraitSize.width;
           final backgroundHeight = room.portraitSize.height * stageScale;
+          // A stage exactly as tall as the art can come out a rounding error
+          // taller, which put the lower bound above zero and made clamp throw
+          // — the whole room then failed to build. Never let it pass zero.
           final background = Rect.fromLTWH(
             0,
             ((size.height - size.width) / 2 - 96 * stageScale).clamp(
-              size.height - backgroundHeight,
+              math.min(size.height - backgroundHeight, 0.0),
               0.0,
             ),
             size.width,
