@@ -9,6 +9,7 @@ import '../models/room_time_of_day.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import 'cat_sprite.dart';
+import 'character_headroom.dart';
 import 'room_lighting.dart';
 
 enum RoomSceneVariant { preview, immersive }
@@ -631,9 +632,22 @@ class RoomScene extends StatelessWidget {
               characterId ??
               SobraScope.maybeOf(context)?.characterId ??
               CharacterCatalog.defaultId;
-          final roomDisplayScale = CharacterCatalog.resolve(
-            sceneCharacterId,
-          ).roomDisplayScale;
+          final sceneCharacter = CharacterCatalog.resolve(sceneCharacterId);
+          final roomDisplayScale = sceneCharacter.roomDisplayScale;
+          final shownMotion = reacting
+              ? CatMotion.celebrate
+              : catMotion ?? CatMotion.idle;
+          // How far above the paws, in source pixels, the speech bubble's tip
+          // sits. It stays where it always was (.06 of the frame above its
+          // top) unless the motion on screen reaches higher once scaled for
+          // the room — a jump or tall ears — and then lifts clear of it.
+          final headRise =
+              (344 -
+                  (characterTopRows[sceneCharacter.id]?[shownMotion.role] ??
+                      16)) *
+              sceneCharacter.motionFor(shownMotion.role).displayScale *
+              roomDisplayScale;
+          final speechRise = math.max(344 - .06 * 360, headRise + 10);
 
           final floorLamps = [
             for (final item in placed)
@@ -759,9 +773,7 @@ class RoomScene extends StatelessWidget {
                             child: lit(
                               catFrame,
                               CatSprite(
-                                motion: reacting
-                                    ? CatMotion.celebrate
-                                    : catMotion ?? CatMotion.idle,
+                                motion: shownMotion,
                                 characterId: sceneCharacterId,
                                 width: catWidth,
                                 animate: !reducedMotionOf(context),
@@ -787,9 +799,14 @@ class RoomScene extends StatelessWidget {
                           ),
                         ),
                       ),
-                    Positioned(
+                    AnimatedPositioned(
+                      duration: reducedMotionOf(context)
+                          ? Duration.zero
+                          : const Duration(milliseconds: 180),
+                      curve: Curves.easeOut,
                       left: catFrame.center.dx - background.width * .25,
-                      bottom: size.height - catFrame.top - catHeight * .06,
+                      bottom:
+                          size.height - catPaws + catHeight * speechRise / 360,
                       width: background.width * .5,
                       child: Align(
                         alignment: Alignment.bottomCenter,
