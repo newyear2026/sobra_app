@@ -301,6 +301,12 @@ class RoomScene extends StatelessWidget {
                 placements[RoomSlot.floorLeft] == RoomDecorAssets.rattanChairId;
             if (slot == RoomSlot.floorCabinet &&
                 itemId == RoomDecorAssets.slimBookcaseId) {
+              // A floor lamp keeps the wall end; the bookcase steps right of
+              // it. Side by side at the usual spot, the shade sank behind the
+              // bookcase and only half of it showed.
+              if (RoomDecorAssets.isFloorLamp(placements[RoomSlot.floorLeft])) {
+                return at(isPanoramic ? .23 : .26, .09);
+              }
               return at(isPanoramic ? .15 : .18, .09);
             }
             if (slot == RoomSlot.floorLeft && hasCabinet) {
