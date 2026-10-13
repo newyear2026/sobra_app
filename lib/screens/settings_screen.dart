@@ -539,6 +539,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 !store.debugPaidCharactersUnlocked,
               ),
             ),
+            _SettingsRow(
+              icon: Icons.trending_up,
+              iconColor: AppColors.violet,
+              label: 'Next level (test)',
+              value: store.xpProgress.isMaxLevel
+                  ? 'MAX'
+                  : 'Lv ${store.xpProgress.level} → ${store.xpProgress.level + 1}',
+              onTap: store.debugAdvanceLevel,
+            ),
           ],
           const SizedBox(height: 18),
           Text(

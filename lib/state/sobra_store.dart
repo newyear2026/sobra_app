@@ -2165,6 +2165,32 @@ class SobraStore extends ChangeNotifier {
         notifyListeners();
       });
 
+  /// Debug builds only: awards exactly the XP the next level still needs.
+  ///
+  /// Level rewards take weeks of real use to reach, so trying the unlock
+  /// lineup on a device needs a shortcut. The award is an ordinary XP event,
+  /// so the level-up card and everything derived from the level behave as
+  /// they would for a real one.
+  Future<void> debugAdvanceLevel() => _write(() async {
+    final before = xpProgress;
+    if (!kDebugMode || before.isMaxLevel) return;
+    final moment = _now();
+    final xp = _awardXp(
+      kind: XpEventKind.cashCount,
+      xp: before.remainingXp,
+      occurredAt: moment,
+      sourceKey: 'debug-level:${moment.microsecondsSinceEpoch}',
+    );
+    _pendingXpNotice = XpNotice(
+      kind: XpNoticeKind.cashCountSaved,
+      xp: xp,
+      newLevel: xpProgress.level,
+      previousLevel: before.level,
+    );
+    await _save();
+    notifyListeners();
+  });
+
   /// Whether general (native) ads should stay off.
   ///
   /// Granted by the pack or by the standalone remove-ads product. Rewarded
