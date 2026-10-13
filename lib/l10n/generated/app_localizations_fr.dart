@@ -495,6 +495,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get collectionItemsHint => 'Rassemble ce qui va chez toi';
 
   @override
+  String get collectionRooms => 'Pièces';
+
+  @override
+  String get collectionRoomsHint => 'Choisis où vit ton compagnon';
+
+  @override
   String collectionCharacterPlaceholder(int number) {
     return 'Personnage $number';
   }
@@ -515,6 +521,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get collectionBuy => 'ACHETER';
+
+  @override
+  String get collectionPricePending => 'PRIX EN ATTENTE';
 
   @override
   String get collectionWatchAd => 'VOIR LA PUB';
@@ -544,6 +553,11 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String collectionUnlockedNotice(String name) {
     return '$name est à toi !';
+  }
+
+  @override
+  String collectionRoomUnlockedNotice(String name) {
+    return 'Tu peux emménager dans $name !';
   }
 
   @override
@@ -2148,6 +2162,25 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1013Rewards =>
+      'Chaque niveau apporte de nouveaux meubles, et certaines décorations s\'obtiennent avec une pub.';
+
+  @override
+  String get releaseNote1013Rooms =>
+      'Les maisons se gagnent aussi : jardin et plage avec une pub, chalet et véranda par niveau.';
+
+  @override
+  String get releaseNote1013Kept => 'Ce que vous aviez déjà reste à vous.';
+
+  @override
+  String get releaseNote1013Home =>
+      'La maison sur l\'accueil suit l\'heure du jour.';
+
+  @override
+  String get releaseNote1013Fixes =>
+      'La lampe ne se cache plus derrière la bibliothèque, et la bulle ne cache plus votre compagnon.';
+
+  @override
   String get releaseNote104Fixed =>
       'Les dépenses fixes restent à part du budget du jour. Elles apparaissent sur l’Accueil et peuvent te prévenir avant l’échéance.';
 
@@ -2197,9 +2230,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get releaseNote101Celebration =>
       'La fête remplit maintenant sa carte et termine son saut.';
-
-  @override
-  String get releaseNote100Launch => 'La première version de Sobrita.';
 
   @override
   String get updateAvailableTitle => 'Une nouvelle version est là';

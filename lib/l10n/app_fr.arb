@@ -156,12 +156,15 @@
   "collectionOwnedCount": "{owned} sur {total}",
   "collectionCharactersHint": "Rassemble tes compagnons",
   "collectionItemsHint": "Rassemble ce qui va chez toi",
+  "collectionRooms": "Pièces",
+  "collectionRoomsHint": "Choisis où vit ton compagnon",
   "collectionCharacterPlaceholder": "Personnage {number}",
   "collectionItemPlaceholder": "Objet {number}",
   "collectionEquipped": "ÉQUIPÉ",
   "collectionOwned": "OBTENU",
   "collectionPlaceIt": "Placer",
   "collectionBuy": "ACHETER",
+  "collectionPricePending": "PRIX EN ATTENTE",
   "collectionWatchAd": "VOIR LA PUB",
   "collectionAdLoading": "CHARGEMENT",
   "collectionAdProgressLine": "{progress}/{target}",
@@ -170,6 +173,7 @@
   "collectionAdDailyCap": "LIMITE DU JOUR",
   "collectionAdTomorrow": "SUITE DEMAIN",
   "collectionUnlockedNotice": "{name} est à toi\u00a0!",
+  "collectionRoomUnlockedNotice": "Tu peux emménager dans {name} !",
   "collectionAdDismissedNotice": "Regarde la pub en entier pour qu’elle compte.",
   "collectionPackOnly": "PACK",
   "collectionPackUnlock": "Inclus dans le pack Les amis de Michi. Pas vendu séparément.",
@@ -628,6 +632,16 @@
   "releaseNotesCurrent": "Actuelle",
   "releaseNotesRetention": "On garde les {count} dernières versions.",
 
+  "releaseNote1013Rewards": "Chaque niveau apporte de nouveaux meubles, et certaines décorations s'obtiennent avec une pub.",
+
+  "releaseNote1013Rooms": "Les maisons se gagnent aussi : jardin et plage avec une pub, chalet et véranda par niveau.",
+
+  "releaseNote1013Kept": "Ce que vous aviez déjà reste à vous.",
+
+  "releaseNote1013Home": "La maison sur l'accueil suit l'heure du jour.",
+
+  "releaseNote1013Fixes": "La lampe ne se cache plus derrière la bibliothèque, et la bulle ne cache plus votre compagnon.",
+
   "releaseNote104Fixed": "Les dépenses fixes restent à part du budget du jour. Elles apparaissent sur l’Accueil et peuvent te prévenir avant l’échéance.",
   "releaseNote104Decor": "La maison a plus à placer\u00a0: un panier, une étagère, un tapis, un buffet, un bocal et un pouf.",
   "releaseNote104Names": "Miru, Yoshi et Cookie ont enfin un nom, et le titre de niveau porte celui de ton compagnon.",
@@ -641,7 +655,6 @@
   "releaseNote102Amounts": "Les pesos colombiens, argentins et chiliens, le réal et l’euro s’écrivent maintenant avec une virgule, comme 1.234,56.",
   "releaseNote101Currencies": "L’argent peut maintenant s’afficher en pesos colombiens, argentins et chiliens, en soles, en livres ou en yens.",
   "releaseNote101Celebration": "La fête remplit maintenant sa carte et termine son saut.",
-  "releaseNote100Launch": "La première version de Sobrita.",
 
   "updateAvailableTitle": "Une nouvelle version est là",
   "updateAvailableBody": "Mets à jour pour avoir le dernier Sobrita.",

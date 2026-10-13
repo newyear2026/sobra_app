@@ -11,6 +11,7 @@ import '../widgets/fixed_expenses.dart';
 import '../widgets/gamification_ui.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/room_scene.dart';
+import '../widgets/room_time_of_day_builder.dart';
 import '../widgets/starter_friend.dart';
 import '../widgets/transaction_row.dart';
 import 'app_shell.dart';
@@ -477,14 +478,19 @@ class _HomeRoomCard extends StatelessWidget {
                     bottom: BorderSide(color: AppColors.ink, width: 2.5),
                   ),
                 ),
-                child: RoomScene(
-                  variant: RoomSceneVariant.preview,
-                  animateItems: active,
-                  roomId: roomId,
-                  placements: placements,
-                  message: message,
-                  catMotion: catMotion,
-                  catLoop: catLoop,
+                // The same light as the room it opens, so tapping through
+                // does not turn day into night.
+                child: RoomTimeOfDayBuilder(
+                  builder: (context, phase) => RoomScene(
+                    variant: RoomSceneVariant.preview,
+                    animateItems: active,
+                    roomId: roomId,
+                    placements: placements,
+                    message: message,
+                    catMotion: catMotion,
+                    catLoop: catLoop,
+                    timeOfDay: phase,
+                  ),
                 ),
               ),
             ),

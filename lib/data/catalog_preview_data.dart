@@ -155,126 +155,22 @@ abstract final class CatalogPreviewData {
     ),
   ];
 
-  /// Seven level rewards, three rewarded-ad slots and included room items.
+  /// Room decorations: three pieces to start, seven level rewards from 2 to
+  /// 10, and small pieces for one or two rewarded ads.
   ///
-  /// The lamp is available from level 1. The level 5 and 8 positions mirror
-  /// the selected collection mockup, while the remaining rewards spread the
-  /// path through the level-10 progression.
+  /// Only art that exists is listed. Numbered placeholder cards were dropped:
+  /// a reward is an id people keep, so it should name a real piece rather
+  /// than a slot waiting for one. The lavender rug and the table plant are
+  /// room defaults rather than entries, and everybody has them too.
+  ///
+  /// The free set is a room's frame — a bookcase, and a side table for the
+  /// jar and the plant to stand on. Levels then add a shelf and furniture in
+  /// the order a room fills, with the first three inside the first month.
+  /// Rewards are derived from the level, so moving one *down* reaches
+  /// everyone already there while moving one *up* takes it away — installs
+  /// that had these pieces free keep them through [SobraStore]'s
+  /// grandfathering instead.
   static const items = <CatalogEntry>[
-    CatalogEntry(
-      id: RoomDecorAssets.rattanChairId,
-      name: 'Sillón de ratán',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.included,
-      visual: CatalogVisual.chair,
-      assetPath: RoomDecorAssets.rattanChair,
-    ),
-    CatalogEntry(
-      id: RoomDecorAssets.floorLampId,
-      name: 'Lámpara de pie',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.included,
-      visual: CatalogVisual.lamp,
-      assetPath: RoomDecorAssets.floorLamp,
-    ),
-    CatalogEntry(
-      id: RoomDecorAssets.wallClockId,
-      name: 'Reloj de pared',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.included,
-      visual: CatalogVisual.clock,
-      assetPath: RoomDecorAssets.wallClock,
-    ),
-    CatalogEntry(
-      id: 'item-01',
-      name: 'Objeto 01',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.level,
-      visual: CatalogVisual.lamp,
-      requiredLevel: 1,
-    ),
-    CatalogEntry(
-      id: 'item-02',
-      name: 'Objeto 02',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.level,
-      visual: CatalogVisual.savings,
-      requiredLevel: 5,
-    ),
-    CatalogEntry(
-      id: 'item-03',
-      name: 'Objeto 03',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.rewardedAd,
-      visual: CatalogVisual.plant,
-      rewardedAdTarget: 1,
-    ),
-    CatalogEntry(
-      id: 'item-04',
-      name: 'Objeto 04',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.level,
-      visual: CatalogVisual.rug,
-      requiredLevel: 8,
-    ),
-    CatalogEntry(
-      id: 'item-05',
-      name: 'Objeto 05',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.rewardedAd,
-      visual: CatalogVisual.frame,
-      rewardedAdTarget: 1,
-    ),
-    CatalogEntry(
-      id: 'item-06',
-      name: 'Objeto 06',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.level,
-      visual: CatalogVisual.shelf,
-      requiredLevel: 10,
-    ),
-    CatalogEntry(
-      id: 'item-07',
-      name: 'Objeto 07',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.level,
-      visual: CatalogVisual.chair,
-      requiredLevel: 2,
-    ),
-    CatalogEntry(
-      id: 'item-08',
-      name: 'Objeto 08',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.rewardedAd,
-      visual: CatalogVisual.clock,
-      rewardedAdTarget: 1,
-    ),
-    CatalogEntry(
-      id: 'item-09',
-      name: 'Objeto 09',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.level,
-      visual: CatalogVisual.trophy,
-      requiredLevel: 3,
-    ),
-    CatalogEntry(
-      id: 'item-10',
-      name: 'Objeto 10',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.level,
-      visual: CatalogVisual.cushion,
-      requiredLevel: 4,
-    ),
-    // New room art follows the original reward lineup, preserving the order
-    // of existing catalog cards and their established navigation positions.
-    CatalogEntry(
-      id: RoomDecorAssets.lowCabinetId,
-      name: 'Low cabinet',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.included,
-      visual: CatalogVisual.shelf,
-      assetPath: RoomDecorAssets.lowCabinet,
-    ),
     CatalogEntry(
       id: RoomDecorAssets.slimBookcaseId,
       name: 'Slim bookcase',
@@ -292,14 +188,6 @@ abstract final class CatalogPreviewData {
       assetPath: RoomDecorAssets.roundSideTable,
     ),
     CatalogEntry(
-      id: RoomDecorAssets.petBedId,
-      name: 'Pet bed',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.included,
-      visual: CatalogVisual.cushion,
-      assetPath: RoomDecorAssets.petBed,
-    ),
-    CatalogEntry(
       id: RoomDecorAssets.savingsJarId,
       name: 'Savings jar',
       kind: CatalogKind.item,
@@ -311,41 +199,130 @@ abstract final class CatalogPreviewData {
       id: RoomDecorAssets.wallShelfId,
       name: 'Wall shelf',
       kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.included,
+      unlockMethod: CatalogUnlockMethod.level,
       visual: CatalogVisual.shelf,
       assetPath: RoomDecorAssets.wallShelf,
+      requiredLevel: 2,
     ),
     CatalogEntry(
-      id: RoomDecorAssets.shelfBooksId,
-      name: 'Shelf books',
+      id: RoomDecorAssets.rattanChairId,
+      name: 'Sillón de ratán',
       kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.included,
+      unlockMethod: CatalogUnlockMethod.level,
+      visual: CatalogVisual.chair,
+      assetPath: RoomDecorAssets.rattanChair,
+      requiredLevel: 3,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.floorLampId,
+      name: 'Lámpara de pie',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.level,
+      visual: CatalogVisual.lamp,
+      assetPath: RoomDecorAssets.floorLamp,
+      requiredLevel: 4,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.lowCabinetId,
+      name: 'Low cabinet',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.level,
       visual: CatalogVisual.shelf,
-      assetPath: RoomDecorAssets.shelfBooks,
-    ),
-    CatalogEntry(
-      id: RoomDecorAssets.trailingPlantId,
-      name: 'Trailing plant',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.included,
-      visual: CatalogVisual.plant,
-      assetPath: RoomDecorAssets.trailingPlant,
-    ),
-    CatalogEntry(
-      id: RoomDecorAssets.terracottaPoufId,
-      name: 'Terracotta pouf',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.included,
-      visual: CatalogVisual.cushion,
-      assetPath: RoomDecorAssets.terracottaPouf,
+      assetPath: RoomDecorAssets.lowCabinet,
+      requiredLevel: 5,
     ),
     CatalogEntry(
       id: RoomDecorAssets.blueCreamRugId,
       name: 'Blue and cream rug',
       kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.included,
+      unlockMethod: CatalogUnlockMethod.level,
       visual: CatalogVisual.rug,
       assetPath: RoomDecorAssets.blueCreamRug,
+      requiredLevel: 6,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.ivorySofaId,
+      name: 'Sofá marfil',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.level,
+      visual: CatalogVisual.cushion,
+      assetPath: RoomDecorAssets.ivorySofa,
+      requiredLevel: 8,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.bronzeLanternLampId,
+      name: 'Lámpara de bronce',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.level,
+      visual: CatalogVisual.lamp,
+      assetPath: RoomDecorAssets.bronzeLanternLamp,
+      requiredLevel: 10,
+    ),
+    // Small pieces take one ad, the larger ones two.
+    CatalogEntry(
+      id: RoomDecorAssets.wallClockId,
+      name: 'Reloj de pared',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
+      visual: CatalogVisual.clock,
+      assetPath: RoomDecorAssets.wallClock,
+      rewardedAdTarget: 1,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.trailingPlantId,
+      name: 'Trailing plant',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
+      visual: CatalogVisual.plant,
+      assetPath: RoomDecorAssets.trailingPlant,
+      rewardedAdTarget: 1,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.shelfBooksId,
+      name: 'Shelf books',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
+      visual: CatalogVisual.shelf,
+      assetPath: RoomDecorAssets.shelfBooks,
+      rewardedAdTarget: 1,
+    ),
+    // The desk lamp and the frame keep their early ids: both may already be
+    // written into saved rooms and rewarded-ad progress.
+    CatalogEntry(
+      id: 'item-01',
+      name: 'Lámpara verde',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
+      visual: CatalogVisual.lamp,
+      assetPath: RoomDecorAssets.lamp,
+      rewardedAdTarget: 1,
+    ),
+    CatalogEntry(
+      id: 'item-05',
+      name: 'Cuadro',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
+      visual: CatalogVisual.frame,
+      assetPath: RoomDecorAssets.wallFrame,
+      rewardedAdTarget: 1,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.terracottaPoufId,
+      name: 'Terracotta pouf',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
+      visual: CatalogVisual.cushion,
+      assetPath: RoomDecorAssets.terracottaPouf,
+      rewardedAdTarget: 2,
+    ),
+    CatalogEntry(
+      id: RoomDecorAssets.petBedId,
+      name: 'Pet bed',
+      kind: CatalogKind.item,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
+      visual: CatalogVisual.cushion,
+      assetPath: RoomDecorAssets.petBed,
+      rewardedAdTarget: 2,
     ),
     // The launch gift is granted by the app, not by Play Billing. Gift cards
     // remain hidden until owned so nobody sees an unobtainable locked item.
@@ -365,21 +342,69 @@ abstract final class CatalogPreviewData {
       visual: CatalogVisual.shelf,
       assetPath: RoomDecorAssets.launchTv,
     ),
+  ];
+
+  /// The backgrounds: Casa clara to start, the garden and the beach for one
+  /// ad each, two by level and Casa torre sold.
+  ///
+  /// Ids are [RoomThemes] ids, so a saved room and its entry are one name.
+  /// Installs from before rooms were locked keep all six (see [SobraStore]).
+  static const rooms = <CatalogEntry>[
     CatalogEntry(
-      id: RoomDecorAssets.ivorySofaId,
-      name: 'Sofá marfil',
-      kind: CatalogKind.item,
+      id: RoomThemes.casaClaraId,
+      name: 'Casa clara',
+      kind: CatalogKind.room,
       unlockMethod: CatalogUnlockMethod.included,
-      visual: CatalogVisual.cushion,
-      assetPath: RoomDecorAssets.ivorySofa,
+      visual: CatalogVisual.room,
+      assetPath: RoomThemes.casaClaraPreviewAsset,
     ),
     CatalogEntry(
-      id: RoomDecorAssets.bronzeLanternLampId,
-      name: 'Lámpara de bronce',
-      kind: CatalogKind.item,
-      unlockMethod: CatalogUnlockMethod.included,
-      visual: CatalogVisual.lamp,
-      assetPath: RoomDecorAssets.bronzeLanternLamp,
+      id: RoomThemes.casaJardinId,
+      name: 'Casa jardín',
+      kind: CatalogKind.room,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
+      visual: CatalogVisual.room,
+      assetPath: 'assets/rooms/casa_jardin/background_preview_aligned.png',
+      rewardedAdTarget: 1,
+    ),
+    CatalogEntry(
+      id: RoomThemes.casaDePlayaId,
+      name: 'Casa de playa',
+      kind: CatalogKind.room,
+      unlockMethod: CatalogUnlockMethod.rewardedAd,
+      visual: CatalogVisual.room,
+      assetPath: 'assets/rooms/casa_de_playa/background_preview_aligned.png',
+      rewardedAdTarget: 1,
+    ),
+    CatalogEntry(
+      id: RoomThemes.casaMontanaId,
+      name: 'Casa montaña',
+      kind: CatalogKind.room,
+      unlockMethod: CatalogUnlockMethod.level,
+      visual: CatalogVisual.room,
+      assetPath: 'assets/rooms/casa_montana/background_preview.png',
+      requiredLevel: 5,
+    ),
+    CatalogEntry(
+      id: RoomThemes.casaInvernaderoId,
+      name: 'Casa invernadero',
+      kind: CatalogKind.room,
+      unlockMethod: CatalogUnlockMethod.level,
+      visual: CatalogVisual.room,
+      assetPath: 'assets/rooms/casa_invernadero/background_preview.png',
+      requiredLevel: 7,
+    ),
+    // Sold once and kept: the launch revocation takes it back only when Play
+    // stops reporting the purchase, and installs that had it free hold it
+    // through a flag rather than the owned set, which that check reads.
+    CatalogEntry(
+      id: RoomThemes.casaTorreId,
+      name: 'Casa torre',
+      kind: CatalogKind.room,
+      unlockMethod: CatalogUnlockMethod.purchase,
+      visual: CatalogVisual.room,
+      assetPath: 'assets/rooms/casa_torre/background_preview.png',
+      storeProductId: 'sobra.room.torre',
     ),
   ];
 
@@ -396,6 +421,32 @@ abstract final class CatalogPreviewData {
   static const starterRecordedDaysTarget = 3;
 
   static bool isStarter(String id) => starterIds.contains(id);
+
+  /// Decorations every install owned before they became level and ad
+  /// rewards, kept for the installs that already had them.
+  ///
+  /// Saved ids: a room may hold any of these, so the list only ever grows.
+  /// The desk lamp was the level-1 reward, which reached everybody. Pieces
+  /// that are free again are listed too, so moving one of them later never
+  /// takes it from somebody who has had it since launch.
+  static const formerlyFreeItemIds = {
+    RoomDecorAssets.rattanChairId,
+    RoomDecorAssets.floorLampId,
+    RoomDecorAssets.wallClockId,
+    RoomDecorAssets.lowCabinetId,
+    RoomDecorAssets.slimBookcaseId,
+    RoomDecorAssets.roundSideTableId,
+    RoomDecorAssets.petBedId,
+    RoomDecorAssets.savingsJarId,
+    RoomDecorAssets.wallShelfId,
+    RoomDecorAssets.shelfBooksId,
+    RoomDecorAssets.trailingPlantId,
+    RoomDecorAssets.terracottaPoufId,
+    RoomDecorAssets.blueCreamRugId,
+    RoomDecorAssets.ivorySofaId,
+    RoomDecorAssets.bronzeLanternLampId,
+    'item-01',
+  };
 
   /// Los amigos de Michi: Tranqui, Lana and Bandi, and ad removal.
   ///
@@ -443,11 +494,14 @@ abstract final class CatalogPreviewData {
   static Set<String>? entitlementsForProductId(String storeProductId) =>
       productEntitlements[storeProductId];
 
-  static List<CatalogEntry> forKind(CatalogKind kind) =>
-      kind == CatalogKind.character ? characters : items;
+  static List<CatalogEntry> forKind(CatalogKind kind) => switch (kind) {
+    CatalogKind.character => characters,
+    CatalogKind.item => items,
+    CatalogKind.room => rooms,
+  };
 
-  /// Every entry this build ships, characters first.
-  static List<CatalogEntry> get all => [...characters, ...items];
+  /// Every entry this build ships: characters, items, then rooms.
+  static List<CatalogEntry> get all => [...characters, ...items, ...rooms];
 
   /// The entry a store product id belongs to, or null where this build has
   /// none for it.
@@ -497,18 +551,20 @@ abstract final class CatalogPreviewData {
   /// Level rewards available to a user now, derived from XP every time.
   ///
   /// Nothing is copied into a separate ownership list, so an existing install
-  /// receives all eligible items immediately after updating the app.
+  /// receives all eligible items immediately after updating the app. Rooms
+  /// are rewards too and come after the decorations.
   static List<CatalogEntry> levelItemsUnlockedAt(int playerLevel) => [
-    for (final entry in items)
+    for (final entry in [...items, ...rooms])
       if (isUnlockedAtLevel(entry, playerLevel)) entry,
   ];
 
-  /// Rewards crossed by one XP award, including multi-level jumps.
+  /// Rewards crossed by one XP award, including multi-level jumps, rooms
+  /// included.
   static List<CatalogEntry> levelItemsUnlockedBetween({
     required int previousLevel,
     required int currentLevel,
   }) => [
-    for (final entry in items)
+    for (final entry in [...items, ...rooms])
       if (entry.unlockMethod == CatalogUnlockMethod.level &&
           entry.requiredLevel! > previousLevel &&
           entry.requiredLevel! <= currentLevel)
@@ -539,6 +595,7 @@ final class PreviewCatalogPriceSource implements CatalogPriceSource {
     'sobra.character.platypus' => r'MX$ 39',
     'sobra.character.rabbit' => r'MX$ 39',
     CatalogPreviewData.packProductId => r'MX$ 89',
+    'sobra.room.torre' => r'MX$ 19',
     _ => null,
   };
 }

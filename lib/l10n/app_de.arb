@@ -156,12 +156,15 @@
   "collectionOwnedCount": "{owned} von {total}",
   "collectionCharactersHint": "Sammle deine Begleiter",
   "collectionItemsHint": "Sammle, was in dein Zuhause gehört",
+  "collectionRooms": "Zimmer",
+  "collectionRoomsHint": "Wähle, wo dein Begleiter wohnt",
   "collectionCharacterPlaceholder": "Figur {number}",
   "collectionItemPlaceholder": "Objekt {number}",
   "collectionEquipped": "AKTIV",
   "collectionOwned": "DEINS",
   "collectionPlaceIt": "Platzieren",
   "collectionBuy": "KAUFEN",
+  "collectionPricePending": "PREIS WIRD GELADEN",
   "collectionWatchAd": "WERBUNG",
   "collectionAdLoading": "LÄDT",
   "collectionAdProgressLine": "{progress}/{target}",
@@ -170,6 +173,7 @@
   "collectionAdDailyCap": "LIMIT HEUTE",
   "collectionAdTomorrow": "MORGEN WEITER",
   "collectionUnlockedNotice": "{name} gehört dir!",
+  "collectionRoomUnlockedNotice": "Du kannst jetzt in {name} einziehen!",
   "collectionAdDismissedNotice": "Schau die Werbung ganz, damit sie zählt.",
   "collectionPackOnly": "PAKET",
   "collectionPackUnlock": "Kommt im Paket „Michis Freunde“. Nicht einzeln erhältlich.",
@@ -628,6 +632,16 @@
   "releaseNotesCurrent": "Aktuell",
   "releaseNotesRetention": "Wir behalten die letzten {count} Versionen.",
 
+  "releaseNote1013Rewards": "Jedes Level bringt neue Möbel, und manche Deko gibt es für eine Werbung.",
+
+  "releaseNote1013Rooms": "Auch Häuser lassen sich verdienen: Garten und Strand für eine Werbung, Berghütte und Wintergarten über Level.",
+
+  "releaseNote1013Kept": "Was du schon hattest, bleibt deins.",
+
+  "releaseNote1013Home": "Das Haus auf dem Startbildschirm folgt der Tageszeit.",
+
+  "releaseNote1013Fixes": "Die Lampe versteckt sich nicht mehr hinter dem Regal, und die Sprechblase verdeckt deinen Begleiter nicht mehr.",
+
   "releaseNote104Fixed": "Fixkosten laufen getrennt vom Tagesbudget. Sie erscheinen auf dem Startbildschirm und können dich vor der Fälligkeit erinnern.",
   "releaseNote104Decor": "Im Zuhause gibt es mehr zu platzieren: ein Bett, ein Regal, einen Teppich, ein Sideboard, ein Glas und einen Pouf.",
   "releaseNote104Names": "Miru, Yoshi und Cookie haben jetzt Namen, und der Level-Titel trägt den Namen deines Begleiters.",
@@ -641,7 +655,6 @@
   "releaseNote102Amounts": "Kolumbianische, argentinische und chilenische Pesos, Real und Euro schreiben sich jetzt mit Komma, wie 1.234,56.",
   "releaseNote101Currencies": "Geld lässt sich jetzt in kolumbianischen, argentinischen und chilenischen Pesos, Soles, Pfund oder Yen bezeichnen.",
   "releaseNote101Celebration": "Die Feier füllt jetzt ihre Karte und beendet ihren Sprung.",
-  "releaseNote100Launch": "Die erste Version von Sobrita.",
 
   "updateAvailableTitle": "Es gibt eine neue Version",
   "updateAvailableBody": "Aktualisiere, um das neueste Sobrita zu bekommen.",

@@ -11,6 +11,7 @@ import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/room_scene.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
 
+import 'support/decorations.dart';
 import 'support/localizations.dart';
 
 void main() {
@@ -65,10 +66,12 @@ void main() {
 
     await openCategory(tester, 'Adornos');
 
-    // Owned from the start, because Casa clara places it.
+    // Owned from the start, like the jar: everybody has the table plant.
     expect(find.text('Planta de mesa'), findsOneWidget);
-    // item-03 is the same plant behind a rewarded ad, and item-08 a clock
-    // behind another. Neither is owned here.
+    expect(find.text('Frasco de ahorros'), findsOneWidget);
+    // The books and the trailing plant are behind a rewarded ad each.
+    expect(find.text('Libros'), findsNothing);
+    expect(find.text('Planta colgante'), findsNothing);
     expect(find.text('VER ANUNCIO'), findsNothing);
     expect(find.text('COMPRAR'), findsNothing);
     expect(find.text('Ver más en la colección'), findsOneWidget);
@@ -78,6 +81,7 @@ void main() {
     tester,
   ) async {
     final store = await loadStore();
+    await ownEverything(store);
     await pump(tester, store);
 
     expect(find.text('Lámpara verde'), findsNothing);
@@ -92,8 +96,11 @@ void main() {
     tester,
   ) async {
     final store = await loadStore();
+    await ownEverything(store);
     await pump(tester, store);
     await openCategory(tester, 'Adornos');
+    await tester.ensureVisible(find.text('Lámpara verde'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Lámpara verde'));
     await tester.pumpAndSettle();
 
@@ -118,6 +125,8 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
     await pump(tester, store);
     await openCategory(tester, 'Adornos');
+    await tester.ensureVisible(find.text('Lámpara verde'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Lámpara verde'));
     await tester.pumpAndSettle();
 
@@ -145,6 +154,7 @@ void main() {
     await preferences.setString('sobra_state_v2', jsonEncode(saved));
 
     final store = await loadStore();
+    await ownEverything(store);
     expect(store.roomDecorationsFor().values, isNot(contains('item-01')));
 
     await pump(tester, store);
@@ -186,10 +196,38 @@ void main() {
     expect(find.byType(CollectionScreen), findsOneWidget);
   });
 
+  testWidgets('the room tab lists owned rooms and leads to the rest', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store);
+    await openCategory(tester, 'Casa');
+
+    expect(find.text('Casa clara'), findsOneWidget);
+    expect(find.text('Casa jardín'), findsNothing);
+    expect(find.text('Casa torre'), findsNothing);
+
+    await tester.ensureVisible(find.text('Ver más en la colección'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Ver más en la colección'));
+    await tester.pumpAndSettle();
+
+    // Lands on the rooms tab, where the locked ones say how to get them.
+    expect(find.byType(CollectionScreen), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Casa torre'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text(r'MX$ 19'), findsOneWidget);
+    expect(find.text('Casa jardín'), findsOneWidget);
+  });
+
   testWidgets('room themes preview, undo, and persist after Done', (
     tester,
   ) async {
     final store = await loadStore();
+    await ownEverything(store);
     await pump(tester, store);
     await openCategory(tester, 'Casa');
 
@@ -223,6 +261,7 @@ void main() {
 
   testWidgets('panoramic room can be selected and saved', (tester) async {
     final store = await loadStore();
+    await ownEverything(store);
     await pump(tester, store);
     await openCategory(tester, 'Casa');
 
@@ -252,6 +291,7 @@ void main() {
   ]) {
     testWidgets('$label can be selected and saved', (tester) async {
       final store = await loadStore();
+      await ownEverything(store);
       await pump(tester, store);
       await openCategory(tester, 'Casa');
 
@@ -273,21 +313,30 @@ void main() {
     });
   }
 
-  testWidgets('three starter items can be placed and saved', (tester) async {
+  testWidgets('the chair, the lamp and the clock can be placed and saved', (
+    tester,
+  ) async {
     final store = await loadStore();
+    await ownEverything(store);
     await pump(tester, store);
 
+    await tester.ensureVisible(find.text('Sillón de ratán'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Sillón de ratán'));
     await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel('Piso, lugar 1'));
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(find.text('Lámpara de pie'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Lámpara de pie'));
     await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel('Piso, lugar 2'));
     await tester.pumpAndSettle();
 
     await openCategory(tester, 'Pared y piso');
+    await tester.ensureVisible(find.text('Reloj de pared'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Reloj de pared'));
     await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel('Pared, lugar 1'));
@@ -303,6 +352,7 @@ void main() {
 
   testWidgets('the jar sits on the cabinet and leaves with it', (tester) async {
     final store = await loadStore();
+    await ownEverything(store);
     await pump(tester, store);
     await openCategory(tester, 'Casa');
     await tester.tap(find.text('Casa jardín'));
@@ -361,6 +411,7 @@ void main() {
     tester,
   ) async {
     final store = await loadStore();
+    await ownEverything(store);
     await store.saveRoomDecorations({
       RoomSlot.floorCabinet: RoomDecorAssets.lowCabinetId,
     });
@@ -404,6 +455,7 @@ void main() {
     tester,
   ) async {
     final store = await loadStore();
+    await ownEverything(store);
     await store.saveRoomDecorations({
       RoomSlot.wallCenter: RoomDecorAssets.wallShelfId,
     });
@@ -463,6 +515,7 @@ void main() {
     tester,
   ) async {
     final store = await loadStore();
+    await ownEverything(store);
     await pump(tester, store);
     await openCategory(tester, 'Casa');
     await tester.tap(find.text('Casa jardín'));
@@ -536,6 +589,7 @@ void main() {
       tester,
     ) async {
       final store = await loadStore();
+      await ownEverything(store);
       await store.grantCatalogEntry('rabbit');
       await pump(tester, store);
       await openCategory(tester, 'Personajes');
@@ -563,6 +617,7 @@ void main() {
 
     testWidgets('the category lists only what is owned', (tester) async {
       final store = await loadStore();
+      await ownEverything(store);
       await store.grantCatalogEntries({'poodle', 'capybara'});
       await pump(tester, store);
 
@@ -582,6 +637,7 @@ void main() {
     // the cat swapped.
     testWidgets('choosing one is staged until Done', (tester) async {
       final store = await loadStore();
+      await ownEverything(store);
       await store.grantCatalogEntry('capybara');
       await pump(tester, store);
 
@@ -602,6 +658,7 @@ void main() {
 
     testWidgets('Undo puts the character back', (tester) async {
       final store = await loadStore();
+      await ownEverything(store);
       await store.grantCatalogEntry('capybara');
       await pump(tester, store);
 

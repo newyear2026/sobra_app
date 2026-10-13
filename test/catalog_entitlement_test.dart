@@ -6,6 +6,8 @@ import 'package:sobra_app/data/catalog_preview_data.dart';
 import 'package:sobra_app/models/catalog_entry.dart';
 import 'package:sobra_app/models/expense_entry.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/models/room_design.dart';
+import 'package:sobra_app/models/xp_event.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 
 void main() {
@@ -18,10 +20,27 @@ void main() {
 
   Future<SobraStore> loadStore() => SobraStore.load(now: () => now);
 
-  CatalogEntry entryById(String id) => [
-    ...CatalogPreviewData.characters,
-    ...CatalogPreviewData.items,
-  ].firstWhere((entry) => entry.id == id);
+  /// Reopens the saved state with [xp] already earned.
+  Future<SobraStore> reopenWithXp(int xp) async {
+    final preferences = await SharedPreferences.getInstance();
+    final saved =
+        jsonDecode(preferences.getString('sobra_state_v2')!)
+            as Map<String, dynamic>;
+    saved['xpEvents'] = [
+      XpEvent(
+        id: 'test-xp',
+        kind: XpEventKind.cashCount,
+        xp: xp,
+        occurredAt: now,
+        sourceKey: 'test-xp',
+      ).toJson(),
+    ];
+    await preferences.setString('sobra_state_v2', jsonEncode(saved));
+    return loadStore();
+  }
+
+  CatalogEntry entryById(String id) =>
+      CatalogPreviewData.all.firstWhere((entry) => entry.id == id);
 
   // The whole point of moving this out of the collection screen's State: what
   // the user acquired used to live in a StatefulWidget and was gone the moment
@@ -66,7 +85,7 @@ void main() {
   );
 
   test('watching another ad after the grant changes nothing', () async {
-    final entry = entryById('item-03');
+    final entry = entryById(RoomDecorAssets.shelfBooksId);
     expect(entry.rewardedAdTarget, 1);
     final store = await loadStore();
 
@@ -94,14 +113,14 @@ void main() {
     'level rewards are owned without being written to the owned set',
     () async {
       final store = await loadStore();
-      final lamp = entryById('item-01');
-      expect(lamp.requiredLevel, 1);
+      final lamp = entryById(RoomDecorAssets.wallShelfId);
+      expect(lamp.requiredLevel, 2);
 
       expect(store.xpProgress.level, 1);
-      expect(store.ownsCatalogEntry(lamp), isTrue);
-      expect(store.ownedCatalogIds, isEmpty);
+      expect(store.ownsCatalogEntry(lamp), isFalse);
 
-      final reopened = await loadStore();
+      final reopened = await reopenWithXp(150);
+      expect(reopened.xpProgress.level, 2);
       expect(reopened.ownsCatalogEntry(lamp), isTrue);
       expect(reopened.ownedCatalogIds, isEmpty);
     },
@@ -225,6 +244,203 @@ void main() {
       await store.revokeCatalogEntries({'capybara'});
 
       expect(store.characterId, 'poodle');
+    });
+  });
+
+  group('decorations that used to be free', () {
+    Future<SobraStore> onboarded() async {
+      final store = await loadStore();
+      await store.chooseCharacter('michi');
+      await store.configureOnboarding(
+        budgetCentavos: 600000,
+        schedule: const PaySchedule.semiMonthly(),
+      );
+      await store.completeOnboarding();
+      return store;
+    }
+
+    // 1.0.12, the build in production when decorations became rewards, gave
+    // every drawn piece away, and the desk lamp at level 1. Each of them has
+    // to be on the list, or an update takes it from somebody's room.
+    test('cover everything 1.0.12 gave away', () {
+      const freeIn1012 = {
+        RoomDecorAssets.rattanChairId,
+        RoomDecorAssets.floorLampId,
+        RoomDecorAssets.wallClockId,
+        RoomDecorAssets.lowCabinetId,
+        RoomDecorAssets.slimBookcaseId,
+        RoomDecorAssets.roundSideTableId,
+        RoomDecorAssets.petBedId,
+        RoomDecorAssets.savingsJarId,
+        RoomDecorAssets.wallShelfId,
+        RoomDecorAssets.shelfBooksId,
+        RoomDecorAssets.trailingPlantId,
+        RoomDecorAssets.terracottaPoufId,
+        RoomDecorAssets.blueCreamRugId,
+        RoomDecorAssets.ivorySofaId,
+        RoomDecorAssets.bronzeLanternLampId,
+        'item-01',
+      };
+      expect(CatalogPreviewData.formerlyFreeItemIds, containsAll(freeIn1012));
+    });
+
+    test('stay owned on an install from before they were rewards', () async {
+      await onboarded();
+      final preferences = await SharedPreferences.getInstance();
+      final saved =
+          jsonDecode(preferences.getString('sobra_state_v2')!)
+              as Map<String, dynamic>;
+      saved.remove('decorRewards');
+      await preferences.setString('sobra_state_v2', jsonEncode(saved));
+
+      final reopened = await loadStore();
+
+      expect(reopened.xpProgress.level, 1);
+      for (final id in CatalogPreviewData.formerlyFreeItemIds) {
+        expect(reopened.ownsCatalogEntry(entryById(id)), isTrue, reason: id);
+      }
+      // Kept on the next save, so the marker cannot strand them.
+      await reopened.grantCatalogEntry('capybara');
+      expect(
+        (await loadStore()).ownedCatalogIds,
+        containsAll(CatalogPreviewData.formerlyFreeItemIds),
+      );
+    });
+
+    test('are earned on a new install', () async {
+      await onboarded();
+
+      final reopened = await loadStore();
+
+      expect(
+        reopened.ownsCatalogEntry(entryById(RoomDecorAssets.floorLampId)),
+        isFalse,
+      );
+      expect(reopened.ownsCatalogEntry(entryById('item-01')), isFalse);
+    });
+  });
+
+  group('rooms', () {
+    Future<SobraStore> onboarded() async {
+      final store = await loadStore();
+      await store.chooseCharacter('michi');
+      await store.configureOnboarding(
+        budgetCentavos: 600000,
+        schedule: const PaySchedule.semiMonthly(),
+      );
+      await store.completeOnboarding();
+      return store;
+    }
+
+    /// Rewrites the save as a build from before rooms were locked left it.
+    Future<void> forgetRoomLocks() async {
+      final preferences = await SharedPreferences.getInstance();
+      final saved =
+          jsonDecode(preferences.getString('sobra_state_v2')!)
+              as Map<String, dynamic>;
+      saved
+        ..remove('decorRewards')
+        ..remove('keepsEveryRoom');
+      await preferences.setString('sobra_state_v2', jsonEncode(saved));
+    }
+
+    test('a new install has only Casa clara', () async {
+      final store = await onboarded();
+
+      expect(
+        [
+          for (final room in RoomThemes.all)
+            if (store.ownsRoom(room.id)) room.id,
+        ],
+        [RoomThemes.casaClaraId],
+      );
+      expect(
+        () => store.saveRoomSelection(
+          roomId: RoomThemes.casaTorreId,
+          placementsByRoom: const {},
+        ),
+        throwsArgumentError,
+      );
+      expect(store.equippedRoomId, RoomThemes.casaClaraId);
+    });
+
+    test('levels 5 and 7 open the mountain and the greenhouse', () async {
+      await onboarded();
+      List<String> owned(SobraStore store) => [
+        for (final room in RoomThemes.all)
+          if (store.ownsRoom(room.id)) room.id,
+      ];
+
+      expect(owned(await reopenWithXp(850)), [RoomThemes.casaClaraId]);
+      expect(owned(await reopenWithXp(1550)), [
+        RoomThemes.casaClaraId,
+        RoomThemes.casaMontanaId,
+      ]);
+      final levelSeven = await reopenWithXp(3850);
+      expect(levelSeven.xpProgress.level, 7);
+      expect(owned(levelSeven), [
+        RoomThemes.casaClaraId,
+        RoomThemes.casaMontanaId,
+        RoomThemes.casaInvernaderoId,
+      ]);
+      // Derived from XP, like the decorations: nothing is written down.
+      expect(
+        levelSeven.ownedCatalogIds.where((id) => RoomThemes.contains(id)),
+        isEmpty,
+      );
+    });
+
+    test('one ad opens the garden or the beach for good', () async {
+      final store = await onboarded();
+
+      for (final id in [RoomThemes.casaJardinId, RoomThemes.casaDePlayaId]) {
+        expect(store.ownsRoom(id), isFalse, reason: id);
+        await store.recordRewardedAdView(entryById(id));
+        expect((await loadStore()).ownsRoom(id), isTrue, reason: id);
+      }
+    });
+
+    test('an install from before they were locked keeps all six', () async {
+      await onboarded();
+      await forgetRoomLocks();
+
+      final reopened = await loadStore();
+
+      for (final room in RoomThemes.all) {
+        expect(reopened.ownsRoom(room.id), isTrue, reason: room.id);
+      }
+      // Not as owned ids: the launch revocation would read a free Casa torre
+      // as a refund.
+      expect(reopened.ownedCatalogIds, isNot(contains(RoomThemes.casaTorreId)));
+      await reopened.grantCatalogEntry('capybara');
+      expect((await loadStore()).ownsRoom(RoomThemes.casaTorreId), isTrue);
+    });
+
+    test('a locked room left equipped opens as Casa clara', () async {
+      await onboarded();
+      final preferences = await SharedPreferences.getInstance();
+      final saved =
+          jsonDecode(preferences.getString('sobra_state_v2')!)
+              as Map<String, dynamic>;
+      saved['equippedRoomId'] = RoomThemes.casaTorreId;
+      await preferences.setString('sobra_state_v2', jsonEncode(saved));
+
+      expect((await loadStore()).equippedRoomId, RoomThemes.casaClaraId);
+    });
+
+    test('a backup brings the earnable rooms, never the sold one', () async {
+      await onboarded();
+      await forgetRoomLocks();
+      final oldInstall = await loadStore();
+      final raw = oldInstall.exportJson();
+      SharedPreferences.setMockInitialValues({});
+      final fresh = await onboarded();
+
+      await fresh.importBackup(raw);
+
+      expect(fresh.ownsRoom(RoomThemes.casaMontanaId), isTrue);
+      expect(fresh.ownsRoom(RoomThemes.casaInvernaderoId), isTrue);
+      expect(fresh.ownsRoom(RoomThemes.casaTorreId), isFalse);
     });
   });
 
@@ -414,8 +630,11 @@ void main() {
       expect(reopened.hasStorageError, isFalse);
       expect(reopened.ownedCatalogIds, isEmpty);
       expect(reopened.equippedIdFor(CatalogKind.item), isNull);
-      // Still theirs: nothing about the old shape changes what the level grants.
-      expect(reopened.ownsCatalogEntry(entryById('item-01')), isTrue);
+      // Still theirs: nothing about the old shape changes what is included.
+      expect(
+        reopened.ownsCatalogEntry(entryById(RoomDecorAssets.slimBookcaseId)),
+        isTrue,
+      );
     },
   );
 
@@ -607,7 +826,7 @@ void main() {
   test('recommended rewarded entry is hidden when the day is capped', () async {
     now = DateTime(2026, 9, 14, 11);
     final store = await SobraStore.load(now: () => now, rewardedAdsPerDay: 1);
-    await store.recordRewardedAdView(entryById('item-03'));
+    await store.recordRewardedAdView(entryById(RoomDecorAssets.shelfBooksId));
 
     expect(store.recommendedRewardedAdEntry, isNull);
   });

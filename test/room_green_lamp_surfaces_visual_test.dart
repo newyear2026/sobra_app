@@ -9,6 +9,7 @@ import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
 
+import 'support/decorations.dart';
 import 'support/localizations.dart';
 
 void main() {
@@ -30,6 +31,7 @@ void main() {
     ]);
     SharedPreferences.setMockInitialValues({});
     final store = await SobraStore.load(now: () => DateTime(2026, 10, 9, 10));
+    await ownEverything(store);
     await store.setReducedMotion(true);
 
     for (final (support, lampSlot, otherSlot, fileName)

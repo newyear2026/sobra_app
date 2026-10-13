@@ -274,6 +274,8 @@
   },
   "collectionCharactersHint": "Reúne a quien te acompaña",
   "collectionItemsHint": "Reúne lo que va en tu espacio",
+  "collectionRooms": "Casas",
+  "collectionRoomsHint": "Elige dónde vive tu compañero",
   "collectionCharacterPlaceholder": "Personaje {number}",
   "@collectionCharacterPlaceholder": {
     "placeholders": { "number": { "type": "int" } }
@@ -286,6 +288,7 @@
   "collectionOwned": "OBTENIDO",
   "collectionPlaceIt": "Colocarlo",
   "collectionBuy": "COMPRAR",
+  "collectionPricePending": "CONSULTANDO PRECIO",
   "collectionWatchAd": "VER ANUNCIO",
   "collectionAdLoading": "PREPARANDO",
   "collectionAdProgressLine": "{progress}/{target}",
@@ -297,6 +300,8 @@
   "collectionAdTomorrow": "SIGUE MAÑANA",
   "collectionUnlockedNotice": "¡{name} es tuyo!",
   "@collectionUnlockedNotice": {"placeholders": {"name": {"type": "String"}}},
+  "collectionRoomUnlockedNotice": "¡Ya puedes mudarte a {name}!",
+  "@collectionRoomUnlockedNotice": {"placeholders": {"name": {"type": "String"}}},
   "collectionAdDismissedNotice": "Mira el anuncio completo para que cuente.",
   "collectionPackOnly": "PAQUETE",
   "collectionPackUnlock": "Viene en el paquete Los amigos de Michi. No se vende por separado.",
@@ -943,6 +948,16 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
+  "releaseNote1013Rewards": "Cada nivel trae muebles nuevos, y algunos adornos se ganan con un anuncio.",
+
+  "releaseNote1013Rooms": "Las casas también se ganan: jardín y playa con un anuncio, montaña e invernadero por nivel.",
+
+  "releaseNote1013Kept": "Lo que ya tenías se queda contigo.",
+
+  "releaseNote1013Home": "La casa en Inicio cambia con la hora del día.",
+
+  "releaseNote1013Fixes": "La lámpara ya no se esconde tras la estantería y el globo ya no tapa a tu compañero.",
+
   "releaseNote104Fixed": "Los gastos fijos van aparte del gasto diario. Aparecen en Inicio y pueden avisarte antes de vencer.",
   "releaseNote104Decor": "La casa tiene más para colocar: una cama, una repisa, un tapete, un aparador, un frasco y un puf.",
   "releaseNote104Names": "Miru, Yoshi y Cookie ya tienen nombre, y el título de nivel lleva el de quien te acompaña.",
@@ -956,7 +971,6 @@
   "releaseNote102Amounts": "Los pesos colombianos, argentinos y chilenos, los reales y el euro ahora se escriben con coma, como 1.234,56.",
   "releaseNote101Currencies": "Ahora puedes etiquetar tu dinero en pesos colombianos, argentinos y chilenos, soles, libras o yenes.",
   "releaseNote101Celebration": "La celebración ahora llena la tarjeta y termina su salto.",
-  "releaseNote100Launch": "Primera versión de Sobrita.",
 
   "updateAvailableTitle": "Hay una versión nueva",
   "@updateAvailableTitle": {

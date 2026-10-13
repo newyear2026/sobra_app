@@ -33,7 +33,7 @@ void main() {
   RewardedAds adsFor(SobraStore store) => RewardedAds(port: port, store: store);
 
   /// An item: one view and it is owned.
-  final item = entryById('item-03');
+  final item = entryById('decor-shelf-books');
 
   /// An ordinary character: two views, on any days.
   final character = entryById('quokka');
@@ -159,9 +159,9 @@ void main() {
       final store = await loadStore();
       final ads = adsFor(store);
 
-      await ads.watch(entryById('item-03'));
+      await ads.watch(entryById('decor-shelf-books'));
       await ads.watch(entryById('item-05'));
-      await ads.watch(entryById('item-08'));
+      await ads.watch(entryById('item-01'));
 
       expect(store.rewardedAdsWatchedToday, 3);
       expect(store.rewardedAdsLeftToday, isNull);
@@ -176,7 +176,7 @@ void main() {
     test('the day is still counted, and still resets', () async {
       final store = await loadStore();
       final ads = adsFor(store);
-      await ads.watch(entryById('item-03'));
+      await ads.watch(entryById('decor-shelf-books'));
       expect(store.rewardedAdsWatchedToday, 1);
 
       now = DateTime(2026, 9, 15, 0, 1);
@@ -186,7 +186,7 @@ void main() {
 
     test('the count survives a restart within the same day', () async {
       final store = await loadStore();
-      await adsFor(store).watch(entryById('item-03'));
+      await adsFor(store).watch(entryById('decor-shelf-books'));
 
       final reopened = await loadStore();
 
@@ -199,9 +199,9 @@ void main() {
       final store = await loadCappedStore();
       final ads = adsFor(store);
 
-      await ads.watch(entryById('item-03'));
+      await ads.watch(entryById('decor-shelf-books'));
       await ads.watch(entryById('item-05'));
-      await ads.watch(entryById('item-08'));
+      await ads.watch(entryById('item-01'));
 
       expect(store.rewardedAdsLeftToday, 0);
       expect(
@@ -219,9 +219,9 @@ void main() {
     test('it resets when the local day turns over', () async {
       final store = await loadCappedStore();
       final ads = adsFor(store);
-      await ads.watch(entryById('item-03'));
+      await ads.watch(entryById('decor-shelf-books'));
       await ads.watch(entryById('item-05'));
-      await ads.watch(entryById('item-08'));
+      await ads.watch(entryById('item-01'));
       expect(store.rewardedAdsLeftToday, 0);
 
       now = DateTime(2026, 9, 15, 0, 1);

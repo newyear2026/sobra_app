@@ -156,12 +156,15 @@
   "collectionOwnedCount": "{owned} de {total}",
   "collectionCharactersHint": "Reúna quem te faz companhia",
   "collectionItemsHint": "Reúna o que vai no seu espaço",
+  "collectionRooms": "Casas",
+  "collectionRoomsHint": "Escolha onde seu companheiro mora",
   "collectionCharacterPlaceholder": "Personagem {number}",
   "collectionItemPlaceholder": "Item {number}",
   "collectionEquipped": "EM USO",
   "collectionOwned": "OBTIDO",
   "collectionPlaceIt": "Colocar",
   "collectionBuy": "COMPRAR",
+  "collectionPricePending": "CONSULTANDO PREÇO",
   "collectionWatchAd": "VER ANÚNCIO",
   "collectionAdLoading": "CARREGANDO",
   "collectionAdProgressLine": "{progress}/{target}",
@@ -170,6 +173,7 @@
   "collectionAdDailyCap": "LIMITE DE HOJE",
   "collectionAdTomorrow": "CONTINUA AMANHÃ",
   "collectionUnlockedNotice": "{name} é seu!",
+  "collectionRoomUnlockedNotice": "Agora você pode se mudar para {name}!",
   "collectionAdDismissedNotice": "Veja o anúncio inteiro para contar.",
   "collectionPackOnly": "PACOTE",
   "collectionPackUnlock": "Vem no pacote Os amigos do Michi. Não é vendido separadamente.",
@@ -628,6 +632,16 @@
   "releaseNotesCurrent": "Atual",
   "releaseNotesRetention": "Guardamos as últimas {count} versões.",
 
+  "releaseNote1013Rewards": "Cada nível traz móveis novos, e alguns enfeites saem com um anúncio.",
+
+  "releaseNote1013Rooms": "As casas também se ganham: jardim e praia com um anúncio, montanha e jardim de inverno por nível.",
+
+  "releaseNote1013Kept": "O que você já tinha continua seu.",
+
+  "releaseNote1013Home": "A casa no Início muda com a hora do dia.",
+
+  "releaseNote1013Fixes": "O abajur não se esconde mais atrás da estante, e o balão não cobre mais seu companheiro.",
+
   "releaseNote104Fixed": "Os gastos fixos ficam separados do gasto diário. Aparecem no Início e podem te avisar antes do vencimento.",
   "releaseNote104Decor": "A casa tem mais coisas para colocar: uma caminha, uma prateleira, um tapete, um aparador, um pote e um pufe.",
   "releaseNote104Names": "Miru, Yoshi e Cookie agora têm nome, e o título de nível leva o nome de quem te faz companhia.",
@@ -641,7 +655,6 @@
   "releaseNote102Amounts": "Pesos colombianos, argentinos e chilenos, reais e euros agora usam vírgula, como em 1.234,56.",
   "releaseNote101Currencies": "Agora dá para rotular seu dinheiro em pesos colombianos, argentinos e chilenos, soles, libras ou ienes.",
   "releaseNote101Celebration": "A comemoração agora preenche o cartão e termina o pulo.",
-  "releaseNote100Launch": "A primeira versão do Sobrita.",
 
   "updateAvailableTitle": "Tem versão nova",
   "updateAvailableBody": "Atualize para ter o Sobrita mais recente.",

@@ -6,6 +6,7 @@ import '../data/catalog_preview_data.dart';
 import '../l10n/catalog_labels.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/room_design.dart';
+import '../models/room_time_of_day.dart';
 import '../models/xp_event.dart';
 import '../services/app_review_service.dart';
 import '../services/app_telemetry.dart';
@@ -142,13 +143,20 @@ class _AppShellState extends State<AppShell> {
       unawaited(nextAnnouncements?.start() ?? Future<void>.value());
     }
     // The room is now above the fold, so its fixed layer and included decor
-    // are warmed before Inicio asks for them.
+    // are warmed before Inicio asks for them. Inicio lights it for the hour,
+    // so the background it shows is the one for now, not the plain art.
+    final room = RoomThemes.byId(nextStore.equippedRoomId);
     unawaited(
       Future.wait([
         precacheImage(
-          AssetImage(RoomThemes.byId(nextStore.equippedRoomId).portraitAsset),
+          AssetImage(
+            room.sceneAssetFor(
+              RoomTimeOfDay.fromLocal(nextStore.currentMoment),
+            ),
+          ),
           context,
         ),
+        precacheImage(AssetImage(room.portraitAsset), context),
         precacheImage(const AssetImage(RoomDecorAssets.rug), context),
         precacheImage(const AssetImage(RoomDecorAssets.tablePlant), context),
       ]),

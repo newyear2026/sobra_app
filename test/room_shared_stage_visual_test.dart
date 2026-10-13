@@ -11,6 +11,7 @@ import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
 import 'package:sobra_app/widgets/room_scene.dart';
 
+import 'support/decorations.dart';
 import 'support/localizations.dart';
 
 void main() {
@@ -32,6 +33,7 @@ void main() {
     ]);
     SharedPreferences.setMockInitialValues({});
     final store = await SobraStore.load(now: () => DateTime(2026, 9, 8, 10));
+    await ownEverything(store);
     await store.configureOnboarding(
       budgetCentavos: 600000,
       schedule: const PaySchedule.semiMonthly(),

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -274,6 +276,98 @@ void main() {
         lampId,
       );
       expect(besideBookcase, closeTo(besideCabinet, .01));
+    }
+  });
+
+  // The lamp keeps the wall end and the bookcase steps aside. Side by side at
+  // the bookcase's usual spot, the shade sank behind it and half of it hid.
+  testWidgets('a floor lamp and the bookcase stand apart on the left', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1000, 1500);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load(now: () => DateTime(2026, 9, 14, 10));
+    await store.setReducedMotion(true);
+
+    /// The painted part of [asset], which sits bottom-centred and contained
+    /// in its frame. [paint] is the opaque box within the sprite's pixels;
+    /// the soft halo around the bookcase is left out, as nobody sees it.
+    Rect painted(String asset, Size pixels, Rect paint) {
+      final frame = tester.getRect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Image &&
+              widget.image is AssetImage &&
+              (widget.image as AssetImage).assetName == asset,
+        ),
+      );
+      final scale = math.min(
+        frame.width / pixels.width,
+        frame.height / pixels.height,
+      );
+      final left = frame.center.dx - pixels.width * scale / 2;
+      final top = frame.bottom - pixels.height * scale;
+      return Rect.fromLTRB(
+        left + paint.left * scale,
+        top + paint.top * scale,
+        left + paint.right * scale,
+        top + paint.bottom * scale,
+      );
+    }
+
+    const lamps = {
+      RoomDecorAssets.floorLampId: (
+        RoomDecorAssets.floorLamp,
+        Size(407, 1412),
+        Rect.fromLTRB(4, 4, 404, 1399),
+      ),
+      RoomDecorAssets.bronzeLanternLampId: (
+        RoomDecorAssets.bronzeLanternLamp,
+        Size(754, 2086),
+        Rect.fromLTRB(159, 128, 579, 1990),
+      ),
+    };
+    for (final roomId in [
+      RoomThemes.casaClaraId,
+      RoomThemes.casaInvernaderoId,
+    ]) {
+      for (final MapEntry(key: lampId, value: (asset, pixels, paint))
+          in lamps.entries) {
+        await tester.pumpWidget(
+          SobraScope(
+            store: store,
+            child: MaterialApp(
+              localizationsDelegates: sobraLocalizationsDelegates,
+              supportedLocales: sobraSupportedLocales,
+              home: RoomScene(
+                variant: RoomSceneVariant.immersive,
+                roomId: roomId,
+                placements: {
+                  RoomSlot.floorCabinet: RoomDecorAssets.slimBookcaseId,
+                  RoomSlot.floorLeft: lampId,
+                },
+                message: '',
+              ),
+            ),
+          ),
+        );
+        await tester.pump();
+
+        final lamp = painted(asset, pixels, paint);
+        final bookcase = painted(
+          RoomDecorAssets.slimBookcase,
+          const Size(1024, 1536),
+          const Rect.fromLTRB(232, 144, 793, 1412),
+        );
+        expect(
+          lamp.right,
+          lessThanOrEqualTo(bookcase.left),
+          reason: '$lampId beside the bookcase in $roomId',
+        );
+      }
     }
   });
 

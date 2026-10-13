@@ -13,6 +13,7 @@ import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
 
 import 'support/fake_rewarded_ad.dart';
+import 'support/decorations.dart';
 import 'support/localizations.dart';
 
 void main() {
@@ -33,10 +34,8 @@ void main() {
     rewardedAdsPerDay: 3,
   );
 
-  CatalogEntry entryById(String id) => [
-    ...CatalogPreviewData.characters,
-    ...CatalogPreviewData.items,
-  ].firstWhere((entry) => entry.id == id);
+  CatalogEntry entryById(String id) =>
+      CatalogPreviewData.all.firstWhere((entry) => entry.id == id);
 
   /// Text inside the open detail dialog.
   ///
@@ -88,6 +87,7 @@ void main() {
   // pinned to Casa clara it went stale the moment another one was equipped.
   testWidgets('the header shows the equipped room', (tester) async {
     final store = await loadStore();
+    await ownAllRooms(store);
     await store.saveRoomSelection(
       roomId: RoomThemes.casaJardinId,
       placementsByRoom: const {},
@@ -139,7 +139,8 @@ void main() {
     await tester.tap(find.text('Bunny'));
     await tester.pumpAndSettle();
 
-    expect(inDialog('COMPRAR'), findsOneWidget);
+    // The price is on the button, as it is on the pack's.
+    expect(inDialog(r'COMPRAR · MX$ 39'), findsOneWidget);
     expect(inDialog('EQUIPAR'), findsNothing);
   });
 
@@ -158,7 +159,7 @@ void main() {
     );
 
     expect(inDialog('Bunny'), findsOneWidget);
-    expect(inDialog('COMPRAR'), findsOneWidget);
+    expect(inDialog('CONSULTANDO PRECIO'), findsOneWidget);
     final buyButton = tester.widget<FilledButton>(
       find.descendant(
         of: find.byType(AlertDialog),
@@ -175,13 +176,8 @@ void main() {
     await pump(tester, store, initialEntryId: 'rabbit');
 
     expect(inDialog('Bunny'), findsOneWidget);
-    expect(
-      find.descendant(
-        of: find.byType(AlertDialog),
-        matching: find.textContaining(r'MX$ 39'),
-      ),
-      findsOneWidget,
-    );
+    // The price is on the button, as it is on the pack's.
+    expect(inDialog(r'COMPRAR · MX$ 39'), findsOneWidget);
     final buyButton = tester.widget<FilledButton>(
       find.descendant(
         of: find.byType(AlertDialog),
@@ -198,14 +194,8 @@ void main() {
     await pump(tester, store, initialEntryId: 'platypus');
 
     expect(inDialog('Pico'), findsOneWidget);
-    expect(inDialog('COMPRAR'), findsOneWidget);
-    expect(
-      find.descendant(
-        of: find.byType(AlertDialog),
-        matching: find.textContaining(r'MX$ 39'),
-      ),
-      findsOneWidget,
-    );
+    // The price is on the button, as it is on the pack's.
+    expect(inDialog(r'COMPRAR · MX$ 39'), findsOneWidget);
     final buyButton = tester.widget<FilledButton>(
       find.descendant(
         of: find.byType(AlertDialog),
@@ -220,13 +210,8 @@ void main() {
     await pump(tester, store, initialEntryId: 'raccoon');
 
     expect(inDialog('Bandi'), findsOneWidget);
-    expect(
-      find.descendant(
-        of: find.byType(AlertDialog),
-        matching: find.textContaining(r'MX$ 39'),
-      ),
-      findsOneWidget,
-    );
+    // The price is on the button, as it is on the pack's.
+    expect(inDialog(r'COMPRAR · MX$ 39'), findsOneWidget);
     expect(
       find.descendant(
         of: find.byType(AlertDialog),
@@ -241,7 +226,6 @@ void main() {
       ),
     );
     expect(buy.onPressed, isNotNull);
-    expect(inDialog('COMPRAR'), findsOneWidget);
     expect(inDialog('También viene en Los amigos de Michi'), findsOneWidget);
   });
 
@@ -280,7 +264,7 @@ void main() {
 
     await tester.tap(find.text('OBJETOS'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Objeto 1'));
+    await tester.tap(find.text('Estantería estrecha'));
     await tester.pumpAndSettle();
 
     expect(inDialog('OBTENIDO'), findsOneWidget);
@@ -353,9 +337,9 @@ void main() {
 
   testWidgets('a spent daily cap is what every ad card says', (tester) async {
     final store = await loadCappedStore();
-    await store.recordRewardedAdView(entryById('item-03'));
+    await store.recordRewardedAdView(entryById('decor-shelf-books'));
     await store.recordRewardedAdView(entryById('item-05'));
-    await store.recordRewardedAdView(entryById('item-08'));
+    await store.recordRewardedAdView(entryById('item-01'));
     expect(store.rewardedAdsLeftToday, 0);
 
     await pump(tester, store, ads: await readyAds(store));
@@ -365,22 +349,26 @@ void main() {
 
   testWidgets('watching an ad through counts and unlocks', (tester) async {
     final store = await loadStore();
-    final item = entryById('item-03');
+    final item = entryById('decor-shelf-books');
     expect(item.rewardedAdTarget, 1);
 
     await pump(tester, store, ads: await readyAds(store));
     await tester.tap(find.text('OBJETOS'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Objeto 3'));
+    await tester.scrollUntilVisible(
+      find.text('Libros'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Objeto 3'));
+    await tester.tap(find.text('Libros'));
     await tester.pumpAndSettle();
     await tester.tap(inDialog('VER ANUNCIO'));
     await tester.pumpAndSettle();
 
     expect(store.ownsCatalogEntry(item), isTrue);
     expect(store.rewardedAdsWatchedToday, 1);
-    expect(find.text('¡Objeto 3 es tuyo!'), findsOneWidget);
+    expect(find.text('¡Libros es tuyo!'), findsOneWidget);
   });
 
   // Acquiring is this screen's work and placing is not, so the unlock hands
@@ -399,9 +387,13 @@ void main() {
     );
     await tester.tap(find.text('OBJETOS'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Objeto 3'));
+    await tester.scrollUntilVisible(
+      find.text('Libros'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Objeto 3'));
+    await tester.tap(find.text('Libros'));
     await tester.pumpAndSettle();
     await tester.tap(inDialog('VER ANUNCIO'));
     await tester.pumpAndSettle();
@@ -417,14 +409,18 @@ void main() {
     await pump(tester, store, ads: await readyAds(store));
     await tester.tap(find.text('OBJETOS'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Objeto 3'));
+    await tester.scrollUntilVisible(
+      find.text('Libros'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Objeto 3'));
+    await tester.tap(find.text('Libros'));
     await tester.pumpAndSettle();
     await tester.tap(inDialog('VER ANUNCIO'));
     await tester.pumpAndSettle();
 
-    expect(find.text('¡Objeto 3 es tuyo!'), findsOneWidget);
+    expect(find.text('¡Libros es tuyo!'), findsOneWidget);
     expect(find.text('Colocarlo'), findsNothing);
   });
 
@@ -437,14 +433,18 @@ void main() {
     await pump(tester, store, ads: ads);
     await tester.tap(find.text('OBJETOS'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Objeto 3'));
+    await tester.scrollUntilVisible(
+      find.text('Libros'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Objeto 3'));
+    await tester.tap(find.text('Libros'));
     await tester.pumpAndSettle();
     await tester.tap(inDialog('VER ANUNCIO'));
     await tester.pumpAndSettle();
 
-    expect(store.ownsCatalogEntry(entryById('item-03')), isFalse);
+    expect(store.ownsCatalogEntry(entryById('decor-shelf-books')), isFalse);
     expect(
       find.text('Mira el anuncio completo para que cuente.'),
       findsOneWidget,
@@ -533,9 +533,7 @@ void main() {
     expect(find.text('¡Quokka es tuyo!'), findsOneWidget);
   });
 
-  testWidgets('Happy unlocks in the collection after two ads', (
-    tester,
-  ) async {
+  testWidgets('Happy unlocks in the collection after two ads', (tester) async {
     final store = await loadStore();
     final entry = entryById('maltese');
     await pump(
@@ -565,6 +563,26 @@ void main() {
     await tester.pumpAndSettle();
     expect(store.ownsCatalogEntry(entry), isTrue);
     expect(find.text('¡Happy es tuyo!'), findsOneWidget);
+  });
+
+  testWidgets('Casa de playa opens after one ad, from the rooms tab', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    final entry = entryById(RoomThemes.casaDePlayaId);
+    await pump(
+      tester,
+      store,
+      ads: await readyAds(store),
+      initialEntryId: RoomThemes.casaDePlayaId,
+    );
+
+    expect(store.ownsRoom(entry.id), isFalse);
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+
+    expect(store.ownsRoom(entry.id), isTrue);
+    expect(find.text('¡Ya puedes mudarte a Casa de playa!'), findsOneWidget);
   });
 
   // The fetch in front of the ad is a network round trip. Before the card said
@@ -613,17 +631,21 @@ void main() {
     await pump(tester, store, ads: ads);
     await tester.tap(find.text('OBJETOS'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Objeto 3'));
+    await tester.scrollUntilVisible(
+      find.text('Libros'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
 
     // The network recovers while the user is looking at the screen.
     port.fills = true;
-    await tester.tap(find.text('Objeto 3'));
+    await tester.tap(find.text('Libros'));
     await tester.pumpAndSettle();
     await tester.tap(inDialog('SIN ANUNCIOS'));
     await tester.pumpAndSettle();
 
-    expect(store.ownsCatalogEntry(entryById('item-03')), isTrue);
+    expect(store.ownsCatalogEntry(entryById('decor-shelf-books')), isTrue);
   });
 
   // Opening the screen asks for one, so the common case never reaches the tap.
@@ -642,9 +664,9 @@ void main() {
   // The real rules still close the button. Only an empty network stays open.
   testWidgets('a rule-blocked card still refuses the tap', (tester) async {
     final store = await loadCappedStore();
-    await store.recordRewardedAdView(entryById('item-03'));
+    await store.recordRewardedAdView(entryById('decor-shelf-books'));
     await store.recordRewardedAdView(entryById('item-05'));
-    await store.recordRewardedAdView(entryById('item-08'));
+    await store.recordRewardedAdView(entryById('item-01'));
     expect(store.rewardedAdsLeftToday, 0);
 
     await pump(tester, store, ads: await readyAds(store));
@@ -671,20 +693,20 @@ void main() {
     tester,
   ) async {
     final store = await loadStore();
-    await pump(tester, store, initialEntryId: 'item-03');
+    await pump(tester, store, initialEntryId: 'decor-shelf-books');
 
     expect(find.byType(AlertDialog), findsOneWidget);
-    expect(inDialog('Objeto 3'), findsOneWidget);
-    expect(store.rewardedAdProgressFor('item-03'), 0);
+    expect(inDialog('Libros'), findsOneWidget);
+    expect(store.rewardedAdProgressFor('decor-shelf-books'), 0);
   });
 
   testWidgets('new room items appear in Items with their own art', (
     tester,
   ) async {
     final store = await loadStore();
-    await pump(tester, store, initialEntryId: RoomDecorAssets.rattanChairId);
+    await pump(tester, store, initialEntryId: RoomDecorAssets.slimBookcaseId);
 
-    expect(inDialog('Sillón de ratán'), findsOneWidget);
+    expect(inDialog('Estantería estrecha'), findsOneWidget);
     expect(inDialog('OBTENIDO'), findsOneWidget);
     expect(
       find.byWidgetPredicate(
@@ -692,7 +714,7 @@ void main() {
             widget is Image &&
             widget.image is AssetImage &&
             (widget.image as AssetImage).assetName ==
-                RoomDecorAssets.rattanChair,
+                RoomDecorAssets.slimBookcase,
       ),
       findsWidgets,
     );

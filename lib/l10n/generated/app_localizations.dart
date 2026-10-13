@@ -911,6 +911,18 @@ abstract class AppLocalizations {
   /// **'Reúne lo que va en tu espacio'**
   String get collectionItemsHint;
 
+  /// No description provided for @collectionRooms.
+  ///
+  /// In es, this message translates to:
+  /// **'Casas'**
+  String get collectionRooms;
+
+  /// No description provided for @collectionRoomsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige dónde vive tu compañero'**
+  String get collectionRoomsHint;
+
   /// No description provided for @collectionCharacterPlaceholder.
   ///
   /// In es, this message translates to:
@@ -946,6 +958,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'COMPRAR'**
   String get collectionBuy;
+
+  /// No description provided for @collectionPricePending.
+  ///
+  /// In es, this message translates to:
+  /// **'CONSULTANDO PRECIO'**
+  String get collectionPricePending;
 
   /// No description provided for @collectionWatchAd.
   ///
@@ -994,6 +1012,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'¡{name} es tuyo!'**
   String collectionUnlockedNotice(String name);
+
+  /// No description provided for @collectionRoomUnlockedNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Ya puedes mudarte a {name}!'**
+  String collectionRoomUnlockedNotice(String name);
 
   /// No description provided for @collectionAdDismissedNotice.
   ///
@@ -3622,6 +3646,36 @@ abstract class AppLocalizations {
   /// **'Guardamos las últimas {count} versiones.'**
   String releaseNotesRetention(int count);
 
+  /// No description provided for @releaseNote1013Rewards.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada nivel trae muebles nuevos, y algunos adornos se ganan con un anuncio.'**
+  String get releaseNote1013Rewards;
+
+  /// No description provided for @releaseNote1013Rooms.
+  ///
+  /// In es, this message translates to:
+  /// **'Las casas también se ganan: jardín y playa con un anuncio, montaña e invernadero por nivel.'**
+  String get releaseNote1013Rooms;
+
+  /// No description provided for @releaseNote1013Kept.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que ya tenías se queda contigo.'**
+  String get releaseNote1013Kept;
+
+  /// No description provided for @releaseNote1013Home.
+  ///
+  /// In es, this message translates to:
+  /// **'La casa en Inicio cambia con la hora del día.'**
+  String get releaseNote1013Home;
+
+  /// No description provided for @releaseNote1013Fixes.
+  ///
+  /// In es, this message translates to:
+  /// **'La lámpara ya no se esconde tras la estantería y el globo ya no tapa a tu compañero.'**
+  String get releaseNote1013Fixes;
+
   /// No description provided for @releaseNote104Fixed.
   ///
   /// In es, this message translates to:
@@ -3699,12 +3753,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'La celebración ahora llena la tarjeta y termina su salto.'**
   String get releaseNote101Celebration;
-
-  /// No description provided for @releaseNote100Launch.
-  ///
-  /// In es, this message translates to:
-  /// **'Primera versión de Sobrita.'**
-  String get releaseNote100Launch;
 
   /// Heading of the dialog shown on launch when Google Play has a newer build waiting.
   ///

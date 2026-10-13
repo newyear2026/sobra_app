@@ -45,7 +45,7 @@ class RoomScene extends StatelessWidget {
   final String roomId;
   final String? backgroundAsset;
 
-  /// Time-of-day art is available in the immersive version of every room.
+  /// Lights the room for this time of day; null keeps the plain art.
   final RoomTimeOfDay? timeOfDay;
 
   /// Lights the places [selectedItemId] can go, and only those.
@@ -91,24 +91,8 @@ class RoomScene extends StatelessWidget {
               room.id == RoomThemes.casaMontanaId ||
               room.id == RoomThemes.casaInvernaderoId;
           final isPanoramic = usesPaintedLight;
-          final roomPhase = variant == RoomSceneVariant.immersive
-              ? timeOfDay
-              : null;
-          final assetDirectory = room.portraitAsset.substring(
-            0,
-            room.portraitAsset.lastIndexOf('/'),
-          );
-          final sceneAsset =
-              backgroundAsset ??
-              switch (roomPhase) {
-                RoomTimeOfDay.dawn || RoomTimeOfDay.sunset =>
-                  '$assetDirectory/background_portrait_sunset_unlit.png',
-                RoomTimeOfDay.night =>
-                  '$assetDirectory/background_portrait_night_unlit.png',
-                RoomTimeOfDay.day =>
-                  '$assetDirectory/background_portrait_unlit.png',
-                null => room.portraitAsset,
-              };
+          final roomPhase = timeOfDay;
+          final sceneAsset = backgroundAsset ?? room.sceneAssetFor(roomPhase);
           final layout = _RoomSceneLayout.of(room.id);
           final selected = selectedItemId;
           final selectedAsset = selected == null
@@ -119,10 +103,13 @@ class RoomScene extends StatelessWidget {
               : const <RoomSlot>[];
           final stageScale = size.width / room.portraitSize.width;
           final backgroundHeight = room.portraitSize.height * stageScale;
+          // A stage exactly as tall as the art can come out a rounding error
+          // taller, which put the lower bound above zero and made clamp throw
+          // — the whole room then failed to build. Never let it pass zero.
           final background = Rect.fromLTWH(
             0,
             ((size.height - size.width) / 2 - 96 * stageScale).clamp(
-              size.height - backgroundHeight,
+              math.min(size.height - backgroundHeight, 0.0),
               0.0,
             ),
             size.width,
@@ -327,6 +314,12 @@ class RoomScene extends StatelessWidget {
             }
             if (slot == RoomSlot.floorCabinet &&
                 itemId == RoomDecorAssets.slimBookcaseId) {
+              // A floor lamp keeps the wall end; the bookcase steps right of
+              // it. Side by side at the usual spot, the shade sank behind the
+              // bookcase and only half of it showed.
+              if (RoomDecorAssets.isFloorLamp(placements[RoomSlot.floorLeft])) {
+                return at(isPanoramic ? .23 : .26, .09);
+              }
               return at(isPanoramic ? .15 : .18, .09);
             }
             if (slot == RoomSlot.floorLeft && hasCabinet) {
@@ -697,6 +690,9 @@ class RoomScene extends StatelessWidget {
                       child: Image.asset(
                         sceneAsset,
                         fit: BoxFit.fill,
+                        // When the hour turns, the last light stays up until
+                        // the next one has loaded instead of a blank room.
+                        gaplessPlayback: true,
                         excludeFromSemantics: true,
                         errorBuilder: (_, _, _) =>
                             const ColoredBox(color: AppColors.paperLight),

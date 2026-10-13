@@ -480,6 +480,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get collectionItemsHint => 'お部屋に置くものを集めよう';
 
   @override
+  String get collectionRooms => 'お部屋';
+
+  @override
+  String get collectionRoomsHint => '一緒に暮らすお部屋を選ぼう';
+
+  @override
   String collectionCharacterPlaceholder(int number) {
     return 'キャラクター$number';
   }
@@ -500,6 +506,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get collectionBuy => '購入';
+
+  @override
+  String get collectionPricePending => '価格を確認中';
 
   @override
   String get collectionWatchAd => '広告を見る';
@@ -529,6 +538,11 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String collectionUnlockedNotice(String name) {
     return '$nameが仲間になりました！';
+  }
+
+  @override
+  String collectionRoomUnlockedNotice(String name) {
+    return '$nameに引っ越せるようになりました！';
   }
 
   @override
@@ -2049,6 +2063,21 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1013Rewards => 'レベルごとに新しい家具が届き、一部の小物は広告1回で手に入ります。';
+
+  @override
+  String get releaseNote1013Rooms => 'お部屋も集められます。庭・海辺は広告1回、山の別荘・温室はレベルで開きます。';
+
+  @override
+  String get releaseNote1013Kept => '持っていたものはそのままです。';
+
+  @override
+  String get releaseNote1013Home => 'ホーム画面のお部屋も時間で昼と夜が変わります。';
+
+  @override
+  String get releaseNote1013Fixes => 'ランプが本棚の後ろに隠れず、吹き出しが仲間に重なりません。';
+
+  @override
   String get releaseNote104Fixed =>
       '固定費を毎日の予算と分けて管理できるようになりました。ホームに表示され、支払い日の前にお知らせもできます。';
 
@@ -2094,9 +2123,6 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get releaseNote101Celebration =>
       'お祝いの演出がカードいっぱいに広がり、ジャンプも最後まで見られるようになりました。';
-
-  @override
-  String get releaseNote100Launch => 'Sobritaの最初のバージョンです。';
 
   @override
   String get updateAvailableTitle => '新しいバージョンがあります';

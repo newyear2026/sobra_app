@@ -15,17 +15,18 @@ import 'package:sobra_app/widgets/release_announcement.dart';
 import 'support/localizations.dart';
 
 /// Notes of its own rather than the shipped list, so these tests keep saying
-/// what they mean after a release is added and the oldest one drops off.
+/// what they mean after a release is added and the oldest one drops off. The
+/// line is a literal for the same reason: an ARB key leaves with its release.
 final _notes = <ReleaseNote>[
   ReleaseNote(
     version: '1.1.0',
     releasedOn: DateTime(2026, 10, 2),
-    lines: [(l10n) => l10n.releaseNote100Launch],
+    lines: [(_) => 'Primera versión de Sobrita.'],
   ),
   ReleaseNote(
     version: '1.0.0',
     releasedOn: DateTime(2026, 9, 11),
-    lines: [(l10n) => l10n.releaseNote100Launch],
+    lines: [(_) => 'Primera versión de Sobrita.'],
   ),
 ];
 
@@ -63,13 +64,14 @@ Future<void> _loadFonts() async {
   await Future.wait([pixelify.load(), icons.load()]);
 }
 
-Widget _harness(Widget child) => MaterialApp(
-  locale: const Locale('es'),
-  theme: buildSobraTheme(),
-  localizationsDelegates: sobraLocalizationsDelegates,
-  supportedLocales: AppLocalizations.supportedLocales,
-  home: Scaffold(body: child),
-);
+Widget _harness(Widget child, {Locale locale = const Locale('es')}) =>
+    MaterialApp(
+      locale: locale,
+      theme: buildSobraTheme(),
+      localizationsDelegates: sobraLocalizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(body: child),
+    );
 
 void main() {
   group('the first launch', () {
@@ -255,27 +257,37 @@ void main() {
       expect(announcements.hasUnreadNotes, isFalse);
     });
 
-    testWidgets('the shipped note fits a small phone', (tester) async {
-      tester.view.physicalSize = const Size(360, 640);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
+    // Every language, not just the template: German and Portuguese run
+    // longest, and a note that fits in Spanish can still overflow there.
+    for (final locale in AppLocalizations.supportedLocales) {
+      testWidgets('the shipped note fits a small phone in $locale', (
+        tester,
+      ) async {
+        tester.view.physicalSize = const Size(360, 640);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
 
-      final announcements = ReleaseAnnouncements(
-        preferences: await _preferences({
-          'sobra_notes_announced_version': '1.0.1',
-          'sobra_notes_read_version': '1.0.1',
-        }),
-        versionLoader: _reports(releaseNotes.first.version),
-      );
-      await announcements.start();
+        final announcements = ReleaseAnnouncements(
+          preferences: await _preferences({
+            'sobra_notes_announced_version': '1.0.1',
+            'sobra_notes_read_version': '1.0.1',
+          }),
+          versionLoader: _reports(releaseNotes.first.version),
+        );
+        await announcements.start();
 
-      await tester.pumpWidget(_harness(const SizedBox.shrink()));
-      final context = tester.element(find.byType(SizedBox));
-      unawaited(showReleaseAnnouncement(context, announcements: announcements));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(
+          _harness(const SizedBox.shrink(), locale: locale),
+        );
+        final context = tester.element(find.byType(SizedBox));
+        unawaited(
+          showReleaseAnnouncement(context, announcements: announcements),
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.text('v${releaseNotes.first.version}'), findsOneWidget);
-    });
+        expect(find.text('v${releaseNotes.first.version}'), findsOneWidget);
+      });
+    }
   });
 }

@@ -6,6 +6,7 @@ import 'support/localizations.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/models/room_design.dart';
+import 'package:sobra_app/models/room_time_of_day.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
@@ -53,8 +54,9 @@ void main() {
     await tester.pump();
     await tester.runAsync(
       () => Future.wait([
+        // Inicio lights the room for the hour: at 10:00 that is day.
         precacheImage(
-          const AssetImage(RoomThemes.casaClaraPortraitAsset),
+          AssetImage(RoomThemes.casaClara.sceneAssetFor(RoomTimeOfDay.day)),
           tester.element(find.byType(RoomScene)),
         ),
         precacheImage(

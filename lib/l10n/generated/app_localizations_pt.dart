@@ -493,6 +493,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get collectionItemsHint => 'Reúna o que vai no seu espaço';
 
   @override
+  String get collectionRooms => 'Casas';
+
+  @override
+  String get collectionRoomsHint => 'Escolha onde seu companheiro mora';
+
+  @override
   String collectionCharacterPlaceholder(int number) {
     return 'Personagem $number';
   }
@@ -513,6 +519,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get collectionBuy => 'COMPRAR';
+
+  @override
+  String get collectionPricePending => 'CONSULTANDO PREÇO';
 
   @override
   String get collectionWatchAd => 'VER ANÚNCIO';
@@ -542,6 +551,11 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String collectionUnlockedNotice(String name) {
     return '$name é seu!';
+  }
+
+  @override
+  String collectionRoomUnlockedNotice(String name) {
+    return 'Agora você pode se mudar para $name!';
   }
 
   @override
@@ -2141,6 +2155,24 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1013Rewards =>
+      'Cada nível traz móveis novos, e alguns enfeites saem com um anúncio.';
+
+  @override
+  String get releaseNote1013Rooms =>
+      'As casas também se ganham: jardim e praia com um anúncio, montanha e jardim de inverno por nível.';
+
+  @override
+  String get releaseNote1013Kept => 'O que você já tinha continua seu.';
+
+  @override
+  String get releaseNote1013Home => 'A casa no Início muda com a hora do dia.';
+
+  @override
+  String get releaseNote1013Fixes =>
+      'O abajur não se esconde mais atrás da estante, e o balão não cobre mais seu companheiro.';
+
+  @override
   String get releaseNote104Fixed =>
       'Os gastos fixos ficam separados do gasto diário. Aparecem no Início e podem te avisar antes do vencimento.';
 
@@ -2191,9 +2223,6 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get releaseNote101Celebration =>
       'A comemoração agora preenche o cartão e termina o pulo.';
-
-  @override
-  String get releaseNote100Launch => 'A primeira versão do Sobrita.';
 
   @override
   String get updateAvailableTitle => 'Tem versão nova';

@@ -9,6 +9,7 @@ import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/room_scene.dart';
 
+import 'support/decorations.dart';
 import 'support/localizations.dart';
 
 void main() {
@@ -29,6 +30,8 @@ void main() {
     useSpanishDevice(tester);
 
     final store = await SobraStore.load(now: () => DateTime(2026, 9, 14, 10));
+
+    await ownEverything(store);
     await store.setReducedMotion(true);
     Future<void> place({required bool plantOnBookcase}) async {
       final plantSlot = plantOnBookcase
@@ -142,6 +145,8 @@ void main() {
     useSpanishDevice(tester);
 
     final store = await SobraStore.load(now: () => DateTime(2026, 9, 14, 10));
+
+    await ownEverything(store);
     await store.setReducedMotion(true);
     await store.saveRoomSelection(
       roomId: RoomThemes.casaJardinId,
@@ -216,6 +221,8 @@ void main() {
     useSpanishDevice(tester);
 
     final store = await SobraStore.load(now: () => DateTime(2026, 9, 14, 10));
+
+    await ownEverything(store);
     await store.setReducedMotion(true);
     await store.saveRoomSelection(
       roomId: RoomThemes.casaJardinId,
@@ -286,6 +293,8 @@ void main() {
     useSpanishDevice(tester);
 
     final store = await SobraStore.load(now: () => DateTime(2026, 9, 14, 10));
+
+    await ownEverything(store);
     await store.setReducedMotion(true);
     await store.saveRoomSelection(
       roomId: RoomThemes.casaJardinId,
