@@ -665,13 +665,15 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
-  "releaseNote1013Rewards": "Levelling up now brings new furniture, and some decorations are yours for one short ad.",
+  "releaseNote1013Rewards": "Each level brings new furniture, and some decorations take one ad.",
 
-  "releaseNote1013Rooms": "Houses are earned too: Garden house and Beach house for one ad, Mountain chalet and Conservatory by level. Tower apartment can be bought.",
+  "releaseNote1013Rooms": "Houses are earned too: garden and beach for one ad, mountain and conservatory by level.",
 
-  "releaseNote1013Kept": "Everything already in your house stays yours.",
+  "releaseNote1013Kept": "Everything you already had stays yours.",
 
-  "releaseNote1013Fixes": "The floor lamp no longer hides behind the bookcase, and the house no longer goes blank on some screens.",
+  "releaseNote1013Home": "The house on Home follows the time of day.",
+
+  "releaseNote1013Fixes": "The lamp no longer hides behind the bookcase, and the bubble no longer covers your companion.",
 
   "releaseNote104Fixed": "Fixed expenses stay apart from the daily spend. They show on Home and can remind you before they are due.",
   "releaseNote104Decor": "The house has more to place: a bed, a shelf, a rug, a cabinet, a jar and a pouf.",

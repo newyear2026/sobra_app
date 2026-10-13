@@ -64,13 +64,14 @@ Future<void> _loadFonts() async {
   await Future.wait([pixelify.load(), icons.load()]);
 }
 
-Widget _harness(Widget child) => MaterialApp(
-  locale: const Locale('es'),
-  theme: buildSobraTheme(),
-  localizationsDelegates: sobraLocalizationsDelegates,
-  supportedLocales: AppLocalizations.supportedLocales,
-  home: Scaffold(body: child),
-);
+Widget _harness(Widget child, {Locale locale = const Locale('es')}) =>
+    MaterialApp(
+      locale: locale,
+      theme: buildSobraTheme(),
+      localizationsDelegates: sobraLocalizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(body: child),
+    );
 
 void main() {
   group('the first launch', () {
@@ -256,27 +257,37 @@ void main() {
       expect(announcements.hasUnreadNotes, isFalse);
     });
 
-    testWidgets('the shipped note fits a small phone', (tester) async {
-      tester.view.physicalSize = const Size(360, 640);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
+    // Every language, not just the template: German and Portuguese run
+    // longest, and a note that fits in Spanish can still overflow there.
+    for (final locale in AppLocalizations.supportedLocales) {
+      testWidgets('the shipped note fits a small phone in $locale', (
+        tester,
+      ) async {
+        tester.view.physicalSize = const Size(360, 640);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
 
-      final announcements = ReleaseAnnouncements(
-        preferences: await _preferences({
-          'sobra_notes_announced_version': '1.0.1',
-          'sobra_notes_read_version': '1.0.1',
-        }),
-        versionLoader: _reports(releaseNotes.first.version),
-      );
-      await announcements.start();
+        final announcements = ReleaseAnnouncements(
+          preferences: await _preferences({
+            'sobra_notes_announced_version': '1.0.1',
+            'sobra_notes_read_version': '1.0.1',
+          }),
+          versionLoader: _reports(releaseNotes.first.version),
+        );
+        await announcements.start();
 
-      await tester.pumpWidget(_harness(const SizedBox.shrink()));
-      final context = tester.element(find.byType(SizedBox));
-      unawaited(showReleaseAnnouncement(context, announcements: announcements));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(
+          _harness(const SizedBox.shrink(), locale: locale),
+        );
+        final context = tester.element(find.byType(SizedBox));
+        unawaited(
+          showReleaseAnnouncement(context, announcements: announcements),
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.text('v${releaseNotes.first.version}'), findsOneWidget);
-    });
+        expect(find.text('v${releaseNotes.first.version}'), findsOneWidget);
+      });
+    }
   });
 }

@@ -3649,25 +3649,31 @@ abstract class AppLocalizations {
   /// No description provided for @releaseNote1013Rewards.
   ///
   /// In es, this message translates to:
-  /// **'Subir de nivel ahora trae muebles nuevos, y algunos adornos se ganan con un anuncio corto.'**
+  /// **'Cada nivel trae muebles nuevos, y algunos adornos se ganan con un anuncio.'**
   String get releaseNote1013Rewards;
 
   /// No description provided for @releaseNote1013Rooms.
   ///
   /// In es, this message translates to:
-  /// **'Las casas también se ganan: Casa jardín y Casa de playa con un anuncio, Casa montaña y Casa invernadero subiendo de nivel. Casa torre se puede comprar.'**
+  /// **'Las casas también se ganan: jardín y playa con un anuncio, montaña e invernadero por nivel.'**
   String get releaseNote1013Rooms;
 
   /// No description provided for @releaseNote1013Kept.
   ///
   /// In es, this message translates to:
-  /// **'Todo lo que ya tenías en tu casa se queda contigo.'**
+  /// **'Lo que ya tenías se queda contigo.'**
   String get releaseNote1013Kept;
+
+  /// No description provided for @releaseNote1013Home.
+  ///
+  /// In es, this message translates to:
+  /// **'La casa en Inicio cambia con la hora del día.'**
+  String get releaseNote1013Home;
 
   /// No description provided for @releaseNote1013Fixes.
   ///
   /// In es, this message translates to:
-  /// **'La lámpara de pie ya no se esconde detrás de la estantería, y la casa ya no se queda en blanco en algunas pantallas.'**
+  /// **'La lámpara ya no se esconde tras la estantería y el globo ya no tapa a tu compañero.'**
   String get releaseNote1013Fixes;
 
   /// No description provided for @releaseNote104Fixed.

@@ -2156,19 +2156,21 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get releaseNote1013Rewards =>
-      'Subir de nível agora traz móveis novos, e alguns enfeites são seus com um anúncio curto.';
+      'Cada nível traz móveis novos, e alguns enfeites saem com um anúncio.';
 
   @override
   String get releaseNote1013Rooms =>
-      'As casas também se ganham: Casa com jardim e Casa de praia com um anúncio, Casa da montanha e Jardim de inverno subindo de nível. O Apartamento panorâmico pode ser comprado.';
+      'As casas também se ganham: jardim e praia com um anúncio, montanha e jardim de inverno por nível.';
 
   @override
-  String get releaseNote1013Kept =>
-      'Tudo o que já estava na sua casa continua seu.';
+  String get releaseNote1013Kept => 'O que você já tinha continua seu.';
+
+  @override
+  String get releaseNote1013Home => 'A casa no Início muda com a hora do dia.';
 
   @override
   String get releaseNote1013Fixes =>
-      'O abajur de chão não se esconde mais atrás da estante, e a casa não fica mais em branco em algumas telas.';
+      'O abajur não se esconde mais atrás da estante, e o balão não cobre mais seu companheiro.';
 
   @override
   String get releaseNote104Fixed =>

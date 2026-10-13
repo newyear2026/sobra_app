@@ -2063,18 +2063,19 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get releaseNote1013Rewards => 'レベルが上がると新しい家具が届き、一部の小物は短い広告1回で手に入ります。';
+  String get releaseNote1013Rewards => 'レベルごとに新しい家具が届き、一部の小物は広告1回で手に入ります。';
 
   @override
-  String get releaseNote1013Rooms =>
-      'お部屋も集められます。庭のある家と海辺の家は広告1回、山の別荘と温室の部屋はレベルで開きます。タワーの部屋は購入できます。';
+  String get releaseNote1013Rooms => 'お部屋も集められます。庭・海辺は広告1回、山の別荘・温室はレベルで開きます。';
 
   @override
-  String get releaseNote1013Kept => 'すでにお部屋にあるものは、そのままあなたのものです。';
+  String get releaseNote1013Kept => '持っていたものはそのままです。';
 
   @override
-  String get releaseNote1013Fixes =>
-      'フロアランプが本棚の後ろに隠れなくなり、一部の画面でお部屋が真っ白になる問題も直しました。';
+  String get releaseNote1013Home => 'ホーム画面のお部屋も時間で昼と夜が変わります。';
+
+  @override
+  String get releaseNote1013Fixes => 'ランプが本棚の後ろに隠れず、吹き出しが仲間に重なりません。';
 
   @override
   String get releaseNote104Fixed =>

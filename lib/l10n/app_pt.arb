@@ -632,13 +632,15 @@
   "releaseNotesCurrent": "Atual",
   "releaseNotesRetention": "Guardamos as últimas {count} versões.",
 
-  "releaseNote1013Rewards": "Subir de nível agora traz móveis novos, e alguns enfeites são seus com um anúncio curto.",
+  "releaseNote1013Rewards": "Cada nível traz móveis novos, e alguns enfeites saem com um anúncio.",
 
-  "releaseNote1013Rooms": "As casas também se ganham: Casa com jardim e Casa de praia com um anúncio, Casa da montanha e Jardim de inverno subindo de nível. O Apartamento panorâmico pode ser comprado.",
+  "releaseNote1013Rooms": "As casas também se ganham: jardim e praia com um anúncio, montanha e jardim de inverno por nível.",
 
-  "releaseNote1013Kept": "Tudo o que já estava na sua casa continua seu.",
+  "releaseNote1013Kept": "O que você já tinha continua seu.",
 
-  "releaseNote1013Fixes": "O abajur de chão não se esconde mais atrás da estante, e a casa não fica mais em branco em algumas telas.",
+  "releaseNote1013Home": "A casa no Início muda com a hora do dia.",
+
+  "releaseNote1013Fixes": "O abajur não se esconde mais atrás da estante, e o balão não cobre mais seu companheiro.",
 
   "releaseNote104Fixed": "Os gastos fixos ficam separados do gasto diário. Aparecem no Início e podem te avisar antes do vencimento.",
   "releaseNote104Decor": "A casa tem mais coisas para colocar: uma caminha, uma prateleira, um tapete, um aparador, um pote e um pufe.",

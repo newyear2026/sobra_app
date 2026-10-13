@@ -2139,19 +2139,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get releaseNote1013Rewards =>
-      'Levelling up now brings new furniture, and some decorations are yours for one short ad.';
+      'Each level brings new furniture, and some decorations take one ad.';
 
   @override
   String get releaseNote1013Rooms =>
-      'Houses are earned too: Garden house and Beach house for one ad, Mountain chalet and Conservatory by level. Tower apartment can be bought.';
+      'Houses are earned too: garden and beach for one ad, mountain and conservatory by level.';
 
   @override
-  String get releaseNote1013Kept =>
-      'Everything already in your house stays yours.';
+  String get releaseNote1013Kept => 'Everything you already had stays yours.';
+
+  @override
+  String get releaseNote1013Home =>
+      'The house on Home follows the time of day.';
 
   @override
   String get releaseNote1013Fixes =>
-      'The floor lamp no longer hides behind the bookcase, and the house no longer goes blank on some screens.';
+      'The lamp no longer hides behind the bookcase, and the bubble no longer covers your companion.';
 
   @override
   String get releaseNote104Fixed =>

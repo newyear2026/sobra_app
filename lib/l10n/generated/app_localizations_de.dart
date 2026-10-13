@@ -2156,19 +2156,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get releaseNote1013Rewards =>
-      'Ein Levelaufstieg bringt jetzt neue Möbel, und manche Deko gibt es für eine kurze Werbung.';
+      'Jedes Level bringt neue Möbel, und manche Deko gibt es für eine Werbung.';
 
   @override
   String get releaseNote1013Rooms =>
-      'Auch Häuser lassen sich verdienen: Gartenhaus und Strandhaus für eine Werbung, Berghütte und Wintergarten über Level. Das Panorama-Apartment kann man kaufen.';
+      'Auch Häuser lassen sich verdienen: Garten und Strand für eine Werbung, Berghütte und Wintergarten über Level.';
 
   @override
-  String get releaseNote1013Kept =>
-      'Alles, was schon in deinem Haus steht, bleibt deins.';
+  String get releaseNote1013Kept => 'Was du schon hattest, bleibt deins.';
+
+  @override
+  String get releaseNote1013Home =>
+      'Das Haus auf dem Startbildschirm folgt der Tageszeit.';
 
   @override
   String get releaseNote1013Fixes =>
-      'Die Stehlampe versteckt sich nicht mehr hinter dem Bücherregal, und das Haus bleibt auf manchen Bildschirmen nicht mehr leer.';
+      'Die Lampe versteckt sich nicht mehr hinter dem Regal, und die Sprechblase verdeckt deinen Begleiter nicht mehr.';
 
   @override
   String get releaseNote104Fixed =>

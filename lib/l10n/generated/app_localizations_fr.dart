@@ -2163,19 +2163,22 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get releaseNote1013Rewards =>
-      'Monter de niveau apporte maintenant de nouveaux meubles, et certaines décorations s\'obtiennent avec une courte pub.';
+      'Chaque niveau apporte de nouveaux meubles, et certaines décorations s\'obtiennent avec une pub.';
 
   @override
   String get releaseNote1013Rooms =>
-      'Les maisons se gagnent aussi : Maison jardin et Maison de plage avec une pub, Chalet de montagne et Véranda en montant de niveau. L\'Appartement panoramique peut s\'acheter.';
+      'Les maisons se gagnent aussi : jardin et plage avec une pub, chalet et véranda par niveau.';
 
   @override
-  String get releaseNote1013Kept =>
-      'Tout ce qui est déjà dans votre maison reste à vous.';
+  String get releaseNote1013Kept => 'Ce que vous aviez déjà reste à vous.';
+
+  @override
+  String get releaseNote1013Home =>
+      'La maison sur l\'accueil suit l\'heure du jour.';
 
   @override
   String get releaseNote1013Fixes =>
-      'Le lampadaire ne se cache plus derrière la bibliothèque, et la maison ne reste plus vide sur certains écrans.';
+      'La lampe ne se cache plus derrière la bibliothèque, et la bulle ne cache plus votre compagnon.';
 
   @override
   String get releaseNote104Fixed =>

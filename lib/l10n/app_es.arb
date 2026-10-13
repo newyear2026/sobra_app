@@ -948,13 +948,15 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
-  "releaseNote1013Rewards": "Subir de nivel ahora trae muebles nuevos, y algunos adornos se ganan con un anuncio corto.",
+  "releaseNote1013Rewards": "Cada nivel trae muebles nuevos, y algunos adornos se ganan con un anuncio.",
 
-  "releaseNote1013Rooms": "Las casas también se ganan: Casa jardín y Casa de playa con un anuncio, Casa montaña y Casa invernadero subiendo de nivel. Casa torre se puede comprar.",
+  "releaseNote1013Rooms": "Las casas también se ganan: jardín y playa con un anuncio, montaña e invernadero por nivel.",
 
-  "releaseNote1013Kept": "Todo lo que ya tenías en tu casa se queda contigo.",
+  "releaseNote1013Kept": "Lo que ya tenías se queda contigo.",
 
-  "releaseNote1013Fixes": "La lámpara de pie ya no se esconde detrás de la estantería, y la casa ya no se queda en blanco en algunas pantallas.",
+  "releaseNote1013Home": "La casa en Inicio cambia con la hora del día.",
+
+  "releaseNote1013Fixes": "La lámpara ya no se esconde tras la estantería y el globo ya no tapa a tu compañero.",
 
   "releaseNote104Fixed": "Los gastos fijos van aparte del gasto diario. Aparecen en Inicio y pueden avisarte antes de vencer.",
   "releaseNote104Decor": "La casa tiene más para colocar: una cama, una repisa, un tapete, un aparador, un frasco y un puf.",

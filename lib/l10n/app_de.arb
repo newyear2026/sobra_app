@@ -632,13 +632,15 @@
   "releaseNotesCurrent": "Aktuell",
   "releaseNotesRetention": "Wir behalten die letzten {count} Versionen.",
 
-  "releaseNote1013Rewards": "Ein Levelaufstieg bringt jetzt neue Möbel, und manche Deko gibt es für eine kurze Werbung.",
+  "releaseNote1013Rewards": "Jedes Level bringt neue Möbel, und manche Deko gibt es für eine Werbung.",
 
-  "releaseNote1013Rooms": "Auch Häuser lassen sich verdienen: Gartenhaus und Strandhaus für eine Werbung, Berghütte und Wintergarten über Level. Das Panorama-Apartment kann man kaufen.",
+  "releaseNote1013Rooms": "Auch Häuser lassen sich verdienen: Garten und Strand für eine Werbung, Berghütte und Wintergarten über Level.",
 
-  "releaseNote1013Kept": "Alles, was schon in deinem Haus steht, bleibt deins.",
+  "releaseNote1013Kept": "Was du schon hattest, bleibt deins.",
 
-  "releaseNote1013Fixes": "Die Stehlampe versteckt sich nicht mehr hinter dem Bücherregal, und das Haus bleibt auf manchen Bildschirmen nicht mehr leer.",
+  "releaseNote1013Home": "Das Haus auf dem Startbildschirm folgt der Tageszeit.",
+
+  "releaseNote1013Fixes": "Die Lampe versteckt sich nicht mehr hinter dem Regal, und die Sprechblase verdeckt deinen Begleiter nicht mehr.",
 
   "releaseNote104Fixed": "Fixkosten laufen getrennt vom Tagesbudget. Sie erscheinen auf dem Startbildschirm und können dich vor der Fälligkeit erinnern.",
   "releaseNote104Decor": "Im Zuhause gibt es mehr zu platzieren: ein Bett, ein Regal, einen Teppich, ein Sideboard, ein Glas und einen Pouf.",

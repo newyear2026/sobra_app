@@ -43,6 +43,7 @@ final releaseNotes = <ReleaseNote>[
       (l10n) => l10n.releaseNote1013Rewards,
       (l10n) => l10n.releaseNote1013Rooms,
       (l10n) => l10n.releaseNote1013Kept,
+      (l10n) => l10n.releaseNote1013Home,
       (l10n) => l10n.releaseNote1013Fixes,
     ],
   ),

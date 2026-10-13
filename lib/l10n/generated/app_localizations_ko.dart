@@ -2061,19 +2061,20 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get releaseNote1013Rewards =>
-      '레벨이 오르면 새 가구가 생기고, 일부 소품은 짧은 광고 한 번으로 받을 수 있어요.';
+  String get releaseNote1013Rewards => '레벨마다 새 가구가 생기고, 일부 소품은 광고 한 번으로 받아요.';
 
   @override
   String get releaseNote1013Rooms =>
-      '방도 모을 수 있어요. 정원 방과 해변 방은 광고 한 번, 산속 별장과 온실 방은 레벨로 열려요. 타워팰리스 방은 구매할 수 있어요.';
+      '방도 모을 수 있어요. 정원·해변 방은 광고 한 번, 산속 별장·온실 방은 레벨로 열려요.';
 
   @override
-  String get releaseNote1013Kept => '이미 집에 있던 건 모두 그대로 가지고 있어요.';
+  String get releaseNote1013Kept => '이미 가진 건 모두 그대로예요.';
 
   @override
-  String get releaseNote1013Fixes =>
-      '스탠드 조명이 책장 뒤에 가려지지 않고, 일부 화면에서 집이 하얗게 비던 문제도 고쳤어요.';
+  String get releaseNote1013Home => '홈 화면의 방도 시간에 맞춰 밤낮이 바뀌어요.';
+
+  @override
+  String get releaseNote1013Fixes => '조명이 책장 뒤에 숨지 않고, 말풍선이 친구를 가리지 않아요.';
 
   @override
   String get releaseNote104Fixed =>
