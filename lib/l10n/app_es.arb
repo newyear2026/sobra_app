@@ -274,6 +274,8 @@
   },
   "collectionCharactersHint": "Reúne a quien te acompaña",
   "collectionItemsHint": "Reúne lo que va en tu espacio",
+  "collectionRooms": "Casas",
+  "collectionRoomsHint": "Elige dónde vive tu compañero",
   "collectionCharacterPlaceholder": "Personaje {number}",
   "@collectionCharacterPlaceholder": {
     "placeholders": { "number": { "type": "int" } }
@@ -286,6 +288,7 @@
   "collectionOwned": "OBTENIDO",
   "collectionPlaceIt": "Colocarlo",
   "collectionBuy": "COMPRAR",
+  "collectionPricePending": "CONSULTANDO PRECIO",
   "collectionWatchAd": "VER ANUNCIO",
   "collectionAdLoading": "PREPARANDO",
   "collectionAdProgressLine": "{progress}/{target}",
@@ -297,6 +300,8 @@
   "collectionAdTomorrow": "SIGUE MAÑANA",
   "collectionUnlockedNotice": "¡{name} es tuyo!",
   "@collectionUnlockedNotice": {"placeholders": {"name": {"type": "String"}}},
+  "collectionRoomUnlockedNotice": "¡Ya puedes mudarte a {name}!",
+  "@collectionRoomUnlockedNotice": {"placeholders": {"name": {"type": "String"}}},
   "collectionAdDismissedNotice": "Mira el anuncio completo para que cuente.",
   "collectionPackOnly": "PAQUETE",
   "collectionPackUnlock": "Viene en el paquete Los amigos de Michi. No se vende por separado.",

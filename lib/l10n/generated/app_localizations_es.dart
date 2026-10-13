@@ -490,6 +490,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get collectionItemsHint => 'Reúne lo que va en tu espacio';
 
   @override
+  String get collectionRooms => 'Casas';
+
+  @override
+  String get collectionRoomsHint => 'Elige dónde vive tu compañero';
+
+  @override
   String collectionCharacterPlaceholder(int number) {
     return 'Personaje $number';
   }
@@ -510,6 +516,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get collectionBuy => 'COMPRAR';
+
+  @override
+  String get collectionPricePending => 'CONSULTANDO PRECIO';
 
   @override
   String get collectionWatchAd => 'VER ANUNCIO';
@@ -539,6 +548,11 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String collectionUnlockedNotice(String name) {
     return '¡$name es tuyo!';
+  }
+
+  @override
+  String collectionRoomUnlockedNotice(String name) {
+    return '¡Ya puedes mudarte a $name!';
   }
 
   @override

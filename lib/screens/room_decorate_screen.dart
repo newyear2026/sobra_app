@@ -137,7 +137,14 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
     if (choice.isLink) {
       Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (_) => const CollectionScreen(openedFromDecorate: true),
+          builder: (_) => CollectionScreen(
+            openedFromDecorate: true,
+            initialKind: switch (_category) {
+              RoomDecorCategory.rooms => CatalogKind.room,
+              RoomDecorCategory.characters => CatalogKind.character,
+              _ => CatalogKind.item,
+            },
+          ),
         ),
       );
       return;
@@ -236,8 +243,7 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
       RoomDecorAssets.lowCabinetId => l10n.roomSuggestCabinet,
       RoomDecorAssets.petBedId => l10n.roomSuggestPetBed,
       RoomDecorAssets.savingsJarId => l10n.roomSuggestSavingsJar,
-      RoomDecorAssets.defaultTablePlantId ||
-      'item-03' => l10n.roomSuggestTablePlant,
+      RoomDecorAssets.defaultTablePlantId => l10n.roomSuggestTablePlant,
       RoomDecorAssets.shelfBooksId ||
       RoomDecorAssets.trailingPlantId => l10n.roomSuggestShelfProps,
       // With no cabinet, side table or wall shelf the generic count would
@@ -719,21 +725,25 @@ List<_RoomChoice> _choicesFor(
   if (category == RoomDecorCategory.rooms) {
     // Each theme has its own saved
     // arrangement, so switching the draft room does not move its furniture.
+    // Locked rooms stay out like everything else here; the last tile goes to
+    // the collection, where they are earned or bought.
     return [
       for (final room in RoomThemes.all)
-        _RoomChoice(
-          id: room.id,
-          roomId: room.id,
-          label: roomThemeDisplayName(l10n, room.id),
-          status: room.id == chosenRoomId
-              ? l10n.collectionEquipped
-              : l10n.collectionOwned,
-          preview: Image.asset(
-            room.previewAsset,
-            fit: BoxFit.cover,
-            excludeFromSemantics: true,
+        if (store.ownsRoom(room.id))
+          _RoomChoice(
+            id: room.id,
+            roomId: room.id,
+            label: roomThemeDisplayName(l10n, room.id),
+            status: room.id == chosenRoomId
+                ? l10n.collectionEquipped
+                : l10n.collectionOwned,
+            preview: Image.asset(
+              room.previewAsset,
+              fit: BoxFit.cover,
+              excludeFromSemantics: true,
+            ),
           ),
-        ),
+      _RoomChoice.link(label: l10n.roomMoreInCollection),
     ];
   }
 
@@ -765,7 +775,11 @@ List<_RoomChoice> _choicesFor(
       ),
     );
   }
-  if (category == RoomDecorCategory.props) {
+  // Everybody's, like the rug, though no room places it to start with.
+  if (category == RoomDecorCategory.props &&
+      !RoomDecorAssets.withheldIds.contains(
+        RoomDecorAssets.defaultTablePlantId,
+      )) {
     choices.add(
       _assetChoice(
         id: RoomDecorAssets.defaultTablePlantId,
@@ -786,7 +800,7 @@ List<_RoomChoice> _choicesFor(
     choices.add(
       _assetChoice(
         id: entry.id,
-        label: _itemLabel(l10n, entry),
+        label: catalogEntryDisplayName(l10n, entry),
         asset: RoomDecorAssets.assetFor(entry.id)!,
         status: decorStatus(entry.id),
       ),
@@ -839,13 +853,4 @@ String _categoryLabel(AppLocalizations l10n, RoomDecorCategory category) =>
       RoomDecorCategory.wallAndFloor => l10n.roomCategoryWallFloor,
       RoomDecorCategory.props => l10n.roomCategoryProps,
       RoomDecorCategory.characters => l10n.roomCategoryCharacters,
-    };
-
-String _itemLabel(AppLocalizations l10n, CatalogEntry entry) =>
-    switch (entry.id) {
-      'item-01' => l10n.roomFloorLamp,
-      'item-03' => l10n.roomTablePlant,
-      'item-04' => l10n.roomDefaultRug,
-      'item-05' => l10n.roomWallFrame,
-      _ => catalogEntryDisplayName(l10n, entry),
     };

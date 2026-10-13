@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 import 'package:sobra_app/data/catalog_preview_data.dart';
 import 'package:sobra_app/models/catalog_entry.dart';
+import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/models/room_design.dart';
 import 'package:sobra_app/services/purchase_service.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 
@@ -340,6 +344,45 @@ void main() {
 
       expect(store.ownedCatalogIds, isEmpty);
     });
+
+    test('takes a refunded room back to Casa clara', () async {
+      await store.grantCatalogEntry(RoomThemes.casaTorreId);
+      await store.saveRoomSelection(
+        roomId: RoomThemes.casaTorreId,
+        placementsByRoom: const {},
+      );
+      backend.paidProductIds = {};
+
+      await started();
+
+      expect(store.ownsRoom(RoomThemes.casaTorreId), isFalse);
+      expect(store.equippedRoomId, RoomThemes.casaClaraId);
+    });
+
+    test(
+      'never takes a room the install had before rooms were locked',
+      () async {
+        await store.configureOnboarding(
+          budgetCentavos: 600000,
+          schedule: const PaySchedule.semiMonthly(),
+        );
+        await store.completeOnboarding();
+        final preferences = await SharedPreferences.getInstance();
+        final saved =
+            jsonDecode(preferences.getString('sobra_state_v2')!)
+                as Map<String, dynamic>;
+        saved
+          ..remove('decorRewards')
+          ..remove('keepsEveryRoom');
+        await preferences.setString('sobra_state_v2', jsonEncode(saved));
+        store = await SobraStore.load(now: () => DateTime(2026, 9, 14, 11));
+        backend.paidProductIds = {};
+
+        await started();
+
+        expect(store.ownsRoom(RoomThemes.casaTorreId), isTrue);
+      },
+    );
 
     test('never touches what was earned with ads', () async {
       final adEntry = entryById('quokka');

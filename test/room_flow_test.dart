@@ -11,6 +11,7 @@ import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
 import 'package:sobra_app/widgets/room_scene.dart';
 
+import 'support/decorations.dart';
 import 'support/localizations.dart';
 
 Future<SobraStore> _store() async {
@@ -193,6 +194,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     final store = await _store();
+    await ownAllDecorations(store);
     await store.saveRoomDecorations({
       RoomSlot.floorRight: RoomDecorAssets.roundSideTableId,
       RoomSlot.rug: RoomDecorAssets.defaultRugId,
@@ -214,6 +216,8 @@ void main() {
 
     // A placed side table remains one of the desk lamp's available spots.
     await tester.tap(find.text('Adornos'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Lámpara verde'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Lámpara verde'));
     await tester.pump();

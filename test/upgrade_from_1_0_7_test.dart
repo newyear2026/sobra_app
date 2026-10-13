@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sobra_app/data/catalog_preview_data.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 
 /// Closed testers run 1.0.7 (13), and their phones hold ledgers that build
@@ -45,6 +46,19 @@ Map<String, Object?> _shown(SobraStore s) => {
   'storageError': s.hasStorageError,
 };
 
+/// What 1.0.7 showed, plus the one intended ownership difference: the
+/// decorations that were free in 1.0.7 and are rewards now stay owned.
+Map<String, dynamic> _expected(Object? shown) {
+  final expected = Map<String, dynamic>.of(shown as Map<String, dynamic>);
+  expected['owned'] = [
+    ...{
+      ...(expected['owned'] as List).cast<String>(),
+      ...CatalogPreviewData.formerlyFreeItemIds,
+    },
+  ]..sort();
+  return expected;
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final fixture =
@@ -60,14 +74,12 @@ void main() {
 
   test('a 1.0.7 ledger opens with the figures 1.0.7 showed', () async {
     final store = await SobraStore.load(now: () => DateTime(2026, 10, 2, 18));
-    expect(_shown(store), fixture['atBuild']);
+    expect(_shown(store), _expected(fixture['atBuild']));
   });
 
   test('a 1.0.7 ledger settles its cycles the way 1.0.7 did', () async {
     final store = await SobraStore.load(now: () => DateTime(2026, 10, 20, 9));
-    final expected = Map<String, dynamic>.of(
-      fixture['later'] as Map<String, dynamic>,
-    );
+    final expected = _expected(fixture['later']);
     // The one intended difference: the queued switch to weekly left Oct 15 as
     // a one-day cycle, which 1.0.7 gave the whole 7,000. It now gets its
     // seventh. See schedule_change_budget_test.dart.

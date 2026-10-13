@@ -23,7 +23,12 @@ class CollectionScreen extends StatefulWidget {
     this.priceSource = const PreviewCatalogPriceSource(),
     this.openedFromDecorate = false,
     this.initialEntryId,
+    this.initialKind = CatalogKind.character,
   });
+
+  /// The tab shown on arrival, so the decorate screen's link lands on the
+  /// kind of thing the user was looking at. [initialEntryId] wins over it.
+  final CatalogKind initialKind;
 
   /// Whether the decorate screen is the route directly underneath.
   ///
@@ -47,7 +52,7 @@ class CollectionScreen extends StatefulWidget {
 }
 
 class _CollectionScreenState extends State<CollectionScreen> {
-  CatalogKind _selectedKind = CatalogKind.character;
+  late CatalogKind _selectedKind = widget.initialKind;
 
   /// Watched rather than polled.
   ///
@@ -231,7 +236,15 @@ class _CollectionScreenState extends State<CollectionScreen> {
       case RewardedAdOutcome.counted:
         if (store.ownsCatalogEntry(entry)) {
           _showNotice(
-            l10n.collectionUnlockedNotice(catalogEntryDisplayName(l10n, entry)),
+            // A room is somewhere to live rather than someone or something
+            // that is "yours" — and casa takes the feminine in Spanish.
+            entry.kind == CatalogKind.room
+                ? l10n.collectionRoomUnlockedNotice(
+                    catalogEntryDisplayName(l10n, entry),
+                  )
+                : l10n.collectionUnlockedNotice(
+                    catalogEntryDisplayName(l10n, entry),
+                  ),
             action: _placeItAction(l10n),
           );
         }
@@ -395,9 +408,11 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         children: [
                           Expanded(
                             child: _SummaryPanel(
-                              icon: _selectedKind == CatalogKind.character
-                                  ? Icons.pets
-                                  : Icons.chair_outlined,
+                              icon: switch (_selectedKind) {
+                                CatalogKind.character => Icons.pets,
+                                CatalogKind.item => Icons.chair_outlined,
+                                CatalogKind.room => Icons.home_outlined,
+                              },
                               text: l10n.collectionOwnedCount(
                                 ownedCount,
                                 states.length,
@@ -408,12 +423,18 @@ class _CollectionScreenState extends State<CollectionScreen> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: _SummaryPanel(
-                              icon: _selectedKind == CatalogKind.character
-                                  ? Icons.auto_awesome_outlined
-                                  : Icons.home_outlined,
-                              text: _selectedKind == CatalogKind.character
-                                  ? l10n.collectionCharactersHint
-                                  : l10n.collectionItemsHint,
+                              icon: switch (_selectedKind) {
+                                CatalogKind.character =>
+                                  Icons.auto_awesome_outlined,
+                                CatalogKind.item => Icons.home_outlined,
+                                CatalogKind.room => Icons.wb_sunny_outlined,
+                              },
+                              text: switch (_selectedKind) {
+                                CatalogKind.character =>
+                                  l10n.collectionCharactersHint,
+                                CatalogKind.item => l10n.collectionItemsHint,
+                                CatalogKind.room => l10n.collectionRoomsHint,
+                              },
                             ),
                           ),
                         ],
@@ -623,6 +644,14 @@ class _CatalogTabs extends StatelessWidget {
               onTap: () => onChanged(CatalogKind.item),
             ),
           ),
+          Container(width: 2.5, height: 48, color: AppColors.ink),
+          Expanded(
+            child: _CatalogTab(
+              label: l10n.collectionRooms.toUpperCase(),
+              selected: selected == CatalogKind.room,
+              onTap: () => onChanged(CatalogKind.room),
+            ),
+          ),
         ],
       ),
     );
@@ -759,17 +788,8 @@ class _CatalogCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: pixelText(size: 14, bold: true),
               ),
-              if (state.localizedStorePrice != null) ...[
-                const SizedBox(height: 4),
-                Text(
-                  state.localizedStorePrice!,
-                  style: pixelText(
-                    size: 12,
-                    bold: true,
-                    color: AppColors.cashInk,
-                  ),
-                ),
-              ] else if (_AdProgressLine.fits(state)) ...[
+              // The price is the buy button itself, so it is not repeated here.
+              if (_AdProgressLine.fits(state)) ...[
                 const SizedBox(height: 4),
                 _AdProgressLine(state: state),
               ] else
@@ -797,7 +817,7 @@ class _CatalogCard extends StatelessWidget {
                         Text(
                           _cardActionLabel(l10n, state),
                           style: pixelText(
-                            size: 12,
+                            size: _showsPrice(state) ? 14 : 12,
                             bold: true,
                             color: tones.foreground,
                           ),
@@ -836,6 +856,22 @@ class _CatalogPreview extends StatelessWidget {
         ),
       );
     }
+    // A room is a whole scene, so it fills the frame rather than sitting in
+    // the middle of it like an object.
+    if (entry.kind == CatalogKind.room && entry.assetPath != null) {
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.ink, width: 2),
+        ),
+        child: ClipRect(
+          child: Image.asset(
+            entry.assetPath!,
+            fit: BoxFit.cover,
+            excludeFromSemantics: true,
+          ),
+        ),
+      );
+    }
     if (entry.assetPath case final asset?) {
       return Center(
         child: SizedBox(
@@ -861,6 +897,7 @@ class _CatalogPreview extends StatelessWidget {
       CatalogVisual.clock => Icons.schedule,
       CatalogVisual.trophy => Icons.emoji_events_outlined,
       CatalogVisual.cushion => Icons.weekend_outlined,
+      CatalogVisual.room => Icons.home_outlined,
       CatalogVisual.michi => Icons.pets,
       CatalogVisual.poodle => Icons.pets,
       CatalogVisual.schnauzer => Icons.pets,
@@ -1088,9 +1125,14 @@ class _CatalogTones {
       return const _CatalogTones(AppColors.tealSoft, AppColors.tealInk);
     }
     return switch (state.entry.unlockMethod) {
+      // Without a price from the store there is nothing to buy yet, so the
+      // button reads as waiting rather than as an action.
+      CatalogUnlockMethod.purchase when state.localizedStorePrice == null =>
+        const _CatalogTones(AppColors.paperLight, AppColors.muted),
       CatalogUnlockMethod.purchase => const _CatalogTones(
         AppColors.cashSoft,
         AppColors.cashInk,
+        Icons.shopping_bag_outlined,
       ),
       CatalogUnlockMethod.rewardedAd => const _CatalogTones(
         AppColors.violetSoft,
@@ -1120,6 +1162,15 @@ class _CatalogTones {
   }
 }
 
+/// Whether the card's button is the price: an unowned entry for sale, with
+/// the store's price in hand and no checkout running.
+bool _showsPrice(CatalogEntryState state) =>
+    !state.isOwned &&
+    !state.isPurchasing &&
+    !state.isWatchingAd &&
+    state.entry.unlockMethod == CatalogUnlockMethod.purchase &&
+    state.localizedStorePrice != null;
+
 String _cardActionLabel(AppLocalizations l10n, CatalogEntryState state) {
   if (state.isWatchingAd) return l10n.collectionAdLoading;
   if (state.isPurchasing) return l10n.collectionPurchasing;
@@ -1127,7 +1178,10 @@ String _cardActionLabel(AppLocalizations l10n, CatalogEntryState state) {
   final blocked = state.rewardedAdBlock;
   if (blocked != null) return _adBlockLabel(l10n, blocked);
   return switch (state.entry.unlockMethod) {
-    CatalogUnlockMethod.purchase => l10n.collectionBuy,
+    // The price alone, beside a bag: what it costs is what a buyer looks for
+    // first, and a "buy" label with the price on another line was easy to miss.
+    CatalogUnlockMethod.purchase =>
+      state.localizedStorePrice ?? l10n.collectionPricePending,
     // The same label the dialog uses, and the same one for both kinds. The
     // count used to sit here for characters and nowhere for items, which made
     // one button say what it does and the other say how far along it is.
@@ -1148,7 +1202,10 @@ String _dialogActionLabel(AppLocalizations l10n, CatalogEntryState state) {
   final blocked = state.rewardedAdBlock;
   if (blocked != null) return _adBlockLabel(l10n, blocked);
   return switch (state.entry.unlockMethod) {
-    CatalogUnlockMethod.purchase => l10n.collectionBuy,
+    CatalogUnlockMethod.purchase => switch (state.localizedStorePrice) {
+      final price? => l10n.packBuy(price),
+      null => l10n.collectionPricePending,
+    },
     CatalogUnlockMethod.rewardedAd => l10n.collectionWatchAd,
     CatalogUnlockMethod.level => l10n.collectionLevel(
       state.entry.requiredLevel!,
