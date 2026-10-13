@@ -212,7 +212,10 @@ void main() {
     testWidgets('opens the notes from the Novedades row', (tester) async {
       await tester.pumpWidget(
         await settings(
-          () async => const AppVersion(version: '1.0.0', buildNumber: '1'),
+          // The oldest note, whatever it is by now: '1.0.0' was pinned here
+          // and stopped matching anything once it aged out.
+          () async =>
+              AppVersion(version: releaseNotes.last.version, buildNumber: '1'),
         ),
       );
       await tester.pumpAndSettle();

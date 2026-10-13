@@ -2162,6 +2162,22 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1013Rewards =>
+      'Monter de niveau apporte maintenant de nouveaux meubles, et certaines décorations s\'obtiennent avec une courte pub.';
+
+  @override
+  String get releaseNote1013Rooms =>
+      'Les maisons se gagnent aussi : Maison jardin et Maison de plage avec une pub, Chalet de montagne et Véranda en montant de niveau. L\'Appartement panoramique peut s\'acheter.';
+
+  @override
+  String get releaseNote1013Kept =>
+      'Tout ce qui est déjà dans votre maison reste à vous.';
+
+  @override
+  String get releaseNote1013Fixes =>
+      'Le lampadaire ne se cache plus derrière la bibliothèque, et la maison ne reste plus vide sur certains écrans.';
+
+  @override
   String get releaseNote104Fixed =>
       'Les dépenses fixes restent à part du budget du jour. Elles apparaissent sur l’Accueil et peuvent te prévenir avant l’échéance.';
 
@@ -2211,9 +2227,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get releaseNote101Celebration =>
       'La fête remplit maintenant sa carte et termine son saut.';
-
-  @override
-  String get releaseNote100Launch => 'La première version de Sobrita.';
 
   @override
   String get updateAvailableTitle => 'Une nouvelle version est là';

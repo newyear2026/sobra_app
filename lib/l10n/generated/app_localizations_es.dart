@@ -2139,6 +2139,22 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1013Rewards =>
+      'Subir de nivel ahora trae muebles nuevos, y algunos adornos se ganan con un anuncio corto.';
+
+  @override
+  String get releaseNote1013Rooms =>
+      'Las casas también se ganan: Casa jardín y Casa de playa con un anuncio, Casa montaña y Casa invernadero subiendo de nivel. Casa torre se puede comprar.';
+
+  @override
+  String get releaseNote1013Kept =>
+      'Todo lo que ya tenías en tu casa se queda contigo.';
+
+  @override
+  String get releaseNote1013Fixes =>
+      'La lámpara de pie ya no se esconde detrás de la estantería, y la casa ya no se queda en blanco en algunas pantallas.';
+
+  @override
   String get releaseNote104Fixed =>
       'Los gastos fijos van aparte del gasto diario. Aparecen en Inicio y pueden avisarte antes de vencer.';
 
@@ -2189,9 +2205,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get releaseNote101Celebration =>
       'La celebración ahora llena la tarjeta y termina su salto.';
-
-  @override
-  String get releaseNote100Launch => 'Primera versión de Sobrita.';
 
   @override
   String get updateAvailableTitle => 'Hay una versión nueva';

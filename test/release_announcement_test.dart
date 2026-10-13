@@ -15,17 +15,18 @@ import 'package:sobra_app/widgets/release_announcement.dart';
 import 'support/localizations.dart';
 
 /// Notes of its own rather than the shipped list, so these tests keep saying
-/// what they mean after a release is added and the oldest one drops off.
+/// what they mean after a release is added and the oldest one drops off. The
+/// line is a literal for the same reason: an ARB key leaves with its release.
 final _notes = <ReleaseNote>[
   ReleaseNote(
     version: '1.1.0',
     releasedOn: DateTime(2026, 10, 2),
-    lines: [(l10n) => l10n.releaseNote100Launch],
+    lines: [(_) => 'Primera versión de Sobrita.'],
   ),
   ReleaseNote(
     version: '1.0.0',
     releasedOn: DateTime(2026, 9, 11),
-    lines: [(l10n) => l10n.releaseNote100Launch],
+    lines: [(_) => 'Primera versión de Sobrita.'],
   ),
 ];
 

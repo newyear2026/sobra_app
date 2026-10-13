@@ -2061,6 +2061,21 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1013Rewards =>
+      '레벨이 오르면 새 가구가 생기고, 일부 소품은 짧은 광고 한 번으로 받을 수 있어요.';
+
+  @override
+  String get releaseNote1013Rooms =>
+      '방도 모을 수 있어요. 정원 방과 해변 방은 광고 한 번, 산속 별장과 온실 방은 레벨로 열려요. 타워팰리스 방은 구매할 수 있어요.';
+
+  @override
+  String get releaseNote1013Kept => '이미 집에 있던 건 모두 그대로 가지고 있어요.';
+
+  @override
+  String get releaseNote1013Fixes =>
+      '스탠드 조명이 책장 뒤에 가려지지 않고, 일부 화면에서 집이 하얗게 비던 문제도 고쳤어요.';
+
+  @override
   String get releaseNote104Fixed =>
       '고정 지출은 하루 지출과 따로 다녀요. 홈에 보이고, 나가기 전에 알려줄 수 있어요.';
 
@@ -2106,9 +2121,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get releaseNote101Celebration => '축하 연출이 카드에 꽉 차게 나오고, 중간에 끊기지 않아요.';
-
-  @override
-  String get releaseNote100Launch => 'Sobrita의 첫 번째 버전이에요.';
 
   @override
   String get updateAvailableTitle => '새 버전이 있어요';

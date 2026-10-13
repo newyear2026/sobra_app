@@ -2138,6 +2138,22 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1013Rewards =>
+      'Levelling up now brings new furniture, and some decorations are yours for one short ad.';
+
+  @override
+  String get releaseNote1013Rooms =>
+      'Houses are earned too: Garden house and Beach house for one ad, Mountain chalet and Conservatory by level. Tower apartment can be bought.';
+
+  @override
+  String get releaseNote1013Kept =>
+      'Everything already in your house stays yours.';
+
+  @override
+  String get releaseNote1013Fixes =>
+      'The floor lamp no longer hides behind the bookcase, and the house no longer goes blank on some screens.';
+
+  @override
   String get releaseNote104Fixed =>
       'Fixed expenses stay apart from the daily spend. They show on Home and can remind you before they are due.';
 
@@ -2187,9 +2203,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get releaseNote101Celebration =>
       'The celebration now fills its card and finishes its jump.';
-
-  @override
-  String get releaseNote100Launch => 'The first version of Sobrita.';
 
   @override
   String get updateAvailableTitle => 'There\'s a new version';

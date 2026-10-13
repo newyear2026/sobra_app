@@ -632,6 +632,14 @@
   "releaseNotesCurrent": "Actuelle",
   "releaseNotesRetention": "On garde les {count} dernières versions.",
 
+  "releaseNote1013Rewards": "Monter de niveau apporte maintenant de nouveaux meubles, et certaines décorations s'obtiennent avec une courte pub.",
+
+  "releaseNote1013Rooms": "Les maisons se gagnent aussi : Maison jardin et Maison de plage avec une pub, Chalet de montagne et Véranda en montant de niveau. L'Appartement panoramique peut s'acheter.",
+
+  "releaseNote1013Kept": "Tout ce qui est déjà dans votre maison reste à vous.",
+
+  "releaseNote1013Fixes": "Le lampadaire ne se cache plus derrière la bibliothèque, et la maison ne reste plus vide sur certains écrans.",
+
   "releaseNote104Fixed": "Les dépenses fixes restent à part du budget du jour. Elles apparaissent sur l’Accueil et peuvent te prévenir avant l’échéance.",
   "releaseNote104Decor": "La maison a plus à placer\u00a0: un panier, une étagère, un tapis, un buffet, un bocal et un pouf.",
   "releaseNote104Names": "Miru, Yoshi et Cookie ont enfin un nom, et le titre de niveau porte celui de ton compagnon.",
@@ -645,7 +653,6 @@
   "releaseNote102Amounts": "Les pesos colombiens, argentins et chiliens, le réal et l’euro s’écrivent maintenant avec une virgule, comme 1.234,56.",
   "releaseNote101Currencies": "L’argent peut maintenant s’afficher en pesos colombiens, argentins et chiliens, en soles, en livres ou en yens.",
   "releaseNote101Celebration": "La fête remplit maintenant sa carte et termine son saut.",
-  "releaseNote100Launch": "La première version de Sobrita.",
 
   "updateAvailableTitle": "Une nouvelle version est là",
   "updateAvailableBody": "Mets à jour pour avoir le dernier Sobrita.",

@@ -948,6 +948,14 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
+  "releaseNote1013Rewards": "Subir de nivel ahora trae muebles nuevos, y algunos adornos se ganan con un anuncio corto.",
+
+  "releaseNote1013Rooms": "Las casas también se ganan: Casa jardín y Casa de playa con un anuncio, Casa montaña y Casa invernadero subiendo de nivel. Casa torre se puede comprar.",
+
+  "releaseNote1013Kept": "Todo lo que ya tenías en tu casa se queda contigo.",
+
+  "releaseNote1013Fixes": "La lámpara de pie ya no se esconde detrás de la estantería, y la casa ya no se queda en blanco en algunas pantallas.",
+
   "releaseNote104Fixed": "Los gastos fijos van aparte del gasto diario. Aparecen en Inicio y pueden avisarte antes de vencer.",
   "releaseNote104Decor": "La casa tiene más para colocar: una cama, una repisa, un tapete, un aparador, un frasco y un puf.",
   "releaseNote104Names": "Miru, Yoshi y Cookie ya tienen nombre, y el título de nivel lleva el de quien te acompaña.",
@@ -961,7 +969,6 @@
   "releaseNote102Amounts": "Los pesos colombianos, argentinos y chilenos, los reales y el euro ahora se escriben con coma, como 1.234,56.",
   "releaseNote101Currencies": "Ahora puedes etiquetar tu dinero en pesos colombianos, argentinos y chilenos, soles, libras o yenes.",
   "releaseNote101Celebration": "La celebración ahora llena la tarjeta y termina su salto.",
-  "releaseNote100Launch": "Primera versión de Sobrita.",
 
   "updateAvailableTitle": "Hay una versión nueva",
   "@updateAvailableTitle": {

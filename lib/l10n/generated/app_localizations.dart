@@ -3646,6 +3646,30 @@ abstract class AppLocalizations {
   /// **'Guardamos las últimas {count} versiones.'**
   String releaseNotesRetention(int count);
 
+  /// No description provided for @releaseNote1013Rewards.
+  ///
+  /// In es, this message translates to:
+  /// **'Subir de nivel ahora trae muebles nuevos, y algunos adornos se ganan con un anuncio corto.'**
+  String get releaseNote1013Rewards;
+
+  /// No description provided for @releaseNote1013Rooms.
+  ///
+  /// In es, this message translates to:
+  /// **'Las casas también se ganan: Casa jardín y Casa de playa con un anuncio, Casa montaña y Casa invernadero subiendo de nivel. Casa torre se puede comprar.'**
+  String get releaseNote1013Rooms;
+
+  /// No description provided for @releaseNote1013Kept.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo lo que ya tenías en tu casa se queda contigo.'**
+  String get releaseNote1013Kept;
+
+  /// No description provided for @releaseNote1013Fixes.
+  ///
+  /// In es, this message translates to:
+  /// **'La lámpara de pie ya no se esconde detrás de la estantería, y la casa ya no se queda en blanco en algunas pantallas.'**
+  String get releaseNote1013Fixes;
+
   /// No description provided for @releaseNote104Fixed.
   ///
   /// In es, this message translates to:
@@ -3723,12 +3747,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'La celebración ahora llena la tarjeta y termina su salto.'**
   String get releaseNote101Celebration;
-
-  /// No description provided for @releaseNote100Launch.
-  ///
-  /// In es, this message translates to:
-  /// **'Primera versión de Sobrita.'**
-  String get releaseNote100Launch;
 
   /// Heading of the dialog shown on launch when Google Play has a newer build waiting.
   ///

@@ -632,6 +632,14 @@
   "releaseNotesCurrent": "Atual",
   "releaseNotesRetention": "Guardamos as últimas {count} versões.",
 
+  "releaseNote1013Rewards": "Subir de nível agora traz móveis novos, e alguns enfeites são seus com um anúncio curto.",
+
+  "releaseNote1013Rooms": "As casas também se ganham: Casa com jardim e Casa de praia com um anúncio, Casa da montanha e Jardim de inverno subindo de nível. O Apartamento panorâmico pode ser comprado.",
+
+  "releaseNote1013Kept": "Tudo o que já estava na sua casa continua seu.",
+
+  "releaseNote1013Fixes": "O abajur de chão não se esconde mais atrás da estante, e a casa não fica mais em branco em algumas telas.",
+
   "releaseNote104Fixed": "Os gastos fixos ficam separados do gasto diário. Aparecem no Início e podem te avisar antes do vencimento.",
   "releaseNote104Decor": "A casa tem mais coisas para colocar: uma caminha, uma prateleira, um tapete, um aparador, um pote e um pufe.",
   "releaseNote104Names": "Miru, Yoshi e Cookie agora têm nome, e o título de nível leva o nome de quem te faz companhia.",
@@ -645,7 +653,6 @@
   "releaseNote102Amounts": "Pesos colombianos, argentinos e chilenos, reais e euros agora usam vírgula, como em 1.234,56.",
   "releaseNote101Currencies": "Agora dá para rotular seu dinheiro em pesos colombianos, argentinos e chilenos, soles, libras ou ienes.",
   "releaseNote101Celebration": "A comemoração agora preenche o cartão e termina o pulo.",
-  "releaseNote100Launch": "A primeira versão do Sobrita.",
 
   "updateAvailableTitle": "Tem versão nova",
   "updateAvailableBody": "Atualize para ter o Sobrita mais recente.",

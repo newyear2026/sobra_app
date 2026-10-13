@@ -2063,6 +2063,20 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1013Rewards => 'レベルが上がると新しい家具が届き、一部の小物は短い広告1回で手に入ります。';
+
+  @override
+  String get releaseNote1013Rooms =>
+      'お部屋も集められます。庭のある家と海辺の家は広告1回、山の別荘と温室の部屋はレベルで開きます。タワーの部屋は購入できます。';
+
+  @override
+  String get releaseNote1013Kept => 'すでにお部屋にあるものは、そのままあなたのものです。';
+
+  @override
+  String get releaseNote1013Fixes =>
+      'フロアランプが本棚の後ろに隠れなくなり、一部の画面でお部屋が真っ白になる問題も直しました。';
+
+  @override
   String get releaseNote104Fixed =>
       '固定費を毎日の予算と分けて管理できるようになりました。ホームに表示され、支払い日の前にお知らせもできます。';
 
@@ -2108,9 +2122,6 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get releaseNote101Celebration =>
       'お祝いの演出がカードいっぱいに広がり、ジャンプも最後まで見られるようになりました。';
-
-  @override
-  String get releaseNote100Launch => 'Sobritaの最初のバージョンです。';
 
   @override
   String get updateAvailableTitle => '新しいバージョンがあります';

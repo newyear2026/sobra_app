@@ -665,6 +665,14 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
+  "releaseNote1013Rewards": "Levelling up now brings new furniture, and some decorations are yours for one short ad.",
+
+  "releaseNote1013Rooms": "Houses are earned too: Garden house and Beach house for one ad, Mountain chalet and Conservatory by level. Tower apartment can be bought.",
+
+  "releaseNote1013Kept": "Everything already in your house stays yours.",
+
+  "releaseNote1013Fixes": "The floor lamp no longer hides behind the bookcase, and the house no longer goes blank on some screens.",
+
   "releaseNote104Fixed": "Fixed expenses stay apart from the daily spend. They show on Home and can remind you before they are due.",
   "releaseNote104Decor": "The house has more to place: a bed, a shelf, a rug, a cabinet, a jar and a pouf.",
   "releaseNote104Names": "Miru, Yoshi and Cookie have names now, and the level title wears whoever sits with you.",
@@ -678,7 +686,6 @@
   "releaseNote102Amounts": "Colombian, Argentine and Chilean pesos, Brazilian reais and euros now use a comma, as in 1.234,56.",
   "releaseNote101Currencies": "Money can now be labelled in Colombian, Argentine and Chilean pesos, soles, pounds or yen.",
   "releaseNote101Celebration": "The celebration now fills its card and finishes its jump.",
-  "releaseNote100Launch": "The first version of Sobrita.",
 
   "updateAvailableTitle": "There's a new version",
   "updateAvailableBody": "Update to get the latest Sobrita.",

@@ -2155,6 +2155,22 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1013Rewards =>
+      'Ein Levelaufstieg bringt jetzt neue Möbel, und manche Deko gibt es für eine kurze Werbung.';
+
+  @override
+  String get releaseNote1013Rooms =>
+      'Auch Häuser lassen sich verdienen: Gartenhaus und Strandhaus für eine Werbung, Berghütte und Wintergarten über Level. Das Panorama-Apartment kann man kaufen.';
+
+  @override
+  String get releaseNote1013Kept =>
+      'Alles, was schon in deinem Haus steht, bleibt deins.';
+
+  @override
+  String get releaseNote1013Fixes =>
+      'Die Stehlampe versteckt sich nicht mehr hinter dem Bücherregal, und das Haus bleibt auf manchen Bildschirmen nicht mehr leer.';
+
+  @override
   String get releaseNote104Fixed =>
       'Fixkosten laufen getrennt vom Tagesbudget. Sie erscheinen auf dem Startbildschirm und können dich vor der Fälligkeit erinnern.';
 
@@ -2204,9 +2220,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get releaseNote101Celebration =>
       'Die Feier füllt jetzt ihre Karte und beendet ihren Sprung.';
-
-  @override
-  String get releaseNote100Launch => 'Die erste Version von Sobrita.';
 
   @override
   String get updateAvailableTitle => 'Es gibt eine neue Version';

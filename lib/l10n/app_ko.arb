@@ -667,6 +667,14 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
+  "releaseNote1013Rewards": "레벨이 오르면 새 가구가 생기고, 일부 소품은 짧은 광고 한 번으로 받을 수 있어요.",
+
+  "releaseNote1013Rooms": "방도 모을 수 있어요. 정원 방과 해변 방은 광고 한 번, 산속 별장과 온실 방은 레벨로 열려요. 타워팰리스 방은 구매할 수 있어요.",
+
+  "releaseNote1013Kept": "이미 집에 있던 건 모두 그대로 가지고 있어요.",
+
+  "releaseNote1013Fixes": "스탠드 조명이 책장 뒤에 가려지지 않고, 일부 화면에서 집이 하얗게 비던 문제도 고쳤어요.",
+
   "releaseNote104Fixed": "고정 지출은 하루 지출과 따로 다녀요. 홈에 보이고, 나가기 전에 알려줄 수 있어요.",
   "releaseNote104Decor": "집에 놓을 것이 더 생겼어요. 침대, 선반, 러그, 수납장, 저금통, 푸프.",
   "releaseNote104Names": "Miru, Yoshi, Cookie가 이름을 가졌고, 레벨 칭호에도 함께하는 친구 이름이 붙어요.",
@@ -680,7 +688,6 @@
   "releaseNote102Amounts": "콜롬비아·아르헨티나·칠레 페소, 헤알, 유로는 이제 1.234,56처럼 쉼표로 적혀요.",
   "releaseNote101Currencies": "이제 콜롬비아·아르헨티나·칠레 페소, 솔, 파운드, 엔으로도 금액을 표시할 수 있어요.",
   "releaseNote101Celebration": "축하 연출이 카드에 꽉 차게 나오고, 중간에 끊기지 않아요.",
-  "releaseNote100Launch": "Sobrita의 첫 번째 버전이에요.",
 
   "updateAvailableTitle": "새 버전이 있어요",
   "updateAvailableBody": "업데이트하면 최신 Sobrita를 쓸 수 있어요.",
