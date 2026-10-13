@@ -14,7 +14,7 @@ const characterTopRows = <String, Map<CharacterMotionRole, int>>{
     CharacterMotionRole.activity: 55,
     CharacterMotionRole.processing: 44,
     CharacterMotionRole.positive: 72,
-    CharacterMotionRole.success: 18,
+    CharacterMotionRole.success: 48,
     CharacterMotionRole.warning: 44,
   },
   'poodle': {
