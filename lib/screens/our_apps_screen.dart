@@ -98,7 +98,7 @@ class _AppCard extends StatelessWidget {
               // filtered the way Sobra's sprites are: it was drawn to be
               // scaled down smoothly by a launcher.
               // In front of the icon, not behind it: a square icon covers
-              // its whole box, and LOOPET's cream would melt into the card.
+              // its whole box, and a pale one would melt into the card.
               DecoratedBox(
                 position: DecorationPosition.foreground,
                 decoration: BoxDecoration(

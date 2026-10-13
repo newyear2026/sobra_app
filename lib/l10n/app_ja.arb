@@ -664,10 +664,8 @@
   "settingsOurApps": "おすすめアプリ",
   "ourAppsIntro": "Sobritaチームが作ったアプリです。",
   "ourAppsOpen": "Google Playで見る",
-  "ourAppsLoopetKind": "ルーティン",
-  "ourAppsLoopetBlurb": "1日24時間をひとつの円に。今やることと次にやることがひと目でわかります。",
-  "ourAppsRandomFocusKind": "集中",
-  "ourAppsRandomFocusBlurb": "ルーレットを回して集中する時間を決めるタイマー。迷わずすぐ始められます。",
+  "ourAppsMultiCalKind": "電卓",
+  "ourAppsMultiCalBlurb": "電卓、チップ、年齢、単位換算をひとつに。レシートを撮るだけで割り勘できます。",
 
   "fixedSectionTitle": "固定費",
   "fixedSectionMonth": "{month} · 毎日の予算とは別",

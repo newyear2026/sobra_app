@@ -3796,29 +3796,17 @@ abstract class AppLocalizations {
   /// **'Ver en Google Play'**
   String get ourAppsOpen;
 
-  /// One word under the name LOOPET: what the app is for. Shown in capitals.
+  /// One word under the name MultiCal: what the app is for. Shown in capitals.
   ///
   /// In es, this message translates to:
-  /// **'Rutinas'**
-  String get ourAppsLoopetKind;
+  /// **'Calculadora'**
+  String get ourAppsMultiCalKind;
 
-  /// Two-line description of LOOPET, a 24-hour circular routine planner. Adapted from its Play short description.
+  /// Two-line description of MultiCal, a calculator app (tip, age, unit converter) that also splits a bill from a photo of the receipt. Adapted from its Play short description.
   ///
   /// In es, this message translates to:
-  /// **'Todo tu día en un círculo. Mira qué toca ahora y qué viene después.'**
-  String get ourAppsLoopetBlurb;
-
-  /// One word under the name RandomFocus: what the app is for. Shown in capitals.
-  ///
-  /// In es, this message translates to:
-  /// **'Enfoque'**
-  String get ourAppsRandomFocusKind;
-
-  /// Two-line description of RandomFocus, a focus timer whose length is picked by spinning a roulette wheel. Adapted from its Play short description.
-  ///
-  /// In es, this message translates to:
-  /// **'Gira la ruleta, elige cuánto tiempo y concéntrate sin pensarlo.'**
-  String get ourAppsRandomFocusBlurb;
+  /// **'Calculadora, propina, edad y unidades. Divide la cuenta con una foto del recibo.'**
+  String get ourAppsMultiCalBlurb;
 
   /// Opens the full Novedades screen from the card shown after an update.
   ///

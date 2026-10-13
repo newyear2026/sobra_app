@@ -2144,17 +2144,11 @@ class AppLocalizationsKo extends AppLocalizations {
   String get ourAppsOpen => 'Google Play에서 보기';
 
   @override
-  String get ourAppsLoopetKind => '루틴';
+  String get ourAppsMultiCalKind => '계산기';
 
   @override
-  String get ourAppsLoopetBlurb => '하루 24시간을 원 하나로. 지금 할 루틴과 다음 루틴이 한눈에 보여요.';
-
-  @override
-  String get ourAppsRandomFocusKind => '집중';
-
-  @override
-  String get ourAppsRandomFocusBlurb =>
-      '룰렛을 돌려 집중할 시간을 정하는 타이머. 고민 없이 바로 시작해요.';
+  String get ourAppsMultiCalBlurb =>
+      '계산기, 팁, 나이, 단위 변환까지. 영수증을 찍으면 내 몫이 바로 나와요.';
 
   @override
   String get releaseAnnouncementViewAll => '전체 보기';

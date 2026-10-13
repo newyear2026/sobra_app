@@ -2225,18 +2225,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ourAppsOpen => 'View on Google Play';
 
   @override
-  String get ourAppsLoopetKind => 'Routines';
+  String get ourAppsMultiCalKind => 'Calculator';
 
   @override
-  String get ourAppsLoopetBlurb =>
-      'Your whole day in one circle. See what to do now and what comes next.';
-
-  @override
-  String get ourAppsRandomFocusKind => 'Focus';
-
-  @override
-  String get ourAppsRandomFocusBlurb =>
-      'Spin the wheel to pick how long, then focus without overthinking it.';
+  String get ourAppsMultiCalBlurb =>
+      'Calculator, tip, age and units. Split any receipt with one photo.';
 
   @override
   String get releaseAnnouncementViewAll => 'See all';

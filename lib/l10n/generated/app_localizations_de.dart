@@ -2243,18 +2243,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get ourAppsOpen => 'Bei Google Play ansehen';
 
   @override
-  String get ourAppsLoopetKind => 'Routinen';
+  String get ourAppsMultiCalKind => 'Rechner';
 
   @override
-  String get ourAppsLoopetBlurb =>
-      'Dein ganzer Tag in einem Kreis. Sieh, was jetzt dran ist und was danach kommt.';
-
-  @override
-  String get ourAppsRandomFocusKind => 'Fokus';
-
-  @override
-  String get ourAppsRandomFocusBlurb =>
-      'Dreh am Rad, lass es die Dauer wählen und konzentrier dich einfach.';
+  String get ourAppsMultiCalBlurb =>
+      'Rechner, Trinkgeld, Alter und Einheiten. Teil jede Rechnung mit einem Foto vom Beleg.';
 
   @override
   String get releaseAnnouncementViewAll => 'Alle ansehen';

@@ -658,10 +658,8 @@
   "settingsOurApps": "Empfohlene Apps",
   "ourAppsIntro": "Vom Sobrita-Team gemacht.",
   "ourAppsOpen": "Bei Google Play ansehen",
-  "ourAppsLoopetKind": "Routinen",
-  "ourAppsLoopetBlurb": "Dein ganzer Tag in einem Kreis. Sieh, was jetzt dran ist und was danach kommt.",
-  "ourAppsRandomFocusKind": "Fokus",
-  "ourAppsRandomFocusBlurb": "Dreh am Rad, lass es die Dauer wählen und konzentrier dich einfach.",
+  "ourAppsMultiCalKind": "Rechner",
+  "ourAppsMultiCalBlurb": "Rechner, Trinkgeld, Alter und Einheiten. Teil jede Rechnung mit einem Foto vom Beleg.",
 
   "releaseAnnouncementViewAll": "Alle ansehen",
   "releaseAnnouncementDone": "Fertig",
