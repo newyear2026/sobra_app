@@ -496,12 +496,16 @@ class _DailyChartCard extends StatelessWidget {
                     shortCycleDate(l10n, bounds.start),
                     style: pixelText(size: 12, color: AppColors.muted),
                   ),
-                  const Spacer(),
-                  Text(
-                    caption,
-                    style: pixelText(size: 12, color: AppColors.muted),
+                  // The middle takes what the two dates leave and wraps
+                  // inside it, so a long limit on a narrow phone breaks
+                  // onto a second line instead of pushing a date off.
+                  Expanded(
+                    child: Text(
+                      caption,
+                      textAlign: TextAlign.center,
+                      style: pixelText(size: 12, color: AppColors.muted),
+                    ),
                   ),
-                  const Spacer(),
                   Text(
                     shortCycleDate(l10n, bounds.end),
                     style: pixelText(size: 12, color: AppColors.muted),

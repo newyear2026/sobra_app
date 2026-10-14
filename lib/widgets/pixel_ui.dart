@@ -893,6 +893,10 @@ class PixelSwitch extends StatelessWidget {
 }
 
 /// What a list says before it has anything in it.
+///
+/// Set flush left beside its icon rather than centred under it: the message
+/// runs to two or three lines, and a centred paragraph makes every line start
+/// somewhere new.
 class PixelEmptyState extends StatelessWidget {
   const PixelEmptyState({
     super.key,
@@ -913,29 +917,32 @@ class PixelEmptyState extends StatelessWidget {
         width: double.infinity,
         color: AppColors.paperLight,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-        child: Column(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (icon != null) ...[
-              Icon(icon, size: 30, color: AppColors.muted),
-              const SizedBox(height: 10),
+              Icon(icon, size: 26, color: AppColors.inkSoft),
+              const SizedBox(width: 12),
             ],
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: pixelText(size: 14, bold: true),
-            ),
-            if (message != null) ...[
-              const SizedBox(height: 5),
-              Text(
-                message!,
-                textAlign: TextAlign.center,
-                style: pixelText(
-                  size: 12,
-                  color: AppColors.muted,
-                  height: 1.45,
-                ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: pixelText(size: 14, bold: true)),
+                  if (message != null) ...[
+                    const SizedBox(height: 5),
+                    Text(
+                      message!,
+                      style: pixelText(
+                        size: 13,
+                        color: AppColors.inkSoft,
+                        height: 1.45,
+                      ),
+                    ),
+                  ],
+                ],
               ),
-            ],
+            ),
           ],
         ),
       ),

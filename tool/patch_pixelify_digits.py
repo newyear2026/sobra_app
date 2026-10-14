@@ -37,8 +37,9 @@ from fontTools.ttLib.tables.TupleVariation import TupleVariation  # noqa: E402
 
 FONT = Path('assets/fonts/PixelifySans.ttf')
 
-# Only the figures that were reading as each other. Everything else in the
-# font, letters included, is left exactly as the designer drew it.
+# Only the figures that were reading as each other. This tool leaves every
+# letter as the designer drew it; the three that read as an O are redrawn by
+# `patch_pixelify_letters.py`, which says so in the font's note itself.
 DIGITS = {
     # An S no longer: the top bar runs the full width and the shoulder below
     # it is open on the right, so nothing about the outline recalls an 8.
@@ -100,9 +101,16 @@ PHANTOM = 4
 
 
 def build(font: TTFont, gvar, name: str, art: str) -> None:
-    cells = grid.parse(art)
-    loops = grid.contours(cells)
+    install(font, gvar, name, grid.contours(grid.parse(art)))
 
+
+def install(font: TTFont, gvar, name: str,
+            loops: list[list[tuple[int, int]]]) -> None:
+    """Replaces `name`'s outline with `loops`, every point on the lattice.
+
+    Shared with `patch_pixelify_letters.py`, whose lowercase c is not a
+    seven-row picture and so hands its outline in directly.
+    """
     points: list[tuple[int, int]] = []
     ends: list[int] = []
     for loop in loops:
@@ -158,9 +166,11 @@ def main() -> int:
     # The OFL asks a modified copy to say so. Pixelify Sans reserves no font
     # name, so the family keeps its own; this note is what travels with the
     # file to explain why its figures are not the ones the designer drew.
+    # It replaces the whole note, so the won and letter tools, which append
+    # their own, run after this one.
     name = font['name']
     note = ('Figures redrawn for Sobra by tool/patch_pixelify_digits.py. '
-            'All other glyphs are unchanged. Original: Pixelify Sans by The '
+            'Original: Pixelify Sans by The '
             'Pixelify Sans Project Authors, under the SIL Open Font License '
             '1.1, which this modified copy is also under.')
     for record in list(name.names):

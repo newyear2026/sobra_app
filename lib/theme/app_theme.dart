@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 /// Sobra's colour tokens.
@@ -14,10 +16,16 @@ abstract final class AppColors {
   static const beige = Color(0xFFEFE7D6);
   static const line = Color(0xFFE7DDC8);
 
-  // Ink scale. On surface: 14.2 : 6.9 : 5.4.
+  // Ink scale. On surface: 14.2 : 6.9 : 6.3.
+  //
+  // `muted` sits close under `inkSoft` on purpose. Pixelify's regular weight
+  // is a one-pixel stroke, so a grey that passes on paper still reads as
+  // faint on a phone; this one clears 5:1 on every ground in this file,
+  // beige and dangerSoft included, where the earlier 0xFF5F6885 did not
+  // reach 4.5:1.
   static const ink = Color(0xFF202848);
   static const inkSoft = Color(0xFF4E5878);
-  static const muted = Color(0xFF5F6885);
+  static const muted = Color(0xFF545E7E);
 
   // Accents. `Ink` variants reach 4.5:1 on their own soft tint.
   static const teal = Color(0xFF0E7A72);
@@ -51,8 +59,11 @@ abstract final class AppColors {
 ///
 /// Only two weights exist: [regular] and [bold]. There is no w800/w900 in the
 /// font, so hierarchy comes from size and from the ink scale, not from more
-/// weight steps. Nothing goes below [minFontSize]; the glyphs are a pixel grid
-/// and they fall apart under it.
+/// weight steps. Nothing goes below [minFontSize], or [minBoldFontSize] for
+/// bold; the glyphs are a pixel grid and they fall apart under it. Regular
+/// stops a size higher because its strokes are one pixel wide: at 12 the
+/// secondary lines set in it read as faint, where bold, at two pixels, still
+/// holds.
 ///
 /// The copy of the font in `assets/fonts` is not the one upstream ships: its
 /// figures are redrawn. Pixelify's own `5` is an S with a diagonal waist and
@@ -60,8 +71,11 @@ abstract final class AppColors {
 /// an amount is read here it is read as an 8 — and `0`, `3`, `6` and `9` sat
 /// no further from `8` than that. `tool/patch_pixelify_digits.py` draws the
 /// five that needed it on the font's own lattice, at the font's own stroke
-/// weight, and along the same `wght` axis; every letter is untouched. Re-run
-/// it if the font is ever updated from upstream.
+/// weight, and along the same `wght` axis. `C`, `G` and `c` had the same
+/// trouble with `O` -- one lattice cell of opening, which closes at text
+/// sizes, so "Comida" read "Oomida" -- and `tool/patch_pixelify_letters.py`
+/// opens them the same way. Every other letter is as the designer drew it.
+/// Re-run both, digits first, if the font is ever updated from upstream.
 abstract final class AppType {
   static const family = 'PixelifySans';
 
@@ -91,7 +105,8 @@ abstract final class AppType {
   /// Japanese heading is set at regular weight on purpose, and its hierarchy
   /// comes from size alone.
   static const fallback = <String>['SobraHangul', 'SobraJapanese'];
-  static const minFontSize = 12.0;
+  static const minFontSize = 13.0;
+  static const minBoldFontSize = 12.0;
 
   static const regular = <FontVariation>[FontVariation('wght', 400)];
   static const bold = <FontVariation>[FontVariation('wght', 700)];
@@ -115,7 +130,10 @@ TextStyle pixelText({
 }) => TextStyle(
   fontFamily: AppType.family,
   fontFamilyFallback: AppType.fallback,
-  fontSize: size < AppType.minFontSize ? AppType.minFontSize : size,
+  fontSize: math.max(
+    size,
+    bold ? AppType.minBoldFontSize : AppType.minFontSize,
+  ),
   // Both, and they do different jobs. [family] is variable and takes its
   // weight off the axis; the Hangul fallback is two static files and takes
   // its own off [fontWeight], which the axis ignores. Setting only one of
@@ -148,7 +166,7 @@ ThemeData buildSobraTheme() {
     titleSmall: pixelText(size: 15, bold: true),
     bodyLarge: pixelText(size: 15, height: 1.4),
     bodyMedium: pixelText(size: 14, color: AppColors.inkSoft, height: 1.45),
-    bodySmall: pixelText(size: 12, color: AppColors.muted, height: 1.45),
+    bodySmall: pixelText(size: 13, color: AppColors.muted, height: 1.45),
     labelLarge: pixelText(size: 16, bold: true),
     labelMedium: pixelText(size: 13, bold: true),
     labelSmall: pixelText(size: 12, bold: true, color: AppColors.muted),
