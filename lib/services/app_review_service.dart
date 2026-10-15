@@ -1,8 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/cycle_record.dart';
-
 /// What the app needs from the store to be rated, with the plugin held at
 /// arm's length.
 abstract interface class AppReviewPort {
@@ -21,14 +19,13 @@ abstract interface class AppReviewPort {
 ///
 /// The rules, in one place because they only make sense together:
 ///
-/// * Only right after a cycle closed with money left over. That is the one
-///   moment the app has something good to say, and asking after an overspent
-///   cycle would be asking somebody to rate the app that just told them so.
-/// * At most once every [quietPeriod]. Play keeps its own quota, but it is
-///   unpublished and it is not ours; a weekly cycle would otherwise knock on
-///   Play's door every week.
-/// * Never again once the user has opened the listing from Ajustes. They went
-///   to the store on their own, which is the answer this was asking for.
+/// * Once, ever. The first attempt is remembered on the device and nothing
+///   asks again, whether or not Play showed its sheet.
+/// * Not before a day of use: something recorded, and a later calendar day
+///   than the one the app was first opened on. Asking on the first day would
+///   be asking about an app nobody has lived with yet.
+/// * Never once the user has opened the listing from Ajustes. They went to
+///   the store on their own, which is the answer this was asking for.
 /// * No Sobra dialog in front of Play's sheet. A "do you like Sobrita?" gate
 ///   that routes only the happy to the store is exactly what Play's policy
 ///   forbids.
@@ -47,7 +44,6 @@ class AppReviews {
     _visitedStore = _preferences?.getBool(_visitedStoreKey) ?? false;
   }
 
-  static const quietPeriod = Duration(days: 120);
   static const _askedAtKey = 'sobra_review_asked_at';
   static const _visitedStoreKey = 'sobra_review_visited_store';
 
@@ -58,22 +54,34 @@ class AppReviews {
   /// "already asked" along with the money.
   final SharedPreferences? _preferences;
   final DateTime Function() _now;
-
   DateTime? _askedAt;
   bool _visitedStore = false;
 
-  /// Whether [afterSettlement] would ask for [record] right now.
-  bool wouldAskAfter(CycleRecord? record) {
-    if (record == null || record.resultCentavos < 0) return false;
-    if (_visitedStore) return false;
-    final asked = _askedAt;
-    return asked == null || _now().difference(asked) >= quietPeriod;
+  /// Whether [askAfterFirstDay] would ask with these facts about the user.
+  ///
+  /// [firstOpenedOn] is the day the app was first opened; [recordedDays] how
+  /// many days have a movement on them.
+  bool wouldAsk({required DateTime? firstOpenedOn, required int recordedDays}) {
+    if (_askedAt != null || _visitedStore) return false;
+    if (firstOpenedOn == null || recordedDays < 1) return false;
+    final now = _now();
+    final today = DateTime(now.year, now.month, now.day);
+    final first = DateTime(
+      firstOpenedOn.year,
+      firstOpenedOn.month,
+      firstOpenedOn.day,
+    );
+    return today.isAfter(first);
   }
 
-  /// Called once the settlement screen has closed, so the sheet lands on
-  /// Inicio rather than on top of the result it would be interrupting.
-  Future<void> afterSettlement(CycleRecord? record) async {
-    if (!wouldAskAfter(record)) return;
+  /// Asks Play for its sheet if [wouldAsk] says so, and never again after.
+  Future<void> askAfterFirstDay({
+    required DateTime? firstOpenedOn,
+    required int recordedDays,
+  }) async {
+    if (!wouldAsk(firstOpenedOn: firstOpenedOn, recordedDays: recordedDays)) {
+      return;
+    }
     // Spent before the request, not after: Play does not say whether the
     // sheet appeared, so the attempt is the only thing there is to count.
     _askedAt = _now();

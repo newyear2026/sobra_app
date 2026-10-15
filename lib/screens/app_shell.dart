@@ -97,6 +97,7 @@ class _AppShellState extends State<AppShell> {
   bool _starterArrivalPresenting = false;
   bool _updatePromptScheduled = false;
   bool _announcementScheduled = false;
+  bool _reviewScheduled = false;
   String? _runningVersion;
   Future<void>? _versionReady;
   RegisterMode _registerMode = RegisterMode.expense;
@@ -164,6 +165,7 @@ class _AppShellState extends State<AppShell> {
     _scheduleXpNotice();
     _scheduleLaunchGiftNotice();
     _scheduleStarterArrival();
+    _scheduleReviewRequest();
   }
 
   @override
@@ -206,11 +208,13 @@ class _AppShellState extends State<AppShell> {
     _scheduleXpNotice();
     _scheduleLaunchGiftNotice();
     _scheduleStarterArrival();
+    _scheduleReviewRequest();
   }
 
   void _onUpdatesChanged() {
     setState(() {});
     _scheduleUpdatePrompt();
+    _scheduleReviewRequest();
   }
 
   void _onAnnouncementsChanged() {
@@ -219,6 +223,7 @@ class _AppShellState extends State<AppShell> {
     _scheduleAnnouncement();
     _scheduleLaunchGiftNotice();
     _scheduleStarterArrival();
+    _scheduleReviewRequest();
   }
 
   /// Says what the update they already installed changed.
@@ -240,7 +245,10 @@ class _AppShellState extends State<AppShell> {
       _announcementScheduled = false;
       if (!mounted || !announcements.shouldAnnounce) return;
       await showReleaseAnnouncement(context, announcements: announcements);
-      if (mounted) _scheduleUpdatePrompt();
+      if (mounted) {
+        _scheduleUpdatePrompt();
+        _scheduleReviewRequest();
+      }
     });
   }
 
@@ -276,7 +284,58 @@ class _AppShellState extends State<AppShell> {
         updates: updates,
         currentVersion: _runningVersion,
       );
+      if (mounted) _scheduleReviewRequest();
     });
+  }
+
+  /// How long Inicio has to stay quiet before Play is asked for its sheet.
+  ///
+  /// The update and release checks answer asynchronously, and either may
+  /// still want the screen; this lets them claim it first.
+  static const reviewDelay = Duration(seconds: 2);
+
+  /// Asks Play for a rating once the user has a day of use behind them.
+  ///
+  /// Last of everything, on Inicio, and only with nothing of Sobra's queued
+  /// or on screen: Play's sheet stacked on a dialog would bury one of them.
+  void _scheduleReviewRequest() {
+    final reviews = AppReviewScope.maybeOf(context);
+    final store = _store;
+    if (_reviewScheduled ||
+        reviews == null ||
+        store == null ||
+        !_quietOnHome ||
+        !reviews.wouldAsk(
+          firstOpenedOn: store.firstStartedAt,
+          recordedDays: store.recordedDayCount,
+        )) {
+      return;
+    }
+    _reviewScheduled = true;
+    Timer(reviewDelay, () {
+      _reviewScheduled = false;
+      if (!mounted || !_quietOnHome) return;
+      unawaited(
+        reviews.askAfterFirstDay(
+          firstOpenedOn: store.firstStartedAt,
+          recordedDays: store.recordedDayCount,
+        ),
+      );
+    });
+  }
+
+  bool get _quietOnHome {
+    final store = _store;
+    return store != null &&
+        _selected == AppTab.home &&
+        (ModalRoute.of(context)?.isCurrent ?? true) &&
+        store.pendingXpNotice == null &&
+        !store.launchGiftNoticePending &&
+        store.starterArrivalId == null &&
+        !_launchGiftPresenting &&
+        !_starterArrivalPresenting &&
+        !(_announcements?.shouldAnnounce ?? false) &&
+        !(_updates?.shouldPrompt ?? false);
   }
 
   Future<void> _openStoreFromBanner() async {
@@ -302,6 +361,7 @@ class _AppShellState extends State<AppShell> {
         _presentXpNotice().whenComplete(() {
           _scheduleLaunchGiftNotice();
           _scheduleStarterArrival();
+          if (mounted) _scheduleReviewRequest();
         }),
       );
     });
@@ -344,6 +404,7 @@ class _AppShellState extends State<AppShell> {
         _scheduleStarterArrival();
         _scheduleAnnouncement();
         _scheduleUpdatePrompt();
+        _scheduleReviewRequest();
       }
     }
   }
@@ -390,6 +451,7 @@ class _AppShellState extends State<AppShell> {
       if (mounted) {
         _scheduleAnnouncement();
         _scheduleUpdatePrompt();
+        _scheduleReviewRequest();
       }
     }
   }
@@ -420,15 +482,11 @@ class _AppShellState extends State<AppShell> {
       // The celebration of a closed cycle is a screen, not a snack bar.
       // Ads are not played here; the card only opens the collection.
       final record = _store?.cycleRecords.firstOrNull;
-      final reviews = AppReviewScope.maybeOf(context);
       await Navigator.of(context).push(
         MaterialPageRoute<void>(
           builder: (_) => SettlementScreen(notice: notice, record: record),
         ),
       );
-      // After the screen, not on it: Play's sheet over the result would cover
-      // the very number that made this a good moment to ask.
-      if (mounted) await reviews?.afterSettlement(record);
       return;
     }
     if (newLevel != null) return;
@@ -455,6 +513,7 @@ class _AppShellState extends State<AppShell> {
     );
     _noteTabTransition(tab);
     setState(() => _selected = tab);
+    if (tab == AppTab.home) _scheduleReviewRequest();
   }
 
   void _noteTabTransition(AppTab next) {

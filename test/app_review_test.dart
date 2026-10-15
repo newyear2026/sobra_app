@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/main.dart';
-import 'package:sobra_app/models/cycle_record.dart';
+import 'package:sobra_app/models/expense_entry.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
-import 'package:sobra_app/screens/settlement_screen.dart';
 import 'package:sobra_app/services/app_review_service.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 
@@ -32,14 +31,6 @@ class _FakePort implements AppReviewPort {
   }
 }
 
-CycleRecord _closed({required int spent}) => CycleRecord(
-  start: DateTime(2026, 9, 1),
-  end: DateTime(2026, 9, 7),
-  budgetCentavos: 700000,
-  spentCentavos: spent,
-  cycleType: PayCycleType.weekly,
-);
-
 Future<SharedPreferences> _preferences([
   Map<String, Object> initial = const {},
 ]) async {
@@ -48,55 +39,91 @@ Future<SharedPreferences> _preferences([
 }
 
 void main() {
-  final kept = _closed(spent: 180000);
-  final overspent = _closed(spent: 900000);
+  final firstDay = DateTime(2026, 10, 14);
 
-  group('after a settlement', () {
-    test('asks when the cycle closed with money left over', () async {
+  group('after a day of use', () {
+    test('asks on a later day once something was recorded', () async {
       final port = _FakePort();
-      final reviews = AppReviews(port: port, preferences: await _preferences());
+      final reviews = AppReviews(
+        port: port,
+        preferences: await _preferences(),
+        now: () => DateTime(2026, 10, 15, 8),
+      );
 
-      await reviews.afterSettlement(kept);
+      await reviews.askAfterFirstDay(firstOpenedOn: firstDay, recordedDays: 1);
 
       expect(port.requests, 1);
     });
 
-    test('stays quiet after an overspent cycle, or with no record', () async {
+    test('stays quiet on the first day, however much was recorded', () async {
       final port = _FakePort();
-      final reviews = AppReviews(port: port, preferences: await _preferences());
+      final reviews = AppReviews(
+        port: port,
+        preferences: await _preferences(),
+        now: () => DateTime(2026, 10, 14, 23, 59),
+      );
 
-      await reviews.afterSettlement(overspent);
-      await reviews.afterSettlement(null);
+      await reviews.askAfterFirstDay(firstOpenedOn: firstDay, recordedDays: 1);
 
       expect(port.requests, 0);
     });
 
-    test('asks at most once per quiet period, across restarts', () async {
+    test('stays quiet for somebody who never recorded anything', () async {
+      final port = _FakePort();
+      final reviews = AppReviews(
+        port: port,
+        preferences: await _preferences(),
+        now: () => DateTime(2026, 10, 20),
+      );
+
+      await reviews.askAfterFirstDay(firstOpenedOn: firstDay, recordedDays: 0);
+      await reviews.askAfterFirstDay(firstOpenedOn: null, recordedDays: 3);
+
+      expect(port.requests, 0);
+    });
+
+    test('asks once, ever, across restarts', () async {
       final port = _FakePort();
       final preferences = await _preferences();
-      var now = DateTime(2026, 9, 7, 20);
+      var now = DateTime(2026, 10, 15, 8);
       await AppReviews(
         port: port,
         preferences: preferences,
         now: () => now,
-      ).afterSettlement(kept);
+      ).askAfterFirstDay(firstOpenedOn: firstDay, recordedDays: 1);
 
-      // A new process a week later: the attempt was remembered.
-      now = now.add(const Duration(days: 7));
+      now = DateTime(2027, 6, 1);
       final restarted = AppReviews(
         port: port,
         preferences: preferences,
         now: () => now,
       );
-      await restarted.afterSettlement(kept);
-      expect(port.requests, 1);
+      await restarted.askAfterFirstDay(
+        firstOpenedOn: firstDay,
+        recordedDays: 40,
+      );
 
-      now = DateTime(2026, 9, 7, 20).add(AppReviews.quietPeriod);
-      await restarted.afterSettlement(kept);
-      expect(port.requests, 2);
+      expect(port.requests, 1);
     });
 
-    test('never asks again once the user opened the listing', () async {
+    // Installs that were asked under the old after-settlement rule wrote the
+    // same key, so they count as asked already.
+    test('an earlier ask under the old rule counts', () async {
+      final port = _FakePort();
+      final reviews = AppReviews(
+        port: port,
+        preferences: await _preferences({
+          'sobra_review_asked_at': DateTime(2026, 9, 30).millisecondsSinceEpoch,
+        }),
+        now: () => DateTime(2026, 10, 15),
+      );
+
+      await reviews.askAfterFirstDay(firstOpenedOn: firstDay, recordedDays: 1);
+
+      expect(port.requests, 0);
+    });
+
+    test('never asks once the user opened the listing', () async {
       final port = _FakePort();
       final preferences = await _preferences();
       await AppReviews(port: port, preferences: preferences).openStore();
@@ -104,77 +131,133 @@ void main() {
       await AppReviews(
         port: port,
         preferences: preferences,
-      ).afterSettlement(kept);
+        now: () => DateTime(2026, 10, 15),
+      ).askAfterFirstDay(firstOpenedOn: firstDay, recordedDays: 1);
 
       expect(port.requests, 0);
     });
 
     test('a listing that failed to open does not count as a visit', () async {
       final port = _FakePort(storeOpens: false);
-      final reviews = AppReviews(port: port, preferences: await _preferences());
+      final reviews = AppReviews(
+        port: port,
+        preferences: await _preferences(),
+        now: () => DateTime(2026, 10, 15),
+      );
 
       expect(await reviews.openStore(), isFalse);
-      await reviews.afterSettlement(kept);
+      await reviews.askAfterFirstDay(firstOpenedOn: firstDay, recordedDays: 1);
 
       expect(port.requests, 1);
     });
 
     test('a plugin failure is swallowed and still spends the turn', () async {
       final port = _FakePort(requestThrows: true);
-      final reviews = AppReviews(port: port, preferences: await _preferences());
+      final reviews = AppReviews(
+        port: port,
+        preferences: await _preferences(),
+        now: () => DateTime(2026, 10, 15),
+      );
 
-      await reviews.afterSettlement(kept);
-      await reviews.afterSettlement(kept);
+      await reviews.askAfterFirstDay(firstOpenedOn: firstDay, recordedDays: 1);
+      await reviews.askAfterFirstDay(firstOpenedOn: firstDay, recordedDays: 1);
 
       expect(port.requests, 1);
     });
   });
 
-  testWidgets('the sheet waits until the settlement screen has closed', (
-    tester,
-  ) async {
-    useSpanishDevice(tester);
-    tester.view.physicalSize = const Size(520, 1600);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+  group('on Inicio', () {
+    Future<(SobraStore, void Function(DateTime), DateTime Function())>
+    usedYesterday() async {
+      SharedPreferences.setMockInitialValues({});
+      var now = DateTime(2026, 10, 14, 9);
+      final store = await SobraStore.load(now: () => now);
+      await store.configureOnboarding(
+        budgetCentavos: 600000,
+        schedule: const PaySchedule.semiMonthly(),
+        cashCentavos: 124000,
+      );
+      await store.completeOnboarding();
+      await store.takeLaunchGiftNotice();
+      await store.addExpense(
+        amountCentavos: 4500,
+        category: ExpenseCategory.food,
+        note: '',
+        occurredAt: now,
+        paymentMethod: PaymentMethod.cash,
+      );
+      store.takePendingXpNotice();
+      await store.setReducedMotion(true);
+      return (store, (DateTime next) => now = next, () => now);
+    }
 
-    SharedPreferences.setMockInitialValues({});
-    final start = DateTime(2026, 9, 2, 10);
-    var now = start;
-    final store = await SobraStore.load(now: () => now);
-    await store.configureOnboarding(
-      budgetCentavos: 700000,
-      schedule: const PaySchedule.weekly(),
-      cashCentavos: 200000,
-    );
-    await store.completeOnboarding();
-    // Two quiet weeks: the first was only partly tracked and files no record,
-    // the second closes whole with the entire budget left over.
-    now = start.add(const Duration(days: 15));
-    await store.settleCycles();
-    await store.setReducedMotion(true);
-    final port = _FakePort();
+    Future<void> pumpApp(WidgetTester tester, SobraApp app) async {
+      useSpanishDevice(tester);
+      tester.view.physicalSize = const Size(520, 1600);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(app);
+      await tester.pump();
+    }
 
-    await tester.pumpWidget(
-      SobraApp(
-        store: store,
-        reviews: AppReviews(port: port),
-      ),
-    );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
+    testWidgets('the sheet comes the next day, after a quiet moment', (
+      tester,
+    ) async {
+      final (store, setNow, clock) = await usedYesterday();
+      setNow(DateTime(2026, 10, 15, 8));
+      final port = _FakePort();
 
-    expect(find.byType(SettlementScreen), findsOneWidget);
-    expect(store.cycleRecords.first.resultCentavos, greaterThan(0));
-    expect(port.requests, 0, reason: 'not over the result itself');
+      await pumpApp(
+        tester,
+        SobraApp(
+          store: store,
+          reviews: AppReviews(port: port, now: clock),
+        ),
+      );
+      expect(port.requests, 0, reason: 'not the instant Inicio draws');
 
-    await tester.tap(find.text('Listo'));
-    await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 3));
+      expect(port.requests, 1);
+      expect(tester.takeException(), isNull);
+    });
 
-    expect(find.byType(SettlementScreen), findsNothing);
-    expect(port.requests, 1);
-    expect(tester.takeException(), isNull);
+    testWidgets('nothing is asked on the first day', (tester) async {
+      final (store, _, clock) = await usedYesterday();
+      final port = _FakePort();
+
+      await pumpApp(
+        tester,
+        SobraApp(
+          store: store,
+          reviews: AppReviews(port: port, now: clock),
+        ),
+      );
+      await tester.pump(const Duration(seconds: 3));
+
+      expect(port.requests, 0);
+    });
+
+    testWidgets('another tab is left alone', (tester) async {
+      final (store, setNow, clock) = await usedYesterday();
+      setNow(DateTime(2026, 10, 15, 8));
+      final port = _FakePort();
+
+      await pumpApp(
+        tester,
+        SobraApp(
+          store: store,
+          reviews: AppReviews(port: port, now: clock),
+        ),
+      );
+      await tester.tap(find.text('Mi Sobrita'));
+      await tester.pump(const Duration(seconds: 3));
+      expect(port.requests, 0);
+
+      await tester.tap(find.text('Inicio'));
+      await tester.pump(const Duration(seconds: 3));
+      expect(port.requests, 1);
+    });
   });
 
   group('the Ajustes row', () {
