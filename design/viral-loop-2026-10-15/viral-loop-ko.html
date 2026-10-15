@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Sobrita viral loop KO</title>
+<style>
+@font-face { font-family: Pixel; src: url(../../assets/fonts/PixelifySans.ttf); }
+@font-face { font-family: Hangul; src: url(../../assets/fonts/SobraHangul.ttf); }
+:root {
+  --paper:#F6EFE0; --surface:#FFFDF7; --beige:#EFE7D6; --line:#E7DDC8;
+  --ink:#202848; --inkSoft:#4E5878; --muted:#545E7E;
+  --teal:#0E7A72; --tealSoft:#D8EDEA; --tealInk:#0B6660;
+  --cash:#C0873A; --cashSoft:#F7E9CE; --cashInk:#845A1E;
+  --rose:#B74769; --wa:#075E54; --waBubble:#DCF8C6; --waBg:#ECE5DD;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:#E9E2D2; font-family:Pixel, Hangul, sans-serif; color:var(--ink); width:1880px; padding:40px 40px 48px; }
+h1 { font-size:34px; margin-bottom:6px; }
+.sub { font-family:Hangul, Pixel, sans-serif; font-size:17px; color:var(--inkSoft); margin-bottom:26px; }
+
+/* loop diagram */
+.loop { display:flex; align-items:center; gap:10px; margin-bottom:30px; }
+.step { background:var(--surface); border:3px solid var(--ink); box-shadow:4px 4px 0 rgba(32,40,72,.18); padding:10px 14px; font-family:Hangul, Pixel, sans-serif; font-size:15px; line-height:1.35; min-width:0; flex:1; }
+.step b { display:block; font-family:Pixel, Hangul; font-size:13px; color:var(--teal); margin-bottom:2px; }
+.arrow { font-size:26px; color:var(--teal); }
+.back { font-family:Hangul, Pixel; font-size:14px; color:var(--teal); margin:-18px 0 26px; text-align:right; }
+
+.row { display:flex; gap:26px; align-items:flex-start; }
+.col { width:340px; }
+.phone { width:340px; height:720px; background:var(--surface); border:4px solid var(--ink); border-radius:26px; overflow:hidden; position:relative; box-shadow:6px 6px 0 rgba(32,40,72,.2); }
+.status { height:26px; font-size:12px; display:flex; justify-content:space-between; padding:6px 18px 0; color:var(--inkSoft); }
+.cap { font-family:Hangul, Pixel, sans-serif; font-size:15px; line-height:1.5; margin-top:16px; color:var(--ink); }
+.cap .n { display:inline-block; background:var(--ink); color:#fff; font-family:Pixel; padding:1px 8px; margin-right:6px; }
+.cap ul { margin:6px 0 0 18px; color:var(--inkSoft); }
+
+.sprite { image-rendering:pixelated; background-repeat:no-repeat; }
+.cat-cheer { width:145px; height:179px; background-image:url(../../assets/cats/cat-celebrate-8.png); background-size:1160px 178.5px; background-position:-725px 0; }
+.cat-sit { width:116px; height:143px; background-image:url(../../assets/cats/cat-celebrate-8.png); background-size:928px 142.8px; background-position:0 0; }
+.cat-sit.s { width:72px; height:89px; background-size:577px 88.8px; }
+.px { image-rendering:pixelated; }
+
+.btn { display:block; text-align:center; border:3px solid var(--ink); padding:12px 10px; font-size:16px; box-shadow:3px 3px 0 var(--ink); }
+.btn.primary { background:var(--teal); color:#fff; }
+.btn.ghost { background:var(--surface); color:var(--ink); }
+.btn.cash { background:var(--cashSoft); color:var(--cashInk); border-color:var(--cashInk); box-shadow:3px 3px 0 var(--cashInk); }
+.tag { display:inline-block; font-size:11px; background:var(--cashSoft); color:var(--cashInk); border:2px solid var(--cashInk); padding:2px 6px; }
+
+/* 1 */
+.room { height:300px; background:url(../../assets/rooms/casa_clara/hybrid_background_portrait.png) center 62% / cover; position:relative; border-bottom:4px solid var(--ink); }
+.room .cat-cheer { position:absolute; left:50%; bottom:8px; transform:translateX(-50%); }
+.spark { position:absolute; color:var(--cash); font-size:22px; }
+.pad { padding:18px 20px; }
+
+/* 2 story card */
+.story { position:absolute; inset:0; background:url(../../assets/rooms/casa_clara/hybrid_background_portrait.png) center / cover; }
+.story .shade { position:absolute; inset:0; background:linear-gradient(180deg, rgba(255,253,247,.0) 40%, rgba(255,253,247,.94) 66%); }
+.story .top { position:absolute; top:34px; left:22px; right:22px; background:var(--surface); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--ink); padding:14px 16px; }
+.story .big { font-size:38px; color:var(--teal); line-height:1.05; }
+.story .cat-cheer { position:absolute; left:50%; top:350px; transform:translateX(-50%) scale(1.15); }
+.story .bottom { position:absolute; left:22px; right:22px; bottom:26px; text-align:center; }
+.story .play { display:inline-block; background:var(--ink); color:#fff; padding:8px 14px; font-size:14px; margin-top:8px; }
+.code { font-size:20px; letter-spacing:2px; color:var(--ink); }
+.ig { position:absolute; top:10px; left:12px; right:12px; display:flex; gap:4px; }
+.ig i { flex:1; height:3px; background:rgba(32,40,72,.35); }
+.ig i:first-child { background:var(--ink); }
+
+/* 3 whatsapp */
+.wa-head { background:var(--wa); color:#fff; height:64px; display:flex; align-items:center; gap:10px; padding:0 14px; font-family:Helvetica, Arial, sans-serif; }
+.wa-av { width:36px; height:36px; border-radius:50%; background:#B9D3C9; }
+.wa-body { background:var(--waBg); position:absolute; top:90px; bottom:56px; left:0; right:0; padding:14px 10px; font-family:Helvetica, Arial, sans-serif; font-size:14px; }
+.bubble { background:var(--waBubble); border-radius:8px; padding:6px; max-width:270px; margin-left:auto; box-shadow:0 1px 1px rgba(0,0,0,.12); margin-bottom:10px; }
+.bubble.in { background:#fff; margin-left:0; margin-right:auto; padding:8px 10px; }
+.lp { background:#F0F7EC; border-radius:6px; overflow:hidden; margin-bottom:6px; }
+.lp .img { height:132px; background:url(../../assets/rooms/casa_clara/hybrid_background_portrait.png) center 70% / cover; position:relative; }
+.lp .img .cat-sit { position:absolute; left:50%; bottom:4px; transform:translateX(-50%); }
+.lp .t { font-weight:bold; font-size:13px; padding:6px 8px 0; color:#111; }
+.lp .d { font-size:12px; padding:2px 8px 6px; color:#555; }
+.lp .u { font-size:11px; padding:0 8px 6px; color:#888; }
+.msg { padding:2px 4px; line-height:1.35; color:#111; }
+.time { text-align:right; font-size:10px; color:#777; }
+.wa-input { position:absolute; bottom:0; left:0; right:0; height:56px; background:#F0F0F0; display:flex; align-items:center; padding:0 10px; }
+.wa-input div { flex:1; height:38px; background:#fff; border-radius:20px; }
+
+/* 4 gift */
+.gift { position:absolute; inset:26px 0 0 0; background:var(--paper); }
+.gift .card { margin:30px 22px 0; background:var(--surface); border:3px solid var(--ink); box-shadow:5px 5px 0 var(--ink); padding:18px; text-align:center; }
+.gift .item { height:150px; display:flex; align-items:flex-end; justify-content:center; background:var(--cashSoft); border:3px dashed var(--cashInk); margin:14px 0; }
+.gift .item img { max-height:132px; max-width:220px; }
+.steps { text-align:left; font-size:14px; line-height:1.6; margin:4px 0 14px; }
+.steps .ok { color:var(--teal); }
+.steps .todo { color:var(--muted); }
+
+/* 5 track */
+.track { margin:8px 0 14px; }
+.tier { display:flex; align-items:center; gap:12px; border:3px solid var(--ink); background:var(--surface); padding:8px 10px; margin-bottom:10px; }
+.tier.got { background:var(--tealSoft); border-color:var(--tealInk); }
+.tier.lock { opacity:.62; }
+.tier .th { width:62px; height:56px; display:flex; align-items:center; justify-content:center; background:var(--beige); border:2px solid var(--line); }
+.tier .th img { max-width:56px; max-height:50px; }
+.tier .tx { flex:1; font-size:14px; line-height:1.3; }
+.tier .tx small { display:block; font-size:12px; color:var(--muted); }
+.bar { height:16px; border:3px solid var(--ink); background:var(--beige); display:flex; gap:3px; padding:2px; }
+.bar i { flex:1; background:var(--line); }
+.bar i.on { background:var(--teal); }
+.toast { margin:0 0 14px; background:var(--ink); color:#fff; padding:10px 12px; font-size:14px; display:flex; gap:10px; align-items:center; }
+h2 { font-size:22px; }
+</style>
+</head>
+<body>
+<h1>Sobrita · 바이럴 루프 시안</h1>
+<div class="sub">좋은 순간에 자랑하기 → 친구 설치 → 친구 첫 기록 → 둘 다 가구 보상 (한글 시안 · 실제 앱 문구는 스페인어/포르투갈어 · 데이터는 예시)</div>
+
+<div class="loop">
+  <div class="step"><b>1 · 좋은 순간</b>사이클 정산·연속 기록 같은 기분 좋은 순간</div><div class="arrow">→</div>
+  <div class="step"><b>2 · 공유</b>캐릭터 자랑 카드를 스토리/WhatsApp 상태에 공유</div><div class="arrow">→</div>
+  <div class="step"><b>3 · 초대</b>초대 링크 (Play 링크 + referrer 코드)</div><div class="arrow">→</div>
+  <div class="step"><b>4 · 선물</b>친구는 설치 직후 선물 확인, 첫 지출 기록 시 지급</div><div class="arrow">→</div>
+  <div class="step"><b>5 · 보상</b>초대한 사람도 단계별 가구 보상 → 또 초대</div>
+</div>
+<div class="back">↺ 친구도 자기 순간이 오면 1번부터 다시 공유</div>
+
+<div class="row">
+
+<!-- 1 -->
+<div class="col">
+  <div class="phone">
+    <div class="status"><span>9:41</span><span>Sobrita</span></div>
+    <div class="room">
+      <div class="sprite cat-cheer"></div>
+      <span class="spark" style="left:62px;top:120px">✦</span>
+      <span class="spark" style="right:70px;top:90px">✦</span>
+    </div>
+    <div class="pad">
+      <span class="tag">사이클 정산 완료</span>
+      <h2 style="margin:10px 0 4px">이번 달 남은 돈</h2>
+      <div style="font-size:40px;color:var(--teal);line-height:1">$1,240 MXN</div>
+      <div style="font-size:14px;color:var(--muted);margin:8px 0 18px">Michi가 뿌듯해해요. 12일 연속 기록 중!</div>
+      <span class="btn primary">내 성과 자랑하기</span>
+      <div style="height:12px"></div>
+      <span class="btn cash">친구 초대하기 · 둘 다 선물</span>
+      <div style="text-align:center;font-size:13px;color:var(--muted);margin-top:14px">나중에</div>
+    </div>
+  </div>
+  <div class="cap"><span class="n">1</span><b>공유 타이밍</b> — 사이클 정산, 7·30일 연속 기록, 레벨업 직후에만 띄워요.
+    <ul><li>기분 좋을 때 공유율이 가장 높아요</li><li>정산 후 리뷰 시트와 같은 날 겹치지 않게</li></ul></div>
+</div>
+
+<!-- 2 -->
+<div class="col">
+  <div class="phone">
+    <div class="story">
+      <div class="shade"></div>
+      <div class="ig"><i></i><i></i><i></i></div>
+      <div class="top">
+        <div style="font-size:15px;color:var(--inkSoft)">이번 달 Michi와 함께</div>
+        <div class="big">남긴 돈<br>$1,240</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:6px">12일 연속으로 지출 기록 중</div>
+      </div>
+      <div class="sprite cat-cheer"></div>
+      <div class="bottom">
+        <div style="font-size:16px">고양이랑 같이 쓰는 가계부</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px">내 초대 코드</div>
+        <div class="code">ANA-7K2</div>
+        <div class="play">Sobrita · Google Play 무료</div>
+      </div>
+    </div>
+  </div>
+  <div class="cap"><span class="n">2</span><b>자랑 카드 (9:16)</b> — 인스타 스토리·WhatsApp 상태용 이미지.
+    <ul><li>금액 숨기기 토글 → "12일 연속 기록"만 표시</li><li>내 캐릭터·내 방이 그대로 나와서 매번 달라요</li><li>코드 + "Google Play 무료" 표기</li></ul></div>
+</div>
+
+<!-- 3 -->
+<div class="col">
+  <div class="phone">
+    <div class="status" style="background:var(--wa);color:#cfe"><span>9:42</span><span></span></div>
+    <div class="wa-head"><div class="wa-av"></div><div><div style="font-size:15px">Caro</div><div style="font-size:11px;opacity:.8">온라인</div></div></div>
+    <div class="wa-body">
+      <div class="bubble in"><div class="msg">너 어떻게 돈을 그렇게 남겨?? 😅</div><div class="time">9:40</div></div>
+      <div class="bubble">
+        <div class="lp">
+          <div class="img"><div class="sprite cat-sit"></div></div>
+          <div class="t">Ana가 Sobrita 의자를 선물했어요</div>
+          <div class="d">이 링크로 설치하면 Michi가 방에 놓을 의자를 줘요.</div>
+          <div class="u">play.google.com</div>
+        </div>
+        <div class="msg">이 앱 쓰는데 엄청 귀여워 🐱 내 링크로 깔면 선물 줘:<br><span style="color:#0277BD;word-break:break-all">play.google.com/store/apps/details?id=com.sobra.app.sobra_app&amp;referrer=inv_ANA7K2</span></div>
+        <div class="time">9:42 ✓✓</div>
+      </div>
+    </div>
+    <div class="wa-input"><div></div></div>
+  </div>
+  <div class="cap"><span class="n">3</span><b>WhatsApp 초대</b> — 멕시코·콜롬비아·브라질은 WhatsApp이 핵심.
+    <ul><li>메시지는 앱이 미리 채워서 공유 시트로 넘김</li><li>Play 링크의 <code>referrer</code>에 초대 코드를 실어 보냄</li><li>미국은 같은 카드를 SMS·인스타 DM으로</li></ul></div>
+</div>
+
+<!-- 4 -->
+<div class="col">
+  <div class="phone">
+    <div class="status"><span>9:58</span><span>Sobrita</span></div>
+    <div class="gift">
+      <div class="card">
+        <div class="sprite cat-sit s" style="margin:0 auto"></div>
+        <h2 style="margin-top:6px">Ana가 선물을<br>보냈어요!</h2>
+        <div class="item"><img class="px" src="../../assets/rooms/shared_items/rattan_chair.png" alt=""></div>
+        <div style="font-size:16px;margin-bottom:8px">라탄 의자</div>
+        <div class="steps">
+          <div class="ok">✓ Sobrita 설치 완료</div>
+          <div class="todo">□ 첫 지출을 기록하면 열려요</div>
+        </div>
+        <span class="btn primary">첫 지출 기록하기</span>
+      </div>
+    </div>
+  </div>
+  <div class="cap"><span class="n">4</span><b>친구 첫 실행</b> — 설치 직후 "선물이 와 있다"로 시작.
+    <ul><li>Play Install Referrer로 코드 읽기 → 서버 없이 가능</li><li>지급 조건 = 첫 지출 기록 (가짜 설치 방지 + 온보딩 완료율 ↑)</li><li>코드 직접 입력란도 Ajustes에 둠</li></ul></div>
+</div>
+
+<!-- 5 -->
+<div class="col">
+  <div class="phone">
+    <div class="status"><span>10:05</span><span>Sobrita</span></div>
+    <div class="pad">
+      <div class="toast"><div class="sprite cat-sit s" style="width:40px;height:50px;background-size:322px 49.6px"></div><div>Caro가 첫 지출을 기록했어요.<br>스탠드 조명을 받았어요!</div></div>
+      <h2>친구 초대</h2>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin:8px 0 6px"><span>함께하는 친구</span><span><b style="color:var(--ink)">2</b> / 5</span></div>
+      <div class="bar"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+      <div class="track" style="margin-top:14px">
+        <div class="tier got"><div class="th"><img class="px" src="../../assets/rooms/shared_items/floor_lamp.png" alt=""></div><div class="tx">친구 1명 · 스탠드 조명<small>받음</small></div></div>
+        <div class="tier got"><div class="th"><img class="px" src="../../assets/rooms/shared_items/savings_jar.png" alt=""></div><div class="tx">친구 2명 · 저금통<small>받음</small></div></div>
+        <div class="tier lock"><div class="th"><img class="px" src="../../assets/rooms/shared_items/pet_bed.png" alt=""></div><div class="tx">친구 3명 · Michi 침대<small>1명 남음</small></div></div>
+        <div class="tier lock"><div class="th"><img class="px" src="../../assets/rooms/shared_items/terracotta_pouf.png" alt=""></div><div class="tx">친구 5명 · 한정 쿠션<small>초대로만 받을 수 있어요</small></div></div>
+      </div>
+      <span class="btn primary">내 링크 공유하기</span>
+    </div>
+  </div>
+  <div class="cap"><span class="n">5</span><b>초대한 사람 보상</b> — 1·2·3·5명 단계별 가구.
+    <ul><li>5명 보상은 초대로만 얻는 한정 아이템</li><li>이 화면은 친구 기록을 알아야 해서 서버 필요 (2단계)</li></ul></div>
+</div>
+
+</div>
+</body>
+</html>

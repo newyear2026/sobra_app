@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Sobrita 100k plan</title>
+<style>
+@font-face { font-family: Pixel; src: url(../../assets/fonts/PixelifySans.ttf); }
+@font-face { font-family: Hangul; src: url(../../assets/fonts/SobraHangul.ttf); }
+@font-face { font-family: HangulB; src: url(../../assets/fonts/SobraHangul-Bold.ttf); }
+:root {
+  --paper:#F6EFE0; --surface:#FFFDF7; --beige:#EFE7D6; --line:#E7DDC8;
+  --ink:#202848; --inkSoft:#4E5878; --muted:#545E7E;
+  --teal:#0E7A72; --tealSoft:#D8EDEA; --cash:#C0873A; --cashSoft:#F7E9CE; --cashInk:#845A1E;
+  --blue:#39558E; --blueSoft:#DCE4F2; --violet:#6E4A8C; --violetSoft:#E7DCF0; --rose:#B74769;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:#E9E2D2; font-family:Pixel, Hangul, sans-serif; color:var(--ink); width:1880px; padding:40px; }
+h1 { font-family:Pixel, HangulB, Hangul; font-size:36px; }
+h2 { font-family:Pixel, HangulB, Hangul; font-size:22px; margin-bottom:14px; }
+.sub { font-size:17px; color:var(--inkSoft); margin:6px 0 26px; }
+.box { background:var(--surface); border:3px solid var(--ink); box-shadow:5px 5px 0 rgba(32,40,72,.2); padding:22px 24px; }
+.grid { display:grid; grid-template-columns: 1.15fr 1fr; gap:26px; margin-bottom:26px; }
+.sprite { image-rendering:pixelated; background-repeat:no-repeat; background-image:url(../../assets/cats/cat-celebrate-8.png); }
+.px { image-rendering:pixelated; }
+
+/* stacked bar */
+.goal { display:flex; align-items:flex-end; gap:18px; margin-bottom:18px; }
+.goal .num { font-size:64px; color:var(--teal); line-height:.9; }
+.goal .lbl { font-size:16px; color:var(--muted); padding-bottom:6px; }
+.stack { display:flex; height:64px; border:3px solid var(--ink); }
+.stack div { display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px; border-right:3px solid var(--ink); }
+.stack div:last-child { border-right:0; }
+.legend { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:16px; }
+.lg { border-left:8px solid; padding:6px 0 6px 12px; font-size:14px; line-height:1.5; color:var(--inkSoft); }
+.lg b { display:block; color:var(--ink); font-size:17px; font-family:Pixel, HangulB, Hangul; }
+
+/* countries */
+table { width:100%; border-collapse:collapse; font-size:15px; }
+th { text-align:left; font-size:13px; color:var(--muted); font-weight:normal; padding:0 8px 8px; border-bottom:3px solid var(--ink); }
+td { padding:11px 8px; border-bottom:2px solid var(--line); vertical-align:middle; }
+td.r, th.r { text-align:right; }
+.flag { display:inline-block; width:34px; font-size:13px; background:var(--ink); color:#fff; text-align:center; padding:2px 0; margin-right:8px; }
+.mini { height:12px; background:var(--beige); border:2px solid var(--ink); width:120px; display:inline-block; vertical-align:middle; }
+.mini i { display:block; height:100%; background:var(--teal); }
+.role { font-size:13px; color:var(--inkSoft); }
+.total td { font-family:Pixel, HangulB, Hangul; border-bottom:0; }
+
+/* timeline */
+.tl { display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin-bottom:26px; }
+.ph { background:var(--surface); border:3px solid var(--ink); margin-right:-3px; padding:18px 18px 20px; position:relative; }
+.ph .w { display:inline-block; background:var(--ink); color:#fff; font-size:13px; padding:3px 8px; margin-bottom:10px; }
+.ph h3 { font-family:Pixel, HangulB, Hangul; font-size:18px; margin-bottom:10px; }
+.ph ul { list-style:none; font-size:14px; line-height:1.55; color:var(--inkSoft); }
+.ph li::before { content:"▪ "; color:var(--teal); }
+.ph .kpi { margin-top:12px; font-size:13px; background:var(--tealSoft); color:var(--teal); padding:6px 8px; border:2px solid var(--teal); }
+.ph.now { background:var(--cashSoft); }
+.ph.now .w { background:var(--cashInk); }
+
+/* bottom row */
+.three { display:grid; grid-template-columns:repeat(3,1fr); gap:26px; }
+.card h2 { display:flex; align-items:center; gap:10px; }
+.card .ic { width:34px; height:34px; border:3px solid var(--ink); display:flex; align-items:center; justify-content:center; font-size:16px; color:#fff; }
+.card ul { list-style:none; font-size:15px; line-height:1.6; color:var(--inkSoft); }
+.card li { padding-left:16px; position:relative; }
+.card li::before { content:"▪"; position:absolute; left:0; color:var(--teal); }
+.card li b { color:var(--ink); }
+.loopmini { display:flex; align-items:center; gap:6px; margin:4px 0 12px; font-size:13px; flex-wrap:wrap; }
+.loopmini span { background:var(--tealSoft); border:2px solid var(--teal); color:var(--teal); padding:3px 7px; }
+.note { font-size:13px; color:var(--muted); margin-top:20px; }
+</style>
+</head>
+<body>
+<div style="display:flex;justify-content:space-between;align-items:flex-start">
+  <div>
+    <h1>Sobrita · 설치 10만 명 계획</h1>
+    <div class="sub">미국 · 멕시코 · 콜롬비아 + 브라질 추가 / 유료 광고 · 스토어 검색 · 바이럴 루프 세 갈래로 채우기</div>
+  </div>
+  <div class="sprite" style="width:145px;height:179px;background-size:1160px 178.5px;background-position:-725px 0;margin-top:-20px"></div>
+</div>
+
+<div class="grid">
+  <div class="box">
+    <h2>10만 명은 어디서 오나 (추정)</h2>
+    <div class="goal"><div class="num">100,000</div><div class="lbl">누적 설치 목표</div></div>
+    <div class="stack">
+      <div style="width:60%;background:var(--blue)">유료 광고 6만</div>
+      <div style="width:25%;background:var(--cash)">스토어 검색 2.5만</div>
+      <div style="width:15%;background:var(--teal)">바이럴 1.5만</div>
+    </div>
+    <div class="legend">
+      <div class="lg" style="border-color:var(--blue)"><b>유료 광고</b>Google App 캠페인 · Meta · TikTok Spark Ads. 예산 약 $33,000</div>
+      <div class="lg" style="border-color:var(--cash)"><b>스토어 검색 (ASO)</b>스페인어·포르투갈어 키워드와 스크린샷. 광고로 순위가 오르면 같이 늘어요</div>
+      <div class="lg" style="border-color:var(--teal)"><b>바이럴 루프</b>자랑 카드 + WhatsApp 초대. 설치 100건마다 10~20건 추가</div>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>나라별 역할</h2>
+    <table>
+      <tr><th>나라</th><th>유료 설치</th><th class="r">설치 단가</th><th class="r">예산</th><th>역할</th></tr>
+      <tr><td><span class="flag">MX</span>멕시코</td><td><span class="mini"><i style="width:100%"></i></span> 2.5만</td><td class="r">~$0.5</td><td class="r">$12,500</td><td class="role">주력 · 스페인어 기준 시장</td></tr>
+      <tr><td><span class="flag">CO</span>콜롬비아</td><td><span class="mini"><i style="width:60%"></i></span> 1.5만</td><td class="r">~$0.3</td><td class="r">$4,500</td><td class="role">가장 싼 설치 · 물량</td></tr>
+      <tr><td><span class="flag">BR</span>브라질</td><td><span class="mini"><i style="width:60%"></i></span> 1.5만</td><td class="r">~$0.4</td><td class="r">$6,000</td><td class="role">새로 추가 · 포르투갈어 스토어 페이지 먼저</td></tr>
+      <tr><td><span class="flag">US</span>미국</td><td><span class="mini"><i style="width:20%"></i></span> 0.5만</td><td class="r">~$2.0</td><td class="r">$10,000</td><td class="role">비싸요 · 히스패닉 타겟 위주로 작게</td></tr>
+      <tr class="total"><td>합계</td><td>6만</td><td class="r">평균 ~$0.55</td><td class="r">$33,000</td><td></td></tr>
+    </table>
+    <div class="note">설치 단가는 업계 평균 기준 대략치예요. 첫 2주 실제 광고 결과로 다시 맞춰야 해요.</div>
+  </div>
+</div>
+
+<div class="tl">
+  <div class="ph now"><span class="w">1~2주 · 지금</span><h3>측정하고 확인하기</h3><ul><li>Firebase 핵심 이벤트를 Google Ads·Meta 전환으로 연결</li><li>첫 기록률, D1·D7 리텐션 확인</li><li>잘 된 TikTok 게시물을 Spark Ads로</li></ul><div class="kpi">D7 리텐션 20% 넘는지 확인</div></div>
+  <div class="ph"><span class="w">2~4주</span><h3>스토어 페이지와 브라질</h3><ul><li>스페인어 키워드: control de gastos, presupuesto, ahorro</li><li>스크린샷 A/B 테스트 (캐릭터형 vs 기능형)</li><li>포르투갈어 스토어 페이지 + 브라질 광고 시작</li></ul><div class="kpi">스토어 방문 → 설치 전환 30%+</div></div>
+  <div class="ph"><span class="w">4~6주</span><h3>바이럴 루프 1단계</h3><ul><li>자랑 카드 공유 (서버 없음)</li><li>WhatsApp 초대 링크 + 친구 선물</li><li>공유율·초대 설치 수 측정</li></ul><div class="kpi">사용자 10%가 공유</div></div>
+  <div class="ph"><span class="w">6주~</span><h3>예산 키우기</h3><ul><li>설치 대신 "첫 기록" 이벤트로 광고 최적화</li><li>잘 되는 나라에 예산 몰기</li><li>초대한 사람 보상 (2단계, 서버 필요)</li></ul><div class="kpi">누적 설치 10만 명</div></div>
+</div>
+
+<div class="three">
+  <div class="box card">
+    <h2><span class="ic" style="background:var(--blue)">$</span>유료 광고 더 잘 쓰기</h2>
+    <ul>
+      <li><b>설치 → 첫 기록</b>으로 최적화 목표 변경 (하루 전환 10건 이상부터)</li>
+      <li>TikTok은 오가닉에서 반응 좋은 영상만 <b>Spark Ads</b>로</li>
+      <li>국가마다 다른 Play 스토어 페이지로 광고 연결</li>
+    </ul>
+  </div>
+  <div class="box card">
+    <h2><span class="ic" style="background:var(--cash)">Q</span>Play 스토어 검색</h2>
+    <ul>
+      <li>제목·짧은 설명에 <b>현지 검색어</b> 넣기</li>
+      <li>첫 스크린샷에 Michi와 방을 크게</li>
+      <li>평점 4.5 이상 유지 (정산 후 리뷰 시트 활용)</li>
+      <li>LOOPET과 서로 홍보</li>
+    </ul>
+  </div>
+  <div class="box card">
+    <h2><span class="ic" style="background:var(--teal)">↺</span>바이럴 루프</h2>
+    <div class="loopmini"><span>좋은 순간</span>→<span>자랑 카드</span>→<span>WhatsApp 초대</span>→<span>친구 첫 기록</span>→<span>둘 다 가구</span></div>
+    <ul>
+      <li>멕시코·콜롬비아·브라질은 <b>WhatsApp</b>이 핵심</li>
+      <li>1단계는 서버 없이 가능 (Play 설치 리퍼러)</li>
+      <li>자세한 화면은 바이럴 루프 시안 참고</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
