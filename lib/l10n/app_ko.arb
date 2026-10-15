@@ -795,5 +795,11 @@
   "shopLoading": "가격을 불러오는 중…",
   "shopRefreshed": "가격을 새로 불러왔어요.",
   "shopRetryFailed": "가격을 불러오지 못했어요. 연결을 확인하고 다시 시도해 주세요.",
-  "backupPrevious": "가져오기 전 데이터 확인"
+  "backupPrevious": "가져오기 전 데이터 확인",
+  "settingsShareApp": "친구에게 Sobrita 알려주기",
+  "shareAction": "공유",
+  "settlementShareTitle": "친구에게 자랑하기",
+  "settlementShareHint": "링크로 Sobrita를 알려줘요",
+  "shareMessageSettlement": "이번 주기 돈 남겼어요. 고양이랑 같이 쓰는 가계부 Sobrita, 무료야:",
+  "shareMessageSettings": "고양이랑 같이 쓰는 가계부 앱이야. 무료야:"
 }

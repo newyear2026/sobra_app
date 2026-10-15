@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../l10n/catalog_labels.dart';
@@ -5,6 +7,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/cycle_record.dart';
 import '../models/xp_event.dart';
+import '../services/app_share.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/pixel_ui.dart';
@@ -13,7 +16,9 @@ import 'collection_screen.dart';
 /// The moment a cycle closes, not the list of past ones.
 ///
 /// Plays no ads. The optional card only opens the collection on the
-/// recommended entry; the rewarded view still starts there.
+/// recommended entry; the rewarded view still starts there. A cycle that
+/// left money over also offers the share sheet — the one moment worth telling
+/// a friend about, so it is not offered after one that ran over.
 class SettlementScreen extends StatelessWidget {
   const SettlementScreen({
     super.key,
@@ -146,6 +151,51 @@ class SettlementScreen extends StatelessWidget {
                         const SizedBox(width: 8),
                         Text(
                           l10n.settlementCtaAction,
+                          style: pixelText(
+                            size: 13,
+                            bold: true,
+                            color: AppColors.muted,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        const Icon(Icons.chevron_right, color: AppColors.ink),
+                      ],
+                    ),
+                  ),
+                ],
+                if (closed != null && leftover > 0) ...[
+                  const SizedBox(height: 14),
+                  PixelCard(
+                    color: AppColors.paperLight,
+                    onTap: () => unawaited(
+                      AppShare.instance.share(l10n, ShareOrigin.settlement),
+                    ),
+                    child: Row(
+                      children: [
+                        const _IconTile(
+                          icon: Icons.share_outlined,
+                          color: AppColors.teal,
+                        ),
+                        const SizedBox(width: 13),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                l10n.settlementShareTitle,
+                                style: pixelText(size: 15, bold: true),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                l10n.settlementShareHint,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          l10n.shareAction,
                           style: pixelText(
                             size: 13,
                             bold: true,

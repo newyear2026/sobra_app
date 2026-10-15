@@ -72,6 +72,9 @@ dependencies:
   firebase_core: ^4.15.0
   firebase_analytics: ^12.6.0
   firebase_crashlytics: ^5.4.0
+  # The system share sheet behind "tell a friend": a line of text and Sobra's
+  # Play link, nothing the user recorded.
+  share_plus: ^13.3.1
 
 dev_dependencies:
   flutter_test:

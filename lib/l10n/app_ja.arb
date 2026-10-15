@@ -758,5 +758,11 @@
   "shopLoading": "価格を読み込み中…",
   "shopRefreshed": "価格を更新しました。",
   "shopRetryFailed": "価格を読み込めませんでした。接続を確認して再試行してください。",
-  "backupPrevious": "読み込み前のデータを確認"
+  "backupPrevious": "読み込み前のデータを確認",
+  "settingsShareApp": "友だちにSobritaを紹介",
+  "shareAction": "共有",
+  "settlementShareTitle": "友だちに自慢する",
+  "settlementShareHint": "リンクでSobritaを紹介",
+  "shareMessageSettlement": "今回のサイクルはお金が残ったよ。Sobritaで猫と一緒に家計簿をつけてる。無料だよ:",
+  "shareMessageSettings": "猫と一緒に家計簿をつけられるアプリだよ。無料:"
 }

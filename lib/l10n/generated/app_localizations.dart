@@ -4347,6 +4347,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Revisar datos anteriores a la importación'**
   String get backupPrevious;
+
+  /// Ajustes › About row that opens the system share sheet with Sobra's Play link.
+  ///
+  /// In es, this message translates to:
+  /// **'Recomendar Sobrita a un amigo'**
+  String get settingsShareApp;
+
+  /// Short action word at the end of the settlement share card.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir'**
+  String get shareAction;
+
+  /// Settlement card shown only when money was left over; opens the share sheet.
+  ///
+  /// In es, this message translates to:
+  /// **'Presúmele a un amigo'**
+  String get settlementShareTitle;
+
+  /// Second line under settlementShareTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Comparte Sobrita con un enlace'**
+  String get settlementShareHint;
+
+  /// Text placed in the share sheet from the settlement screen. The Play link follows on its own line. Never includes the amount.
+  ///
+  /// In es, this message translates to:
+  /// **'Este ciclo me sobró lana. Llevo mis gastos con un gatito en Sobrita y es gratis:'**
+  String get shareMessageSettlement;
+
+  /// Text placed in the share sheet from the Ajustes row. The Play link follows on its own line.
+  ///
+  /// In es, this message translates to:
+  /// **'Mira esta app para anotar tus gastos con un gatito. Es gratis:'**
+  String get shareMessageSettings;
 }
 
 class _AppLocalizationsDelegate

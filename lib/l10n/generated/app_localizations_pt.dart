@@ -2581,4 +2581,24 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get backupPrevious => 'Conferir dados anteriores à importação';
+
+  @override
+  String get settingsShareApp => 'Indicar o Sobrita a um amigo';
+
+  @override
+  String get shareAction => 'Compartilhar';
+
+  @override
+  String get settlementShareTitle => 'Mostre a um amigo';
+
+  @override
+  String get settlementShareHint => 'Compartilhe o Sobrita com um link';
+
+  @override
+  String get shareMessageSettlement =>
+      'Neste ciclo sobrou dinheiro. Anoto meus gastos com um gatinho no Sobrita, e é grátis:';
+
+  @override
+  String get shareMessageSettings =>
+      'Olha esse app para anotar seus gastos com um gatinho. É grátis:';
 }

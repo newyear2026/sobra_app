@@ -757,5 +757,11 @@
   "shopLoading": "Carregando preços…",
   "shopRefreshed": "Preços atualizados.",
   "shopRetryFailed": "Não foi possível carregar os preços. Confira sua conexão e tente novamente.",
-  "backupPrevious": "Conferir dados anteriores à importação"
+  "backupPrevious": "Conferir dados anteriores à importação",
+  "settingsShareApp": "Indicar o Sobrita a um amigo",
+  "shareAction": "Compartilhar",
+  "settlementShareTitle": "Mostre a um amigo",
+  "settlementShareHint": "Compartilhe o Sobrita com um link",
+  "shareMessageSettlement": "Neste ciclo sobrou dinheiro. Anoto meus gastos com um gatinho no Sobrita, e é grátis:",
+  "shareMessageSettings": "Olha esse app para anotar seus gastos com um gatinho. É grátis:"
 }

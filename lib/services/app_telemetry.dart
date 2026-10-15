@@ -35,7 +35,11 @@ enum TelemetryEvent {
 
   /// The app was opened from a widget, the lock-screen entry or a reminder.
   /// `destination`: where it was sent.
-  shortcutOpened('shortcut_opened');
+  shortcutOpened('shortcut_opened'),
+
+  /// The share sheet closed. `origin`: a `ShareOrigin`; `result`: the
+  /// platform's `ShareResultStatus`.
+  shared('share');
 
   const TelemetryEvent(this.eventName);
   final String eventName;

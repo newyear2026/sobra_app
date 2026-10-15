@@ -757,5 +757,11 @@
   "shopLoading": "Chargement des prix…",
   "shopRefreshed": "Prix actualisés.",
   "shopRetryFailed": "Impossible de charger les prix. Vérifie ta connexion et réessaie.",
-  "backupPrevious": "Vérifier les données avant importation"
+  "backupPrevious": "Vérifier les données avant importation",
+  "settingsShareApp": "Recommander Sobrita à un ami",
+  "shareAction": "Partager",
+  "settlementShareTitle": "Montrer à un ami",
+  "settlementShareHint": "Partage Sobrita avec un lien",
+  "shareMessageSettlement": "Il m’est resté de l’argent ce cycle. Je note mes dépenses avec un petit chat dans Sobrita, c’est gratuit :",
+  "shareMessageSettings": "Regarde cette appli pour noter tes dépenses avec un petit chat. C’est gratuit :"
 }

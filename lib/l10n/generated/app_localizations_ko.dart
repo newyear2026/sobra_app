@@ -2469,4 +2469,23 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get backupPrevious => '가져오기 전 데이터 확인';
+
+  @override
+  String get settingsShareApp => '친구에게 Sobrita 알려주기';
+
+  @override
+  String get shareAction => '공유';
+
+  @override
+  String get settlementShareTitle => '친구에게 자랑하기';
+
+  @override
+  String get settlementShareHint => '링크로 Sobrita를 알려줘요';
+
+  @override
+  String get shareMessageSettlement =>
+      '이번 주기 돈 남겼어요. 고양이랑 같이 쓰는 가계부 Sobrita, 무료야:';
+
+  @override
+  String get shareMessageSettings => '고양이랑 같이 쓰는 가계부 앱이야. 무료야:';
 }

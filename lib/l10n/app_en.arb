@@ -793,5 +793,11 @@
   "shopLoading": "Loading prices…",
   "shopRefreshed": "Prices updated.",
   "shopRetryFailed": "We could not load prices. Check your connection and try again.",
-  "backupPrevious": "Review data from before the import"
+  "backupPrevious": "Review data from before the import",
+  "settingsShareApp": "Tell a friend about Sobrita",
+  "shareAction": "Share",
+  "settlementShareTitle": "Show a friend",
+  "settlementShareHint": "Share Sobrita with a link",
+  "shareMessageSettlement": "I had money left over this cycle. I track my spending with a little cat in Sobrita, and it's free:",
+  "shareMessageSettings": "Check out this app for tracking your spending with a little cat. It's free:"
 }

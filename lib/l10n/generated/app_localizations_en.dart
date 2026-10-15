@@ -2564,4 +2564,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupPrevious => 'Review data from before the import';
+
+  @override
+  String get settingsShareApp => 'Tell a friend about Sobrita';
+
+  @override
+  String get shareAction => 'Share';
+
+  @override
+  String get settlementShareTitle => 'Show a friend';
+
+  @override
+  String get settlementShareHint => 'Share Sobrita with a link';
+
+  @override
+  String get shareMessageSettlement =>
+      'I had money left over this cycle. I track my spending with a little cat in Sobrita, and it\'s free:';
+
+  @override
+  String get shareMessageSettings =>
+      'Check out this app for tracking your spending with a little cat. It\'s free:';
 }

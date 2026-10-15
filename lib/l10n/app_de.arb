@@ -757,5 +757,11 @@
   "shopLoading": "Preise werden geladen…",
   "shopRefreshed": "Preise aktualisiert.",
   "shopRetryFailed": "Preise konnten nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.",
-  "backupPrevious": "Daten vor dem Import prüfen"
+  "backupPrevious": "Daten vor dem Import prüfen",
+  "settingsShareApp": "Sobrita weiterempfehlen",
+  "shareAction": "Teilen",
+  "settlementShareTitle": "Einem Freund zeigen",
+  "settlementShareHint": "Teile Sobrita per Link",
+  "shareMessageSettlement": "Diesen Zyklus ist Geld übrig geblieben. Ich notiere meine Ausgaben mit einer kleinen Katze in Sobrita, kostenlos:",
+  "shareMessageSettings": "Schau dir diese App an: Ausgaben notieren mit einer kleinen Katze. Kostenlos:"
 }

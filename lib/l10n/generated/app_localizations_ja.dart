@@ -2468,4 +2468,23 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get backupPrevious => '読み込み前のデータを確認';
+
+  @override
+  String get settingsShareApp => '友だちにSobritaを紹介';
+
+  @override
+  String get shareAction => '共有';
+
+  @override
+  String get settlementShareTitle => '友だちに自慢する';
+
+  @override
+  String get settlementShareHint => 'リンクでSobritaを紹介';
+
+  @override
+  String get shareMessageSettlement =>
+      '今回のサイクルはお金が残ったよ。Sobritaで猫と一緒に家計簿をつけてる。無料だよ:';
+
+  @override
+  String get shareMessageSettings => '猫と一緒に家計簿をつけられるアプリだよ。無料:';
 }

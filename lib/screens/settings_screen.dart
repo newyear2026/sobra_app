@@ -11,6 +11,7 @@ import '../models/currency.dart';
 import '../models/pay_schedule.dart';
 import '../l10n/labels.dart';
 import '../services/app_review_service.dart';
+import '../services/app_share.dart';
 import '../services/app_update_service.dart';
 import '../services/app_version_service.dart';
 import '../services/release_announcement_service.dart';
@@ -451,6 +452,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ],
           const SizedBox(height: 10),
           _SectionHeader(l10n.settingsSectionAbout),
+          // First in the section so it is found without hunting. Same gate as
+          // the rate row: the link it sends is a Play listing.
+          if (reviews != null)
+            _SettingsRow(
+              icon: Icons.share_outlined,
+              iconColor: AppColors.cash,
+              label: l10n.settingsShareApp,
+              // No value, like the rate row: the label is long enough to wrap
+              // beside one in Spanish.
+              value: '',
+              onTap: () => unawaited(
+                AppShare.instance.share(l10n, ShareOrigin.settings),
+              ),
+            ),
           // Absent where there is no store to ask — iOS, web, and any harness
           // that pumps this screen without the service.
           if (updates != null)

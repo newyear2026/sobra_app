@@ -1149,5 +1149,29 @@
       }
     }
   },
-  "backupPrevious": "Revisar datos anteriores a la importación"
+  "backupPrevious": "Revisar datos anteriores a la importación",
+  "settingsShareApp": "Recomendar Sobrita a un amigo",
+  "@settingsShareApp": {
+    "description": "Ajustes › About row that opens the system share sheet with Sobra's Play link."
+  },
+  "shareAction": "Compartir",
+  "@shareAction": {
+    "description": "Short action word at the end of the settlement share card."
+  },
+  "settlementShareTitle": "Presúmele a un amigo",
+  "@settlementShareTitle": {
+    "description": "Settlement card shown only when money was left over; opens the share sheet."
+  },
+  "settlementShareHint": "Comparte Sobrita con un enlace",
+  "@settlementShareHint": {
+    "description": "Second line under settlementShareTitle."
+  },
+  "shareMessageSettlement": "Este ciclo me sobró lana. Llevo mis gastos con un gatito en Sobrita y es gratis:",
+  "@shareMessageSettlement": {
+    "description": "Text placed in the share sheet from the settlement screen. The Play link follows on its own line. Never includes the amount."
+  },
+  "shareMessageSettings": "Mira esta app para anotar tus gastos con un gatito. Es gratis:",
+  "@shareMessageSettings": {
+    "description": "Text placed in the share sheet from the Ajustes row. The Play link follows on its own line."
+  }
 }

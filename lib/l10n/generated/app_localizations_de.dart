@@ -2581,4 +2581,24 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get backupPrevious => 'Daten vor dem Import prüfen';
+
+  @override
+  String get settingsShareApp => 'Sobrita weiterempfehlen';
+
+  @override
+  String get shareAction => 'Teilen';
+
+  @override
+  String get settlementShareTitle => 'Einem Freund zeigen';
+
+  @override
+  String get settlementShareHint => 'Teile Sobrita per Link';
+
+  @override
+  String get shareMessageSettlement =>
+      'Diesen Zyklus ist Geld übrig geblieben. Ich notiere meine Ausgaben mit einer kleinen Katze in Sobrita, kostenlos:';
+
+  @override
+  String get shareMessageSettings =>
+      'Schau dir diese App an: Ausgaben notieren mit einer kleinen Katze. Kostenlos:';
 }
