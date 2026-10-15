@@ -176,6 +176,9 @@ class RewardedAds extends ChangeNotifier {
         unawaited(prepare());
         return RewardedAdOutcome.dismissed;
       case RewardedAdResult.failed:
+        // The failed ad is spent either way. Fetching now means the user's
+        // second tap opens one rather than repeating the first one's wait.
+        unawaited(prepare());
         return RewardedAdOutcome.unavailable;
     }
   }

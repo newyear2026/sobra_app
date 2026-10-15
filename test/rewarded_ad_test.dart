@@ -137,6 +137,19 @@ void main() {
       expect(store.rewardedAdsWatchedToday, 0);
     });
 
+    test('an ad that fails to show fetches the next one', () async {
+      final store = await loadStore();
+      final ads = adsFor(store);
+      port.script = [RewardedAdResult.failed, RewardedAdResult.earned];
+
+      expect(await ads.watch(item), RewardedAdOutcome.unavailable);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(port.loads, 2);
+      expect(ads.isReady, isTrue, reason: 'the second tap opens at once');
+      expect(await ads.watch(item), RewardedAdOutcome.counted);
+    });
+
     // No-fill is ordinary, not an error. The button says so and nothing is
     // spent.
     test('a network with nothing to serve spends nothing', () async {
