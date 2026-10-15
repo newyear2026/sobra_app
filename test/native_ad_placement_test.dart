@@ -110,14 +110,14 @@ Future<SobraStore> _storeWithExpenses(int count) async {
 }
 
 void main() {
-  testWidgets('two expense rows do not reserve a native slot', (tester) async {
+  testWidgets('an empty ledger has no native slot', (tester) async {
     useSpanishDevice(tester);
     tester.view.physicalSize = const Size(520, 1600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    final store = await _storeWithExpenses(2);
+    final store = await _storeWithExpenses(0);
     final ads = NativeAds(store: store, graceDays: 0)..setSdkReady(true);
 
     await tester.pumpWidget(SobraApp(store: store, nativeAds: ads));
@@ -128,6 +128,43 @@ void main() {
     expect(ads.shouldPlace, isTrue);
     expect(find.byType(SobraNativeAd), findsNothing);
   });
+
+  // With fewer than three movements the slot follows the last one, so the
+  // first week of use is not ad-free just for being short.
+  for (final count in [1, 2]) {
+    testWidgets('$count expense rows are followed by the native slot', (
+      tester,
+    ) async {
+      useSpanishDevice(tester);
+      tester.view.physicalSize = const Size(520, 1600);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final store = await _storeWithExpenses(count);
+      final ads = NativeAds(store: store, graceDays: 0)..setSdkReady(true);
+
+      await tester.pumpWidget(
+        NativeAdPreviewScope(
+          preview: const _SampleNativeBody(),
+          child: SobraApp(store: store, nativeAds: ads),
+        ),
+      );
+      await tester.pump();
+      await tester.tap(find.text('Movim.'));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.byType(SobraNativeAd), findsOneWidget);
+      final ad = tester.getRect(find.byType(SobraNativeAd));
+      for (var i = 1; i <= count; i++) {
+        expect(
+          tester.getRect(find.text('Gasto $i')).bottom,
+          lessThan(ad.top),
+          reason: 'Gasto $i sits above the ad',
+        );
+      }
+    });
+  }
 
   testWidgets('the third expense row is followed by the native slot', (
     tester,
