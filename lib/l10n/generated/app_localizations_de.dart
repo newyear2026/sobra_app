@@ -2166,12 +2166,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get releaseNote1013Kept => 'Was du schon hattest, bleibt deins.';
 
   @override
-  String get releaseNote1013Home =>
-      'Das Haus auf dem Startbildschirm folgt der Tageszeit.';
+  String get releaseNote1013Home => 'Das Haus im Start folgt der Tageszeit.';
+
+  @override
+  String get releaseNote1013Share =>
+      'Sobrita weiterempfehlen: in Mein Sobrita oder am Zyklusende.';
 
   @override
   String get releaseNote1013Fixes =>
-      'Die Lampe versteckt sich nicht mehr hinter dem Regal, und die Sprechblase verdeckt deinen Begleiter nicht mehr.';
+      'Die Lampe steht nicht mehr hinter dem Regal, die Sprechblase verdeckt niemanden.';
 
   @override
   String get releaseNote104Fixed =>

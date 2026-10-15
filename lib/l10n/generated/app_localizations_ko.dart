@@ -2074,6 +2074,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get releaseNote1013Home => '홈 화면의 방도 시간에 맞춰 밤낮이 바뀌어요.';
 
   @override
+  String get releaseNote1013Share =>
+      '내 정보에서, 또는 돈이 남은 주기를 마감할 때 친구에게 Sobrita를 알려줄 수 있어요.';
+
+  @override
   String get releaseNote1013Fixes => '조명이 책장 뒤에 숨지 않고, 말풍선이 친구를 가리지 않아요.';
 
   @override

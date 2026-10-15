@@ -2177,6 +2177,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'La maison sur l\'accueil suit l\'heure du jour.';
 
   @override
+  String get releaseNote1013Share =>
+      'Recommandez Sobrita depuis Mon Sobrita ou en fin de cycle avec un reste.';
+
+  @override
   String get releaseNote1013Fixes =>
       'La lampe ne se cache plus derrière la bibliothèque, et la bulle ne cache plus votre compagnon.';
 

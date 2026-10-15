@@ -38,12 +38,13 @@ class ReleaseNote {
 final releaseNotes = <ReleaseNote>[
   ReleaseNote(
     version: '1.0.13',
-    releasedOn: DateTime(2026, 10, 12),
+    releasedOn: DateTime(2026, 10, 15),
     lines: [
       (l10n) => l10n.releaseNote1013Rewards,
       (l10n) => l10n.releaseNote1013Rooms,
       (l10n) => l10n.releaseNote1013Kept,
       (l10n) => l10n.releaseNote1013Home,
+      (l10n) => l10n.releaseNote1013Share,
       (l10n) => l10n.releaseNote1013Fixes,
     ],
   ),

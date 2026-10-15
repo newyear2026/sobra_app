@@ -2075,6 +2075,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get releaseNote1013Home => 'ホーム画面のお部屋も時間で昼と夜が変わります。';
 
   @override
+  String get releaseNote1013Share =>
+      'マイSobritaから、またはお金が残ったサイクルの締めくくりに、友だちにSobritaを紹介できます。';
+
+  @override
   String get releaseNote1013Fixes => 'ランプが本棚の後ろに隠れず、吹き出しが仲間に重なりません。';
 
   @override

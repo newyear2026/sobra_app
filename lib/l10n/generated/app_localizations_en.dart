@@ -2153,6 +2153,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'The house on Home follows the time of day.';
 
   @override
+  String get releaseNote1013Share =>
+      'You can tell a friend about Sobrita from My Sobrita, or when a cycle closes with money left over.';
+
+  @override
   String get releaseNote1013Fixes =>
       'The lamp no longer hides behind the bookcase, and the bubble no longer covers your companion.';
 

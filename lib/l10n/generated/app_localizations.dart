@@ -3670,6 +3670,12 @@ abstract class AppLocalizations {
   /// **'La casa en Inicio cambia con la hora del día.'**
   String get releaseNote1013Home;
 
+  /// No description provided for @releaseNote1013Share.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes recomendar Sobrita a un amigo desde Mi Sobrita, o al cerrar un ciclo en el que te sobró.'**
+  String get releaseNote1013Share;
+
   /// No description provided for @releaseNote1013Fixes.
   ///
   /// In es, this message translates to:

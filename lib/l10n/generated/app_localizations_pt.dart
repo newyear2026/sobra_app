@@ -2169,6 +2169,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get releaseNote1013Home => 'A casa no Início muda com a hora do dia.';
 
   @override
+  String get releaseNote1013Share =>
+      'Você pode indicar o Sobrita a um amigo em Meu Sobrita ou ao fechar um ciclo em que sobrou dinheiro.';
+
+  @override
   String get releaseNote1013Fixes =>
       'O abajur não se esconde mais atrás da estante, e o balão não cobre mais seu companheiro.';
 

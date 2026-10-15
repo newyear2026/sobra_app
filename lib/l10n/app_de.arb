@@ -638,9 +638,11 @@
 
   "releaseNote1013Kept": "Was du schon hattest, bleibt deins.",
 
-  "releaseNote1013Home": "Das Haus auf dem Startbildschirm folgt der Tageszeit.",
+  "releaseNote1013Home": "Das Haus im Start folgt der Tageszeit.",
 
-  "releaseNote1013Fixes": "Die Lampe versteckt sich nicht mehr hinter dem Regal, und die Sprechblase verdeckt deinen Begleiter nicht mehr.",
+  "releaseNote1013Share": "Sobrita weiterempfehlen: in Mein Sobrita oder am Zyklusende.",
+
+  "releaseNote1013Fixes": "Die Lampe steht nicht mehr hinter dem Regal, die Sprechblase verdeckt niemanden.",
 
   "releaseNote104Fixed": "Fixkosten laufen getrennt vom Tagesbudget. Sie erscheinen auf dem Startbildschirm und können dich vor der Fälligkeit erinnern.",
   "releaseNote104Decor": "Im Zuhause gibt es mehr zu platzieren: ein Bett, ein Regal, einen Teppich, ein Sideboard, ein Glas und einen Pouf.",

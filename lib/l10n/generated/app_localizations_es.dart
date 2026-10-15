@@ -2154,6 +2154,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'La casa en Inicio cambia con la hora del día.';
 
   @override
+  String get releaseNote1013Share =>
+      'Puedes recomendar Sobrita a un amigo desde Mi Sobrita, o al cerrar un ciclo en el que te sobró.';
+
+  @override
   String get releaseNote1013Fixes =>
       'La lámpara ya no se esconde tras la estantería y el globo ya no tapa a tu compañero.';
 
