@@ -138,7 +138,7 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
       Navigator.of(context).push(
         MaterialPageRoute<void>(
           builder: (_) => CollectionScreen(
-            openedFromDecorate: true,
+            origin: CollectionOrigin.decorate,
             initialKind: switch (_category) {
               RoomDecorCategory.rooms => CatalogKind.room,
               RoomDecorCategory.characters => CatalogKind.character,

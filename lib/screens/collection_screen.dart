@@ -8,6 +8,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/catalog_entry.dart';
 import '../models/room_design.dart';
+import '../services/app_telemetry.dart';
 import '../services/purchase_service.dart';
 import '../services/rewarded_ad_service.dart';
 import '../state/sobra_store.dart';
@@ -17,11 +18,17 @@ import '../widgets/pack_offer_dialog.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/store_refresh_button.dart';
 
+/// Where the collection was opened from.
+///
+/// Sent with the screen visit, so Analytics can tell which way in people
+/// actually use.
+enum CollectionOrigin { home, decorate, settings, settlement }
+
 class CollectionScreen extends StatefulWidget {
   const CollectionScreen({
     super.key,
+    required this.origin,
     this.priceSource = const PreviewCatalogPriceSource(),
-    this.openedFromDecorate = false,
     this.initialEntryId,
     this.initialKind = CatalogKind.character,
   });
@@ -30,13 +37,13 @@ class CollectionScreen extends StatefulWidget {
   /// kind of thing the user was looking at. [initialEntryId] wins over it.
   final CatalogKind initialKind;
 
-  /// Whether the decorate screen is the route directly underneath.
+  /// The screen directly underneath.
   ///
-  /// Decides what the "place it" action after an unlock does: going back is
-  /// right when they came from there, and stacking a second decorate screen
-  /// on top of the first is not. Opened from anywhere else there is nothing
-  /// to return to, so the action is not offered.
-  final bool openedFromDecorate;
+  /// Also decides what the "place it" action after an unlock does: going back
+  /// is right when they came from decorate, and stacking a second decorate
+  /// screen on top of the first is not. Opened from anywhere else there is
+  /// nothing to return to, so the action is not offered.
+  final CollectionOrigin origin;
 
   /// Opens this entry's detail on arrival. Used by the settlement card so
   /// the ad still plays here, not on the celebration screen.
@@ -70,6 +77,16 @@ class _CollectionScreenState extends State<CollectionScreen> {
   /// forever, whenever the answer is empty.
   bool _askedForAd = false;
   bool _openedInitial = false;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(
+      AppTelemetry.instance.screen(TelemetryScreen.collection, {
+        'origin': widget.origin,
+      }),
+    );
+  }
 
   @override
   void didChangeDependencies() {
@@ -274,7 +291,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
   /// screen from inside the collection would put the two surfaces in the
   /// order this split exists to undo.
   SnackBarAction? _placeItAction(AppLocalizations l10n) {
-    if (!widget.openedFromDecorate) return null;
+    if (widget.origin != CollectionOrigin.decorate) return null;
     return SnackBarAction(
       label: l10n.collectionPlaceIt,
       onPressed: () => Navigator.of(context).pop(),

@@ -30,7 +30,8 @@ Crashlytics are enabled in release builds; debug/profile builds default to no
 collection. Web and iOS previews skip Firebase initialization.
 
 Analytics records app/session information, the welcome/onboarding/recovery
-screens, the five main tabs, completed onboarding (`tutorial_complete`), and
+screens, the five main tabs, the collection and the screen it was opened from,
+completed onboarding (`tutorial_complete`), and
 successful new entries from the register form (`expense_recorded`,
 `income_recorded`), rewarded-ad results (`rewarded_ad_result`) and the unlocks
 they complete (`item_unlocked`), opened checkouts (`purchase_started`), fixed

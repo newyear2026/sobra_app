@@ -121,6 +121,7 @@ class SettlementScreen extends StatelessWidget {
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder: (_) => CollectionScreen(
+                          origin: CollectionOrigin.settlement,
                           initialEntryId: recommended.id,
                         ),
                       ),

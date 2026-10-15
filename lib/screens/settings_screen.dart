@@ -221,7 +221,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             label: l10n.collectionTitle,
             value: l10n.collectionSettingsValue,
             onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (_) => const CollectionScreen()),
+              MaterialPageRoute<void>(
+                builder: (_) =>
+                    const CollectionScreen(origin: CollectionOrigin.settings),
+              ),
             ),
           ),
           if (purchases != null) ...[

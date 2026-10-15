@@ -7,6 +7,7 @@ import 'package:sobra_app/data/catalog_preview_data.dart';
 import 'package:sobra_app/models/catalog_entry.dart';
 import 'package:sobra_app/models/room_design.dart';
 import 'package:sobra_app/screens/collection_screen.dart';
+import 'package:sobra_app/services/app_telemetry.dart';
 import 'package:sobra_app/services/rewarded_ad_service.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
@@ -56,7 +57,7 @@ void main() {
     WidgetTester tester,
     SobraStore store, {
     RewardedAds? ads,
-    bool openedFromDecorate = false,
+    CollectionOrigin origin = CollectionOrigin.settings,
     String? initialEntryId,
     CatalogPriceSource prices = const PreviewCatalogPriceSource(),
   }) async {
@@ -72,7 +73,7 @@ void main() {
         supportedLocales: sobraSupportedLocales,
         theme: buildSobraTheme(),
         home: CollectionScreen(
-          openedFromDecorate: openedFromDecorate,
+          origin: origin,
           initialEntryId: initialEntryId,
           priceSource: prices,
         ),
@@ -82,6 +83,27 @@ void main() {
     await tester.pumpWidget(app);
     await tester.pumpAndSettle();
   }
+
+  // Pushed over a tab, the collection is invisible to the tab reporting; this
+  // visit and its way in are the only record that anyone opened it.
+  testWidgets('arriving reports the visit and where it came from', (
+    tester,
+  ) async {
+    final sent = <(String, Map<String, Object>)>[];
+    AppTelemetry.instance = AppTelemetry(
+      sendEvent: (name, parameters) async => sent.add((name, parameters)),
+    );
+    addTearDown(() => AppTelemetry.instance = AppTelemetry());
+
+    await pump(tester, await loadStore(), origin: CollectionOrigin.settlement);
+
+    expect(sent.single.$1, 'screen_view');
+    expect(sent.single.$2, {
+      'screen_name': 'collection',
+      'screen_class': 'Sobrita',
+      'origin': 'settlement',
+    });
+  });
 
   // The header art is a picture of a room, so it has to be the user's room:
   // pinned to Casa clara it went stale the moment another one was equipped.
@@ -383,7 +405,7 @@ void main() {
       tester,
       store,
       ads: await readyAds(store),
-      openedFromDecorate: true,
+      origin: CollectionOrigin.decorate,
     );
     await tester.tap(find.text('OBJETOS'));
     await tester.pumpAndSettle();

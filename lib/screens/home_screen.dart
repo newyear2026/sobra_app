@@ -236,8 +236,10 @@ class HomeScreen extends StatelessWidget {
                       // opens the starter's card there.
                       onCallWithAds: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (_) =>
-                              CollectionScreen(initialEntryId: waiting.id),
+                          builder: (_) => CollectionScreen(
+                            origin: CollectionOrigin.home,
+                            initialEntryId: waiting.id,
+                          ),
                         ),
                       ),
                     ),

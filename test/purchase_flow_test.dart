@@ -83,7 +83,10 @@ void main() {
   testWidgets('the card shows the price the store quoted', (tester) async {
     await purchases.start();
 
-    await pump(tester, const CollectionScreen());
+    await pump(
+      tester,
+      const CollectionScreen(origin: CollectionOrigin.settings),
+    );
 
     // The preview source prices Bunny the same. Only the one the fake store
     // actually listed may carry a price now.
@@ -94,7 +97,10 @@ void main() {
     tester,
   ) async {
     await purchases.start();
-    await pump(tester, const CollectionScreen());
+    await pump(
+      tester,
+      const CollectionScreen(origin: CollectionOrigin.settings),
+    );
 
     await openPico(tester);
     await tester.tap(inDialog(r'COMPRAR · MX$ 39'));
@@ -116,7 +122,10 @@ void main() {
     tester,
   ) async {
     await purchases.start();
-    await pump(tester, const CollectionScreen());
+    await pump(
+      tester,
+      const CollectionScreen(origin: CollectionOrigin.settings),
+    );
 
     backend.emit([
       detailsFor(productId, PurchaseStatus.pending, needsCompleting: false),
@@ -135,7 +144,10 @@ void main() {
     tester,
   ) async {
     await purchases.start();
-    await pump(tester, const CollectionScreen());
+    await pump(
+      tester,
+      const CollectionScreen(origin: CollectionOrigin.settings),
+    );
 
     await openPico(tester);
     await tester.tap(inDialog(r'COMPRAR · MX$ 39'));
@@ -160,7 +172,10 @@ void main() {
     tester,
   ) async {
     await purchases.start();
-    await pump(tester, const CollectionScreen());
+    await pump(
+      tester,
+      const CollectionScreen(origin: CollectionOrigin.settings),
+    );
 
     await openPico(tester);
     await tester.tap(inDialog(r'COMPRAR · MX$ 39'));
@@ -181,7 +196,10 @@ void main() {
     tester,
   ) async {
     await purchases.start();
-    await pump(tester, const CollectionScreen());
+    await pump(
+      tester,
+      const CollectionScreen(origin: CollectionOrigin.settings),
+    );
 
     await openPico(tester);
     await tester.tap(inDialog(r'COMPRAR · MX$ 39'));
@@ -214,7 +232,10 @@ void main() {
     backend.available = false;
     await purchases.start();
 
-    await pump(tester, const CollectionScreen());
+    await pump(
+      tester,
+      const CollectionScreen(origin: CollectionOrigin.settings),
+    );
 
     expect(find.text('Tranqui'), findsOneWidget);
     expect(find.text(r'MX$ 39'), findsNothing);
@@ -314,7 +335,10 @@ void main() {
       productFor(CatalogPreviewData.packProductId, r'MX$ 89'),
     ];
     await purchases.start();
-    await pump(tester, const CollectionScreen());
+    await pump(
+      tester,
+      const CollectionScreen(origin: CollectionOrigin.settings),
+    );
 
     await tester.ensureVisible(find.text('Lana'));
     await tester.pumpAndSettle();

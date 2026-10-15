@@ -9,6 +9,10 @@ enum TelemetryScreen {
   register,
   budget,
   settings,
+
+  /// Pushed over a tab rather than one itself. `origin`: a
+  /// `CollectionOrigin`.
+  collection,
 }
 
 enum TelemetryEvent {
@@ -58,10 +62,14 @@ class AppTelemetry {
   final EventSender? sendEvent;
   final ErrorSender? sendError;
 
-  Future<void> screen(TelemetryScreen screen) => _safely(
+  Future<void> screen(
+    TelemetryScreen screen, [
+    Map<String, Enum> parameters = const {},
+  ]) => _safely(
     () => sendEvent?.call('screen_view', {
       'screen_name': screen.name,
       'screen_class': 'Sobrita',
+      for (final MapEntry(:key, :value) in parameters.entries) key: value.name,
     }),
   );
 
