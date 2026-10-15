@@ -9,6 +9,7 @@ import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import '../data/catalog_preview_data.dart';
 import '../models/catalog_entry.dart';
 import '../state/sobra_store.dart';
+import 'app_telemetry.dart';
 
 /// Why a purchase did not finish, in a form the view can word.
 ///
@@ -439,6 +440,7 @@ class SobraPurchases extends ChangeNotifier implements CatalogPriceSource {
       _report(PurchaseFailure.storeUnavailable);
       return;
     }
+    unawaited(AppTelemetry.instance.event(TelemetryEvent.purchaseStarted));
     _checkingOut[productId] = Timer(checkoutTimeout, () {
       _checkingOut.remove(productId);
       notifyListeners();

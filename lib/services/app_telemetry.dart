@@ -14,7 +14,28 @@ enum TelemetryScreen {
 enum TelemetryEvent {
   onboardingCompleted('tutorial_complete'),
   expenseRecorded('expense_recorded'),
-  incomeRecorded('income_recorded');
+  incomeRecorded('income_recorded'),
+
+  /// How a rewarded-ad run ended. `result`: a `RewardedAdOutcome`; `kind`:
+  /// the catalog kind the ad was for.
+  rewardedAdResult('rewarded_ad_result'),
+
+  /// An entry became owned through Sobra's own rules. `method`: how; `kind`:
+  /// what. Paid ones are already Firebase's automatic `in_app_purchase`.
+  itemUnlocked('item_unlocked'),
+
+  /// Play's checkout was opened. Set against `in_app_purchase` for the share
+  /// that finishes paying.
+  purchaseStarted('purchase_started'),
+  fixedExpenseAdded('fixed_expense_added'),
+  fixedPaymentRecorded('fixed_payment_recorded'),
+
+  /// One budget cycle closed.
+  cycleSettled('cycle_settled'),
+
+  /// The app was opened from a widget, the lock-screen entry or a reminder.
+  /// `destination`: where it was sent.
+  shortcutOpened('shortcut_opened');
 
   const TelemetryEvent(this.eventName);
   final String eventName;
@@ -40,8 +61,16 @@ class AppTelemetry {
     }),
   );
 
-  Future<void> event(TelemetryEvent event) =>
-      _safely(() => sendEvent?.call(event.eventName, const {}));
+  /// Parameters are enum values only, sent by name. No caller can pass an
+  /// amount, a note or any text a user typed, because none of them is one.
+  Future<void> event(
+    TelemetryEvent event, [
+    Map<String, Enum> parameters = const {},
+  ]) => _safely(
+    () => sendEvent?.call(event.eventName, {
+      for (final MapEntry(:key, :value) in parameters.entries) key: value.name,
+    }),
+  );
 
   Future<void> reportError(
     Object error,

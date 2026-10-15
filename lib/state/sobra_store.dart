@@ -22,6 +22,7 @@ import '../models/recurring_expense.dart';
 import '../models/room_design.dart';
 import '../models/store_failure.dart';
 import '../models/xp_event.dart';
+import '../services/app_telemetry.dart';
 
 typedef NowProvider = DateTime Function();
 
@@ -716,6 +717,9 @@ class SobraStore extends ChangeNotifier {
 
     if (run.closedCycles > 0 || trackingStarted) {
       await _save();
+    }
+    for (var i = 0; i < run.closedCycles; i++) {
+      unawaited(AppTelemetry.instance.event(TelemetryEvent.cycleSettled));
     }
     if (run.closedCycles > 0) {
       if (run.awardedXp > 0) {

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import '../models/money_movement.dart';
 import '../state/sobra_store.dart';
 import '../widgets/pixel_ui.dart';
+import 'app_telemetry.dart';
 
 enum SobraWidgetDestination {
   home,
@@ -305,6 +306,12 @@ abstract final class SobraWidgetSync {
       'budget' => SobraWidgetDestination.budget,
       _ => null,
     };
-    if (value != null) destination.value = value;
+    if (value == null) return;
+    destination.value = value;
+    unawaited(
+      AppTelemetry.instance.event(TelemetryEvent.shortcutOpened, {
+        'destination': value,
+      }),
+    );
   }
 }

@@ -32,7 +32,11 @@ collection. Web and iOS previews skip Firebase initialization.
 Analytics records app/session information, the welcome/onboarding/recovery
 screens, the five main tabs, completed onboarding (`tutorial_complete`), and
 successful new entries from the register form (`expense_recorded`,
-`income_recorded`). Custom events carry no financial amounts, notes, receipt
+`income_recorded`), rewarded-ad results (`rewarded_ad_result`) and the unlocks
+they complete (`item_unlocked`), opened checkouts (`purchase_started`), fixed
+expenses (`fixed_expense_added`, `fixed_payment_recorded`), closed cycles
+(`cycle_settled`), and opens from a widget, quick entry or reminder
+(`shortcut_opened`). Parameters are enum names only. Custom events carry no financial amounts, notes, receipt
 contents or user identifiers. Dart error reports contain the exception type and
 stack, not the exception message. Flutter framework errors are non-fatal;
 unhandled asynchronous errors are fatal. Native crashes are captured by the SDK.

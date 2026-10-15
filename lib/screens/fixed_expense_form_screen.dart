@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
@@ -5,6 +7,7 @@ import '../l10n/labels.dart';
 import '../models/expense_entry.dart';
 import '../models/pay_schedule.dart';
 import '../models/recurring_expense.dart';
+import '../services/app_telemetry.dart';
 import '../services/fixed_reminders.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
@@ -152,6 +155,9 @@ class _FixedExpenseFormScreenState extends State<FixedExpenseFormScreen> {
         await store.updateRecurringExpense(saved!);
       }
     });
+    if (ok && _existing == null) {
+      unawaited(AppTelemetry.instance.event(TelemetryEvent.fixedExpenseAdded));
+    }
     if (!mounted) return;
     // Asked when a reminder is actually wanted, not when the screen opens:
     // Android shows its prompt once or twice at most, and it should land

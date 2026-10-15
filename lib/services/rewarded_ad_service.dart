@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import '../models/catalog_entry.dart';
 import '../state/sobra_store.dart';
+import 'app_telemetry.dart';
 
 /// How one rewarded ad ended.
 ///
@@ -132,6 +133,33 @@ class RewardedAds extends ChangeNotifier {
   /// slot of the daily cap each while the user watched a single ad, and a
   /// double tap on a slow network is enough to cause it.
   Future<RewardedAdOutcome> watch(CatalogEntry entry) async {
+    // A tap refused by the busy guard or Sobra's rules never reached the
+    // network, so it is not a result worth counting.
+    if (isBusy) return RewardedAdOutcome.notAllowed;
+    if (availabilityFor(entry) != RewardedAdAvailability.available) {
+      return RewardedAdOutcome.notAllowed;
+    }
+    final outcome = await _run(entry);
+    final telemetry = AppTelemetry.instance;
+    unawaited(
+      telemetry.event(TelemetryEvent.rewardedAdResult, {
+        'result': outcome,
+        'kind': entry.kind,
+      }),
+    );
+    if (outcome == RewardedAdOutcome.counted &&
+        _store.ownsCatalogEntry(entry)) {
+      unawaited(
+        telemetry.event(TelemetryEvent.itemUnlocked, {
+          'method': entry.unlockMethod,
+          'kind': entry.kind,
+        }),
+      );
+    }
+    return outcome;
+  }
+
+  Future<RewardedAdOutcome> _run(CatalogEntry entry) async {
     if (isBusy) return RewardedAdOutcome.notAllowed;
     if (availabilityFor(entry) != RewardedAdAvailability.available) {
       return RewardedAdOutcome.notAllowed;

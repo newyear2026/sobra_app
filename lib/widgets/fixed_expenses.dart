@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
@@ -6,6 +8,7 @@ import '../models/currency.dart';
 import '../models/expense_entry.dart';
 import '../models/recurring_expense.dart';
 import '../screens/fixed_expense_form_screen.dart';
+import '../services/app_telemetry.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import 'pixel_ui.dart';
@@ -302,6 +305,11 @@ class _FixedPaymentSheetState extends State<_FixedPaymentSheet> {
         paymentMethod: _method,
       ),
     );
+    if (saved) {
+      unawaited(
+        AppTelemetry.instance.event(TelemetryEvent.fixedPaymentRecorded),
+      );
+    }
     if (!mounted) return;
     setState(() => _saving = false);
     if (!saved) return;
@@ -568,6 +576,9 @@ class FixedDueCard extends StatelessWidget {
       ),
     );
     if (saved) {
+      unawaited(
+        AppTelemetry.instance.event(TelemetryEvent.fixedPaymentRecorded),
+      );
       messenger.showSnackBar(
         SnackBar(content: Text(l10n.fixedPaymentSaved(due.expense.name))),
       );
