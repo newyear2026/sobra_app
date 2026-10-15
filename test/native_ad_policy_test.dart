@@ -35,7 +35,7 @@ void main() {
     expect(ads.canOffer, isTrue);
   });
 
-  test('one impression per visit and two per local day', () async {
+  test('one impression per visit and five minutes between ads', () async {
     final store = await loadStore();
     final ads = NativeAds(store: store, graceDays: 0)..setSdkReady(true);
 
@@ -43,23 +43,49 @@ void main() {
     expect(ads.canOffer, isTrue);
     ads.recordImpression();
     await Future<void>.delayed(Duration.zero);
-    expect(store.nativeAdImpressionsToday, 1);
+    expect(store.lastNativeAdImpressionAt, now);
     expect(ads.canOffer, isFalse);
     expect(ads.shouldPlace, isTrue);
 
-    ads.endVisit();
-    ads.startVisit();
-    expect(ads.canOffer, isTrue);
-    ads.recordImpression();
-    await Future<void>.delayed(Duration.zero);
-    expect(store.nativeAdImpressionsToday, 2);
-
+    // Flipping tabs inside the gap serves nothing.
+    now = now.add(const Duration(minutes: 4, seconds: 59));
     ads.endVisit();
     ads.startVisit();
     expect(ads.canOffer, isFalse);
+    expect(ads.shouldPlace, isFalse);
 
-    now = DateTime(2026, 9, 16, 10);
-    expect(store.nativeAdImpressionsToday, 0);
+    now = now.add(const Duration(seconds: 1));
+    ads.endVisit();
+    ads.startVisit();
+    expect(ads.canOffer, isTrue);
+  });
+
+  // The daily cap is gone: a ledger opened all day long keeps a place for
+  // an ad on every visit that comes after the gap.
+  test('there is no daily limit past the gap', () async {
+    final store = await loadStore();
+    final ads = NativeAds(store: store, graceDays: 0)..setSdkReady(true);
+
+    for (var i = 0; i < 6; i++) {
+      ads.endVisit();
+      ads.startVisit();
+      expect(ads.canOffer, isTrue, reason: 'visit $i');
+      ads.recordImpression();
+      await pumpEventQueue();
+      now = now.add(const Duration(minutes: 30));
+    }
+  });
+
+  test('a clock set back past the last ad does not hold ads', () async {
+    final store = await loadStore();
+    final ads = NativeAds(store: store, graceDays: 0)..setSdkReady(true);
+    ads.startVisit();
+    ads.recordImpression();
+    await pumpEventQueue();
+
+    now = now.subtract(const Duration(hours: 2));
+    ads.endVisit();
+    ads.startVisit();
     expect(ads.canOffer, isTrue);
   });
 
@@ -75,12 +101,37 @@ void main() {
     expect(ads.shouldPlace, isFalse);
   });
 
-  test('only a real recorded impression spends the persisted cap', () async {
+  test('the last impression survives a restart', () async {
     final store = await loadStore();
-    expect(store.nativeAdImpressionsToday, 0);
+    expect(store.lastNativeAdImpressionAt, isNull);
 
-    expect(await store.recordNativeAdImpression(), isTrue);
-    expect((await loadStore()).nativeAdImpressionsToday, 1);
+    await store.recordNativeAdImpression();
+    final reopened = await loadStore();
+    expect(reopened.lastNativeAdImpressionAt, now);
+    expect(
+      reopened.nativeAdIntervalElapsed(const Duration(minutes: 5)),
+      isFalse,
+    );
+  });
+
+  // States written by the daily-cap builds say how many, not when.
+  test('a state from the daily-cap builds loads without a gap', () async {
+    await loadStore();
+    final preferences = await SharedPreferences.getInstance();
+    final saved =
+        jsonDecode(preferences.getString('sobra_state_v2')!)
+            as Map<String, dynamic>;
+    saved
+      ..remove('lastNativeAdImpressionAt')
+      ..['nativeAdDay'] = '2026-09-15'
+      ..['nativeAdImpressionsOnDay'] = 2;
+    await preferences.setString('sobra_state_v2', jsonEncode(saved));
+
+    final store = await loadStore();
+
+    expect(store.hasStorageError, isFalse);
+    expect(store.lastNativeAdImpressionAt, isNull);
+    expect(store.nativeAdIntervalElapsed(const Duration(minutes: 5)), isTrue);
   });
 
   testWidgets('only a real transition into transactions starts a visit', (
@@ -115,7 +166,7 @@ void main() {
 
   // The ad becomes visible exactly as the user taps another tab. Google has
   // billed the impression either way; dropping it locally is what lets the
-  // next visit serve past the daily limit.
+  // next visit serve inside the gap.
   test(
     'an impression arriving after the visit ends is still counted',
     () async {
@@ -128,14 +179,7 @@ void main() {
       ads.recordImpression();
       await pumpEventQueue();
 
-      expect(store.nativeAdImpressionsToday, 1);
-
-      // And the day's second slot is the last one, not the third.
-      ads.startVisit();
-      ads.recordImpression();
-      await pumpEventQueue();
-      expect(store.nativeAdImpressionsToday, 2);
-
+      expect(store.lastNativeAdImpressionAt, now);
       ads.startVisit();
       expect(ads.canOffer, isFalse);
     },
@@ -147,10 +191,13 @@ void main() {
 
     ads.startVisit();
     ads.recordImpression();
+    await pumpEventQueue();
+    now = now.add(const Duration(minutes: 1));
     ads.recordImpression();
     await pumpEventQueue();
 
-    expect(store.nativeAdImpressionsToday, 1);
+    // The second callback did not move the gap's start a minute later.
+    expect(store.lastNativeAdImpressionAt, DateTime(2026, 9, 15, 10));
   });
 
   // Asked from inside a build, so it must answer rather than throw. A state

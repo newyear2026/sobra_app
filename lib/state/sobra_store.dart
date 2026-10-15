@@ -214,9 +214,12 @@ class SobraStore extends ChangeNotifier {
   /// grace period can be introduced without another state migration.
   String? _nativeAdInstallDay;
 
-  /// The local day [_nativeAdImpressionsOnDay] belongs to.
-  String? _nativeAdDay;
-  int _nativeAdImpressionsOnDay = 0;
+  /// When Google last reported a native impression, or null for never.
+  ///
+  /// A moment rather than a per-day count: the limit is a gap between ads,
+  /// not a number of them, so somebody who opens the ledger again in the
+  /// evening sees one while somebody flipping tabs does not.
+  DateTime? _lastNativeAdImpressionAt;
 
   /// The local day the user answered "Todavía no" on Inicio's fixed-expense
   /// card, which keeps the card away for the rest of that day only.
@@ -1871,7 +1874,7 @@ class SobraStore extends ChangeNotifier {
       'irregularCycleStart',
       'biweeklyAnchor',
       'nativeAdInstallDay',
-      'nativeAdDay',
+      'lastNativeAdImpressionAt',
       'rewardedAdDay',
       'fixedHomeSnoozedDay',
       'recordedDays',
@@ -1932,7 +1935,7 @@ class SobraStore extends ChangeNotifier {
     require(successfulCycles >= 0);
     require(categoryLimits.values.every((amount) => amount >= 0));
     require(_rewardedAdProgress.values.every((count) => count >= 0));
-    require(_rewardedAdsWatchedOnDay >= 0 && _nativeAdImpressionsOnDay >= 0);
+    require(_rewardedAdsWatchedOnDay >= 0);
     schedule(paySchedule);
     if (pendingPaySchedule != null) schedule(pendingPaySchedule!);
     require(
@@ -2294,9 +2297,21 @@ class SobraStore extends ChangeNotifier {
   String? rewardedAdLastEarnedDateFor(String id) =>
       _rewardedAdLastEarnedDate[id];
 
-  /// Native impressions counted today. A stale stored day reads as zero.
-  int get nativeAdImpressionsToday =>
-      _nativeAdDay == todayKey ? _nativeAdImpressionsOnDay : 0;
+  /// When the last native impression was reported, or null for never.
+  DateTime? get lastNativeAdImpressionAt => _lastNativeAdImpressionAt;
+
+  /// Whether at least [interval] has passed since the last native impression.
+  ///
+  /// Asked from inside a build, like [nativeAdGraceComplete], so it answers
+  /// rather than throws. A stored moment later than now means the clock was
+  /// set back; it reads as elapsed, because holding ads until the clock
+  /// catches up would hide them for as long as the clock was wrong.
+  bool nativeAdIntervalElapsed(Duration interval) {
+    final last = _lastNativeAdImpressionAt;
+    if (last == null) return true;
+    final now = _now();
+    return last.isAfter(now) || now.difference(last) >= interval;
+  }
 
   /// Whether the install/update grace period has elapsed.
   ///
@@ -2317,19 +2332,14 @@ class SobraStore extends ChangeNotifier {
 
   /// Records a native ad only after the SDK reports a real impression.
   ///
-  /// The day and cap are checked again here so two callbacks racing one
-  /// another cannot both spend the last slot.
-  Future<bool> recordNativeAdImpression({int maxPerDay = 2}) => _write(
-    () async {
-      if (maxPerDay <= 0 || nativeAdImpressionsToday >= maxPerDay) return false;
-      final count = nativeAdImpressionsToday;
-      _nativeAdDay = todayKey;
-      _nativeAdImpressionsOnDay = count + 1;
-      await _save();
-      notifyListeners();
-      return true;
-    },
-  );
+  /// Always moves the moment forward. An impression Google has counted
+  /// starts the gap whether or not the previous one had ended, so two
+  /// callbacks racing one another settle on the later of them.
+  Future<void> recordNativeAdImpression() => _write(() async {
+    _lastNativeAdImpressionAt = _now();
+    await _save();
+    notifyListeners();
+  });
 
   /// Whether a rewarded view would count toward [entry] right now.
   ///
@@ -2892,8 +2902,7 @@ class SobraStore extends ChangeNotifier {
     _rewardedAdsWatchedOnDay = 0;
     _rewardedAdLastEarnedDate.clear();
     _nativeAdInstallDay = todayKey;
-    _nativeAdDay = null;
-    _nativeAdImpressionsOnDay = 0;
+    _lastNativeAdImpressionAt = null;
     _fixedHomeSnoozedDay = null;
     countedCashCentavos = 0;
     expectedCashCentavos = 0;
@@ -2996,8 +3005,7 @@ class SobraStore extends ChangeNotifier {
       ..clear()
       ..addAll(other._rewardedAdLastEarnedDate);
     _nativeAdInstallDay = other._nativeAdInstallDay;
-    _nativeAdDay = other._nativeAdDay;
-    _nativeAdImpressionsOnDay = other._nativeAdImpressionsOnDay;
+    _lastNativeAdImpressionAt = other._lastNativeAdImpressionAt;
     _fixedHomeSnoozedDay = other._fixedHomeSnoozedDay;
     _baseBudgetCentavos = other._baseBudgetCentavos;
     _hasBudget = other._hasBudget;
@@ -3167,9 +3175,13 @@ class SobraStore extends ChangeNotifier {
         installDay != null && DateTime.tryParse(installDay) != null
         ? installDay
         : null;
-    _nativeAdDay = json['nativeAdDay'] as String?;
-    _nativeAdImpressionsOnDay =
-        (json['nativeAdImpressionsOnDay'] as num?)?.toInt() ?? 0;
+    // States from the daily-cap builds carry nativeAdDay and a count instead.
+    // Neither says when the last ad was, so they are left behind and the
+    // first visit after the update may show one.
+    final lastNativeAd = json['lastNativeAdImpressionAt'] as String?;
+    _lastNativeAdImpressionAt = lastNativeAd == null
+        ? null
+        : DateTime.tryParse(lastNativeAd);
     _fixedHomeSnoozedDay = json['fixedHomeSnoozedDay'] as String?;
     countedCashCentavos = (json['countedCashCentavos'] as num).toInt();
     expectedCashCentavos = (json['expectedCashCentavos'] as num).toInt();
@@ -3306,8 +3318,7 @@ class SobraStore extends ChangeNotifier {
     'rewardedAdsWatchedOnDay': _rewardedAdsWatchedOnDay,
     'rewardedAdLastEarnedDate': _rewardedAdLastEarnedDate,
     'nativeAdInstallDay': _nativeAdInstallDay,
-    'nativeAdDay': _nativeAdDay,
-    'nativeAdImpressionsOnDay': _nativeAdImpressionsOnDay,
+    'lastNativeAdImpressionAt': _lastNativeAdImpressionAt?.toIso8601String(),
     'fixedHomeSnoozedDay': _fixedHomeSnoozedDay,
     'cycleBudgetExtras': _cycleBudgetExtras,
     'countedCashCentavos': countedCashCentavos,
