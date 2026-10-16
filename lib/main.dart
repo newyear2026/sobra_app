@@ -50,7 +50,12 @@ Future<void> main() async {
       systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
-  final store = await SobraStore.load();
+  // The phone's country only seeds a brand-new ledger's currency; Ajustes
+  // changes it, and an existing ledger never follows the phone.
+  final store = await SobraStore.load(
+    deviceCountry:
+        WidgetsBinding.instance.platformDispatcher.locale.countryCode,
+  );
   await SobraWidgetSync.initialize(store);
   await SobraQuickEntry.initialize();
   SobraFixedReminders.initialize(store);

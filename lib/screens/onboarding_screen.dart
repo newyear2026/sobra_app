@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
+import '../models/currency.dart';
 import '../models/xp_event.dart';
 import '../models/pay_schedule.dart';
 import '../services/app_telemetry.dart';
@@ -19,13 +20,6 @@ class OnboardingScreen extends StatefulWidget {
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
-
-/// The figure the budget field opens on, for the user to write over.
-///
-/// A count of hundredths like every other amount, so it reads as $6,000 in the
-/// peso and ¥6,000 in the yen — a starting point in both, and nobody's real
-/// budget in either.
-const _suggestedBudgetCentavos = 600000;
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final _pageController = PageController();
@@ -52,9 +46,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       // is made, because how it is spelled depends on the currency and no
       // initialiser can reach the scope holding it. Once only: a later rebuild
       // must not write over what the user has typed since.
+      // A figure for the user to write over, in the money they start with.
+      final currency = SobraScope.of(context).currency;
       _budgetController.text = amountFieldText(
-        SobraScope.of(context).currency,
-        _suggestedBudgetCentavos,
+        currency,
+        currency.suggestedBudgetUnits * Currency.minorUnitsPerUnit,
       );
     }
     if (_loadedCharacterChoice) return;
@@ -169,7 +165,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     AppLocalizations.of(context),
     () async {
       await store.completeOnboarding();
-      unawaited(AppTelemetry.instance.event(TelemetryEvent.onboardingCompleted));
+      unawaited(
+        AppTelemetry.instance.event(TelemetryEvent.onboardingCompleted),
+      );
     },
   );
 

@@ -109,6 +109,65 @@ enum Currency {
     (value) => value.code == code,
     orElse: () => Currency.mxn,
   );
+
+  /// The money a new user starts with, from the phone's country.
+  ///
+  /// Only a starting point, chosen once when there is no ledger yet: the
+  /// picker in Ajustes changes it, and nothing saved ever follows the phone
+  /// afterwards. A country whose money is not on this list, or a phone that
+  /// names no country, starts in Mexican pesos as every install did before.
+  static Currency forCountry(String? countryCode) =>
+      _byCountry[countryCode?.toUpperCase()] ?? Currency.mxn;
+
+  /// What onboarding fills the budget field with, in whole units.
+  ///
+  /// Roughly what MX\$6,000 is in each, rounded to a figure somebody might
+  /// write: a starting point to overwrite, never anybody's real budget. One
+  /// number for every currency made \$6,000 a peso budget and ₩6,000 the
+  /// price of a coffee.
+  int get suggestedBudgetUnits => switch (this) {
+    Currency.mxn => 6000,
+    Currency.usd => 300,
+    Currency.cad => 450,
+    Currency.cop => 1300000,
+    Currency.ars => 400000,
+    Currency.clp => 300000,
+    Currency.pen => 1200,
+    Currency.brl => 1800,
+    Currency.eur => 300,
+    Currency.gbp => 250,
+    Currency.jpy => 50000,
+    Currency.krw => 450000,
+    Currency.aud => 500,
+  };
+
+  static const _byCountry = <String, Currency>{
+    'MX': Currency.mxn,
+    // The dollar, and the countries that spend it as their own.
+    'US': Currency.usd, 'PR': Currency.usd, 'EC': Currency.usd,
+    'SV': Currency.usd, 'PA': Currency.usd,
+    'CA': Currency.cad,
+    'CO': Currency.cop,
+    'AR': Currency.ars,
+    'CL': Currency.clp,
+    'PE': Currency.pen,
+    'BR': Currency.brl,
+    // The euro area as of 2026, Bulgaria included, and the small states
+    // that use the euro by agreement.
+    'AT': Currency.eur, 'BE': Currency.eur, 'BG': Currency.eur,
+    'HR': Currency.eur, 'CY': Currency.eur, 'EE': Currency.eur,
+    'FI': Currency.eur, 'FR': Currency.eur, 'DE': Currency.eur,
+    'GR': Currency.eur, 'IE': Currency.eur, 'IT': Currency.eur,
+    'LV': Currency.eur, 'LT': Currency.eur, 'LU': Currency.eur,
+    'MT': Currency.eur, 'NL': Currency.eur, 'PT': Currency.eur,
+    'SK': Currency.eur, 'SI': Currency.eur, 'ES': Currency.eur,
+    'AD': Currency.eur, 'MC': Currency.eur, 'SM': Currency.eur,
+    'VA': Currency.eur,
+    'GB': Currency.gbp,
+    'JP': Currency.jpy,
+    'KR': Currency.krw,
+    'AU': Currency.aud,
+  };
 }
 
 /// The headings the currency picker groups its rows under.

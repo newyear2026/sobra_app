@@ -281,6 +281,10 @@ class SobraStore extends ChangeNotifier {
   /// What Sobra labels money in. Changing it relabels; it never converts.
   Currency currency = Currency.mxn;
 
+  /// The phone's country as [load] was told it. Only [_initializeNewUser]
+  /// reads it, to start a new ledger in that country's money.
+  String? _deviceCountry;
+
   /// The language the user picked, or null to follow the phone.
   ///
   /// Stored as a bare language code rather than a full locale: Sobra's Spanish
@@ -344,16 +348,21 @@ class SobraStore extends ChangeNotifier {
 
   Map<ExpenseCategory, int> categoryLimits = _categoryLimitsForBudget(600000);
 
+  /// [deviceCountry] picks the currency a brand-new ledger starts in, via
+  /// [Currency.forCountry]. It is read once and never again: a saved ledger
+  /// keeps the currency it has. Omitted, a new ledger starts in pesos, which
+  /// is what every test that does not care gets.
   static Future<SobraStore> load({
     NowProvider? now,
     int? rewardedAdsPerDay,
+    String? deviceCountry,
   }) async {
     final preferences = await SharedPreferences.getInstance();
     final store = SobraStore._(
       preferences,
       now ?? DateTime.now,
       rewardedAdsPerDay,
-    );
+    ).._deviceCountry = deviceCountry;
     final saved = preferences.getString(_storageKey);
     store._persistedJson = saved;
     if (saved == null) {
@@ -2886,6 +2895,7 @@ class SobraStore extends ChangeNotifier {
   }
 
   void _initializeNewUser() {
+    currency = Currency.forCountry(_deviceCountry);
     _transactions.clear();
     _incomes.clear();
     _cashReconciliations.clear();
