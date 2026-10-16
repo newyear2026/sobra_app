@@ -18,6 +18,13 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-2706404530136726~6701842938" />
+        <!-- Meta App Events: lets Meta's app-install campaigns see the installs
+             and opens they caused. Only release builds turn the automatic
+             events and the advertising ID on (see build.gradle.kts). -->
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />
+        <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token" />
+        <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled" android:value="${metaAppEventsEnabled}" />
+        <meta-data android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled" android:value="${metaAppEventsEnabled}" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

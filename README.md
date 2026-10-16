@@ -63,8 +63,23 @@ Select **Sobrita Android** in Crashlytics. Analytics shares one property across
 the apps, so filter reports by Sobrita's app/data stream when reviewing its
 users, events and retention.
 
+## Meta App Events (Android)
+
+Release builds include Meta's `facebook-core` SDK so Meta app-install
+campaigns can see the installs and opens they caused. The SDK starts itself
+from `AndroidManifest.xml`; no Dart code calls it. Only release builds turn on
+its automatic events and advertising-ID collection (`metaAppEventsEnabled` in
+`android/app/build.gradle.kts`), so debug and profile runs send nothing.
+
+The app ID and client token are in `android/app/src/main/res/values/strings.xml`
+(Meta app `2109763983239758`, App settings > Advanced). To verify delivery,
+install a release build on a test device, open it, and watch Events Manager >
+Sobrita > Test events for the app activation event.
+
 Before publishing the next release, publish the updated privacy policy and
-update Play Console's Data safety answers for Analytics and Crashlytics. The
+update Play Console's Data safety answers for Analytics, Crashlytics and Meta
+App Events (device or other IDs and app interactions, shared for advertising
+and analytics). The
 policy sources in `docs/` remain drafts with the existing identity placeholders.
 Firebase's SDK disclosure reference:
 https://firebase.google.com/docs/android/play-data-disclosure

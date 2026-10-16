@@ -13,7 +13,7 @@
 > 기준 문서: 이 Markdown 파일이 정책 원본입니다. `privacy-policy.html`은 스토어에 제출할 공개 웹페이지입니다.
 
 - 시행일 / Fecha de entrada en vigor / Effective date: 2026-09-15
-- 최종 업데이트 / Última actualización / Last updated: 2026-10-15
+- 최종 업데이트 / Última actualización / Last updated: 2026-10-16
 - 앱 / Aplicación / App: **Sobrita** (`com.sobra.app.sobra_app`)
 
 ---
@@ -77,6 +77,12 @@ Android 버전은 Google Analytics for Firebase와 Firebase Crashlytics를 사�
 
 개발자가 보내는 분석 이벤트에는 거래 금액, 예산, 메모, 영수증 사진 또는 사용자 식별자를 넣지 않습니다. Dart 오류는 원문 메시지 대신 오류 유형과 스택을 전송합니다. Analytics의 광고 ID 수집과 광고 개인화 신호는 비활성화하며, AdMob의 동의 처리는 별도로 유지합니다. 이 설정이 모든 분석·진단 식별자의 수집을 끄는 것은 아닙니다. 수집 데이터의 보관·삭제는 Firebase·Google Analytics의 설정과 Google 정책을 따릅니다. 자세한 내용은 [Firebase 데이터 공개 안내](https://firebase.google.com/docs/android/play-data-disclosure)를 확인하세요.
 
+### 3.2. 광고 성과 측정(Meta)
+
+Android 버전은 Facebook·Instagram에 게재한 Sobrita 광고가 설치와 실행으로 이어졌는지 측정하기 위해 Meta Platforms의 Facebook SDK(App Events)를 사용합니다. 정식 배포 빌드에서 SDK는 앱 설치·실행 이벤트, 앱 버전, 운영체제·기기 정보(모델, 언어, 시간대 등), Android 광고 ID, Google Play 설치 리퍼러(어떤 광고나 경로로 설치했는지), IP 주소를 자동으로 Meta에 전송하며, Meta 앱 설정에 따라 Google Play 인앱 구매 이벤트(상품 ID·가격·통화)가 포함될 수 있습니다. 개발자는 거래 금액, 예산, 메모, 영수증 사진 또는 앱 안의 기록을 Meta에 보내지 않습니다.
+
+Meta는 이 정보를 광고 성과 측정·귀속과 광고 전달 최적화에 사용하며, Meta의 정책에 따라 자체 목적으로 처리할 수 있습니다. 사용자는 Android 설정의 광고 메뉴에서 광고 ID를 재설정하거나 삭제할 수 있습니다. 보관·삭제는 Meta의 정책을 따릅니다. 자세한 내용은 [Meta 개인정보처리방침](https://www.facebook.com/privacy/policy/)을 확인하세요.
+
 ### 4. 앱 내 구매
 
 유료 아이템을 구매하거나 복원할 때 결제는 Google Play 또는 Apple App Store가 처리합니다. Sobrita는 카드번호나 은행계좌 정보를 직접 수집하지 않습니다. 앱은 상품 제공과 복원을 위해 상품 ID, 구매 상태, 구매 식별자 또는 검증 정보와 같은 결제 결과를 앱 마켓에서 받을 수 있습니다. 앱 마켓의 정보 처리는 각 제공자의 개인정보처리방침을 따릅니다.
@@ -86,7 +92,7 @@ Android 버전은 Google Analytics for Firebase와 Firebase Crashlytics를 사�
 - **카메라 및 사진:** 사용자가 영수증 사진을 직접 촬영하거나 선택할 때만 사용합니다.
 - **알림:** 사용자가 빠른 지출 입력 알림을 켰을 때 사용합니다. 기기 설정에서 언제든 끌 수 있습니다.
 - **부팅 완료:** 사용자가 켜 둔 빠른 입력 알림을 재부팅 후 복원하는 데 사용합니다.
-- **인터넷:** 광고·동의 메시지, 앱 마켓 구매, 사용 통계 및 오류 진단에 사용합니다.
+- **인터넷:** 광고·동의 메시지, 앱 마켓 구매, 사용 통계, 광고 성과 측정 및 오류 진단에 사용합니다.
 
 ### 6. 제3자 제공, 판매 및 국외 처리
 
@@ -94,8 +100,9 @@ Android 버전은 Google Analytics for Firebase와 Firebase Crashlytics를 사�
 
 - Google: Firebase Analytics·Crashlytics, AdMob 광고, UMP 동의 관리, Google Play 결제 및 Android 백업
 - Apple: App Store 결제 및 기기 백업(해당 플랫폼에서 사용하는 경우)
+- Meta: Facebook SDK를 통한 광고 성과 측정
 
-Google과 Apple은 사용자의 거주 국가 밖에서 정보를 처리할 수 있습니다. 구체적인 처리 장소와 보호조치는 각 회사의 정책을 따릅니다. 법률상 의무, 법적 절차, 권리·안전 보호를 위해 필요한 경우에도 법이 허용하는 범위에서 정보를 공개할 수 있습니다.
+Google, Apple과 Meta는 사용자의 거주 국가 밖에서 정보를 처리할 수 있습니다. 구체적인 처리 장소와 보호조치는 각 회사의 정책을 따릅니다. 법률상 의무, 법적 절차, 권리·안전 보호를 위해 필요한 경우에도 법이 허용하는 범위에서 정보를 공개할 수 있습니다.
 
 ### 7. 보관 및 삭제
 
@@ -103,7 +110,7 @@ Google과 Apple은 사용자의 거주 국가 밖에서 정보를 처리할 수 
 
 개발자는 핵심 가계부 정보를 서버에 보관하지 않으므로 사용자의 기기 안에 있는 기록을 원격으로 열람하거나 삭제할 수 없습니다. 기기 데이터는 앱에서 개별 기록을 삭제하거나, 운영체제 설정에서 앱 데이터를 삭제하거나, 앱을 제거하여 삭제할 수 있습니다. 운영체제 백업 사본은 Google 또는 Apple 계정의 백업 설정에서 관리해야 합니다.
 
-광고 및 결제와 관련해 Google 또는 Apple이 처리하는 정보의 보관·삭제는 각 제공자의 정책과 사용자의 계정 설정을 따릅니다.
+광고 및 결제와 관련해 Google, Apple 또는 Meta가 처리하는 정보의 보관·삭제는 각 제공자의 정책과 사용자의 계정 설정을 따릅니다.
 
 ### 8. 보안
 
@@ -119,7 +126,7 @@ Google과 Apple은 사용자의 거주 국가 밖에서 정보를 처리할 수 
 - 원하는 조치와 관련 정보에 대한 설명
 - 본인 확인에 합리적으로 필요한 정보
 
-개발자가 보유하지 않는 기기 내 데이터는 위 7절의 방법으로 직접 관리해야 합니다. Google 또는 Apple이 독립적으로 처리하는 정보에 관한 요청은 해당 제공자에게 제출해야 합니다.
+개발자가 보유하지 않는 기기 내 데이터는 위 7절의 방법으로 직접 관리해야 합니다. Google, Apple 또는 Meta가 독립적으로 처리하는 정보에 관한 요청은 해당 제공자에게 제출해야 합니다.
 
 ### 10. 아동의 개인정보
 
@@ -192,6 +199,12 @@ La versión Android utiliza Google Analytics for Firebase y Firebase Crashlytics
 
 Los eventos definidos por el desarrollador no incluyen importes, presupuestos, notas, fotografías ni identificadores de usuario. Los errores Dart se envían como tipo y traza, sin el mensaje original. La recopilación del ID publicitario y las señales de personalización publicitaria de Analytics están desactivadas; AdMob mantiene su propio flujo de consentimiento. Esto no desactiva todos los identificadores analíticos o de diagnóstico. La conservación y eliminación dependen de la configuración de Firebase y Google Analytics y de las políticas de Google. Consulta la [información de datos de Firebase](https://firebase.google.com/docs/android/play-data-disclosure).
 
+### 3.2. Medición de anuncios (Meta)
+
+La versión Android utiliza el SDK de Facebook (App Events) de Meta Platforms para medir si los anuncios de Sobrita en Facebook e Instagram generaron instalaciones y aperturas. En las versiones publicadas, el SDK envía automáticamente a Meta los eventos de instalación y apertura de la aplicación, la versión de la aplicación, datos del sistema y del dispositivo (como modelo, idioma y zona horaria), el ID de publicidad de Android, el referente de instalación de Google Play (el anuncio o medio que llevó a la instalación) y la dirección IP; según la configuración de la aplicación en Meta, también pueden incluirse eventos de compras en Google Play (ID del producto, precio y moneda). El responsable no envía a Meta importes, presupuestos, notas, fotografías de recibos ni registros de la Aplicación.
+
+Meta utiliza esta información para medir y atribuir anuncios y optimizar su entrega, y puede tratarla para sus propios fines conforme a sus políticas. La persona usuaria puede restablecer o eliminar el ID de publicidad en los ajustes de anuncios de Android. La conservación y eliminación se rigen por las políticas de Meta. Consulta la [Política de privacidad de Meta](https://www.facebook.com/privacy/policy/).
+
 ### 4. Compras dentro de la Aplicación
 
 Google Play o Apple App Store procesan el pago y la restauración de artículos de pago. Sobrita no recibe directamente números de tarjeta ni datos bancarios. Para entregar y restaurar una compra, la Aplicación puede recibir de la tienda el ID del producto, el estado de compra, un identificador de compra o información de verificación. El tratamiento de la tienda se rige por la política de privacidad de su proveedor.
@@ -201,7 +214,7 @@ Google Play o Apple App Store procesan el pago y la restauración de artículos 
 - **Cámara y fotos:** se utilizan únicamente cuando la persona usuaria toma o selecciona una foto de un recibo.
 - **Notificaciones:** se utilizan si la persona usuaria habilita la notificación de acceso rápido. Pueden deshabilitarse en los ajustes del dispositivo.
 - **Inicio del dispositivo:** permite restaurar la notificación de acceso rápido que la persona usuaria dejó habilitada.
-- **Internet:** se utiliza para publicidad, mensajes de consentimiento, compras de la tienda, estadísticas de uso y diagnóstico de errores.
+- **Internet:** se utiliza para publicidad, mensajes de consentimiento, compras de la tienda, estadísticas de uso, medición de anuncios y diagnóstico de errores.
 
 ### 6. Terceros, venta y transferencias internacionales
 
@@ -209,8 +222,9 @@ El responsable no vende el contenido de los registros financieros ni las fotogra
 
 - Google: Firebase Analytics y Crashlytics, AdMob, UMP, compras de Google Play y respaldo de Android.
 - Apple: compras de App Store y respaldo del dispositivo, cuando corresponda.
+- Meta: medición de anuncios mediante el SDK de Facebook.
 
-Google y Apple pueden tratar información fuera del país de residencia de la persona usuaria. Las ubicaciones y salvaguardas concretas se rigen por sus respectivas políticas. También podrán comunicarse datos cuando sea necesario para cumplir una obligación legal, un proceso jurídico o proteger derechos y seguridad, dentro de lo permitido por la ley.
+Google, Apple y Meta pueden tratar información fuera del país de residencia de la persona usuaria. Las ubicaciones y salvaguardas concretas se rigen por sus respectivas políticas. También podrán comunicarse datos cuando sea necesario para cumplir una obligación legal, un proceso jurídico o proteger derechos y seguridad, dentro de lo permitido por la ley.
 
 ### 7. Conservación y eliminación
 
@@ -218,7 +232,7 @@ Los datos locales permanecen en el dispositivo hasta que la persona usuaria borr
 
 Como el responsable no conserva los registros principales en un servidor, no puede acceder ni borrarlos de forma remota. La persona usuaria puede borrar movimientos dentro de la Aplicación, borrar los datos desde el sistema operativo o desinstalarla. Los respaldos deben administrarse en la cuenta de Google o Apple correspondiente.
 
-La conservación y eliminación de datos publicitarios o de compras tratados por Google o Apple se rigen por las políticas y controles de cuenta de cada proveedor.
+La conservación y eliminación de datos publicitarios o de compras tratados por Google, Apple o Meta se rigen por las políticas y controles de cuenta de cada proveedor.
 
 ### 8. Seguridad
 
@@ -234,7 +248,7 @@ Para ejercerlos, envía a `{{PRIVACY_EMAIL}}`:
 - descripción clara del derecho que deseas ejercer y de la información relacionada; y
 - información razonablemente necesaria para verificar la identidad.
 
-Los datos que solo existen en el dispositivo deben gestionarse mediante los controles indicados en la sección 7. Para datos tratados de manera independiente por Google o Apple, la solicitud debe dirigirse al proveedor correspondiente.
+Los datos que solo existen en el dispositivo deben gestionarse mediante los controles indicados en la sección 7. Para datos tratados de manera independiente por Google, Apple o Meta, la solicitud debe dirigirse al proveedor correspondiente.
 
 ### 10. Privacidad de menores
 
@@ -307,6 +321,12 @@ The Android version uses Google Analytics for Firebase and Firebase Crashlytics.
 
 Developer-defined events do not include financial amounts, budgets, notes, receipt photos or user identifiers. Dart errors are reported as an error type and stack without the original exception message. Analytics advertising-ID collection and ad-personalization signals are disabled; AdMob retains its separate consent flow. This does not disable all analytics or diagnostic identifiers. Retention and deletion follow Firebase and Google Analytics settings and Google's policies. See [Firebase data-disclosure guidance](https://firebase.google.com/docs/android/play-data-disclosure).
 
+### 3.2. Ad measurement (Meta)
+
+The Android version uses Meta Platforms' Facebook SDK (App Events) to measure whether Sobrita's ads on Facebook and Instagram led to installs and opens. In published builds, the SDK automatically sends Meta app install and open events, the app version, operating system and device information (such as model, language and time zone), the Android advertising ID, the Google Play install referrer (the ad or source that led to the install), and the IP address; depending on the app's settings at Meta, Google Play in-app purchase events (product ID, price and currency) may also be included. The controller does not send Meta financial amounts, budgets, notes, receipt photos or any records kept in the App.
+
+Meta uses this information to measure and attribute ads and optimize their delivery, and may process it for its own purposes under its policies. Users can reset or delete the advertising ID in Android's ad settings. Retention and deletion follow Meta's policies. See the [Meta Privacy Policy](https://www.facebook.com/privacy/policy/).
+
 ### 4. In-app purchases
 
 Google Play or the Apple App Store processes payments and purchase restoration. Sobrita does not directly receive card numbers or bank account details. To deliver or restore an item, the App may receive a product ID, purchase status, purchase identifier, or verification information from the store. The store's processing is governed by its provider's privacy policy.
@@ -316,7 +336,7 @@ Google Play or the Apple App Store processes payments and purchase restoration. 
 - **Camera and photos:** used only when the user takes or selects a receipt photo.
 - **Notifications:** used if the user enables the quick-entry notification; it can be disabled in device settings.
 - **Boot completed:** used to restore the quick-entry notification the user left enabled.
-- **Internet:** used for ads, consent messages, app-store purchases, analytics and diagnostics.
+- **Internet:** used for ads, consent messages, app-store purchases, analytics, ad measurement and diagnostics.
 
 ### 6. Third parties, sale, and international processing
 
@@ -324,8 +344,9 @@ The controller does not sell the contents of users' financial records or receipt
 
 - Google: Firebase Analytics and Crashlytics, AdMob advertising, UMP consent management, Google Play purchases, and Android backup.
 - Apple: App Store purchases and device backup, where applicable.
+- Meta: ad measurement through the Facebook SDK.
 
-Google and Apple may process information outside the user's country of residence. The specific locations and safeguards are governed by their respective policies. Information may also be disclosed where required to comply with law or legal process or to protect rights and safety, as permitted by law.
+Google, Apple, and Meta may process information outside the user's country of residence. The specific locations and safeguards are governed by their respective policies. Information may also be disclosed where required to comply with law or legal process or to protect rights and safety, as permitted by law.
 
 ### 7. Retention and deletion
 
@@ -333,7 +354,7 @@ Local data remains on the device until the user deletes records in the App, clea
 
 Because the controller does not store the core budget records on a server, it cannot remotely access or delete records held on the user's device. Users can delete individual records in the App, clear App data in operating-system settings, or uninstall the App. Backup copies must be managed through the relevant Google or Apple account.
 
-Retention and deletion of advertising or purchase data processed by Google or Apple are governed by each provider's policies and account controls.
+Retention and deletion of advertising or purchase data processed by Google, Apple, or Meta are governed by each provider's policies and account controls.
 
 ### 8. Security
 
@@ -349,7 +370,7 @@ To submit a request, email `{{PRIVACY_EMAIL}}` with:
 - a clear description of the requested action and related information; and
 - information reasonably needed to verify your identity.
 
-Data that exists only on the device must be managed using the controls described in section 7. Requests concerning information independently processed by Google or Apple should be submitted to the relevant provider.
+Data that exists only on the device must be managed using the controls described in section 7. Requests concerning information independently processed by Google, Apple, or Meta should be submitted to the relevant provider.
 
 ### 10. Children's privacy
 

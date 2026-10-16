@@ -6,6 +6,11 @@
          supportedLocales: a phone in none of the shipped languages reads English
          likelier than Spanish. -->
     <string name="app_name">Sobrita</string>
+    <!-- Meta app "Sobrita". The client token is the one under App settings >
+         Advanced on developers.facebook.com; Meta designs it to ship inside
+         the app, unlike the app secret, which must never be here. -->
+    <string name="facebook_app_id" translatable="false">2109763983239758</string>
+    <string name="facebook_client_token" translatable="false">70538d6e8262929acc30e0bacf3ca6ea</string>
     <string name="quick_entry_channel_name">Quick entry</string>
     <string name="quick_entry_channel_description">Shortcuts to add income and expenses</string>
     <string name="fixed_channel_name">Fixed payments</string>

@@ -42,6 +42,10 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // Meta App Events, read by AndroidManifest.xml. Debug and profile runs
+        // send nothing, the same default the Firebase telemetry keeps, so a
+        // developer's phone never counts as an install from a Meta ad.
+        manifestPlaceholders["metaAppEventsEnabled"] = "false"
     }
 
     signingConfigs {
@@ -63,10 +67,18 @@ android {
                 } else {
                     signingConfigs.getByName("debug")
                 }
+            manifestPlaceholders["metaAppEventsEnabled"] = "true"
         }
     }
 }
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // Install and open events for Meta app-install campaigns. Core only: no
+    // Facebook Login or sharing. The SDK initializes itself from the manifest
+    // and reads the Play Install Referrer, so no Dart code calls it.
+    implementation("com.facebook.android:facebook-core:18.3.0")
 }
