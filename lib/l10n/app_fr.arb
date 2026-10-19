@@ -632,6 +632,10 @@
   "releaseNotesCurrent": "Actuelle",
   "releaseNotesRetention": "On garde les {count} dernières versions.",
 
+  "releaseNote1014FirstExpense": "Juste après l’accueil, votre première dépense se note en deux étapes, et ce jour compte déjà pour faire venir votre autre compagnon.",
+
+  "releaseNote1014Currency": "Un nouveau carnet démarre dans la monnaie de votre pays.",
+
   "releaseNote1013Rewards": "Chaque niveau apporte de nouveaux meubles, et certaines décorations s'obtiennent avec une pub.",
 
   "releaseNote1013Rooms": "Les maisons se gagnent aussi : jardin et plage avec une pub, chalet et véranda par niveau.",
@@ -655,8 +659,6 @@
   "releaseNote102Rooms": "La maison peut être un jardin ou une plage, et un fauteuil, une lampe et une horloge sont prêts à placer.",
   "releaseNote102Missions": "Deux des trois missions du jour changent chaque jour, et celles qui demandent un effort de plus rapportent plus d’XP.",
   "releaseNote102Amounts": "Les pesos colombiens, argentins et chiliens, le réal et l’euro s’écrivent maintenant avec une virgule, comme 1.234,56.",
-  "releaseNote101Currencies": "L’argent peut maintenant s’afficher en pesos colombiens, argentins et chiliens, en soles, en livres ou en yens.",
-  "releaseNote101Celebration": "La fête remplit maintenant sa carte et termine son saut.",
 
   "updateAvailableTitle": "Une nouvelle version est là",
   "updateAvailableBody": "Mets à jour pour avoir le dernier Sobrita.",

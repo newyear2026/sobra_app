@@ -2063,6 +2063,13 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1014FirstExpense =>
+      'ようこそ画面のあと、はじめての支出を2ステップで記録できます。その日から、もう一匹の仲間を迎える記録日に数えます。';
+
+  @override
+  String get releaseNote1014Currency => '新しく始めると、お住まいの国の通貨で始まります。';
+
+  @override
   String get releaseNote1013Rewards => 'レベルごとに新しい家具が届き、一部の小物は広告1回で手に入ります。';
 
   @override
@@ -2119,14 +2126,6 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get releaseNote102Amounts =>
       'コロンビア・アルゼンチン・チリのペソ、レアル、ユーロの金額が1.234,56のようにコンマ区切りになりました。';
-
-  @override
-  String get releaseNote101Currencies =>
-      'コロンビア・アルゼンチン・チリのペソ、ソル、ポンド、円で金額を表示できるようになりました。';
-
-  @override
-  String get releaseNote101Celebration =>
-      'お祝いの演出がカードいっぱいに広がり、ジャンプも最後まで見られるようになりました。';
 
   @override
   String get updateAvailableTitle => '新しいバージョンがあります';

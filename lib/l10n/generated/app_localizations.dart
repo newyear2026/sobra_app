@@ -3646,6 +3646,18 @@ abstract class AppLocalizations {
   /// **'Guardamos las últimas {count} versiones.'**
   String releaseNotesRetention(int count);
 
+  /// No description provided for @releaseNote1014FirstExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Al terminar la bienvenida, tu primer gasto se anota en dos pasos, y ese día ya cuenta para que llegue tu otro compañero.'**
+  String get releaseNote1014FirstExpense;
+
+  /// No description provided for @releaseNote1014Currency.
+  ///
+  /// In es, this message translates to:
+  /// **'Una cuenta nueva empieza en la moneda de tu país.'**
+  String get releaseNote1014Currency;
+
   /// No description provided for @releaseNote1013Rewards.
   ///
   /// In es, this message translates to:
@@ -3747,18 +3759,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Los pesos colombianos, argentinos y chilenos, los reales y el euro ahora se escriben con coma, como 1.234,56.'**
   String get releaseNote102Amounts;
-
-  /// No description provided for @releaseNote101Currencies.
-  ///
-  /// In es, this message translates to:
-  /// **'Ahora puedes etiquetar tu dinero en pesos colombianos, argentinos y chilenos, soles, libras o yenes.'**
-  String get releaseNote101Currencies;
-
-  /// No description provided for @releaseNote101Celebration.
-  ///
-  /// In es, this message translates to:
-  /// **'La celebración ahora llena la tarjeta y termina su salto.'**
-  String get releaseNote101Celebration;
 
   /// Heading of the dialog shown on launch when Google Play has a newer build waiting.
   ///

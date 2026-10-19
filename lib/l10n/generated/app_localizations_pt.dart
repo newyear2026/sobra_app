@@ -2155,6 +2155,14 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1014FirstExpense =>
+      'Logo depois das boas-vindas, seu primeiro gasto leva dois passos, e esse dia já conta para trazer seu outro companheiro.';
+
+  @override
+  String get releaseNote1014Currency =>
+      'Uma conta nova começa na moeda do seu país.';
+
+  @override
   String get releaseNote1013Rewards =>
       'Cada nível traz móveis novos, e alguns enfeites saem com um anúncio.';
 
@@ -2219,14 +2227,6 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get releaseNote102Amounts =>
       'Pesos colombianos, argentinos e chilenos, reais e euros agora usam vírgula, como em 1.234,56.';
-
-  @override
-  String get releaseNote101Currencies =>
-      'Agora dá para rotular seu dinheiro em pesos colombianos, argentinos e chilenos, soles, libras ou ienes.';
-
-  @override
-  String get releaseNote101Celebration =>
-      'A comemoração agora preenche o cartão e termina o pulo.';
 
   @override
   String get updateAvailableTitle => 'Tem versão nova';

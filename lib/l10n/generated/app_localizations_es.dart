@@ -2139,6 +2139,14 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1014FirstExpense =>
+      'Al terminar la bienvenida, tu primer gasto se anota en dos pasos, y ese día ya cuenta para que llegue tu otro compañero.';
+
+  @override
+  String get releaseNote1014Currency =>
+      'Una cuenta nueva empieza en la moneda de tu país.';
+
+  @override
   String get releaseNote1013Rewards =>
       'Cada nivel trae muebles nuevos, y algunos adornos se ganan con un anuncio.';
 
@@ -2204,14 +2212,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get releaseNote102Amounts =>
       'Los pesos colombianos, argentinos y chilenos, los reales y el euro ahora se escriben con coma, como 1.234,56.';
-
-  @override
-  String get releaseNote101Currencies =>
-      'Ahora puedes etiquetar tu dinero en pesos colombianos, argentinos y chilenos, soles, libras o yenes.';
-
-  @override
-  String get releaseNote101Celebration =>
-      'La celebración ahora llena la tarjeta y termina su salto.';
 
   @override
   String get updateAvailableTitle => 'Hay una versión nueva';

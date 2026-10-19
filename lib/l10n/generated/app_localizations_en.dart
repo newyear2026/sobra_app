@@ -2138,6 +2138,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1014FirstExpense =>
+      'Right after the welcome, your first expense takes two steps, and that day already counts towards bringing your other companion over.';
+
+  @override
+  String get releaseNote1014Currency =>
+      'A new ledger starts in your country\'s currency.';
+
+  @override
   String get releaseNote1013Rewards =>
       'Each level brings new furniture, and some decorations take one ad.';
 
@@ -2202,14 +2210,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get releaseNote102Amounts =>
       'Colombian, Argentine and Chilean pesos, Brazilian reais and euros now use a comma, as in 1.234,56.';
-
-  @override
-  String get releaseNote101Currencies =>
-      'Money can now be labelled in Colombian, Argentine and Chilean pesos, soles, pounds or yen.';
-
-  @override
-  String get releaseNote101Celebration =>
-      'The celebration now fills its card and finishes its jump.';
 
   @override
   String get updateAvailableTitle => 'There\'s a new version';

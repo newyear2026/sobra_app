@@ -2162,6 +2162,14 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1014FirstExpense =>
+      'Juste après l’accueil, votre première dépense se note en deux étapes, et ce jour compte déjà pour faire venir votre autre compagnon.';
+
+  @override
+  String get releaseNote1014Currency =>
+      'Un nouveau carnet démarre dans la monnaie de votre pays.';
+
+  @override
   String get releaseNote1013Rewards =>
       'Chaque niveau apporte de nouveaux meubles, et certaines décorations s\'obtiennent avec une pub.';
 
@@ -2226,14 +2234,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get releaseNote102Amounts =>
       'Les pesos colombiens, argentins et chiliens, le réal et l’euro s’écrivent maintenant avec une virgule, comme 1.234,56.';
-
-  @override
-  String get releaseNote101Currencies =>
-      'L’argent peut maintenant s’afficher en pesos colombiens, argentins et chiliens, en soles, en livres ou en yens.';
-
-  @override
-  String get releaseNote101Celebration =>
-      'La fête remplit maintenant sa carte et termine son saut.';
 
   @override
   String get updateAvailableTitle => 'Une nouvelle version est là';

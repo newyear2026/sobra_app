@@ -2061,6 +2061,13 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1014FirstExpense =>
+      '환영 화면이 끝나면 첫 지출을 두 단계로 기록해요. 그날부터 다른 친구를 데려오는 기록일로 쳐요.';
+
+  @override
+  String get releaseNote1014Currency => '새로 시작하면 내 나라 통화로 시작해요.';
+
+  @override
   String get releaseNote1013Rewards => '레벨마다 새 가구가 생기고, 일부 소품은 광고 한 번으로 받아요.';
 
   @override
@@ -2119,13 +2126,6 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get releaseNote102Amounts =>
       '콜롬비아·아르헨티나·칠레 페소, 헤알, 유로는 이제 1.234,56처럼 쉼표로 적혀요.';
-
-  @override
-  String get releaseNote101Currencies =>
-      '이제 콜롬비아·아르헨티나·칠레 페소, 솔, 파운드, 엔으로도 금액을 표시할 수 있어요.';
-
-  @override
-  String get releaseNote101Celebration => '축하 연출이 카드에 꽉 차게 나오고, 중간에 끊기지 않아요.';
 
   @override
   String get updateAvailableTitle => '새 버전이 있어요';
