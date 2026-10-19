@@ -765,5 +765,23 @@
   "settlementShareTitle": "Einem Freund zeigen",
   "settlementShareHint": "Teile Sobrita per Link",
   "shareMessageSettlement": "Diesen Zyklus ist Geld übrig geblieben. Ich notiere meine Ausgaben mit einer kleinen Katze in Sobrita, kostenlos:",
-  "shareMessageSettings": "Schau dir diese App an: Ausgaben notieren mit einer kleinen Katze. Kostenlos:"
+  "shareMessageSettings": "Schau dir diese App an: Ausgaben notieren mit einer kleinen Katze. Kostenlos:",
+
+  "firstExpenseStepOf": "Deine erste Ausgabe · {step} von {total}",
+  "firstExpenseDoneStep": "Deine erste Ausgabe",
+  "firstExpenseAmountQuestion": "Wie viel hast du ausgegeben?",
+  "firstExpenseAmountHint": "Denk an etwas, das du heute bezahlt hast.",
+  "firstExpenseAmountLater": "Du kannst es später ändern.",
+  "firstExpenseNotYet": "Ich habe noch nichts ausgegeben",
+  "firstExpenseWhatQuestion": "Wofür war es?",
+  "firstExpensePaymentQuestion": "Wie hast du bezahlt?",
+  "firstExpenseSave": "Ausgabe speichern",
+  "firstExpenseDoneTitle": "Fertig!",
+  "firstExpenseDoneBody": "Ist notiert.",
+  "firstExpenseRecordTitle": "Dein erster Eintrag",
+  "firstExpenseStarterNote": "Heute zählt schon. Mit jedem Tag, an dem du etwas notierst, kommt {name} näher.",
+  "homeFirstExpenseTitle": "Eine Ausgabe, und los geht’s.",
+  "homeFirstExpenseBody": "Notiere etwas, das du heute bezahlt hast.",
+  "homeFirstExpenseAction": "Ausgabe erfassen",
+  "homeFirstExpenseLater": "Nicht jetzt"
 }

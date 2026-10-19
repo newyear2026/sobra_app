@@ -803,5 +803,23 @@
   "settlementShareTitle": "친구에게 자랑하기",
   "settlementShareHint": "링크로 Sobrita를 알려줘요",
   "shareMessageSettlement": "이번 주기 돈 남겼어요. 고양이랑 같이 쓰는 가계부 Sobrita, 무료야:",
-  "shareMessageSettings": "고양이랑 같이 쓰는 가계부 앱이야. 무료야:"
+  "shareMessageSettings": "고양이랑 같이 쓰는 가계부 앱이야. 무료야:",
+
+  "firstExpenseStepOf": "첫 지출 · {total}단계 중 {step}",
+  "firstExpenseDoneStep": "첫 지출",
+  "firstExpenseAmountQuestion": "얼마 썼어요?",
+  "firstExpenseAmountHint": "오늘 결제한 걸 하나 떠올려 보세요.",
+  "firstExpenseAmountLater": "나중에 바꿀 수 있어요.",
+  "firstExpenseNotYet": "아직 쓴 게 없어요",
+  "firstExpenseWhatQuestion": "어디에 썼어요?",
+  "firstExpensePaymentQuestion": "어떻게 냈어요?",
+  "firstExpenseSave": "지출 저장하기",
+  "firstExpenseDoneTitle": "됐어요!",
+  "firstExpenseDoneBody": "잘 적어 뒀어요.",
+  "firstExpenseRecordTitle": "첫 기록",
+  "firstExpenseStarterNote": "오늘이 채워졌어요. 기록하는 날마다 {name}가 가까워져요.",
+  "homeFirstExpenseTitle": "지출 하나로 시작해요.",
+  "homeFirstExpenseBody": "오늘 결제한 걸 하나 적어 보세요.",
+  "homeFirstExpenseAction": "지출 기록하기",
+  "homeFirstExpenseLater": "나중에"
 }

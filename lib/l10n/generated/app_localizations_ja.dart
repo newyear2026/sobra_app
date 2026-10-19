@@ -2491,4 +2491,59 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get shareMessageSettings => '猫と一緒に家計簿をつけられるアプリだよ。無料:';
+
+  @override
+  String firstExpenseStepOf(int step, int total) {
+    return 'はじめての支出 · $step/$total';
+  }
+
+  @override
+  String get firstExpenseDoneStep => 'はじめての支出';
+
+  @override
+  String get firstExpenseAmountQuestion => 'いくら使いましたか？';
+
+  @override
+  String get firstExpenseAmountHint => '今日払ったものをひとつ思い出してください。';
+
+  @override
+  String get firstExpenseAmountLater => 'あとで変更できます。';
+
+  @override
+  String get firstExpenseNotYet => 'まだ使っていません';
+
+  @override
+  String get firstExpenseWhatQuestion => '何に使いましたか？';
+
+  @override
+  String get firstExpensePaymentQuestion => 'どうやって払いましたか？';
+
+  @override
+  String get firstExpenseSave => '支出を保存';
+
+  @override
+  String get firstExpenseDoneTitle => 'できました！';
+
+  @override
+  String get firstExpenseDoneBody => '記録しました。';
+
+  @override
+  String get firstExpenseRecordTitle => 'はじめての記録';
+
+  @override
+  String firstExpenseStarterNote(String name) {
+    return '今日の分はもう数えています。記録する日ごとに$nameが近づきます。';
+  }
+
+  @override
+  String get homeFirstExpenseTitle => '支出ひとつで始めましょう。';
+
+  @override
+  String get homeFirstExpenseBody => '今日払ったものを記録してみましょう。';
+
+  @override
+  String get homeFirstExpenseAction => '支出を記録する';
+
+  @override
+  String get homeFirstExpenseLater => 'あとで';
 }

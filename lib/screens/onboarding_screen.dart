@@ -160,11 +160,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   /// Marks onboarding finished, which is what swaps the whole app over to the
   /// shell. A failure here has to be visible: the user taps "Listo" and would
   /// otherwise be left staring at the summary with nothing happening.
+  ///
+  /// The shell then opens the guided first expense: the setup is done, and
+  /// one record is what turns it into a day the app can say something about.
   Future<void> _finish(SobraStore store) => guardStoreWrite(
     ScaffoldMessenger.of(context),
     AppLocalizations.of(context),
     () async {
-      await store.completeOnboarding();
+      await store.completeOnboarding(offerFirstExpense: true);
       unawaited(
         AppTelemetry.instance.event(TelemetryEvent.onboardingCompleted),
       );

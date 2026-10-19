@@ -225,6 +225,10 @@ class SobraStore extends ChangeNotifier {
   /// The local day the user answered "Todavía no" on Inicio's fixed-expense
   /// card, which keeps the card away for the rest of that day only.
   String? _fixedHomeSnoozedDay;
+
+  /// The local day the user answered "Ahora no" on Inicio's first-expense
+  /// card. Like the fixed-expense card, it only keeps away until tomorrow.
+  String? _firstExpenseCardSnoozedDay;
   int _idSequence = 0;
 
   int _baseBudgetCentavos = 600000;
@@ -324,6 +328,20 @@ class SobraStore extends ChangeNotifier {
   DateTime? budgetTrackingStartedAt;
   DateTime? firstStartedAt;
   bool launchGiftNoticePending = false;
+
+  /// Whether the guided first expense is owed, from the moment the onboarding
+  /// screen is finished until the shell has shown it.
+  ///
+  /// Raised only by finishing onboarding on screen, never by loading a state
+  /// that is already past it: an install that finished onboarding before this
+  /// existed is not thrown a screen mid-use.
+  bool firstExpenseGuidePending = false;
+
+  /// Whether the guided first expense has been shown, saved or not.
+  ///
+  /// Inicio's card is for whoever was shown it and left without recording, so
+  /// it never appears to somebody who was not asked in the first place.
+  bool firstExpenseGuideOffered = false;
 
   /// The starter picked at onboarding, or null before onboarding ends.
   ///
@@ -1399,6 +1417,48 @@ class SobraStore extends ChangeNotifier {
   /// user around. Reminding is the job; nagging is not.
   static const fixedOverdueDaysOnHome = 2;
 
+  /// Whether the user has recorded any everyday spending of their own.
+  ///
+  /// Fixed payments and cash-count differences are left out: neither is the
+  /// habit the first-expense prompts are there to start.
+  bool get hasRecordedEverydayExpense => _transactions.any(
+    (entry) =>
+        !entry.isFixedPayment &&
+        !entry.isLinkedToCashCount &&
+        !entry.isPendingCashAdjustment,
+  );
+
+  /// Whether Inicio should carry the first-expense card.
+  ///
+  /// For whoever was shown the guided first expense and left it without
+  /// recording anything, unless the card was put off for today.
+  bool get showsFirstExpenseCard =>
+      hasCompletedOnboarding &&
+      firstExpenseGuideOffered &&
+      !firstExpenseGuidePending &&
+      !hasRecordedEverydayExpense &&
+      _firstExpenseCardSnoozedDay != todayKey;
+
+  /// Clears the owed guided first expense, as the shell starts showing it.
+  ///
+  /// Cleared on the way in rather than on the way out, so a screen closed by
+  /// the system or a crash is not shown twice; the card on Inicio picks the
+  /// user up from there.
+  Future<void> takeFirstExpenseGuide() => _write(() async {
+    if (!firstExpenseGuidePending) return;
+    firstExpenseGuidePending = false;
+    firstExpenseGuideOffered = true;
+    await _save();
+    notifyListeners();
+  });
+
+  /// Hides Inicio's first-expense card until tomorrow.
+  Future<void> snoozeFirstExpenseCard() => _write(() async {
+    _firstExpenseCardSnoozedDay = todayKey;
+    await _save();
+    notifyListeners();
+  });
+
   /// Whether Inicio's fixed-expense card was put off for today.
   bool get isFixedHomeCardSnoozed => _fixedHomeSnoozedDay == todayKey;
 
@@ -1890,6 +1950,7 @@ class SobraStore extends ChangeNotifier {
       'lastNativeAdImpressionAt',
       'rewardedAdDay',
       'fixedHomeSnoozedDay',
+      'firstExpenseCardSnoozedDay',
       'recordedDays',
     };
     if (value is String && dateKeys.contains(key)) {
@@ -2700,28 +2761,41 @@ class SobraStore extends ChangeNotifier {
     notifyListeners();
   });
 
-  Future<void> completeOnboarding() => _write(() async {
-    hasCompletedOnboarding = true;
-    // Onboarding sits behind the welcome, so reaching the end of it is proof
-    // the welcome was passed. Recording that here keeps the two from ever
-    // disagreeing — an install that finished onboarding can never be sent
-    // back to the doorstep.
-    hasAnsweredLoginOffer = true;
-    xpTrackingStartedAt ??= today;
-    if (_hasBudget) budgetTrackingStartedAt ??= today;
-    firstStartedAt ??= today;
-    final starter =
-        starterCharacterId ??
-        (CatalogPreviewData.isStarter(characterId)
-            ? characterId
-            : CatalogPreviewData.starterIds.first);
-    starterCharacterId = starter;
-    _ownedCatalogIds.add(starter);
-    characterId = starter;
-    await _save();
-    notifyListeners();
-    await maybeGrantLaunchGift();
-  });
+  /// Marks onboarding finished.
+  ///
+  /// [offerFirstExpense] is for the onboarding screen itself, whose last
+  /// button leads into the guided first expense. Everything else that
+  /// completes onboarding — a restore, a test setting up a ledger — does not
+  /// owe anybody that screen.
+  Future<void> completeOnboarding({bool offerFirstExpense = false}) => _write(
+    () async {
+      hasCompletedOnboarding = true;
+      // Onboarding sits behind the welcome, so reaching the end of it is proof
+      // the welcome was passed. Recording that here keeps the two from ever
+      // disagreeing — an install that finished onboarding can never be sent
+      // back to the doorstep.
+      hasAnsweredLoginOffer = true;
+      xpTrackingStartedAt ??= today;
+      if (_hasBudget) budgetTrackingStartedAt ??= today;
+      firstStartedAt ??= today;
+      final starter =
+          starterCharacterId ??
+          (CatalogPreviewData.isStarter(characterId)
+              ? characterId
+              : CatalogPreviewData.starterIds.first);
+      starterCharacterId = starter;
+      _ownedCatalogIds.add(starter);
+      characterId = starter;
+      // A restored ledger can already hold spending; asking such somebody for
+      // their first expense would be asking for something they did long ago.
+      if (offerFirstExpense && !hasRecordedEverydayExpense) {
+        firstExpenseGuidePending = true;
+      }
+      await _save();
+      notifyListeners();
+      await maybeGrantLaunchGift();
+    },
+  );
 
   /// The starter still waiting at the door, or null when there is none.
   ///
@@ -2918,6 +2992,7 @@ class SobraStore extends ChangeNotifier {
     _nativeAdInstallDay = todayKey;
     _lastNativeAdImpressionAt = null;
     _fixedHomeSnoozedDay = null;
+    _firstExpenseCardSnoozedDay = null;
     countedCashCentavos = 0;
     expectedCashCentavos = 0;
     reducedMotion = false;
@@ -2935,6 +3010,8 @@ class SobraStore extends ChangeNotifier {
     budgetTrackingStartedAt = null;
     firstStartedAt = today;
     launchGiftNoticePending = false;
+    firstExpenseGuidePending = false;
+    firstExpenseGuideOffered = false;
     starterCharacterId = null;
     starterArrivalId = null;
     _recordedDayKeys.clear();
@@ -3021,6 +3098,7 @@ class SobraStore extends ChangeNotifier {
     _nativeAdInstallDay = other._nativeAdInstallDay;
     _lastNativeAdImpressionAt = other._lastNativeAdImpressionAt;
     _fixedHomeSnoozedDay = other._fixedHomeSnoozedDay;
+    _firstExpenseCardSnoozedDay = other._firstExpenseCardSnoozedDay;
     _baseBudgetCentavos = other._baseBudgetCentavos;
     _hasBudget = other._hasBudget;
     characterId = other.characterId;
@@ -3053,6 +3131,8 @@ class SobraStore extends ChangeNotifier {
     budgetTrackingStartedAt = other.budgetTrackingStartedAt;
     firstStartedAt = other.firstStartedAt;
     launchGiftNoticePending = other.launchGiftNoticePending;
+    firstExpenseGuidePending = other.firstExpenseGuidePending;
+    firstExpenseGuideOffered = other.firstExpenseGuideOffered;
     starterCharacterId = other.starterCharacterId;
     starterArrivalId = other.starterArrivalId;
     _recordedDayKeys
@@ -3197,6 +3277,7 @@ class SobraStore extends ChangeNotifier {
         ? null
         : DateTime.tryParse(lastNativeAd);
     _fixedHomeSnoozedDay = json['fixedHomeSnoozedDay'] as String?;
+    _firstExpenseCardSnoozedDay = json['firstExpenseCardSnoozedDay'] as String?;
     countedCashCentavos = (json['countedCashCentavos'] as num).toInt();
     expectedCashCentavos = (json['expectedCashCentavos'] as num).toInt();
     reducedMotion = json['reducedMotion'] as bool? ?? false;
@@ -3250,6 +3331,10 @@ class SobraStore extends ChangeNotifier {
     final firstStarted = json['firstStartedAt'] as String?;
     firstStartedAt = firstStarted == null ? null : DateTime.parse(firstStarted);
     launchGiftNoticePending = json['launchGiftNoticePending'] as bool? ?? false;
+    firstExpenseGuidePending =
+        json['firstExpenseGuidePending'] as bool? ?? false;
+    firstExpenseGuideOffered =
+        json['firstExpenseGuideOffered'] as bool? ?? false;
     starterCharacterId = json['starterCharacterId'] as String?;
     starterArrivalId = json['starterArrivalId'] as String?;
     _recordedDayKeys
@@ -3334,6 +3419,7 @@ class SobraStore extends ChangeNotifier {
     'nativeAdInstallDay': _nativeAdInstallDay,
     'lastNativeAdImpressionAt': _lastNativeAdImpressionAt?.toIso8601String(),
     'fixedHomeSnoozedDay': _fixedHomeSnoozedDay,
+    'firstExpenseCardSnoozedDay': _firstExpenseCardSnoozedDay,
     'cycleBudgetExtras': _cycleBudgetExtras,
     'countedCashCentavos': countedCashCentavos,
     'expectedCashCentavos': expectedCashCentavos,
@@ -3356,6 +3442,8 @@ class SobraStore extends ChangeNotifier {
     'budgetTrackingStartedAt': budgetTrackingStartedAt?.toIso8601String(),
     'firstStartedAt': firstStartedAt?.toIso8601String(),
     'launchGiftNoticePending': launchGiftNoticePending,
+    'firstExpenseGuidePending': firstExpenseGuidePending,
+    'firstExpenseGuideOffered': firstExpenseGuideOffered,
     'starterCharacterId': starterCharacterId,
     'starterArrivalId': starterArrivalId,
     'recordedDays': _recordedDayKeys.toList()..sort(),

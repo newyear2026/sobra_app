@@ -24,6 +24,7 @@ import '../widgets/pixel_ui.dart';
 import '../widgets/release_announcement.dart';
 import '../widgets/update_prompt.dart';
 import 'budget_screen.dart';
+import 'first_expense_screen.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
 import 'room_decorate_screen.dart';
@@ -91,6 +92,8 @@ class _AppShellState extends State<AppShell> {
   AppUpdates? _updates;
   ReleaseAnnouncements? _announcements;
   bool _xpNoticeScheduled = false;
+  bool _firstExpenseScheduled = false;
+  bool _firstExpensePresenting = false;
   bool _launchGiftScheduled = false;
   bool _launchGiftPresenting = false;
   bool _starterArrivalScheduled = false;
@@ -162,6 +165,7 @@ class _AppShellState extends State<AppShell> {
         precacheImage(const AssetImage(RoomDecorAssets.tablePlant), context),
       ]),
     );
+    _scheduleFirstExpenseGuide();
     _scheduleXpNotice();
     _scheduleLaunchGiftNotice();
     _scheduleStarterArrival();
@@ -205,6 +209,7 @@ class _AppShellState extends State<AppShell> {
   }
 
   void _onStoreChanged() {
+    _scheduleFirstExpenseGuide();
     _scheduleXpNotice();
     _scheduleLaunchGiftNotice();
     _scheduleStarterArrival();
@@ -235,6 +240,7 @@ class _AppShellState extends State<AppShell> {
     if (_announcementScheduled ||
         announcements == null ||
         !announcements.shouldAnnounce ||
+        _firstExpenseAhead ||
         (_store?.launchGiftNoticePending ?? false) ||
         _store?.starterArrivalId != null ||
         _store?.pendingXpNotice != null) {
@@ -263,6 +269,7 @@ class _AppShellState extends State<AppShell> {
     if (_updatePromptScheduled ||
         updates == null ||
         !updates.shouldPrompt ||
+        _firstExpenseAhead ||
         _store?.pendingXpNotice != null ||
         (_store?.launchGiftNoticePending ?? false) ||
         _store?.starterArrivalId != null ||
@@ -329,6 +336,7 @@ class _AppShellState extends State<AppShell> {
     return store != null &&
         _selected == AppTab.home &&
         (ModalRoute.of(context)?.isCurrent ?? true) &&
+        !_firstExpenseAhead &&
         store.pendingXpNotice == null &&
         !store.launchGiftNoticePending &&
         store.starterArrivalId == null &&
@@ -351,8 +359,63 @@ class _AppShellState extends State<AppShell> {
       );
   }
 
+  /// Whether the guided first expense is on screen or still owed.
+  ///
+  /// It is the rest of onboarding, so everything else that may interrupt a
+  /// launch waits behind it — including the XP from the very expense it
+  /// records, which then lands on Inicio where the user can see it move.
+  bool get _firstExpenseAhead =>
+      _firstExpensePresenting || (_store?.firstExpenseGuidePending ?? false);
+
+  void _scheduleFirstExpenseGuide() {
+    if (_firstExpenseScheduled ||
+        _firstExpensePresenting ||
+        !(_store?.firstExpenseGuidePending ?? false)) {
+      return;
+    }
+    _firstExpenseScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _firstExpenseScheduled = false;
+      if (mounted) unawaited(_presentFirstExpenseGuide());
+    });
+  }
+
+  Future<void> _presentFirstExpenseGuide() async {
+    final store = _store;
+    if (_firstExpensePresenting ||
+        store == null ||
+        !store.firstExpenseGuidePending) {
+      return;
+    }
+    _firstExpensePresenting = true;
+    try {
+      await store.takeFirstExpenseGuide();
+      if (!mounted) return;
+      await showFirstExpenseGuide(
+        context,
+        origin: FirstExpenseOrigin.onboarding,
+      );
+    } on Object {
+      // A failed save leaves the guide owed, and it is offered again.
+    } finally {
+      _firstExpensePresenting = false;
+      if (mounted) {
+        _scheduleXpNotice();
+        _scheduleLaunchGiftNotice();
+        _scheduleStarterArrival();
+        _scheduleAnnouncement();
+        _scheduleUpdatePrompt();
+        _scheduleReviewRequest();
+      }
+    }
+  }
+
   void _scheduleXpNotice() {
-    if (_xpNoticeScheduled || _store?.pendingXpNotice == null) return;
+    if (_xpNoticeScheduled ||
+        _firstExpenseAhead ||
+        _store?.pendingXpNotice == null) {
+      return;
+    }
     _xpNoticeScheduled = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _xpNoticeScheduled = false;
@@ -370,6 +433,7 @@ class _AppShellState extends State<AppShell> {
   void _scheduleLaunchGiftNotice() {
     if (_launchGiftScheduled ||
         _launchGiftPresenting ||
+        _firstExpenseAhead ||
         !(_store?.launchGiftNoticePending ?? false) ||
         _store?.pendingXpNotice != null) {
       return;
@@ -417,6 +481,7 @@ class _AppShellState extends State<AppShell> {
     if (_starterArrivalScheduled ||
         _starterArrivalPresenting ||
         _launchGiftPresenting ||
+        _firstExpenseAhead ||
         store == null ||
         store.starterArrivalId == null ||
         store.pendingXpNotice != null ||

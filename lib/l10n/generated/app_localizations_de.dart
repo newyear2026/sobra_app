@@ -2604,4 +2604,61 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get shareMessageSettings =>
       'Schau dir diese App an: Ausgaben notieren mit einer kleinen Katze. Kostenlos:';
+
+  @override
+  String firstExpenseStepOf(int step, int total) {
+    return 'Deine erste Ausgabe · $step von $total';
+  }
+
+  @override
+  String get firstExpenseDoneStep => 'Deine erste Ausgabe';
+
+  @override
+  String get firstExpenseAmountQuestion => 'Wie viel hast du ausgegeben?';
+
+  @override
+  String get firstExpenseAmountHint =>
+      'Denk an etwas, das du heute bezahlt hast.';
+
+  @override
+  String get firstExpenseAmountLater => 'Du kannst es später ändern.';
+
+  @override
+  String get firstExpenseNotYet => 'Ich habe noch nichts ausgegeben';
+
+  @override
+  String get firstExpenseWhatQuestion => 'Wofür war es?';
+
+  @override
+  String get firstExpensePaymentQuestion => 'Wie hast du bezahlt?';
+
+  @override
+  String get firstExpenseSave => 'Ausgabe speichern';
+
+  @override
+  String get firstExpenseDoneTitle => 'Fertig!';
+
+  @override
+  String get firstExpenseDoneBody => 'Ist notiert.';
+
+  @override
+  String get firstExpenseRecordTitle => 'Dein erster Eintrag';
+
+  @override
+  String firstExpenseStarterNote(String name) {
+    return 'Heute zählt schon. Mit jedem Tag, an dem du etwas notierst, kommt $name näher.';
+  }
+
+  @override
+  String get homeFirstExpenseTitle => 'Eine Ausgabe, und los geht’s.';
+
+  @override
+  String get homeFirstExpenseBody =>
+      'Notiere etwas, das du heute bezahlt hast.';
+
+  @override
+  String get homeFirstExpenseAction => 'Ausgabe erfassen';
+
+  @override
+  String get homeFirstExpenseLater => 'Nicht jetzt';
 }

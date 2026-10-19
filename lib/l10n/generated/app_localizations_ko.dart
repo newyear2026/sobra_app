@@ -2492,4 +2492,59 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get shareMessageSettings => '고양이랑 같이 쓰는 가계부 앱이야. 무료야:';
+
+  @override
+  String firstExpenseStepOf(int step, int total) {
+    return '첫 지출 · $total단계 중 $step';
+  }
+
+  @override
+  String get firstExpenseDoneStep => '첫 지출';
+
+  @override
+  String get firstExpenseAmountQuestion => '얼마 썼어요?';
+
+  @override
+  String get firstExpenseAmountHint => '오늘 결제한 걸 하나 떠올려 보세요.';
+
+  @override
+  String get firstExpenseAmountLater => '나중에 바꿀 수 있어요.';
+
+  @override
+  String get firstExpenseNotYet => '아직 쓴 게 없어요';
+
+  @override
+  String get firstExpenseWhatQuestion => '어디에 썼어요?';
+
+  @override
+  String get firstExpensePaymentQuestion => '어떻게 냈어요?';
+
+  @override
+  String get firstExpenseSave => '지출 저장하기';
+
+  @override
+  String get firstExpenseDoneTitle => '됐어요!';
+
+  @override
+  String get firstExpenseDoneBody => '잘 적어 뒀어요.';
+
+  @override
+  String get firstExpenseRecordTitle => '첫 기록';
+
+  @override
+  String firstExpenseStarterNote(String name) {
+    return '오늘이 채워졌어요. 기록하는 날마다 $name가 가까워져요.';
+  }
+
+  @override
+  String get homeFirstExpenseTitle => '지출 하나로 시작해요.';
+
+  @override
+  String get homeFirstExpenseBody => '오늘 결제한 걸 하나 적어 보세요.';
+
+  @override
+  String get homeFirstExpenseAction => '지출 기록하기';
+
+  @override
+  String get homeFirstExpenseLater => '나중에';
 }

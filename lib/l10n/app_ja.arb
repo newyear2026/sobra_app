@@ -766,5 +766,23 @@
   "settlementShareTitle": "友だちに自慢する",
   "settlementShareHint": "リンクでSobritaを紹介",
   "shareMessageSettlement": "今回のサイクルはお金が残ったよ。Sobritaで猫と一緒に家計簿をつけてる。無料だよ:",
-  "shareMessageSettings": "猫と一緒に家計簿をつけられるアプリだよ。無料:"
+  "shareMessageSettings": "猫と一緒に家計簿をつけられるアプリだよ。無料:",
+
+  "firstExpenseStepOf": "はじめての支出 · {step}/{total}",
+  "firstExpenseDoneStep": "はじめての支出",
+  "firstExpenseAmountQuestion": "いくら使いましたか？",
+  "firstExpenseAmountHint": "今日払ったものをひとつ思い出してください。",
+  "firstExpenseAmountLater": "あとで変更できます。",
+  "firstExpenseNotYet": "まだ使っていません",
+  "firstExpenseWhatQuestion": "何に使いましたか？",
+  "firstExpensePaymentQuestion": "どうやって払いましたか？",
+  "firstExpenseSave": "支出を保存",
+  "firstExpenseDoneTitle": "できました！",
+  "firstExpenseDoneBody": "記録しました。",
+  "firstExpenseRecordTitle": "はじめての記録",
+  "firstExpenseStarterNote": "今日の分はもう数えています。記録する日ごとに{name}が近づきます。",
+  "homeFirstExpenseTitle": "支出ひとつで始めましょう。",
+  "homeFirstExpenseBody": "今日払ったものを記録してみましょう。",
+  "homeFirstExpenseAction": "支出を記録する",
+  "homeFirstExpenseLater": "あとで"
 }

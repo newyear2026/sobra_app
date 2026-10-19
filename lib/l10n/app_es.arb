@@ -1175,5 +1175,25 @@
   "shareMessageSettings": "Mira esta app para anotar tus gastos con un gatito. Es gratis:",
   "@shareMessageSettings": {
     "description": "Text placed in the share sheet from the Ajustes row. The Play link follows on its own line."
-  }
+  },
+
+  "firstExpenseStepOf": "Tu primer gasto · {step} de {total}",
+  "@firstExpenseStepOf": {"placeholders": {"step": {"type": "int"}, "total": {"type": "int"}}},
+  "firstExpenseDoneStep": "Tu primer gasto",
+  "firstExpenseAmountQuestion": "¿Cuánto gastaste?",
+  "firstExpenseAmountHint": "Piensa en algo que hayas pagado hoy.",
+  "firstExpenseAmountLater": "Puedes cambiarlo después.",
+  "firstExpenseNotYet": "Aún no he gastado",
+  "firstExpenseWhatQuestion": "¿En qué lo gastaste?",
+  "firstExpensePaymentQuestion": "¿Cómo pagaste?",
+  "firstExpenseSave": "Guardar mi gasto",
+  "firstExpenseDoneTitle": "¡Listo!",
+  "firstExpenseDoneBody": "Ya lo tenemos anotado.",
+  "firstExpenseRecordTitle": "Tu primer registro",
+  "firstExpenseStarterNote": "Hoy ya cuenta. Cada día que anotes, {name} se acerca.",
+  "@firstExpenseStarterNote": {"placeholders": {"name": {"type": "String"}}},
+  "homeFirstExpenseTitle": "Un gasto, y empezamos.",
+  "homeFirstExpenseBody": "Anota algo que hayas pagado hoy.",
+  "homeFirstExpenseAction": "Registrar un gasto",
+  "homeFirstExpenseLater": "Ahora no"
 }

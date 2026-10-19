@@ -765,5 +765,23 @@
   "settlementShareTitle": "Montrer à un ami",
   "settlementShareHint": "Partage Sobrita avec un lien",
   "shareMessageSettlement": "Il m’est resté de l’argent ce cycle. Je note mes dépenses avec un petit chat dans Sobrita, c’est gratuit :",
-  "shareMessageSettings": "Regarde cette appli pour noter tes dépenses avec un petit chat. C’est gratuit :"
+  "shareMessageSettings": "Regarde cette appli pour noter tes dépenses avec un petit chat. C’est gratuit :",
+
+  "firstExpenseStepOf": "Ta première dépense · {step} sur {total}",
+  "firstExpenseDoneStep": "Ta première dépense",
+  "firstExpenseAmountQuestion": "Combien as-tu dépensé ?",
+  "firstExpenseAmountHint": "Pense à quelque chose que tu as payé aujourd’hui.",
+  "firstExpenseAmountLater": "Tu pourras le modifier plus tard.",
+  "firstExpenseNotYet": "Je n’ai encore rien dépensé",
+  "firstExpenseWhatQuestion": "C’était pour quoi ?",
+  "firstExpensePaymentQuestion": "Comment as-tu payé ?",
+  "firstExpenseSave": "Enregistrer ma dépense",
+  "firstExpenseDoneTitle": "C’est fait !",
+  "firstExpenseDoneBody": "C’est noté.",
+  "firstExpenseRecordTitle": "Ta première entrée",
+  "firstExpenseStarterNote": "Aujourd’hui compte déjà. Chaque jour où tu notes quelque chose, {name} se rapproche.",
+  "homeFirstExpenseTitle": "Une dépense, et c’est parti.",
+  "homeFirstExpenseBody": "Note quelque chose que tu as payé aujourd’hui.",
+  "homeFirstExpenseAction": "Noter une dépense",
+  "homeFirstExpenseLater": "Pas maintenant"
 }

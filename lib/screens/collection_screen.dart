@@ -22,7 +22,7 @@ import '../widgets/store_refresh_button.dart';
 ///
 /// Sent with the screen visit, so Analytics can tell which way in people
 /// actually use.
-enum CollectionOrigin { home, decorate, settings, settlement }
+enum CollectionOrigin { home, decorate, settings, settlement, firstExpense }
 
 class CollectionScreen extends StatefulWidget {
   const CollectionScreen({

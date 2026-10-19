@@ -2589,4 +2589,59 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get shareMessageSettings =>
       'Mira esta app para anotar tus gastos con un gatito. Es gratis:';
+
+  @override
+  String firstExpenseStepOf(int step, int total) {
+    return 'Tu primer gasto · $step de $total';
+  }
+
+  @override
+  String get firstExpenseDoneStep => 'Tu primer gasto';
+
+  @override
+  String get firstExpenseAmountQuestion => '¿Cuánto gastaste?';
+
+  @override
+  String get firstExpenseAmountHint => 'Piensa en algo que hayas pagado hoy.';
+
+  @override
+  String get firstExpenseAmountLater => 'Puedes cambiarlo después.';
+
+  @override
+  String get firstExpenseNotYet => 'Aún no he gastado';
+
+  @override
+  String get firstExpenseWhatQuestion => '¿En qué lo gastaste?';
+
+  @override
+  String get firstExpensePaymentQuestion => '¿Cómo pagaste?';
+
+  @override
+  String get firstExpenseSave => 'Guardar mi gasto';
+
+  @override
+  String get firstExpenseDoneTitle => '¡Listo!';
+
+  @override
+  String get firstExpenseDoneBody => 'Ya lo tenemos anotado.';
+
+  @override
+  String get firstExpenseRecordTitle => 'Tu primer registro';
+
+  @override
+  String firstExpenseStarterNote(String name) {
+    return 'Hoy ya cuenta. Cada día que anotes, $name se acerca.';
+  }
+
+  @override
+  String get homeFirstExpenseTitle => 'Un gasto, y empezamos.';
+
+  @override
+  String get homeFirstExpenseBody => 'Anota algo que hayas pagado hoy.';
+
+  @override
+  String get homeFirstExpenseAction => 'Registrar un gasto';
+
+  @override
+  String get homeFirstExpenseLater => 'Ahora no';
 }
