@@ -5,10 +5,10 @@ import 'package:sobra_app/models/room_design.dart';
 import 'package:sobra_app/models/xp_event.dart';
 
 void main() {
-  test('Michi and Miru are starters; new companions use ads', () {
+  test('Michi and Miru are starters; companions have one unlock route', () {
     final entries = CatalogPreviewData.characters;
 
-    expect(entries, hasLength(15));
+    expect(entries, hasLength(16));
     expect(
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.included,
@@ -25,7 +25,7 @@ void main() {
       entries.where(
         (entry) => entry.unlockMethod == CatalogUnlockMethod.purchase,
       ),
-      hasLength(6),
+      hasLength(7),
     );
     expect(
       entries.where(
@@ -82,6 +82,27 @@ void main() {
       rabbit,
     );
     expect(CatalogPreviewData.storeProductIds, contains(rabbit.storeProductId));
+    final penguin = entries.firstWhere((entry) => entry.id == 'penguin');
+    expect(penguin.name, 'Penguin');
+    expect(penguin.unlockMethod, CatalogUnlockMethod.purchase);
+    expect(penguin.rewardedAdTarget, isNull);
+    expect(penguin.storeProductId, 'sobra.character.penguin');
+    expect(penguin.assetPath, 'assets/characters/penguin/idle-8.png');
+    expect(
+      CatalogPreviewData.entryForProductId(penguin.storeProductId!),
+      same(penguin),
+    );
+    expect(
+      CatalogPreviewData.storeProductIds,
+      contains(penguin.storeProductId),
+    );
+    // Its Play price has not been set yet; do not invent a preview amount.
+    expect(
+      const PreviewCatalogPriceSource().localizedPriceFor(
+        penguin.storeProductId!,
+      ),
+      isNull,
+    );
     // Every single character is one flat price.
     for (final paid in [platypus, rabbit]) {
       expect(

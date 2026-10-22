@@ -191,6 +191,32 @@ void main() {
     expect(buyButton.onPressed, isNull);
   });
 
+  testWidgets(
+    'Penguin is listed but cannot be bought before Play has a price',
+    (tester) async {
+      final store = await loadStore();
+      await pump(tester, store, initialEntryId: 'penguin');
+
+      expect(inDialog('Penguin'), findsOneWidget);
+      expect(inDialog('CONSULTANDO PRECIO'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.byType(CharacterSprite),
+        ),
+        findsOneWidget,
+      );
+      final buyButton = tester.widget<FilledButton>(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.byType(FilledButton),
+        ),
+      );
+      expect(buyButton.onPressed, isNull);
+      expect(store.ownsCatalogEntry(entryById('penguin')), isFalse);
+    },
+  );
+
   testWidgets('Bunny appears in the collection at the single price', (
     tester,
   ) async {
@@ -544,7 +570,11 @@ void main() {
     expect(store.rewardedAdProgressFor(entry.id), 1);
     expect(store.ownsCatalogEntry(entry), isFalse);
 
-    await tester.ensureVisible(find.text('Quokka'));
+    await tester.scrollUntilVisible(
+      find.text('Quokka'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.text('Quokka'));
     await tester.pumpAndSettle();

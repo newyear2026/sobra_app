@@ -97,4 +97,12 @@ const characterTopRows = <String, Map<CharacterMotionRole, int>>{
     CharacterMotionRole.success: 16,
     CharacterMotionRole.warning: 33,
   },
+  'penguin': {
+    CharacterMotionRole.idle: 78,
+    CharacterMotionRole.activity: 81,
+    CharacterMotionRole.processing: 82,
+    CharacterMotionRole.positive: 74,
+    CharacterMotionRole.success: 66,
+    CharacterMotionRole.warning: 81,
+  },
 };

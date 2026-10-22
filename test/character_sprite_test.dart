@@ -22,6 +22,7 @@ void main() {
     'raccoon',
     'quokka',
     'maltese',
+    'penguin',
   ]) {
     testWidgets('$id dialog reserves the full enlarged motion bounds', (
       tester,
@@ -439,6 +440,33 @@ void main() {
     }
     expect(
       CharacterCatalog.maltese
+          .motionFor(CharacterMotionRole.success)
+          .playbackSpec
+          .completionFrame,
+      11,
+    );
+  });
+
+  test('Penguin owns the selected six-role motion pack', () {
+    expect(
+      CharacterCatalog.all,
+      containsPair('penguin', CharacterCatalog.penguin),
+    );
+    expect(
+      CharacterCatalog.penguin.motions.keys.toSet(),
+      CharacterMotionRole.values.toSet(),
+    );
+    for (final role in CharacterMotionRole.values) {
+      expect(
+        CharacterCatalog.penguin.motionFor(role).frameCount,
+        role == CharacterMotionRole.idle || role == CharacterMotionRole.warning
+            ? 8
+            : 12,
+        reason: role.name,
+      );
+    }
+    expect(
+      CharacterCatalog.penguin
           .motionFor(CharacterMotionRole.success)
           .playbackSpec
           .completionFrame,

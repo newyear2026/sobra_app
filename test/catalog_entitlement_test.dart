@@ -552,6 +552,21 @@ void main() {
     expect(reopened.ownsCatalogEntry(raccoon), isTrue);
   });
 
+  test('Penguin can be equipped only after purchase ownership', () async {
+    final store = await loadStore();
+    final penguin = entryById('penguin');
+
+    expect(penguin.unlockMethod, CatalogUnlockMethod.purchase);
+    expect(store.ownsCatalogEntry(penguin), isFalse);
+    expect(() => store.chooseCharacter('penguin'), throwsArgumentError);
+
+    await store.grantCatalogEntry(penguin.id);
+    await store.equipCharacter(penguin);
+    final reopened = await loadStore();
+    expect(reopened.characterId, 'penguin');
+    expect(reopened.ownsCatalogEntry(penguin), isTrue);
+  });
+
   test('an old free Schnauzer choice reverts until it is earned', () async {
     await loadStore();
     final preferences = await SharedPreferences.getInstance();

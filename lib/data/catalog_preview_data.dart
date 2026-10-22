@@ -103,6 +103,15 @@ abstract final class CatalogPreviewData {
       storeProductId: 'sobra.character.rabbit',
     ),
     CatalogEntry(
+      id: 'penguin',
+      name: 'Penguin',
+      kind: CatalogKind.character,
+      unlockMethod: CatalogUnlockMethod.purchase,
+      visual: CatalogVisual.penguin,
+      assetPath: 'assets/characters/penguin/idle-8.png',
+      storeProductId: 'sobra.character.penguin',
+    ),
+    CatalogEntry(
       id: 'quokka',
       name: 'Quokka',
       kind: CatalogKind.character,

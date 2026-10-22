@@ -34,6 +34,7 @@ enum CatalogVisual {
   rabbit,
   raccoon,
   maltese,
+  penguin,
   characterPlaceholder,
   lamp,
   savings,

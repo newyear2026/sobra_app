@@ -886,6 +886,74 @@ abstract final class CharacterCatalog {
     },
   );
 
+  static const penguin = CharacterDefinition(
+    id: 'penguin',
+    displayName: 'Penguin',
+    roomDisplayScale: 1.25,
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.png',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 3,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 4,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.png',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 6,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.png',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 3,
+        ),
+      ),
+    },
+  );
+
   static const Map<String, CharacterDefinition> all = {
     'michi': michi,
     'poodle': poodle,
@@ -898,6 +966,7 @@ abstract final class CharacterCatalog {
     'raccoon': raccoon,
     'quokka': quokka,
     'maltese': maltese,
+    'penguin': penguin,
   };
 
   /// The pack for [characterId], or Michi when there is no such pack.

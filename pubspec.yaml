@@ -135,6 +135,7 @@ flutter:
     - assets/characters/rabbit/
     - assets/characters/raccoon/
     - assets/characters/maltese/
+    - assets/characters/penguin/
     - assets/login/
     - assets/pack/
     - assets/rooms/casa_clara/

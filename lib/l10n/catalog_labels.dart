@@ -60,4 +60,5 @@ const _namedCharacterIds = {
   'rabbit',
   'raccoon',
   'maltese',
+  'penguin',
 };
