@@ -33,7 +33,8 @@ Analytics records app/session information, the welcome/onboarding/recovery
 screens, the five main tabs, the collection and the screen it was opened from,
 completed onboarding (`tutorial_complete`), and
 successful new entries from the register form (`expense_recorded`,
-`income_recorded`), rewarded-ad results (`rewarded_ad_result`) and the unlocks
+`income_recorded`), rewarded-ad SDK stages and failure reasons
+(`rewarded_ad_lifecycle`), rewarded-ad results (`rewarded_ad_result`) and the unlocks
 they complete (`item_unlocked`), opened checkouts (`purchase_started`), fixed
 expenses (`fixed_expense_added`, `fixed_payment_recorded`), closed cycles
 (`cycle_settled`), and opens from a widget, quick entry or reminder

@@ -24,6 +24,10 @@ enum TelemetryEvent {
   /// the catalog kind the ad was for.
   rewardedAdResult('rewarded_ad_result'),
 
+  /// SDK lifecycle, separate from the reward actually credited by the store.
+  /// `stage`: a `RewardedAdStage`; optional `reason`: a `RewardedAdFailure`.
+  rewardedAdLifecycle('rewarded_ad_lifecycle'),
+
   /// An entry became owned through Sobra's own rules. `method`: how; `kind`:
   /// what. Paid ones are already Firebase's automatic `in_app_purchase`.
   itemUnlocked('item_unlocked'),

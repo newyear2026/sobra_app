@@ -4,7 +4,43 @@ import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'admob_config.dart';
+import 'app_telemetry.dart';
 import 'rewarded_ad_service.dart';
+
+/// An SDK callback, or a load/show attempt. Only the impression stage means a
+/// recorded view.
+enum RewardedAdStage {
+  loadRequested,
+  loaded,
+  loadFailed,
+  showRequested,
+  showed,
+  impression,
+  showFailed,
+  rewardEarned,
+  dismissed,
+}
+
+/// Fixed diagnostic categories. SDK messages and response IDs stay out of
+/// Analytics, like all other free text in [AppTelemetry].
+enum RewardedAdFailure {
+  timeout,
+  consentUnavailable,
+  notReady,
+  internalError,
+  invalidRequest,
+  networkError,
+  noFill,
+  appIdMissing,
+  mediationNoFill,
+  requestIdMismatch,
+  invalidAdString,
+  adReused,
+  appNotForeground,
+  mediationShowError,
+  otherSdkError,
+  platformError,
+}
 
 /// The Google Mobile Ads implementation behind the existing collection flow.
 final class AdMobRewardedAdPort implements RewardedAdPort {
@@ -16,7 +52,7 @@ final class AdMobRewardedAdPort implements RewardedAdPort {
   }) : _canRequestAds = canRequestAds,
        _ad = PreloadedAd<RewardedAd>(now: now, dispose: (ad) => ad.dispose());
 
-  /// How long a request may go unanswered before it counts as no fill.
+  /// How long a request may go unanswered before it times out.
   ///
   /// [RewardedAd.load] answers through callbacks, and nothing guarantees one
   /// arrives: an SDK that was never initialised, a platform channel dropped
@@ -35,7 +71,8 @@ final class AdMobRewardedAdPort implements RewardedAdPort {
 
   final bool Function() _canRequestAds;
   final PreloadedAd<RewardedAd> _ad;
-  Future<void>? _loading;
+  Completer<void>? _loading;
+  Timer? _loadTimer;
 
   @override
   bool get isReady => _canRequestAds() && _ad.fresh != null;
@@ -44,83 +81,215 @@ final class AdMobRewardedAdPort implements RewardedAdPort {
   Future<void> load() {
     if (!_canRequestAds() || _ad.fresh != null) return Future<void>.value();
     final inFlight = _loading;
-    if (inFlight != null) return inFlight;
+    if (inFlight != null) return inFlight.future;
 
     final completer = Completer<void>();
-    _loading = completer.future;
+    _loading = completer;
     // Clears `_loading` as well as answering the caller, so a silent request
     // costs one wait rather than every wait after it.
-    Timer(loadTimeout, () => _finishLoad(completer));
+    _loadTimer = Timer(
+      loadTimeout,
+      () => _failLoad(completer, RewardedAdFailure.timeout),
+    );
+    _record(RewardedAdStage.loadRequested);
     try {
       RewardedAd.load(
         adUnitId: AdMobConfig.rewardedAdUnitId,
         request: const AdRequest(),
         rewardedAdLoadCallback: RewardedAdLoadCallback(
           onAdLoaded: (ad) {
+            // A timed-out request can still answer after a retry has started.
+            // Its ad must not replace the retry's slot or clear its timer.
+            if (!_finishLoad(completer)) {
+              ad.dispose();
+              return;
+            }
             if (_canRequestAds()) {
               _ad.hold(ad);
+              _record(RewardedAdStage.loaded);
             } else {
               ad.dispose();
+              _record(
+                RewardedAdStage.loadFailed,
+                reason: RewardedAdFailure.consentUnavailable,
+              );
             }
-            _finishLoad(completer);
           },
           onAdFailedToLoad: (error) {
-            debugPrint('Rewarded ad did not load: ${error.message}');
-            _finishLoad(completer);
+            _failLoad(completer, _loadFailure(error), error: error);
           },
         ),
       ).catchError((Object error) {
-        debugPrint('Rewarded ad request failed: $error');
-        _finishLoad(completer);
+        _failLoad(completer, RewardedAdFailure.platformError);
       });
-    } on Object catch (error) {
-      debugPrint('Rewarded ad request failed: $error');
-      _finishLoad(completer);
+    } on Object {
+      _failLoad(completer, RewardedAdFailure.platformError);
     }
     return completer.future;
   }
 
-  void _finishLoad(Completer<void> completer) {
+  bool _finishLoad(Completer<void> completer) {
+    if (!identical(_loading, completer)) return false;
+    _loadTimer?.cancel();
+    _loadTimer = null;
     _loading = null;
-    if (!completer.isCompleted) completer.complete();
+    completer.complete();
+    return true;
+  }
+
+  void _failLoad(
+    Completer<void> completer,
+    RewardedAdFailure reason, {
+    AdError? error,
+  }) {
+    if (!_finishLoad(completer)) return;
+    _record(RewardedAdStage.loadFailed, reason: reason, error: error);
   }
 
   @override
-  Future<RewardedAdResult> show() async {
-    if (!_canRequestAds()) return RewardedAdResult.failed;
+  Future<RewardedAdResult> show() {
+    _record(RewardedAdStage.showRequested);
+    if (!_canRequestAds()) {
+      _record(
+        RewardedAdStage.showFailed,
+        reason: RewardedAdFailure.consentUnavailable,
+      );
+      return Future.value(RewardedAdResult.failed);
+    }
     final ad = _ad.take();
-    if (ad == null) return RewardedAdResult.failed;
+    if (ad == null) {
+      _record(RewardedAdStage.showFailed, reason: RewardedAdFailure.notReady);
+      return Future.value(RewardedAdResult.failed);
+    }
 
     final result = Completer<RewardedAdResult>();
     var earned = false;
-    void finish(RewardedAdResult value) {
-      if (!result.isCompleted) result.complete(value);
+    var disposed = false;
+    Timer? timer;
+    final recorded = <RewardedAdStage>{};
+    void recordOnce(RewardedAdStage stage) {
+      if (recorded.add(stage)) _record(stage);
+    }
+
+    void disposeAd() {
+      if (disposed) return;
+      disposed = true;
+      ad.dispose();
+    }
+
+    void finish(
+      RewardedAdResult value, {
+      RewardedAdFailure? reason,
+      AdError? error,
+    }) {
+      if (result.isCompleted) return;
+      timer?.cancel();
+      if (reason != null) {
+        _record(RewardedAdStage.showFailed, reason: reason, error: error);
+      }
+      result.complete(value);
     }
 
     ad.fullScreenContentCallback = FullScreenContentCallback<RewardedAd>(
+      onAdShowedFullScreenContent: (_) => recordOnce(RewardedAdStage.showed),
+      onAdImpression: (_) => recordOnce(RewardedAdStage.impression),
       onAdDismissedFullScreenContent: (ad) {
-        ad.dispose();
+        disposeAd();
+        recordOnce(RewardedAdStage.dismissed);
         finish(earned ? RewardedAdResult.earned : RewardedAdResult.dismissed);
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
-        debugPrint('Rewarded ad could not be shown: ${error.message}');
-        ad.dispose();
-        finish(RewardedAdResult.failed);
+        disposeAd();
+        finish(
+          RewardedAdResult.failed,
+          reason: _showFailure(error),
+          error: error,
+        );
       },
     );
     // Deliberately does not dispose. The ad may still be on screen, and
     // tearing it down under the user is worse than the wedge this guards
     // against; the dismissal callback still disposes it whenever it arrives,
     // and `finish` ignores a late answer to a run already abandoned.
-    Timer(showTimeout, () => finish(RewardedAdResult.failed));
+    timer = Timer(
+      showTimeout,
+      () => finish(RewardedAdResult.failed, reason: RewardedAdFailure.timeout),
+    );
     try {
-      await ad.show(onUserEarnedReward: (_, reward) => earned = true);
-    } on Object catch (error) {
-      debugPrint('Rewarded ad presentation failed: $error');
-      ad.dispose();
-      finish(RewardedAdResult.failed);
+      // Do not wait on the platform channel before returning the result:
+      // the timer must also free a run whose platform call never answers.
+      unawaited(
+        ad
+            .show(
+              onUserEarnedReward: (_, reward) {
+                earned = true;
+                recordOnce(RewardedAdStage.rewardEarned);
+              },
+            )
+            .catchError((Object error) {
+              disposeAd();
+              finish(
+                RewardedAdResult.failed,
+                reason: RewardedAdFailure.platformError,
+              );
+            }),
+      );
+    } on Object {
+      disposeAd();
+      finish(RewardedAdResult.failed, reason: RewardedAdFailure.platformError);
     }
     return result.future;
+  }
+
+  void _record(
+    RewardedAdStage stage, {
+    RewardedAdFailure? reason,
+    AdError? error,
+  }) {
+    debugPrint(
+      'Rewarded ad ${stage.name}'
+      '${reason == null ? '' : ': ${reason.name}'}'
+      '${error == null ? '' : ' (SDK ${error.domain}/${error.code})'}',
+    );
+    unawaited(
+      AppTelemetry.instance.event(TelemetryEvent.rewardedAdLifecycle, {
+        'stage': stage,
+        'reason': ?reason,
+      }),
+    );
+  }
+
+  // Android is the supported AdMob platform. Codes from another domain must
+  // not be mistaken for Google's codes with the same number.
+  static RewardedAdFailure _loadFailure(AdError error) {
+    if (error.domain != 'com.google.android.gms.ads') {
+      return RewardedAdFailure.otherSdkError;
+    }
+    return switch (error.code) {
+      0 => RewardedAdFailure.internalError,
+      1 => RewardedAdFailure.invalidRequest,
+      2 => RewardedAdFailure.networkError,
+      3 => RewardedAdFailure.noFill,
+      8 => RewardedAdFailure.appIdMissing,
+      9 => RewardedAdFailure.mediationNoFill,
+      10 => RewardedAdFailure.requestIdMismatch,
+      11 => RewardedAdFailure.invalidAdString,
+      _ => RewardedAdFailure.otherSdkError,
+    };
+  }
+
+  static RewardedAdFailure _showFailure(AdError error) {
+    if (error.domain != 'com.google.android.gms.ads') {
+      return RewardedAdFailure.otherSdkError;
+    }
+    return switch (error.code) {
+      0 => RewardedAdFailure.internalError,
+      1 => RewardedAdFailure.adReused,
+      2 => RewardedAdFailure.notReady,
+      3 => RewardedAdFailure.appNotForeground,
+      4 => RewardedAdFailure.mediationShowError,
+      _ => RewardedAdFailure.otherSdkError,
+    };
   }
 }
 

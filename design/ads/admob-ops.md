@@ -3,7 +3,7 @@
 Sobra 광고를 늘리기 전에, 이미 있는 보상형·네이티브가 **유효 노출로 쌓이는지**를 본다.
 Play 콘솔 수익과 AdMob 지급은 계정이 다르다. 세금·지급 프로필을 한쪽에만 맞추지 않는다.
 
-최종 갱신: 2026-10-12
+최종 갱신: 2026-10-16
 
 ---
 
@@ -22,6 +22,44 @@ AdMob → 앱 → 광고 단위별로 본다. 합산만 보면 어느 포맷이 
 출시 직후 낮으면 포맷을 추가하지 않는다. 먼저 앱 검토 승인, 광고 단위 상태, 테스트/프로덕션 유닛 혼선을 확인한다.
 
 가계부 카테고리는 네트워크가 보수적으로 심의할 수 있다. 거래 금액·메모·영수증은 AdMob에 넘기지 않는 현재 정책을 유지한다.
+
+---
+
+## 보상형 광고가 표시되지 않을 때
+
+Firebase Analytics에서 Sobrita 앱/데이터 스트림으로 필터링하고
+`rewarded_ad_lifecycle` 이벤트의 `stage`와 실패 시의 `reason`을 확인한다.
+기기에서 바로 볼 때는 logcat의 `Rewarded ad` 로그를 사용한다.
+개발 빌드의 Firebase 수집은 README의 `TELEMETRY_ENABLED=true` 설정으로 켠다.
+
+| stage | 의미 |
+| --- | --- |
+| `loadRequested` | SDK에 광고 로드 요청을 보냄 |
+| `loaded` | 현재 요청의 광고를 받아 표시할 수 있는 슬롯에 보관함 |
+| `loadFailed` | 로드 실패·시간 초과 또는 응답 시점에 광고 동의가 유효하지 않음 |
+| `showRequested` | 표시 메서드 호출. 동의·준비 상태를 확인하는 단계도 포함 |
+| `showed` | SDK가 전체 화면 표시를 확인함 |
+| `impression` | SDK의 실제 노출 콜백을 받음 |
+| `showFailed` | 표시 실패·시간 초과 또는 동의/준비 상태로 표시하지 못함 |
+| `rewardEarned` | SDK가 보상 조건 충족을 확인함 |
+| `dismissed` | 광고가 닫힘. 보상 조건 충족 여부와 별개 |
+
+- `loaded`만 있고 `showRequested`가 없으면 미리 받은 광고를 표시하려는 시도가 없었다.
+  앱 시작 시 사전 로드하는 현재 동작에서는 요청 수만 늘 수 있다.
+- `loadFailed`/`showFailed`의 `reason`으로 `timeout`, `networkError`, `noFill`,
+  `invalidRequest`, `appNotForeground`, `notReady`, `platformError` 등을 구분한다.
+  로드와 표시의 SDK 오류 코드는 의미가 달라 각각 분류한다.
+- Google 이외 도메인이나 알려지지 않은 SDK 코드는 `otherSdkError`로 기록한다.
+  원래 도메인/숫자 코드는 기기 로그에서 확인한다. Analytics에는 정해진 enum 이름만 보낸다.
+- 표시 시간 초과는 기다림을 끝내는 안전장치다. 이미 화면에 나온 광고를 제거하지 않으며,
+  늦게 온 실제 노출·닫힘 콜백은 기록할 수 있다.
+- `rewardEarned`는 SDK 확인이다. 실제 아이템 진행도 반영 여부는 기존
+  `rewarded_ad_result`의 `counted` 및 `item_unlocked`로 확인한다.
+
+노출은 `impression` 콜백으로만 기록한다. SDK 오류 원문·응답 ID·보상 금액은
+분석 이벤트에 넣지 않는다. 확인은 테스트 광고로 하고 운영 AdMob 집계와 구분한다.
+단계/실패 원인을 일반 Analytics 보고서에서 나눠 보려면 `stage`, `reason`을
+이벤트 범위 맞춤 측정기준으로 등록한다. 실기기 검증에는 DebugView를 사용할 수 있다.
 
 ---
 
