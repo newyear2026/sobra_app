@@ -17,6 +17,10 @@ enum TelemetryScreen {
 
 enum TelemetryEvent {
   onboardingCompleted('tutorial_complete'),
+
+  /// How a first-expense prompt ended. `origin`: a `FirstExpenseOrigin`;
+  /// `result`: a `FirstExpenseResult`.
+  firstExpense('first_expense'),
   expenseRecorded('expense_recorded'),
   incomeRecorded('income_recorded'),
 

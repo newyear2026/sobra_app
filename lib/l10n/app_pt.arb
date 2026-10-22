@@ -632,6 +632,10 @@
   "releaseNotesCurrent": "Atual",
   "releaseNotesRetention": "Guardamos as últimas {count} versões.",
 
+  "releaseNote1014FirstExpense": "Logo depois das boas-vindas, seu primeiro gasto leva dois passos, e esse dia já conta para trazer seu outro companheiro.",
+
+  "releaseNote1014Currency": "Uma conta nova começa na moeda do seu país.",
+
   "releaseNote1013Rewards": "Cada nível traz móveis novos, e alguns enfeites saem com um anúncio.",
 
   "releaseNote1013Rooms": "As casas também se ganham: jardim e praia com um anúncio, montanha e jardim de inverno por nível.",
@@ -655,8 +659,6 @@
   "releaseNote102Rooms": "A casa pode ser um jardim ou uma praia, e já dá para colocar uma poltrona, uma luminária e um relógio.",
   "releaseNote102Missions": "Duas das três missões do dia mudam todo dia, e as que pedem um passo a mais dão mais XP.",
   "releaseNote102Amounts": "Pesos colombianos, argentinos e chilenos, reais e euros agora usam vírgula, como em 1.234,56.",
-  "releaseNote101Currencies": "Agora dá para rotular seu dinheiro em pesos colombianos, argentinos e chilenos, soles, libras ou ienes.",
-  "releaseNote101Celebration": "A comemoração agora preenche o cartão e termina o pulo.",
 
   "updateAvailableTitle": "Tem versão nova",
   "updateAvailableBody": "Atualize para ter o Sobrita mais recente.",
@@ -765,5 +767,23 @@
   "settlementShareTitle": "Mostre a um amigo",
   "settlementShareHint": "Compartilhe o Sobrita com um link",
   "shareMessageSettlement": "Neste ciclo sobrou dinheiro. Anoto meus gastos com um gatinho no Sobrita, e é grátis:",
-  "shareMessageSettings": "Olha esse app para anotar seus gastos com um gatinho. É grátis:"
+  "shareMessageSettings": "Olha esse app para anotar seus gastos com um gatinho. É grátis:",
+
+  "firstExpenseStepOf": "Seu primeiro gasto · {step} de {total}",
+  "firstExpenseDoneStep": "Seu primeiro gasto",
+  "firstExpenseAmountQuestion": "Quanto você gastou?",
+  "firstExpenseAmountHint": "Pense em algo que você pagou hoje.",
+  "firstExpenseAmountLater": "Dá para mudar depois.",
+  "firstExpenseNotYet": "Ainda não gastei",
+  "firstExpenseWhatQuestion": "Com o que foi?",
+  "firstExpensePaymentQuestion": "Como você pagou?",
+  "firstExpenseSave": "Salvar meu gasto",
+  "firstExpenseDoneTitle": "Pronto!",
+  "firstExpenseDoneBody": "Já está anotado.",
+  "firstExpenseRecordTitle": "Seu primeiro registro",
+  "firstExpenseStarterNote": "Hoje já conta. Cada dia que você anotar, {name} chega mais perto.",
+  "homeFirstExpenseTitle": "Um gasto e começamos.",
+  "homeFirstExpenseBody": "Anote algo que você pagou hoje.",
+  "homeFirstExpenseAction": "Registrar um gasto",
+  "homeFirstExpenseLater": "Agora não"
 }

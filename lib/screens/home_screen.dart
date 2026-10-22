@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/recurring_expense.dart';
 import '../models/room_design.dart';
+import '../services/app_telemetry.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
@@ -18,6 +21,7 @@ import 'app_shell.dart';
 import 'cash_count_screen.dart';
 import 'collection_screen.dart';
 import 'daily_mission_screen.dart';
+import 'first_expense_screen.dart';
 import 'room_screen.dart';
 import 'xp_history_screen.dart';
 
@@ -51,6 +55,74 @@ class _BudgetQuest extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           PixelButton(label: l10n.budgetSetAction, onPressed: onTap),
+        ],
+      ),
+    );
+  }
+}
+
+/// The first expense, offered again on Inicio to somebody who has none yet.
+///
+/// Mostly for whoever answered "Aún no he gastado" at the end of onboarding,
+/// but also for installs from before the guided screen existed. It opens that
+/// same guided screen rather than the register tab, so the first record is
+/// asked for the same way wherever it starts.
+class _FirstExpenseCard extends StatelessWidget {
+  const _FirstExpenseCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final store = SobraScope.of(context);
+    return PixelCard(
+      color: AppColors.tealSoft,
+      borderColor: AppColors.tealInk,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.firstExpenseRecordTitle,
+            style: pixelText(size: 12, bold: true, color: AppColors.tealInk),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            l10n.homeFirstExpenseTitle,
+            style: pixelText(size: 17, bold: true),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            l10n.homeFirstExpenseBody,
+            style: pixelText(size: 13, color: AppColors.tealInk, height: 1.4),
+          ),
+          const SizedBox(height: 12),
+          PixelButton(
+            label: l10n.homeFirstExpenseAction,
+            onPressed: () => showFirstExpenseGuide(
+              context,
+              origin: FirstExpenseOrigin.homeCard,
+            ),
+          ),
+          const SizedBox(height: 4),
+          TextButton(
+            onPressed: () async {
+              final saved = await guardStoreWrite(
+                ScaffoldMessenger.of(context),
+                l10n,
+                store.snoozeFirstExpenseCard,
+              );
+              if (!saved) return;
+              unawaited(
+                AppTelemetry.instance.event(TelemetryEvent.firstExpense, {
+                  'origin': FirstExpenseOrigin.homeCard,
+                  'result': FirstExpenseResult.snoozed,
+                }),
+              );
+            },
+            child: Text(
+              l10n.homeFirstExpenseLater,
+              style: pixelText(size: 13, bold: true, color: AppColors.tealInk),
+            ),
+          ),
         ],
       ),
     );
@@ -190,6 +262,10 @@ class HomeScreen extends StatelessWidget {
                     MaterialPageRoute<void>(builder: (_) => const RoomScreen()),
                   ),
                 ),
+                if (store.showsFirstExpenseCard) ...[
+                  const SizedBox(height: 16),
+                  const _FirstExpenseCard(),
+                ],
                 const SizedBox(height: 18),
                 LevelStrip(
                   level: xp.level,

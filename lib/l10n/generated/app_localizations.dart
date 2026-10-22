@@ -3646,6 +3646,18 @@ abstract class AppLocalizations {
   /// **'Guardamos las últimas {count} versiones.'**
   String releaseNotesRetention(int count);
 
+  /// No description provided for @releaseNote1014FirstExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Al terminar la bienvenida, tu primer gasto se anota en dos pasos, y ese día ya cuenta para que llegue tu otro compañero.'**
+  String get releaseNote1014FirstExpense;
+
+  /// No description provided for @releaseNote1014Currency.
+  ///
+  /// In es, this message translates to:
+  /// **'Una cuenta nueva empieza en la moneda de tu país.'**
+  String get releaseNote1014Currency;
+
   /// No description provided for @releaseNote1013Rewards.
   ///
   /// In es, this message translates to:
@@ -3747,18 +3759,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Los pesos colombianos, argentinos y chilenos, los reales y el euro ahora se escriben con coma, como 1.234,56.'**
   String get releaseNote102Amounts;
-
-  /// No description provided for @releaseNote101Currencies.
-  ///
-  /// In es, this message translates to:
-  /// **'Ahora puedes etiquetar tu dinero en pesos colombianos, argentinos y chilenos, soles, libras o yenes.'**
-  String get releaseNote101Currencies;
-
-  /// No description provided for @releaseNote101Celebration.
-  ///
-  /// In es, this message translates to:
-  /// **'La celebración ahora llena la tarjeta y termina su salto.'**
-  String get releaseNote101Celebration;
 
   /// Heading of the dialog shown on launch when Google Play has a newer build waiting.
   ///
@@ -4389,6 +4389,108 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Mira esta app para anotar tus gastos con un gatito. Es gratis:'**
   String get shareMessageSettings;
+
+  /// No description provided for @firstExpenseStepOf.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu primer gasto · {step} de {total}'**
+  String firstExpenseStepOf(int step, int total);
+
+  /// No description provided for @firstExpenseDoneStep.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu primer gasto'**
+  String get firstExpenseDoneStep;
+
+  /// No description provided for @firstExpenseAmountQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuánto gastaste?'**
+  String get firstExpenseAmountQuestion;
+
+  /// No description provided for @firstExpenseAmountHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Piensa en algo que hayas pagado hoy.'**
+  String get firstExpenseAmountHint;
+
+  /// No description provided for @firstExpenseAmountLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes cambiarlo después.'**
+  String get firstExpenseAmountLater;
+
+  /// No description provided for @firstExpenseNotYet.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no he gastado'**
+  String get firstExpenseNotYet;
+
+  /// No description provided for @firstExpenseWhatQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'¿En qué lo gastaste?'**
+  String get firstExpenseWhatQuestion;
+
+  /// No description provided for @firstExpensePaymentQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo pagaste?'**
+  String get firstExpensePaymentQuestion;
+
+  /// No description provided for @firstExpenseSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar mi gasto'**
+  String get firstExpenseSave;
+
+  /// No description provided for @firstExpenseDoneTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Listo!'**
+  String get firstExpenseDoneTitle;
+
+  /// No description provided for @firstExpenseDoneBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya lo tenemos anotado.'**
+  String get firstExpenseDoneBody;
+
+  /// No description provided for @firstExpenseRecordTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu primer registro'**
+  String get firstExpenseRecordTitle;
+
+  /// No description provided for @firstExpenseStarterNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy ya cuenta. Cada día que anotes, {name} se acerca.'**
+  String firstExpenseStarterNote(String name);
+
+  /// No description provided for @homeFirstExpenseTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Un gasto, y empezamos.'**
+  String get homeFirstExpenseTitle;
+
+  /// No description provided for @homeFirstExpenseBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Anota algo que hayas pagado hoy.'**
+  String get homeFirstExpenseBody;
+
+  /// No description provided for @homeFirstExpenseAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrar un gasto'**
+  String get homeFirstExpenseAction;
+
+  /// No description provided for @homeFirstExpenseLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora no'**
+  String get homeFirstExpenseLater;
 }
 
 class _AppLocalizationsDelegate

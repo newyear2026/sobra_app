@@ -2155,6 +2155,14 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1014FirstExpense =>
+      'Logo depois das boas-vindas, seu primeiro gasto leva dois passos, e esse dia já conta para trazer seu outro companheiro.';
+
+  @override
+  String get releaseNote1014Currency =>
+      'Uma conta nova começa na moeda do seu país.';
+
+  @override
   String get releaseNote1013Rewards =>
       'Cada nível traz móveis novos, e alguns enfeites saem com um anúncio.';
 
@@ -2219,14 +2227,6 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get releaseNote102Amounts =>
       'Pesos colombianos, argentinos e chilenos, reais e euros agora usam vírgula, como em 1.234,56.';
-
-  @override
-  String get releaseNote101Currencies =>
-      'Agora dá para rotular seu dinheiro em pesos colombianos, argentinos e chilenos, soles, libras ou ienes.';
-
-  @override
-  String get releaseNote101Celebration =>
-      'A comemoração agora preenche o cartão e termina o pulo.';
 
   @override
   String get updateAvailableTitle => 'Tem versão nova';
@@ -2605,4 +2605,59 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get shareMessageSettings =>
       'Olha esse app para anotar seus gastos com um gatinho. É grátis:';
+
+  @override
+  String firstExpenseStepOf(int step, int total) {
+    return 'Seu primeiro gasto · $step de $total';
+  }
+
+  @override
+  String get firstExpenseDoneStep => 'Seu primeiro gasto';
+
+  @override
+  String get firstExpenseAmountQuestion => 'Quanto você gastou?';
+
+  @override
+  String get firstExpenseAmountHint => 'Pense em algo que você pagou hoje.';
+
+  @override
+  String get firstExpenseAmountLater => 'Dá para mudar depois.';
+
+  @override
+  String get firstExpenseNotYet => 'Ainda não gastei';
+
+  @override
+  String get firstExpenseWhatQuestion => 'Com o que foi?';
+
+  @override
+  String get firstExpensePaymentQuestion => 'Como você pagou?';
+
+  @override
+  String get firstExpenseSave => 'Salvar meu gasto';
+
+  @override
+  String get firstExpenseDoneTitle => 'Pronto!';
+
+  @override
+  String get firstExpenseDoneBody => 'Já está anotado.';
+
+  @override
+  String get firstExpenseRecordTitle => 'Seu primeiro registro';
+
+  @override
+  String firstExpenseStarterNote(String name) {
+    return 'Hoje já conta. Cada dia que você anotar, $name chega mais perto.';
+  }
+
+  @override
+  String get homeFirstExpenseTitle => 'Um gasto e começamos.';
+
+  @override
+  String get homeFirstExpenseBody => 'Anote algo que você pagou hoje.';
+
+  @override
+  String get homeFirstExpenseAction => 'Registrar um gasto';
+
+  @override
+  String get homeFirstExpenseLater => 'Agora não';
 }

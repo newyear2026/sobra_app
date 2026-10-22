@@ -632,6 +632,10 @@
   "releaseNotesCurrent": "Aktuell",
   "releaseNotesRetention": "Wir behalten die letzten {count} Versionen.",
 
+  "releaseNote1014FirstExpense": "Direkt nach der Begrüßung trägst du deine erste Ausgabe in zwei Schritten ein, und dieser Tag zählt schon, um deinen zweiten Begleiter zu holen.",
+
+  "releaseNote1014Currency": "Ein neues Haushaltsbuch startet in der Währung deines Landes.",
+
   "releaseNote1013Rewards": "Jedes Level bringt neue Möbel, und manche Deko gibt es für eine Werbung.",
 
   "releaseNote1013Rooms": "Auch Häuser lassen sich verdienen: Garten und Strand für eine Werbung, Berghütte und Wintergarten über Level.",
@@ -655,8 +659,6 @@
   "releaseNote102Rooms": "Das Zuhause kann ein Garten oder ein Strand sein, und ein Sessel, eine Lampe und eine Uhr stehen bereit.",
   "releaseNote102Missions": "Zwei der drei Tagesmissionen wechseln täglich, und die mit einem Extraschritt bringen mehr XP.",
   "releaseNote102Amounts": "Kolumbianische, argentinische und chilenische Pesos, Real und Euro schreiben sich jetzt mit Komma, wie 1.234,56.",
-  "releaseNote101Currencies": "Geld lässt sich jetzt in kolumbianischen, argentinischen und chilenischen Pesos, Soles, Pfund oder Yen bezeichnen.",
-  "releaseNote101Celebration": "Die Feier füllt jetzt ihre Karte und beendet ihren Sprung.",
 
   "updateAvailableTitle": "Es gibt eine neue Version",
   "updateAvailableBody": "Aktualisiere, um das neueste Sobrita zu bekommen.",
@@ -765,5 +767,23 @@
   "settlementShareTitle": "Einem Freund zeigen",
   "settlementShareHint": "Teile Sobrita per Link",
   "shareMessageSettlement": "Diesen Zyklus ist Geld übrig geblieben. Ich notiere meine Ausgaben mit einer kleinen Katze in Sobrita, kostenlos:",
-  "shareMessageSettings": "Schau dir diese App an: Ausgaben notieren mit einer kleinen Katze. Kostenlos:"
+  "shareMessageSettings": "Schau dir diese App an: Ausgaben notieren mit einer kleinen Katze. Kostenlos:",
+
+  "firstExpenseStepOf": "Deine erste Ausgabe · {step} von {total}",
+  "firstExpenseDoneStep": "Deine erste Ausgabe",
+  "firstExpenseAmountQuestion": "Wie viel hast du ausgegeben?",
+  "firstExpenseAmountHint": "Denk an etwas, das du heute bezahlt hast.",
+  "firstExpenseAmountLater": "Du kannst es später ändern.",
+  "firstExpenseNotYet": "Ich habe noch nichts ausgegeben",
+  "firstExpenseWhatQuestion": "Wofür war es?",
+  "firstExpensePaymentQuestion": "Wie hast du bezahlt?",
+  "firstExpenseSave": "Ausgabe speichern",
+  "firstExpenseDoneTitle": "Fertig!",
+  "firstExpenseDoneBody": "Ist notiert.",
+  "firstExpenseRecordTitle": "Dein erster Eintrag",
+  "firstExpenseStarterNote": "Heute zählt schon. Mit jedem Tag, an dem du etwas notierst, kommt {name} näher.",
+  "homeFirstExpenseTitle": "Eine Ausgabe, und los geht’s.",
+  "homeFirstExpenseBody": "Notiere etwas, das du heute bezahlt hast.",
+  "homeFirstExpenseAction": "Ausgabe erfassen",
+  "homeFirstExpenseLater": "Nicht jetzt"
 }

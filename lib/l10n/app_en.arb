@@ -665,6 +665,10 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
+  "releaseNote1014FirstExpense": "Right after the welcome, your first expense takes two steps, and that day already counts towards bringing your other companion over.",
+
+  "releaseNote1014Currency": "A new ledger starts in your country's currency.",
+
   "releaseNote1013Rewards": "Each level brings new furniture, and some decorations take one ad.",
 
   "releaseNote1013Rooms": "Houses are earned too: garden and beach for one ad, mountain and conservatory by level.",
@@ -688,8 +692,6 @@
   "releaseNote102Rooms": "The house can be a garden or a beach, and a chair, a lamp and a clock are ready to place.",
   "releaseNote102Missions": "Two of the three daily missions change every day, and the ones that take an extra step pay more XP.",
   "releaseNote102Amounts": "Colombian, Argentine and Chilean pesos, Brazilian reais and euros now use a comma, as in 1.234,56.",
-  "releaseNote101Currencies": "Money can now be labelled in Colombian, Argentine and Chilean pesos, soles, pounds or yen.",
-  "releaseNote101Celebration": "The celebration now fills its card and finishes its jump.",
 
   "updateAvailableTitle": "There's a new version",
   "updateAvailableBody": "Update to get the latest Sobrita.",
@@ -801,5 +803,23 @@
   "settlementShareTitle": "Show a friend",
   "settlementShareHint": "Share Sobrita with a link",
   "shareMessageSettlement": "I had money left over this cycle. I track my spending with a little cat in Sobrita, and it's free:",
-  "shareMessageSettings": "Check out this app for tracking your spending with a little cat. It's free:"
+  "shareMessageSettings": "Check out this app for tracking your spending with a little cat. It's free:",
+
+  "firstExpenseStepOf": "Your first expense · {step} of {total}",
+  "firstExpenseDoneStep": "Your first expense",
+  "firstExpenseAmountQuestion": "How much did you spend?",
+  "firstExpenseAmountHint": "Think of something you paid for today.",
+  "firstExpenseAmountLater": "You can change it later.",
+  "firstExpenseNotYet": "I haven't spent anything yet",
+  "firstExpenseWhatQuestion": "What was it for?",
+  "firstExpensePaymentQuestion": "How did you pay?",
+  "firstExpenseSave": "Save my expense",
+  "firstExpenseDoneTitle": "Done!",
+  "firstExpenseDoneBody": "It's written down.",
+  "firstExpenseRecordTitle": "Your first entry",
+  "firstExpenseStarterNote": "Today already counts. Every day you record, {name} gets closer.",
+  "homeFirstExpenseTitle": "One expense and we're off.",
+  "homeFirstExpenseBody": "Note something you paid for today.",
+  "homeFirstExpenseAction": "Record an expense",
+  "homeFirstExpenseLater": "Not now"
 }

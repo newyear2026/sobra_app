@@ -632,6 +632,10 @@
   "releaseNotesCurrent": "現在",
   "releaseNotesRetention": "直近{count}バージョン分を残しています。",
 
+  "releaseNote1014FirstExpense": "ようこそ画面のあと、はじめての支出を2ステップで記録できます。その日から、もう一匹の仲間を迎える記録日に数えます。",
+
+  "releaseNote1014Currency": "新しく始めると、お住まいの国の通貨で始まります。",
+
   "releaseNote1013Rewards": "レベルごとに新しい家具が届き、一部の小物は広告1回で手に入ります。",
 
   "releaseNote1013Rooms": "お部屋も集められます。庭・海辺は広告1回、山の別荘・温室はレベルで開きます。",
@@ -655,8 +659,6 @@
   "releaseNote102Rooms": "お部屋を庭や海辺にできるようになり、チェア、ランプ、時計も置けるようになりました。",
   "releaseNote102Missions": "毎日のミッション3つのうち2つが日替わりに。ひと手間かかるものはXPが多めです。",
   "releaseNote102Amounts": "コロンビア・アルゼンチン・チリのペソ、レアル、ユーロの金額が1.234,56のようにコンマ区切りになりました。",
-  "releaseNote101Currencies": "コロンビア・アルゼンチン・チリのペソ、ソル、ポンド、円で金額を表示できるようになりました。",
-  "releaseNote101Celebration": "お祝いの演出がカードいっぱいに広がり、ジャンプも最後まで見られるようになりました。",
 
   "updateAvailableTitle": "新しいバージョンがあります",
   "updateAvailableBody": "アップデートして最新のSobritaを使いましょう。",
@@ -766,5 +768,23 @@
   "settlementShareTitle": "友だちに自慢する",
   "settlementShareHint": "リンクでSobritaを紹介",
   "shareMessageSettlement": "今回のサイクルはお金が残ったよ。Sobritaで猫と一緒に家計簿をつけてる。無料だよ:",
-  "shareMessageSettings": "猫と一緒に家計簿をつけられるアプリだよ。無料:"
+  "shareMessageSettings": "猫と一緒に家計簿をつけられるアプリだよ。無料:",
+
+  "firstExpenseStepOf": "はじめての支出 · {step}/{total}",
+  "firstExpenseDoneStep": "はじめての支出",
+  "firstExpenseAmountQuestion": "いくら使いましたか？",
+  "firstExpenseAmountHint": "今日払ったものをひとつ思い出してください。",
+  "firstExpenseAmountLater": "あとで変更できます。",
+  "firstExpenseNotYet": "まだ使っていません",
+  "firstExpenseWhatQuestion": "何に使いましたか？",
+  "firstExpensePaymentQuestion": "どうやって払いましたか？",
+  "firstExpenseSave": "支出を保存",
+  "firstExpenseDoneTitle": "できました！",
+  "firstExpenseDoneBody": "記録しました。",
+  "firstExpenseRecordTitle": "はじめての記録",
+  "firstExpenseStarterNote": "今日の分はもう数えています。記録する日ごとに{name}が近づきます。",
+  "homeFirstExpenseTitle": "支出ひとつで始めましょう。",
+  "homeFirstExpenseBody": "今日払ったものを記録してみましょう。",
+  "homeFirstExpenseAction": "支出を記録する",
+  "homeFirstExpenseLater": "あとで"
 }

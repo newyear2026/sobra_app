@@ -258,6 +258,8 @@ void main() {
       expect(find.text('Puedes ponerlo después desde Inicio.'), findsOneWidget);
 
       await tap('Ir a Inicio');
+      // The guided first expense follows onboarding; this walks past it.
+      await tap('Aún no he gastado');
 
       expect(find.text('Primera misión'), findsOneWidget);
       expect(find.text('Definir presupuesto'), findsOneWidget);
@@ -338,6 +340,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tap('Ir a Inicio');
+      await tap('Aún no he gastado');
       expect(find.text('Primera misión'), findsNothing);
     });
 
@@ -360,6 +363,7 @@ void main() {
       expect(find.text('Conteo de efectivo'), findsOneWidget);
 
       await tap('Ir a Inicio');
+      await tap('Aún no he gastado');
       expect(find.text('Efectivo sin configurar'), findsOneWidget);
     });
   });

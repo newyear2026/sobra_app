@@ -2063,6 +2063,13 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1014FirstExpense =>
+      'ようこそ画面のあと、はじめての支出を2ステップで記録できます。その日から、もう一匹の仲間を迎える記録日に数えます。';
+
+  @override
+  String get releaseNote1014Currency => '新しく始めると、お住まいの国の通貨で始まります。';
+
+  @override
   String get releaseNote1013Rewards => 'レベルごとに新しい家具が届き、一部の小物は広告1回で手に入ります。';
 
   @override
@@ -2119,14 +2126,6 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get releaseNote102Amounts =>
       'コロンビア・アルゼンチン・チリのペソ、レアル、ユーロの金額が1.234,56のようにコンマ区切りになりました。';
-
-  @override
-  String get releaseNote101Currencies =>
-      'コロンビア・アルゼンチン・チリのペソ、ソル、ポンド、円で金額を表示できるようになりました。';
-
-  @override
-  String get releaseNote101Celebration =>
-      'お祝いの演出がカードいっぱいに広がり、ジャンプも最後まで見られるようになりました。';
 
   @override
   String get updateAvailableTitle => '新しいバージョンがあります';
@@ -2491,4 +2490,59 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get shareMessageSettings => '猫と一緒に家計簿をつけられるアプリだよ。無料:';
+
+  @override
+  String firstExpenseStepOf(int step, int total) {
+    return 'はじめての支出 · $step/$total';
+  }
+
+  @override
+  String get firstExpenseDoneStep => 'はじめての支出';
+
+  @override
+  String get firstExpenseAmountQuestion => 'いくら使いましたか？';
+
+  @override
+  String get firstExpenseAmountHint => '今日払ったものをひとつ思い出してください。';
+
+  @override
+  String get firstExpenseAmountLater => 'あとで変更できます。';
+
+  @override
+  String get firstExpenseNotYet => 'まだ使っていません';
+
+  @override
+  String get firstExpenseWhatQuestion => '何に使いましたか？';
+
+  @override
+  String get firstExpensePaymentQuestion => 'どうやって払いましたか？';
+
+  @override
+  String get firstExpenseSave => '支出を保存';
+
+  @override
+  String get firstExpenseDoneTitle => 'できました！';
+
+  @override
+  String get firstExpenseDoneBody => '記録しました。';
+
+  @override
+  String get firstExpenseRecordTitle => 'はじめての記録';
+
+  @override
+  String firstExpenseStarterNote(String name) {
+    return '今日の分はもう数えています。記録する日ごとに$nameが近づきます。';
+  }
+
+  @override
+  String get homeFirstExpenseTitle => '支出ひとつで始めましょう。';
+
+  @override
+  String get homeFirstExpenseBody => '今日払ったものを記録してみましょう。';
+
+  @override
+  String get homeFirstExpenseAction => '支出を記録する';
+
+  @override
+  String get homeFirstExpenseLater => 'あとで';
 }

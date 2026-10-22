@@ -2155,6 +2155,14 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1014FirstExpense =>
+      'Direkt nach der Begrüßung trägst du deine erste Ausgabe in zwei Schritten ein, und dieser Tag zählt schon, um deinen zweiten Begleiter zu holen.';
+
+  @override
+  String get releaseNote1014Currency =>
+      'Ein neues Haushaltsbuch startet in der Währung deines Landes.';
+
+  @override
   String get releaseNote1013Rewards =>
       'Jedes Level bringt neue Möbel, und manche Deko gibt es für eine Werbung.';
 
@@ -2218,14 +2226,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get releaseNote102Amounts =>
       'Kolumbianische, argentinische und chilenische Pesos, Real und Euro schreiben sich jetzt mit Komma, wie 1.234,56.';
-
-  @override
-  String get releaseNote101Currencies =>
-      'Geld lässt sich jetzt in kolumbianischen, argentinischen und chilenischen Pesos, Soles, Pfund oder Yen bezeichnen.';
-
-  @override
-  String get releaseNote101Celebration =>
-      'Die Feier füllt jetzt ihre Karte und beendet ihren Sprung.';
 
   @override
   String get updateAvailableTitle => 'Es gibt eine neue Version';
@@ -2604,4 +2604,61 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get shareMessageSettings =>
       'Schau dir diese App an: Ausgaben notieren mit einer kleinen Katze. Kostenlos:';
+
+  @override
+  String firstExpenseStepOf(int step, int total) {
+    return 'Deine erste Ausgabe · $step von $total';
+  }
+
+  @override
+  String get firstExpenseDoneStep => 'Deine erste Ausgabe';
+
+  @override
+  String get firstExpenseAmountQuestion => 'Wie viel hast du ausgegeben?';
+
+  @override
+  String get firstExpenseAmountHint =>
+      'Denk an etwas, das du heute bezahlt hast.';
+
+  @override
+  String get firstExpenseAmountLater => 'Du kannst es später ändern.';
+
+  @override
+  String get firstExpenseNotYet => 'Ich habe noch nichts ausgegeben';
+
+  @override
+  String get firstExpenseWhatQuestion => 'Wofür war es?';
+
+  @override
+  String get firstExpensePaymentQuestion => 'Wie hast du bezahlt?';
+
+  @override
+  String get firstExpenseSave => 'Ausgabe speichern';
+
+  @override
+  String get firstExpenseDoneTitle => 'Fertig!';
+
+  @override
+  String get firstExpenseDoneBody => 'Ist notiert.';
+
+  @override
+  String get firstExpenseRecordTitle => 'Dein erster Eintrag';
+
+  @override
+  String firstExpenseStarterNote(String name) {
+    return 'Heute zählt schon. Mit jedem Tag, an dem du etwas notierst, kommt $name näher.';
+  }
+
+  @override
+  String get homeFirstExpenseTitle => 'Eine Ausgabe, und los geht’s.';
+
+  @override
+  String get homeFirstExpenseBody =>
+      'Notiere etwas, das du heute bezahlt hast.';
+
+  @override
+  String get homeFirstExpenseAction => 'Ausgabe erfassen';
+
+  @override
+  String get homeFirstExpenseLater => 'Nicht jetzt';
 }
