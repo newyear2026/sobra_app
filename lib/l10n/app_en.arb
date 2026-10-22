@@ -665,6 +665,10 @@
     "placeholders": { "count": { "type": "int" } }
   },
 
+  "releaseNote1015Penguin": "Penguin is in the collection. One purchase, and they stay.",
+
+  "releaseNote1015Ads": "Improved rewarded-ad loading and reliability.",
+
   "releaseNote1014FirstExpense": "Right after the welcome, your first expense takes two steps, and that day already counts towards bringing your other companion over.",
 
   "releaseNote1014Currency": "A new ledger starts in your country's currency.",
@@ -688,10 +692,6 @@
   "releaseNote104Languages": "Sobrita now speaks Portuguese, German, French and Japanese.",
   "releaseNote103GuineaPig": "Guinea Pig is in the collection. Two short ads, and they stay.",
   "releaseNote103Widget": "The home widget shows who you live with, and writes the amount the same way the app does.",
-  "releaseNote102Schnauzer": "Schnauzer is in the collection. Two short ads, and they stay.",
-  "releaseNote102Rooms": "The house can be a garden or a beach, and a chair, a lamp and a clock are ready to place.",
-  "releaseNote102Missions": "Two of the three daily missions change every day, and the ones that take an extra step pay more XP.",
-  "releaseNote102Amounts": "Colombian, Argentine and Chilean pesos, Brazilian reais and euros now use a comma, as in 1.234,56.",
 
   "updateAvailableTitle": "There's a new version",
   "updateAvailableBody": "Update to get the latest Sobrita.",

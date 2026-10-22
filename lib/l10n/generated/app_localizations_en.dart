@@ -2138,6 +2138,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1015Penguin =>
+      'Penguin is in the collection. One purchase, and they stay.';
+
+  @override
+  String get releaseNote1015Ads =>
+      'Improved rewarded-ad loading and reliability.';
+
+  @override
   String get releaseNote1014FirstExpense =>
       'Right after the welcome, your first expense takes two steps, and that day already counts towards bringing your other companion over.';
 
@@ -2194,22 +2202,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get releaseNote103Widget =>
       'The home widget shows who you live with, and writes the amount the same way the app does.';
-
-  @override
-  String get releaseNote102Schnauzer =>
-      'Schnauzer is in the collection. Two short ads, and they stay.';
-
-  @override
-  String get releaseNote102Rooms =>
-      'The house can be a garden or a beach, and a chair, a lamp and a clock are ready to place.';
-
-  @override
-  String get releaseNote102Missions =>
-      'Two of the three daily missions change every day, and the ones that take an extra step pay more XP.';
-
-  @override
-  String get releaseNote102Amounts =>
-      'Colombian, Argentine and Chilean pesos, Brazilian reais and euros now use a comma, as in 1.234,56.';
 
   @override
   String get updateAvailableTitle => 'There\'s a new version';

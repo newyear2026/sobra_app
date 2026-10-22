@@ -3646,6 +3646,18 @@ abstract class AppLocalizations {
   /// **'Guardamos las últimas {count} versiones.'**
   String releaseNotesRetention(int count);
 
+  /// No description provided for @releaseNote1015Penguin.
+  ///
+  /// In es, this message translates to:
+  /// **'Penguin ya está en la colección. Una compra única y se queda contigo.'**
+  String get releaseNote1015Penguin;
+
+  /// No description provided for @releaseNote1015Ads.
+  ///
+  /// In es, this message translates to:
+  /// **'Mejoramos la carga y la estabilidad de los anuncios con recompensa.'**
+  String get releaseNote1015Ads;
+
   /// No description provided for @releaseNote1014FirstExpense.
   ///
   /// In es, this message translates to:
@@ -3735,30 +3747,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'El widget de inicio muestra con quién vives, y el monto se escribe igual que en la app.'**
   String get releaseNote103Widget;
-
-  /// No description provided for @releaseNote102Schnauzer.
-  ///
-  /// In es, this message translates to:
-  /// **'Schnauzer ya está en la colección. Dos anuncios cortos y se queda contigo.'**
-  String get releaseNote102Schnauzer;
-
-  /// No description provided for @releaseNote102Rooms.
-  ///
-  /// In es, this message translates to:
-  /// **'La casa puede ser un jardín o la playa, y ya puedes colocar un sillón, una lámpara y un reloj.'**
-  String get releaseNote102Rooms;
-
-  /// No description provided for @releaseNote102Missions.
-  ///
-  /// In es, this message translates to:
-  /// **'Dos de las tres misiones del día cambian cada día, y las que piden un paso más dan más XP.'**
-  String get releaseNote102Missions;
-
-  /// No description provided for @releaseNote102Amounts.
-  ///
-  /// In es, this message translates to:
-  /// **'Los pesos colombianos, argentinos y chilenos, los reales y el euro ahora se escriben con coma, como 1.234,56.'**
-  String get releaseNote102Amounts;
 
   /// Heading of the dialog shown on launch when Google Play has a newer build waiting.
   ///

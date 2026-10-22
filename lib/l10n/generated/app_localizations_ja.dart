@@ -2063,6 +2063,12 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1015Penguin => 'Penguinがコレクションに登場。一度の購入で仲間になります。';
+
+  @override
+  String get releaseNote1015Ads => 'リワード広告の読み込みと安定性を改善しました。';
+
+  @override
   String get releaseNote1014FirstExpense =>
       'ようこそ画面のあと、はじめての支出を2ステップで記録できます。その日から、もう一匹の仲間を迎える記録日に数えます。';
 
@@ -2112,20 +2118,6 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get releaseNote103Widget =>
       'ホームウィジェットに一緒に暮らす仲間が表示され、金額もアプリと同じ書き方になりました。';
-
-  @override
-  String get releaseNote102Schnauzer => 'シュナウザーがコレクションに登場。短い広告2本で仲間になります。';
-
-  @override
-  String get releaseNote102Rooms => 'お部屋を庭や海辺にできるようになり、チェア、ランプ、時計も置けるようになりました。';
-
-  @override
-  String get releaseNote102Missions =>
-      '毎日のミッション3つのうち2つが日替わりに。ひと手間かかるものはXPが多めです。';
-
-  @override
-  String get releaseNote102Amounts =>
-      'コロンビア・アルゼンチン・チリのペソ、レアル、ユーロの金額が1.234,56のようにコンマ区切りになりました。';
 
   @override
   String get updateAvailableTitle => '新しいバージョンがあります';

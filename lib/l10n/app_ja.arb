@@ -632,6 +632,10 @@
   "releaseNotesCurrent": "現在",
   "releaseNotesRetention": "直近{count}バージョン分を残しています。",
 
+  "releaseNote1015Penguin": "Penguinがコレクションに登場。一度の購入で仲間になります。",
+
+  "releaseNote1015Ads": "リワード広告の読み込みと安定性を改善しました。",
+
   "releaseNote1014FirstExpense": "ようこそ画面のあと、はじめての支出を2ステップで記録できます。その日から、もう一匹の仲間を迎える記録日に数えます。",
 
   "releaseNote1014Currency": "新しく始めると、お住まいの国の通貨で始まります。",
@@ -655,10 +659,6 @@
   "releaseNote104Languages": "Sobritaがポルトガル語、ドイツ語、フランス語、日本語に対応しました。",
   "releaseNote103GuineaPig": "モルモットがコレクションに登場。短い広告2本で仲間になります。",
   "releaseNote103Widget": "ホームウィジェットに一緒に暮らす仲間が表示され、金額もアプリと同じ書き方になりました。",
-  "releaseNote102Schnauzer": "シュナウザーがコレクションに登場。短い広告2本で仲間になります。",
-  "releaseNote102Rooms": "お部屋を庭や海辺にできるようになり、チェア、ランプ、時計も置けるようになりました。",
-  "releaseNote102Missions": "毎日のミッション3つのうち2つが日替わりに。ひと手間かかるものはXPが多めです。",
-  "releaseNote102Amounts": "コロンビア・アルゼンチン・チリのペソ、レアル、ユーロの金額が1.234,56のようにコンマ区切りになりました。",
 
   "updateAvailableTitle": "新しいバージョンがあります",
   "updateAvailableBody": "アップデートして最新のSobritaを使いましょう。",

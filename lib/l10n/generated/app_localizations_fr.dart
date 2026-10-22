@@ -2162,6 +2162,14 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1015Penguin =>
+      'Penguin arrive dans la collection. Un seul achat, et il reste.';
+
+  @override
+  String get releaseNote1015Ads =>
+      'Le chargement des publicités avec récompense est plus fiable.';
+
+  @override
   String get releaseNote1014FirstExpense =>
       'Juste après l’accueil, votre première dépense se note en deux étapes, et ce jour compte déjà pour faire venir votre autre compagnon.';
 
@@ -2218,22 +2226,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get releaseNote103Widget =>
       'Le widget montre avec qui tu vis, et écrit le montant comme l’app.';
-
-  @override
-  String get releaseNote102Schnauzer =>
-      'Le schnauzer arrive dans la collection. Deux pubs courtes, et il reste.';
-
-  @override
-  String get releaseNote102Rooms =>
-      'La maison peut être un jardin ou une plage, et un fauteuil, une lampe et une horloge sont prêts à placer.';
-
-  @override
-  String get releaseNote102Missions =>
-      'Deux des trois missions du jour changent chaque jour, et celles qui demandent un effort de plus rapportent plus d’XP.';
-
-  @override
-  String get releaseNote102Amounts =>
-      'Les pesos colombiens, argentins et chiliens, le réal et l’euro s’écrivent maintenant avec une virgule, comme 1.234,56.';
 
   @override
   String get updateAvailableTitle => 'Une nouvelle version est là';

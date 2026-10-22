@@ -2155,6 +2155,14 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1015Penguin =>
+      'O Penguin chegou à coleção. Uma compra única e ele fica com você.';
+
+  @override
+  String get releaseNote1015Ads =>
+      'Melhoramos o carregamento e a estabilidade dos anúncios com recompensa.';
+
+  @override
   String get releaseNote1014FirstExpense =>
       'Logo depois das boas-vindas, seu primeiro gasto leva dois passos, e esse dia já conta para trazer seu outro companheiro.';
 
@@ -2211,22 +2219,6 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get releaseNote103Widget =>
       'O widget da tela inicial mostra com quem você mora, e o valor é escrito igual ao app.';
-
-  @override
-  String get releaseNote102Schnauzer =>
-      'O Schnauzer chegou à coleção. Dois anúncios curtos e ele fica com você.';
-
-  @override
-  String get releaseNote102Rooms =>
-      'A casa pode ser um jardim ou uma praia, e já dá para colocar uma poltrona, uma luminária e um relógio.';
-
-  @override
-  String get releaseNote102Missions =>
-      'Duas das três missões do dia mudam todo dia, e as que pedem um passo a mais dão mais XP.';
-
-  @override
-  String get releaseNote102Amounts =>
-      'Pesos colombianos, argentinos e chilenos, reais e euros agora usam vírgula, como em 1.234,56.';
 
   @override
   String get updateAvailableTitle => 'Tem versão nova';

@@ -632,6 +632,10 @@
   "releaseNotesCurrent": "Atual",
   "releaseNotesRetention": "Guardamos as últimas {count} versões.",
 
+  "releaseNote1015Penguin": "O Penguin chegou à coleção. Uma compra única e ele fica com você.",
+
+  "releaseNote1015Ads": "Melhoramos o carregamento e a estabilidade dos anúncios com recompensa.",
+
   "releaseNote1014FirstExpense": "Logo depois das boas-vindas, seu primeiro gasto leva dois passos, e esse dia já conta para trazer seu outro companheiro.",
 
   "releaseNote1014Currency": "Uma conta nova começa na moeda do seu país.",
@@ -655,10 +659,6 @@
   "releaseNote104Languages": "O Sobrita agora fala português, alemão, francês e japonês.",
   "releaseNote103GuineaPig": "O porquinho-da-índia chegou à coleção. Dois anúncios curtos e ele fica com você.",
   "releaseNote103Widget": "O widget da tela inicial mostra com quem você mora, e o valor é escrito igual ao app.",
-  "releaseNote102Schnauzer": "O Schnauzer chegou à coleção. Dois anúncios curtos e ele fica com você.",
-  "releaseNote102Rooms": "A casa pode ser um jardim ou uma praia, e já dá para colocar uma poltrona, uma luminária e um relógio.",
-  "releaseNote102Missions": "Duas das três missões do dia mudam todo dia, e as que pedem um passo a mais dão mais XP.",
-  "releaseNote102Amounts": "Pesos colombianos, argentinos e chilenos, reais e euros agora usam vírgula, como em 1.234,56.",
 
   "updateAvailableTitle": "Tem versão nova",
   "updateAvailableBody": "Atualize para ter o Sobrita mais recente.",

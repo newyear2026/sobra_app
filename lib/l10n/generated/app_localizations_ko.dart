@@ -2061,6 +2061,12 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get releaseNote1015Penguin => 'Penguin이 컬렉션에 들어왔어요. 한 번 구매하면 함께 지내요.';
+
+  @override
+  String get releaseNote1015Ads => '보상형 광고를 더 안정적으로 불러오도록 개선했어요.';
+
+  @override
   String get releaseNote1014FirstExpense =>
       '환영 화면이 끝나면 첫 지출을 두 단계로 기록해요. 그날부터 다른 친구를 데려오는 기록일로 쳐요.';
 
@@ -2111,21 +2117,6 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get releaseNote103Widget =>
       '홈 위젯에 같이 지내는 친구가 나오고, 금액도 앱과 같은 방식으로 적혀요.';
-
-  @override
-  String get releaseNote102Schnauzer => '슈나우저가 컬렉션에 들어왔어요. 짧은 광고 두 번이면 함께 지내요.';
-
-  @override
-  String get releaseNote102Rooms =>
-      '집을 정원이나 해변으로 바꿀 수 있고, 의자·스탠드·벽시계를 바로 둘 수 있어요.';
-
-  @override
-  String get releaseNote102Missions =>
-      '오늘 미션 세 개 중 두 개는 날마다 바뀌고, 한 단계 더 하는 미션은 XP도 더 받아요.';
-
-  @override
-  String get releaseNote102Amounts =>
-      '콜롬비아·아르헨티나·칠레 페소, 헤알, 유로는 이제 1.234,56처럼 쉼표로 적혀요.';
 
   @override
   String get updateAvailableTitle => '새 버전이 있어요';
