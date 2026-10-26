@@ -6,9 +6,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/data/release_notes.dart';
 import 'package:sobra_app/l10n/generated/app_localizations.dart';
+import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/screens/release_notes_screen.dart';
 import 'package:sobra_app/services/app_version_service.dart';
 import 'package:sobra_app/services/release_announcement_service.dart';
+import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
 import 'package:sobra_app/widgets/release_announcement.dart';
 
@@ -255,6 +257,74 @@ void main() {
 
       expect(find.byType(ReleaseNotesScreen), findsOneWidget);
       expect(announcements.hasUnreadNotes, isFalse);
+    });
+
+    group('for the seasonal gift release', () {
+      final giftNotes = <ReleaseNote>[
+        ReleaseNote(
+          version: '1.1.0',
+          releasedOn: DateTime(2026, 10, 28),
+          seasonalGift: true,
+          lines: [(_) => 'Llegaron disfraces.'],
+        ),
+      ];
+
+      Future<SobraStore> store({required bool claimed}) async {
+        final store = await SobraStore.load(
+          now: () => DateTime(2026, 10, 28, 9),
+        );
+        await store.configureOnboarding(
+          budgetCentavos: 600000,
+          schedule: const PaySchedule.semiMonthly(),
+        );
+        await store.completeOnboarding();
+        if (claimed) await store.claimSeasonalCostumes();
+        return store;
+      }
+
+      Future<void> showCard(WidgetTester tester, SobraStore store) async {
+        final preferences = await _preferences({
+          'sobra_notes_announced_version': '1.0.0',
+          'sobra_notes_read_version': '1.0.0',
+        });
+        final announcements = ReleaseAnnouncements(
+          preferences: preferences,
+          versionLoader: _reports('1.1.0'),
+          notes: giftNotes,
+        );
+        await announcements.start();
+        await tester.pumpWidget(
+          SobraScope(store: store, child: _harness(const SizedBox.shrink())),
+        );
+        final context = tester.element(find.byType(SizedBox));
+        unawaited(
+          showReleaseAnnouncement(context, announcements: announcements),
+        );
+        await tester.pumpAndSettle();
+      }
+
+      testWidgets('Ver regalo opens the gift while it can be claimed', (
+        tester,
+      ) async {
+        await showCard(tester, await store(claimed: false));
+
+        expect(find.text('Ver todo'), findsNothing);
+        await tester.tap(find.text('Ver regalo'));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.byKey(const ValueKey('claim-seasonal-costumes')),
+          findsOneWidget,
+        );
+        expect(find.byType(ReleaseNotesScreen), findsNothing);
+      });
+
+      testWidgets('a claimed gift leaves the ordinary card', (tester) async {
+        await showCard(tester, await store(claimed: true));
+
+        expect(find.text('Ver regalo'), findsNothing);
+        expect(find.text('Ver todo'), findsOneWidget);
+      });
     });
 
     // Every language, not just the template: German and Portuguese run

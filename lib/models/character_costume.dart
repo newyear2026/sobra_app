@@ -37,6 +37,10 @@ abstract final class CharacterCostumes {
   static DateTime get endsAt => DateTime(2026, 11, 4);
   static DateTime get lastClaimDay => DateTime(2026, 11, 3);
 
+  /// Mid-morning of the last day: late enough not to wake anyone, early
+  /// enough to leave the day to claim it.
+  static DateTime get lastDayReminderAt => DateTime(2026, 11, 3, 10);
+
   // Availability is the device's local calendar, like the rest of the offline
   // app. Only acquisition ends; an already received costume never expires.
   static bool canClaimOn(DateTime moment) {

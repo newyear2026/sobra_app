@@ -2069,6 +2069,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get releaseNote1015Ads => 'リワード広告の読み込みと安定性を改善しました。';
 
   @override
+  String get releaseNote1016Costumes => '仲間たちの季節の衣装が12着届きました。11月3日まで無料で受け取れます。';
+
+  @override
+  String get releaseNote1016Keeps => '受け取った衣装はずっと使えます。';
+
+  @override
   String get releaseNote1014FirstExpense =>
       'ようこそ画面のあと、はじめての支出を2ステップで記録できます。その日から、もう一匹の仲間を迎える記録日に数えます。';
 
@@ -2111,13 +2117,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get releaseNote104Languages => 'Sobritaがポルトガル語、ドイツ語、フランス語、日本語に対応しました。';
-
-  @override
-  String get releaseNote103GuineaPig => 'モルモットがコレクションに登場。短い広告2本で仲間になります。';
-
-  @override
-  String get releaseNote103Widget =>
-      'ホームウィジェットに一緒に暮らす仲間が表示され、金額もアプリと同じ書き方になりました。';
 
   @override
   String get updateAvailableTitle => '新しいバージョンがあります';
@@ -2613,6 +2612,14 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get seasonalGiftPreview => '12着の衣装の一部';
+
+  @override
+  String get seasonalGiftLastDayTitle => '今日がプレゼントの最終日です';
+
+  @override
+  String seasonalGiftLastDayBody(int count) {
+    return '今日中に衣装$count着を無料で受け取れます。受け取った衣装はずっと使えます。';
+  }
 
   @override
   String get costumeDracula => 'ドラキュラ';

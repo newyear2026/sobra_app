@@ -2163,6 +2163,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Melhoramos o carregamento e a estabilidade dos anúncios com recompensa.';
 
   @override
+  String get releaseNote1016Costumes =>
+      'Chegaram 12 fantasias da temporada para seus amigos. São grátis até 3 de novembro.';
+
+  @override
+  String get releaseNote1016Keeps => 'Depois de receber, são seus para sempre.';
+
+  @override
   String get releaseNote1014FirstExpense =>
       'Logo depois das boas-vindas, seu primeiro gasto leva dois passos, e esse dia já conta para trazer seu outro companheiro.';
 
@@ -2211,14 +2218,6 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get releaseNote104Languages =>
       'O Sobrita agora fala português, alemão, francês e japonês.';
-
-  @override
-  String get releaseNote103GuineaPig =>
-      'O porquinho-da-índia chegou à coleção. Dois anúncios curtos e ele fica com você.';
-
-  @override
-  String get releaseNote103Widget =>
-      'O widget da tela inicial mostra com quem você mora, e o valor é escrito igual ao app.';
 
   @override
   String get updateAvailableTitle => 'Tem versão nova';
@@ -2729,6 +2728,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get seasonalGiftPreview => 'Uma prévia das 12 fantasias';
+
+  @override
+  String get seasonalGiftLastDayTitle => 'Hoje é o último dia do presente';
+
+  @override
+  String seasonalGiftLastDayBody(int count) {
+    return 'Receba as $count fantasias grátis antes da meia-noite. Depois de receber, são seus para sempre.';
+  }
 
   @override
   String get costumeDracula => 'Drácula';

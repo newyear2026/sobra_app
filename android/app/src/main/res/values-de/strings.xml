@@ -4,6 +4,8 @@
     <string name="quick_entry_channel_description">Abkürzungen zum Eintragen von Einnahmen und Ausgaben</string>
     <string name="fixed_channel_name">Fixkosten</string>
     <string name="fixed_channel_description">Erinnerungen, bevor Miete und Rechnungen fällig sind</string>
+    <string name="news_channel_name">Geschenke und Neuigkeiten</string>
+    <string name="news_channel_description">Hinweise auf saisonale Geschenke, bevor sie enden</string>
     <string name="quick_entry_question">Was möchtest du eintragen?</string>
     <string name="quick_entry_income">Einnahme</string>
     <string name="quick_entry_expense">Ausgabe</string>

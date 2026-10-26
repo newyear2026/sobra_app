@@ -32,6 +32,7 @@ import 'services/native_ad_service.dart';
 import 'services/rewarded_ad_service.dart';
 import 'services/receipt_store.dart';
 import 'services/fixed_reminders.dart';
+import 'services/seasonal_gift_reminder.dart';
 import 'services/sobra_quick_entry.dart';
 import 'services/sobra_widget_sync.dart';
 import 'state/sobra_store.dart';
@@ -61,6 +62,7 @@ Future<void> main() async {
   await SobraWidgetSync.initialize(store);
   await SobraQuickEntry.initialize();
   SobraFixedReminders.initialize(store);
+  SeasonalGiftReminder.initialize(store);
   final receipts = ReceiptStore.forPlatform();
   await prepareReceipts(receipts, store);
   final purchasePlatform =
@@ -399,6 +401,7 @@ class _WidgetSyncLabelsState extends State<_WidgetSyncLabels> {
       ),
     );
     SobraFixedReminders.localize(l10n);
+    SeasonalGiftReminder.localize(l10n);
     SobraQuickEntry.copy = SobraQuickEntryCopy(
       question: l10n.quickEntryQuestion,
       income: l10n.registerIncome,

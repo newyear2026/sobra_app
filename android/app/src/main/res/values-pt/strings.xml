@@ -4,6 +4,8 @@
     <string name="quick_entry_channel_description">Atalhos para anotar entradas e gastos</string>
     <string name="fixed_channel_name">Pagamentos fixos</string>
     <string name="fixed_channel_description">Avisos antes do vencimento do aluguel e das contas</string>
+    <string name="news_channel_name">Presentes e novidades</string>
+    <string name="news_channel_description">Avisos de presentes da temporada antes de acabarem</string>
     <string name="quick_entry_question">O que você quer anotar?</string>
     <string name="quick_entry_income">Entrada</string>
     <string name="quick_entry_expense">Gasto</string>

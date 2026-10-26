@@ -2147,6 +2147,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'Mejoramos la carga y la estabilidad de los anuncios con recompensa.';
 
   @override
+  String get releaseNote1016Costumes =>
+      'Llegaron 12 disfraces de temporada para tus amigos. Son gratis hasta el 3 de noviembre.';
+
+  @override
+  String get releaseNote1016Keeps =>
+      'Una vez recibidos, son tuyos para siempre.';
+
+  @override
   String get releaseNote1014FirstExpense =>
       'Al terminar la bienvenida, tu primer gasto se anota en dos pasos, y ese día ya cuenta para que llegue tu otro compañero.';
 
@@ -2196,14 +2204,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get releaseNote104Languages =>
       'Sobrita ahora habla portugués, alemán, francés y japonés.';
-
-  @override
-  String get releaseNote103GuineaPig =>
-      'Cobaya ya está en la colección. Dos anuncios cortos y se queda contigo.';
-
-  @override
-  String get releaseNote103Widget =>
-      'El widget de inicio muestra con quién vives, y el monto se escribe igual que en la app.';
 
   @override
   String get updateAvailableTitle => 'Hay una versión nueva';
@@ -2712,6 +2712,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get seasonalGiftPreview => 'Algunos de los 12 disfraces';
+
+  @override
+  String get seasonalGiftLastDayTitle => 'Hoy es el último día del regalo';
+
+  @override
+  String seasonalGiftLastDayBody(int count) {
+    return 'Recibe los $count disfraces gratis antes de medianoche. Una vez recibidos, son tuyos para siempre.';
+  }
 
   @override
   String get costumeDracula => 'Drácula';

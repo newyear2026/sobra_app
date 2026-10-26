@@ -669,6 +669,9 @@
 
   "releaseNote1015Ads": "Improved rewarded-ad loading and reliability.",
 
+  "releaseNote1016Costumes": "12 seasonal outfits arrived for your friends. They're free until November 3.",
+  "releaseNote1016Keeps": "Once received, they are yours to keep.",
+
   "releaseNote1014FirstExpense": "Right after the welcome, your first expense takes two steps, and that day already counts towards bringing your other companion over.",
 
   "releaseNote1014Currency": "A new ledger starts in your country's currency.",
@@ -690,8 +693,6 @@
   "releaseNote104Names": "Miru, Yoshi and Cookie have names now, and the level title wears whoever sits with you.",
   "releaseNote104Widget": "The home widget shows the whole amount.",
   "releaseNote104Languages": "Sobrita now speaks Portuguese, German, French and Japanese.",
-  "releaseNote103GuineaPig": "Guinea Pig is in the collection. Two short ads, and they stay.",
-  "releaseNote103Widget": "The home widget shows who you live with, and writes the amount the same way the app does.",
 
   "updateAvailableTitle": "There's a new version",
   "updateAvailableBody": "Update to get the latest Sobrita.",
@@ -844,6 +845,15 @@
   "seasonalGiftWardrobe": "Try them in Decorate",
   "seasonalGiftClosed": "The time to claim this gift has ended.",
   "seasonalGiftPreview": "A preview of the 12 outfits",
+  "seasonalGiftLastDayTitle": "Today is the last day of the gift",
+  "seasonalGiftLastDayBody": "Get all {count} outfits free before midnight. Once received, they are yours to keep.",
+  "@seasonalGiftLastDayBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "costumeDracula": "Dracula",
   "costumeFrankenstein": "Frankenstein",
   "costumeWerewolf": "Werewolf",

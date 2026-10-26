@@ -4,6 +4,8 @@
     <string name="quick_entry_channel_description">Raccourcis pour noter rentrées et dépenses</string>
     <string name="fixed_channel_name">Dépenses fixes</string>
     <string name="fixed_channel_description">Rappels avant l’échéance du loyer et des factures</string>
+    <string name="news_channel_name">Cadeaux et nouveautés</string>
+    <string name="news_channel_description">Rappels des cadeaux de saison avant leur fin</string>
     <string name="quick_entry_question">Que veux-tu noter ?</string>
     <string name="quick_entry_income">Rentrée</string>
     <string name="quick_entry_expense">Dépense</string>

@@ -2067,6 +2067,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get releaseNote1015Ads => '보상형 광고를 더 안정적으로 불러오도록 개선했어요.';
 
   @override
+  String get releaseNote1016Costumes =>
+      '친구들을 위한 시즌 코스튬 12종이 도착했어요. 11월 3일까지 무료로 받을 수 있어요.';
+
+  @override
+  String get releaseNote1016Keeps => '한 번 받으면 이벤트가 끝나도 영구 소장해요.';
+
+  @override
   String get releaseNote1014FirstExpense =>
       '환영 화면이 끝나면 첫 지출을 두 단계로 기록해요. 그날부터 다른 친구를 데려오는 기록일로 쳐요.';
 
@@ -2110,13 +2117,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get releaseNote104Languages => '이제 포르투갈어, 독일어, 프랑스어, 일본어로도 쓸 수 있어요.';
-
-  @override
-  String get releaseNote103GuineaPig => '기니피그가 컬렉션에 들어왔어요. 짧은 광고 두 번이면 함께 지내요.';
-
-  @override
-  String get releaseNote103Widget =>
-      '홈 위젯에 같이 지내는 친구가 나오고, 금액도 앱과 같은 방식으로 적혀요.';
 
   @override
   String get updateAvailableTitle => '새 버전이 있어요';
@@ -2614,6 +2614,14 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get seasonalGiftPreview => '12종 중 미리보기';
+
+  @override
+  String get seasonalGiftLastDayTitle => '오늘이 선물을 받을 수 있는 마지막 날이에요';
+
+  @override
+  String seasonalGiftLastDayBody(int count) {
+    return '자정 전에 코스튬 $count종을 무료로 받아 가세요. 한 번 받으면 영구 소장해요.';
+  }
 
   @override
   String get costumeDracula => '드라큘라';

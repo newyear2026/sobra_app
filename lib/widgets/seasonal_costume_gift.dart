@@ -10,34 +10,36 @@ import '../theme/app_theme.dart';
 import 'cat_sprite.dart';
 import 'pixel_ui.dart';
 
+/// Opens the gift sheet and, if the user asks to try the costumes on, the
+/// wardrobe after it. Shared by the home banner and the 1.0.16 release card.
+Future<void> openSeasonalCostumeGift(BuildContext context) async {
+  // Claiming removes the banner. Keep the route's navigator rather than the
+  // banner's soon-to-be-unmounted context for the wardrobe continuation.
+  final navigator = Navigator.of(context);
+  final wardrobe = await showModalBottomSheet<bool>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    backgroundColor: AppColors.paperLight,
+    shape: const RoundedRectangleBorder(
+      side: BorderSide(color: AppColors.ink, width: 3),
+    ),
+    builder: (_) => const _SeasonalGiftSheet(),
+  );
+  if (!navigator.mounted || wardrobe != true) return;
+  await navigator.push<void>(
+    MaterialPageRoute(
+      builder: (_) => const RoomDecorateScreen(
+        initialCategory: RoomDecorCategory.characters,
+      ),
+    ),
+  );
+}
+
 /// One optional entry into the gift, on home and in the acquisition collection.
 /// Receiving costumes does not auto-equip them or grant any base characters.
 class SeasonalCostumeGiftBanner extends StatelessWidget {
   const SeasonalCostumeGiftBanner({super.key});
-
-  Future<void> _open(BuildContext context) async {
-    // Claiming removes the banner. Keep the route's navigator rather than the
-    // banner's soon-to-be-unmounted context for the wardrobe continuation.
-    final navigator = Navigator.of(context);
-    final wardrobe = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: AppColors.paperLight,
-      shape: const RoundedRectangleBorder(
-        side: BorderSide(color: AppColors.ink, width: 3),
-      ),
-      builder: (_) => const _SeasonalGiftSheet(),
-    );
-    if (!navigator.mounted || wardrobe != true) return;
-    await navigator.push<void>(
-      MaterialPageRoute(
-        builder: (_) => const RoomDecorateScreen(
-          initialCategory: RoomDecorCategory.characters,
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,7 @@ class SeasonalCostumeGiftBanner extends StatelessWidget {
       button: true,
       child: InkWell(
         key: const ValueKey('seasonal-costume-gift'),
-        onTap: () => _open(context),
+        onTap: () => openSeasonalCostumeGift(context),
         child: PixelCard(
           color: AppColors.cashSoft,
           borderColor: AppColors.cashInk,

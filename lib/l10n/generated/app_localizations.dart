@@ -3658,6 +3658,18 @@ abstract class AppLocalizations {
   /// **'Mejoramos la carga y la estabilidad de los anuncios con recompensa.'**
   String get releaseNote1015Ads;
 
+  /// No description provided for @releaseNote1016Costumes.
+  ///
+  /// In es, this message translates to:
+  /// **'Llegaron 12 disfraces de temporada para tus amigos. Son gratis hasta el 3 de noviembre.'**
+  String get releaseNote1016Costumes;
+
+  /// No description provided for @releaseNote1016Keeps.
+  ///
+  /// In es, this message translates to:
+  /// **'Una vez recibidos, son tuyos para siempre.'**
+  String get releaseNote1016Keeps;
+
   /// No description provided for @releaseNote1014FirstExpense.
   ///
   /// In es, this message translates to:
@@ -3735,18 +3747,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Sobrita ahora habla portugués, alemán, francés y japonés.'**
   String get releaseNote104Languages;
-
-  /// No description provided for @releaseNote103GuineaPig.
-  ///
-  /// In es, this message translates to:
-  /// **'Cobaya ya está en la colección. Dos anuncios cortos y se queda contigo.'**
-  String get releaseNote103GuineaPig;
-
-  /// No description provided for @releaseNote103Widget.
-  ///
-  /// In es, this message translates to:
-  /// **'El widget de inicio muestra con quién vives, y el monto se escribe igual que en la app.'**
-  String get releaseNote103Widget;
 
   /// Heading of the dialog shown on launch when Google Play has a newer build waiting.
   ///
@@ -4605,6 +4605,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Algunos de los 12 disfraces'**
   String get seasonalGiftPreview;
+
+  /// No description provided for @seasonalGiftLastDayTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy es el último día del regalo'**
+  String get seasonalGiftLastDayTitle;
+
+  /// No description provided for @seasonalGiftLastDayBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Recibe los {count} disfraces gratis antes de medianoche. Una vez recibidos, son tuyos para siempre.'**
+  String seasonalGiftLastDayBody(int count);
 
   /// No description provided for @costumeDracula.
   ///

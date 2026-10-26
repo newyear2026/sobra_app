@@ -4,6 +4,8 @@
     <string name="quick_entry_channel_description">수입과 지출을 기록하는 바로가기</string>
     <string name="fixed_channel_name">고정지출</string>
     <string name="fixed_channel_description">월세와 고지서를 내기 전에 알려 드려요</string>
+    <string name="news_channel_name">선물과 새로운 소식</string>
+    <string name="news_channel_description">시즌 선물이 끝나기 전에 알려 드려요</string>
     <string name="quick_entry_question">무엇을 기록할까요?</string>
     <string name="quick_entry_income">수입</string>
     <string name="quick_entry_expense">지출</string>

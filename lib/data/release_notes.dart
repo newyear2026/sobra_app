@@ -19,6 +19,7 @@ class ReleaseNote {
     required this.version,
     required this.releasedOn,
     required this.lines,
+    this.seasonalGift = false,
   });
 
   /// Matches `pubspec.yaml`'s version without the build number, because that
@@ -27,6 +28,10 @@ class ReleaseNote {
 
   final DateTime releasedOn;
   final List<String Function(AppLocalizations)> lines;
+
+  /// Whether the release brought the seasonal costume gift. Its card shows
+  /// the costumes and, while the gift can still be claimed, opens it.
+  final bool seasonalGift;
 }
 
 /// What changed in each shipped version, newest first.
@@ -36,6 +41,15 @@ class ReleaseNote {
 /// eligibility, build plumbing — ships without an entry and announces
 /// nothing, which is what [ReleaseAnnouncements] reads a missing note as.
 final releaseNotes = <ReleaseNote>[
+  ReleaseNote(
+    version: '1.0.16',
+    releasedOn: DateTime(2026, 10, 28),
+    seasonalGift: true,
+    lines: [
+      (l10n) => l10n.releaseNote1016Costumes,
+      (l10n) => l10n.releaseNote1016Keeps,
+    ],
+  ),
   ReleaseNote(
     version: '1.0.15',
     releasedOn: DateTime(2026, 10, 21),
@@ -73,14 +87,6 @@ final releaseNotes = <ReleaseNote>[
       (l10n) => l10n.releaseNote104Names,
       (l10n) => l10n.releaseNote104Widget,
       (l10n) => l10n.releaseNote104Languages,
-    ],
-  ),
-  ReleaseNote(
-    version: '1.0.3',
-    releasedOn: DateTime(2026, 9, 26),
-    lines: [
-      (l10n) => l10n.releaseNote103GuineaPig,
-      (l10n) => l10n.releaseNote103Widget,
     ],
   ),
 ];

@@ -2146,6 +2146,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Improved rewarded-ad loading and reliability.';
 
   @override
+  String get releaseNote1016Costumes =>
+      '12 seasonal outfits arrived for your friends. They\'re free until November 3.';
+
+  @override
+  String get releaseNote1016Keeps => 'Once received, they are yours to keep.';
+
+  @override
   String get releaseNote1014FirstExpense =>
       'Right after the welcome, your first expense takes two steps, and that day already counts towards bringing your other companion over.';
 
@@ -2194,14 +2201,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get releaseNote104Languages =>
       'Sobrita now speaks Portuguese, German, French and Japanese.';
-
-  @override
-  String get releaseNote103GuineaPig =>
-      'Guinea Pig is in the collection. Two short ads, and they stay.';
-
-  @override
-  String get releaseNote103Widget =>
-      'The home widget shows who you live with, and writes the amount the same way the app does.';
 
   @override
   String get updateAvailableTitle => 'There\'s a new version';
@@ -2711,6 +2710,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seasonalGiftPreview => 'A preview of the 12 outfits';
+
+  @override
+  String get seasonalGiftLastDayTitle => 'Today is the last day of the gift';
+
+  @override
+  String seasonalGiftLastDayBody(int count) {
+    return 'Get all $count outfits free before midnight. Once received, they are yours to keep.';
+  }
 
   @override
   String get costumeDracula => 'Dracula';

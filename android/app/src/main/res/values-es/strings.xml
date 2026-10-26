@@ -4,6 +4,8 @@
     <string name="quick_entry_channel_description">Accesos para registrar ingresos y gastos</string>
     <string name="fixed_channel_name">Pagos fijos</string>
     <string name="fixed_channel_description">Avisos antes de que toque pagar la renta y los recibos</string>
+    <string name="news_channel_name">Regalos y novedades</string>
+    <string name="news_channel_description">Avisos de regalos de temporada antes de que terminen</string>
     <string name="quick_entry_question">¿Qué quieres registrar?</string>
     <string name="quick_entry_income">Ingreso</string>
     <string name="quick_entry_expense">Gasto</string>

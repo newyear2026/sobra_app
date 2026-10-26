@@ -636,6 +636,9 @@
 
   "releaseNote1015Ads": "Melhoramos o carregamento e a estabilidade dos anúncios com recompensa.",
 
+  "releaseNote1016Costumes": "Chegaram 12 fantasias da temporada para seus amigos. São grátis até 3 de novembro.",
+  "releaseNote1016Keeps": "Depois de receber, são seus para sempre.",
+
   "releaseNote1014FirstExpense": "Logo depois das boas-vindas, seu primeiro gasto leva dois passos, e esse dia já conta para trazer seu outro companheiro.",
 
   "releaseNote1014Currency": "Uma conta nova começa na moeda do seu país.",
@@ -657,8 +660,6 @@
   "releaseNote104Names": "Miru, Yoshi e Cookie agora têm nome, e o título de nível leva o nome de quem te faz companhia.",
   "releaseNote104Widget": "O widget da tela inicial mostra o valor completo.",
   "releaseNote104Languages": "O Sobrita agora fala português, alemão, francês e japonês.",
-  "releaseNote103GuineaPig": "O porquinho-da-índia chegou à coleção. Dois anúncios curtos e ele fica com você.",
-  "releaseNote103Widget": "O widget da tela inicial mostra com quem você mora, e o valor é escrito igual ao app.",
 
   "updateAvailableTitle": "Tem versão nova",
   "updateAvailableBody": "Atualize para ter o Sobrita mais recente.",
@@ -808,6 +809,15 @@
   "seasonalGiftWardrobe": "Experimentar em Decorar",
   "seasonalGiftClosed": "O prazo para receber este presente terminou.",
   "seasonalGiftPreview": "Uma prévia das 12 fantasias",
+  "seasonalGiftLastDayTitle": "Hoje é o último dia do presente",
+  "seasonalGiftLastDayBody": "Receba as {count} fantasias grátis antes da meia-noite. Depois de receber, são seus para sempre.",
+  "@seasonalGiftLastDayBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "costumeDracula": "Drácula",
   "costumeFrankenstein": "Frankenstein",
   "costumeWerewolf": "Lobisomem",

@@ -117,6 +117,27 @@ class MainActivity : FlutterActivity() {
                 else -> result.notImplemented()
             }
         }
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            SEASONAL_REMINDER_CHANNEL,
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "schedule" -> {
+                    val plan = call.arguments as? Map<*, *>
+                    if (plan == null) {
+                        result.error("INVALID_PAYLOAD", "Reminder plan is missing.", null)
+                    } else {
+                        SobraSeasonalReminder.schedule(this, plan)
+                        result.success(null)
+                    }
+                }
+                "cancel" -> {
+                    SobraSeasonalReminder.cancel(this)
+                    result.success(null)
+                }
+                else -> result.notImplemented()
+            }
+        }
         SobraQuickEntryNotification.restore(this)
     }
 
@@ -197,5 +218,6 @@ class MainActivity : FlutterActivity() {
         private const val QUICK_ENTRY_PERMISSION_REQUEST = 2609
         private const val FIXED_REMINDERS_CHANNEL = "com.sobra.app/fixed_reminders"
         private const val FIXED_REMINDER_PERMISSION_REQUEST = 2610
+        private const val SEASONAL_REMINDER_CHANNEL = "com.sobra.app/seasonal_reminder"
     }
 }

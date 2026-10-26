@@ -952,6 +952,9 @@
 
   "releaseNote1015Ads": "Mejoramos la carga y la estabilidad de los anuncios con recompensa.",
 
+  "releaseNote1016Costumes": "Llegaron 12 disfraces de temporada para tus amigos. Son gratis hasta el 3 de noviembre.",
+  "releaseNote1016Keeps": "Una vez recibidos, son tuyos para siempre.",
+
   "releaseNote1014FirstExpense": "Al terminar la bienvenida, tu primer gasto se anota en dos pasos, y ese día ya cuenta para que llegue tu otro compañero.",
 
   "releaseNote1014Currency": "Una cuenta nueva empieza en la moneda de tu país.",
@@ -973,8 +976,6 @@
   "releaseNote104Names": "Miru, Yoshi y Cookie ya tienen nombre, y el título de nivel lleva el de quien te acompaña.",
   "releaseNote104Widget": "El widget de inicio muestra el monto completo.",
   "releaseNote104Languages": "Sobrita ahora habla portugués, alemán, francés y japonés.",
-  "releaseNote103GuineaPig": "Cobaya ya está en la colección. Dos anuncios cortos y se queda contigo.",
-  "releaseNote103Widget": "El widget de inicio muestra con quién vives, y el monto se escribe igual que en la app.",
 
   "updateAvailableTitle": "Hay una versión nueva",
   "@updateAvailableTitle": {
@@ -1265,6 +1266,15 @@
   "seasonalGiftWardrobe": "Probar en Decorar",
   "seasonalGiftClosed": "El plazo para recibir este regalo terminó.",
   "seasonalGiftPreview": "Algunos de los 12 disfraces",
+  "seasonalGiftLastDayTitle": "Hoy es el último día del regalo",
+  "seasonalGiftLastDayBody": "Recibe los {count} disfraces gratis antes de medianoche. Una vez recibidos, son tuyos para siempre.",
+  "@seasonalGiftLastDayBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "costumeDracula": "Drácula",
   "costumeFrankenstein": "Frankenstein",
   "costumeWerewolf": "Hombre lobo",
