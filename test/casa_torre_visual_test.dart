@@ -106,9 +106,9 @@ void main() {
     await tester.runAsync(
       () => Future.wait([
         for (final asset in [
-          'assets/rooms/casa_torre/background_portrait_unlit.png',
-          'assets/rooms/casa_torre/background_portrait_sunset_unlit.png',
-          'assets/rooms/casa_torre/background_portrait_night_unlit.png',
+          'assets/rooms/casa_torre/background_portrait_unlit.webp',
+          'assets/rooms/casa_torre/background_portrait_sunset_unlit.webp',
+          'assets/rooms/casa_torre/background_portrait_night_unlit.webp',
           RoomDecorAssets.launchSofa,
           RoomDecorAssets.floorLamp,
           RoomDecorAssets.rug,
@@ -169,7 +169,7 @@ void main() {
     await tester.runAsync(
       () => Future.wait([
         for (final asset in [
-          'assets/rooms/casa_torre/background_portrait_unlit.png',
+          'assets/rooms/casa_torre/background_portrait_unlit.webp',
           RoomDecorAssets.launchSofa,
           RoomDecorAssets.floorLamp,
           RoomDecorAssets.rug,

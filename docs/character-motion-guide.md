@@ -56,7 +56,9 @@
 
 - 프레임 320×360px, 가로형 RGBA 투명 PNG, 최근접 보간.
 - 8프레임 시트 2560×360px, 12프레임 시트 3840×360px.
-- 파일명 `{role}-{frameCount}.png`, 폴더 `assets/characters/{id}/`.
+- 원본 파일명 `{role}-{frameCount}.png`, 폴더 `design/png-sources/characters/{id}/`.
+- 앱에는 `python3 tool/package_app_art.py characters/{id}`로 만든 `assets/characters/{id}/{role}-{frameCount}.webp`만 들어간다.
+  색상 q90 손실, 알파 무손실이라 투명 영역과 프레임 경계는 PNG와 같다.
 - 중심 x=160, 바닥선 y=344, 안전 여백 16px. 캐릭터 비율·팔레트 유지.
 - 접지 동작은 발이 뜨지 않아야 한다. 점프만 의도된 높이 변화를 허용한다.
 - 소품이 이유 없이 사라지거나 이동하지 않아야 한다. 마지막→첫 프레임 연결까지 검수한다.

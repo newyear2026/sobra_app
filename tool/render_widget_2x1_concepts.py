@@ -37,7 +37,7 @@ def hangul_font(size: int) -> ImageFont.FreeTypeFont:
 
 
 def character_frame(character_id: str, width: int) -> Image.Image:
-    sheet = Image.open(ROOT / f"assets/characters/{character_id}/idle-8.png").convert("RGBA")
+    sheet = Image.open(ROOT / f"design/png-sources/characters/{character_id}/idle-8.png").convert("RGBA")
     if sheet.size != (2560, 360):
         raise ValueError(f"Unexpected idle sheet size for {character_id}: {sheet.size}")
     return sheet.crop((0, 0, 320, 360)).resize(

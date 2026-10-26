@@ -18,7 +18,7 @@ from normalize_success_jump import _components
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "design/characters/michi"
 RAW = SOURCE / "generated-v2"
-OUTPUT = ROOT / "assets/characters/michi"
+OUTPUT = ROOT / "design/png-sources/characters/michi"
 PREVIEWS = SOURCE / "previews"
 WIDTH, HEIGHT, BASELINE, MARGIN = 320, 360, 344, 16
 COUNTS = {"idle": 8, "activity": 12, "processing": 12,

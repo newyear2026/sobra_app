@@ -24,7 +24,7 @@ from normalize_success_jump import (
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "design/characters/maltese"
-OUTPUT = ROOT / "assets/characters/maltese"
+OUTPUT = ROOT / "design/png-sources/characters/maltese"
 WIDTH, HEIGHT, BASELINE, MARGIN = 320, 360, 344, 16
 COUNTS = {
     "idle": 8,

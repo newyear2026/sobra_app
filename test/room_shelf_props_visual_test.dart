@@ -101,7 +101,7 @@ void main() {
       );
       final portraitAsset = RoomThemes.byId(roomId).portraitAsset;
       final unlitAsset =
-          '${portraitAsset.substring(0, portraitAsset.lastIndexOf('/'))}/background_portrait_unlit.png';
+          '${portraitAsset.substring(0, portraitAsset.lastIndexOf('/'))}/background_portrait_unlit.webp';
       await tester.pumpWidget(
         SobraScope(
           store: store,

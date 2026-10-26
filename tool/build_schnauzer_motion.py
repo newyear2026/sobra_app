@@ -16,7 +16,7 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "design/characters/schnauzer"
 RAW = SOURCE / "generated-v2"
-OUTPUT = ROOT / "assets/characters/schnauzer"
+OUTPUT = ROOT / "design/png-sources/characters/schnauzer"
 PREVIEWS = SOURCE / "previews"
 FRAME_WIDTH = 320
 FRAME_HEIGHT = 360

@@ -13,7 +13,7 @@ from normalize_success_jump import _components, _extract, body_dimensions, valid
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "design/characters/raccoon"
 RAW = SOURCE / "generated-v1"
-OUTPUT = ROOT / "assets/characters/raccoon"
+OUTPUT = ROOT / "design/png-sources/characters/raccoon"
 PREVIEWS = SOURCE / "previews"
 WIDTH, HEIGHT, BASELINE, MARGIN = 320, 360, 344, 16
 COUNTS = {

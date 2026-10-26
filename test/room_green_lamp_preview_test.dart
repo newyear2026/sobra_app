@@ -64,7 +64,7 @@ void main() {
       () => Future.wait([
         for (final asset in [
           RoomThemes.casaDePlaya.portraitAsset,
-          'assets/rooms/casa_de_playa/background_portrait_unlit.png',
+          'assets/rooms/casa_de_playa/background_portrait_unlit.webp',
           CatMotion.idle.asset,
           for (final id in placements.values) RoomDecorAssets.assetFor(id)!,
         ])

@@ -436,7 +436,7 @@ void main() {
             : 12,
         reason: role.name,
       );
-      expect(CharacterCatalog.maltese.assetFor(role), endsWith('-v2.png'));
+      expect(CharacterCatalog.maltese.assetFor(role), endsWith('-v2.webp'));
     }
     expect(
       CharacterCatalog.maltese
@@ -509,7 +509,7 @@ void main() {
       sprite.motionSpec,
       same(CharacterCatalog.michi.motionFor(CharacterMotionRole.processing)),
     );
-    expect(sprite.asset, endsWith('/michi/processing-12.png'));
+    expect(sprite.asset, endsWith('/michi/processing-12.webp'));
     expect(sprite.motionSpec.frameCount, 12);
     expect(sprite.effectiveLoop, isTrue);
   });

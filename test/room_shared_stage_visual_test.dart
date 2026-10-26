@@ -59,7 +59,7 @@ void main() {
       () => Future.wait([
         for (final asset in [
           RoomThemes.casaClara.portraitAsset,
-          'assets/rooms/casa_clara/background_portrait_unlit.png',
+          'assets/rooms/casa_clara/background_portrait_unlit.webp',
           CharacterCatalog.poodle.assetFor(CharacterMotionRole.idle),
           for (final id in store.roomDecorationsFor().values)
             RoomDecorAssets.assetFor(id)!,

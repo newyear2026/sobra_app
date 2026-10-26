@@ -93,7 +93,7 @@ void main() {
             widget is Image &&
             widget.image is AssetImage &&
             (widget.image as AssetImage).assetName ==
-                'assets/rooms/casa_clara/background_portrait_night_unlit.png',
+                'assets/rooms/casa_clara/background_portrait_night_unlit.webp',
       ),
       findsOneWidget,
     );
@@ -135,7 +135,7 @@ void main() {
               widget is Image &&
               widget.image is AssetImage &&
               (widget.image as AssetImage).assetName ==
-                  'assets/rooms/$directory/background_portrait_night_unlit.png',
+                  'assets/rooms/$directory/background_portrait_night_unlit.webp',
         ),
         findsOneWidget,
       );
@@ -153,7 +153,7 @@ void main() {
               widget is Image &&
               widget.image is AssetImage &&
               (widget.image as AssetImage).assetName ==
-                  'assets/rooms/$directory/background_portrait_sunset_unlit.png',
+                  'assets/rooms/$directory/background_portrait_sunset_unlit.webp',
         ),
         findsOneWidget,
       );
@@ -351,14 +351,14 @@ void main() {
         .evaluate()
         .isNotEmpty;
     expect(
-      shows('assets/rooms/casa_clara/background_portrait_unlit.png'),
+      shows('assets/rooms/casa_clara/background_portrait_unlit.webp'),
       isTrue,
     );
     currentMoment = DateTime(2026, 10, 1, 21);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await tester.pump();
     expect(
-      shows('assets/rooms/casa_clara/background_portrait_night_unlit.png'),
+      shows('assets/rooms/casa_clara/background_portrait_night_unlit.webp'),
       isTrue,
     );
 
@@ -367,7 +367,7 @@ void main() {
     await tester.tap(find.text('Day').last);
     await tester.pumpAndSettle();
     expect(
-      shows('assets/rooms/casa_clara/background_portrait_unlit.png'),
+      shows('assets/rooms/casa_clara/background_portrait_unlit.webp'),
       isTrue,
     );
   });

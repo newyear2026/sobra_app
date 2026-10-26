@@ -216,7 +216,7 @@ def main() -> None:
             best = None
             for raw in sorted(raw_dir.glob(f'{role}-{count}-raw*.png')):
                 image, report = restore(
-                    ROOT / f'assets/characters/{character}/{asset}',
+                    ROOT / f'design/png-sources/characters/{character}/{asset}',
                     raw,
                     count,
                     args.min_fit,
@@ -238,7 +238,7 @@ def main() -> None:
             if not changed:
                 print(f'ok     {character} {role}')
                 continue
-            image.save(ROOT / f'assets/characters/{character}/{asset}', optimize=True)
+            image.save(ROOT / f'design/png-sources/characters/{character}/{asset}', optimize=True)
             print(f'write  {character} {role} from {raw.name} (median fit {worst:.3f}): '
                   + ', '.join(f'f{i} +{a}/-{r}' for i, a, r in changed))
 

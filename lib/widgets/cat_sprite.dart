@@ -140,7 +140,7 @@ abstract final class CharacterCatalog {
     displayName: 'Michi',
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
-        assetFileName: 'idle-8.png',
+        assetFileName: 'idle-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 2800),
         defaultLoop: true,
@@ -150,7 +150,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.activity: CharacterMotionSpec(
-        assetFileName: 'activity-12.png',
+        assetFileName: 'activity-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 1800),
         defaultLoop: true,
@@ -160,7 +160,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.processing: CharacterMotionSpec(
-        assetFileName: 'processing-12.png',
+        assetFileName: 'processing-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 3600),
         defaultLoop: true,
@@ -170,7 +170,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.positive: CharacterMotionSpec(
-        assetFileName: 'positive-12.png',
+        assetFileName: 'positive-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 4000),
         defaultLoop: true,
@@ -180,7 +180,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.success: CharacterMotionSpec(
-        assetFileName: 'success-12.png',
+        assetFileName: 'success-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 2200),
         // V2 art includes jump height and lands on the idle pose at full size.
@@ -192,7 +192,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.warning: CharacterMotionSpec(
-        assetFileName: 'warning-8.png',
+        assetFileName: 'warning-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 1600),
         defaultLoop: false,
@@ -209,7 +209,7 @@ abstract final class CharacterCatalog {
     displayName: 'Miru',
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
-        assetFileName: 'idle-8.png',
+        assetFileName: 'idle-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 2800),
         defaultLoop: true,
@@ -219,7 +219,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.activity: CharacterMotionSpec(
-        assetFileName: 'activity-12.png',
+        assetFileName: 'activity-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 1800),
         defaultLoop: true,
@@ -229,7 +229,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.processing: CharacterMotionSpec(
-        assetFileName: 'processing-12.png',
+        assetFileName: 'processing-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 3600),
         defaultLoop: true,
@@ -239,7 +239,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.positive: CharacterMotionSpec(
-        assetFileName: 'positive-12.png',
+        assetFileName: 'positive-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 4000),
         defaultLoop: true,
@@ -249,7 +249,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.success: CharacterMotionSpec(
-        assetFileName: 'success-12.png',
+        assetFileName: 'success-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 2200),
         // Settled pose: 223 source pixels tall versus idle's 323.
@@ -262,7 +262,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.warning: CharacterMotionSpec(
-        assetFileName: 'warning-8.png',
+        assetFileName: 'warning-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 1600),
         defaultLoop: false,
@@ -279,7 +279,7 @@ abstract final class CharacterCatalog {
     displayName: 'Yoshi',
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
-        assetFileName: 'idle-8.png',
+        assetFileName: 'idle-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 2800),
         defaultLoop: true,
@@ -289,7 +289,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.activity: CharacterMotionSpec(
-        assetFileName: 'activity-12.png',
+        assetFileName: 'activity-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 1800),
         defaultLoop: true,
@@ -299,7 +299,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.processing: CharacterMotionSpec(
-        assetFileName: 'processing-12.png',
+        assetFileName: 'processing-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 3600),
         defaultLoop: true,
@@ -309,7 +309,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.positive: CharacterMotionSpec(
-        assetFileName: 'positive-12.png',
+        assetFileName: 'positive-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 4000),
         defaultLoop: true,
@@ -319,7 +319,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.success: CharacterMotionSpec(
-        assetFileName: 'success-12.png',
+        assetFileName: 'success-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 2200),
         defaultLoop: false,
@@ -329,7 +329,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.warning: CharacterMotionSpec(
-        assetFileName: 'warning-8.png',
+        assetFileName: 'warning-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 1600),
         defaultLoop: false,
@@ -346,7 +346,7 @@ abstract final class CharacterCatalog {
     displayName: 'Cookie',
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
-        assetFileName: 'idle-8.png',
+        assetFileName: 'idle-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 2800),
         defaultLoop: true,
@@ -356,7 +356,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.activity: CharacterMotionSpec(
-        assetFileName: 'activity-12.png',
+        assetFileName: 'activity-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 1800),
         defaultLoop: true,
@@ -366,7 +366,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.processing: CharacterMotionSpec(
-        assetFileName: 'processing-12.png',
+        assetFileName: 'processing-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 3600),
         defaultLoop: true,
@@ -376,7 +376,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.positive: CharacterMotionSpec(
-        assetFileName: 'positive-12.png',
+        assetFileName: 'positive-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 4000),
         defaultLoop: true,
@@ -386,7 +386,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.success: CharacterMotionSpec(
-        assetFileName: 'success-12.png',
+        assetFileName: 'success-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 2200),
         defaultLoop: false,
@@ -396,7 +396,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.warning: CharacterMotionSpec(
-        assetFileName: 'warning-8.png',
+        assetFileName: 'warning-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 1600),
         defaultLoop: false,
@@ -413,7 +413,7 @@ abstract final class CharacterCatalog {
     displayName: 'Tranqui',
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
-        assetFileName: 'idle-8.png',
+        assetFileName: 'idle-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 2800),
         defaultLoop: true,
@@ -423,7 +423,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.activity: CharacterMotionSpec(
-        assetFileName: 'activity-12.png',
+        assetFileName: 'activity-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 1800),
         defaultLoop: true,
@@ -433,7 +433,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.processing: CharacterMotionSpec(
-        assetFileName: 'processing-12.png',
+        assetFileName: 'processing-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 3600),
         defaultLoop: true,
@@ -443,7 +443,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.positive: CharacterMotionSpec(
-        assetFileName: 'positive-12.png',
+        assetFileName: 'positive-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 4000),
         defaultLoop: true,
@@ -453,7 +453,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.success: CharacterMotionSpec(
-        assetFileName: 'success-12.png',
+        assetFileName: 'success-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 2200),
         defaultLoop: false,
@@ -463,7 +463,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.warning: CharacterMotionSpec(
-        assetFileName: 'warning-8.png',
+        assetFileName: 'warning-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 1600),
         defaultLoop: false,
@@ -481,7 +481,7 @@ abstract final class CharacterCatalog {
     roomDisplayScale: 1.28,
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
-        assetFileName: 'idle-8.png',
+        assetFileName: 'idle-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 2800),
         defaultLoop: true,
@@ -491,7 +491,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.activity: CharacterMotionSpec(
-        assetFileName: 'activity-12.png',
+        assetFileName: 'activity-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 1800),
         defaultLoop: true,
@@ -501,7 +501,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.processing: CharacterMotionSpec(
-        assetFileName: 'processing-12.png',
+        assetFileName: 'processing-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 3600),
         defaultLoop: true,
@@ -511,7 +511,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.positive: CharacterMotionSpec(
-        assetFileName: 'positive-12.png',
+        assetFileName: 'positive-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 4000),
         defaultLoop: true,
@@ -521,7 +521,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.success: CharacterMotionSpec(
-        assetFileName: 'success-12.png',
+        assetFileName: 'success-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 2200),
         defaultLoop: false,
@@ -531,7 +531,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.warning: CharacterMotionSpec(
-        assetFileName: 'warning-8.png',
+        assetFileName: 'warning-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 1600),
         defaultLoop: false,
@@ -549,7 +549,7 @@ abstract final class CharacterCatalog {
     roomDisplayScale: 1.24,
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
-        assetFileName: 'idle-8.png',
+        assetFileName: 'idle-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 2800),
         defaultLoop: true,
@@ -559,7 +559,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.activity: CharacterMotionSpec(
-        assetFileName: 'activity-12.png',
+        assetFileName: 'activity-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 1800),
         defaultLoop: true,
@@ -569,7 +569,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.processing: CharacterMotionSpec(
-        assetFileName: 'processing-12.png',
+        assetFileName: 'processing-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 3600),
         defaultLoop: true,
@@ -579,7 +579,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.positive: CharacterMotionSpec(
-        assetFileName: 'positive-12.png',
+        assetFileName: 'positive-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 4000),
         defaultLoop: true,
@@ -589,7 +589,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.success: CharacterMotionSpec(
-        assetFileName: 'success-12.png',
+        assetFileName: 'success-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 2200),
         defaultLoop: false,
@@ -599,7 +599,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.warning: CharacterMotionSpec(
-        assetFileName: 'warning-8.png',
+        assetFileName: 'warning-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 1600),
         defaultLoop: false,
@@ -617,7 +617,7 @@ abstract final class CharacterCatalog {
     roomDisplayScale: 1.38,
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
-        assetFileName: 'idle-8.png',
+        assetFileName: 'idle-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 2800),
         defaultLoop: true,
@@ -630,7 +630,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.activity: CharacterMotionSpec(
-        assetFileName: 'activity-12.png',
+        assetFileName: 'activity-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 1800),
         defaultLoop: true,
@@ -640,7 +640,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.processing: CharacterMotionSpec(
-        assetFileName: 'processing-12.png',
+        assetFileName: 'processing-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 3600),
         defaultLoop: true,
@@ -650,7 +650,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.positive: CharacterMotionSpec(
-        assetFileName: 'positive-12.png',
+        assetFileName: 'positive-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 4000),
         defaultLoop: true,
@@ -660,7 +660,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.success: CharacterMotionSpec(
-        assetFileName: 'success-12.png',
+        assetFileName: 'success-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 2200),
         defaultLoop: false,
@@ -670,7 +670,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.warning: CharacterMotionSpec(
-        assetFileName: 'warning-8.png',
+        assetFileName: 'warning-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 1600),
         defaultLoop: false,
@@ -687,7 +687,7 @@ abstract final class CharacterCatalog {
     displayName: 'Bandi',
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
-        assetFileName: 'idle-8.png',
+        assetFileName: 'idle-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 2800),
         defaultLoop: true,
@@ -697,7 +697,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.activity: CharacterMotionSpec(
-        assetFileName: 'activity-12.png',
+        assetFileName: 'activity-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 1800),
         defaultLoop: true,
@@ -707,7 +707,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.processing: CharacterMotionSpec(
-        assetFileName: 'processing-12.png',
+        assetFileName: 'processing-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 3600),
         defaultLoop: true,
@@ -717,7 +717,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.positive: CharacterMotionSpec(
-        assetFileName: 'positive-12.png',
+        assetFileName: 'positive-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 4000),
         defaultLoop: true,
@@ -727,7 +727,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.success: CharacterMotionSpec(
-        assetFileName: 'success-12.png',
+        assetFileName: 'success-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 2200),
         defaultLoop: false,
@@ -737,7 +737,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.warning: CharacterMotionSpec(
-        assetFileName: 'warning-8.png',
+        assetFileName: 'warning-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 1600),
         defaultLoop: false,
@@ -754,7 +754,7 @@ abstract final class CharacterCatalog {
     displayName: 'Quokka',
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
-        assetFileName: 'idle-8.png',
+        assetFileName: 'idle-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 2800),
         defaultLoop: true,
@@ -764,7 +764,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.activity: CharacterMotionSpec(
-        assetFileName: 'activity-12.png',
+        assetFileName: 'activity-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 1800),
         defaultLoop: true,
@@ -774,7 +774,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.processing: CharacterMotionSpec(
-        assetFileName: 'processing-12.png',
+        assetFileName: 'processing-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 3600),
         defaultLoop: true,
@@ -784,7 +784,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.positive: CharacterMotionSpec(
-        assetFileName: 'positive-12.png',
+        assetFileName: 'positive-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 4000),
         defaultLoop: true,
@@ -794,7 +794,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.success: CharacterMotionSpec(
-        assetFileName: 'success-12.png',
+        assetFileName: 'success-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 2200),
         defaultLoop: false,
@@ -804,7 +804,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.warning: CharacterMotionSpec(
-        assetFileName: 'warning-8.png',
+        assetFileName: 'warning-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 1600),
         defaultLoop: false,
@@ -822,7 +822,7 @@ abstract final class CharacterCatalog {
     roomDisplayScale: 1.08,
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
-        assetFileName: 'idle-8-v2.png',
+        assetFileName: 'idle-8-v2.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 2800),
         defaultLoop: true,
@@ -832,7 +832,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.activity: CharacterMotionSpec(
-        assetFileName: 'activity-12-v2.png',
+        assetFileName: 'activity-12-v2.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 1800),
         defaultLoop: true,
@@ -842,7 +842,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.processing: CharacterMotionSpec(
-        assetFileName: 'processing-12-v2.png',
+        assetFileName: 'processing-12-v2.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 3600),
         defaultLoop: true,
@@ -852,7 +852,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.positive: CharacterMotionSpec(
-        assetFileName: 'positive-12-v2.png',
+        assetFileName: 'positive-12-v2.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 4000),
         defaultLoop: true,
@@ -862,7 +862,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.success: CharacterMotionSpec(
-        assetFileName: 'success-12-v2.png',
+        assetFileName: 'success-12-v2.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 2200),
         // The settled pose is slightly shorter than idle in the source art.
@@ -874,7 +874,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.warning: CharacterMotionSpec(
-        assetFileName: 'warning-8-v2.png',
+        assetFileName: 'warning-8-v2.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 1600),
         defaultLoop: false,
@@ -892,7 +892,7 @@ abstract final class CharacterCatalog {
     roomDisplayScale: 1.25,
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
-        assetFileName: 'idle-8.png',
+        assetFileName: 'idle-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 2800),
         defaultLoop: true,
@@ -902,7 +902,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.activity: CharacterMotionSpec(
-        assetFileName: 'activity-12.png',
+        assetFileName: 'activity-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 1800),
         defaultLoop: true,
@@ -912,7 +912,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.processing: CharacterMotionSpec(
-        assetFileName: 'processing-12.png',
+        assetFileName: 'processing-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 3600),
         defaultLoop: true,
@@ -922,7 +922,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.positive: CharacterMotionSpec(
-        assetFileName: 'positive-12.png',
+        assetFileName: 'positive-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 4000),
         defaultLoop: true,
@@ -932,7 +932,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.success: CharacterMotionSpec(
-        assetFileName: 'success-12.png',
+        assetFileName: 'success-12.webp',
         frameCount: 12,
         duration: Duration(milliseconds: 2200),
         defaultLoop: false,
@@ -942,7 +942,7 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.warning: CharacterMotionSpec(
-        assetFileName: 'warning-8.png',
+        assetFileName: 'warning-8.webp',
         frameCount: 8,
         duration: Duration(milliseconds: 1600),
         defaultLoop: false,

@@ -179,7 +179,7 @@ void main() {
       () => Future.wait([
         for (final asset in [
           RoomThemes.casaJardin.portraitAsset,
-          'assets/rooms/casa_jardin/background_portrait_unlit.png',
+          'assets/rooms/casa_jardin/background_portrait_unlit.webp',
           RoomDecorAssets.rattanChair,
           RoomDecorAssets.floorLamp,
           RoomDecorAssets.lowCabinet,
@@ -254,7 +254,7 @@ void main() {
       () => Future.wait([
         for (final asset in [
           RoomThemes.casaJardin.portraitAsset,
-          'assets/rooms/casa_jardin/background_portrait_unlit.png',
+          'assets/rooms/casa_jardin/background_portrait_unlit.webp',
           RoomDecorAssets.rattanChair,
           RoomDecorAssets.floorLamp,
           RoomDecorAssets.lowCabinet,

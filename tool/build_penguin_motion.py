@@ -14,7 +14,7 @@ from normalize_success_jump import _components, body_dimensions, validate_jump_s
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "design/characters/penguin"
 RAW = SOURCE / "generated-v1"
-OUTPUT = ROOT / "assets/characters/penguin"
+OUTPUT = ROOT / "design/png-sources/characters/penguin"
 PREVIEWS = SOURCE / "previews"
 WIDTH, HEIGHT, BASELINE, MARGIN = 320, 360, 344, 16
 COUNTS = {"idle": 8, "activity": 12, "processing": 12,

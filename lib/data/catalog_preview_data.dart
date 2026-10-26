@@ -18,7 +18,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.michi,
-      assetPath: 'assets/characters/michi/idle-8.png',
+      assetPath: 'assets/characters/michi/idle-8.webp',
       rewardedAdTarget: 2,
     ),
     CatalogEntry(
@@ -27,7 +27,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.poodle,
-      assetPath: 'assets/characters/poodle/idle-8.png',
+      assetPath: 'assets/characters/poodle/idle-8.webp',
       rewardedAdTarget: 2,
     ),
     // Earned with ads, and for good. Turning it into a purchase later would
@@ -40,7 +40,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.schnauzer,
-      assetPath: 'assets/characters/schnauzer/idle-8.png',
+      assetPath: 'assets/characters/schnauzer/idle-8.webp',
       rewardedAdTarget: 2,
     ),
     CatalogEntry(
@@ -49,7 +49,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.guineaPig,
-      assetPath: 'assets/characters/guinea-pig/idle-8.png',
+      assetPath: 'assets/characters/guinea-pig/idle-8.webp',
       rewardedAdTarget: 2,
     ),
     // Los amigos de Michi: sold one by one and together in the pack.
@@ -63,7 +63,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.purchase,
       visual: CatalogVisual.capybara,
-      assetPath: 'assets/characters/capybara/idle-8.png',
+      assetPath: 'assets/characters/capybara/idle-8.webp',
       storeProductId: 'sobra.character.capybara',
     ),
     CatalogEntry(
@@ -72,7 +72,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.purchase,
       visual: CatalogVisual.alpaca,
-      assetPath: 'assets/characters/alpaca/idle-8.png',
+      assetPath: 'assets/characters/alpaca/idle-8.webp',
       storeProductId: 'sobra.character.alpaca',
     ),
     CatalogEntry(
@@ -81,7 +81,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.purchase,
       visual: CatalogVisual.raccoon,
-      assetPath: 'assets/characters/raccoon/idle-8.png',
+      assetPath: 'assets/characters/raccoon/idle-8.webp',
       storeProductId: 'sobra.character.raccoon',
     ),
     CatalogEntry(
@@ -90,7 +90,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.purchase,
       visual: CatalogVisual.platypus,
-      assetPath: 'assets/characters/platypus/idle-8.png',
+      assetPath: 'assets/characters/platypus/idle-8.webp',
       storeProductId: 'sobra.character.platypus',
     ),
     CatalogEntry(
@@ -99,7 +99,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.purchase,
       visual: CatalogVisual.rabbit,
-      assetPath: 'assets/characters/rabbit/idle-8.png',
+      assetPath: 'assets/characters/rabbit/idle-8.webp',
       storeProductId: 'sobra.character.rabbit',
     ),
     CatalogEntry(
@@ -108,7 +108,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.purchase,
       visual: CatalogVisual.penguin,
-      assetPath: 'assets/characters/penguin/idle-8.png',
+      assetPath: 'assets/characters/penguin/idle-8.webp',
       storeProductId: 'sobra.character.penguin',
     ),
     CatalogEntry(
@@ -117,7 +117,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.quokka,
-      assetPath: 'assets/characters/quokka/idle-8.png',
+      assetPath: 'assets/characters/quokka/idle-8.webp',
       rewardedAdTarget: 2,
     ),
     CatalogEntry(
@@ -126,7 +126,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.character,
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.maltese,
-      assetPath: 'assets/characters/maltese/idle-8-v2.png',
+      assetPath: 'assets/characters/maltese/idle-8-v2.webp',
       rewardedAdTarget: 2,
     ),
     CatalogEntry(
@@ -373,7 +373,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.room,
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.room,
-      assetPath: 'assets/rooms/casa_jardin/background_preview_aligned.png',
+      assetPath: 'assets/rooms/casa_jardin/background_preview_aligned.webp',
       rewardedAdTarget: 1,
     ),
     CatalogEntry(
@@ -382,7 +382,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.room,
       unlockMethod: CatalogUnlockMethod.rewardedAd,
       visual: CatalogVisual.room,
-      assetPath: 'assets/rooms/casa_de_playa/background_preview_aligned.png',
+      assetPath: 'assets/rooms/casa_de_playa/background_preview_aligned.webp',
       rewardedAdTarget: 1,
     ),
     CatalogEntry(
@@ -391,7 +391,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.room,
       unlockMethod: CatalogUnlockMethod.level,
       visual: CatalogVisual.room,
-      assetPath: 'assets/rooms/casa_montana/background_preview.png',
+      assetPath: 'assets/rooms/casa_montana/background_preview.webp',
       requiredLevel: 5,
     ),
     CatalogEntry(
@@ -400,7 +400,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.room,
       unlockMethod: CatalogUnlockMethod.level,
       visual: CatalogVisual.room,
-      assetPath: 'assets/rooms/casa_invernadero/background_preview.png',
+      assetPath: 'assets/rooms/casa_invernadero/background_preview.webp',
       requiredLevel: 7,
     ),
     // Sold once and kept: the launch revocation takes it back only when Play
@@ -412,7 +412,7 @@ abstract final class CatalogPreviewData {
       kind: CatalogKind.room,
       unlockMethod: CatalogUnlockMethod.purchase,
       visual: CatalogVisual.room,
-      assetPath: 'assets/rooms/casa_torre/background_preview.png',
+      assetPath: 'assets/rooms/casa_torre/background_preview.webp',
       storeProductId: 'sobra.room.torre',
     ),
   ];

@@ -31,6 +31,23 @@ Future<List<Uint8List>> _frames(CharacterMotionRole role) async {
   }
 }
 
+/// Frames come from separately encoded q90 WebP sheets, so the same drawing
+/// differs by a few colour levels. Alpha is encoded losslessly and must match.
+Matcher _samePose(Uint8List expected) => predicate<Uint8List>((actual) {
+  if (actual.length != expected.length) return false;
+  var visible = 0;
+  var total = 0;
+  for (var i = 0; i < actual.length; i += 4) {
+    if (actual[i + 3] != expected[i + 3]) return false;
+    if (expected[i + 3] == 0) continue;
+    visible++;
+    for (var c = 0; c < 3; c++) {
+      total += (actual[i + c] - expected[i + c]).abs();
+    }
+  }
+  return visible > 0 && total / (visible * 3) < 3;
+}, 'the same drawing (identical alpha, mean colour difference under 3)');
+
 int _paintedHeight(Uint8List frame) {
   var top = 360;
   var bottom = 0;
@@ -57,11 +74,11 @@ void main() {
     final approved = idle[idleSpec.playbackSpec.posterFrame];
     expect(
       success[successSpec.playbackSpec.playRange.start],
-      orderedEquals(approved),
+      _samePose(approved),
     );
     expect(
       success[successSpec.playbackSpec.completionFrame],
-      orderedEquals(approved),
+      _samePose(approved),
     );
   });
 

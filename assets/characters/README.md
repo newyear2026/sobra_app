@@ -1,5 +1,10 @@
 # Sobra 캐릭터 애니메이션 규격 v2
 
+> **배포 형식 (2026-10-26~):** 이 폴더에는 앱에 들어가는 q90 WebP만 둔다.
+> 아래 규격의 PNG 원본은 `design/png-sources/characters/{id}/`에 있고, 제작 도구도 그곳에 쓴다.
+> PNG를 고친 뒤 `python3 tool/package_app_art.py characters/{id}`로 WebP를 다시 만든다.
+> `character.yaml`의 `asset` 값은 원본 PNG 파일명이다.
+
 > **현행 규격 안내:** 아래 내용은 8프레임 전용 레거시 규격이다.
 > 현재 제작 범위·혼합 8/12프레임 형식·화면별 사용 정책은
 > [캐릭터·장면 모션 가이드](../../docs/character-motion-guide.md)를 우선 적용한다.

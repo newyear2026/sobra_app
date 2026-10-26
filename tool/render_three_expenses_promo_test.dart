@@ -79,8 +79,8 @@ void main() {
       if (mounted == 1) {
         await tester.runAsync(() async {
           for (final path in [
-            'assets/characters/michi/idle-8.png',
-            'assets/characters/michi/activity-12.png',
+            'assets/characters/michi/idle-8.webp',
+            'assets/characters/michi/activity-12.webp',
           ]) {
             await precacheImage(AssetImage(path), boundaryKey.currentContext!);
           }

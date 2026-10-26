@@ -19,7 +19,7 @@ FRAME_HEIGHT = 360
 
 def main() -> None:
     for character in CHARACTERS:
-        sheet = Image.open(ROOT / f"assets/characters/{character}/idle-8.png")
+        sheet = Image.open(ROOT / f"design/png-sources/characters/{character}/idle-8.png")
         if sheet.size != (8 * FRAME_WIDTH, FRAME_HEIGHT):
             raise ValueError(f"Unexpected idle sheet size for {character}: {sheet.size}")
         for number, index in enumerate(FRAME_INDICES, start=1):

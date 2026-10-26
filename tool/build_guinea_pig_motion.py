@@ -18,7 +18,7 @@ from normalize_success_jump import rebalance_jump_frame, validate_jump_scale
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "design/characters/guinea-pig"
 RAW = SOURCE / "generated-v1"
-OUTPUT = ROOT / "assets/characters/guinea-pig"
+OUTPUT = ROOT / "design/png-sources/characters/guinea-pig"
 PREVIEWS = SOURCE / "previews"
 FRAME_WIDTH = 320
 FRAME_HEIGHT = 360

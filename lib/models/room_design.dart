@@ -83,9 +83,9 @@ class RoomTheme {
     );
     return switch (phase) {
       RoomTimeOfDay.dawn ||
-      RoomTimeOfDay.sunset => '$directory/background_portrait_sunset_unlit.png',
-      RoomTimeOfDay.night => '$directory/background_portrait_night_unlit.png',
-      RoomTimeOfDay.day => '$directory/background_portrait_unlit.png',
+      RoomTimeOfDay.sunset => '$directory/background_portrait_sunset_unlit.webp',
+      RoomTimeOfDay.night => '$directory/background_portrait_night_unlit.webp',
+      RoomTimeOfDay.day => '$directory/background_portrait_unlit.webp',
       null => portraitAsset,
     };
   }
@@ -170,9 +170,9 @@ abstract final class RoomThemes {
   static const casaMontanaId = 'casa-montana';
   static const casaInvernaderoId = 'casa-invernadero';
   static const casaClaraPreviewAsset =
-      'assets/rooms/casa_clara/background_preview_empty.png';
+      'assets/rooms/casa_clara/background_preview_empty.webp';
   static const casaClaraPortraitAsset =
-      'assets/rooms/casa_clara/background_portrait_empty.png';
+      'assets/rooms/casa_clara/background_portrait_empty.webp';
   static const emptyRoomSlots = <RoomSlot>[
     RoomSlot.rug,
     RoomSlot.wallLeft,
@@ -216,9 +216,9 @@ abstract final class RoomThemes {
 
   static const casaJardin = RoomTheme(
     id: casaJardinId,
-    previewAsset: 'assets/rooms/casa_jardin/background_preview_aligned.png',
+    previewAsset: 'assets/rooms/casa_jardin/background_preview_aligned.webp',
     previewSize: Size(1536, 1024),
-    portraitAsset: 'assets/rooms/casa_jardin/background_portrait.png',
+    portraitAsset: 'assets/rooms/casa_jardin/background_portrait.webp',
     portraitSize: Size(1024, 1536),
     slots: emptyRoomSlots,
     defaultPlacements: RoomDecorAssets.defaultPlacements,
@@ -226,9 +226,9 @@ abstract final class RoomThemes {
 
   static const casaDePlaya = RoomTheme(
     id: casaDePlayaId,
-    previewAsset: 'assets/rooms/casa_de_playa/background_preview_aligned.png',
+    previewAsset: 'assets/rooms/casa_de_playa/background_preview_aligned.webp',
     previewSize: Size(1536, 1024),
-    portraitAsset: 'assets/rooms/casa_de_playa/background_portrait.png',
+    portraitAsset: 'assets/rooms/casa_de_playa/background_portrait.webp',
     portraitSize: Size(1024, 1536),
     slots: emptyRoomSlots,
     defaultPlacements: RoomDecorAssets.defaultPlacements,
@@ -236,9 +236,9 @@ abstract final class RoomThemes {
 
   static const casaTorre = RoomTheme(
     id: casaTorreId,
-    previewAsset: 'assets/rooms/casa_torre/background_preview.png',
+    previewAsset: 'assets/rooms/casa_torre/background_preview.webp',
     previewSize: Size(1536, 1024),
-    portraitAsset: 'assets/rooms/casa_torre/background_portrait_unlit.png',
+    portraitAsset: 'assets/rooms/casa_torre/background_portrait_unlit.webp',
     portraitSize: Size(1024, 1536),
     slots: panoramicRoomSlots,
     defaultPlacements: RoomDecorAssets.defaultPlacements,
@@ -246,9 +246,9 @@ abstract final class RoomThemes {
 
   static const casaMontana = RoomTheme(
     id: casaMontanaId,
-    previewAsset: 'assets/rooms/casa_montana/background_preview.png',
+    previewAsset: 'assets/rooms/casa_montana/background_preview.webp',
     previewSize: Size(1536, 1024),
-    portraitAsset: 'assets/rooms/casa_montana/background_portrait_unlit.png',
+    portraitAsset: 'assets/rooms/casa_montana/background_portrait_unlit.webp',
     portraitSize: Size(1024, 1536),
     slots: panoramicRoomSlots,
     defaultPlacements: RoomDecorAssets.defaultPlacements,
@@ -256,10 +256,10 @@ abstract final class RoomThemes {
 
   static const casaInvernadero = RoomTheme(
     id: casaInvernaderoId,
-    previewAsset: 'assets/rooms/casa_invernadero/background_preview.png',
+    previewAsset: 'assets/rooms/casa_invernadero/background_preview.webp',
     previewSize: Size(1536, 1024),
     portraitAsset:
-        'assets/rooms/casa_invernadero/background_portrait_unlit.png',
+        'assets/rooms/casa_invernadero/background_portrait_unlit.webp',
     portraitSize: Size(1024, 1536),
     slots: panoramicRoomSlots,
     defaultPlacements: RoomDecorAssets.defaultPlacements,
@@ -319,36 +319,36 @@ abstract final class RoomDecorAssets {
   /// down. Never shown and never owned.
   static const clearedId = '';
 
-  static const rug = 'assets/rooms/casa_clara/items/rug.png';
-  static const lamp = 'assets/rooms/casa_clara/items/lamp.png';
-  static const tablePlant = 'assets/rooms/casa_clara/items/table_plant.png';
-  static const wallFrame = 'assets/rooms/casa_clara/items/wall_frame.png';
-  static const rattanChair = 'assets/rooms/shared_items/rattan_chair.png';
-  static const floorLamp = 'assets/rooms/shared_items/floor_lamp.png';
-  static const wallClock = 'assets/rooms/shared_items/wall_clock.png';
-  static const lowCabinet = 'assets/rooms/shared_items/low_cabinet_empty.png';
-  static const slimBookcase = 'assets/rooms/shared_items/slim_bookcase.png';
+  static const rug = 'assets/rooms/casa_clara/items/rug.webp';
+  static const lamp = 'assets/rooms/casa_clara/items/lamp.webp';
+  static const tablePlant = 'assets/rooms/casa_clara/items/table_plant.webp';
+  static const wallFrame = 'assets/rooms/casa_clara/items/wall_frame.webp';
+  static const rattanChair = 'assets/rooms/shared_items/rattan_chair.webp';
+  static const floorLamp = 'assets/rooms/shared_items/floor_lamp.webp';
+  static const wallClock = 'assets/rooms/shared_items/wall_clock.webp';
+  static const lowCabinet = 'assets/rooms/shared_items/low_cabinet_empty.webp';
+  static const slimBookcase = 'assets/rooms/shared_items/slim_bookcase.webp';
   static const roundSideTable =
-      'assets/rooms/shared_items/round_side_table.png';
-  static const petBed = 'assets/rooms/shared_items/pet_bed.png';
-  static const savingsJar = 'assets/rooms/shared_items/savings_jar.png';
-  static const wallShelf = 'assets/rooms/shared_items/wall_shelf_empty.png';
-  static const shelfBooks = 'assets/rooms/shared_items/shelf_books.png';
-  static const trailingPlant = 'assets/rooms/shared_items/trailing_plant.png';
-  static const terracottaPouf = 'assets/rooms/shared_items/terracotta_pouf.png';
-  static const blueCreamRug = 'assets/rooms/shared_items/blue_cream_rug.png';
-  static const launchSofa = 'assets/rooms/shared_items/launch_sofa.png';
-  static const ivorySofa = 'assets/rooms/shared_items/ivory_sofa.png';
+      'assets/rooms/shared_items/round_side_table.webp';
+  static const petBed = 'assets/rooms/shared_items/pet_bed.webp';
+  static const savingsJar = 'assets/rooms/shared_items/savings_jar.webp';
+  static const wallShelf = 'assets/rooms/shared_items/wall_shelf_empty.webp';
+  static const shelfBooks = 'assets/rooms/shared_items/shelf_books.webp';
+  static const trailingPlant = 'assets/rooms/shared_items/trailing_plant.webp';
+  static const terracottaPouf = 'assets/rooms/shared_items/terracotta_pouf.webp';
+  static const blueCreamRug = 'assets/rooms/shared_items/blue_cream_rug.webp';
+  static const launchSofa = 'assets/rooms/shared_items/launch_sofa.webp';
+  static const ivorySofa = 'assets/rooms/shared_items/ivory_sofa.webp';
   static const bronzeLanternLamp =
-      'assets/rooms/shared_items/bronze_lantern_lamp.png';
-  static const launchTvBase = 'assets/rooms/shared_items/launch_tv_base.png';
-  static const launchTv = 'assets/rooms/shared_items/launch_tv_telenovela.png';
+      'assets/rooms/shared_items/bronze_lantern_lamp.webp';
+  static const launchTvBase = 'assets/rooms/shared_items/launch_tv_base.webp';
+  static const launchTv = 'assets/rooms/shared_items/launch_tv_telenovela.webp';
   static const launchTvBlink =
-      'assets/rooms/shared_items/launch_tv_telenovela_blink.png';
+      'assets/rooms/shared_items/launch_tv_telenovela_blink.webp';
   static const launchTvSoccer =
-      'assets/rooms/shared_items/launch_tv_soccer.png';
+      'assets/rooms/shared_items/launch_tv_soccer.webp';
   static const launchTvSoccerAlt =
-      'assets/rooms/shared_items/launch_tv_soccer_alt.png';
+      'assets/rooms/shared_items/launch_tv_soccer_alt.webp';
 
   /// What every room starts with: the rug, and nothing on any sill or table.
   ///

@@ -34,11 +34,11 @@ Future<void> _precache(
     () => Future.wait([
       for (final asset in [
         if (preview)
-          'assets/rooms/$folder/background_portrait_unlit.png'
+          'assets/rooms/$folder/background_portrait_unlit.webp'
         else ...[
-          'assets/rooms/$folder/background_portrait_unlit.png',
-          'assets/rooms/$folder/background_portrait_sunset_unlit.png',
-          'assets/rooms/$folder/background_portrait_night_unlit.png',
+          'assets/rooms/$folder/background_portrait_unlit.webp',
+          'assets/rooms/$folder/background_portrait_sunset_unlit.webp',
+          'assets/rooms/$folder/background_portrait_night_unlit.webp',
         ],
         RoomDecorAssets.launchSofa,
         RoomDecorAssets.floorLamp,

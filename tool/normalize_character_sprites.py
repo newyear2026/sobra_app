@@ -54,7 +54,7 @@ def _resolve_motions(
         return MICHI_LEGACY_MOTIONS
 
     directory = (project_root / source_dir).resolve()
-    if directory == (project_root / "assets/characters" / character_id).resolve():
+    if directory == (project_root / "design/png-sources/characters" / character_id).resolve():
         raise ValueError("source and output directories must be different")
     return tuple(
         MotionSource(role, str(directory / f"{role}-8.png")) for role in ROLES
@@ -164,7 +164,7 @@ def main() -> None:
         "--character-id",
         type=_validate_character_id,
         default="michi",
-        help="Output folder name under assets/characters (default: michi).",
+        help="Output folder name under design/png-sources/characters (default: michi).",
     )
     parser.add_argument(
         "--source-dir",
@@ -178,7 +178,7 @@ def main() -> None:
     args = parser.parse_args()
 
     project_root = Path(__file__).resolve().parents[1]
-    output_dir = project_root / "assets/characters" / args.character_id
+    output_dir = project_root / "design/png-sources/characters" / args.character_id
     if not args.check:
         output_dir.mkdir(parents=True, exist_ok=True)
     motions = (

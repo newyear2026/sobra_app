@@ -174,6 +174,11 @@ A table or shelf is an item that brings its own places.
    pixels to spare. A wide transparent margin under an item makes it float
    above the floor line by that margin.
 
+Keep each delivered PNG under `design/png-sources/rooms/{room}/` (furniture
+under `design/png-sources/rooms/shared_items/`) and ship it with
+`python3 tool/package_app_art.py rooms/{room}`, which writes the q90 WebP the
+app loads from `assets/rooms/`. A PNG left in `assets/rooms/` would ship too.
+
 Generating with ChatGPT: attach the empty reference
 (`design/rooms/generation/casa-clara-empty-reference.png`) and ask for an
 edit that keeps the window, baseboard, floor line and light identical and

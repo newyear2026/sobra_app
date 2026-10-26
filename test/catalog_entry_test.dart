@@ -44,26 +44,26 @@ void main() {
     expect(guineaPig.rewardedAdTarget, 2);
     expect(guineaPig.rewardedAdOncePerDay, isFalse);
     expect(guineaPig.storeProductId, isNull);
-    expect(guineaPig.assetPath, 'assets/characters/guinea-pig/idle-8.png');
+    expect(guineaPig.assetPath, 'assets/characters/guinea-pig/idle-8.webp');
     final quokka = entries.firstWhere((entry) => entry.id == 'quokka');
     expect(quokka.name, 'Quokka');
     expect(quokka.unlockMethod, CatalogUnlockMethod.rewardedAd);
     expect(quokka.rewardedAdTarget, 2);
     expect(quokka.rewardedAdOncePerDay, isFalse);
     expect(quokka.storeProductId, isNull);
-    expect(quokka.assetPath, 'assets/characters/quokka/idle-8.png');
+    expect(quokka.assetPath, 'assets/characters/quokka/idle-8.webp');
     final maltese = entries.firstWhere((entry) => entry.id == 'maltese');
     expect(maltese.name, 'Happy');
     expect(maltese.unlockMethod, CatalogUnlockMethod.rewardedAd);
     expect(maltese.rewardedAdTarget, 2);
     expect(maltese.rewardedAdOncePerDay, isFalse);
     expect(maltese.storeProductId, isNull);
-    expect(maltese.assetPath, 'assets/characters/maltese/idle-8-v2.png');
+    expect(maltese.assetPath, 'assets/characters/maltese/idle-8-v2.webp');
     final platypus = entries.firstWhere((entry) => entry.id == 'platypus');
     expect(platypus.name, 'Pico');
     expect(platypus.unlockMethod, CatalogUnlockMethod.purchase);
     expect(platypus.storeProductId, 'sobra.character.platypus');
-    expect(platypus.assetPath, 'assets/characters/platypus/idle-8.png');
+    expect(platypus.assetPath, 'assets/characters/platypus/idle-8.webp');
     expect(
       CatalogPreviewData.entryForProductId(platypus.storeProductId!),
       same(platypus),
@@ -76,7 +76,7 @@ void main() {
     expect(rabbit.name, 'Bunny');
     expect(rabbit.unlockMethod, CatalogUnlockMethod.purchase);
     expect(rabbit.storeProductId, 'sobra.character.rabbit');
-    expect(rabbit.assetPath, 'assets/characters/rabbit/idle-8.png');
+    expect(rabbit.assetPath, 'assets/characters/rabbit/idle-8.webp');
     expect(
       CatalogPreviewData.entryForProductId(rabbit.storeProductId!),
       rabbit,
@@ -87,7 +87,7 @@ void main() {
     expect(penguin.unlockMethod, CatalogUnlockMethod.purchase);
     expect(penguin.rewardedAdTarget, isNull);
     expect(penguin.storeProductId, 'sobra.character.penguin');
-    expect(penguin.assetPath, 'assets/characters/penguin/idle-8.png');
+    expect(penguin.assetPath, 'assets/characters/penguin/idle-8.webp');
     expect(
       CatalogPreviewData.entryForProductId(penguin.storeProductId!),
       same(penguin),
@@ -129,7 +129,7 @@ void main() {
     for (final entry in pack) {
       expect(entry.unlockMethod, CatalogUnlockMethod.purchase);
       expect(entry.storeProductId, 'sobra.character.${entry.id}');
-      expect(entry.assetPath, 'assets/characters/${entry.id}/idle-8.png');
+      expect(entry.assetPath, 'assets/characters/${entry.id}/idle-8.webp');
       expect(
         CatalogPreviewData.entryForProductId(entry.storeProductId!),
         same(entry),
