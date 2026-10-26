@@ -587,6 +587,7 @@ class PixelButton extends StatelessWidget {
     this.variant = PixelButtonVariant.primary,
     this.color,
     this.expand = true,
+    this.maxLines = 1,
   });
 
   final String label;
@@ -598,6 +599,7 @@ class PixelButton extends StatelessWidget {
   /// category or channel colour of their own.
   final Color? color;
   final bool expand;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -632,7 +634,7 @@ class PixelButton extends StatelessWidget {
                 child: Text(
                   label,
                   textAlign: TextAlign.center,
-                  maxLines: 1,
+                  maxLines: maxLines,
                   overflow: TextOverflow.ellipsis,
                   style: pixelText(size: 16, bold: true, color: foreground),
                 ),

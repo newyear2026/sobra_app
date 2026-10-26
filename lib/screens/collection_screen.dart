@@ -14,6 +14,7 @@ import '../services/rewarded_ad_service.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
+import '../widgets/seasonal_costume_gift.dart';
 import '../widgets/pack_offer_dialog.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/store_refresh_button.dart';
@@ -411,6 +412,10 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         roomId: store.equippedRoomId,
                       ),
                       const SizedBox(height: 18),
+                      if (store.canClaimSeasonalCostumes) ...[
+                        const SeasonalCostumeGiftBanner(),
+                        const SizedBox(height: 16),
+                      ],
                       if (purchases != null) const StoreRefreshButton(),
                       _CatalogTabs(
                         selected: _selectedKind,
@@ -863,6 +868,7 @@ class _CatalogPreview extends StatelessWidget {
       return Center(
         child: CharacterSprite(
           characterId: entry.id,
+          costumeId: SobraScope.of(context).equippedCostumeFor(entry.id),
           role: CharacterMotionRole.idle,
           width: 104,
           animate: false,

@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/l10n/generated/app_localizations.dart';
+import 'package:sobra_app/l10n/costume_labels.dart';
 import 'package:sobra_app/l10n/labels.dart';
 import 'package:sobra_app/models/currency.dart';
 import 'package:sobra_app/models/money_movement.dart';
@@ -101,6 +102,8 @@ void main() {
         'progressSegments',
         'reducedMotion',
         'characterId',
+        'costumeId',
+        'characterDescription',
         'movementCount',
         'movement1Title',
         'movement1AmountCentavos',
@@ -197,6 +200,45 @@ void main() {
       'poodle',
     );
   });
+
+  test(
+    'widget keeps base identity and announces the equipped costume',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final store = await SobraStore.load(now: () => DateTime(2026, 10, 24));
+      await store.completeOnboarding();
+      await store.claimSeasonalCostumes();
+      await store.equipCharacterCostume('michi', 'autumn-2026-michi');
+      final l10n = lookupAppLocalizations(const Locale('ko'));
+      final copy = SobraWidgetCopy(
+        todayLeft: l10n.homeTodayLeft,
+        todayLeftShort: l10n.widgetTodayLeft,
+        cycleBalance: l10n.homeCycleBalance,
+        cycleBalanceShort: l10n.widgetCycleBalance,
+        cycleProgress: l10n.homeCycleProgress,
+        openApp: l10n.widgetOpenApp,
+        registerExpense: l10n.widgetRegisterExpense,
+        days: l10n.daysCount,
+        characterDescription: (id, costumeId) => costumeId == null
+            ? 'Michi'
+            : l10n.costumeDescription(
+                'Michi',
+                costumeDisplayName(l10n, costumeId),
+              ),
+      );
+      Map<String, Object> payload() => SobraWidgetSnapshot.fromStore(
+        store,
+        _label,
+        copy: copy,
+      ).toPlatformMap();
+      expect(payload()['characterId'], 'michi');
+      expect(payload()['costumeId'], 'autumn-2026-michi');
+      expect(payload()['characterDescription'], contains('드라큘라'));
+      await store.equipCharacterCostume('michi', null);
+      expect(payload()['costumeId'], '');
+      expect(payload()['characterDescription'], 'Michi');
+    },
+  );
 
   test('an overspent cycle reports a full bar and a negative day', () async {
     SharedPreferences.setMockInitialValues({});

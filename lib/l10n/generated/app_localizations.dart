@@ -4479,6 +4479,204 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ahora no'**
   String get homeFirstExpenseLater;
+
+  /// No description provided for @costumeChange.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar disfraz'**
+  String get costumeChange;
+
+  /// No description provided for @costumeCurrent.
+  ///
+  /// In es, this message translates to:
+  /// **'Disfraz actual: {name}'**
+  String costumeCurrent(String name);
+
+  /// No description provided for @costumeSheetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Disfraces de {character}'**
+  String costumeSheetTitle(String character);
+
+  /// No description provided for @costumeDefault.
+  ///
+  /// In es, this message translates to:
+  /// **'Original'**
+  String get costumeDefault;
+
+  /// No description provided for @costumePermanent.
+  ///
+  /// In es, this message translates to:
+  /// **'Para siempre'**
+  String get costumePermanent;
+
+  /// No description provided for @costumeApply.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar este disfraz'**
+  String get costumeApply;
+
+  /// No description provided for @costumeCanReturn.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes volver al original cuando quieras.'**
+  String get costumeCanReturn;
+
+  /// No description provided for @costumeNoExpiry.
+  ///
+  /// In es, this message translates to:
+  /// **'Los disfraces recibidos se quedan contigo.'**
+  String get costumeNoExpiry;
+
+  /// No description provided for @costumeOwnedCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} disponibles'**
+  String costumeOwnedCount(int count);
+
+  /// No description provided for @costumeDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'{character}, {costume}'**
+  String costumeDescription(String character, String costume);
+
+  /// No description provided for @seasonalGiftTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Un regalo de temporada'**
+  String get seasonalGiftTitle;
+
+  /// No description provided for @seasonalGiftBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Un cambio especial para tus amigos.'**
+  String get seasonalGiftBody;
+
+  /// No description provided for @seasonalGiftView.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver regalo'**
+  String get seasonalGiftView;
+
+  /// No description provided for @seasonalGiftClaim.
+  ///
+  /// In es, this message translates to:
+  /// **'Recibir {count} disfraces gratis'**
+  String seasonalGiftClaim(int count);
+
+  /// No description provided for @seasonalGiftDeadline.
+  ///
+  /// In es, this message translates to:
+  /// **'Recíbelo hasta el {date}'**
+  String seasonalGiftDeadline(String date);
+
+  /// No description provided for @seasonalGiftKeeps.
+  ///
+  /// In es, this message translates to:
+  /// **'Una vez recibidos, son tuyos para siempre.'**
+  String get seasonalGiftKeeps;
+
+  /// No description provided for @seasonalGiftLockedCharacters.
+  ///
+  /// In es, this message translates to:
+  /// **'También guardamos los disfraces de amigos que aún no tienes. Podrás usarlos cuando consigas al personaje.'**
+  String get seasonalGiftLockedCharacters;
+
+  /// No description provided for @seasonalGiftReceived.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Ya tienes los disfraces!'**
+  String get seasonalGiftReceived;
+
+  /// No description provided for @seasonalGiftWardrobe.
+  ///
+  /// In es, this message translates to:
+  /// **'Probar en Decorar'**
+  String get seasonalGiftWardrobe;
+
+  /// No description provided for @seasonalGiftClosed.
+  ///
+  /// In es, this message translates to:
+  /// **'El plazo para recibir este regalo terminó.'**
+  String get seasonalGiftClosed;
+
+  /// No description provided for @seasonalGiftPreview.
+  ///
+  /// In es, this message translates to:
+  /// **'Algunos de los 12 disfraces'**
+  String get seasonalGiftPreview;
+
+  /// No description provided for @costumeDracula.
+  ///
+  /// In es, this message translates to:
+  /// **'Drácula'**
+  String get costumeDracula;
+
+  /// No description provided for @costumeFrankenstein.
+  ///
+  /// In es, this message translates to:
+  /// **'Frankenstein'**
+  String get costumeFrankenstein;
+
+  /// No description provided for @costumeWerewolf.
+  ///
+  /// In es, this message translates to:
+  /// **'Hombre lobo'**
+  String get costumeWerewolf;
+
+  /// No description provided for @costumePumpkin.
+  ///
+  /// In es, this message translates to:
+  /// **'Duende calabaza'**
+  String get costumePumpkin;
+
+  /// No description provided for @costumeMummy.
+  ///
+  /// In es, this message translates to:
+  /// **'Momia'**
+  String get costumeMummy;
+
+  /// No description provided for @costumeCatrina.
+  ///
+  /// In es, this message translates to:
+  /// **'Catrina'**
+  String get costumeCatrina;
+
+  /// No description provided for @costumeGhostPirate.
+  ///
+  /// In es, this message translates to:
+  /// **'Pirata fantasma'**
+  String get costumeGhostPirate;
+
+  /// No description provided for @costumeSwampMonster.
+  ///
+  /// In es, this message translates to:
+  /// **'Monstruo del pantano'**
+  String get costumeSwampMonster;
+
+  /// No description provided for @costumeMoonWitch.
+  ///
+  /// In es, this message translates to:
+  /// **'Bruja lunar'**
+  String get costumeMoonWitch;
+
+  /// No description provided for @costumeCalaveraMusician.
+  ///
+  /// In es, this message translates to:
+  /// **'Músico calavera'**
+  String get costumeCalaveraMusician;
+
+  /// No description provided for @costumeScarecrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Espantapájaros'**
+  String get costumeScarecrow;
+
+  /// No description provided for @costumeLittleGhost.
+  ///
+  /// In es, this message translates to:
+  /// **'Fantasmita'**
+  String get costumeLittleGhost;
 }
 
 class _AppLocalizationsDelegate

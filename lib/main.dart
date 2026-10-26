@@ -9,6 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'l10n/generated/app_localizations.dart';
 import 'l10n/labels.dart';
+import 'l10n/costume_labels.dart';
+import 'data/catalog_preview_data.dart';
 import 'models/language.dart';
 import 'models/money_movement.dart';
 import 'screens/app_shell.dart';
@@ -380,6 +382,20 @@ class _WidgetSyncLabelsState extends State<_WidgetSyncLabels> {
         openApp: l10n.widgetOpenApp,
         registerExpense: l10n.widgetRegisterExpense,
         days: l10n.daysCount,
+        characterDescription: (id, costumeId) {
+          final name =
+              CatalogPreviewData.characters
+                  .where((entry) => entry.id == id)
+                  .firstOrNull
+                  ?.name ??
+              'Michi';
+          return costumeId == null
+              ? name
+              : l10n.costumeDescription(
+                  name,
+                  costumeDisplayName(l10n, costumeId),
+                );
+        },
       ),
     );
     SobraFixedReminders.localize(l10n);

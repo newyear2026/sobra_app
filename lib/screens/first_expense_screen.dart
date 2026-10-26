@@ -562,6 +562,7 @@ class _CharacterSays extends StatelessWidget {
       children: [
         CharacterSprite(
           characterId: CharacterCatalog.resolve(store.characterId).id,
+          costumeId: store.equippedCostumeFor(store.characterId),
           role: role,
           width: 104,
           animate: !reducedMotionOf(context),

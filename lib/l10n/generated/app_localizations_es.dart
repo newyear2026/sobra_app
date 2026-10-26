@@ -2636,4 +2636,116 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get homeFirstExpenseLater => 'Ahora no';
+
+  @override
+  String get costumeChange => 'Cambiar disfraz';
+
+  @override
+  String costumeCurrent(String name) {
+    return 'Disfraz actual: $name';
+  }
+
+  @override
+  String costumeSheetTitle(String character) {
+    return 'Disfraces de $character';
+  }
+
+  @override
+  String get costumeDefault => 'Original';
+
+  @override
+  String get costumePermanent => 'Para siempre';
+
+  @override
+  String get costumeApply => 'Usar este disfraz';
+
+  @override
+  String get costumeCanReturn => 'Puedes volver al original cuando quieras.';
+
+  @override
+  String get costumeNoExpiry => 'Los disfraces recibidos se quedan contigo.';
+
+  @override
+  String costumeOwnedCount(int count) {
+    return '$count disponibles';
+  }
+
+  @override
+  String costumeDescription(String character, String costume) {
+    return '$character, $costume';
+  }
+
+  @override
+  String get seasonalGiftTitle => 'Un regalo de temporada';
+
+  @override
+  String get seasonalGiftBody => 'Un cambio especial para tus amigos.';
+
+  @override
+  String get seasonalGiftView => 'Ver regalo';
+
+  @override
+  String seasonalGiftClaim(int count) {
+    return 'Recibir $count disfraces gratis';
+  }
+
+  @override
+  String seasonalGiftDeadline(String date) {
+    return 'Recíbelo hasta el $date';
+  }
+
+  @override
+  String get seasonalGiftKeeps => 'Una vez recibidos, son tuyos para siempre.';
+
+  @override
+  String get seasonalGiftLockedCharacters =>
+      'También guardamos los disfraces de amigos que aún no tienes. Podrás usarlos cuando consigas al personaje.';
+
+  @override
+  String get seasonalGiftReceived => '¡Ya tienes los disfraces!';
+
+  @override
+  String get seasonalGiftWardrobe => 'Probar en Decorar';
+
+  @override
+  String get seasonalGiftClosed => 'El plazo para recibir este regalo terminó.';
+
+  @override
+  String get seasonalGiftPreview => 'Algunos de los 12 disfraces';
+
+  @override
+  String get costumeDracula => 'Drácula';
+
+  @override
+  String get costumeFrankenstein => 'Frankenstein';
+
+  @override
+  String get costumeWerewolf => 'Hombre lobo';
+
+  @override
+  String get costumePumpkin => 'Duende calabaza';
+
+  @override
+  String get costumeMummy => 'Momia';
+
+  @override
+  String get costumeCatrina => 'Catrina';
+
+  @override
+  String get costumeGhostPirate => 'Pirata fantasma';
+
+  @override
+  String get costumeSwampMonster => 'Monstruo del pantano';
+
+  @override
+  String get costumeMoonWitch => 'Bruja lunar';
+
+  @override
+  String get costumeCalaveraMusician => 'Músico calavera';
+
+  @override
+  String get costumeScarecrow => 'Espantapájaros';
+
+  @override
+  String get costumeLittleGhost => 'Fantasmita';
 }

@@ -37,6 +37,8 @@ class RoomScene extends StatelessWidget {
     this.catMotion,
     this.catLoop,
     this.characterId,
+    this.costumeId,
+    this.useEquippedCostume = true,
   });
 
   final RoomSceneVariant variant;
@@ -64,6 +66,8 @@ class RoomScene extends StatelessWidget {
 
   /// Overrides the character the scope names; see [CatSprite.characterId].
   final String? characterId;
+  final String? costumeId;
+  final bool useEquippedCostume;
 
   RoomTheme get _room => RoomThemes.byId(roomId);
 
@@ -775,6 +779,8 @@ class RoomScene extends StatelessWidget {
                               CatSprite(
                                 motion: shownMotion,
                                 characterId: sceneCharacterId,
+                                costumeId: costumeId,
+                                useEquippedCostume: useEquippedCostume,
                                 width: catWidth,
                                 animate: !reducedMotionOf(context),
                                 loop: reacting ? false : catLoop,

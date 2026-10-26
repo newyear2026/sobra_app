@@ -2652,4 +2652,117 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get homeFirstExpenseLater => 'Agora não';
+
+  @override
+  String get costumeChange => 'Trocar fantasia';
+
+  @override
+  String costumeCurrent(String name) {
+    return 'Fantasia atual: $name';
+  }
+
+  @override
+  String costumeSheetTitle(String character) {
+    return 'Fantasias de $character';
+  }
+
+  @override
+  String get costumeDefault => 'Original';
+
+  @override
+  String get costumePermanent => 'Para sempre';
+
+  @override
+  String get costumeApply => 'Usar esta fantasia';
+
+  @override
+  String get costumeCanReturn => 'Você pode voltar ao original quando quiser.';
+
+  @override
+  String get costumeNoExpiry => 'As fantasias recebidas ficam com você.';
+
+  @override
+  String costumeOwnedCount(int count) {
+    return '$count disponíveis';
+  }
+
+  @override
+  String costumeDescription(String character, String costume) {
+    return '$character, $costume';
+  }
+
+  @override
+  String get seasonalGiftTitle => 'Um presente da temporada';
+
+  @override
+  String get seasonalGiftBody => 'Um visual especial para seus amigos.';
+
+  @override
+  String get seasonalGiftView => 'Ver presente';
+
+  @override
+  String seasonalGiftClaim(int count) {
+    return 'Receber $count fantasias grátis';
+  }
+
+  @override
+  String seasonalGiftDeadline(String date) {
+    return 'Receba até $date';
+  }
+
+  @override
+  String get seasonalGiftKeeps => 'Depois de receber, são seus para sempre.';
+
+  @override
+  String get seasonalGiftLockedCharacters =>
+      'As fantasias de personagens que você ainda não tem também ficam guardadas. Use-as quando conseguir o personagem.';
+
+  @override
+  String get seasonalGiftReceived => 'Suas fantasias estão guardadas!';
+
+  @override
+  String get seasonalGiftWardrobe => 'Experimentar em Decorar';
+
+  @override
+  String get seasonalGiftClosed =>
+      'O prazo para receber este presente terminou.';
+
+  @override
+  String get seasonalGiftPreview => 'Uma prévia das 12 fantasias';
+
+  @override
+  String get costumeDracula => 'Drácula';
+
+  @override
+  String get costumeFrankenstein => 'Frankenstein';
+
+  @override
+  String get costumeWerewolf => 'Lobisomem';
+
+  @override
+  String get costumePumpkin => 'Duende abóbora';
+
+  @override
+  String get costumeMummy => 'Múmia';
+
+  @override
+  String get costumeCatrina => 'Catrina';
+
+  @override
+  String get costumeGhostPirate => 'Pirata fantasma';
+
+  @override
+  String get costumeSwampMonster => 'Monstro do pântano';
+
+  @override
+  String get costumeMoonWitch => 'Bruxa da lua';
+
+  @override
+  String get costumeCalaveraMusician => 'Músico calavera';
+
+  @override
+  String get costumeScarecrow => 'Espantalho';
+
+  @override
+  String get costumeLittleGhost => 'Fantasminha';
 }

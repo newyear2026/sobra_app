@@ -10,6 +10,7 @@ import '../data/launch_gift_campaign.dart';
 import '../models/backup_summary.dart';
 import '../models/cash_reconciliation.dart';
 import '../models/catalog_entry.dart';
+import '../models/character_costume.dart';
 import '../models/currency.dart';
 import '../models/cycle_record.dart';
 import '../models/daily_mission.dart';
@@ -247,6 +248,82 @@ class SobraStore extends ChangeNotifier {
   /// opinion about what art exists, and a pack that a later build no longer
   /// ships must not stop the file from opening. The sprite resolves it.
   String characterId = 'michi';
+
+  final Set<String> _ownedCostumeIds = {};
+  final Set<String> _claimedCostumeCampaignIds = {};
+  final Map<String, String> _costumeSelections = {};
+
+  Set<String> get ownedCostumeIds => Set.unmodifiable(_ownedCostumeIds);
+  Map<String, String> get costumeSelections =>
+      Map.unmodifiable(_costumeSelections);
+  bool get hasClaimedSeasonalCostumes =>
+      _claimedCostumeCampaignIds.contains(CharacterCostumes.campaignId);
+  bool get canClaimSeasonalCostumes =>
+      hasCompletedOnboarding &&
+      !hasClaimedSeasonalCostumes &&
+      CharacterCostumes.canClaimOn(currentMoment);
+
+  bool ownsCharacter(String id) {
+    final entry = CatalogPreviewData.characters
+        .where((entry) => entry.id == id)
+        .firstOrNull;
+    return entry != null && ownsCatalogEntry(entry);
+  }
+
+  /// Unknown/withdrawn appearances stay in storage for future versions, but
+  /// cannot render on a different or currently unowned base character.
+  String? equippedCostumeFor(String id) {
+    final selected = _costumeSelections[id];
+    final costume = CharacterCostumes.byId(selected);
+    return ownsCharacter(id) &&
+            costume?.characterId == id &&
+            _ownedCostumeIds.contains(selected)
+        ? selected
+        : null;
+  }
+
+  Iterable<CharacterCostume> ownedCostumesFor(String id) =>
+      CharacterCostumes.forCharacter(
+        id,
+      ).where((costume) => _ownedCostumeIds.contains(costume.id));
+
+  Future<bool> claimSeasonalCostumes() => _write(() async {
+    // Rechecked inside the serialized write, including the date boundary.
+    if (!canClaimSeasonalCostumes) return false;
+    _ownedCostumeIds.addAll(CharacterCostumes.all.map((costume) => costume.id));
+    _claimedCostumeCampaignIds.add(CharacterCostumes.campaignId);
+    await _save();
+    notifyListeners();
+    return true;
+  });
+
+  void _validateCostumeSelection(String id, String? costumeId) {
+    if (!ownsCharacter(id)) {
+      throw ArgumentError.value(id, 'characterId', 'character not owned');
+    }
+    if (costumeId == null) return;
+    final costume = CharacterCostumes.byId(costumeId);
+    if (costume?.characterId != id || !_ownedCostumeIds.contains(costumeId)) {
+      throw ArgumentError.value(costumeId, 'costumeId', 'costume not owned');
+    }
+  }
+
+  void _applyCostumeSelection(String id, String? costumeId) {
+    if (costumeId == null) {
+      _costumeSelections.remove(id);
+    } else {
+      _costumeSelections[id] = costumeId;
+    }
+  }
+
+  Future<void> equipCharacterCostume(String id, String? costumeId) =>
+      _write(() async {
+        _validateCostumeSelection(id, costumeId);
+        if (_costumeSelections[id] == costumeId) return;
+        _applyCostumeSelection(id, costumeId);
+        await _save();
+        notifyListeners();
+      });
 
   /// The room item the user is showing, or null while the room is bare.
   ///
@@ -1911,7 +1988,7 @@ class SobraStore extends ChangeNotifier {
     if (version != null && (version is! int || version < 1)) {
       throw const FormatException('Invalid backup version');
     }
-    if (version is int && version > 10) {
+    if (version is int && version > 11) {
       throw UnsupportedError('Backup requires a newer app');
     }
     try {
@@ -2082,6 +2159,10 @@ class SobraStore extends ChangeNotifier {
     candidate._ownedCatalogIds
       ..retainAll(portableIds)
       ..addAll(_ownedCatalogIds);
+    // Importing an older ledger must not take back a permanently received
+    // event gift. Free costume ownership is portable independently of Play.
+    candidate._ownedCostumeIds.addAll(_ownedCostumeIds);
+    candidate._claimedCostumeCampaignIds.addAll(_claimedCostumeCampaignIds);
     // The all-rooms flag covers Casa torre, which is sold, so it follows this
     // install rather than the file. What the file had free that can also be
     // earned comes along as ordinary ids.
@@ -2515,7 +2596,21 @@ class SobraStore extends ChangeNotifier {
   Future<void> saveRoomSelection({
     required String roomId,
     required Map<String, Map<RoomSlot, String>> placementsByRoom,
+    String? selectedCharacterId,
+    Map<String, String?> costumeChanges = const {},
   }) => _write(() async {
+    if (selectedCharacterId != null &&
+        selectedCharacterId != characterId &&
+        !ownsCharacter(selectedCharacterId)) {
+      throw ArgumentError.value(
+        selectedCharacterId,
+        'selectedCharacterId',
+        'character not owned',
+      );
+    }
+    for (final choice in costumeChanges.entries) {
+      _validateCostumeSelection(choice.key, choice.value);
+    }
     if (!RoomThemes.contains(roomId)) {
       throw ArgumentError.value(roomId, 'roomId', 'unknown room');
     }
@@ -2539,6 +2634,10 @@ class SobraStore extends ChangeNotifier {
       );
     }
     equippedRoomId = roomId;
+    if (selectedCharacterId != null) characterId = selectedCharacterId;
+    for (final choice in costumeChanges.entries) {
+      _applyCostumeSelection(choice.key, choice.value);
+    }
     _updateEquippedItem(roomDecorationsFor(roomId));
     await _save();
     notifyListeners();
@@ -2980,6 +3079,9 @@ class SobraStore extends ChangeNotifier {
     _baseBudgetCentavos = 600000;
     _hasBudget = true;
     characterId = 'michi';
+    _ownedCostumeIds.clear();
+    _claimedCostumeCampaignIds.clear();
+    _costumeSelections.clear();
     equippedItemId = null;
     equippedRoomId = RoomThemes.casaClaraId;
     _roomPlacementsByRoom.clear();
@@ -3102,6 +3204,15 @@ class SobraStore extends ChangeNotifier {
     _baseBudgetCentavos = other._baseBudgetCentavos;
     _hasBudget = other._hasBudget;
     characterId = other.characterId;
+    _ownedCostumeIds
+      ..clear()
+      ..addAll(other._ownedCostumeIds);
+    _claimedCostumeCampaignIds
+      ..clear()
+      ..addAll(other._claimedCostumeCampaignIds);
+    _costumeSelections
+      ..clear()
+      ..addAll(other._costumeSelections);
     equippedItemId = other.equippedItemId;
     equippedRoomId = other.equippedRoomId;
     _keepsEveryRoom = other._keepsEveryRoom;
@@ -3197,6 +3308,23 @@ class SobraStore extends ChangeNotifier {
     // figure is a real one and the flag reads true.
     _hasBudget = json['hasBudget'] as bool? ?? true;
     characterId = json['characterId'] as String? ?? 'michi';
+    _ownedCostumeIds
+      ..clear()
+      ..addAll(
+        (json['ownedCostumeIds'] as List<dynamic>? ?? const []).cast<String>(),
+      );
+    _claimedCostumeCampaignIds
+      ..clear()
+      ..addAll(
+        (json['claimedCostumeCampaignIds'] as List<dynamic>? ?? const [])
+            .cast<String>(),
+      );
+    _costumeSelections
+      ..clear()
+      ..addAll(
+        (json['costumeSelections'] as Map<String, dynamic>? ?? const {})
+            .cast<String, String>(),
+      );
     equippedItemId = json['equippedItemId'] as String?;
     equippedRoomId =
         json['equippedRoomId'] as String? ?? RoomThemes.casaClaraId;
@@ -3378,7 +3506,7 @@ class SobraStore extends ChangeNotifier {
   }
 
   Map<String, Object?> _toJson() => {
-    'schemaVersion': 10,
+    'schemaVersion': 11,
     'transactions': _transactions.map((entry) => entry.toJson()).toList(),
     'incomes': _incomes.map((entry) => entry.toJson()).toList(),
     'cashReconciliations': _cashReconciliations
@@ -3395,6 +3523,12 @@ class SobraStore extends ChangeNotifier {
     'totalBudgetCentavos': _baseBudgetCentavos,
     'hasBudget': _hasBudget,
     'characterId': characterId,
+    'ownedCostumeIds': _ownedCostumeIds.toList()..sort(),
+    'claimedCostumeCampaignIds': _claimedCostumeCampaignIds.toList()..sort(),
+    'costumeSelections': {
+      for (final id in (_costumeSelections.keys.toList()..sort()))
+        id: _costumeSelections[id],
+    },
     'equippedItemId': equippedItemId,
     'equippedRoomId': equippedRoomId,
     'roomPlacementsByRoom': {

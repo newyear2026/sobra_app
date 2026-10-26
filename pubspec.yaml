@@ -136,6 +136,19 @@ flutter:
     - assets/characters/raccoon/
     - assets/characters/maltese/
     - assets/characters/penguin/
+    - assets/costumes/autumn_2026/motion_v2/
+    - assets/costumes/autumn_2026/motion_v2/michi/
+    - assets/costumes/autumn_2026/motion_v2/poodle/
+    - assets/costumes/autumn_2026/motion_v2/schnauzer/
+    - assets/costumes/autumn_2026/motion_v2/guinea-pig/
+    - assets/costumes/autumn_2026/motion_v2/capybara/
+    - assets/costumes/autumn_2026/motion_v2/alpaca/
+    - assets/costumes/autumn_2026/motion_v2/raccoon/
+    - assets/costumes/autumn_2026/motion_v2/platypus/
+    - assets/costumes/autumn_2026/motion_v2/rabbit/
+    - assets/costumes/autumn_2026/motion_v2/penguin/
+    - assets/costumes/autumn_2026/motion_v2/quokka/
+    - assets/costumes/autumn_2026/motion_v2/maltese/
     - assets/login/
     - assets/pack/
     - assets/rooms/casa_clara/

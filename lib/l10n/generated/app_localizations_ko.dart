@@ -2538,4 +2538,116 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get homeFirstExpenseLater => '나중에';
+
+  @override
+  String get costumeChange => '의상 바꾸기';
+
+  @override
+  String costumeCurrent(String name) {
+    return '현재 의상: $name';
+  }
+
+  @override
+  String costumeSheetTitle(String character) {
+    return '$character의 의상';
+  }
+
+  @override
+  String get costumeDefault => '기본';
+
+  @override
+  String get costumePermanent => '영구 소장';
+
+  @override
+  String get costumeApply => '이 의상 입히기';
+
+  @override
+  String get costumeCanReturn => '기본 모습도 언제든 선택할 수 있어요.';
+
+  @override
+  String get costumeNoExpiry => '받은 의상은 이벤트가 끝나도 남아요.';
+
+  @override
+  String costumeOwnedCount(int count) {
+    return '$count벌 보유';
+  }
+
+  @override
+  String costumeDescription(String character, String costume) {
+    return '$costume 의상의 $character';
+  }
+
+  @override
+  String get seasonalGiftTitle => '가을 축제 선물';
+
+  @override
+  String get seasonalGiftBody => '우리 친구들의 특별한 변신을 만나보세요.';
+
+  @override
+  String get seasonalGiftView => '선물 보기';
+
+  @override
+  String seasonalGiftClaim(int count) {
+    return '코스튬 $count종 무료로 받기';
+  }
+
+  @override
+  String seasonalGiftDeadline(String date) {
+    return '$date까지 받을 수 있어요';
+  }
+
+  @override
+  String get seasonalGiftKeeps => '한 번 받으면 이벤트가 끝나도 영구 소장해요.';
+
+  @override
+  String get seasonalGiftLockedCharacters =>
+      '아직 없는 캐릭터의 의상도 보관돼요. 캐릭터를 얻으면 입힐 수 있어요.';
+
+  @override
+  String get seasonalGiftReceived => '코스튬을 받았어요!';
+
+  @override
+  String get seasonalGiftWardrobe => '꾸미기에서 입어보기';
+
+  @override
+  String get seasonalGiftClosed => '이 선물을 받을 수 있는 기간이 끝났어요.';
+
+  @override
+  String get seasonalGiftPreview => '12종 중 미리보기';
+
+  @override
+  String get costumeDracula => '드라큘라';
+
+  @override
+  String get costumeFrankenstein => '프랑켄슈타인';
+
+  @override
+  String get costumeWerewolf => '늑대인간';
+
+  @override
+  String get costumePumpkin => '호박 요정';
+
+  @override
+  String get costumeMummy => '미라';
+
+  @override
+  String get costumeCatrina => '카트리나';
+
+  @override
+  String get costumeGhostPirate => '유령 해적';
+
+  @override
+  String get costumeSwampMonster => '늪 괴물';
+
+  @override
+  String get costumeMoonWitch => '달빛 마녀';
+
+  @override
+  String get costumeCalaveraMusician => '칼라베라 악단';
+
+  @override
+  String get costumeScarecrow => '허수아비';
+
+  @override
+  String get costumeLittleGhost => '꼬마 유령';
 }

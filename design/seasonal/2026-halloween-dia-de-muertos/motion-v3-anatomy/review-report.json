@@ -1,0 +1,137 @@
+{
+  "scope": "six repaired motion sheets, 72 frames",
+  "manualAnatomyReview": {
+    "capybara/positive": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "visualReview": "enlarged production-renderer frame sheet",
+      "losslessRgbaVerified": true,
+      "bundledSha256": "673b07f4dbcad4cd64287f4883caa258bba66c2c9da09e306031887a3e046463"
+    },
+    "rabbit/positive": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "visualReview": "enlarged production-renderer frame sheet",
+      "losslessRgbaVerified": true,
+      "bundledSha256": "8eb6f8093060385278da771fc3feda33c54f58768d772aeb7113dca288c56e4a"
+    },
+    "raccoon/success": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "visualReview": "enlarged production-renderer frame sheet",
+      "losslessRgbaVerified": true,
+      "bundledSha256": "a186983fae8f29957a74bd5019606536116428ac5746c809b39a4019500659f1"
+    },
+    "alpaca/positive": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "visualReview": "enlarged production-renderer frame sheet",
+      "losslessRgbaVerified": true,
+      "bundledSha256": "cb5c6da998f6608324ca18083be0a41c5b055fbd1918301840e7bff70ef60861"
+    },
+    "maltese/positive": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "visualReview": "enlarged production-renderer frame sheet",
+      "losslessRgbaVerified": true,
+      "bundledSha256": "bd432abba3f243e61f3bf49361dc75901c7d89f194e0c74883a23f881466e427"
+    },
+    "poodle/positive": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "visualReview": "enlarged production-renderer frame sheet",
+      "losslessRgbaVerified": true,
+      "bundledSha256": "5db447968bf001358b0ab1468384bbb91d231f3855d29f04043ff07026400272"
+    }
+  },
+  "rawSheetsChanged": [
+    "alpaca/positive-12.png",
+    "capybara/positive-12.png",
+    "maltese/positive-12.png",
+    "poodle/positive-12.png",
+    "rabbit/positive-12.png",
+    "raccoon/success-12.png"
+  ],
+  "otherRawSheetsPreserved": 66,
+  "previousApkShowsExactlySixReplacedTextures": true,
+  "validation": {
+    "motionAndRenderingTestsPassed": 8,
+    "fullTestsPassed": 911,
+    "skippedTests": 3,
+    "staticAnalysis": "passed",
+    "androidDebugApk": "passed",
+    "apkTextureHashesMatchReviewedAssets": true
+  }
+}

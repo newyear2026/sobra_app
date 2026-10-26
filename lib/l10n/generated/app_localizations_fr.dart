@@ -2662,4 +2662,119 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get homeFirstExpenseLater => 'Pas maintenant';
+
+  @override
+  String get costumeChange => 'Changer de tenue';
+
+  @override
+  String costumeCurrent(String name) {
+    return 'Tenue actuelle : $name';
+  }
+
+  @override
+  String costumeSheetTitle(String character) {
+    return 'Tenues de $character';
+  }
+
+  @override
+  String get costumeDefault => 'Original';
+
+  @override
+  String get costumePermanent => 'À garder';
+
+  @override
+  String get costumeApply => 'Mettre cette tenue';
+
+  @override
+  String get costumeCanReturn =>
+      'Tu peux revenir à la tenue originale à tout moment.';
+
+  @override
+  String get costumeNoExpiry => 'Les tenues reçues restent dans ta garde-robe.';
+
+  @override
+  String costumeOwnedCount(int count) {
+    return '$count disponibles';
+  }
+
+  @override
+  String costumeDescription(String character, String costume) {
+    return '$character, $costume';
+  }
+
+  @override
+  String get seasonalGiftTitle => 'Un cadeau de saison';
+
+  @override
+  String get seasonalGiftBody => 'Un nouveau look pour tes amis.';
+
+  @override
+  String get seasonalGiftView => 'Voir le cadeau';
+
+  @override
+  String seasonalGiftClaim(int count) {
+    return 'Recevoir $count tenues gratuites';
+  }
+
+  @override
+  String seasonalGiftDeadline(String date) {
+    return 'À recevoir avant le $date';
+  }
+
+  @override
+  String get seasonalGiftKeeps =>
+      'Une fois reçues, ces tenues sont à toi pour toujours.';
+
+  @override
+  String get seasonalGiftLockedCharacters =>
+      'Les tenues des personnages que tu ne possèdes pas encore sont aussi conservées. Tu pourras les utiliser quand tu obtiendras le personnage.';
+
+  @override
+  String get seasonalGiftReceived => 'Tes tenues sont enregistrées !';
+
+  @override
+  String get seasonalGiftWardrobe => 'Essayer dans Décorer';
+
+  @override
+  String get seasonalGiftClosed =>
+      'La période pour recevoir ce cadeau est terminée.';
+
+  @override
+  String get seasonalGiftPreview => 'Aperçu des 12 tenues';
+
+  @override
+  String get costumeDracula => 'Dracula';
+
+  @override
+  String get costumeFrankenstein => 'Frankenstein';
+
+  @override
+  String get costumeWerewolf => 'Loup-garou';
+
+  @override
+  String get costumePumpkin => 'Esprit citrouille';
+
+  @override
+  String get costumeMummy => 'Momie';
+
+  @override
+  String get costumeCatrina => 'Catrina';
+
+  @override
+  String get costumeGhostPirate => 'Pirate fantôme';
+
+  @override
+  String get costumeSwampMonster => 'Monstre des marais';
+
+  @override
+  String get costumeMoonWitch => 'Sorcière de lune';
+
+  @override
+  String get costumeCalaveraMusician => 'Musicien calavera';
+
+  @override
+  String get costumeScarecrow => 'Épouvantail';
+
+  @override
+  String get costumeLittleGhost => 'Petit fantôme';
 }

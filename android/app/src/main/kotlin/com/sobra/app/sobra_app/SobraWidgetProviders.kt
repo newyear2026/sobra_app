@@ -7,12 +7,19 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.RectF
 import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
 import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.abs
+import org.json.JSONObject
 
 class SobraCompactWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(
@@ -194,6 +201,7 @@ object SobraWidgetUpdater {
         characterId: String?,
         summary: Boolean,
     ) {
+        if (applyCostume(context, views, characterId, summary)) return
         // The native widget cannot load Flutter's sprite sheets. These four
         // frames are exported from each character's idle sheet by
         // tool/export_android_widget_characters.py.
@@ -249,6 +257,83 @@ object SobraWidgetUpdater {
         }
         views.setImageViewResource(R.id.cat_static, staticFrame)
         views.setContentDescription(R.id.cat_static, description)
+    }
+
+    // Read the same bundled atlas and crop metadata Flutter uses. No duplicate
+    // full-resolution Android resources, and the binder receives only small
+    // rendered frames. A failed/unknown pack falls back to the base companion.
+    private var costumeLayouts: JSONObject? = null
+
+    private fun applyCostume(
+        context: Context,
+        views: RemoteViews,
+        characterId: String?,
+        summary: Boolean,
+    ): Boolean {
+        if (characterId == null) return false
+        val preferences = preferences(context)
+        if (preferences.getString("costumeId", "") != "autumn-2026-$characterId") {
+            return false
+        }
+        return try {
+            val layouts = costumeLayouts ?: context.assets.open(
+                "flutter_assets/assets/costumes/autumn_2026/motion_v2/layout.json",
+            ).bufferedReader().use { JSONObject(it.readText()) }.also { costumeLayouts = it }
+            val layout = layouts.optJSONObject(characterId)
+                ?.optJSONObject(if (summary) "positive" else "idle") ?: return false
+            val poses = layout.getJSONArray("sources")
+            val targets = layout.getJSONArray("targets")
+            val options = BitmapFactory.Options().apply { inSampleSize = 2 }
+            val source = context.assets.open(
+                "flutter_assets/${layout.getString("asset")}",
+            ).use { BitmapFactory.decodeStream(it, null, options) } ?: return false
+            // Sample actual drawn motion, including eyelids and paws. The
+            // native widget no longer stretches a single stationary pose.
+            val indices = if (summary) intArrayOf(0, 3, 6, 9, 11)
+                else intArrayOf(0, 3, 5, 7)
+            val frames = indices.map { index ->
+                val pose = poses.getJSONArray(index)
+                val target = targets.getJSONArray(index)
+                val src = Rect(
+                    (pose.getDouble(0) * source.width).toInt().coerceIn(0, source.width - 1),
+                    (pose.getDouble(1) * source.height).toInt().coerceIn(0, source.height - 1),
+                    ((pose.getDouble(0) + pose.getDouble(2)) * source.width).toInt().coerceIn(1, source.width),
+                    ((pose.getDouble(1) + pose.getDouble(3)) * source.height).toInt().coerceIn(1, source.height),
+                )
+                Bitmap.createBitmap(128, 144, Bitmap.Config.ARGB_8888).also { bitmap ->
+                    Canvas(bitmap).drawBitmap(
+                        source, src,
+                        RectF(
+                            target.getDouble(0).toFloat() * .4f,
+                            target.getDouble(1).toFloat() * .4f,
+                            (target.getDouble(0) + target.getDouble(2)).toFloat() * .4f,
+                            (target.getDouble(1) + target.getDouble(3)).toFloat() * .4f,
+                        ),
+                        Paint().apply { isFilterBitmap = false },
+                    )
+                }
+            }
+            source.recycle()
+            val description = preferences.getString("characterDescription", null)
+                ?.takeIf { it.isNotBlank() } ?: characterId
+            val ids = intArrayOf(
+                R.id.character_frame_1, R.id.character_frame_2,
+                R.id.character_frame_3, R.id.character_frame_4,
+            )
+            ids.forEachIndexed { index, id ->
+                views.setImageViewBitmap(id, frames[index])
+                views.setContentDescription(id, description)
+            }
+            if (summary) {
+                views.setImageViewBitmap(R.id.character_frame_5, frames.last())
+                views.setContentDescription(R.id.character_frame_5, description)
+            }
+            views.setImageViewBitmap(R.id.cat_static, frames.first())
+            views.setContentDescription(R.id.cat_static, description)
+            true
+        } catch (_: Exception) {
+            false
+        }
     }
 
     private fun launch(context: Context, destination: String, requestCode: Int): PendingIntent {

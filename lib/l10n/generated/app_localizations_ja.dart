@@ -2537,4 +2537,116 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get homeFirstExpenseLater => 'あとで';
+
+  @override
+  String get costumeChange => '衣装を変える';
+
+  @override
+  String costumeCurrent(String name) {
+    return '現在の衣装：$name';
+  }
+
+  @override
+  String costumeSheetTitle(String character) {
+    return '$characterの衣装';
+  }
+
+  @override
+  String get costumeDefault => 'いつもの姿';
+
+  @override
+  String get costumePermanent => 'ずっと使える';
+
+  @override
+  String get costumeApply => 'この衣装を着せる';
+
+  @override
+  String get costumeCanReturn => 'いつでも元の姿に戻せます。';
+
+  @override
+  String get costumeNoExpiry => '受け取った衣装はイベント後も残ります。';
+
+  @override
+  String costumeOwnedCount(int count) {
+    return '$count着所持';
+  }
+
+  @override
+  String costumeDescription(String character, String costume) {
+    return '$costumeの衣装の$character';
+  }
+
+  @override
+  String get seasonalGiftTitle => '季節のプレゼント';
+
+  @override
+  String get seasonalGiftBody => '仲間たちの特別な姿を楽しもう。';
+
+  @override
+  String get seasonalGiftView => 'プレゼントを見る';
+
+  @override
+  String seasonalGiftClaim(int count) {
+    return '衣装$count着を無料で受け取る';
+  }
+
+  @override
+  String seasonalGiftDeadline(String date) {
+    return '$dateまで受け取れます';
+  }
+
+  @override
+  String get seasonalGiftKeeps => '受け取った衣装はずっと使えます。';
+
+  @override
+  String get seasonalGiftLockedCharacters =>
+      'まだ持っていないキャラクターの衣装も保管されます。仲間にしたら着せられます。';
+
+  @override
+  String get seasonalGiftReceived => '衣装を受け取りました！';
+
+  @override
+  String get seasonalGiftWardrobe => '模様替えで着せてみる';
+
+  @override
+  String get seasonalGiftClosed => 'プレゼントの受取期間は終了しました。';
+
+  @override
+  String get seasonalGiftPreview => '12着の衣装の一部';
+
+  @override
+  String get costumeDracula => 'ドラキュラ';
+
+  @override
+  String get costumeFrankenstein => 'フランケンシュタイン';
+
+  @override
+  String get costumeWerewolf => 'オオカミ男';
+
+  @override
+  String get costumePumpkin => 'カボチャの妖精';
+
+  @override
+  String get costumeMummy => 'ミイラ';
+
+  @override
+  String get costumeCatrina => 'カトリーナ';
+
+  @override
+  String get costumeGhostPirate => '幽霊の海賊';
+
+  @override
+  String get costumeSwampMonster => '沼のモンスター';
+
+  @override
+  String get costumeMoonWitch => '月の魔女';
+
+  @override
+  String get costumeCalaveraMusician => 'カラベラの音楽家';
+
+  @override
+  String get costumeScarecrow => 'かかし';
+
+  @override
+  String get costumeLittleGhost => '小さな幽霊';
 }

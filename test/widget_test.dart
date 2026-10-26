@@ -131,6 +131,12 @@ void main() {
     // Only the starter picked in onboarding ships owned; Miru waits at the
     // door, and the other pets need rewarded ads.
     expect(find.text('OBTENIDO'), findsOneWidget);
+    // Seasonal gift notices can move the next row below the viewport.
+    await tester.scrollUntilVisible(
+      find.text('Cookie'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Yoshi'), findsOneWidget);
     expect(find.text('Cookie'), findsOneWidget);
     await tester.scrollUntilVisible(

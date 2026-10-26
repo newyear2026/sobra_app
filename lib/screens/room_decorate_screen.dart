@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/catalog_preview_data.dart';
 import '../l10n/catalog_labels.dart';
+import '../l10n/costume_labels.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/room_labels.dart';
 import '../models/catalog_entry.dart';
@@ -11,11 +12,18 @@ import '../state/sobra_store.dart';
 import 'collection_screen.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
+import '../widgets/character_costume_picker.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/room_scene.dart';
 
 class RoomDecorateScreen extends StatefulWidget {
-  const RoomDecorateScreen({super.key, this.previewTimeOfDay});
+  const RoomDecorateScreen({
+    super.key,
+    this.previewTimeOfDay,
+    this.initialCategory = RoomDecorCategory.furniture,
+  });
+
+  final RoomDecorCategory initialCategory;
 
   /// Debug preview follows the source room's selected time when supplied.
   final RoomTimeOfDay? previewTimeOfDay;
@@ -32,6 +40,7 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
   @override
   void initState() {
     super.initState();
+    _category = widget.initialCategory;
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -62,6 +71,8 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
   /// sit outside both — the user would press Undo, watch the lamp go back and
   /// the cat stay, and be right to call that broken.
   String? _draftCharacterId;
+  final Map<String, String?> _draftCostumes = {};
+  bool _costumesInitialized = false;
 
   final List<_DecorSnapshot> _history = [];
   bool _saving = false;
@@ -76,6 +87,10 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
       () => Map.of(store.roomDecorationsFor(_draftRoomId!)),
     );
     _draftCharacterId ??= store.characterId;
+    if (!_costumesInitialized) {
+      _draftCostumes.addAll(store.costumeSelections);
+      _costumesInitialized = true;
+    }
   }
 
   void _pushHistory() => _history.add(
@@ -85,6 +100,7 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
       },
       roomId: _draftRoomId!,
       characterId: _draftCharacterId!,
+      costumeSelections: Map.of(_draftCostumes),
     ),
   );
 
@@ -99,14 +115,13 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
       await store.saveRoomSelection(
         roomId: _draftRoomId!,
         placementsByRoom: _draftRooms,
+        selectedCharacterId: _draftCharacterId,
+        costumeChanges: {
+          for (final entry in _draftCostumes.entries)
+            if (entry.value != store.costumeSelections[entry.key])
+              entry.key: entry.value,
+        },
       );
-      if (_draftCharacterId != store.characterId) {
-        await store.equipCharacter(
-          CatalogPreviewData.characters.firstWhere(
-            (entry) => entry.id == _draftCharacterId,
-          ),
-        );
-      }
     });
     if (!mounted) return;
     setState(() => _saving = false);
@@ -129,6 +144,9 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
         });
       _draftRoomId = previous.roomId;
       _draftCharacterId = previous.characterId;
+      _draftCostumes
+        ..clear()
+        ..addAll(previous.costumeSelections);
       _selectedItemId = null;
     });
   }
@@ -175,6 +193,22 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
     }
     if (choice.surfaces.isEmpty) return;
     setState(() => _selectedItemId = choice.id);
+  }
+
+  Future<void> _changeCostume() async {
+    final id = _draftCharacterId!;
+    final choice = await showCharacterCostumePicker(
+      context,
+      characterId: id,
+      selectedCostumeId: _draftCostumes[id],
+    );
+    if (!mounted || choice == null) return;
+    final costumeId = choice.isEmpty ? null : choice;
+    if (costumeId == _draftCostumes[id]) return;
+    setState(() {
+      _pushHistory();
+      _draftCostumes[id] = costumeId;
+    });
   }
 
   /// Puts the selected item in [slot], or takes it out if it is already there.
@@ -277,6 +311,7 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
       _draftRoomId!,
       _draftCharacterId,
       _draft,
+      costumeSelections: _draftCostumes,
     );
     return Scaffold(
       backgroundColor: AppColors.surface,
@@ -317,6 +352,10 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
                         showSlots: true,
                         selectedItemId: _selectedItemId,
                         characterId: _draftCharacterId,
+                        costumeId: store.ownsCharacter(_draftCharacterId!)
+                            ? _draftCostumes[_draftCharacterId]
+                            : null,
+                        useEquippedCostume: false,
                         onSlotTap: _place,
                       ),
                     ),
@@ -358,6 +397,75 @@ class _RoomDecorateScreenState extends State<RoomDecorateScreen>
                         selectedItemId: _selectedItemId,
                         selectedRoomId: _draftRoomId!,
                         selectedCharacterId: _draftCharacterId,
+                        costumeControl:
+                            store.ownsCharacter(_draftCharacterId!) &&
+                                store
+                                    .ownedCostumesFor(_draftCharacterId!)
+                                    .isNotEmpty
+                            ? Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          CharacterCatalog.resolve(
+                                            _draftCharacterId!,
+                                          ).displayName,
+                                          style: pixelText(
+                                            size: 17,
+                                            bold: true,
+                                          ),
+                                        ),
+                                        Text(
+                                          l10n.costumeCurrent(
+                                            costumeDisplayName(
+                                              l10n,
+                                              _draftCostumes[_draftCharacterId],
+                                            ),
+                                          ),
+                                          maxLines: 2,
+                                          style: pixelText(
+                                            size: 12,
+                                            color: AppColors.tealInk,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  TextButton.icon(
+                                    key: const ValueKey(
+                                      'change-character-costume',
+                                    ),
+                                    onPressed: _changeCostume,
+                                    style: TextButton.styleFrom(
+                                      side: const BorderSide(
+                                        color: AppColors.tealInk,
+                                        width: 2,
+                                      ),
+                                      shape: const RoundedRectangleBorder(),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 8,
+                                      ),
+                                    ),
+                                    icon: const Icon(
+                                      Icons.checkroom_outlined,
+                                      size: 20,
+                                    ),
+                                    label: Text(
+                                      l10n.costumeChange,
+                                      style: pixelText(
+                                        size: 13,
+                                        bold: true,
+                                        color: AppColors.tealInk,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : null,
                         onCategoryChanged: (category) {
                           setState(() {
                             _category = category;
@@ -445,6 +553,7 @@ class _DecorDrawer extends StatelessWidget {
     required this.selectedCharacterId,
     required this.onCategoryChanged,
     required this.onChoiceTap,
+    this.costumeControl,
   });
 
   final RoomDecorCategory category;
@@ -454,10 +563,10 @@ class _DecorDrawer extends StatelessWidget {
   final String? selectedCharacterId;
   final ValueChanged<RoomDecorCategory> onCategoryChanged;
   final ValueChanged<_RoomChoice> onChoiceTap;
+  final Widget? costumeControl;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
       decoration: const BoxDecoration(
@@ -466,23 +575,13 @@ class _DecorDrawer extends StatelessWidget {
       ),
       child: Column(
         children: [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                for (final item in RoomDecorCategory.values) ...[
-                  _CategoryButton(
-                    label: _categoryLabel(l10n, item),
-                    selected: item == category,
-                    onTap: () => onCategoryChanged(item),
-                  ),
-                  if (item != RoomDecorCategory.values.last)
-                    const SizedBox(width: 6),
-                ],
-              ],
-            ),
-          ),
+          _DecorCategoryTabs(category: category, onChanged: onCategoryChanged),
           const SizedBox(height: 12),
+          if (category == RoomDecorCategory.characters &&
+              costumeControl != null) ...[
+            costumeControl!,
+            const SizedBox(height: 8),
+          ],
           Expanded(
             child: GridView.builder(
               padding: const EdgeInsets.only(bottom: 14),
@@ -515,6 +614,7 @@ class _DecorDrawer extends StatelessWidget {
 
 class _CategoryButton extends StatelessWidget {
   const _CategoryButton({
+    super.key,
     required this.label,
     required this.selected,
     required this.onTap,
@@ -551,6 +651,67 @@ class _CategoryButton extends StatelessWidget {
       ),
     ),
   );
+}
+
+/// A gift can open directly on Characters, beyond the initial tab viewport.
+/// Keep the selected tab visible when opening or changing the category.
+class _DecorCategoryTabs extends StatefulWidget {
+  const _DecorCategoryTabs({required this.category, required this.onChanged});
+
+  final RoomDecorCategory category;
+  final ValueChanged<RoomDecorCategory> onChanged;
+
+  @override
+  State<_DecorCategoryTabs> createState() => _DecorCategoryTabsState();
+}
+
+class _DecorCategoryTabsState extends State<_DecorCategoryTabs> {
+  final _selectedKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    _revealSelected();
+  }
+
+  @override
+  void didUpdateWidget(covariant _DecorCategoryTabs oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.category != widget.category) _revealSelected();
+  }
+
+  void _revealSelected() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final target = _selectedKey.currentContext;
+      if (mounted && target != null) {
+        Scrollable.ensureVisible(
+          target,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+        );
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (final item in RoomDecorCategory.values) ...[
+            _CategoryButton(
+              key: item == widget.category ? _selectedKey : null,
+              label: _categoryLabel(l10n, item),
+              selected: item == widget.category,
+              onTap: () => widget.onChanged(item),
+            ),
+            if (item != RoomDecorCategory.values.last) const SizedBox(width: 6),
+          ],
+        ],
+      ),
+    );
+  }
 }
 
 class _RoomChoiceTile extends StatelessWidget {
@@ -651,11 +812,13 @@ class _DecorSnapshot {
     required this.placementsByRoom,
     required this.roomId,
     required this.characterId,
+    required this.costumeSelections,
   });
 
   final Map<String, Map<RoomSlot, String>> placementsByRoom;
   final String roomId;
   final String characterId;
+  final Map<String, String?> costumeSelections;
 }
 
 class _RoomChoice {
@@ -715,8 +878,9 @@ List<_RoomChoice> _choicesFor(
   SobraStore store,
   String chosenRoomId,
   String? chosenCharacterId,
-  Map<RoomSlot, String> placements,
-) {
+  Map<RoomSlot, String> placements, {
+  Map<String, String?> costumeSelections = const {},
+}) {
   final choices = <_RoomChoice>[];
   final room = RoomThemes.byId(chosenRoomId);
   String decorStatus(String id) =>
@@ -758,7 +922,12 @@ List<_RoomChoice> _choicesFor(
           status: entry.id == chosenCharacterId
               ? l10n.collectionEquipped
               : l10n.collectionOwned,
-          preview: _characterPreview(entry),
+          preview: _characterPreview(
+            entry,
+            costumeId: costumeSelections.containsKey(entry.id)
+                ? costumeSelections[entry.id]
+                : store.equippedCostumeFor(entry.id),
+          ),
         ),
       );
     }
@@ -813,7 +982,7 @@ List<_RoomChoice> _choicesFor(
 ///
 /// The character registry is the source of truth for whether final sprite art
 /// exists, so placeholder catalog entries remain cheap icons.
-Widget _characterPreview(CatalogEntry entry) => Center(
+Widget _characterPreview(CatalogEntry entry, {String? costumeId}) => Center(
   child: CharacterCatalog.all.containsKey(entry.id)
       ? Transform.scale(
           key: ValueKey('decorate-character-scale-${entry.id}'),
@@ -821,6 +990,7 @@ Widget _characterPreview(CatalogEntry entry) => Center(
           alignment: const Alignment(0, 2 * 344 / 360 - 1),
           child: CharacterSprite(
             characterId: entry.id,
+            costumeId: costumeId,
             role: CharacterMotionRole.idle,
             width: 72,
             animate: false,

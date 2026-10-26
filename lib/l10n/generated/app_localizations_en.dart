@@ -2635,4 +2635,116 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeFirstExpenseLater => 'Not now';
+
+  @override
+  String get costumeChange => 'Change outfit';
+
+  @override
+  String costumeCurrent(String name) {
+    return 'Current outfit: $name';
+  }
+
+  @override
+  String costumeSheetTitle(String character) {
+    return '$character’s outfits';
+  }
+
+  @override
+  String get costumeDefault => 'Original';
+
+  @override
+  String get costumePermanent => 'Keep forever';
+
+  @override
+  String get costumeApply => 'Wear this outfit';
+
+  @override
+  String get costumeCanReturn => 'You can switch back to the original anytime.';
+
+  @override
+  String get costumeNoExpiry => 'Received outfits stay in your wardrobe.';
+
+  @override
+  String costumeOwnedCount(int count) {
+    return '$count available';
+  }
+
+  @override
+  String costumeDescription(String character, String costume) {
+    return '$character, $costume';
+  }
+
+  @override
+  String get seasonalGiftTitle => 'A seasonal gift';
+
+  @override
+  String get seasonalGiftBody => 'A special new look for your friends.';
+
+  @override
+  String get seasonalGiftView => 'See gift';
+
+  @override
+  String seasonalGiftClaim(int count) {
+    return 'Get $count free outfits';
+  }
+
+  @override
+  String seasonalGiftDeadline(String date) {
+    return 'Claim by $date';
+  }
+
+  @override
+  String get seasonalGiftKeeps => 'Once received, they are yours to keep.';
+
+  @override
+  String get seasonalGiftLockedCharacters =>
+      'Outfits for characters you do not own are saved too. Wear them when you get that character.';
+
+  @override
+  String get seasonalGiftReceived => 'Your outfits are saved!';
+
+  @override
+  String get seasonalGiftWardrobe => 'Try them in Decorate';
+
+  @override
+  String get seasonalGiftClosed => 'The time to claim this gift has ended.';
+
+  @override
+  String get seasonalGiftPreview => 'A preview of the 12 outfits';
+
+  @override
+  String get costumeDracula => 'Dracula';
+
+  @override
+  String get costumeFrankenstein => 'Frankenstein';
+
+  @override
+  String get costumeWerewolf => 'Werewolf';
+
+  @override
+  String get costumePumpkin => 'Pumpkin sprite';
+
+  @override
+  String get costumeMummy => 'Mummy';
+
+  @override
+  String get costumeCatrina => 'Catrina';
+
+  @override
+  String get costumeGhostPirate => 'Ghost pirate';
+
+  @override
+  String get costumeSwampMonster => 'Swamp monster';
+
+  @override
+  String get costumeMoonWitch => 'Moon witch';
+
+  @override
+  String get costumeCalaveraMusician => 'Calavera musician';
+
+  @override
+  String get costumeScarecrow => 'Scarecrow';
+
+  @override
+  String get costumeLittleGhost => 'Little ghost';
 }

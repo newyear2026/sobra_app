@@ -41,6 +41,7 @@ class SobraWidgetCopy {
     required this.openApp,
     required this.registerExpense,
     required this.days,
+    this.characterDescription,
   });
 
   final String todayLeft;
@@ -60,6 +61,8 @@ class SobraWidgetCopy {
 
   /// "3 days", with the language's own plural.
   final String Function(int count) days;
+  final String Function(String characterId, String? costumeId)?
+  characterDescription;
 }
 
 @immutable
@@ -113,6 +116,8 @@ class SobraWidgetSnapshot {
     required this.characterId,
     required this.movements,
     required this.copy,
+    this.costumeId,
+    this.characterDescription = '',
   });
 
   final bool hasCompletedOnboarding;
@@ -143,6 +148,8 @@ class SobraWidgetSnapshot {
   final int progressSegments;
   final bool reducedMotion;
   final String characterId;
+  final String? costumeId;
+  final String characterDescription;
   final List<SobraWidgetMovement> movements;
 
   /// Null until the app root resolves localizations. The widget then keeps
@@ -173,6 +180,13 @@ class SobraWidgetSnapshot {
       progressSegments: (progress * 10).ceil(),
       reducedMotion: store.reducedMotion,
       characterId: store.characterId,
+      costumeId: store.equippedCostumeFor(store.characterId),
+      characterDescription:
+          copy?.characterDescription?.call(
+            store.characterId,
+            store.equippedCostumeFor(store.characterId),
+          ) ??
+          '',
       movements: store.movements
           .take(2)
           .map((movement) => SobraWidgetMovement.fromMovement(movement, label))
@@ -196,6 +210,8 @@ class SobraWidgetSnapshot {
       'progressSegments': progressSegments,
       'reducedMotion': reducedMotion,
       'characterId': characterId,
+      'costumeId': costumeId ?? '',
+      'characterDescription': characterDescription,
       'movementCount': movements.length,
       // Empty until the app is localized; Android falls back to its own
       // resource strings for an empty one.

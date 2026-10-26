@@ -164,6 +164,8 @@ class MainActivity : FlutterActivity() {
             .putInt("progressSegments", number("progressSegments").toInt())
             .putBoolean("reducedMotion", arguments["reducedMotion"] as? Boolean ?: false)
             .putString("characterId", text("characterId"))
+            .putString("costumeId", text("costumeId"))
+            .putString("characterDescription", text("characterDescription"))
             .putInt("movementCount", number("movementCount").toInt())
             .putString("movement1Title", text("movement1Title"))
             .putLong("movement1AmountCentavos", number("movement1AmountCentavos"))

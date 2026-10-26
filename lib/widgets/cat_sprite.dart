@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../state/sobra_store.dart';
 import '../l10n/labels.dart';
+import '../models/character_costume.dart';
+import '../models/costume_motion.dart';
+import '../data/costume_motion_atlases.dart';
+import 'costume_motion_painter.dart';
 
 /// Stable, character-independent roles used by every Sobra character pack.
 enum CharacterMotionRole {
@@ -995,6 +999,7 @@ class CharacterSprite extends StatefulWidget {
     super.key,
     required this.characterId,
     required this.role,
+    this.costumeId,
     this.width = 112,
     this.animate = true,
     this.loop,
@@ -1005,6 +1010,13 @@ class CharacterSprite extends StatefulWidget {
 
   final String characterId;
   final CharacterMotionRole role;
+  final String? costumeId;
+
+  CharacterCostume? get costume {
+    final candidate = CharacterCostumes.byId(costumeId);
+    return candidate?.characterId == characterId ? candidate : null;
+  }
+
   final double width;
   final bool animate;
   final bool? loop;
@@ -1015,9 +1027,32 @@ class CharacterSprite extends StatefulWidget {
   CharacterDefinition get characterDefinition =>
       CharacterCatalog.require(characterId);
 
-  CharacterMotionSpec get motionSpec => characterDefinition.motionFor(role);
+  CostumeMotionAtlas? get costumeMotion {
+    if (costume == null) return null;
+    final atlas = costumeMotionAtlases[characterId]?[role.name];
+    if (atlas == null) {
+      throw FlutterError('$costumeId is missing the ${role.name} animation.');
+    }
+    return atlas;
+  }
 
-  String get asset => characterDefinition.assetFor(role);
+  CharacterMotionSpec get motionSpec {
+    final atlas = costumeMotion;
+    if (atlas == null) return characterDefinition.motionFor(role);
+    return CharacterMotionSpec(
+      assetFileName: atlas.asset.split('/').last,
+      frameCount: atlas.frameCount,
+      duration: Duration(milliseconds: atlas.durationMs),
+      defaultLoop: atlas.loop,
+      playbackSpec: CharacterPlaybackSpec(
+        playRange: CharacterFrameRange(0, atlas.frameCount - 1),
+        posterFrame: atlas.posterFrame,
+      ),
+    );
+  }
+
+  String get asset =>
+      costumeMotion?.asset ?? characterDefinition.assetFor(role);
 
   bool get effectiveLoop => loop ?? motionSpec.defaultLoop;
 
@@ -1031,6 +1066,9 @@ class _CharacterSpriteState extends State<CharacterSprite>
   ImageStream? _stream;
   ImageStreamListener? _listener;
   ui.Image? _image;
+  ImageStream? _landingStream;
+  ImageStreamListener? _landingListener;
+  ui.Image? _landingImage;
 
   @override
   void initState() {
@@ -1054,10 +1092,12 @@ class _CharacterSpriteState extends State<CharacterSprite>
   void didUpdateWidget(covariant CharacterSprite oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.characterId != widget.characterId ||
-        oldWidget.role != widget.role) {
+        oldWidget.role != widget.role ||
+        oldWidget.costumeId != widget.costumeId) {
       _loadImage();
     }
     if (oldWidget.characterId != widget.characterId ||
+        oldWidget.costumeId != widget.costumeId ||
         oldWidget.role != widget.role ||
         oldWidget.animate != widget.animate ||
         oldWidget.effectiveLoop != widget.effectiveLoop ||
@@ -1068,12 +1108,17 @@ class _CharacterSpriteState extends State<CharacterSprite>
 
   void _loadImage() {
     _removeImageListener();
-    final stream = AssetImage(
-      widget.asset,
-    ).resolve(createLocalImageConfiguration(context));
+    _image = null;
+    _landingImage = null;
+    final requestedAsset = widget.asset;
+    final ImageProvider provider = widget.costume == null
+        ? AssetImage(requestedAsset)
+        : ResizeImage(AssetImage(requestedAsset), width: 1024);
+    final stream = provider.resolve(createLocalImageConfiguration(context));
     final listener = ImageStreamListener((info, _) {
-      if (!mounted) return;
+      if (!mounted || widget.asset != requestedAsset) return;
       assert(() {
+        if (widget.costume != null) return true;
         final motion = widget.motionSpec;
         final playback = motion.playbackSpec;
         if (playback.playRange.end >= motion.frameCount ||
@@ -1102,6 +1147,20 @@ class _CharacterSpriteState extends State<CharacterSprite>
     _stream = stream;
     _listener = listener;
     stream.addListener(listener);
+    if (widget.costumeMotion?.landingFrameStart != null) {
+      final idle = costumeMotionAtlases[widget.characterId]!['idle']!;
+      final landingStream = ResizeImage(
+        AssetImage(idle.asset),
+        width: 1024,
+      ).resolve(createLocalImageConfiguration(context));
+      final landingListener = ImageStreamListener((info, _) {
+        if (!mounted || widget.asset != requestedAsset) return;
+        setState(() => _landingImage = info.image);
+      });
+      _landingStream = landingStream;
+      _landingListener = landingListener;
+      landingStream.addListener(landingListener);
+    }
   }
 
   @visibleForTesting
@@ -1126,6 +1185,13 @@ class _CharacterSpriteState extends State<CharacterSprite>
     final stream = _stream;
     final listener = _listener;
     if (stream != null && listener != null) stream.removeListener(listener);
+    final landingStream = _landingStream;
+    final landingListener = _landingListener;
+    if (landingStream != null && landingListener != null) {
+      landingStream.removeListener(landingListener);
+    }
+    _landingStream = null;
+    _landingListener = null;
   }
 
   @override
@@ -1159,6 +1225,18 @@ class _CharacterSpriteState extends State<CharacterSprite>
                   !widget.effectiveLoop &&
                   _controller.status == AnimationStatus.completed,
             );
+            final costumeAtlas = widget.costumeMotion;
+            if (costumeAtlas != null) {
+              return CustomPaint(
+                painter: CostumeMotionPainter(
+                  image: _image,
+                  atlas: costumeAtlas,
+                  frame: frame,
+                  landingImage: _landingImage,
+                  idleAtlas: costumeMotionAtlases[widget.characterId]!['idle']!,
+                ),
+              );
+            }
             final paintedFrame = CustomPaint(
               painter: _SpritePainter(
                 image: _image,
@@ -1212,6 +1290,8 @@ class CatSprite extends StatelessWidget {
     super.key,
     required this.motion,
     this.characterId,
+    this.costumeId,
+    this.useEquippedCostume = true,
     this.width = 112,
     this.animate = true,
     this.loop,
@@ -1231,6 +1311,8 @@ class CatSprite extends StatelessWidget {
   /// still holds the old character, and the preview has to show the new one
   /// or the choice looks like it did not register.
   final String? characterId;
+  final String? costumeId;
+  final bool useEquippedCostume;
   final double width;
   final bool animate;
   final bool? loop;
@@ -1245,8 +1327,12 @@ class CatSprite extends StatelessWidget {
     final definition = CharacterCatalog.resolve(
       chosen ?? CharacterCatalog.defaultId,
     );
+    final appearance = useEquippedCostume
+        ? SobraScope.maybeOf(context)?.equippedCostumeFor(definition.id)
+        : costumeId;
     final sprite = CharacterSprite(
       characterId: definition.id,
+      costumeId: appearance,
       role: motion.role,
       width: width,
       animate: animate,
@@ -1255,7 +1341,7 @@ class CatSprite extends StatelessWidget {
       semanticLabel: motion.semanticLabel(AppLocalizations.of(context)),
       onComplete: onComplete,
     );
-    if (!reserveMotionSpace) return sprite;
+    if (!reserveMotionSpace || appearance != null) return sprite;
     final spec = definition.motionFor(motion.role);
     final scale = spec.displayScale;
     final pixelsToLogical = width / CharacterAnimationStandard.frameWidth;

@@ -1197,5 +1197,84 @@
   "homeFirstExpenseTitle": "Un gasto, y empezamos.",
   "homeFirstExpenseBody": "Anota algo que hayas pagado hoy.",
   "homeFirstExpenseAction": "Registrar un gasto",
-  "homeFirstExpenseLater": "Ahora no"
+  "homeFirstExpenseLater": "Ahora no",
+
+  "costumeChange": "Cambiar disfraz",
+  "costumeCurrent": "Disfraz actual: {name}",
+  "@costumeCurrent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "costumeSheetTitle": "Disfraces de {character}",
+  "@costumeSheetTitle": {
+    "placeholders": {
+      "character": {
+        "type": "String"
+      }
+    }
+  },
+  "costumeDefault": "Original",
+  "costumePermanent": "Para siempre",
+  "costumeApply": "Usar este disfraz",
+  "costumeCanReturn": "Puedes volver al original cuando quieras.",
+  "costumeNoExpiry": "Los disfraces recibidos se quedan contigo.",
+  "costumeOwnedCount": "{count} disponibles",
+  "@costumeOwnedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "costumeDescription": "{character}, {costume}",
+  "@costumeDescription": {
+    "placeholders": {
+      "character": {
+        "type": "String"
+      },
+      "costume": {
+        "type": "String"
+      }
+    }
+  },
+  "seasonalGiftTitle": "Un regalo de temporada",
+  "seasonalGiftBody": "Un cambio especial para tus amigos.",
+  "seasonalGiftView": "Ver regalo",
+  "seasonalGiftClaim": "Recibir {count} disfraces gratis",
+  "@seasonalGiftClaim": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "seasonalGiftDeadline": "Recíbelo hasta el {date}",
+  "@seasonalGiftDeadline": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "seasonalGiftKeeps": "Una vez recibidos, son tuyos para siempre.",
+  "seasonalGiftLockedCharacters": "También guardamos los disfraces de amigos que aún no tienes. Podrás usarlos cuando consigas al personaje.",
+  "seasonalGiftReceived": "¡Ya tienes los disfraces!",
+  "seasonalGiftWardrobe": "Probar en Decorar",
+  "seasonalGiftClosed": "El plazo para recibir este regalo terminó.",
+  "seasonalGiftPreview": "Algunos de los 12 disfraces",
+  "costumeDracula": "Drácula",
+  "costumeFrankenstein": "Frankenstein",
+  "costumeWerewolf": "Hombre lobo",
+  "costumePumpkin": "Duende calabaza",
+  "costumeMummy": "Momia",
+  "costumeCatrina": "Catrina",
+  "costumeGhostPirate": "Pirata fantasma",
+  "costumeSwampMonster": "Monstruo del pantano",
+  "costumeMoonWitch": "Bruja lunar",
+  "costumeCalaveraMusician": "Músico calavera",
+  "costumeScarecrow": "Espantapájaros",
+  "costumeLittleGhost": "Fantasmita"
 }
