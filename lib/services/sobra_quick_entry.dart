@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// The small piece of localized copy rendered by Android's lock-screen
 /// notification.
@@ -37,12 +38,21 @@ class SobraQuickEntryCopy {
   int get hashCode => Object.hash(question, income, expense);
 }
 
-/// Controls Android's opt-in, ongoing quick-entry notification.
+/// Controls Android's ongoing quick-entry notification.
+///
+/// On by default, once: nobody finds a lock-screen shortcut they have never
+/// seen, so every user gets it one time and Ajustes turns it off. Where Android
+/// has to ask for notification permission, the asking waits for the next
+/// saved record, when what the shortcut is for is obvious.
 ///
 /// The platform channel is deliberately non-fatal: iOS, web and widget tests
 /// can all run the same Flutter tree without an Android notification host.
 abstract final class SobraQuickEntry {
   static const _channel = MethodChannel('com.sobra.app/quick_entry');
+
+  /// `pending` while the default waits on a record to ask for permission,
+  /// `done` once it has been applied or asked for.
+  static const _defaultKey = 'sobra_quick_entry_default_on';
 
   static final enabled = ValueNotifier<bool>(false);
 
@@ -80,6 +90,42 @@ abstract final class SobraQuickEntry {
     } on Object {
       enabled.value = false;
       return !value;
+    }
+  }
+
+  /// Turns the shortcut on, once ever, for someone past onboarding.
+  static Future<void> applyDefaultOnce() async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      if (preferences.getString(_defaultKey) != null) return;
+      if (enabled.value) {
+        await preferences.setString(_defaultKey, 'done');
+        return;
+      }
+      final needsPermission =
+          await _channel.invokeMethod<bool>('needsQuickEntryPermission') ??
+          false;
+      if (needsPermission) {
+        await preferences.setString(_defaultKey, 'pending');
+        return;
+      }
+      await preferences.setString(_defaultKey, 'done');
+      await setEnabled(true);
+    } on Object {
+      // No Android host, or nothing to remember it in: the toggle stays off.
+    }
+  }
+
+  /// After a saved record, asks for the permission the default is waiting on.
+  /// Once: a "no" here is not asked again, and Ajustes still has the toggle.
+  static Future<void> offerAfterRecord() async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      if (preferences.getString(_defaultKey) != 'pending') return;
+      await preferences.setString(_defaultKey, 'done');
+      if (!enabled.value) await setEnabled(true);
+    } on Object {
+      // Same as above: the shortcut is a convenience, never a failed save.
     }
   }
 

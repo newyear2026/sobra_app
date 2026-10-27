@@ -6,6 +6,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/expense_entry.dart';
 import '../services/app_telemetry.dart';
+import '../services/sobra_quick_entry.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
@@ -145,6 +146,7 @@ class _FirstExpenseScreenState extends State<FirstExpenseScreen> {
     if (!saved) return;
     unawaited(AppTelemetry.instance.event(TelemetryEvent.expenseRecorded));
     _report(FirstExpenseResult.saved);
+    unawaited(SobraQuickEntry.offerAfterRecord());
     if (!mounted) return;
     setState(() {
       _saved = entry;

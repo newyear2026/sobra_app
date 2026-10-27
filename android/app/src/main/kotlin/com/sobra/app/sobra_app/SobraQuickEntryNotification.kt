@@ -21,7 +21,7 @@ import android.widget.RemoteViews
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
-/** The opt-in notification that keeps Income and Expense one tap away. */
+/** The notification that keeps Income and Expense one tap away; on by default, off in Ajustes. */
 object SobraQuickEntryNotification {
     private const val CHANNEL_ID = "sobra_quick_entry"
     private const val NOTIFICATION_ID = 260911

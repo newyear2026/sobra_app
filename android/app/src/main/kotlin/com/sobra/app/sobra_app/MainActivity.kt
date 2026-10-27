@@ -44,6 +44,9 @@ class MainActivity : FlutterActivity() {
                 "getQuickEntryEnabled" -> result.success(
                     SobraQuickEntryNotification.isEnabled(this),
                 )
+                "needsQuickEntryPermission" -> result.success(
+                    SobraQuickEntryNotification.needsRuntimePermission(this),
+                )
                 "setQuickEntryEnabled" -> {
                     val enabled = call.arguments as? Boolean
                     if (enabled == null) {

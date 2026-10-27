@@ -6,6 +6,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/expense_entry.dart';
 import '../services/app_telemetry.dart';
+import '../services/sobra_quick_entry.dart';
 import '../models/income_entry.dart';
 import '../models/pay_schedule.dart';
 import '../state/sobra_store.dart';
@@ -209,6 +210,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _receiptFileName = null;
     });
     widget.onSaved();
+    unawaited(SobraQuickEntry.offerAfterRecord());
   }
 
   @override

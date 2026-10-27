@@ -14,6 +14,7 @@ import '../services/app_update_service.dart';
 import '../services/app_version_service.dart';
 import '../services/native_ad_service.dart';
 import '../services/release_announcement_service.dart';
+import '../services/sobra_quick_entry.dart';
 import '../services/sobra_widget_sync.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
@@ -114,6 +115,8 @@ class _AppShellState extends State<AppShell> {
     SobraWidgetSync.destination.addListener(_onWidgetDestination);
     WidgetsBinding.instance.addPostFrameCallback((_) => _onWidgetDestination());
     _versionReady = _loadRunningVersion();
+    // The shell is past onboarding, for a new install and an old one alike.
+    unawaited(SobraQuickEntry.applyDefaultOnce());
   }
 
   /// Only for the dialog's "your version" row, so a failure to read it is a
