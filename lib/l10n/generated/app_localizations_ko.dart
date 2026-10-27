@@ -2578,7 +2578,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get seasonalGiftTitle => '가을 축제 선물';
+  String get seasonalGiftTitle => '할로윈 축제 선물';
 
   @override
   String get seasonalGiftBody => '우리 친구들의 특별한 변신을 만나보세요.';

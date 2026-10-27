@@ -836,7 +836,7 @@
   "costumeNoExpiry": "받은 의상은 이벤트가 끝나도 남아요.",
   "costumeOwnedCount": "{count}벌 보유",
   "costumeDescription": "{costume} 의상의 {character}",
-  "seasonalGiftTitle": "가을 축제 선물",
+  "seasonalGiftTitle": "할로윈 축제 선물",
   "seasonalGiftBody": "우리 친구들의 특별한 변신을 만나보세요.",
   "seasonalGiftView": "선물 보기",
   "seasonalGiftClaim": "코스튬 {count}종 무료로 받기",
