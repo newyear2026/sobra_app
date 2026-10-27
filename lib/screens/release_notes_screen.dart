@@ -4,9 +4,11 @@ import '../data/release_notes.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../services/app_version_service.dart';
+import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/gamification_ui.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/seasonal_costume_gift.dart';
 
 /// What changed, for whoever comes looking.
 ///
@@ -75,6 +77,11 @@ class _NoteCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final ink = isCurrent ? AppColors.tealInk : AppColors.ink;
+    // The update card shows once, so a gift closed from it unclaimed is
+    // reachable from its note too, for as long as it can still be claimed.
+    final offersGift =
+        note.seasonalGift &&
+        (SobraScope.maybeOf(context)?.canClaimSeasonalCostumes ?? false);
 
     return PixelCard(
       color: isCurrent ? AppColors.tealSoft : AppColors.surface,
@@ -110,17 +117,16 @@ class _NoteCard extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '›',
-                    style: pixelText(size: 13, bold: true, color: ink),
-                  ),
+                  Text('›', style: pixelText(size: 13, bold: true, color: ink)),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       line(l10n),
                       style: pixelText(
                         size: 13,
-                        color: isCurrent ? AppColors.tealInk : AppColors.inkSoft,
+                        color: isCurrent
+                            ? AppColors.tealInk
+                            : AppColors.inkSoft,
                         height: 1.55,
                       ),
                     ),
@@ -128,6 +134,15 @@ class _NoteCard extends StatelessWidget {
                 ],
               ),
             ),
+          if (offersGift) ...[
+            const SizedBox(height: 6),
+            PixelButton(
+              key: ValueKey('release-notes-gift-${note.version}'),
+              label: l10n.seasonalGiftView,
+              icon: Icons.card_giftcard,
+              onPressed: () => openSeasonalCostumeGift(context),
+            ),
+          ],
         ],
       ),
     );

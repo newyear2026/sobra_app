@@ -325,6 +325,49 @@ void main() {
         expect(find.text('Ver regalo'), findsNothing);
         expect(find.text('Ver todo'), findsOneWidget);
       });
+
+      Future<void> showNotes(WidgetTester tester, SobraStore store) async {
+        await tester.pumpWidget(
+          SobraScope(
+            store: store,
+            child: _harness(
+              ReleaseNotesScreen(
+                currentVersion: AppVersion(
+                  version: releaseNotes.first.version,
+                  buildNumber: '1',
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+      }
+
+      final giftNote = releaseNotes.firstWhere((note) => note.seasonalGift);
+      final notesGift = find.byKey(
+        ValueKey('release-notes-gift-${giftNote.version}'),
+      );
+
+      testWidgets('its note opens the gift after the card is gone', (
+        tester,
+      ) async {
+        await showNotes(tester, await store(claimed: false));
+
+        await tester.ensureVisible(notesGift);
+        await tester.tap(notesGift);
+        await tester.pumpAndSettle();
+
+        expect(
+          find.byKey(const ValueKey('claim-seasonal-costumes')),
+          findsOneWidget,
+        );
+      });
+
+      testWidgets('its note drops the button once claimed', (tester) async {
+        await showNotes(tester, await store(claimed: true));
+
+        expect(notesGift, findsNothing);
+      });
     });
 
     // Every language, not just the template: German and Portuguese run
