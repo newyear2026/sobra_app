@@ -1,0 +1,294 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-10-26",
+  "type": "upright posture and visible arm correction",
+  "scope": "raccoon and rabbit, six roles each, 128 frames",
+  "repairs": [
+    {
+      "id": "raccoon",
+      "role": "success",
+      "input": "/Users/jaewook/dev_app/sobra_app/design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/success-12.png",
+      "prompt": "Use case: precise-object-edit.\nAsset type: production game animation atlas, 12 sequential frames, four columns by three rows.\nThe supplied image is the exact edit target. Repaint the character's anatomy and posture consistently in ALL TWELVE frames to fulfill the request below. Preserve the same character identity, face, eyes, costume design, colors, rich crisp shaded pixel-art style, props, viewing angle and expression/action order.\nMake a CUTE UPRIGHT BIPED with a clearly readable torso, pelvis above two separately visible legs, and two feet supporting its weight directly under its hips. The silhouette must read as STANDING rather than sitting on its bottom, crouching like a quadruped, or kneeling. Keep rounded animal mascot proportions, not long human legs. EXACTLY TWO ARMS ending in TWO animal paws, plus TWO LEGS ending in TWO feet. Do not add any other paw or leg. Shoulders, elbows, hips and knees connect naturally. Preserve one tail as a tail.\nProduction invariants: exactly 12 complete frames, strict FOUR COLUMNS by THREE ROWS in reading order. All frames remain entirely within their own cells, uniform figure scale, at least 24px fully transparent outer padding and 30px clear transparent gutters between silhouettes. No clipping, no touching neighboring cells, no numbers, text, grid lines or watermarks.\nClean actual transparent RGBA background. No backdrop, floor, cast shadow, glow, colored registration specks or cutout halos. Preserve transparency.\nSpecific correction for the ghost-pirate RACCOON:\nThe source loses BOTH ARMS in the resting frames. Draw TWO COMPLETE teal-coated ARMS emerging visibly from the shoulders, with sleeves, gold cuffs and dark furry paws visible in EVERY frame, especially frames 1, 2, 3, 10, 11 and 12. In standing frames each arm hangs RELAXED just outside the front edge of the coat, elbow slightly bent, each paw visible beside its waist/upper thigh, distinctly separated from the torso. Never hide an arm behind the coat, tail, chest or back. Both hands stay well ABOVE the knees and never touch the floor. The coat opens in front to reveal TWO short legs below the belt, with clear upper/lower leg length and TWO broad furry feet planted beneath the body. The pelvis and coat hem must sit above the knees; do NOT leave two feet glued directly to a seated belly.\nRetain the celebration sequence: frames 1-2 relaxed upright stance, frame 3 only a small knee flex as takeoff anticipation with both hands visible, frames 4-7 joyful jump with BOTH arms raised and exactly TWO airborne feet, frames 8-9 soft landing with knee flex and hands still visible, frames 10-12 return to the SAME upright standing stance with TWO relaxed visible arms. Feet bend/extend naturally through jump/landing. No squat seated idle, no missing arms at the end, no grounded copies of raised paws.\nKeep the black pirate hat with teal/gold trim and bat emblem, red bandana, gold buttons, teal ghost-flame coat tails, cream chest and single striped tail. Keep the recognizable raccoon face and adorable proportions. The requested visible-arms standing redesign is the priority.",
+      "count": 12,
+      "selectedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-9362a0cf-f925-4a7c-a09e-70d986efa8d7.png",
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/success-12.png",
+      "pngSha256": "2b327e850e51691cae33f8a12a6a9c193f360266e65f564bc7beaa95be233b31",
+      "asset": "assets/costumes/autumn_2026/motion_v2/raccoon/success-12.webp",
+      "bundledSha256": "c3e4e9c2d5856bee7dfbb97e546c58f26874224b505db0f8ca55d6583a68fd9f",
+      "packaging": {
+        "format": "WebP q90",
+        "exactAlpha": true,
+        "visiblePsnrDb": 30.756
+      },
+      "beforeSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/before/raccoon/success-12.png",
+      "beforePngSha256": "3ef97095cc63caa2d1a7e2a9a9f860875eb9df767fdcede4d15439df405595e9"
+    },
+    {
+      "id": "rabbit",
+      "role": "positive",
+      "input": "/Users/jaewook/dev_app/sobra_app/design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/positive-12.png",
+      "prompt": "Use case: precise-object-edit.\nAsset type: production game animation atlas, 12 sequential frames, four columns by three rows.\nThe supplied image is the exact edit target. Repaint the character's anatomy and posture consistently in ALL TWELVE frames to fulfill the request below. Preserve the same character identity, face, eyes, costume design, colors, rich crisp shaded pixel-art style, props, viewing angle and expression/action order.\nMake a CUTE UPRIGHT BIPED with a clearly readable torso, pelvis above two separately visible legs, and two feet supporting its weight directly under its hips. The silhouette must read as STANDING rather than sitting on its bottom, crouching like a quadruped, or kneeling. Keep rounded animal mascot proportions, not long human legs. EXACTLY TWO ARMS ending in TWO animal paws, plus TWO LEGS ending in TWO feet. Do not add any other paw or leg. Shoulders, elbows, hips and knees connect naturally. Preserve one tail as a tail.\nProduction invariants: exactly 12 complete frames, strict FOUR COLUMNS by THREE ROWS in reading order. All frames remain entirely within their own cells, uniform figure scale, at least 24px fully transparent outer padding and 30px clear transparent gutters between silhouettes. No clipping, no touching neighboring cells, no numbers, text, grid lines or watermarks.\nClean actual transparent RGBA background. No backdrop, floor, cast shadow, glow, colored registration specks or cutout halos. Preserve transparency.\nSpecific correction for the moon-witch RABBIT:\nThe source reads as sitting on folded haunches. Redraw the rabbit as naturally STANDING UPRIGHT on TWO visible short hind legs. Raise the pelvis from the feet, extend the knees gently and show a short but clear length of dark-gray shins ending in TWO white broad rabbit feet under the hips. Feet point slightly forward, both grounded; body balanced vertically, no large seated thigh bulge. The belly does not touch the feet, the cape does not cover both legs, no crouching and no hock resting on the floor. Give the posture a relaxed slight knee bend and gentle weight shift while keeping the two-foot support.\nKeep both arms present and visibly connected to the shoulders: ONE forepaw holds the broom at screen-left at waist height throughout, the OTHER holds one gold star coin at screen-right and raises then lowers it through the SAME 12-frame saving gesture. Do not rest either hand on the ground; do not make a third foot. Exactly TWO forepaws plus TWO hind feet in every frame. The broom is a prop, not a hidden limb; leave both feet visible beside it.\nPreserve the huge long ears, purple moon-and-stars witch hat, teal hatband and gold crescent, purple/teal cape, white chest, golden broom and the SAME small teal moon-decorated piggybank at screen-right. Preserve coin raising/cheerful smile/blink/lowering phases in their original order. Frame 12 matches frame 1 for a smooth loop. Only improve the standing anatomy and balance, not the identity or costume.",
+      "count": 12,
+      "selectedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-daab0dfb-f86e-4f3f-9210-c904585dd09c.png",
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/positive-12.png",
+      "pngSha256": "863c9cb2d14a047da91a74db92247c54c6706ef0e81951bab1d3c47cc806fd8d",
+      "asset": "assets/costumes/autumn_2026/motion_v2/rabbit/positive-12.webp",
+      "bundledSha256": "0f3271d67098a09d89aaff60ae2d18a972b1575de6d3e308ae4b39470322ee8f",
+      "packaging": {
+        "format": "WebP q90",
+        "exactAlpha": true,
+        "visiblePsnrDb": 32.192
+      },
+      "beforeSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/before/rabbit/positive-12.png",
+      "beforePngSha256": "7ffcf8ab6d0235053d01375f3c168e1f7db1a937b44f9466cbb24b39daef3468"
+    },
+    {
+      "id": "raccoon",
+      "role": "idle",
+      "count": 8,
+      "input": "/Users/jaewook/dev_app/sobra_app/design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/idle-8.png",
+      "support": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-c10c0507-4251-40f3-aae7-e2e79bab7277.png",
+      "prompt": "Use case: precise-object-edit. Asset: production 8-frame game animation atlas.\nImage 1 is the EXACT EDIT TARGET: preserve its character identity, costume details, colors, crisp rich pixel-art style, role/expression sequence and prop designs. Image 2 is ONLY a supporting anatomy/standing-proportion reference for this SAME character; DO NOT copy its jump choreography into this different role.\nRequest: redraw every frame as a naturally balanced STANDING BIPED to match image 2. Maintain cute rounded animal mascot proportions, relaxed extended knees, pelvis above two visibly separate short legs and feet beneath hips. EXACTLY TWO ARMS + TWO LEGS throughout, four limbs total, one tail. No extra paws, disconnected joints, missing arms, human fingers, sitting or quadruped posture.\nSame ghost-pirate raccoon: black teal/gold pirate hat, bat emblem, red bandana, cream chest, teal coat with golden cuffs and ghost-flame tails, red sash, one striped tail. BOTH arms must always emerge visibly from shoulders, with sleeves and TWO distinct dark furry hands OUTSIDE the coat. Never hide a hand behind the coat, tail or body. Hands stay above knees except deliberate arm gestures. Exactly TWO short legs below the pelvis and TWO broad dark feet below the knees; NO floor forepaws. Use the raised pelvis, visible leg length and upright proportions of image 2. No seated haunches, no missing hands.\nAction: Gentle standing idle cycle: subtle chest breathing, one natural blink, slight head/ear and tail movement. Frame 1 and final frame have the same relaxed upright stance. No coin, piggybank or calculator.\nLayout: EXACTLY 8 sequential frames arranged FOUR columns by 2 rows, left-to-right top-to-bottom. NO extra/missing frame. Keep SAME character body scale throughout, full ears/tail/props inside each cell. Generous transparent spacing: uniformly size complete figures to fit comfortably with minimum 35px completely clear gutters BETWEEN neighboring silhouettes and 24px outer border. Do not crowd or cross a cell boundary. Transparent RGBA background, no floor, shadow, backdrop, gradient, blur, glow, outlines outside actual art, registration marks, labels, text, grid or watermark.",
+      "selectedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-a9740b11-048e-4d88-a341-fb7d420eab97.png",
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/idle-8.png",
+      "pngSha256": "c9aecff901ab210a176c8da9814cd5cc824ce94d33094a9b716bee44fc37e3f8",
+      "asset": "assets/costumes/autumn_2026/motion_v2/raccoon/idle-8.webp",
+      "bundledSha256": "a2af3971f979adaa65b1647e97595ddf0f159b01519a047e4755b4721e9545fb",
+      "packaging": {
+        "format": "WebP q90",
+        "exactAlpha": true,
+        "visiblePsnrDb": 33.145
+      },
+      "beforeSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/before/raccoon/idle-8.png",
+      "beforePngSha256": "bbde781a9c8d80dc84e761ae0bced84dc852718ef72757946e16bea5f9573b9b"
+    },
+    {
+      "id": "raccoon",
+      "role": "activity",
+      "count": 12,
+      "input": "/Users/jaewook/dev_app/sobra_app/design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/activity-12.png",
+      "support": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-c10c0507-4251-40f3-aae7-e2e79bab7277.png",
+      "prompt": "Use case: precise-object-edit. Asset: production 12-frame game animation atlas.\nImage 1 is the EXACT EDIT TARGET: preserve its character identity, costume details, colors, crisp rich pixel-art style, role/expression sequence and prop designs. Image 2 is ONLY a supporting anatomy/standing-proportion reference for this SAME character; DO NOT copy its jump choreography into this different role.\nRequest: redraw every frame as a naturally balanced STANDING BIPED to match image 2. Maintain cute rounded animal mascot proportions, relaxed extended knees, pelvis above two visibly separate short legs and feet beneath hips. EXACTLY TWO ARMS + TWO LEGS throughout, four limbs total, one tail. No extra paws, disconnected joints, missing arms, human fingers, sitting or quadruped posture.\nSame ghost-pirate raccoon: black teal/gold pirate hat, bat emblem, red bandana, cream chest, teal coat with golden cuffs and ghost-flame tails, red sash, one striped tail. BOTH arms must always emerge visibly from shoulders, with sleeves and TWO distinct dark furry hands OUTSIDE the coat. Never hide a hand behind the coat, tail or body. Hands stay above knees except deliberate arm gestures. Exactly TWO short legs below the pelvis and TWO broad dark feet below the knees; NO floor forepaws. Use the raised pelvis, visible leg length and upright proportions of image 2. No seated haunches, no missing hands.\nAction: In-place TWO-LEGGED walking cycle with alternating foot steps, weight shifting over the support foot, gentle counter-swing of arms, subtle tail/cape motion. Exactly two hind legs stepping and two visible arms; no four-legged crawling and no extra middle foot. The feet pass cleanly in a readable biped gait. Final pose connects to first. No coin, piggybank or calculator.\nLayout: EXACTLY 12 sequential frames arranged FOUR columns by 3 rows, left-to-right top-to-bottom. NO extra/missing frame. Keep SAME character body scale throughout, full ears/tail/props inside each cell. Generous transparent spacing: uniformly size complete figures to fit comfortably with minimum 35px completely clear gutters BETWEEN neighboring silhouettes and 24px outer border. Do not crowd or cross a cell boundary. Transparent RGBA background, no floor, shadow, backdrop, gradient, blur, glow, outlines outside actual art, registration marks, labels, text, grid or watermark.",
+      "selectedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-895316aa-167d-4c40-b5f4-adca9f62fa90.png",
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/activity-12.png",
+      "pngSha256": "989bfd2198a654087d80ed735833f03882f977a894cb65e5d97071cec33fb4fe",
+      "asset": "assets/costumes/autumn_2026/motion_v2/raccoon/activity-12.webp",
+      "bundledSha256": "6a609f44c1eb4e610ad1ec3b7f0ffd21e727909096170201f38e29b8dbbfe74b",
+      "packaging": {
+        "format": "WebP q90",
+        "exactAlpha": true,
+        "visiblePsnrDb": 31.927
+      },
+      "beforeSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/before/raccoon/activity-12.png",
+      "beforePngSha256": "4d3508dbaaebcc77dd97774522aac2898fae6f5e7fee3aff6e5d33cb719e673f"
+    },
+    {
+      "id": "raccoon",
+      "role": "processing",
+      "count": 12,
+      "input": "/Users/jaewook/dev_app/sobra_app/design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/processing-12.png",
+      "support": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-c10c0507-4251-40f3-aae7-e2e79bab7277.png",
+      "prompt": "Use case: precise-object-edit. Asset: production 12-frame game animation atlas.\nImage 1 is the EXACT EDIT TARGET: preserve its character identity, costume details, colors, crisp rich pixel-art style, role/expression sequence and prop designs. Image 2 is ONLY a supporting anatomy/standing-proportion reference for this SAME character; DO NOT copy its jump choreography into this different role.\nRequest: redraw every frame as a naturally balanced STANDING BIPED to match image 2. Maintain cute rounded animal mascot proportions, relaxed extended knees, pelvis above two visibly separate short legs and feet beneath hips. EXACTLY TWO ARMS + TWO LEGS throughout, four limbs total, one tail. No extra paws, disconnected joints, missing arms, human fingers, sitting or quadruped posture.\nSame ghost-pirate raccoon: black teal/gold pirate hat, bat emblem, red bandana, cream chest, teal coat with golden cuffs and ghost-flame tails, red sash, one striped tail. BOTH arms must always emerge visibly from shoulders, with sleeves and TWO distinct dark furry hands OUTSIDE the coat. Never hide a hand behind the coat, tail or body. Hands stay above knees except deliberate arm gestures. Exactly TWO short legs below the pelvis and TWO broad dark feet below the knees; NO floor forepaws. Use the raised pelvis, visible leg length and upright proportions of image 2. No seated haunches, no missing hands.\nAction: Thoughtful calculation cycle. Character stands the entire time, hips raised and knees softly extended. One paw HOLDS the teal calculator at waist height for the whole sequence; the other paw taps its buttons then rests thoughtfully near its chin. Calculator always stays visible and supported by a hand; never abandoned on the floor. Maintain the same calculator design/colors from image 1. Head tilts and eyes look at the calculator then toward viewer. Final connects to first. For the rabbit ONLY, the broom rests upright beside its left leg as a separate unchanged prop, both arms occupied by calculator/tapping; no third arm.\nLayout: EXACTLY 12 sequential frames arranged FOUR columns by 3 rows, left-to-right top-to-bottom. NO extra/missing frame. Keep SAME character body scale throughout, full ears/tail/props inside each cell. Generous transparent spacing: uniformly size complete figures to fit comfortably with minimum 35px completely clear gutters BETWEEN neighboring silhouettes and 24px outer border. Do not crowd or cross a cell boundary. Transparent RGBA background, no floor, shadow, backdrop, gradient, blur, glow, outlines outside actual art, registration marks, labels, text, grid or watermark.",
+      "selectedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-2278452e-aca3-457e-bf52-78de3e5311cd.png",
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/processing-12.png",
+      "pngSha256": "b5432c69333b68f5c5131cd8175c6465800afadc80b40c4c0122f5eb43239b13",
+      "asset": "assets/costumes/autumn_2026/motion_v2/raccoon/processing-12.webp",
+      "bundledSha256": "2ce5c9f6c886269fcd4e3fb5bc1ed00559f2bcbe1f2526d88284659bfe2cf333",
+      "packaging": {
+        "format": "WebP q90",
+        "exactAlpha": true,
+        "visiblePsnrDb": 32.056
+      },
+      "beforeSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/before/raccoon/processing-12.png",
+      "beforePngSha256": "3d8e6b1cd6b8a97a3ccf8b7a5dde90bfe35b55098737df093329ac67dbc00b97"
+    },
+    {
+      "id": "raccoon",
+      "role": "positive",
+      "count": 12,
+      "input": "/Users/jaewook/dev_app/sobra_app/design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/positive-12.png",
+      "support": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-c10c0507-4251-40f3-aae7-e2e79bab7277.png",
+      "prompt": "Use case: precise-object-edit. Asset: production 12-frame game animation atlas.\nImage 1 is the EXACT EDIT TARGET: preserve its character identity, costume details, colors, crisp rich pixel-art style, role/expression sequence and prop designs. Image 2 is ONLY a supporting anatomy/standing-proportion reference for this SAME character; DO NOT copy its jump choreography into this different role.\nRequest: redraw every frame as a naturally balanced STANDING BIPED to match image 2. Maintain cute rounded animal mascot proportions, relaxed extended knees, pelvis above two visibly separate short legs and feet beneath hips. EXACTLY TWO ARMS + TWO LEGS throughout, four limbs total, one tail. No extra paws, disconnected joints, missing arms, human fingers, sitting or quadruped posture.\nSame ghost-pirate raccoon: black teal/gold pirate hat, bat emblem, red bandana, cream chest, teal coat with golden cuffs and ghost-flame tails, red sash, one striped tail. BOTH arms must always emerge visibly from shoulders, with sleeves and TWO distinct dark furry hands OUTSIDE the coat. Never hide a hand behind the coat, tail or body. Hands stay above knees except deliberate arm gestures. Exactly TWO short legs below the pelvis and TWO broad dark feet below the knees; NO floor forepaws. Use the raised pelvis, visible leg length and upright proportions of image 2. No seated haunches, no missing hands.\nAction: Standing saving loop. One paw holds the single gold coin and raises it toward head height, cheerful blink/smile, then lowers it toward the SAME teal piggybank at screen-right and returns to the start. Keep the coin in the same paw throughout, never release it into the bank. The other arm is fully visible, relaxed at the side slightly bent above the waist. Exactly two planted feet below hips throughout. Retain original coin and piggybank identity. Final connects to first.\nLayout: EXACTLY 12 sequential frames arranged FOUR columns by 3 rows, left-to-right top-to-bottom. NO extra/missing frame. Keep SAME character body scale throughout, full ears/tail/props inside each cell. Generous transparent spacing: uniformly size complete figures to fit comfortably with minimum 35px completely clear gutters BETWEEN neighboring silhouettes and 24px outer border. Do not crowd or cross a cell boundary. Transparent RGBA background, no floor, shadow, backdrop, gradient, blur, glow, outlines outside actual art, registration marks, labels, text, grid or watermark.",
+      "selectedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-e525e688-9104-4f70-be56-e383594a1824.png",
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/positive-12.png",
+      "pngSha256": "c60fdd74bb8f73fc2f9c3e261b3b8ac8bdee73d311ae7047845c1430abd168eb",
+      "asset": "assets/costumes/autumn_2026/motion_v2/raccoon/positive-12.webp",
+      "bundledSha256": "01fd9dc726d5400af0ac30aa6296ebddda9047dda669e7140ef55b4e1c384d24",
+      "packaging": {
+        "format": "WebP q90",
+        "exactAlpha": true,
+        "visiblePsnrDb": 31.704
+      },
+      "beforeSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/before/raccoon/positive-12.png",
+      "beforePngSha256": "761c2fb90946b7bd2a273527c97f393f733a949449af2b4adf66b3f3d5bd9963"
+    },
+    {
+      "id": "raccoon",
+      "role": "warning",
+      "count": 8,
+      "input": "/Users/jaewook/dev_app/sobra_app/design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/warning-8.png",
+      "support": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-c10c0507-4251-40f3-aae7-e2e79bab7277.png",
+      "prompt": "Use case: precise-object-edit. Asset: production 8-frame game animation atlas.\nImage 1 is the EXACT EDIT TARGET: preserve its character identity, costume details, colors, crisp rich pixel-art style, role/expression sequence and prop designs. Image 2 is ONLY a supporting anatomy/standing-proportion reference for this SAME character; DO NOT copy its jump choreography into this different role.\nRequest: redraw every frame as a naturally balanced STANDING BIPED to match image 2. Maintain cute rounded animal mascot proportions, relaxed extended knees, pelvis above two visibly separate short legs and feet beneath hips. EXACTLY TWO ARMS + TWO LEGS throughout, four limbs total, one tail. No extra paws, disconnected joints, missing arms, human fingers, sitting or quadruped posture.\nSame ghost-pirate raccoon: black teal/gold pirate hat, bat emblem, red bandana, cream chest, teal coat with golden cuffs and ghost-flame tails, red sash, one striped tail. BOTH arms must always emerge visibly from shoulders, with sleeves and TWO distinct dark furry hands OUTSIDE the coat. Never hide a hand behind the coat, tail or body. Hands stay above knees except deliberate arm gestures. Exactly TWO short legs below the pelvis and TWO broad dark feet below the knees; NO floor forepaws. Use the raised pelvis, visible leg length and upright proportions of image 2. No seated haunches, no missing hands.\nAction: Concerned reaction while STANDING UPRIGHT: a worried glance, ears/hat dip, one paw naturally touches the chest/chin and returns to relaxed side, other arm stays visible. Gentle small knee bend only; do not sit down. End in a worried standing hold. No coin, piggybank or calculator.\nLayout: EXACTLY 8 sequential frames arranged FOUR columns by 2 rows, left-to-right top-to-bottom. NO extra/missing frame. Keep SAME character body scale throughout, full ears/tail/props inside each cell. Generous transparent spacing: uniformly size complete figures to fit comfortably with minimum 35px completely clear gutters BETWEEN neighboring silhouettes and 24px outer border. Do not crowd or cross a cell boundary. Transparent RGBA background, no floor, shadow, backdrop, gradient, blur, glow, outlines outside actual art, registration marks, labels, text, grid or watermark.",
+      "selectedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-b9478d38-3ea3-4a52-823b-40c6e3f65ea3.png",
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/warning-8.png",
+      "pngSha256": "876aa47642a308b619fbb138a76d41f17525ec560b0656fcf872775ae21d2905",
+      "asset": "assets/costumes/autumn_2026/motion_v2/raccoon/warning-8.webp",
+      "bundledSha256": "a92fae9ed625489e80d0f301c41e421a4706a7a16de9ac26865d73bb7c8a99d9",
+      "packaging": {
+        "format": "WebP q90",
+        "exactAlpha": true,
+        "visiblePsnrDb": 33.147
+      },
+      "beforeSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/before/raccoon/warning-8.png",
+      "beforePngSha256": "ffdf07923a1152b20883c484885b0c8eccfd5b4115c8521c2e62e9a72e041670"
+    },
+    {
+      "id": "rabbit",
+      "role": "idle",
+      "count": 8,
+      "input": "/Users/jaewook/dev_app/sobra_app/design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/idle-8.png",
+      "support": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-daab0dfb-f86e-4f3f-9210-c904585dd09c.png",
+      "prompt": "Use case: precise-object-edit. Asset: production 8-frame game animation atlas.\nImage 1 is the EXACT EDIT TARGET: preserve its character identity, costume details, colors, crisp rich pixel-art style, role/expression sequence and prop designs. Image 2 is ONLY a supporting anatomy/standing-proportion reference for this SAME character; DO NOT copy its coin/piggybank props into this different role.\nRequest: redraw every frame as a naturally balanced STANDING BIPED to match image 2. Maintain cute rounded animal mascot proportions, relaxed extended knees, pelvis above two visibly separate short legs and feet beneath hips. EXACTLY TWO ARMS + TWO LEGS throughout, four limbs total, one tail. No extra paws, disconnected joints, missing arms, human fingers, sitting or quadruped posture.\nSame moon-witch rabbit: gray/white fur, long ears, purple stars-and-moon hat, teal/gold band and crescent, cape with teal/gold trim, white chest and tail. Show TWO short dark-gray shins extending from hips above the feet and TWO broad white feet directly under hips, as in standing image 2. No folded seated haunch, no belly touching toes. BOTH arms connect to shoulders, with two white paws visible. In idle/activity/success/warning the screen-left hand holds the golden broom at waist height and the screen-right hand is free for gestures. Keep the broom on the SAME SCREEN-LEFT side as image 2 across all those roles. The free hand never rests on floor and never becomes another foot. In processing follow its calculator handling instructions below.\nAction: Gentle standing idle cycle: subtle chest breathing, one natural blink, slight head/ear and tail movement. Frame 1 and final frame have the same relaxed upright stance. No coin, piggybank or calculator.\nLayout: EXACTLY 8 sequential frames arranged FOUR columns by 2 rows, left-to-right top-to-bottom. NO extra/missing frame. Keep SAME character body scale throughout, full ears/tail/props inside each cell. Generous transparent spacing: uniformly size complete figures to fit comfortably with minimum 35px completely clear gutters BETWEEN neighboring silhouettes and 24px outer border. Do not crowd or cross a cell boundary. Transparent RGBA background, no floor, shadow, backdrop, gradient, blur, glow, outlines outside actual art, registration marks, labels, text, grid or watermark.",
+      "selectedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-fa9a594a-f3a3-4b10-b121-74664960a4f8.png",
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/idle-8.png",
+      "pngSha256": "319894135ba60417de83254f6d10a0fee98202d4af1576cd148dfe740d65d4fd",
+      "asset": "assets/costumes/autumn_2026/motion_v2/rabbit/idle-8.webp",
+      "bundledSha256": "e4115668d92570d00c094e6c0e6aabbf1903fb37b30b1374168e3759c6d430b4",
+      "packaging": {
+        "format": "WebP q90",
+        "exactAlpha": true,
+        "visiblePsnrDb": 35.313
+      },
+      "beforeSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/before/rabbit/idle-8.png",
+      "beforePngSha256": "7054ec47408b23ffd71d060853caf5bf4882fdf2af4cf3110c727428becc34f4"
+    },
+    {
+      "id": "rabbit",
+      "role": "activity",
+      "count": 12,
+      "input": "/Users/jaewook/dev_app/sobra_app/design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/activity-12.png",
+      "support": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-daab0dfb-f86e-4f3f-9210-c904585dd09c.png",
+      "prompt": "Use case: precise-object-edit. Asset: production 12-frame game animation atlas.\nImage 1 is the EXACT EDIT TARGET: preserve its character identity, costume details, colors, crisp rich pixel-art style, role/expression sequence and prop designs. Image 2 is ONLY a supporting anatomy/standing-proportion reference for this SAME character; DO NOT copy its coin/piggybank props into this different role.\nRequest: redraw every frame as a naturally balanced STANDING BIPED to match image 2. Maintain cute rounded animal mascot proportions, relaxed extended knees, pelvis above two visibly separate short legs and feet beneath hips. EXACTLY TWO ARMS + TWO LEGS throughout, four limbs total, one tail. No extra paws, disconnected joints, missing arms, human fingers, sitting or quadruped posture.\nSame moon-witch rabbit: gray/white fur, long ears, purple stars-and-moon hat, teal/gold band and crescent, cape with teal/gold trim, white chest and tail. Show TWO short dark-gray shins extending from hips above the feet and TWO broad white feet directly under hips, as in standing image 2. No folded seated haunch, no belly touching toes. BOTH arms connect to shoulders, with two white paws visible. In idle/activity/success/warning the screen-left hand holds the golden broom at waist height and the screen-right hand is free for gestures. Keep the broom on the SAME SCREEN-LEFT side as image 2 across all those roles. The free hand never rests on floor and never becomes another foot. In processing follow its calculator handling instructions below.\nAction: In-place TWO-LEGGED walking cycle with alternating foot steps, weight shifting over the support foot, gentle counter-swing of arms, subtle tail/cape motion. Exactly two hind legs stepping and two visible arms; no four-legged crawling and no extra middle foot. The feet pass cleanly in a readable biped gait. Final pose connects to first. No coin, piggybank or calculator.\nLayout: EXACTLY 12 sequential frames arranged FOUR columns by 3 rows, left-to-right top-to-bottom. NO extra/missing frame. Keep SAME character body scale throughout, full ears/tail/props inside each cell. Generous transparent spacing: uniformly size complete figures to fit comfortably with minimum 35px completely clear gutters BETWEEN neighboring silhouettes and 24px outer border. Do not crowd or cross a cell boundary. Transparent RGBA background, no floor, shadow, backdrop, gradient, blur, glow, outlines outside actual art, registration marks, labels, text, grid or watermark.",
+      "selectedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-18ef48f0-04a6-4c4f-9bb3-11789f8c9ef0.png",
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/activity-12.png",
+      "pngSha256": "27616a23ccbf167d0dbce71715592178aa9c70e8453b3556247f420a64d9400b",
+      "asset": "assets/costumes/autumn_2026/motion_v2/rabbit/activity-12.webp",
+      "bundledSha256": "9f31daa50278cab0bc6b50d8be255108fcf41da1d731aa64bc8605288c57c4c0",
+      "packaging": {
+        "format": "WebP q90",
+        "exactAlpha": true,
+        "visiblePsnrDb": 32.518
+      },
+      "beforeSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/before/rabbit/activity-12.png",
+      "beforePngSha256": "e881930f7c9f560e58eb0f2539b083fdbdc3c89ae9c0aa68ebdbd7c5eb7ccf7e"
+    },
+    {
+      "id": "rabbit",
+      "role": "processing",
+      "count": 12,
+      "input": "/Users/jaewook/dev_app/sobra_app/design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/processing-12.png",
+      "support": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-daab0dfb-f86e-4f3f-9210-c904585dd09c.png",
+      "prompt": "Use case: precise-object-edit. Asset: production 12-frame game animation atlas.\nImage 1 is the EXACT EDIT TARGET: preserve its character identity, costume details, colors, crisp rich pixel-art style, role/expression sequence and prop designs. Image 2 is ONLY a supporting anatomy/standing-proportion reference for this SAME character; DO NOT copy its coin/piggybank props into this different role.\nRequest: redraw every frame as a naturally balanced STANDING BIPED to match image 2. Maintain cute rounded animal mascot proportions, relaxed extended knees, pelvis above two visibly separate short legs and feet beneath hips. EXACTLY TWO ARMS + TWO LEGS throughout, four limbs total, one tail. No extra paws, disconnected joints, missing arms, human fingers, sitting or quadruped posture.\nSame moon-witch rabbit: gray/white fur, long ears, purple stars-and-moon hat, teal/gold band and crescent, cape with teal/gold trim, white chest and tail. Show TWO short dark-gray shins extending from hips above the feet and TWO broad white feet directly under hips, as in standing image 2. No folded seated haunch, no belly touching toes. BOTH arms connect to shoulders, with two white paws visible. In idle/activity/success/warning the screen-left hand holds the golden broom at waist height and the screen-right hand is free for gestures. Keep the broom on the SAME SCREEN-LEFT side as image 2 across all those roles. The free hand never rests on floor and never becomes another foot. In processing follow its calculator handling instructions below.\nAction: Thoughtful calculation cycle. Character stands the entire time, hips raised and knees softly extended. One paw HOLDS the teal calculator at waist height for the whole sequence; the other paw taps its buttons then rests thoughtfully near its chin. Calculator always stays visible and supported by a hand; never abandoned on the floor. Maintain the same calculator design/colors from image 1. Head tilts and eyes look at the calculator then toward viewer. Final connects to first. For the rabbit ONLY, the broom rests upright beside its left leg as a separate unchanged prop, both arms occupied by calculator/tapping; no third arm.\nLayout: EXACTLY 12 sequential frames arranged FOUR columns by 3 rows, left-to-right top-to-bottom. NO extra/missing frame. Keep SAME character body scale throughout, full ears/tail/props inside each cell. Generous transparent spacing: uniformly size complete figures to fit comfortably with minimum 35px completely clear gutters BETWEEN neighboring silhouettes and 24px outer border. Do not crowd or cross a cell boundary. Transparent RGBA background, no floor, shadow, backdrop, gradient, blur, glow, outlines outside actual art, registration marks, labels, text, grid or watermark.",
+      "selectedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-98d5c3c2-ac9e-4b9a-95f7-cd29b3ecada0.png",
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/processing-12.png",
+      "pngSha256": "be99c9eae6c8f1316aaad761e5383f1825a422909d5307d129adf72f88433067",
+      "asset": "assets/costumes/autumn_2026/motion_v2/rabbit/processing-12.webp",
+      "bundledSha256": "c5b2060af80fa545174eb41a97a842cd20bad25bbd4dff6c9f7eca7c92a09882",
+      "packaging": {
+        "format": "WebP q90",
+        "exactAlpha": true,
+        "visiblePsnrDb": 32.098
+      },
+      "beforeSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/before/rabbit/processing-12.png",
+      "beforePngSha256": "11ddad4463b52c7b0901b7cdcf9153ed4305d04a9ceabcfc7294932217706b71"
+    },
+    {
+      "id": "rabbit",
+      "role": "success",
+      "count": 12,
+      "input": "/Users/jaewook/dev_app/sobra_app/design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/success-12.png",
+      "support": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-daab0dfb-f86e-4f3f-9210-c904585dd09c.png",
+      "prompt": "Use case: precise-object-edit. Asset: production 12-frame game animation atlas.\nImage 1 is the EXACT EDIT TARGET: preserve its character identity, costume details, colors, crisp rich pixel-art style, role/expression sequence and prop designs. Image 2 is ONLY a supporting anatomy/standing-proportion reference for this SAME character; DO NOT copy its coin/piggybank props into this different role.\nRequest: redraw every frame as a naturally balanced STANDING BIPED to match image 2. Maintain cute rounded animal mascot proportions, relaxed extended knees, pelvis above two visibly separate short legs and feet beneath hips. EXACTLY TWO ARMS + TWO LEGS throughout, four limbs total, one tail. No extra paws, disconnected joints, missing arms, human fingers, sitting or quadruped posture.\nSame moon-witch rabbit: gray/white fur, long ears, purple stars-and-moon hat, teal/gold band and crescent, cape with teal/gold trim, white chest and tail. Show TWO short dark-gray shins extending from hips above the feet and TWO broad white feet directly under hips, as in standing image 2. No folded seated haunch, no belly touching toes. BOTH arms connect to shoulders, with two white paws visible. In idle/activity/success/warning the screen-left hand holds the golden broom at waist height and the screen-right hand is free for gestures. Keep the broom on the SAME SCREEN-LEFT side as image 2 across all those roles. The free hand never rests on floor and never becomes another foot. In processing follow its calculator handling instructions below.\nAction: Standing celebration jump. Frames 1-2 upright standing with two hands visible, frame 3 shallow knee flex for takeoff, frames 4-7 happy airborne jump with two legs and raised arms, frames 8-9 soft knee-bend landing, frames 10-12 return to upright standing. Bunny holds broom in ONE paw throughout and waves the OTHER paw. No third hand, no ghost floor copies of raised paws. No coin, piggybank or calculator.\nLayout: EXACTLY 12 sequential frames arranged FOUR columns by 3 rows, left-to-right top-to-bottom. NO extra/missing frame. Keep SAME character body scale throughout, full ears/tail/props inside each cell. Generous transparent spacing: uniformly size complete figures to fit comfortably with minimum 35px completely clear gutters BETWEEN neighboring silhouettes and 24px outer border. Do not crowd or cross a cell boundary. Transparent RGBA background, no floor, shadow, backdrop, gradient, blur, glow, outlines outside actual art, registration marks, labels, text, grid or watermark.",
+      "selectedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-8771d9f9-a3a7-4e68-b8d7-0a8493f11a52.png",
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/success-12.png",
+      "pngSha256": "4adace3a2a11f2d0e3395bb48334c86b65d67a337f4641adc9af36c7181813d9",
+      "asset": "assets/costumes/autumn_2026/motion_v2/rabbit/success-12.webp",
+      "bundledSha256": "89e3c954a2b484e82f11c0827bef7b5ba16630ab747ae7dfb678455a25a08ad7",
+      "packaging": {
+        "format": "WebP q90",
+        "exactAlpha": true,
+        "visiblePsnrDb": 32.684
+      },
+      "beforeSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/before/rabbit/success-12.png",
+      "beforePngSha256": "8e11778fabc758a611a737fc0861686452f5c4dd868c184523eefebf14ff46b1"
+    },
+    {
+      "id": "rabbit",
+      "role": "warning",
+      "count": 8,
+      "input": "/Users/jaewook/dev_app/sobra_app/design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/warning-8.png",
+      "support": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-daab0dfb-f86e-4f3f-9210-c904585dd09c.png",
+      "prompt": "Use case: precise-object-edit. Asset: production 8-frame game animation atlas.\nImage 1 is the EXACT EDIT TARGET: preserve its character identity, costume details, colors, crisp rich pixel-art style, role/expression sequence and prop designs. Image 2 is ONLY a supporting anatomy/standing-proportion reference for this SAME character; DO NOT copy its coin/piggybank props into this different role.\nRequest: redraw every frame as a naturally balanced STANDING BIPED to match image 2. Maintain cute rounded animal mascot proportions, relaxed extended knees, pelvis above two visibly separate short legs and feet beneath hips. EXACTLY TWO ARMS + TWO LEGS throughout, four limbs total, one tail. No extra paws, disconnected joints, missing arms, human fingers, sitting or quadruped posture.\nSame moon-witch rabbit: gray/white fur, long ears, purple stars-and-moon hat, teal/gold band and crescent, cape with teal/gold trim, white chest and tail. Show TWO short dark-gray shins extending from hips above the feet and TWO broad white feet directly under hips, as in standing image 2. No folded seated haunch, no belly touching toes. BOTH arms connect to shoulders, with two white paws visible. In idle/activity/success/warning the screen-left hand holds the golden broom at waist height and the screen-right hand is free for gestures. Keep the broom on the SAME SCREEN-LEFT side as image 2 across all those roles. The free hand never rests on floor and never becomes another foot. In processing follow its calculator handling instructions below.\nAction: Concerned reaction while STANDING UPRIGHT: a worried glance, ears/hat dip, one paw naturally touches the chest/chin and returns to relaxed side, other arm stays visible. Gentle small knee bend only; do not sit down. End in a worried standing hold. No coin, piggybank or calculator.\nLayout: EXACTLY 8 sequential frames arranged FOUR columns by 2 rows, left-to-right top-to-bottom. NO extra/missing frame. Keep SAME character body scale throughout, full ears/tail/props inside each cell. Generous transparent spacing: uniformly size complete figures to fit comfortably with minimum 35px completely clear gutters BETWEEN neighboring silhouettes and 24px outer border. Do not crowd or cross a cell boundary. Transparent RGBA background, no floor, shadow, backdrop, gradient, blur, glow, outlines outside actual art, registration marks, labels, text, grid or watermark.",
+      "selectedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-4ce69b94-9d40-43cc-8f64-f0c6445e148c.png",
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/warning-8.png",
+      "pngSha256": "b98c0dd79bd02bfac8ea04d20f333ac30c8168daddf65b7d48dd327af9149f1f",
+      "asset": "assets/costumes/autumn_2026/motion_v2/rabbit/warning-8.webp",
+      "bundledSha256": "8345fced4de40ce385923e209ebf07402d3877f0674d71e93580ccab7b7f6ba6",
+      "packaging": {
+        "format": "WebP q90",
+        "exactAlpha": true,
+        "visiblePsnrDb": 33.98
+      },
+      "beforeSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/before/rabbit/warning-8.png",
+      "beforePngSha256": "e7640d58ee85ee3b7a7425a2c109c28825cf552942aac0a5a97519bcd0ec7eb8"
+    }
+  ],
+  "refinements": [
+    {
+      "id": "raccoon",
+      "role": "success",
+      "count": 12,
+      "prompt": "Background extraction ONLY for this exact 12-frame upright pirate raccoon sprite sheet. Remove the entire blurred colored/white gradient backdrop to true fully transparent alpha=0. Keep every one of the 12 figures COMPLETELY unchanged, including the correct standing anatomy, both visible arms, two legs, expressions, pixel shading, outline, original size, positions, 4-column by 3-row layout and the existing generous gaps. All empty space between figures and outside their silhouettes must have zero alpha, including holes around hands, feet and tail. No backdrop, no floor, no shadow, no glow or white fill. The output must be transparent RGBA sprites, not characters printed on a background. Preserve opaque character interiors, teal ghost flames and fine whiskers. Do NOT modify art or spacing at all; ONLY remove the gradient background.",
+      "input": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-c10c0507-4251-40f3-aae7-e2e79bab7277.png",
+      "previousSpacingPrompt": "Layout-only refinement of this exact corrected UPRIGHT RACCOON 12-frame animation atlas. Preserve ALL twelve illustrated poses, exact upright anatomy, BOTH gold-cuffed arms and dark paws visible in every frame, TWO legs and TWO feet only, identity, colors, face, coat, hat, tail, expressions and motion sequence. Do not redraw the anatomy or shorten the legs.\nChange ONLY spacing: uniformly reduce all twelve complete figures including tails to 82 percent of their current size and center each in its own cell of an EXACT FOUR-COLUMN by THREE-ROW regular grid. Minimum 35px completely transparent gutter between every neighboring silhouette, including the feet of row 2 and hat tips of row 3. At least 24px clear transparent outer border. No shape may cross or touch a cell boundary. Keep uniform scale across frames and the current relative jump/landing proportions. Actual transparent RGBA background; no shadow, floor, blur, gradient, glow, text, labels, lines. Preserve the corrected natural standing pose with separate two legs and both arms always visible.",
+      "note": "First spacing-only result had an opaque backdrop and was rejected. Final extraction restores true transparent gutters."
+    },
+    {
+      "id": "rabbit",
+      "role": "activity",
+      "input": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-e56c3e73-a59a-431e-b767-046dc9c98041.png",
+      "prompt": "Precise prop-removal edit of this EXACT 12-frame STANDING witch-rabbit walking atlas. There are wrongly TWO broom handles in each cell. Keep ONE complete golden broom on SCREEN-LEFT, held by the screen-left paw, unchanged. REMOVE THE ENTIRE SECOND BROOM ON SCREEN-RIGHT in ALL twelve frames: delete its brown shaft, golden bristles, teal ribbon, and any little surviving stick stub. The screen-RIGHT PAW stays present as an EMPTY free white paw, naturally relaxed or counter-swinging while walking, connected to its shoulder. There must be only ONE broom total per rabbit. Keep exactly TWO ARMS (one broom hand plus one empty hand) and TWO upright WALKING LEGS/feet. Preserve the corrected standing anatomy, all 12 different stepping poses, leg length, face, ears, hat, cape, tail, expression, colors, rich crisp pixel art and uniform scale. Exactly FOUR columns by THREE rows, same reading order, clear transparent gutters of 30px or more and no neighbor touching. TRUE fully transparent alpha=0 everywhere outside the character and one remaining broom; no backdrop, floor, shadow, gradient, glow, text, grid or registration specks. Change only removal of duplicated screen-right broom; do not add limbs, do not sit the character down."
+    },
+    {
+      "id": "rabbit",
+      "role": "processing",
+      "input": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-be6d3cc9-5115-48c7-b5c0-6e736636c67d.png",
+      "prompt": "Precise anatomy repair of this EXACT 12-frame STANDING witch-rabbit calculator atlas. It currently has THREE HANDS because one grips a broom while two others use a calculator. DELETE THE ENTIRE BROOM AND ITS GRIPPING HAND/ARM AT SCREEN-LEFT IN EVERY FRAME. Remove the brown shaft, golden bristles, teal ribbon and the extra white hand gripping it, all the way back to its redundant shoulder connection. Do NOT leave any broom or little white extra paw nub. There should be NO BROOM in this calculator role. Keep only TWO original ARMS: ONE white hand supports the teal calculator at screen-right for the entire sequence, the OTHER attached arm crosses the chest to tap calculator buttons or thoughtfully touch the chin. One calculator-supporting hand + one tapping/thinking hand = exactly TWO hands. Keep exactly TWO upright short LEGS with TWO grounded white FEET; do not add a paw below the chest or move a hand onto the floor. Fill the removed redundant arm area with the natural purple cape edge/gray torso contour. Preserve all 12 expression/tap/chin poses, calculator position/design, corrected standing proportions, face, ears, hat, cape, tail, colors and crisp pixel art. Exactly FOUR columns by THREE rows with clear fully transparent 30px gutters, no clipping or touching neighboring cells. TRUE RGBA transparent background, alpha=0 everywhere outside art; no floor, shadows, gradients, glow, labels, grid, text or colored specks. Priority: FOUR limbs total, TWO arms + TWO legs, and NO broom in this role."
+    }
+  ],
+  "packaging": {
+    "sourcePngBytes": 28309253,
+    "bundledWebpBytes": 5168068,
+    "minimumVisiblePsnrDb": 30.756
+  },
+  "rejectedCandidates": [
+    {
+      "generatedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-be6d3cc9-5115-48c7-b5c0-6e736636c67d.png",
+      "characterId": "rabbit",
+      "role": "processing",
+      "reason": "Three hands: broom grip plus two calculator hands. Rejected before app packaging.",
+      "status": "rejected"
+    },
+    {
+      "generatedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-e56c3e73-a59a-431e-b767-046dc9c98041.png",
+      "characterId": "rabbit",
+      "role": "activity",
+      "reason": "Two broom handles/bristles instead of one. Rejected before app packaging.",
+      "status": "rejected"
+    }
+  ],
+  "supersededRoles": {
+    "rabbit/activity": "design/seasonal/2026-halloween-dia-de-muertos/motion-v5-rabbit-limbs/generation-manifest.json",
+    "rabbit/processing": "design/seasonal/2026-halloween-dia-de-muertos/motion-v5-rabbit-limbs/generation-manifest.json"
+  }
+}

@@ -365,7 +365,9 @@
       "reference": "raccoon-ghost-pirate-v1.png",
       "asset": "assets/costumes/autumn_2026/motion_v2/raccoon/idle-8.webp",
       "generatedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-6efb6135-aa36-4b28-9515-7b60060c8885.png",
-      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/idle-8.png"
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/idle-8.png",
+      "latestGeneratedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-a9740b11-048e-4d88-a341-fb7d420eab97.png",
+      "latestRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/generation-manifest.json"
     },
     {
       "characterId": "raccoon",
@@ -375,7 +377,9 @@
       "reference": "raccoon-ghost-pirate-v1.png",
       "asset": "assets/costumes/autumn_2026/motion_v2/raccoon/activity-12.webp",
       "generatedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-85f1a46f-fe25-452c-b625-8b6c40f7db11.png",
-      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/activity-12.png"
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/activity-12.png",
+      "latestGeneratedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-895316aa-167d-4c40-b5f4-adca9f62fa90.png",
+      "latestRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/generation-manifest.json"
     },
     {
       "characterId": "raccoon",
@@ -385,7 +389,9 @@
       "reference": "raccoon-ghost-pirate-v1.png",
       "asset": "assets/costumes/autumn_2026/motion_v2/raccoon/processing-12.webp",
       "generatedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-14c8531e-78f4-4f2a-801d-61e50c3e0ecc.png",
-      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/processing-12.png"
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/processing-12.png",
+      "latestGeneratedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-2278452e-aca3-457e-bf52-78de3e5311cd.png",
+      "latestRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/generation-manifest.json"
     },
     {
       "characterId": "alpaca",
@@ -406,7 +412,8 @@
       "asset": "assets/costumes/autumn_2026/motion_v2/raccoon/success-12.webp",
       "generatedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-fbeb4018-b555-47eb-ae28-a2bb892b7995.png",
       "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/success-12.png",
-      "latestGeneratedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-4986a76c-eb84-4bd4-87e6-be9cd468a955.png"
+      "latestGeneratedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-9362a0cf-f925-4a7c-a09e-70d986efa8d7.png",
+      "latestRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/generation-manifest.json"
     },
     {
       "characterId": "raccoon",
@@ -416,7 +423,9 @@
       "reference": "raccoon-ghost-pirate-v1.png",
       "asset": "assets/costumes/autumn_2026/motion_v2/raccoon/warning-8.webp",
       "generatedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-45008dbd-dc5b-4a23-b506-a3675aeac443.png",
-      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/warning-8.png"
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/warning-8.png",
+      "latestGeneratedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-b9478d38-3ea3-4a52-823b-40c6e3f65ea3.png",
+      "latestRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/generation-manifest.json"
     },
     {
       "characterId": "platypus",
@@ -446,7 +455,9 @@
       "reference": "raccoon-ghost-pirate-v1.png",
       "asset": "assets/costumes/autumn_2026/motion_v2/raccoon/positive-12.webp",
       "generatedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-d4a0aa8b-3ff8-49f3-8ec1-3b09c53b57a3.png",
-      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/positive-12.png"
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/raccoon/positive-12.png",
+      "latestGeneratedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-e525e688-9104-4f70-be56-e383594a1824.png",
+      "latestRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/generation-manifest.json"
     },
     {
       "characterId": "platypus",
@@ -476,7 +487,9 @@
       "reference": "rabbit-moon-witch-v1.png",
       "asset": "assets/costumes/autumn_2026/motion_v2/rabbit/idle-8.webp",
       "generatedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-a854d818-b86c-46ac-8ad3-f5d19784658f.png",
-      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/idle-8.png"
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/idle-8.png",
+      "latestGeneratedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-fa9a594a-f3a3-4b10-b121-74664960a4f8.png",
+      "latestRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/generation-manifest.json"
     },
     {
       "characterId": "platypus",
@@ -496,7 +509,9 @@
       "reference": "rabbit-moon-witch-v1.png",
       "asset": "assets/costumes/autumn_2026/motion_v2/rabbit/activity-12.webp",
       "generatedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-9788c388-14ff-47c2-a683-4d7980d3df3a.png",
-      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/activity-12.png"
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/activity-12.png",
+      "latestGeneratedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-b2902688-cc5f-45d0-a61d-8fcf542a7db4.png",
+      "latestRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v5-rabbit-limbs/generation-manifest.json"
     },
     {
       "characterId": "rabbit",
@@ -506,7 +521,9 @@
       "reference": "rabbit-moon-witch-v1.png",
       "asset": "assets/costumes/autumn_2026/motion_v2/rabbit/processing-12.webp",
       "generatedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-71b1fd16-dcca-4dac-b4f2-646c13c84164.png",
-      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/processing-12.png"
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/processing-12.png",
+      "latestGeneratedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-a5b2af90-d611-4506-b717-90cfd4c16843.png",
+      "latestRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v5-rabbit-limbs/generation-manifest.json"
     },
     {
       "characterId": "platypus",
@@ -537,7 +554,8 @@
       "asset": "assets/costumes/autumn_2026/motion_v2/rabbit/positive-12.webp",
       "generatedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-209da17d-97a2-49bc-9807-287ce402ed34.png",
       "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/positive-12.png",
-      "latestGeneratedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-060457b1-0c89-4db2-894f-9aacf21c126f.png"
+      "latestGeneratedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-daab0dfb-f86e-4f3f-9210-c904585dd09c.png",
+      "latestRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/generation-manifest.json"
     },
     {
       "characterId": "rabbit",
@@ -547,7 +565,9 @@
       "reference": "rabbit-moon-witch-v1.png",
       "asset": "assets/costumes/autumn_2026/motion_v2/rabbit/success-12.webp",
       "generatedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-c5878626-5b79-400b-8c1b-bd6c124e6813.png",
-      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/success-12.png"
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/success-12.png",
+      "latestGeneratedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-8771d9f9-a3a7-4e68-b8d7-0a8493f11a52.png",
+      "latestRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/generation-manifest.json"
     },
     {
       "characterId": "penguin",
@@ -567,7 +587,9 @@
       "reference": "rabbit-moon-witch-v1.png",
       "asset": "assets/costumes/autumn_2026/motion_v2/rabbit/warning-8.webp",
       "generatedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-74fdacb8-8914-4cb0-8afa-39ed19749ec1.png",
-      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/warning-8.png"
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/warning-8.png",
+      "latestGeneratedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-4ce69b94-9d40-43cc-8f64-f0c6445e148c.png",
+      "latestRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/generation-manifest.json"
     },
     {
       "characterId": "penguin",
@@ -752,10 +774,12 @@
     }
   ],
   "packaging": {
-    "format": "lossless WebP",
-    "pixelVerification": "all RGBA bytes identical to generated PNG",
-    "sourcePngBytes": 172526878,
-    "bundledWebPBytes": 129016404
+    "format": "WebP q90",
+    "alphaVerification": "all alpha bytes identical to generated PNG; RGB is lossy",
+    "sourcePngBytes": 170712803,
+    "bundledWebPBytes": 31832036
   },
-  "anatomyRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v3-anatomy/generation-manifest.json"
+  "anatomyRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v3-anatomy/generation-manifest.json",
+  "standingRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v4-standing/generation-manifest.json",
+  "rabbitLimbRevision": "design/seasonal/2026-halloween-dia-de-muertos/motion-v5-rabbit-limbs/generation-manifest.json"
 }

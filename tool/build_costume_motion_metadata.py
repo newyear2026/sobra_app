@@ -116,9 +116,9 @@ def inspect(path, character_id, role):
             "size": [width, height], "frameCount": count,
             "durationMs": DURATIONS[role], "posterFrame": POSTERS[role],
             "loop": role not in {"success", "warning"},
-            # The repaired raccoon finishes on its own anatomically reviewed
-            # landing. Replacing it with the older idle art discards that pose.
-            "landingFrameStart": 10 if role == "success" and character_id != "raccoon" else None,
+            # All idle atlases, including the upright raccoon, now preserve the
+            # reviewed anatomy. Settle every celebration onto that exact pose.
+            "landingFrameStart": 10 if role == "success" else None,
             "sources": sources, "targets": targets,
             "validation": {"uniqueGeneratedFrames": len(set(hashes)),
                            "transparentFraction": round(clear_fraction, 4),

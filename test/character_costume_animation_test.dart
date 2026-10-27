@@ -131,10 +131,7 @@ void main() {
             expect(atlas.targets.last, atlas.targets.first);
           }
           if (role == CharacterMotionRole.success) {
-            expect(
-              atlas.landingFrameStart,
-              costume.characterId == 'raccoon' ? isNull : 10,
-            );
+            expect(atlas.landingFrameStart, 10);
             expect(
               atlas.targets[5].bottom,
               lessThan(atlas.targets.first.bottom - 15),
@@ -218,7 +215,7 @@ void main() {
     },
   );
 
-  testWidgets('repaired raccoon holds its own reviewed landing frame', (
+  testWidgets('upright raccoon settles onto its corrected standing idle', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -236,10 +233,14 @@ void main() {
     );
     await tester.pump(const Duration(seconds: 3));
     expect(painter(tester).frame, 11);
-    expect(painter(tester).isLanding, isFalse);
+    expect(painter(tester).isLanding, isTrue);
     expect(
       painter(tester).atlas,
       same(costumeMotionAtlases['raccoon']!['success']),
+    );
+    expect(
+      painter(tester).idleAtlas,
+      same(costumeMotionAtlases['raccoon']!['idle']),
     );
   });
 

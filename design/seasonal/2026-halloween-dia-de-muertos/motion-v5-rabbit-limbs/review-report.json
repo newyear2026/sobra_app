@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-26",
+  "scope": "rabbit activity and processing, 24 repaired source poses",
+  "manualAnatomyReview": {
+    "activity": {
+      "frames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "visualReview": "enlarged production-renderer source sheet and 48 playback frames",
+      "pngSha256": "c21cde758e7cc7779410108e83c035671d2a23fadb0e03a954d4f12330737489",
+      "bundledSha256": "06d93a3fd4fd6e8e22a2c5ee9ce3b5956eeb949abecee8babf72eaf6531a9dfd",
+      "anatomyChecks": [
+        "two continuous hip-leg-ankle chains",
+        "only two feet throughout the step cycle",
+        "no apparent spare hock behind the broom",
+        "single broom moved outward, leg silhouettes visible"
+      ]
+    },
+    "processing": {
+      "frames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "visualReview": "enlarged production-renderer source sheet and 48 playback frames",
+      "pngSha256": "8d69b33562b57a23aeff5c3ff93dd236f58d7e011a7cc2e8a280a565c1a4328d",
+      "bundledSha256": "176167c9a58590becb870da56342e271e18361232536d1bb33ac8b246e1038f4",
+      "anatomyChecks": [
+        "left support arm stays beneath calculator",
+        "right tapping arm originates at screen-left shoulder",
+        "thinking frames 6 and 10 show same right elbow-to-wrist chain",
+        "two opposite forepaws; no shoulder switching"
+      ]
+    }
+  },
+  "otherSourceSheetsPreserved": 70,
+  "otherAppSheetsPreserved": 70,
+  "validation": {
+    "motionAssetBudgetAndRendererTestsPassed": 10,
+    "staticAnalysis": "passed",
+    "androidDebugApk": "passed",
+    "apkTextureHashesMatchReviewedAssets": true,
+    "gifFrames": 48,
+    "gifDurationMs": 4800
+  },
+  "previews": [
+    "review/rabbit-leg-and-right-arm-fix.gif",
+    "review/right-arm-path.png",
+    "review/rabbit-activity.png",
+    "review/rabbit-processing.png"
+  ]
+}
