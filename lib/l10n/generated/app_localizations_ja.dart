@@ -2172,6 +2172,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get ourAppsMultiCalBlurb => '電卓、チップ、年齢、単位換算をひとつに。レシートを撮るだけで割り勘できます。';
 
   @override
+  String get ourAppsLoopetKind => 'ルーティン管理';
+
+  @override
+  String get ourAppsLoopetBlurb => '24時間をひとつの円に。今やるルーティンと次のルーティンがひと目でわかります。';
+
+  @override
   String get releaseAnnouncementViewAll => 'すべて見る';
 
   @override

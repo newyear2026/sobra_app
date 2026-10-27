@@ -3850,6 +3850,18 @@ abstract class AppLocalizations {
   /// **'Calculadora, propina, edad y unidades. Divide la cuenta con una foto del recibo.'**
   String get ourAppsMultiCalBlurb;
 
+  /// Category under the name LOOPET: a daily routine planner. Shown in capitals.
+  ///
+  /// In es, this message translates to:
+  /// **'Rutinas'**
+  String get ourAppsLoopetKind;
+
+  /// Short description of LOOPET, a routine planner with a 24-hour circular timetable showing the current and next routine.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo tu día en un círculo. Mira qué rutina toca ahora y cuál viene después.'**
+  String get ourAppsLoopetBlurb;
+
   /// Opens the full Novedades screen from the card shown after an update.
   ///
   /// In es, this message translates to:

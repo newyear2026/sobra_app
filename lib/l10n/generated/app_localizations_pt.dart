@@ -2274,6 +2274,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Calculadora, gorjeta, idade e unidades. Divida a conta com uma foto do recibo.';
 
   @override
+  String get ourAppsLoopetKind => 'Rotinas';
+
+  @override
+  String get ourAppsLoopetBlurb =>
+      'Seu dia inteiro em um círculo. Veja qual rotina fazer agora e qual vem depois.';
+
+  @override
   String get releaseAnnouncementViewAll => 'Ver tudo';
 
   @override

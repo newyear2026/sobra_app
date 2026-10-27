@@ -47,4 +47,11 @@ final ourApps = <OurApp>[
     kind: (l10n) => l10n.ourAppsMultiCalKind,
     blurb: (l10n) => l10n.ourAppsMultiCalBlurb,
   ),
+  OurApp(
+    packageName: 'com.dayround.app',
+    name: 'LOOPET',
+    icon: 'assets/apps/loopet.png',
+    kind: (l10n) => l10n.ourAppsLoopetKind,
+    blurb: (l10n) => l10n.ourAppsLoopetBlurb,
+  ),
 ];

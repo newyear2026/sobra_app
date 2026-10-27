@@ -2257,6 +2257,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Calculator, tip, age and units. Split any receipt with one photo.';
 
   @override
+  String get ourAppsLoopetKind => 'Routines';
+
+  @override
+  String get ourAppsLoopetBlurb =>
+      'Your whole day in one circle. See which routine to do now and what comes next.';
+
+  @override
   String get releaseAnnouncementViewAll => 'See all';
 
   @override

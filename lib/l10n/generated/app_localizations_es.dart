@@ -2261,6 +2261,13 @@ class AppLocalizationsEs extends AppLocalizations {
       'Calculadora, propina, edad y unidades. Divide la cuenta con una foto del recibo.';
 
   @override
+  String get ourAppsLoopetKind => 'Rutinas';
+
+  @override
+  String get ourAppsLoopetBlurb =>
+      'Todo tu día en un círculo. Mira qué rutina toca ahora y cuál viene después.';
+
+  @override
   String get releaseAnnouncementViewAll => 'Ver todo';
 
   @override

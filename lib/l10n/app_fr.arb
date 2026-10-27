@@ -678,6 +678,8 @@
   "ourAppsOpen": "Voir sur Google Play",
   "ourAppsMultiCalKind": "Calculatrice",
   "ourAppsMultiCalBlurb": "Calculatrice, pourboire, âge et unités. Partage l’addition avec une photo du ticket.",
+  "ourAppsLoopetKind": "Routines",
+  "ourAppsLoopetBlurb": "Toute ta journée dans un cercle. Vois quelle routine faire maintenant et laquelle vient ensuite.",
 
   "releaseAnnouncementViewAll": "Tout voir",
   "releaseAnnouncementDone": "Terminé",

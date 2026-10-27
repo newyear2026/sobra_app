@@ -1025,6 +1025,14 @@
   "@ourAppsMultiCalBlurb": {
     "description": "Two-line description of MultiCal, a calculator app (tip, age, unit converter) that also splits a bill from a photo of the receipt. Adapted from its Play short description."
   },
+  "ourAppsLoopetKind": "Rutinas",
+  "@ourAppsLoopetKind": {
+    "description": "Category under the name LOOPET: a daily routine planner. Shown in capitals."
+  },
+  "ourAppsLoopetBlurb": "Todo tu día en un círculo. Mira qué rutina toca ahora y cuál viene después.",
+  "@ourAppsLoopetBlurb": {
+    "description": "Short description of LOOPET, a routine planner with a 24-hour circular timetable showing the current and next routine."
+  },
 
   "releaseAnnouncementViewAll": "Ver todo",
   "@releaseAnnouncementViewAll": {

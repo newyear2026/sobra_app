@@ -684,6 +684,8 @@
   "ourAppsOpen": "Google Playで見る",
   "ourAppsMultiCalKind": "電卓",
   "ourAppsMultiCalBlurb": "電卓、チップ、年齢、単位換算をひとつに。レシートを撮るだけで割り勘できます。",
+  "ourAppsLoopetKind": "ルーティン管理",
+  "ourAppsLoopetBlurb": "24時間をひとつの円に。今やるルーティンと次のルーティンがひと目でわかります。",
 
   "fixedSectionTitle": "固定費",
   "fixedSectionMonth": "{month} · 毎日の予算とは別",

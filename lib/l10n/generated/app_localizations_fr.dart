@@ -2283,6 +2283,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Calculatrice, pourboire, âge et unités. Partage l’addition avec une photo du ticket.';
 
   @override
+  String get ourAppsLoopetKind => 'Routines';
+
+  @override
+  String get ourAppsLoopetBlurb =>
+      'Toute ta journée dans un cercle. Vois quelle routine faire maintenant et laquelle vient ensuite.';
+
+  @override
   String get releaseAnnouncementViewAll => 'Tout voir';
 
   @override

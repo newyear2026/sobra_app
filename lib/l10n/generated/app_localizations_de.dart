@@ -2275,6 +2275,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Rechner, Trinkgeld, Alter und Einheiten. Teil jede Rechnung mit einem Foto vom Beleg.';
 
   @override
+  String get ourAppsLoopetKind => 'Routinen';
+
+  @override
+  String get ourAppsLoopetBlurb =>
+      'Dein ganzer Tag in einem Kreis. Sieh, welche Routine jetzt dran ist und was als Nächstes kommt.';
+
+  @override
   String get releaseAnnouncementViewAll => 'Alle ansehen';
 
   @override

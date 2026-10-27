@@ -2173,6 +2173,12 @@ class AppLocalizationsKo extends AppLocalizations {
       '계산기, 팁, 나이, 단위 변환까지. 영수증을 찍으면 내 몫이 바로 나와요.';
 
   @override
+  String get ourAppsLoopetKind => '루틴 관리';
+
+  @override
+  String get ourAppsLoopetBlurb => '하루 24시간을 원 하나로. 지금 할 루틴과 다음 루틴이 한눈에 보여요.';
+
+  @override
   String get releaseAnnouncementViewAll => '전체 보기';
 
   @override
