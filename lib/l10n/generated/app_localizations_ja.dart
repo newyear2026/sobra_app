@@ -2184,6 +2184,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get releaseAnnouncementDone => 'OK';
 
   @override
+  String get releaseAnnouncementDontShowAgain => '今後表示しない';
+
+  @override
   String get settingsReleaseNotesUnread => '未読の新機能';
 
   @override

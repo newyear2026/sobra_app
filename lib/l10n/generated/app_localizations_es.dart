@@ -2274,6 +2274,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get releaseAnnouncementDone => 'Listo';
 
   @override
+  String get releaseAnnouncementDontShowAgain => 'No volver a mostrar';
+
+  @override
   String get settingsReleaseNotesUnread => 'Novedades sin leer';
 
   @override

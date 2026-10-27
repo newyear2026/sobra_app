@@ -2270,6 +2270,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get releaseAnnouncementDone => 'Done';
 
   @override
+  String get releaseAnnouncementDontShowAgain => 'Don\'t show again';
+
+  @override
   String get settingsReleaseNotesUnread => 'Unread release notes';
 
   @override

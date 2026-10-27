@@ -6,6 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/data/release_notes.dart';
 import 'package:sobra_app/l10n/generated/app_localizations.dart';
+import 'package:sobra_app/main.dart';
+import 'package:sobra_app/models/expense_entry.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/screens/release_notes_screen.dart';
 import 'package:sobra_app/services/app_version_service.dart';
@@ -70,20 +72,19 @@ Widget _harness(
   Widget child, {
   Locale locale = const Locale('es'),
   double textScale = 1,
-}) =>
-    MaterialApp(
-      locale: locale,
-      theme: buildSobraTheme(),
-      localizationsDelegates: sobraLocalizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(
-          textScaler: TextScaler.linear(textScale),
-        ),
-        child: child!,
-      ),
-      home: Scaffold(body: child),
-    );
+}) => MaterialApp(
+  locale: locale,
+  theme: buildSobraTheme(),
+  localizationsDelegates: sobraLocalizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
+  builder: (context, child) => MediaQuery(
+    data: MediaQuery.of(
+      context,
+    ).copyWith(textScaler: TextScaler.linear(textScale)),
+    child: child!,
+  ),
+  home: Scaffold(body: child),
+);
 
 void main() {
   group('the first launch', () {
@@ -464,5 +465,210 @@ void main() {
         expect(find.text('v${releaseNotes.first.version}'), findsOneWidget);
       });
     }
+  });
+
+  group('the seasonal gift card', () {
+    final giftNotes = <ReleaseNote>[
+      ReleaseNote(
+        version: '1.1.0',
+        releasedOn: DateTime(2026, 10, 28),
+        seasonalGift: true,
+        lines: [(_) => 'Llegaron disfraces.'],
+      ),
+    ];
+    final today = DateTime(2026, 10, 28, 9);
+    final tomorrow = DateTime(2026, 10, 29, 8);
+
+    Future<ReleaseAnnouncements> giftStarted(
+      SharedPreferences preferences,
+    ) async {
+      final announcements = ReleaseAnnouncements(
+        preferences: preferences,
+        versionLoader: _reports('1.1.0'),
+        notes: giftNotes,
+      );
+      await announcements.start();
+      return announcements;
+    }
+
+    Future<SobraStore> onboarded({DateTime? now}) async {
+      final store = await SobraStore.load(now: () => now ?? today);
+      await store.configureOnboarding(
+        budgetCentavos: 600000,
+        schedule: const PaySchedule.semiMonthly(),
+      );
+      await store.completeOnboarding();
+      return store;
+    }
+
+    test('is owed to a new install, which gets no version card', () async {
+      final announcements = await giftStarted(await _preferences());
+
+      expect(announcements.shouldAnnounce, isFalse);
+      expect(announcements.giftCardDue(canClaim: true, now: today), isTrue);
+    });
+
+    test('comes once a day, and again the next day', () async {
+      final preferences = await _preferences();
+      final announcements = await giftStarted(preferences);
+
+      await announcements.markGiftCardShown(today);
+      expect(
+        announcements.giftCardDue(
+          canClaim: true,
+          now: today.add(const Duration(hours: 10)),
+        ),
+        isFalse,
+      );
+
+      final relaunch = await giftStarted(preferences);
+      expect(relaunch.giftCardDue(canClaim: true, now: today), isFalse);
+      expect(relaunch.giftCardDue(canClaim: true, now: tomorrow), isTrue);
+    });
+
+    test('stops for good once muted', () async {
+      final preferences = await _preferences();
+      final announcements = await giftStarted(preferences);
+
+      await announcements.muteGiftCard();
+      expect(announcements.giftCardDue(canClaim: true, now: tomorrow), isFalse);
+
+      final relaunch = await giftStarted(preferences);
+      expect(relaunch.giftCardDue(canClaim: true, now: tomorrow), isFalse);
+    });
+
+    test('is not owed once the gift cannot be claimed', () async {
+      final announcements = await giftStarted(await _preferences());
+
+      expect(announcements.giftCardDue(canClaim: false, now: today), isFalse);
+    });
+
+    group('on screen', () {
+      setUpAll(_loadFonts);
+
+      final mute = find.byKey(const ValueKey('release-announcement-mute'));
+
+      Future<ReleaseAnnouncements> showGiftCard(
+        WidgetTester tester,
+        SobraStore store, {
+        Map<String, Object> preferences = const {
+          'sobra_notes_announced_version': '1.1.0',
+          'sobra_notes_read_version': '1.1.0',
+        },
+      }) async {
+        final announcements = await giftStarted(
+          await _preferences(preferences),
+        );
+        await tester.pumpWidget(
+          SobraScope(store: store, child: _harness(const SizedBox.shrink())),
+        );
+        final context = tester.element(find.byType(SizedBox));
+        unawaited(
+          showReleaseAnnouncement(context, announcements: announcements),
+        );
+        await tester.pumpAndSettle();
+        return announcements;
+      }
+
+      testWidgets('closed with the box ticked, it does not come back', (
+        tester,
+      ) async {
+        final announcements = await showGiftCard(tester, await onboarded());
+
+        expect(find.text('Llegaron disfraces.'), findsOneWidget);
+        await tester.tap(mute);
+        await tester.pump();
+        await tester.tap(find.text('Listo'));
+        await tester.pumpAndSettle();
+
+        expect(
+          announcements.giftCardDue(canClaim: true, now: tomorrow),
+          isFalse,
+        );
+      });
+
+      testWidgets('closed without the box, it comes back tomorrow', (
+        tester,
+      ) async {
+        final announcements = await showGiftCard(tester, await onboarded());
+
+        await tester.tap(find.text('Listo'));
+        await tester.pumpAndSettle();
+
+        expect(announcements.giftCardDue(canClaim: true, now: today), isFalse);
+        expect(
+          announcements.giftCardDue(canClaim: true, now: tomorrow),
+          isTrue,
+        );
+      });
+
+      testWidgets('the version card carries the box too', (tester) async {
+        final announcements = await showGiftCard(
+          tester,
+          await onboarded(),
+          preferences: const {
+            'sobra_notes_announced_version': '1.0.0',
+            'sobra_notes_read_version': '1.0.0',
+          },
+        );
+
+        expect(announcements.shouldAnnounce, isFalse);
+        expect(mute, findsOneWidget);
+        expect(
+          announcements.giftCardDue(canClaim: true, now: today),
+          isFalse,
+          reason: 'the version card was today\'s card',
+        );
+      });
+
+      testWidgets('a card that would not come back has no box', (tester) async {
+        final store = await onboarded();
+        await store.claimSeasonalCostumes();
+        await showGiftCard(
+          tester,
+          store,
+          preferences: const {
+            'sobra_notes_announced_version': '1.0.0',
+            'sobra_notes_read_version': '1.0.0',
+          },
+        );
+
+        expect(find.text('Ver todo'), findsOneWidget);
+        expect(mute, findsNothing);
+      });
+
+      testWidgets('the app brings it up on a launch that owes it', (
+        tester,
+      ) async {
+        SharedPreferences.setMockInitialValues({});
+        final store = await onboarded();
+        await store.takeLaunchGiftNotice();
+        await store.addExpense(
+          amountCentavos: 8500,
+          category: ExpenseCategory.values.first,
+          note: '',
+          occurredAt: today.subtract(const Duration(hours: 1)),
+          paymentMethod: PaymentMethod.values.first,
+        );
+        store.takePendingXpNotice();
+        await store.takeFirstExpenseGuide();
+        // Left for the shell to start, as the app does.
+        final announcements = ReleaseAnnouncements(
+          preferences: await SharedPreferences.getInstance(),
+          versionLoader: _reports('1.1.0'),
+          notes: giftNotes,
+        );
+
+        await tester.pumpWidget(
+          SobraApp(store: store, announcements: announcements),
+        );
+        for (var i = 0; i < 20; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+
+        expect(mute, findsOneWidget);
+        expect(announcements.giftCardDue(canClaim: true, now: today), isFalse);
+      });
+    });
   });
 }

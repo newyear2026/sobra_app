@@ -3874,6 +3874,12 @@ abstract class AppLocalizations {
   /// **'Listo'**
   String get releaseAnnouncementDone;
 
+  /// No description provided for @releaseAnnouncementDontShowAgain.
+  ///
+  /// In es, this message translates to:
+  /// **'No volver a mostrar'**
+  String get releaseAnnouncementDontShowAgain;
+
   /// Screen-reader label for the dot on the Novedades row. The dot is the only thing that carries this meaning visually.
   ///
   /// In es, this message translates to:

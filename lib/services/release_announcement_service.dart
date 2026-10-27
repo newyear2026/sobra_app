@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/release_notes.dart';
+import '../models/character_costume.dart';
 import 'app_version_service.dart';
 
 /// Mentions what changed, once, after the phone has installed it.
@@ -21,6 +22,10 @@ import 'app_version_service.dart';
 ///   onboarding is a non-sequitur.
 /// * Being told is not the same as having read it. Dismissing the card leaves
 ///   the dot on the Ajustes row; only opening the notes clears it.
+/// * The seasonal gift is the exception to "once". While it can be claimed,
+///   its card comes back on the first launch of each day, new installs
+///   included, until it is claimed, the campaign ends, or the card is closed
+///   with "do not show again" ticked.
 class ReleaseAnnouncements extends ChangeNotifier {
   ReleaseAnnouncements({
     SharedPreferences? preferences,
@@ -32,6 +37,8 @@ class ReleaseAnnouncements extends ChangeNotifier {
 
   static const _announcedKey = 'sobra_notes_announced_version';
   static const _readKey = 'sobra_notes_read_version';
+  static const _giftShownDayKey = 'sobra_gift_card_shown_day';
+  static const _giftMutedKey = 'sobra_gift_card_muted_campaign';
 
   /// Device bookkeeping rather than ledger state, for the same reason
   /// [AppUpdates] keeps its own: restoring a backup onto another phone must
@@ -43,6 +50,8 @@ class ReleaseAnnouncements extends ChangeNotifier {
   AppVersion? _version;
   String? _announcedVersion;
   String? _readVersion;
+  String? _giftShownDay;
+  String? _giftMutedCampaign;
   bool _started = false;
 
   /// The running build, kept whole so the notes screen can mark its own card
@@ -64,6 +73,29 @@ class ReleaseAnnouncements extends ChangeNotifier {
 
   bool get shouldAnnounce =>
       currentNote != null && _runningVersion != _announcedVersion;
+
+  /// The note that brought the seasonal gift, which the daily gift card
+  /// carries whatever version is running.
+  ReleaseNote? get giftNote {
+    if (_runningVersion == null) return null;
+    for (final note in _notes) {
+      if (note.seasonalGift) return note;
+    }
+    return null;
+  }
+
+  /// Whether today's launch owes the gift card, apart from the version card.
+  ///
+  /// [canClaim] comes from the store, which already folds in onboarding, the
+  /// campaign's dates and whether the gift was claimed by any route.
+  bool giftCardDue({required bool canClaim, required DateTime now}) =>
+      canClaim &&
+      giftNote != null &&
+      _giftMutedCampaign != CharacterCostumes.campaignId &&
+      _giftShownDay != _dayKey(now);
+
+  static String _dayKey(DateTime moment) =>
+      '${moment.year}-${moment.month}-${moment.day}';
 
   /// Whether the Ajustes row wears its dot.
   bool get hasUnreadNotes =>
@@ -87,6 +119,8 @@ class ReleaseAnnouncements extends ChangeNotifier {
     final preferences = _preferences;
     _announcedVersion = preferences?.getString(_announcedKey);
     _readVersion = preferences?.getString(_readKey);
+    _giftShownDay = preferences?.getString(_giftShownDayKey);
+    _giftMutedCampaign = preferences?.getString(_giftMutedKey);
 
     if (_announcedVersion == null && _readVersion == null) {
       // The first launch this ever ran on. Record where we are and say
@@ -123,6 +157,32 @@ class ReleaseAnnouncements extends ChangeNotifier {
     _announcedVersion = _runningVersion;
     await _persist();
     notifyListeners();
+  }
+
+  /// The gift card had its turn today.
+  Future<void> markGiftCardShown(DateTime now) async {
+    final day = _dayKey(now);
+    if (_giftShownDay == day) return;
+    _giftShownDay = day;
+    await _save(_giftShownDayKey, day);
+    notifyListeners();
+  }
+
+  /// "Do not show again": no more gift cards for this campaign. The banners,
+  /// the note's button and the last-day reminder stay.
+  Future<void> muteGiftCard() async {
+    if (_giftMutedCampaign == CharacterCostumes.campaignId) return;
+    _giftMutedCampaign = CharacterCostumes.campaignId;
+    await _save(_giftMutedKey, CharacterCostumes.campaignId);
+    notifyListeners();
+  }
+
+  Future<void> _save(String key, String value) async {
+    try {
+      await _preferences?.setString(key, value);
+    } on Object catch (error) {
+      debugPrint('Sobra: could not save the gift card state: $error');
+    }
   }
 
   /// The notes screen was opened, which covers being told as well.

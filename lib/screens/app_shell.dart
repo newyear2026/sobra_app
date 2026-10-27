@@ -100,6 +100,7 @@ class _AppShellState extends State<AppShell> {
   bool _starterArrivalPresenting = false;
   bool _updatePromptScheduled = false;
   bool _announcementScheduled = false;
+  bool _announcementPresenting = false;
   bool _reviewScheduled = false;
   String? _runningVersion;
   Future<void>? _versionReady;
@@ -238,8 +239,9 @@ class _AppShellState extends State<AppShell> {
   void _scheduleAnnouncement() {
     final announcements = _announcements;
     if (_announcementScheduled ||
+        _announcementPresenting ||
         announcements == null ||
-        !announcements.shouldAnnounce ||
+        !_announcementDue ||
         _firstExpenseAhead ||
         (_store?.launchGiftNoticePending ?? false) ||
         _store?.starterArrivalId != null ||
@@ -249,13 +251,31 @@ class _AppShellState extends State<AppShell> {
     _announcementScheduled = true;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _announcementScheduled = false;
-      if (!mounted || !announcements.shouldAnnounce) return;
-      await showReleaseAnnouncement(context, announcements: announcements);
+      if (!mounted || !_announcementDue) return;
+      _announcementPresenting = true;
+      try {
+        await showReleaseAnnouncement(context, announcements: announcements);
+      } finally {
+        _announcementPresenting = false;
+      }
       if (mounted) {
         _scheduleUpdatePrompt();
         _scheduleReviewRequest();
       }
     });
+  }
+
+  /// The version card, or the gift's daily card while the gift waits.
+  bool get _announcementDue {
+    final announcements = _announcements;
+    final store = _store;
+    if (announcements == null) return false;
+    if (announcements.shouldAnnounce) return true;
+    return store != null &&
+        announcements.giftCardDue(
+          canClaim: store.canClaimSeasonalCostumes,
+          now: store.currentMoment,
+        );
   }
 
   /// Offers the update once the frame is done and nothing louder is queued.
@@ -273,7 +293,7 @@ class _AppShellState extends State<AppShell> {
         _store?.pendingXpNotice != null ||
         (_store?.launchGiftNoticePending ?? false) ||
         _store?.starterArrivalId != null ||
-        (_announcements?.shouldAnnounce ?? false)) {
+        _announcementDue) {
       return;
     }
     _updatePromptScheduled = true;
@@ -342,7 +362,7 @@ class _AppShellState extends State<AppShell> {
         store.starterArrivalId == null &&
         !_launchGiftPresenting &&
         !_starterArrivalPresenting &&
-        !(_announcements?.shouldAnnounce ?? false) &&
+        !_announcementDue &&
         !(_updates?.shouldPrompt ?? false);
   }
 

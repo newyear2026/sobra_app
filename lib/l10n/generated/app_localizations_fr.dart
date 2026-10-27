@@ -2296,6 +2296,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get releaseAnnouncementDone => 'Terminé';
 
   @override
+  String get releaseAnnouncementDontShowAgain => 'Ne plus afficher';
+
+  @override
   String get settingsReleaseNotesUnread => 'Nouveautés non lues';
 
   @override

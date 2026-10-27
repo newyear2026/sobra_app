@@ -2185,6 +2185,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get releaseAnnouncementDone => '확인';
 
   @override
+  String get releaseAnnouncementDontShowAgain => '다시 보지 않기';
+
+  @override
   String get settingsReleaseNotesUnread => '읽지 않은 새로운 소식';
 
   @override

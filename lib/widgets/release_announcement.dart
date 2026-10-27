@@ -15,7 +15,8 @@ import 'seasonal_costume_gift.dart';
 
 enum _AnnouncementChoice { seeAll, openGift }
 
-/// Says what changed, once, on the first launch after an update.
+/// Says what changed, once, on the first launch after an update — and, while
+/// the seasonal gift waits to be claimed, brings its note back once a day.
 ///
 /// It carries the note itself rather than a link to it. A card that only
 /// announced there was something to read would be an interruption that costs
@@ -24,25 +25,43 @@ Future<void> showReleaseAnnouncement(
   BuildContext context, {
   required ReleaseAnnouncements announcements,
 }) async {
-  final note = announcements.currentNote;
-  if (note == null) return;
-  // Before the dialog, so anything that rebuilds while it is open already
-  // sees a state that cannot ask for a second copy.
-  await announcements.markAnnounced();
-  if (!context.mounted) return;
-
+  final store = SobraScope.maybeOf(context);
+  final now = store?.currentMoment ?? DateTime.now();
   // Decided once, before the card opens: a gift that has been claimed or has
   // run out leaves the card with the ordinary way into the notes.
-  final offersGift =
-      note.seasonalGift &&
-      (SobraScope.maybeOf(context)?.canClaimSeasonalCostumes ?? false);
+  final canClaim = store?.canClaimSeasonalCostumes ?? false;
+  final ReleaseNote? note;
+  if (announcements.shouldAnnounce) {
+    note = announcements.currentNote;
+  } else if (announcements.giftCardDue(canClaim: canClaim, now: now)) {
+    note = announcements.giftNote;
+  } else {
+    return;
+  }
+  if (note == null) return;
+  // Before the dialog, so anything that rebuilds while it is open already
+  // sees a state that cannot ask for a second copy. One card a launch: the
+  // version card also counts as today's gift card.
+  await announcements.markAnnounced();
+  await announcements.markGiftCardShown(now);
+  if (!context.mounted) return;
+
+  final offersGift = note.seasonalGift && canClaim;
+  final mute = ValueNotifier(false);
   final navigator = Navigator.of(context);
   final choice = await showDialog<_AnnouncementChoice>(
     context: context,
     barrierColor: const Color(0x99242B4A),
-    builder: (context) =>
-        _ReleaseAnnouncementDialog(note: note, offersGift: offersGift),
+    builder: (context) => _ReleaseAnnouncementDialog(
+      note: note!,
+      offersGift: offersGift,
+      mute: offersGift ? mute : null,
+    ),
   );
+  // However it was closed — a button, the scrim or back — the box counts.
+  final muted = mute.value;
+  mute.dispose();
+  if (muted) await announcements.muteGiftCard();
   switch (choice) {
     case null:
       return;
@@ -64,10 +83,14 @@ class _ReleaseAnnouncementDialog extends StatelessWidget {
   const _ReleaseAnnouncementDialog({
     required this.note,
     required this.offersGift,
+    this.mute,
   });
 
   final ReleaseNote note;
   final bool offersGift;
+
+  /// The "do not show again" box, only on a card that would come back.
+  final ValueNotifier<bool>? mute;
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +207,62 @@ class _ReleaseAnnouncementDialog extends StatelessWidget {
               variant: PixelButtonVariant.secondary,
               onPressed: () => Navigator.of(context).pop(),
             ),
+            if (mute case final mute?) ...[
+              const SizedBox(height: 10),
+              _DontShowAgain(value: mute),
+            ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DontShowAgain extends StatelessWidget {
+  const _DontShowAgain({required this.value});
+
+  final ValueNotifier<bool> value;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = AppLocalizations.of(context).releaseAnnouncementDontShowAgain;
+    return ValueListenableBuilder<bool>(
+      valueListenable: value,
+      builder: (context, checked, _) => MergeSemantics(
+        child: Semantics(
+          checked: checked,
+          child: InkWell(
+            key: const ValueKey('release-announcement-mute'),
+            onTap: () => value.value = !checked,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Row(
+                children: [
+                  Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: checked ? AppColors.teal : AppColors.surface,
+                      border: Border.all(color: AppColors.ink, width: 2.5),
+                    ),
+                    child: checked
+                        ? const Icon(Icons.check, size: 14, color: Colors.white)
+                        : null,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: pixelText(
+                        size: 13,
+                        color: checked ? AppColors.ink : AppColors.muted,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

@@ -2287,6 +2287,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get releaseAnnouncementDone => 'Pronto';
 
   @override
+  String get releaseAnnouncementDontShowAgain => 'Não mostrar de novo';
+
+  @override
   String get settingsReleaseNotesUnread => 'Novidades não lidas';
 
   @override

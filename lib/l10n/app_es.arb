@@ -1039,6 +1039,7 @@
     "description": "Opens the full Novedades screen from the card shown after an update."
   },
   "releaseAnnouncementDone": "Listo",
+  "releaseAnnouncementDontShowAgain": "No volver a mostrar",
 
   "settingsReleaseNotesUnread": "Novedades sin leer",
   "@settingsReleaseNotesUnread": {

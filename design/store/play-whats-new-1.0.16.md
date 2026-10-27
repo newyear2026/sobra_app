@@ -45,6 +45,11 @@ User-facing, and in the notes:
 - The "Novedades" card for 1.0.16 shows three of the costumes and, while
   the gift is unclaimed, its main button is **Ver regalo**, which opens the
   gift sheet. Once claimed or expired it falls back to **Ver todo**.
+- While the gift is unclaimed, that card comes back on the first launch of
+  each day through 11/3, new installs included (after onboarding's own
+  notices). Ticking **No volver a mostrar** before closing it stops it for
+  the rest of the campaign; the banners, the note's button and the last-day
+  reminder stay.
 
 Shipped too, but not announced:
 
