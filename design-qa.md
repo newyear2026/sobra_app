@@ -1,51 +1,40 @@
-# Shared room stage and square Home card
+# Owned-companion Halloween gift list (selected option 2)
 
 final result: passed
 
 ## Visual target and evidence
 
-- Selected target: `design/rooms/shared-stage-target.png` (the third displayed image, 854 × 1842 pixels).
-- Flutter Home capture: `design/rooms/shared-stage-home.png` (426 × 919 pixels).
-- Flutter Decorate capture: `design/rooms/shared-stage-decorate.png` (426 × 919 pixels).
-- Full comparison: `design/qa/shared-stage-comparison.html`, opened and visually reviewed in the in-app browser. It places all three images together at 426 logical pixels wide, preserving their aspect ratios. The target consequently renders at about 426 × 919 pixels; Flutter captures use device pixel ratio 1.
-- State: Spanish, Casa clara, Miru, ivory sofa, launch TV, floor lamp, sill plant and default rug; budget $857.14 remaining today, reduced motion enabled. The fixtures use the same date and budget as the visual reference. User data and saved furniture were not changed.
-- Full-size room and lighting references were also rendered in the existing room visual tests. All six themes are covered by geometry tests across square, short and tall areas.
+- Selected reference: `design/seasonal/2026-halloween-dia-de-muertos/owned-gift-ui-concepts-v1/02-owned-costume-list.png` (977 x 1610).
+- Current native capture: `design/seasonal/2026-halloween-dia-de-muertos/implementation/05-owned-gift-list-reference.png` (780 x 1288).
+- Final shared comparison: `design/seasonal/2026-halloween-dia-de-muertos/owned-gift-ui-implementation/comparison-v3.png`.
+- Enlarged row/action comparison: `design/seasonal/2026-halloween-dia-de-muertos/owned-gift-ui-implementation/rows-and-action-comparison.png`.
+- State: Korean, unclaimed gift, owned Michi and Poodle/Miru only, no costumes selected, reduced motion.
+- Viewport: 390 x 644 logical pixels, capture density 2. The generated reference has an effective density of 977/390 and an implied height of 643 logical pixels. It was proportionally normalized, never stretched, to compare the content at the same width.
+- This is production Flutter work. Captures come from the real widget tree and bundled character assets, not a web recreation. Core interactions run in Flutter widget tests.
+- The earlier room-stage QA report is preserved at `design/seasonal/2026-halloween-dia-de-muertos/owned-gift-ui-implementation/prior-design-qa.md`.
 
-This is an update to the existing native Flutter application, not a new web prototype. The browser comparison contains actual Flutter-rendered screenshots. Native navigation, saving, placement and animation are verified by Flutter widget tests. The full comparison retains readable 426-pixel-wide screens, and the room regions were also inspected directly at native resolution; a separate enlarged crop was not needed.
+## Findings and iteration history
 
-## Comparison history
+1. [P2, resolved] The first capture's primary button and permanent-ownership footer extended below the initial viewport. Explicit line heights improved v2, but the footer still required scrolling. V3 reduces unused header/row/section spacing; the action and complete footer are visible. A widget assertion guards the footer's bottom edge at 390 x 644.
+2. [P2, resolved] Initial type hierarchy was smaller and looser than the reference, especially the Korean gift title and row costume names. The final layout increases gift/section headings and costume sizes and removes inherited body-line padding. V3 was reviewed beside the source, including the enlarged row/action detail.
+3. [P3, accepted] Gift icons use the app's existing Material icon rather than the generated decorative present artwork. Production costume atlases, PixelifySans/SobraHangul, and canonical names Michi/Miru are retained. These differences preserve the actual product's assets and naming.
 
-1. Initial native capture: the enlarged Home image covered the card's side/bottom border, while some Decorate drawer images had not finished loading in the visual fixture. Added a foreground border to the Home viewport and explicitly precached the visible drawer providers before capturing.
-2. Post-fix captures: a complete square border surrounds the room, all drawer artwork is present, and the level/mission block follows the room above the fixed bottom navigation. Compared the final target, Home and Decorate together in the browser. No actionable P0/P1/P2 findings remain.
+No unresolved P0, P1 or P2 visual findings remain. The final two-image comparison was inspected directly; this pass is not based solely on test results.
 
-## Fidelity review
+## Fidelity surfaces
 
-- **Fonts and typography:** retained the app's PixelifySans and language fallbacks, existing amount hierarchy, labels and navigation sizes. Text remains live and localized.
-- **Spacing and layout:** Home's scene is 1:1 with the original header and section gaps. Budget remains above the room; level/missions remain below; lower content scrolls. Short room areas contain the complete scene, and tall areas reveal more of the portrait instead of repositioning furniture.
-- **Colors and tokens:** existing cream, indigo and teal tokens and square borders are retained. No new palette, corner radius or elevation system.
-- **Image quality and fidelity:** existing portrait backgrounds, transparent furniture sprites and animated characters are reused. TV, lamp and sofa remain behind the character and rug. Relative coordinates, sizes and paint order match across the five tested viewport shapes, with three furniture arrangements in every theme.
-- **Copy and content:** existing app copy is retained. The source mock incorrectly says “Michi curioso” under Miru; the implementation correctly resolves “Miru curioso” from the equipped character. The fixture's poses and exact sprite pixels differ from the generated mock because the production animation assets are retained.
+- Fonts and typography: production PixelifySans and regular/bold SobraHangul fonts; final heading, outfit and helper hierarchy visually verified.
+- Spacing and layout: two owned-friend rows with separators, a permanent-storage explanation, one teal claim action, and a complete footer. All fit in the reference-sized viewport; longer lists and enlarged text scroll naturally.
+- Colors and tokens: use existing AppColors paperLight/ink/teal/cashInk/line values.
+- Asset quality: use real costume atlases through CharacterSprite. Keep the existing Material gift icon and proper companion names, rather than the generated mock's illustrative gift and breed labels.
+- Copy and content: owned previews are personalized; all 12 costumes remain free and permanently stored. Translations cover all seven locales.
 
 ## Verification
 
-- `flutter test --no-pub`: **779 passed, 3 skipped**. Updated only visual baselines affected by the shared renderer and Home height change.
-- Added strict stage-normalized position, size and paint-order assertions for every placed item and the character. Former foreground-item exceptions were removed.
-- Checked opaque furniture bounds, rug/paw contact, room navigation, slot selection, saving, undo, per-room placements and time-of-day lighting.
-- Static analysis of all 12 changed Dart files: **no issues**.
-- Whole-repository analysis still reports 18 pre-existing lint/warning entries in the two unrelated `tool/render_promo_video*_test.dart` scripts.
-- `git diff --check`: passed.
+- Final functional pass: 55 targeted costume, ownership, release-note and gift-flow tests passed.
+- Ownership fixtures cover one friend, two friends and all twelve friends, including 320 x 568 at text scale 1.6 in all seven locales.
+- Full regression suite: 938 passed; 3 time-zone-specific cases skipped in the default zone were covered by a separate America/Chicago run (4 passed).
+- Application and test static analysis: no issues found.
+- No browser prototype was created: this request updates the existing native Flutter implementation. Device purchase, ad delivery and physical-device checks are outside this visual QA.
 
-## Accepted differences and follow-up polish
-
-- Preserve the app's existing font metrics and real assets instead of tracing the generated mock's typography, poses or speech-bubble artwork.
-- Outside the square-to-portrait aspect range, the room is centered with surrounding app surface visible. This deliberately preserves the full arrangement on short or very tall viewports.
-- No physical-device or release-build validation was performed in this pass.
-
-## Implementation checklist
-
-- [x] Square Home room with visible perimeter border.
-- [x] One portrait background, coordinate map and furniture scale for every surface.
-- [x] Fixed stage anchors for character, pet bed and rug.
-- [x] Viewport-independent furniture bounds and matching placement targets.
-- [x] Refresh preload, geometry tests, visual baselines and room documentation.
-- [x] Review actual Home and Decorate captures against the selected target.
+- Signed Android release bundle built and inspected: 1.0.16+26, 72 costume textures and layout match the workspace. Detailed results: `output/validation/owned-gift-ui-2026-10-27/report.json`.

@@ -2590,27 +2590,24 @@ class AppLocalizationsKo extends AppLocalizations {
   String get seasonalGiftTitle => '할로윈 축제 선물';
 
   @override
-  String get seasonalGiftBody => '우리 친구들의 특별한 변신을 만나보세요.';
+  String get seasonalGiftBody => '보유한 친구의 의상을 먼저 보여드려요.';
 
   @override
   String get seasonalGiftView => '선물 보기';
 
   @override
-  String seasonalGiftClaim(int count) {
-    return '코스튬 $count종 무료로 받기';
-  }
+  String get seasonalGiftClaim => '내 캐릭터의 할로윈 의상 받기';
 
   @override
   String seasonalGiftDeadline(String date) {
-    return '$date까지 받을 수 있어요';
+    return '$date까지 무료로 받을 수 있어요';
   }
 
   @override
   String get seasonalGiftKeeps => '한 번 받으면 이벤트가 끝나도 영구 소장해요.';
 
   @override
-  String get seasonalGiftLockedCharacters =>
-      '아직 없는 캐릭터의 의상도 보관돼요. 캐릭터를 얻으면 입힐 수 있어요.';
+  String get seasonalGiftLockedCharacters => '나중에 얻는 캐릭터의 의상도 함께 보관돼요.';
 
   @override
   String get seasonalGiftReceived => '코스튬을 받았어요!';
@@ -2622,7 +2619,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get seasonalGiftClosed => '이 선물을 받을 수 있는 기간이 끝났어요.';
 
   @override
-  String get seasonalGiftPreview => '12종 중 미리보기';
+  String get seasonalGiftPreview => '내 친구에게 도착한 의상';
+
+  @override
+  String get seasonalGiftReady => '지금 입힐 수 있어요';
+
+  @override
+  String seasonalGiftStorageTitle(int count) {
+    return '$count종 의상 모두 영구 보관';
+  }
 
   @override
   String get seasonalGiftLastDayTitle => '오늘이 선물을 받을 수 있는 마지막 날이에요';

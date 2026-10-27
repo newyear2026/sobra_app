@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/l10n/generated/app_localizations.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/models/character_costume.dart';
 import 'package:sobra_app/models/room_design.dart';
 import 'package:sobra_app/screens/room_decorate_screen.dart';
 import 'package:sobra_app/state/sobra_store.dart';
@@ -18,14 +19,17 @@ import 'package:sobra_app/widgets/seasonal_costume_gift.dart';
 
 import 'support/localizations.dart';
 
-Future<SobraStore> _store({bool claim = true}) async {
+Future<SobraStore> _store({
+  bool claim = true,
+  Set<String> characters = const {'poodle', 'schnauzer'},
+}) async {
   final store = await SobraStore.load(now: () => DateTime(2026, 10, 24, 12));
   await store.configureOnboarding(
     budgetCentavos: 600000,
     schedule: const PaySchedule.semiMonthly(),
   );
   await store.completeOnboarding();
-  await store.grantCatalogEntries({'poodle', 'schnauzer'});
+  await store.grantCatalogEntries(characters);
   await store.setReducedMotion(true);
   if (claim) await store.claimSeasonalCostumes();
   return store;
@@ -151,11 +155,15 @@ void main() {
     for (final entry in {
       'PixelifySans': 'assets/fonts/PixelifySans.ttf',
       'SobraHangul': 'assets/fonts/SobraHangul.ttf',
+      'SobraJapanese': 'assets/fonts/SobraJapanese.ttf',
       'MaterialIcons': 'fonts/MaterialIcons-Regular.otf',
     }.entries) {
-      await (FontLoader(
-        entry.key,
-      )..addFont(rootBundle.load(entry.value))).load();
+      final loader = FontLoader(entry.key)
+        ..addFont(rootBundle.load(entry.value));
+      if (entry.key == 'SobraHangul') {
+        loader.addFont(rootBundle.load('assets/fonts/SobraHangul-Bold.ttf'));
+      }
+      await loader.load();
     }
   });
   setUp(() => SharedPreferences.setMockInitialValues({}));
@@ -246,6 +254,124 @@ void main() {
     expect(store.equippedCostumeFor('michi'), isNull);
     expect(store.ownedCostumeIds, hasLength(12));
   });
+
+  testWidgets(
+    'gift shows owned friends and keeps the full gift for later unlocks',
+    (tester) async {
+      final store = await _store(claim: false, characters: {'poodle'});
+      final before = store.ownedCatalogIds.toSet();
+      await _pump(
+        tester,
+        store,
+        gift: true,
+        locale: const Locale('ko'),
+        size: const Size(390, 644),
+      );
+      await tester.tap(find.byKey(const ValueKey('seasonal-costume-gift')));
+      await tester.pumpAndSettle();
+      final rows = tester.widgetList<CharacterSprite>(
+        find.descendant(
+          of: find.byType(BottomSheet),
+          matching: find.byType(CharacterSprite),
+        ),
+      );
+      expect(rows.map((sprite) => sprite.characterId), ['michi', 'poodle']);
+      expect(
+        find.byKey(const ValueKey('seasonal-gift-character-alpaca')),
+        findsNothing,
+      );
+      expect(
+        find.text(lookupAppLocalizations(const Locale('ko')).seasonalGiftClaim),
+        findsOneWidget,
+      );
+      final footer = find.descendant(
+        of: find.byType(BottomSheet),
+        matching: find.text(
+          lookupAppLocalizations(const Locale('ko')).seasonalGiftKeeps,
+        ),
+      );
+      expect(tester.getBottomRight(footer).dy, lessThanOrEqualTo(644));
+      await _capture(tester, '05-owned-gift-list-reference');
+      final claim = find.byKey(const ValueKey('claim-seasonal-costumes'));
+      await tester.ensureVisible(claim);
+      await tester.tap(claim);
+      await tester.pumpAndSettle();
+      expect(store.ownedCostumeIds, hasLength(CharacterCostumes.all.length));
+      expect(store.ownedCatalogIds, before);
+      expect(store.costumeSelections, isEmpty);
+      await _capture(tester, '06-owned-gift-list-received');
+      await store.grantCatalogEntry('alpaca');
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('seasonal-gift-character-alpaca')),
+        findsOneWidget,
+      );
+      expect(store.ownedCostumeIds, contains('autumn-2026-alpaca'));
+    },
+  );
+
+  testWidgets('a gift with one owned friend never previews locked friends', (
+    tester,
+  ) async {
+    final store = await _store(claim: false, characters: {});
+    await _pump(tester, store, gift: true);
+    await tester.tap(find.byKey(const ValueKey('seasonal-costume-gift')));
+    await tester.pumpAndSettle();
+    final sprites = tester.widgetList<CharacterSprite>(
+      find.descendant(
+        of: find.byType(BottomSheet),
+        matching: find.byType(CharacterSprite),
+      ),
+    );
+    expect(sprites.map((sprite) => sprite.characterId), ['michi']);
+    expect(sprites.single.costumeId, 'autumn-2026-michi');
+    final claim = find.byKey(const ValueKey('claim-seasonal-costumes'));
+    await tester.ensureVisible(claim);
+    await tester.tap(claim);
+    await tester.pumpAndSettle();
+    expect(store.ownedCostumeIds, hasLength(12));
+    expect(store.ownsCharacter('poodle'), isFalse);
+  });
+
+  for (final locale in AppLocalizations.supportedLocales) {
+    testWidgets(
+      '${locale.languageCode} owned gift list can claim and continue with all friends and large text',
+      (tester) async {
+        final store = await _store(
+          claim: false,
+          characters: CharacterCostumes.all.map((c) => c.characterId).toSet(),
+        );
+        await _pump(
+          tester,
+          store,
+          gift: true,
+          locale: locale,
+          size: const Size(320, 568),
+          textScale: 1.6,
+        );
+        await tester.tap(find.byKey(const ValueKey('seasonal-costume-gift')));
+        await tester.pumpAndSettle();
+        final sprites = tester.widgetList<CharacterSprite>(
+          find.descendant(
+            of: find.byType(BottomSheet),
+            matching: find.byType(CharacterSprite),
+          ),
+        );
+        expect(sprites, hasLength(12));
+        final claim = find.byKey(const ValueKey('claim-seasonal-costumes'));
+        await tester.ensureVisible(claim);
+        expect(claim.hitTestable(), findsOneWidget);
+        await tester.tap(claim);
+        await tester.pumpAndSettle();
+        expect(store.ownedCostumeIds, hasLength(12));
+        await tester.ensureVisible(claim);
+        await tester.tap(claim);
+        await tester.pumpAndSettle();
+        expect(find.byType(RoomDecorateScreen), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 
   testWidgets(
     'claim disappears from home and continues to the wardrobe after receiving',

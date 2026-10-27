@@ -106,112 +106,114 @@ class _ReleaseAnnouncementDialog extends StatelessWidget {
       insetPadding: const EdgeInsets.symmetric(horizontal: 32),
       child: PixelCard(
         elevation: PixelElevation.hero,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.releaseNotesTitle,
-              style: pixelText(size: 19, bold: true),
-            ),
-            const SizedBox(height: 12),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: soft,
-                border: Border.all(color: ink, width: 2.5),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.releaseNotesTitle,
+                style: pixelText(size: 19, bold: true),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (seasonal) const _CostumeNight(),
-                  Padding(
-                    padding: const EdgeInsets.all(11),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              'v${note.version}',
-                              style: pixelText(
-                                size: 18,
-                                bold: true,
-                                color: ink,
-                              ),
-                            ),
-                            const Spacer(),
-                            PixelTag(
-                              label: l10n.releaseNotesCurrent,
-                              color: accent,
-                              ink: Colors.white,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          fullDate(l10n, note.releasedOn),
-                          style: pixelText(size: 12, color: AppColors.muted),
-                        ),
-                        const SizedBox(height: 9),
-                        for (final line in note.lines)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 6),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '›',
-                                  style: pixelText(
-                                    size: 13,
-                                    bold: true,
-                                    color: ink,
-                                  ),
+              const SizedBox(height: 12),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: soft,
+                  border: Border.all(color: ink, width: 2.5),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (seasonal) const _CostumeNight(),
+                    Padding(
+                      padding: const EdgeInsets.all(11),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                'v${note.version}',
+                                style: pixelText(
+                                  size: 18,
+                                  bold: true,
+                                  color: ink,
                                 ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    line(l10n),
+                              ),
+                              const Spacer(),
+                              PixelTag(
+                                label: l10n.releaseNotesCurrent,
+                                color: accent,
+                                ink: Colors.white,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            fullDate(l10n, note.releasedOn),
+                            style: pixelText(size: 12, color: AppColors.muted),
+                          ),
+                          const SizedBox(height: 9),
+                          for (final line in note.lines)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '›',
                                     style: pixelText(
                                       size: 13,
+                                      bold: true,
                                       color: ink,
-                                      height: 1.55,
                                     ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      line(l10n),
+                                      style: pixelText(
+                                        size: 13,
+                                        color: ink,
+                                        height: 1.55,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            if (offersGift)
+              const SizedBox(height: 16),
+              if (offersGift)
+                PixelButton(
+                  key: const ValueKey('release-announcement-gift'),
+                  label: l10n.seasonalGiftView,
+                  onPressed: () =>
+                      Navigator.of(context).pop(_AnnouncementChoice.openGift),
+                )
+              else
+                PixelButton(
+                  label: l10n.releaseAnnouncementViewAll,
+                  onPressed: () =>
+                      Navigator.of(context).pop(_AnnouncementChoice.seeAll),
+                ),
+              const SizedBox(height: 6),
               PixelButton(
-                key: const ValueKey('release-announcement-gift'),
-                label: l10n.seasonalGiftView,
-                onPressed: () =>
-                    Navigator.of(context).pop(_AnnouncementChoice.openGift),
-              )
-            else
-              PixelButton(
-                label: l10n.releaseAnnouncementViewAll,
-                onPressed: () =>
-                    Navigator.of(context).pop(_AnnouncementChoice.seeAll),
+                label: l10n.releaseAnnouncementDone,
+                variant: PixelButtonVariant.secondary,
+                onPressed: () => Navigator.of(context).pop(),
               ),
-            const SizedBox(height: 6),
-            PixelButton(
-              label: l10n.releaseAnnouncementDone,
-              variant: PixelButtonVariant.secondary,
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            if (mute case final mute?) ...[
-              const SizedBox(height: 10),
-              _DontShowAgain(value: mute),
+              if (mute case final mute?) ...[
+                const SizedBox(height: 10),
+                _DontShowAgain(value: mute),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -322,12 +324,19 @@ class _CostumeNight extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   for (final id in const ['poodle', 'michi', 'alpaca'])
-                    CharacterSprite(
-                      characterId: id,
-                      costumeId: CharacterCostumes.forCharacter(id).single.id,
-                      role: CharacterMotionRole.idle,
-                      width: 82,
-                      animate: false,
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: CharacterSprite(
+                          characterId: id,
+                          costumeId: CharacterCostumes.forCharacter(
+                            id,
+                          ).single.id,
+                          role: CharacterMotionRole.idle,
+                          width: 82,
+                          animate: false,
+                        ),
+                      ),
                     ),
                 ],
               ),

@@ -2708,19 +2708,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get seasonalGiftTitle => 'Ein saisonales Geschenk';
 
   @override
-  String get seasonalGiftBody => 'Ein besonderer Look für deine Freunde.';
+  String get seasonalGiftBody =>
+      'Zuerst siehst du die Outfits deiner freigeschalteten Freunde.';
 
   @override
   String get seasonalGiftView => 'Geschenk ansehen';
 
   @override
-  String seasonalGiftClaim(int count) {
-    return '$count kostenlose Kostüme erhalten';
-  }
+  String get seasonalGiftClaim => 'Halloween-Outfits meiner Freunde holen';
 
   @override
   String seasonalGiftDeadline(String date) {
-    return 'Bis $date abholen';
+    return 'Bis $date kostenlos abholen';
   }
 
   @override
@@ -2728,7 +2727,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get seasonalGiftLockedCharacters =>
-      'Auch Kostüme für noch nicht freigeschaltete Charaktere werden aufbewahrt. Du kannst sie nutzen, sobald du den Charakter hast.';
+      'Auch Outfits für Freunde, die du später bekommst, bleiben gespeichert.';
 
   @override
   String get seasonalGiftReceived => 'Deine Kostüme sind gespeichert!';
@@ -2741,7 +2740,15 @@ class AppLocalizationsDe extends AppLocalizations {
       'Der Zeitraum zum Abholen dieses Geschenks ist vorbei.';
 
   @override
-  String get seasonalGiftPreview => 'Vorschau auf die 12 Kostüme';
+  String get seasonalGiftPreview => 'Outfits für deine Freunde';
+
+  @override
+  String get seasonalGiftReady => 'Jetzt anziehbar';
+
+  @override
+  String seasonalGiftStorageTitle(int count) {
+    return 'Alle $count Outfits dauerhaft behalten';
+  }
 
   @override
   String get seasonalGiftLastDayTitle =>

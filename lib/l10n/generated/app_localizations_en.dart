@@ -2687,19 +2687,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seasonalGiftTitle => 'A seasonal gift';
 
   @override
-  String get seasonalGiftBody => 'A special new look for your friends.';
+  String get seasonalGiftBody =>
+      'See outfits for the companions you already have first.';
 
   @override
   String get seasonalGiftView => 'See gift';
 
   @override
-  String seasonalGiftClaim(int count) {
-    return 'Get $count free outfits';
-  }
+  String get seasonalGiftClaim => 'Get my companions\' Halloween outfits';
 
   @override
   String seasonalGiftDeadline(String date) {
-    return 'Claim by $date';
+    return 'Free to claim until $date';
   }
 
   @override
@@ -2707,7 +2706,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seasonalGiftLockedCharacters =>
-      'Outfits for characters you do not own are saved too. Wear them when you get that character.';
+      'Outfits for companions you get later are saved too.';
 
   @override
   String get seasonalGiftReceived => 'Your outfits are saved!';
@@ -2719,7 +2718,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seasonalGiftClosed => 'The time to claim this gift has ended.';
 
   @override
-  String get seasonalGiftPreview => 'A preview of the 12 outfits';
+  String get seasonalGiftPreview => 'Outfits for your companions';
+
+  @override
+  String get seasonalGiftReady => 'Ready to wear now';
+
+  @override
+  String seasonalGiftStorageTitle(int count) {
+    return 'Keep all $count outfits forever';
+  }
 
   @override
   String get seasonalGiftLastDayTitle => 'Today is the last day of the gift';

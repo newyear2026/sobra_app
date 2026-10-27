@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-27",
+  "feature": "Selected option 2: owned-character seasonal gift list",
+  "status": "passed",
+  "headRevision": "9e37b33b9288f6cfea213d03aebcace26a00cfd6",
+  "workingDiffSha256": "fe41d8625424e7dedd7a6d14ea722908cdd3d3edfb7ba2483afc118896f8d768",
+  "behavior": {
+    "previews": "Only owned base characters; canonical names and shipped costume sprites",
+    "grant": "All 12 outfits in one claim; no base characters unlocked; no auto equip",
+    "storage": "Permanent, including future character unlocks",
+    "campaign": "2026-10-23 through 2026-11-03 inclusive, device local date",
+    "afterClaim": "Continue to Decorate wardrobe"
+  },
+  "tests": {
+    "targetedPassed": 55,
+    "fullSuitePassed": 938,
+    "defaultTimeZoneSkipped": 3,
+    "daylightSavingPassedInAmericaChicago": 4,
+    "allSkippedCasesCoveredSeparately": true,
+    "smallViewport": [
+      320,
+      568
+    ],
+    "largeTextScale": 1.6,
+    "locales": [
+      "de",
+      "en",
+      "es",
+      "fr",
+      "ja",
+      "ko",
+      "pt"
+    ]
+  },
+  "analysis": "flutter analyze --no-pub lib test: no issues",
+  "visualQa": {
+    "result": "passed",
+    "report": "design-qa.md",
+    "comparison": "design/seasonal/2026-halloween-dia-de-muertos/owned-gift-ui-implementation/comparison-v3.png",
+    "capture": "design/seasonal/2026-halloween-dia-de-muertos/implementation/05-owned-gift-list-reference.png",
+    "logicalViewport": [
+      390,
+      644
+    ]
+  },
+  "androidBundle": {
+    "path": "/Users/jaewook/dev_app/sobra_app/build/app/outputs/bundle/release/app-release.aab",
+    "package": "com.sobra.app.sobra_app",
+    "versionName": "1.0.16",
+    "versionCode": 26,
+    "bytes": 113126246,
+    "sha256": "686dce1593c64d10bf7128f38a04eb301206cac379bdd8a16c1fe339d6e156a3",
+    "costumeTexturesVerified": 72,
+    "allTexturesMatchWorkspace": true,
+    "layoutMatchesWorkspace": true,
+    "signatureVerified": true
+  },
+  "artifactDiscoveryNote": "Flutter stdout reports an older sobrita-1.0.15+25.aab; the newly generated app-release.aab was independently inspected and signed.",
+  "scope": "Native Flutter widget tests and signed Android release build. No physical-device store or ad transactions."
+}

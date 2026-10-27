@@ -1251,17 +1251,10 @@
     }
   },
   "seasonalGiftTitle": "Un regalo de temporada",
-  "seasonalGiftBody": "Un cambio especial para tus amigos.",
+  "seasonalGiftBody": "Primero te mostramos a los amigos que ya tienes.",
   "seasonalGiftView": "Ver regalo",
-  "seasonalGiftClaim": "Recibir {count} disfraces gratis",
-  "@seasonalGiftClaim": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "seasonalGiftDeadline": "Recíbelo hasta el {date}",
+  "seasonalGiftClaim": "Recibir disfraces para mis amigos",
+  "seasonalGiftDeadline": "Gratis hasta el {date}",
   "@seasonalGiftDeadline": {
     "placeholders": {
       "date": {
@@ -1270,11 +1263,14 @@
     }
   },
   "seasonalGiftKeeps": "Una vez recibidos, son tuyos para siempre.",
-  "seasonalGiftLockedCharacters": "También guardamos los disfraces de amigos que aún no tienes. Podrás usarlos cuando consigas al personaje.",
+  "seasonalGiftLockedCharacters": "Los disfraces de amigos que consigas después también quedan guardados.",
   "seasonalGiftReceived": "¡Ya tienes los disfraces!",
   "seasonalGiftWardrobe": "Probar en Decorar",
   "seasonalGiftClosed": "El plazo para recibir este regalo terminó.",
-  "seasonalGiftPreview": "Algunos de los 12 disfraces",
+  "seasonalGiftPreview": "Disfraces para tus amigos",
+  "seasonalGiftReady": "Ya puedes usarlo",
+  "seasonalGiftStorageTitle": "Los {count} disfraces son tuyos para siempre",
+  "@seasonalGiftStorageTitle": {"placeholders": {"count": {"type": "int"}}},
   "seasonalGiftLastDayTitle": "Hoy es el último día del regalo",
   "seasonalGiftLastDayBody": "Recibe los {count} disfraces gratis antes de medianoche. Una vez recibidos, son tuyos para siempre.",
   "@seasonalGiftLastDayBody": {

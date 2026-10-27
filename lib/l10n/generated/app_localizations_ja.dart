@@ -2588,27 +2588,24 @@ class AppLocalizationsJa extends AppLocalizations {
   String get seasonalGiftTitle => '季節のプレゼント';
 
   @override
-  String get seasonalGiftBody => '仲間たちの特別な姿を楽しもう。';
+  String get seasonalGiftBody => '仲間にしているキャラクターの衣装を先にご紹介。';
 
   @override
   String get seasonalGiftView => 'プレゼントを見る';
 
   @override
-  String seasonalGiftClaim(int count) {
-    return '衣装$count着を無料で受け取る';
-  }
+  String get seasonalGiftClaim => '仲間のハロウィン衣装を受け取る';
 
   @override
   String seasonalGiftDeadline(String date) {
-    return '$dateまで受け取れます';
+    return '$dateまで無料で受け取れます';
   }
 
   @override
   String get seasonalGiftKeeps => '受け取った衣装はずっと使えます。';
 
   @override
-  String get seasonalGiftLockedCharacters =>
-      'まだ持っていないキャラクターの衣装も保管されます。仲間にしたら着せられます。';
+  String get seasonalGiftLockedCharacters => 'これから仲間にするキャラクターの衣装も保管されます。';
 
   @override
   String get seasonalGiftReceived => '衣装を受け取りました！';
@@ -2620,7 +2617,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get seasonalGiftClosed => 'プレゼントの受取期間は終了しました。';
 
   @override
-  String get seasonalGiftPreview => '12着の衣装の一部';
+  String get seasonalGiftPreview => '仲間に届いた衣装';
+
+  @override
+  String get seasonalGiftReady => '今すぐ着せられます';
+
+  @override
+  String seasonalGiftStorageTitle(int count) {
+    return '全$count着の衣装をずっと保管';
+  }
 
   @override
   String get seasonalGiftLastDayTitle => '今日がプレゼントの最終日です';

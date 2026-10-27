@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/costume_labels.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/character_costume.dart';
@@ -137,16 +138,20 @@ class _SeasonalGiftSheetState extends State<_SeasonalGiftSheet> {
     final store = SobraScope.of(context);
     final l10n = AppLocalizations.of(context);
     final claimed = store.hasClaimedSeasonalCostumes;
+    final outfits = CharacterCostumes.all
+        .where((costume) => store.ownsCharacter(costume.characterId))
+        .toList(growable: false);
     final deadline = MaterialLocalizations.of(
       context,
-    ).formatShortDate(CharacterCostumes.lastClaimDay);
+    ).formatShortMonthDay(CharacterCostumes.lastClaimDay);
     return SafeArea(
       child: ConstrainedBox(
         constraints: BoxConstraints(
           maxHeight: MediaQuery.sizeOf(context).height * .9,
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 24),
+          key: const ValueKey('seasonal-gift-scroll'),
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
@@ -166,73 +171,82 @@ class _SeasonalGiftSheetState extends State<_SeasonalGiftSheet> {
               ),
               Text(
                 claimed ? l10n.seasonalGiftReceived : l10n.seasonalGiftTitle,
-                style: pixelText(size: 26, bold: true),
+                style: pixelText(size: 30, bold: true, height: 1.15),
               ),
-              const SizedBox(height: 10),
-              Text(l10n.seasonalGiftBody, style: pixelText(size: 15)),
               if (!claimed) ...[
-                const SizedBox(height: 10),
-                Text(
-                  l10n.seasonalGiftDeadline(deadline),
-                  style: pixelText(
-                    size: 13,
-                    color: AppColors.cashInk,
-                    bold: true,
-                  ),
+                const SizedBox(height: 6),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.schedule,
+                      size: 20,
+                      color: AppColors.cashInk,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        l10n.seasonalGiftDeadline(deadline),
+                        style: pixelText(
+                          size: 16,
+                          color: AppColors.cashInk,
+                          bold: true,
+                          height: 1.2,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
-              const SizedBox(height: 20),
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final width = ((constraints.maxWidth - 16) / 3).clamp(
-                    50.0,
-                    112.0,
-                  );
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      for (final id in const ['poodle', 'michi', 'alpaca'])
-                        CharacterSprite(
-                          characterId: id,
-                          costumeId: CharacterCostumes.forCharacter(
-                            id,
-                          ).single.id,
-                          role: CharacterMotionRole.idle,
-                          width: width,
-                          animate: false,
-                        ),
-                    ],
-                  );
-                },
-              ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 16),
               Text(
                 l10n.seasonalGiftPreview,
-                textAlign: TextAlign.center,
-                style: pixelText(size: 12, color: AppColors.muted),
+                style: pixelText(size: 22, bold: true, height: 1.2),
               ),
-              const SizedBox(height: 20),
-              PixelCard(
-                color: AppColors.cashSoft,
-                borderColor: AppColors.cashInk,
-                elevation: PixelElevation.none,
-                child: Text(
-                  l10n.seasonalGiftKeeps,
-                  style: pixelText(
-                    size: 16,
-                    bold: true,
+              const SizedBox(height: 4),
+              Text(
+                l10n.seasonalGiftBody,
+                style: pixelText(size: 14, color: AppColors.muted, height: 1.3),
+              ),
+              for (final costume in outfits) ...[
+                _OwnedCostumeGiftRow(costume: costume),
+                const Divider(height: 1, color: AppColors.line),
+              ],
+              const SizedBox(height: 12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.card_giftcard,
+                    size: 40,
                     color: AppColors.cashInk,
                   ),
-                ),
-              ),
-              const SizedBox(height: 14),
-              Text(
-                l10n.seasonalGiftLockedCharacters,
-                style: pixelText(
-                  size: 14,
-                  color: AppColors.muted,
-                  height: 1.45,
-                ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.seasonalGiftStorageTitle(
+                            CharacterCostumes.all.length,
+                          ),
+                          style: pixelText(size: 17, bold: true, height: 1.2),
+                        ),
+                        if (outfits.length < CharacterCostumes.all.length) ...[
+                          const SizedBox(height: 5),
+                          Text(
+                            l10n.seasonalGiftLockedCharacters,
+                            style: pixelText(
+                              size: 14,
+                              color: AppColors.muted,
+                              height: 1.3,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
               ),
               if (_error != null || _closed) ...[
                 const SizedBox(height: 14),
@@ -244,18 +258,24 @@ class _SeasonalGiftSheetState extends State<_SeasonalGiftSheet> {
                   ),
                 ),
               ],
-              const SizedBox(height: 20),
+              const SizedBox(height: 12),
               PixelButton(
                 key: const ValueKey('claim-seasonal-costumes'),
-                maxLines: 2,
+                maxLines: 3,
                 label: claimed
                     ? l10n.seasonalGiftWardrobe
-                    : l10n.seasonalGiftClaim(CharacterCostumes.all.length),
+                    : l10n.seasonalGiftClaim,
                 onPressed: _busy || _closed
                     ? null
                     : claimed
                     ? () => Navigator.pop(context, true)
                     : _claim,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.seasonalGiftKeeps,
+                textAlign: TextAlign.center,
+                style: pixelText(size: 13, color: AppColors.muted, height: 1.3),
               ),
               if (_busy)
                 const Padding(
@@ -271,6 +291,76 @@ class _SeasonalGiftSheetState extends State<_SeasonalGiftSheet> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _OwnedCostumeGiftRow extends StatelessWidget {
+  const _OwnedCostumeGiftRow({required this.costume});
+
+  final CharacterCostume costume;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final name = CharacterCatalog.require(costume.characterId).displayName;
+    return Padding(
+      key: ValueKey('seasonal-gift-character-${costume.characterId}'),
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final width = (constraints.maxWidth * .28).clamp(64.0, 96.0);
+          return Row(
+            children: [
+              SizedBox(
+                width: width + 16,
+                child: Center(
+                  child: ExcludeSemantics(
+                    child: CharacterSprite(
+                      characterId: costume.characterId,
+                      costumeId: costume.id,
+                      role: CharacterMotionRole.idle,
+                      width: width,
+                      animate: false,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 20),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: pixelText(size: 19, bold: true, height: 1.2),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      costumeDisplayName(l10n, costume.id),
+                      style: pixelText(
+                        size: 17,
+                        bold: true,
+                        color: AppColors.cashInk,
+                        height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 7),
+                    Text(
+                      l10n.seasonalGiftReady,
+                      style: pixelText(
+                        size: 14,
+                        color: AppColors.muted,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

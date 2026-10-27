@@ -387,6 +387,7 @@ void main() {
       testWidgets('gift card remains usable at large text in $locale', (
         tester,
       ) async {
+        SharedPreferences.setMockInitialValues({});
         tester.view.physicalSize = const Size(320, 568);
         tester.view.devicePixelRatio = 1;
         addTearDown(tester.view.resetPhysicalSize);

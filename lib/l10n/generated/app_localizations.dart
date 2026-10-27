@@ -4567,7 +4567,7 @@ abstract class AppLocalizations {
   /// No description provided for @seasonalGiftBody.
   ///
   /// In es, this message translates to:
-  /// **'Un cambio especial para tus amigos.'**
+  /// **'Primero te mostramos a los amigos que ya tienes.'**
   String get seasonalGiftBody;
 
   /// No description provided for @seasonalGiftView.
@@ -4579,13 +4579,13 @@ abstract class AppLocalizations {
   /// No description provided for @seasonalGiftClaim.
   ///
   /// In es, this message translates to:
-  /// **'Recibir {count} disfraces gratis'**
-  String seasonalGiftClaim(int count);
+  /// **'Recibir disfraces para mis amigos'**
+  String get seasonalGiftClaim;
 
   /// No description provided for @seasonalGiftDeadline.
   ///
   /// In es, this message translates to:
-  /// **'Recíbelo hasta el {date}'**
+  /// **'Gratis hasta el {date}'**
   String seasonalGiftDeadline(String date);
 
   /// No description provided for @seasonalGiftKeeps.
@@ -4597,7 +4597,7 @@ abstract class AppLocalizations {
   /// No description provided for @seasonalGiftLockedCharacters.
   ///
   /// In es, this message translates to:
-  /// **'También guardamos los disfraces de amigos que aún no tienes. Podrás usarlos cuando consigas al personaje.'**
+  /// **'Los disfraces de amigos que consigas después también quedan guardados.'**
   String get seasonalGiftLockedCharacters;
 
   /// No description provided for @seasonalGiftReceived.
@@ -4621,8 +4621,20 @@ abstract class AppLocalizations {
   /// No description provided for @seasonalGiftPreview.
   ///
   /// In es, this message translates to:
-  /// **'Algunos de los 12 disfraces'**
+  /// **'Disfraces para tus amigos'**
   String get seasonalGiftPreview;
+
+  /// No description provided for @seasonalGiftReady.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya puedes usarlo'**
+  String get seasonalGiftReady;
+
+  /// No description provided for @seasonalGiftStorageTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Los {count} disfraces son tuyos para siempre'**
+  String seasonalGiftStorageTitle(int count);
 
   /// No description provided for @seasonalGiftLastDayTitle.
   ///

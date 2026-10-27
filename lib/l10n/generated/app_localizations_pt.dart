@@ -2704,19 +2704,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get seasonalGiftTitle => 'Um presente da temporada';
 
   @override
-  String get seasonalGiftBody => 'Um visual especial para seus amigos.';
+  String get seasonalGiftBody =>
+      'Veja primeiro as fantasias dos amigos que você já tem.';
 
   @override
   String get seasonalGiftView => 'Ver presente';
 
   @override
-  String seasonalGiftClaim(int count) {
-    return 'Receber $count fantasias grátis';
-  }
+  String get seasonalGiftClaim => 'Receber fantasias dos meus amigos';
 
   @override
   String seasonalGiftDeadline(String date) {
-    return 'Receba até $date';
+    return 'Grátis até $date';
   }
 
   @override
@@ -2724,7 +2723,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get seasonalGiftLockedCharacters =>
-      'As fantasias de personagens que você ainda não tem também ficam guardadas. Use-as quando conseguir o personagem.';
+      'As fantasias dos amigos que você conseguir depois também ficam guardadas.';
 
   @override
   String get seasonalGiftReceived => 'Suas fantasias estão guardadas!';
@@ -2737,7 +2736,15 @@ class AppLocalizationsPt extends AppLocalizations {
       'O prazo para receber este presente terminou.';
 
   @override
-  String get seasonalGiftPreview => 'Uma prévia das 12 fantasias';
+  String get seasonalGiftPreview => 'Fantasias para seus amigos';
+
+  @override
+  String get seasonalGiftReady => 'Já pode vestir';
+
+  @override
+  String seasonalGiftStorageTitle(int count) {
+    return 'Guarde as $count fantasias para sempre';
+  }
 
   @override
   String get seasonalGiftLastDayTitle => 'Hoje é o último dia do presente';
