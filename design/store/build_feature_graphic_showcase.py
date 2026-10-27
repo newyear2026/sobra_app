@@ -21,6 +21,7 @@ the app name is literally the same artwork.
 from __future__ import annotations
 
 import importlib.util
+import sys
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
@@ -51,6 +52,18 @@ FONT = ROOT / "assets" / "fonts" / "PixelifySans.ttf"
 
 NAME = "Sobrita"
 TAGLINE_LINES = ["Track your spending.", "Raise a pixel cat."]
+
+# Per-language versions, for a listing whose screens would otherwise be in
+# another language: the tagline, and the store captures (status bar cropped)
+# that stand in for the two design renders. The default stays the English
+# tagline over the design renders, which is what the es listing already uses.
+LOCALIZED = {
+    "pt": {
+        "tagline": ["Controle seus gastos.", "Cuide de um gato pixel."],
+        "phones": [("shots/pt/6-cash.png", 320, (838, 244)), ("shots/pt/3-budget.png", 350, (682, 262))],
+    },
+}
+STATUS_BAR = 56   # as in build_screenshots.py
 
 # Two coins from the icon's own artwork, sitting above and below the play
 # button's zone rather than beside it. They tie the column to the phones across
@@ -92,7 +105,11 @@ def rounded(art: Image.Image, radius: int) -> Image.Image:
 
 def phone(screen: str, height: int) -> Image.Image:
     """A screenshot in a plain dark bezel."""
-    shot = Image.open(ROOT / "design" / "screens" / screen).convert("RGB")
+    if screen.startswith("shots/"):
+        shot = Image.open(HERE / screen).convert("RGB")
+        shot = shot.crop((0, STATUS_BAR, shot.width, shot.height))
+    else:
+        shot = Image.open(ROOT / "design" / "screens" / screen).convert("RGB")
     width = round(height * shot.width / shot.height)
     shot = shot.resize((width, height), Image.LANCZOS)
 
@@ -120,9 +137,13 @@ def lifted(art: Image.Image, blur: int = 16, drop: int = 10, alpha: int = 135) -
 
 
 def main() -> None:
+    locale = sys.argv[1] if len(sys.argv) > 1 else None
+    local = LOCALIZED.get(locale, {}) if locale else {}
+    if locale and not local:
+        raise SystemExit(f"no showcase copy for {locale!r}")
     banner = base.grid_field(WIDTH, HEIGHT)
 
-    for screen, height, centre in PHONES:
+    for screen, height, centre in local.get("phones", PHONES):
         art = lifted(phone(screen, height))
         banner.alpha_composite(art, (round(centre[0] - art.width / 2),
                                      round(centre[1] - art.height / 2)))
@@ -138,10 +159,11 @@ def main() -> None:
 
     pen = ImageDraw.Draw(banner)
     pen.text((COLUMN_X, NAME_Y), NAME, font=pixel_font(60, 700), fill=(*PAPER, 255), anchor="mm")
-    for line, y in zip(TAGLINE_LINES, TAGLINE_Y):
+    for line, y in zip(local.get("tagline", TAGLINE_LINES), TAGLINE_Y):
         pen.text((COLUMN_X, y), line, font=pixel_font(23, 500), fill=(*TAGLINE, 255), anchor="mm")
 
-    out = HERE / "sobrita-feature-graphic-showcase-1024x500.png"
+    suffix = f"-{locale}" if locale else ""
+    out = HERE / f"sobrita-feature-graphic-showcase{suffix}-1024x500.png"
     banner.convert("RGB").save(out)
     print(f"wrote {out.name}")
 

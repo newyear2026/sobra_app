@@ -1,0 +1,150 @@
+{
+  "created": "2026-10-22",
+  "tool": "built-in image_gen",
+  "language": "es-MX",
+  "artifacts": [
+    {
+      "n": 1,
+      "slug": "where-did-it-go",
+      "shape": "square",
+      "headline": "¿En qué se fue?",
+      "sub": "Registra tus gastos con Sobrita.",
+      "file": "images/IMG01-square.png",
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-7c3d05be-7f08-4924-8f52-8627b6e1b992.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1674448,
+      "sha256": "49f68fe8f061b610cc88677058962f1c558453a47067d5f665415361f49e3b9d"
+    },
+    {
+      "n": 2,
+      "slug": "daily-clarity",
+      "shape": "square",
+      "headline": "Hoy, con más claridad.",
+      "sub": "Tu presupuesto, a tu ritmo.",
+      "file": "images/IMG02-square.png",
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-f21aa76c-098b-4323-9953-ddc0e32a3b45.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1902915,
+      "sha256": "fde9d988dbd502c7ba9b069670ec8b1d847a0772a11c7f191a73f5662043b9f4"
+    },
+    {
+      "n": 3,
+      "slug": "coffee-and-record",
+      "shape": "square",
+      "headline": "Un café. Un registro.",
+      "sub": "Empieza con lo de hoy.",
+      "file": "images/IMG03-square.png",
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-3140d32c-4d0a-466a-8bb0-ac9a2d1fa467.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1916669,
+      "sha256": "54363c9ef9e30fe40d92d7d03f703ec56087784313a760847052f58be6e74b6f"
+    },
+    {
+      "n": 4,
+      "slug": "quincena-companion",
+      "shape": "square",
+      "headline": "Tu quincena,\ncon compañía.",
+      "sub": "Un michi para tu día a día.",
+      "file": "images/IMG04-square.png",
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-5fbf118e-655d-4e13-bb57-5164dbd569c5.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1566356,
+      "sha256": "d6ceb6e2ce2937a4612dfe61e15850d3017cde0a781216188bb31503bcf5969d"
+    },
+    {
+      "n": 5,
+      "slug": "categories-organized",
+      "shape": "square",
+      "headline": "Tus gastos,\nen su lugar.",
+      "sub": "Organiza por categoría.",
+      "file": "images/IMG05-square.png",
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-e1aa5e64-d57d-4ebd-8b31-b2bdc8e82da8.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1669169,
+      "sha256": "0cab29a846480171f1b7bce65d7adff5045feeb21c0d7e54d63980e7b9f291f1"
+    },
+    {
+      "n": 6,
+      "slug": "your-own-pace",
+      "shape": "landscape",
+      "headline": "Tu dinero,\na tu ritmo.",
+      "sub": "Registra. Revisa. Sigue.",
+      "file": "images/IMG06-landscape.png",
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-d2a2950b-3d40-4e17-af31-14a1be46a5df.png",
+      "width": 1734,
+      "height": 907,
+      "bytes": 1625519,
+      "sha256": "3ba9d399e978a3bcf864cdb61056ed8db61116a135fb2f6e20e52b934645d0a8"
+    },
+    {
+      "n": 7,
+      "slug": "personalize-your-corner",
+      "shape": "landscape",
+      "headline": "Un espacio\nmuy tuyo.",
+      "sub": "Registra gastos y decora tu rincón.",
+      "file": "images/IMG07-landscape.png",
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-96fceab6-62f1-43f4-b171-d5e7e73364ac.png",
+      "width": 1735,
+      "height": 907,
+      "bytes": 2037213,
+      "sha256": "d80cba27b05f0dc1fdd0c194734e24daf91fae473e957cf6abf94944ef9d0c77"
+    },
+    {
+      "n": 8,
+      "slug": "evening-ritual",
+      "shape": "landscape",
+      "headline": "Tu pequeño\nritual diario.",
+      "sub": "Un momento para tus gastos.",
+      "file": "images/IMG08-landscape.png",
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-423c5ab8-9131-4937-87e8-86403ae9b715.png",
+      "width": 1734,
+      "height": 907,
+      "bytes": 1764516,
+      "sha256": "5d47f948d25f6aef3ac91d404bca2610b9e37def587cf51783ed00df32526e42"
+    },
+    {
+      "n": 9,
+      "slug": "little-expenses-big-habit",
+      "shape": "portrait",
+      "headline": "Pequeños gastos.\nUn gran hábito.",
+      "sub": "Registra tu día con Sobrita.",
+      "file": "images/IMG09-portrait.png",
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-fb319d4a-1006-480d-8c5e-ec6fe8148f6f.png",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 1739076,
+      "sha256": "d6afbe9c721b20f8f048cc2aa943a701cc7a323ddb26d759b7393eba4db601a3"
+    },
+    {
+      "n": 10,
+      "slug": "little-friend",
+      "shape": "portrait",
+      "headline": "Un presupuesto.\nUn pequeño amigo.",
+      "sub": "Gastos y gatitos, a tu manera.",
+      "file": "images/IMG10-portrait.png",
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-cc7a8539-6267-49ed-8974-8f78d29dfbdd.png",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 1779762,
+      "sha256": "4643d4f2ec8565b1eea5e5fd0d6d86a5e6cfbd7d81688804fb975e4a5e520776"
+    }
+  ],
+  "validation": {
+    "png_files": 10,
+    "format_counts": {
+      "square": 5,
+      "landscape": 3,
+      "portrait": 2
+    },
+    "all_under_5MB": true,
+    "all_aspect_ratios_within_one_percent": true,
+    "minimum_sizes_passed": true,
+    "visual_review": "Spanish copy, mascot identity, composition and text clipping reviewed for all ten outputs.",
+    "specification_source": "https://support.google.com/google-ads/answer/9948381"
+  }
+}

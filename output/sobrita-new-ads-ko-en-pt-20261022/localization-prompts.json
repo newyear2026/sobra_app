@@ -1,0 +1,609 @@
+{
+  "created": "2026-10-22",
+  "tool": "built-in image_gen",
+  "source_set": "output/sobrita-new-ads-es-20261022",
+  "translations": [
+    {
+      "n": 1,
+      "ko": [
+        "어디에 썼더라?",
+        "Sobrita와 함께 지출을 기록해요."
+      ],
+      "en": [
+        "Where did it go?",
+        "Track your spending with Sobrita."
+      ],
+      "pt": [
+        "Para onde foi?",
+        "Registre seus gastos no Sobrita."
+      ]
+    },
+    {
+      "n": 2,
+      "ko": [
+        "오늘의 지출을 한눈에.",
+        "내 예산, 내 속도대로."
+      ],
+      "en": [
+        "A clearer view of today.",
+        "Your budget. Your pace."
+      ],
+      "pt": [
+        "Mais clareza no seu dia.",
+        "Seu orçamento, no seu ritmo."
+      ]
+    },
+    {
+      "n": 3,
+      "ko": [
+        "커피 한 잔,\n기록 한 번.",
+        "오늘의 지출부터 가볍게 시작해요."
+      ],
+      "en": [
+        "One coffee.\nOne entry.",
+        "Start with today's spending."
+      ],
+      "pt": [
+        "Um café.\nUm registro.",
+        "Comece pelos gastos de hoje."
+      ]
+    },
+    {
+      "n": 4,
+      "ko": [
+        "예산 관리도,\n고양이와 함께.",
+        "매일 곁에 있는 작은 친구."
+      ],
+      "en": [
+        "Your budget.\nA little company.",
+        "A kitty by your side, every day."
+      ],
+      "pt": [
+        "Seu orçamento,\ncom companhia.",
+        "Um gatinho para o seu dia a dia."
+      ]
+    },
+    {
+      "n": 5,
+      "ko": [
+        "나의 지출,\n차곡차곡 정리.",
+        "카테고리별로 한눈에."
+      ],
+      "en": [
+        "Every expense,\nin its place.",
+        "Organize by category."
+      ],
+      "pt": [
+        "Seus gastos,\ncada um no seu lugar.",
+        "Organize por categoria."
+      ]
+    },
+    {
+      "n": 6,
+      "ko": [
+        "내 돈 관리도,\n내 속도대로.",
+        "기록하고, 살펴보고, 이어가요."
+      ],
+      "en": [
+        "Your money.\nYour pace.",
+        "Record. Review. Keep going."
+      ],
+      "pt": [
+        "Seu dinheiro,\nno seu ritmo.",
+        "Registre. Confira. Continue."
+      ]
+    },
+    {
+      "n": 7,
+      "ko": [
+        "내 취향을 담은\n나만의 공간.",
+        "지출을 기록하고 내 방도 꾸며요."
+      ],
+      "en": [
+        "A space\nthat's all yours.",
+        "Track spending. Decorate your corner."
+      ],
+      "pt": [
+        "Um cantinho\ncom a sua cara.",
+        "Registre gastos e decore seu espaço."
+      ]
+    },
+    {
+      "n": 8,
+      "ko": [
+        "하루의 작은\n기록 습관.",
+        "내 지출을 돌아보는 시간."
+      ],
+      "en": [
+        "Your little\ndaily ritual.",
+        "A moment to review your spending."
+      ],
+      "pt": [
+        "Seu pequeno\nritual diário.",
+        "Um momento para cuidar dos gastos."
+      ]
+    },
+    {
+      "n": 9,
+      "ko": [
+        "작은 지출도,\n꾸준히 기록해요.",
+        "Sobrita와 매일의 지출을 기록해요."
+      ],
+      "en": [
+        "Small expenses.\nA lasting habit.",
+        "Track your day with Sobrita."
+      ],
+      "pt": [
+        "Pequenos gastos.\nUm grande hábito.",
+        "Registre seu dia com o Sobrita."
+      ]
+    },
+    {
+      "n": 10,
+      "ko": [
+        "나의 가계부,\n나의 작은 친구.",
+        "고양이와 함께, 나만의 지출 관리."
+      ],
+      "en": [
+        "One budget.\nOne little friend.",
+        "Spending and kitties, your way."
+      ],
+      "pt": [
+        "Um orçamento.\nUm pequeno amigo.",
+        "Gastos e gatinhos, do seu jeito."
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "id": "ko-01",
+      "n": 1,
+      "language": "ko",
+      "folder": "ko",
+      "name": "Korean",
+      "shape": "square",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG01-square.png",
+      "source_headline": "¿En qué se fue?",
+      "source_sub": "Registra tus gastos con Sobrita.",
+      "headline": "어디에 썼더라?",
+      "sub": "Sobrita와 함께 지출을 기록해요.",
+      "footer": "지출 관리 · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized Sobrita advertisement, IMG01.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Korean text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1254 × 1254 aspect ratio and square framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"¿En qué se fue?\" → \"어디에 썼더라?\"\nSecondary copy \"Registra tus gastos con Sobrita.\" → \"Sobrita와 함께 지출을 기록해요.\"\nFooter \"Control de gastos · Android\" → \"지출 관리 · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use a professional highly legible Korean Hangul sans-serif, with correctly formed syllables and clean spacing. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "en-01",
+      "n": 1,
+      "language": "en",
+      "folder": "en",
+      "name": "English",
+      "shape": "square",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG01-square.png",
+      "source_headline": "¿En qué se fue?",
+      "source_sub": "Registra tus gastos con Sobrita.",
+      "headline": "Where did it go?",
+      "sub": "Track your spending with Sobrita.",
+      "footer": "Expense tracking · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final English localized Sobrita advertisement, IMG01.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified English text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1254 × 1254 aspect ratio and square framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"¿En qué se fue?\" → \"Where did it go?\"\nSecondary copy \"Registra tus gastos con Sobrita.\" → \"Track your spending with Sobrita.\"\nFooter \"Control de gastos · Android\" → \"Expense tracking · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "pt-BR-01",
+      "n": 1,
+      "language": "pt",
+      "folder": "pt-BR",
+      "name": "Brazilian Portuguese (pt-BR)",
+      "shape": "square",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG01-square.png",
+      "source_headline": "¿En qué se fue?",
+      "source_sub": "Registra tus gastos con Sobrita.",
+      "headline": "Para onde foi?",
+      "sub": "Registre seus gastos no Sobrita.",
+      "footer": "Controle de gastos · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Brazilian Portuguese (pt-BR) localized Sobrita advertisement, IMG01.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Brazilian Portuguese (pt-BR) text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1254 × 1254 aspect ratio and square framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"¿En qué se fue?\" → \"Para onde foi?\"\nSecondary copy \"Registra tus gastos con Sobrita.\" → \"Registre seus gastos no Sobrita.\"\nFooter \"Control de gastos · Android\" → \"Controle de gastos · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "ko-02",
+      "n": 2,
+      "language": "ko",
+      "folder": "ko",
+      "name": "Korean",
+      "shape": "square",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG02-square.png",
+      "source_headline": "Hoy, con más claridad.",
+      "source_sub": "Tu presupuesto, a tu ritmo.",
+      "headline": "오늘의 지출을 한눈에.",
+      "sub": "내 예산, 내 속도대로.",
+      "footer": "지출 관리 · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized Sobrita advertisement, IMG02.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Korean text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1254 × 1254 aspect ratio and square framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Hoy, con más claridad.\" → \"오늘의 지출을 한눈에.\"\nSecondary copy \"Tu presupuesto, a tu ritmo.\" → \"내 예산, 내 속도대로.\"\nFooter \"Control de gastos · Android\" → \"지출 관리 · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use a professional highly legible Korean Hangul sans-serif, with correctly formed syllables and clean spacing. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "en-02",
+      "n": 2,
+      "language": "en",
+      "folder": "en",
+      "name": "English",
+      "shape": "square",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG02-square.png",
+      "source_headline": "Hoy, con más claridad.",
+      "source_sub": "Tu presupuesto, a tu ritmo.",
+      "headline": "A clearer view of today.",
+      "sub": "Your budget. Your pace.",
+      "footer": "Expense tracking · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final English localized Sobrita advertisement, IMG02.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified English text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1254 × 1254 aspect ratio and square framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Hoy, con más claridad.\" → \"A clearer view of today.\"\nSecondary copy \"Tu presupuesto, a tu ritmo.\" → \"Your budget. Your pace.\"\nFooter \"Control de gastos · Android\" → \"Expense tracking · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "pt-BR-02",
+      "n": 2,
+      "language": "pt",
+      "folder": "pt-BR",
+      "name": "Brazilian Portuguese (pt-BR)",
+      "shape": "square",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG02-square.png",
+      "source_headline": "Hoy, con más claridad.",
+      "source_sub": "Tu presupuesto, a tu ritmo.",
+      "headline": "Mais clareza no seu dia.",
+      "sub": "Seu orçamento, no seu ritmo.",
+      "footer": "Controle de gastos · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Brazilian Portuguese (pt-BR) localized Sobrita advertisement, IMG02.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Brazilian Portuguese (pt-BR) text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1254 × 1254 aspect ratio and square framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Hoy, con más claridad.\" → \"Mais clareza no seu dia.\"\nSecondary copy \"Tu presupuesto, a tu ritmo.\" → \"Seu orçamento, no seu ritmo.\"\nFooter \"Control de gastos · Android\" → \"Controle de gastos · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "ko-03",
+      "n": 3,
+      "language": "ko",
+      "folder": "ko",
+      "name": "Korean",
+      "shape": "square",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG03-square.png",
+      "source_headline": "Un café. Un registro.",
+      "source_sub": "Empieza con lo de hoy.",
+      "headline": "커피 한 잔,\n기록 한 번.",
+      "sub": "오늘의 지출부터 가볍게 시작해요.",
+      "footer": "지출 관리 · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized Sobrita advertisement, IMG03.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Korean text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1254 × 1254 aspect ratio and square framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Un café. Un registro.\" → \"커피 한 잔,\\n기록 한 번.\"\nSecondary copy \"Empieza con lo de hoy.\" → \"오늘의 지출부터 가볍게 시작해요.\"\nFooter \"Control de gastos · Android\" → \"지출 관리 · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use a professional highly legible Korean Hangul sans-serif, with correctly formed syllables and clean spacing. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "en-03",
+      "n": 3,
+      "language": "en",
+      "folder": "en",
+      "name": "English",
+      "shape": "square",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG03-square.png",
+      "source_headline": "Un café. Un registro.",
+      "source_sub": "Empieza con lo de hoy.",
+      "headline": "One coffee.\nOne entry.",
+      "sub": "Start with today's spending.",
+      "footer": "Expense tracking · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final English localized Sobrita advertisement, IMG03.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified English text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1254 × 1254 aspect ratio and square framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Un café. Un registro.\" → \"One coffee.\\nOne entry.\"\nSecondary copy \"Empieza con lo de hoy.\" → \"Start with today's spending.\"\nFooter \"Control de gastos · Android\" → \"Expense tracking · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "pt-BR-03",
+      "n": 3,
+      "language": "pt",
+      "folder": "pt-BR",
+      "name": "Brazilian Portuguese (pt-BR)",
+      "shape": "square",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG03-square.png",
+      "source_headline": "Un café. Un registro.",
+      "source_sub": "Empieza con lo de hoy.",
+      "headline": "Um café.\nUm registro.",
+      "sub": "Comece pelos gastos de hoje.",
+      "footer": "Controle de gastos · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Brazilian Portuguese (pt-BR) localized Sobrita advertisement, IMG03.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Brazilian Portuguese (pt-BR) text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1254 × 1254 aspect ratio and square framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Un café. Un registro.\" → \"Um café.\\nUm registro.\"\nSecondary copy \"Empieza con lo de hoy.\" → \"Comece pelos gastos de hoje.\"\nFooter \"Control de gastos · Android\" → \"Controle de gastos · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "ko-04",
+      "n": 4,
+      "language": "ko",
+      "folder": "ko",
+      "name": "Korean",
+      "shape": "square",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG04-square.png",
+      "source_headline": "Tu quincena,\ncon compañía.",
+      "source_sub": "Un michi para tu día a día.",
+      "headline": "예산 관리도,\n고양이와 함께.",
+      "sub": "매일 곁에 있는 작은 친구.",
+      "footer": "지출 관리 · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized Sobrita advertisement, IMG04.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Korean text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1254 × 1254 aspect ratio and square framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Tu quincena,\\ncon compañía.\" → \"예산 관리도,\\n고양이와 함께.\"\nSecondary copy \"Un michi para tu día a día.\" → \"매일 곁에 있는 작은 친구.\"\nFooter \"Control de gastos · Android\" → \"지출 관리 · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use a professional highly legible Korean Hangul sans-serif, with correctly formed syllables and clean spacing. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "en-04",
+      "n": 4,
+      "language": "en",
+      "folder": "en",
+      "name": "English",
+      "shape": "square",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG04-square.png",
+      "source_headline": "Tu quincena,\ncon compañía.",
+      "source_sub": "Un michi para tu día a día.",
+      "headline": "Your budget.\nA little company.",
+      "sub": "A kitty by your side, every day.",
+      "footer": "Expense tracking · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final English localized Sobrita advertisement, IMG04.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified English text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1254 × 1254 aspect ratio and square framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Tu quincena,\\ncon compañía.\" → \"Your budget.\\nA little company.\"\nSecondary copy \"Un michi para tu día a día.\" → \"A kitty by your side, every day.\"\nFooter \"Control de gastos · Android\" → \"Expense tracking · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "pt-BR-04",
+      "n": 4,
+      "language": "pt",
+      "folder": "pt-BR",
+      "name": "Brazilian Portuguese (pt-BR)",
+      "shape": "square",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG04-square.png",
+      "source_headline": "Tu quincena,\ncon compañía.",
+      "source_sub": "Un michi para tu día a día.",
+      "headline": "Seu orçamento,\ncom companhia.",
+      "sub": "Um gatinho para o seu dia a dia.",
+      "footer": "Controle de gastos · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Brazilian Portuguese (pt-BR) localized Sobrita advertisement, IMG04.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Brazilian Portuguese (pt-BR) text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1254 × 1254 aspect ratio and square framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Tu quincena,\\ncon compañía.\" → \"Seu orçamento,\\ncom companhia.\"\nSecondary copy \"Un michi para tu día a día.\" → \"Um gatinho para o seu dia a dia.\"\nFooter \"Control de gastos · Android\" → \"Controle de gastos · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "ko-05",
+      "n": 5,
+      "language": "ko",
+      "folder": "ko",
+      "name": "Korean",
+      "shape": "square",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG05-square.png",
+      "source_headline": "Tus gastos,\nen su lugar.",
+      "source_sub": "Organiza por categoría.",
+      "headline": "나의 지출,\n차곡차곡 정리.",
+      "sub": "카테고리별로 한눈에.",
+      "footer": "지출 관리 · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized Sobrita advertisement, IMG05.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Korean text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1254 × 1254 aspect ratio and square framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Tus gastos,\\nen su lugar.\" → \"나의 지출,\\n차곡차곡 정리.\"\nSecondary copy \"Organiza por categoría.\" → \"카테고리별로 한눈에.\"\nFooter \"Control de gastos · Android\" → \"지출 관리 · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use a professional highly legible Korean Hangul sans-serif, with correctly formed syllables and clean spacing. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "en-05",
+      "n": 5,
+      "language": "en",
+      "folder": "en",
+      "name": "English",
+      "shape": "square",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG05-square.png",
+      "source_headline": "Tus gastos,\nen su lugar.",
+      "source_sub": "Organiza por categoría.",
+      "headline": "Every expense,\nin its place.",
+      "sub": "Organize by category.",
+      "footer": "Expense tracking · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final English localized Sobrita advertisement, IMG05.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified English text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1254 × 1254 aspect ratio and square framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Tus gastos,\\nen su lugar.\" → \"Every expense,\\nin its place.\"\nSecondary copy \"Organiza por categoría.\" → \"Organize by category.\"\nFooter \"Control de gastos · Android\" → \"Expense tracking · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "pt-BR-05",
+      "n": 5,
+      "language": "pt",
+      "folder": "pt-BR",
+      "name": "Brazilian Portuguese (pt-BR)",
+      "shape": "square",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG05-square.png",
+      "source_headline": "Tus gastos,\nen su lugar.",
+      "source_sub": "Organiza por categoría.",
+      "headline": "Seus gastos,\ncada um no seu lugar.",
+      "sub": "Organize por categoria.",
+      "footer": "Controle de gastos · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Brazilian Portuguese (pt-BR) localized Sobrita advertisement, IMG05.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Brazilian Portuguese (pt-BR) text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1254 × 1254 aspect ratio and square framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Tus gastos,\\nen su lugar.\" → \"Seus gastos,\\ncada um no seu lugar.\"\nSecondary copy \"Organiza por categoría.\" → \"Organize por categoria.\"\nFooter \"Control de gastos · Android\" → \"Controle de gastos · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "ko-06",
+      "n": 6,
+      "language": "ko",
+      "folder": "ko",
+      "name": "Korean",
+      "shape": "landscape",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG06-landscape.png",
+      "source_headline": "Tu dinero,\na tu ritmo.",
+      "source_sub": "Registra. Revisa. Sigue.",
+      "headline": "내 돈 관리도,\n내 속도대로.",
+      "sub": "기록하고, 살펴보고, 이어가요.",
+      "footer": "지출 관리 · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized Sobrita advertisement, IMG06.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Korean text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1734 × 907 aspect ratio and landscape framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Tu dinero,\\na tu ritmo.\" → \"내 돈 관리도,\\n내 속도대로.\"\nSecondary copy \"Registra. Revisa. Sigue.\" → \"기록하고, 살펴보고, 이어가요.\"\nFooter \"Control de gastos · Android\" → \"지출 관리 · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use a professional highly legible Korean Hangul sans-serif, with correctly formed syllables and clean spacing. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "en-06",
+      "n": 6,
+      "language": "en",
+      "folder": "en",
+      "name": "English",
+      "shape": "landscape",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG06-landscape.png",
+      "source_headline": "Tu dinero,\na tu ritmo.",
+      "source_sub": "Registra. Revisa. Sigue.",
+      "headline": "Your money.\nYour pace.",
+      "sub": "Record. Review. Keep going.",
+      "footer": "Expense tracking · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final English localized Sobrita advertisement, IMG06.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified English text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1734 × 907 aspect ratio and landscape framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Tu dinero,\\na tu ritmo.\" → \"Your money.\\nYour pace.\"\nSecondary copy \"Registra. Revisa. Sigue.\" → \"Record. Review. Keep going.\"\nFooter \"Control de gastos · Android\" → \"Expense tracking · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "pt-BR-06",
+      "n": 6,
+      "language": "pt",
+      "folder": "pt-BR",
+      "name": "Brazilian Portuguese (pt-BR)",
+      "shape": "landscape",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG06-landscape.png",
+      "source_headline": "Tu dinero,\na tu ritmo.",
+      "source_sub": "Registra. Revisa. Sigue.",
+      "headline": "Seu dinheiro,\nno seu ritmo.",
+      "sub": "Registre. Confira. Continue.",
+      "footer": "Controle de gastos · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Brazilian Portuguese (pt-BR) localized Sobrita advertisement, IMG06.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Brazilian Portuguese (pt-BR) text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1734 × 907 aspect ratio and landscape framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Tu dinero,\\na tu ritmo.\" → \"Seu dinheiro,\\nno seu ritmo.\"\nSecondary copy \"Registra. Revisa. Sigue.\" → \"Registre. Confira. Continue.\"\nFooter \"Control de gastos · Android\" → \"Controle de gastos · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "ko-07",
+      "n": 7,
+      "language": "ko",
+      "folder": "ko",
+      "name": "Korean",
+      "shape": "landscape",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG07-landscape.png",
+      "source_headline": "Un espacio\nmuy tuyo.",
+      "source_sub": "Registra gastos y decora tu rincón.",
+      "headline": "내 취향을 담은\n나만의 공간.",
+      "sub": "지출을 기록하고 내 방도 꾸며요.",
+      "footer": "지출 관리 · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized Sobrita advertisement, IMG07.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Korean text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1735 × 907 aspect ratio and landscape framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Un espacio\\nmuy tuyo.\" → \"내 취향을 담은\\n나만의 공간.\"\nSecondary copy \"Registra gastos y decora tu rincón.\" → \"지출을 기록하고 내 방도 꾸며요.\"\nFooter \"Control de gastos · Android\" → \"지출 관리 · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use a professional highly legible Korean Hangul sans-serif, with correctly formed syllables and clean spacing. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "en-07",
+      "n": 7,
+      "language": "en",
+      "folder": "en",
+      "name": "English",
+      "shape": "landscape",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG07-landscape.png",
+      "source_headline": "Un espacio\nmuy tuyo.",
+      "source_sub": "Registra gastos y decora tu rincón.",
+      "headline": "A space\nthat's all yours.",
+      "sub": "Track spending. Decorate your corner.",
+      "footer": "Expense tracking · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final English localized Sobrita advertisement, IMG07.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified English text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1735 × 907 aspect ratio and landscape framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Un espacio\\nmuy tuyo.\" → \"A space\\nthat's all yours.\"\nSecondary copy \"Registra gastos y decora tu rincón.\" → \"Track spending. Decorate your corner.\"\nFooter \"Control de gastos · Android\" → \"Expense tracking · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "pt-BR-07",
+      "n": 7,
+      "language": "pt",
+      "folder": "pt-BR",
+      "name": "Brazilian Portuguese (pt-BR)",
+      "shape": "landscape",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG07-landscape.png",
+      "source_headline": "Un espacio\nmuy tuyo.",
+      "source_sub": "Registra gastos y decora tu rincón.",
+      "headline": "Um cantinho\ncom a sua cara.",
+      "sub": "Registre gastos e decore seu espaço.",
+      "footer": "Controle de gastos · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Brazilian Portuguese (pt-BR) localized Sobrita advertisement, IMG07.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Brazilian Portuguese (pt-BR) text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1735 × 907 aspect ratio and landscape framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Un espacio\\nmuy tuyo.\" → \"Um cantinho\\ncom a sua cara.\"\nSecondary copy \"Registra gastos y decora tu rincón.\" → \"Registre gastos e decore seu espaço.\"\nFooter \"Control de gastos · Android\" → \"Controle de gastos · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "ko-08",
+      "n": 8,
+      "language": "ko",
+      "folder": "ko",
+      "name": "Korean",
+      "shape": "landscape",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG08-landscape.png",
+      "source_headline": "Tu pequeño\nritual diario.",
+      "source_sub": "Un momento para tus gastos.",
+      "headline": "하루의 작은\n기록 습관.",
+      "sub": "내 지출을 돌아보는 시간.",
+      "footer": "지출 관리 · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized Sobrita advertisement, IMG08.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Korean text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1734 × 907 aspect ratio and landscape framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Tu pequeño\\nritual diario.\" → \"하루의 작은\\n기록 습관.\"\nSecondary copy \"Un momento para tus gastos.\" → \"내 지출을 돌아보는 시간.\"\nFooter \"Control de gastos · Android\" → \"지출 관리 · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use a professional highly legible Korean Hangul sans-serif, with correctly formed syllables and clean spacing. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "en-08",
+      "n": 8,
+      "language": "en",
+      "folder": "en",
+      "name": "English",
+      "shape": "landscape",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG08-landscape.png",
+      "source_headline": "Tu pequeño\nritual diario.",
+      "source_sub": "Un momento para tus gastos.",
+      "headline": "Your little\ndaily ritual.",
+      "sub": "A moment to review your spending.",
+      "footer": "Expense tracking · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final English localized Sobrita advertisement, IMG08.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified English text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1734 × 907 aspect ratio and landscape framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Tu pequeño\\nritual diario.\" → \"Your little\\ndaily ritual.\"\nSecondary copy \"Un momento para tus gastos.\" → \"A moment to review your spending.\"\nFooter \"Control de gastos · Android\" → \"Expense tracking · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "pt-BR-08",
+      "n": 8,
+      "language": "pt",
+      "folder": "pt-BR",
+      "name": "Brazilian Portuguese (pt-BR)",
+      "shape": "landscape",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG08-landscape.png",
+      "source_headline": "Tu pequeño\nritual diario.",
+      "source_sub": "Un momento para tus gastos.",
+      "headline": "Seu pequeno\nritual diário.",
+      "sub": "Um momento para cuidar dos gastos.",
+      "footer": "Controle de gastos · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Brazilian Portuguese (pt-BR) localized Sobrita advertisement, IMG08.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Brazilian Portuguese (pt-BR) text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1734 × 907 aspect ratio and landscape framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Tu pequeño\\nritual diario.\" → \"Seu pequeno\\nritual diário.\"\nSecondary copy \"Un momento para tus gastos.\" → \"Um momento para cuidar dos gastos.\"\nFooter \"Control de gastos · Android\" → \"Controle de gastos · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "ko-09",
+      "n": 9,
+      "language": "ko",
+      "folder": "ko",
+      "name": "Korean",
+      "shape": "portrait",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG09-portrait.png",
+      "source_headline": "Pequeños gastos.\nUn gran hábito.",
+      "source_sub": "Registra tu día con Sobrita.",
+      "headline": "작은 지출도,\n꾸준히 기록해요.",
+      "sub": "Sobrita와 매일의 지출을 기록해요.",
+      "footer": "지출 관리 · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized Sobrita advertisement, IMG09.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Korean text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1122 × 1402 aspect ratio and portrait framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Pequeños gastos.\\nUn gran hábito.\" → \"작은 지출도,\\n꾸준히 기록해요.\"\nSecondary copy \"Registra tu día con Sobrita.\" → \"Sobrita와 매일의 지출을 기록해요.\"\nFooter \"Control de gastos · Android\" → \"지출 관리 · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use a professional highly legible Korean Hangul sans-serif, with correctly formed syllables and clean spacing. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "en-09",
+      "n": 9,
+      "language": "en",
+      "folder": "en",
+      "name": "English",
+      "shape": "portrait",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG09-portrait.png",
+      "source_headline": "Pequeños gastos.\nUn gran hábito.",
+      "source_sub": "Registra tu día con Sobrita.",
+      "headline": "Small expenses.\nA lasting habit.",
+      "sub": "Track your day with Sobrita.",
+      "footer": "Expense tracking · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final English localized Sobrita advertisement, IMG09.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified English text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1122 × 1402 aspect ratio and portrait framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Pequeños gastos.\\nUn gran hábito.\" → \"Small expenses.\\nA lasting habit.\"\nSecondary copy \"Registra tu día con Sobrita.\" → \"Track your day with Sobrita.\"\nFooter \"Control de gastos · Android\" → \"Expense tracking · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "pt-BR-09",
+      "n": 9,
+      "language": "pt",
+      "folder": "pt-BR",
+      "name": "Brazilian Portuguese (pt-BR)",
+      "shape": "portrait",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG09-portrait.png",
+      "source_headline": "Pequeños gastos.\nUn gran hábito.",
+      "source_sub": "Registra tu día con Sobrita.",
+      "headline": "Pequenos gastos.\nUm grande hábito.",
+      "sub": "Registre seu dia com o Sobrita.",
+      "footer": "Controle de gastos · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Brazilian Portuguese (pt-BR) localized Sobrita advertisement, IMG09.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Brazilian Portuguese (pt-BR) text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1122 × 1402 aspect ratio and portrait framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Pequeños gastos.\\nUn gran hábito.\" → \"Pequenos gastos.\\nUm grande hábito.\"\nSecondary copy \"Registra tu día con Sobrita.\" → \"Registre seu dia com o Sobrita.\"\nFooter \"Control de gastos · Android\" → \"Controle de gastos · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "ko-10",
+      "n": 10,
+      "language": "ko",
+      "folder": "ko",
+      "name": "Korean",
+      "shape": "portrait",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG10-portrait.png",
+      "source_headline": "Un presupuesto.\nUn pequeño amigo.",
+      "source_sub": "Gastos y gatitos, a tu manera.",
+      "headline": "나의 가계부,\n나의 작은 친구.",
+      "sub": "고양이와 함께, 나만의 지출 관리.",
+      "footer": "지출 관리 · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized Sobrita advertisement, IMG10.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Korean text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1122 × 1402 aspect ratio and portrait framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Un presupuesto.\\nUn pequeño amigo.\" → \"나의 가계부,\\n나의 작은 친구.\"\nSecondary copy \"Gastos y gatitos, a tu manera.\" → \"고양이와 함께, 나만의 지출 관리.\"\nFooter \"Control de gastos · Android\" → \"지출 관리 · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use a professional highly legible Korean Hangul sans-serif, with correctly formed syllables and clean spacing. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "en-10",
+      "n": 10,
+      "language": "en",
+      "folder": "en",
+      "name": "English",
+      "shape": "portrait",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG10-portrait.png",
+      "source_headline": "Un presupuesto.\nUn pequeño amigo.",
+      "source_sub": "Gastos y gatitos, a tu manera.",
+      "headline": "One budget.\nOne little friend.",
+      "sub": "Spending and kitties, your way.",
+      "footer": "Expense tracking · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final English localized Sobrita advertisement, IMG10.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified English text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1122 × 1402 aspect ratio and portrait framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Un presupuesto.\\nUn pequeño amigo.\" → \"One budget.\\nOne little friend.\"\nSecondary copy \"Gastos y gatitos, a tu manera.\" → \"Spending and kitties, your way.\"\nFooter \"Control de gastos · Android\" → \"Expense tracking · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    },
+    {
+      "id": "pt-BR-10",
+      "n": 10,
+      "language": "pt",
+      "folder": "pt-BR",
+      "name": "Brazilian Portuguese (pt-BR)",
+      "shape": "portrait",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-new-ads-es-20261022/images/IMG10-portrait.png",
+      "source_headline": "Un presupuesto.\nUn pequeño amigo.",
+      "source_sub": "Gastos y gatitos, a tu manera.",
+      "headline": "Um orçamento.\nUm pequeno amigo.",
+      "sub": "Gastos e gatinhos, do seu jeito.",
+      "footer": "Controle de gastos · Android",
+      "prompt": "Use case: text-localization.\nAsset type: final Brazilian Portuguese (pt-BR) localized Sobrita advertisement, IMG10.\nInput image 1 is the EDIT TARGET. Change ONLY its in-image Spanish text to the specified Brazilian Portuguese (pt-BR) text. This is a precision lettering replacement, not a new illustration or redesign.\nCanvas: preserve the original 1122 × 1402 aspect ratio and portrait framing. Produce ONE full-bleed advertisement.\nExact replacements (render the replacement strings verbatim, using the line breaks shown):\nHeadline \"Un presupuesto.\\nUn pequeño amigo.\" → \"Um orçamento.\\nUm pequeno amigo.\"\nSecondary copy \"Gastos y gatitos, a tu manera.\" → \"Gastos e gatinhos, do seu jeito.\"\nFooter \"Control de gastos · Android\" → \"Controle de gastos · Android\"\nThe brand word \"Sobrita\" must remain exactly as in the original, with identical spelling and position. Keep \"Android\" unchanged in the translated footer.\nTypography: match the original rounded bold sans-serif, hierarchy, colors, alignment, balance and whitespace. Use clean professionally typeset rounded sans-serif lettering. Fit the text within its existing areas with modest font-size adjustments. Preserve the original headline line count where practical; the provided explicit newline means a line break, never print a slash. Never clip lettering, put text on the kitten or furniture, or let copy collide with detailed background elements. All diacritics and punctuation must be accurate. Render the English apostrophe and Portuguese accents correctly.\nINVARIANTS: keep the EXACT same kitten identity, pose, facial expression, proportions, orange eyes, three cream forehead stripes, folded ear, navy fur, cream paws and tail tip, teal collar and square golden charm. Keep every background, notebook, receipt, plant, coffee cup, furniture item, light, shadow, decoration, shape, color, texture and pixel edge unchanged. Preserve the composition and placement of all non-text content. Seamlessly replace the old lettering with the existing background behind it; no visible patches or added panels.\nAvoid: no remaining Spanish copy, extra words, prices, UI, new objects, badges, watermarks, borders, collages, new poses, retouching or art restyling. The output must visually be the same ad with only the localized lettering replaced. Opaque background. Deliver exactly ONE final image."
+    }
+  ]
+}

@@ -7,7 +7,7 @@ It drives the app through Flutter's semantics tree rather than through pixel
 coordinates. `adb shell uiautomator dump` returns every node Flutter exposes to
 Android accessibility, with its label and its bounds, so a button is found by
 what it says instead of by where it was the last time someone looked. That
-matters here more than usual: the same walk has to run in three languages, and
+matters here more than usual: the same walk has to run in four languages, and
 the only things addressed by position are the five tab bar slots, which do not
 move, and the cash field, which has no label until it has a value.
 
@@ -67,10 +67,18 @@ NAV = {"home": 109, "activity": 327, "add": 540, "budget": 753, "me": 971}
 NAV_Y = 1999
 CASH_FIELD = (540, 504)
 
-TABS = r"^(Home|홈|Inicio)\n"
-ROOM = r"Open my room|내 방 열기|Abrir mi casa"
-CASH = r"Estimated cash|예상 현금|Efectivo estimado|Cash not set up|현금 미설정"
+TABS = r"^(Home|홈|Inicio|Início)\n"
+ROOM = r"Open my room|내 방 열기|Abrir mi casa|Abrir minha casa"
+CASH = (
+    r"Estimated cash|예상 현금|Efectivo estimado|Dinheiro estimado"
+    r"|Cash not set up|현금 미설정|Dinheiro não configurado"
+)
 LANGUAGE = r"^(Language|언어|Idioma)\b"
+
+# What is typed into the count. A figure near the expected cash, so the gap the
+# screen reports is the size of a forgotten coffee, not a typo; the pt-BR data
+# is in reais and expects about R$170.
+CASH_COUNT = {"pt": "150"}
 
 SCREENS = ["1-home", "2-entry", "3-budget", "4-activity", "5-room", "6-cash"]
 
@@ -79,10 +87,10 @@ def adb(*args) -> str:
     return subprocess.run([str(ADB), *args], capture_output=True, text=True).stdout
 
 
-# "Sobrita isn't responding", in the three languages the device may be in. On a
+# "Sobrita isn't responding", in the four languages the device may be in. On a
 # loaded host the emulator drops enough frames to raise it, and it survives a
 # force-stop, so it has to be answered rather than stepped around.
-ANR_WAIT = r"^(Wait|기다리기|Esperar)$"
+ANR_WAIT = r"^(Wait|기다리기|Esperar|Aguardar)$"
 
 
 def dismiss_anr() -> bool:
@@ -234,7 +242,7 @@ def capture(locale: str):
     # moment it shows the difference, which is while you are still standing
     # there with the money in your hand.
     touch(*CASH_FIELD, settle=1.5)
-    adb("shell", "input", "text", "1630")
+    adb("shell", "input", "text", CASH_COUNT.get(locale, "1630"))
     time.sleep(1.5)
     back()                       # closes the keyboard, not the route
     grab(locale, "6-cash")

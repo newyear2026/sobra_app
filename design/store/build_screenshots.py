@@ -23,7 +23,7 @@ headline over a Korean screenshot is set in the same two faces, in the same
 pairing, as the screen beneath it. Runs are split per character and drawn on a
 shared baseline, which is what a text engine would do and what PIL will not.
 
-Three locales come out of one copy table. The feature graphic could stay
+Four locales come out of one copy table. The feature graphic could stay
 textless and serve all three; a screenshot cannot, because the screen inside it
 is already in one language and a headline in another would read as an error.
 
@@ -35,6 +35,7 @@ fraction of its pixels and the pixel art stays on the pixel grid.
 from __future__ import annotations
 
 import importlib.util
+import sys
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -102,36 +103,42 @@ COPY = {
         "en": (["Today's money,", "already worked out"], "Your quincena, divided into days."),
         "ko": (["오늘 쓸 돈은", "이미 정해져 있어요"], "급여일까지 남은 돈을 하루 단위로."),
         "es": (["Lo de hoy,", "ya calculado"], "Tu quincena, repartida por día."),
+        "pt": (["O dinheiro de hoje,", "já calculado"], "Seu mês, dividido em dias."),
     },
     "2-entry": {
         "en": (["Log it in", "three taps"], "Amount, category, saved."),
         "ko": (["세 번 누르면", "기록 끝"], "금액, 분류, 저장."),
         "es": (["Anótalo en", "tres toques"], "Monto, categoría, listo."),
+        "pt": (["Anote em", "três toques"], "Valor, categoria, pronto."),
     },
     "3-budget": {
         "en": (["Every category", "has a ceiling"], "See where the quincena goes."),
         "ko": (["분류마다", "한도가 있어요"], "이번 주기의 돈이 어디로 가는지."),
         "es": (["Cada categoría", "con su límite"], "Mira a dónde se va la quincena."),
+        "pt": (["Cada categoria", "com seu limite"], "Veja para onde vai o dinheiro do mês."),
     },
     "4-activity": {
         "en": (["Your days,", "side by side"], "One bar a day against your limit."),
         "ko": (["하루하루를", "나란히"], "하루치 지출을 한도와 나란히."),
         "es": (["Tus días,", "uno junto a otro"], "Cada día frente a tu límite."),
+        "pt": (["Seus dias,", "lado a lado"], "Cada dia comparado ao seu limite."),
     },
     "5-room": {
         "en": (["Someone keeps", "the numbers with you"], "Michi counts. You keep the room."),
         "ko": (["혼자 세지 않아도", "괜찮아요"], "숫자는 미치가, 방은 당신이."),
         "es": (["Alguien lleva", "la cuenta contigo"], "Michi, con los números; tú, con la casa."),
+        "pt": (["Alguém faz as contas", "com você"], "O Michi cuida dos números; você, da casa."),
     },
     "6-cash": {
         "en": (["Count the cash,", "find the gap"], "It finds the expense you never wrote down."),
         "ko": (["지갑을 세면", "차이가 보여요"], "기록하지 않은 지출을 찾아줘요."),
         "es": (["Cuenta el efectivo", "y aparece el hueco"], "Encuentra el gasto que no anotaste."),
+        "pt": (["Conte o dinheiro", "e ache a diferença"], "Encontra o gasto que você não anotou."),
     },
 }
 
 ORDER = ["1-home", "2-entry", "3-budget", "4-activity", "5-room", "6-cash"]
-LOCALES = ["en", "ko", "es"]
+LOCALES = ["en", "ko", "es", "pt"]
 
 
 def grid_field(width: int, height: int) -> Image.Image:
@@ -245,7 +252,9 @@ def build(locale: str, name: str) -> Path:
 
 
 def main() -> None:
-    for locale in LOCALES:
+    # Named locales only, when given: one new language should not redraw the
+    # other three from captures that may no longer be on this machine.
+    for locale in sys.argv[1:] or LOCALES:
         for name in ORDER:
             print("wrote", build(locale, name).relative_to(HERE))
 

@@ -66,12 +66,22 @@ Future<void> _loadFonts() async {
   await Future.wait([pixelify.load(), icons.load()]);
 }
 
-Widget _harness(Widget child, {Locale locale = const Locale('es')}) =>
+Widget _harness(
+  Widget child, {
+  Locale locale = const Locale('es'),
+  double textScale = 1,
+}) =>
     MaterialApp(
       locale: locale,
       theme: buildSobraTheme(),
       localizationsDelegates: sobraLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler: TextScaler.linear(textScale),
+        ),
+        child: child!,
+      ),
       home: Scaffold(body: child),
     );
 
@@ -373,6 +383,58 @@ void main() {
     // Every language, not just the template: German and Portuguese run
     // longest, and a note that fits in Spanish can still overflow there.
     for (final locale in AppLocalizations.supportedLocales) {
+      testWidgets('gift card remains usable at large text in $locale', (
+        tester,
+      ) async {
+        tester.view.physicalSize = const Size(320, 568);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        final store = await SobraStore.load(
+          now: () => DateTime(2026, 10, 28, 9),
+        );
+        await store.configureOnboarding(
+          budgetCentavos: 600000,
+          schedule: const PaySchedule.semiMonthly(),
+        );
+        await store.completeOnboarding();
+        final announcements = ReleaseAnnouncements(
+          preferences: await _preferences({
+            'sobra_notes_announced_version': '1.0.15',
+            'sobra_notes_read_version': '1.0.15',
+          }),
+          versionLoader: _reports(releaseNotes.first.version),
+        );
+        await announcements.start();
+        await tester.pumpWidget(
+          SobraScope(
+            store: store,
+            child: _harness(
+              const SizedBox.shrink(),
+              locale: locale,
+              textScale: 1.6,
+            ),
+          ),
+        );
+        final context = tester.element(find.byType(SizedBox));
+        unawaited(
+          showReleaseAnnouncement(context, announcements: announcements),
+        );
+        await tester.pumpAndSettle();
+        final gift = find.byKey(const ValueKey('release-announcement-gift'));
+        final l10n = AppLocalizations.of(tester.element(gift));
+        final done = find.text(l10n.releaseAnnouncementDone);
+        await tester.ensureVisible(done);
+        expect(done.hitTestable(), findsOneWidget);
+        await tester.ensureVisible(gift);
+        await tester.tap(gift);
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const ValueKey('claim-seasonal-costumes')),
+          findsOneWidget,
+        );
+      });
+
       testWidgets('the shipped note fits a small phone in $locale', (
         tester,
       ) async {
