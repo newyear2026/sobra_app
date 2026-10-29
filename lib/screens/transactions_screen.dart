@@ -47,7 +47,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   /// favour of the expense or income it produced, so removing that one row
   /// would take the whole count off the ledger while the counted cash figure
   /// kept the money — the two would stop telling the same story.
-  Future<void> _deleteMovement(
+  ///
+  /// Reports whether the row went, so the edit sheet knows to close.
+  Future<bool> _deleteMovement(
     ScaffoldMessengerState messenger,
     AppLocalizations l10n,
     SobraStore store,
@@ -55,7 +57,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   ) async {
     final expense = movement.expense;
     final income = movement.income;
-    if (expense == null && income == null) return;
+    if (expense == null && income == null) return false;
 
     var removed = false;
     final wrote = await guardStoreWrite(messenger, l10n, () async {
@@ -63,8 +65,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           ? await store.deleteExpense(expense.id)
           : await store.deleteIncome(income!.id);
     });
-    if (!wrote) return;
+    if (!wrote) return false;
 
+    // An undo waiting behind an XP notice is an undo that times out unseen.
+    messenger.hideCurrentSnackBar();
     if (!removed) {
       messenger.showSnackBar(
         SnackBar(
@@ -75,7 +79,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           ),
         ),
       );
-      return;
+      return false;
     }
 
     messenger.showSnackBar(
@@ -99,6 +103,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         ),
       ),
     );
+    return true;
   }
 
   /// The ⋮ menu for a row, or nothing at all when it would be empty.
@@ -129,7 +134,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       iconSize: 17,
       onSelected: (value) async {
         if (value == 'edit' && expense != null) {
-          await _editExpense(context, expense);
+          await _editExpense(context, store, movement);
           return;
         }
         if (value != 'delete') return;
@@ -147,20 +152,33 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     );
   }
 
-  Future<void> _editExpense(BuildContext context, ExpenseEntry entry) =>
-      showModalBottomSheet<void>(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: AppColors.surface,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.zero,
-          side: BorderSide(color: AppColors.ink, width: 3),
-        ),
-        builder: (_) => _EditExpenseSheet(
-          entry: entry,
-          currency: SobraScope.of(context).currency,
-        ),
-      );
+  /// Opens the editor for an expense row.
+  ///
+  /// Tapping the row is where people look for delete, so the sheet carries it
+  /// too, through the same path as the ⋮ menu. The messenger is the ledger's:
+  /// the undo has to outlive the sheet that asked for it.
+  Future<void> _editExpense(
+    BuildContext context,
+    SobraStore store,
+    MoneyMovement movement,
+  ) {
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context);
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.zero,
+        side: BorderSide(color: AppColors.ink, width: 3),
+      ),
+      builder: (_) => _EditExpenseSheet(
+        entry: movement.expense!,
+        currency: store.currency,
+        onDelete: () => _deleteMovement(messenger, l10n, store, movement),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +213,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             movement: movement,
             onTap: movement.expense == null
                 ? null
-                : () => _editExpense(context, movement.expense!),
+                : () => _editExpense(context, store, movement),
             trailing: _rowMenu(context, store, movement),
           ),
         );
@@ -257,12 +275,19 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 }
 
 class _EditExpenseSheet extends StatefulWidget {
-  const _EditExpenseSheet({required this.entry, required this.currency});
+  const _EditExpenseSheet({
+    required this.entry,
+    required this.currency,
+    required this.onDelete,
+  });
   final ExpenseEntry entry;
 
   /// Handed in rather than read from the scope: the figure the sheet opens on
   /// is spelled in [initState], out of reach of an inherited widget.
   final Currency currency;
+
+  /// Deletes the entry, reporting whether it went.
+  final Future<bool> Function() onDelete;
   @override
   State<_EditExpenseSheet> createState() => _EditExpenseSheetState();
 }
@@ -321,6 +346,11 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
       );
     });
     if (saved && mounted) Navigator.pop(context);
+  }
+
+  Future<void> _delete() async {
+    final removed = await widget.onDelete();
+    if (removed && mounted) Navigator.pop(context);
   }
 
   @override
@@ -409,6 +439,22 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
                   : l10n.saveChanges,
               onPressed: _save,
             ),
+            const SizedBox(height: 8),
+            // A cash-count expense keeps its place in the sheet with the reason
+            // it cannot go; a missing button read as a broken delete.
+            if (widget.entry.isLinkedToCashCount)
+              PixelHint(
+                tone: PixelHintTone.cash,
+                icon: Icons.lock_outline,
+                text: l10n.transactionsExpensePinned,
+              )
+            else
+              PixelButton(
+                label: l10n.delete,
+                icon: Icons.delete_outline,
+                variant: PixelButtonVariant.danger,
+                onPressed: _delete,
+              ),
           ],
         ),
       ),

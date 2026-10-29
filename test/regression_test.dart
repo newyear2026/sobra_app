@@ -13,6 +13,7 @@ import 'package:sobra_app/screens/cash_count_screen.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
 import 'package:sobra_app/widgets/pixel_ui.dart';
+import 'package:sobra_app/widgets/transaction_row.dart';
 
 Future<SobraStore> _seeded(DateTime Function() now, {int? cash}) async {
   SharedPreferences.setMockInitialValues({});
@@ -394,6 +395,80 @@ void main() {
     }
     expect(find.text('Eliminar'), findsOneWidget);
     expect(find.text('Editar'), findsNothing, reason: 'income has no editor');
+  });
+
+  testWidgets('the expense sheet deletes, or says why it cannot', (
+    tester,
+  ) async {
+    useSpanishDevice(tester);
+    tester.view.physicalSize = const Size(520, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    var now = DateTime(2026, 3, 10, 9);
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load(now: () => now);
+    await store.configureOnboarding(
+      budgetCentavos: 600000,
+      schedule: const PaySchedule.semiMonthly(),
+      cashCentavos: 200000,
+    );
+    await store.completeOnboarding();
+    await store.addExpense(
+      amountCentavos: 12000,
+      category: ExpenseCategory.food,
+      note: 'Tacos',
+      occurredAt: now,
+      paymentMethod: PaymentMethod.card,
+    );
+
+    Future<void> settle() async {
+      for (var i = 0; i < 6; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+    }
+
+    await tester.pumpWidget(SobraApp(store: store));
+    await tester.pump();
+    await tester.tap(find.text('Movim.'));
+    await tester.pump();
+
+    // Tapping the row is where people look for delete, not the ⋮ beside it.
+    await tester.tap(find.text('Tacos'));
+    await settle();
+    expect(find.text('Editar movimiento'), findsOneWidget);
+    await tester.tap(find.widgetWithText(PixelButton, 'Eliminar'));
+    await settle();
+
+    expect(store.transactions, isEmpty);
+    expect(find.text('Editar movimiento'), findsNothing);
+    expect(find.text('Movimiento eliminado.'), findsOneWidget);
+    expect(find.text('Deshacer'), findsOneWidget);
+
+    // A cash-count expense keeps its sheet, with the reason in the button's
+    // place instead of a delete that silently is not there.
+    now = DateTime(2026, 3, 11, 9);
+    await store.reconcileCashCount(
+      actualCentavos: 170000,
+      resolution: CashResolution.expense,
+    );
+    await tester.pump();
+    final counted = store.transactions.single;
+    expect(counted.isLinkedToCashCount, isTrue);
+
+    await tester.tap(find.byType(MovementRow).first);
+    await settle();
+    expect(find.text('Editar movimiento'), findsOneWidget);
+    expect(find.widgetWithText(PixelButton, 'Eliminar'), findsNothing);
+    expect(
+      find.text(
+        'Este gasto viene de un conteo de efectivo. '
+        'Vuelve a contar para corregirlo.',
+      ),
+      findsOneWidget,
+    );
+    expect(store.transactions, hasLength(1));
   });
 
   test('undo cannot file the same entry twice', () async {
