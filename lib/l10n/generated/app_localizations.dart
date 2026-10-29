@@ -2255,6 +2255,24 @@ abstract class AppLocalizations {
   /// **'Editar movimiento'**
   String get editMovement;
 
+  /// No description provided for @editIncome.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar ingreso'**
+  String get editIncome;
+
+  /// No description provided for @editPaidDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Día en que lo pagaste'**
+  String get editPaidDate;
+
+  /// A fixed-expense payment whose paid date can move. {date} is the due date it settles, written short.
+  ///
+  /// In es, this message translates to:
+  /// **'Sigue contando como el pago del {date}.'**
+  String editFixedOccurrence(String date);
+
   /// No description provided for @amount.
   ///
   /// In es, this message translates to:
@@ -2578,6 +2596,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Estimado que te quedará'**
   String get budgetEstimatedLeft;
+
+  /// Why the projection reads what it does. {amount} is the cycle's average spend per day.
+  ///
+  /// In es, this message translates to:
+  /// **'Si sigues gastando {amount} al día, como hasta ahora, te queda esto.'**
+  String budgetProjectionBasis(String amount);
+
+  /// No description provided for @budgetSavedThisCycle.
+  ///
+  /// In es, this message translates to:
+  /// **'Apartado como ahorro este ciclo'**
+  String get budgetSavedThisCycle;
+
+  /// No description provided for @budgetClosedCyclesResult.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que te sobró en ciclos anteriores'**
+  String get budgetClosedCyclesResult;
+
+  /// First line of the projection on Inicio. {date} is the cycle's last day, written short.
+  ///
+  /// In es, this message translates to:
+  /// **'A este ritmo, al cierre del {date}'**
+  String homeProjectionLead(String date);
+
+  /// Second line of the projection on Inicio when money is left. {amount} is formatted money.
+  ///
+  /// In es, this message translates to:
+  /// **'te sobran {amount}'**
+  String homeProjectionLeft(String amount);
+
+  /// Second line of the projection on Inicio when the cycle runs over. {amount} is formatted money.
+  ///
+  /// In es, this message translates to:
+  /// **'te faltan {amount}'**
+  String homeProjectionShort(String amount);
 
   /// No description provided for @continueLabel.
   ///
@@ -3675,6 +3729,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ahora puedes eliminar un gasto desde la pantalla donde lo editas.'**
   String get releaseNote1017Delete;
+
+  /// No description provided for @releaseNote1017Dates.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes cambiar la fecha de un gasto o un ingreso, y ahora los ingresos también se editan.'**
+  String get releaseNote1017Dates;
+
+  /// No description provided for @releaseNote1017Projection.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio te dice cuánto te sobrará al cierre del ciclo si sigues a este ritmo.'**
+  String get releaseNote1017Projection;
 
   /// No description provided for @releaseNote1014FirstExpense.
   ///

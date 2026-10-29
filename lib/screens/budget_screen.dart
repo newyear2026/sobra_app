@@ -141,6 +141,11 @@ class BudgetScreen extends StatelessWidget {
     if (!store.hasBudget) return _budgetPrompt(context, store, l10n);
     final currency = store.currency;
     final projectionPositive = store.projectedRemainderCentavos >= 0;
+    final averagePerDay = store.cycleAveragePerDayCentavos;
+    final saved = store.savedThisCycleCentavos;
+    final hasClosedCycles = store.cycleRecords.any(
+      (record) => record.budgetCentavos > 0,
+    );
     final motionToken = Object.hashAll([
       store.totalBudgetCentavos,
       ...store.categoryLimits.values,
@@ -183,6 +188,102 @@ class BudgetScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             _CycleRingCard(store: store),
+            const SizedBox(height: 12),
+            // Under the ring rather than at the foot of the screen: it is the
+            // savings estimate people asked for, and below every category it
+            // went unseen.
+            PixelCard(
+              color: AppColors.cashSoft,
+              borderColor: AppColors.cashInk,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l10n.budgetProjection,
+                              style: pixelText(
+                                size: 15,
+                                bold: true,
+                                color: AppColors.cashInk,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                formatMoney(
+                                  currency,
+                                  store.projectedRemainderCentavos,
+                                ),
+                                style: pixelText(
+                                  size: 28,
+                                  bold: true,
+                                  color: projectionPositive
+                                      ? AppColors.tealInk
+                                      : AppColors.dangerInk,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              !projectionPositive
+                                  ? l10n.homeAdjustCalmly
+                                  : averagePerDay == null
+                                  ? l10n.budgetEstimatedLeft
+                                  : l10n.budgetProjectionBasis(
+                                      formatMoney(
+                                        currency,
+                                        averagePerDay,
+                                        showCode: false,
+                                      ),
+                                    ),
+                              style: pixelText(
+                                size: 12,
+                                color: AppColors.cashInk,
+                                height: 1.45,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      _BudgetCompanion(
+                        characterId: store.characterId,
+                        motionToken: motionToken,
+                        active: active,
+                        reducedMotion: reducedMotionOf(context),
+                      ),
+                    ],
+                  ),
+                  // The money already put aside, beside the money still to
+                  // come: an estimate alone says nothing of what was kept.
+                  if (saved > 0 || hasClosedCycles) ...[
+                    const SizedBox(height: 10),
+                    const Divider(height: 1, color: AppColors.cashInk),
+                    const SizedBox(height: 8),
+                    if (saved > 0)
+                      _ProjectionLine(
+                        label: l10n.budgetSavedThisCycle,
+                        amount: formatMoney(currency, saved, showCode: false),
+                      ),
+                    if (hasClosedCycles)
+                      _ProjectionLine(
+                        label: l10n.budgetClosedCyclesResult,
+                        amount: formatMoney(
+                          currency,
+                          store.closedCyclesResultCentavos,
+                          showCode: false,
+                        ),
+                      ),
+                  ],
+                ],
+              ),
+            ),
             // Only once there is a closed cycle to look back at: an empty
             // history says nothing the rest of this screen does not.
             if (store.cycleRecords.isNotEmpty) ...[
@@ -303,70 +404,39 @@ class BudgetScreen extends StatelessWidget {
                 ),
               );
             }),
-            const SizedBox(height: 8),
-            PixelCard(
-              color: AppColors.cashSoft,
-              borderColor: AppColors.cashInk,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10n.budgetProjection,
-                          style: pixelText(
-                            size: 15,
-                            bold: true,
-                            color: AppColors.cashInk,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            formatMoney(
-                              currency,
-                              store.projectedRemainderCentavos,
-                            ),
-                            style: pixelText(
-                              size: 28,
-                              bold: true,
-                              color: projectionPositive
-                                  ? AppColors.tealInk
-                                  : AppColors.dangerInk,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          projectionPositive
-                              ? l10n.budgetEstimatedLeft
-                              : l10n.homeAdjustCalmly,
-                          style: pixelText(
-                            size: 12,
-                            color: AppColors.cashInk,
-                            height: 1.45,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  _BudgetCompanion(
-                    characterId: store.characterId,
-                    motionToken: motionToken,
-                    active: active,
-                    reducedMotion: reducedMotionOf(context),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       ),
     );
   }
+}
+
+/// One figure under the projection, label left and amount right.
+class _ProjectionLine extends StatelessWidget {
+  const _ProjectionLine({required this.label, required this.amount});
+
+  final String label;
+  final String amount;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 2),
+    child: Row(
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: pixelText(size: 12, color: AppColors.cashInk),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          amount,
+          style: pixelText(size: 13, bold: true, color: AppColors.cashInk),
+        ),
+      ],
+    ),
+  );
 }
 
 /// Plays the saving reaction once, then keeps the companion quietly alive.

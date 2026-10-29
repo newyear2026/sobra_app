@@ -91,7 +91,9 @@ void main() {
     tester,
   ) async {
     useSpanishDevice(tester);
-    tester.view.physicalSize = const Size(520, 1600);
+    // Tall enough that Inicio's recent movements are laid out, under the
+    // projection line and the room.
+    tester.view.physicalSize = const Size(520, 1800);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -377,7 +379,7 @@ void main() {
     expect(find.text('Ingreso en efectivo'), findsWidgets);
     expect(find.byType(PopupMenuButton<String>), findsNothing);
 
-    // An ordinary income beside it still gets its Eliminar.
+    // An ordinary income beside it gets its Editar and Eliminar.
     await store.addIncome(
       amountCentavos: 50000,
       kind: IncomeKind.extra,
@@ -394,7 +396,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
     }
     expect(find.text('Eliminar'), findsOneWidget);
-    expect(find.text('Editar'), findsNothing, reason: 'income has no editor');
+    expect(find.text('Editar'), findsOneWidget, reason: 'it opens its editor');
   });
 
   testWidgets('the expense sheet deletes, or says why it cannot', (

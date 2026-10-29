@@ -420,6 +420,9 @@
   "delete": "삭제",
   "identifyDifference": "차액 확인하기",
   "editMovement": "내역 수정",
+  "editIncome": "수입 수정",
+  "editPaidDate": "낸 날",
+  "editFixedOccurrence": "{date} 납부분으로 남아요.",
   "amount": "금액",
   "editPendingHint": "금액은 현금 집계에서 왔어요. 분류와 메모는 바꿀 수 있어요.",
   "category": "분류",
@@ -477,6 +480,12 @@
   "budgetSpentOfLimit": "{spent} / {limit}",
   "budgetProjection": "마감 시 예상",
   "budgetEstimatedLeft": "남을 것으로 보이는 금액",
+  "budgetProjectionBasis": "지금처럼 하루 평균 {amount}씩 쓰면 이만큼 남아요.",
+  "budgetSavedThisCycle": "이번 주기에 저축으로 넣은 돈",
+  "budgetClosedCyclesResult": "지난 주기들에 남긴 돈",
+  "homeProjectionLead": "이 속도면 {date} 마감에",
+  "homeProjectionLeft": "{amount} 남아요",
+  "homeProjectionShort": "{amount} 모자라요",
 
   "continueLabel": "계속",
   "saving": "저장 중…",
@@ -675,6 +684,10 @@
   "releaseNote1016Keeps": "한 번 받으면 이벤트가 끝나도 영구 소장해요.",
 
   "releaseNote1017Delete": "지출을 수정하는 화면에서도 바로 삭제할 수 있어요.",
+
+  "releaseNote1017Dates": "지출과 수입의 날짜를 바꿀 수 있고, 이제 수입도 수정할 수 있어요.",
+
+  "releaseNote1017Projection": "홈에서 지금 속도라면 주기 마감 때 얼마가 남을지 바로 보여요.",
 
   "releaseNote1014FirstExpense": "환영 화면이 끝나면 첫 지출을 두 단계로 기록해요. 그날부터 다른 친구를 데려오는 기록일로 쳐요.",
 

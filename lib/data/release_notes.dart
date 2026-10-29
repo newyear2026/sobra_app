@@ -44,7 +44,11 @@ final releaseNotes = <ReleaseNote>[
   ReleaseNote(
     version: '1.0.17',
     releasedOn: DateTime(2026, 10, 29),
-    lines: [(l10n) => l10n.releaseNote1017Delete],
+    lines: [
+      (l10n) => l10n.releaseNote1017Delete,
+      (l10n) => l10n.releaseNote1017Dates,
+      (l10n) => l10n.releaseNote1017Projection,
+    ],
   ),
   ReleaseNote(
     version: '1.0.16',

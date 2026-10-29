@@ -1318,6 +1318,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get editMovement => 'Eintrag bearbeiten';
 
   @override
+  String get editIncome => 'Einnahme bearbeiten';
+
+  @override
+  String get editPaidDate => 'Bezahlt am';
+
+  @override
+  String editFixedOccurrence(String date) {
+    return 'Zählt weiter als Zahlung für den $date.';
+  }
+
+  @override
   String get amount => 'Betrag';
 
   @override
@@ -1524,6 +1535,32 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get budgetEstimatedLeft => 'Was dir übrig bleiben sollte';
+
+  @override
+  String budgetProjectionBasis(String amount) {
+    return 'Gibst du wie bisher $amount am Tag aus, bleibt so viel.';
+  }
+
+  @override
+  String get budgetSavedThisCycle => 'In diesem Zyklus gespart';
+
+  @override
+  String get budgetClosedCyclesResult => 'In früheren Zyklen übrig';
+
+  @override
+  String homeProjectionLead(String date) {
+    return 'In diesem Tempo zum Abschluss am $date';
+  }
+
+  @override
+  String homeProjectionLeft(String amount) {
+    return 'bleiben dir $amount';
+  }
+
+  @override
+  String homeProjectionShort(String amount) {
+    return 'fehlen dir $amount';
+  }
 
   @override
   String get continueLabel => 'Weiter';
@@ -2173,6 +2210,14 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get releaseNote1017Delete =>
       'Du kannst eine Ausgabe jetzt direkt beim Bearbeiten löschen.';
+
+  @override
+  String get releaseNote1017Dates =>
+      'Du kannst das Datum einer Ausgabe oder Einnahme ändern, und Einnahmen lassen sich jetzt auch bearbeiten.';
+
+  @override
+  String get releaseNote1017Projection =>
+      'Die Startseite zeigt, wie viel dir in diesem Tempo zum Zyklusende bleibt.';
 
   @override
   String get releaseNote1014FirstExpense =>

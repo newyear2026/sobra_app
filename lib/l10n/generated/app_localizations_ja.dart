@@ -1265,6 +1265,17 @@ class AppLocalizationsJa extends AppLocalizations {
   String get editMovement => '記録を編集';
 
   @override
+  String get editIncome => '収入を編集';
+
+  @override
+  String get editPaidDate => '支払った日';
+
+  @override
+  String editFixedOccurrence(String date) {
+    return '$date分の支払いとして残ります。';
+  }
+
+  @override
   String get amount => '金額';
 
   @override
@@ -1464,6 +1475,32 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get budgetEstimatedLeft => '残りそうな額';
+
+  @override
+  String budgetProjectionBasis(String amount) {
+    return 'これまでどおり1日$amountずつ使うと、これだけ残ります。';
+  }
+
+  @override
+  String get budgetSavedThisCycle => '今回の周期で貯金に回したお金';
+
+  @override
+  String get budgetClosedCyclesResult => 'これまでの周期で残したお金';
+
+  @override
+  String homeProjectionLead(String date) {
+    return 'このペースなら$dateの締めに';
+  }
+
+  @override
+  String homeProjectionLeft(String amount) {
+    return '$amount残ります';
+  }
+
+  @override
+  String homeProjectionShort(String amount) {
+    return '$amount足りません';
+  }
 
   @override
   String get continueLabel => '続ける';
@@ -2076,6 +2113,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get releaseNote1017Delete => '支出の編集画面からも、そのまま削除できるようになりました。';
+
+  @override
+  String get releaseNote1017Dates => '支出と収入の日付を変えられるようになり、収入も編集できるようになりました。';
+
+  @override
+  String get releaseNote1017Projection => 'ホームで、今のペースなら周期の締めにいくら残るかがすぐ分かります。';
 
   @override
   String get releaseNote1014FirstExpense =>

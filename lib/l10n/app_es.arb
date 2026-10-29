@@ -592,6 +592,15 @@
   "delete": "Eliminar",
   "identifyDifference": "Identificar diferencia",
   "editMovement": "Editar movimiento",
+  "editIncome": "Editar ingreso",
+  "editPaidDate": "Día en que lo pagaste",
+  "editFixedOccurrence": "Sigue contando como el pago del {date}.",
+  "@editFixedOccurrence": {
+    "description": "A fixed-expense payment whose paid date can move. {date} is the due date it settles, written short.",
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
   "amount": "Monto",
   "editPendingHint": "El monto viene de tu conteo de efectivo. Puedes cambiar la categoría y la nota.",
   "category": "Categoría",
@@ -690,6 +699,36 @@
   },
   "budgetProjection": "Proyección al cierre",
   "budgetEstimatedLeft": "Estimado que te quedará",
+  "budgetProjectionBasis": "Si sigues gastando {amount} al día, como hasta ahora, te queda esto.",
+  "@budgetProjectionBasis": {
+    "description": "Why the projection reads what it does. {amount} is the cycle's average spend per day.",
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "budgetSavedThisCycle": "Apartado como ahorro este ciclo",
+  "budgetClosedCyclesResult": "Lo que te sobró en ciclos anteriores",
+  "homeProjectionLead": "A este ritmo, al cierre del {date}",
+  "@homeProjectionLead": {
+    "description": "First line of the projection on Inicio. {date} is the cycle's last day, written short.",
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "homeProjectionLeft": "te sobran {amount}",
+  "@homeProjectionLeft": {
+    "description": "Second line of the projection on Inicio when money is left. {amount} is formatted money.",
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "homeProjectionShort": "te faltan {amount}",
+  "@homeProjectionShort": {
+    "description": "Second line of the projection on Inicio when the cycle runs over. {amount} is formatted money.",
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
 
   "continueLabel": "Continuar",
   "saving": "Guardando…",
@@ -956,6 +995,10 @@
   "releaseNote1016Keeps": "Una vez recibidos, son tuyos para siempre.",
 
   "releaseNote1017Delete": "Ahora puedes eliminar un gasto desde la pantalla donde lo editas.",
+
+  "releaseNote1017Dates": "Puedes cambiar la fecha de un gasto o un ingreso, y ahora los ingresos también se editan.",
+
+  "releaseNote1017Projection": "Inicio te dice cuánto te sobrará al cierre del ciclo si sigues a este ritmo.",
 
   "releaseNote1014FirstExpense": "Al terminar la bienvenida, tu primer gasto se anota en dos pasos, y ese día ya cuenta para que llegue tu otro compañero.",
 

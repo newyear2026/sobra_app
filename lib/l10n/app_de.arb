@@ -386,6 +386,9 @@
   "delete": "Löschen",
   "identifyDifference": "Differenz klären",
   "editMovement": "Eintrag bearbeiten",
+  "editIncome": "Einnahme bearbeiten",
+  "editPaidDate": "Bezahlt am",
+  "editFixedOccurrence": "Zählt weiter als Zahlung für den {date}.",
   "amount": "Betrag",
   "editPendingHint": "Der Betrag stammt aus deinem Kassensturz. Kategorie und Notiz kannst du trotzdem ändern.",
   "category": "Kategorie",
@@ -443,6 +446,12 @@
   "budgetSpentOfLimit": "{spent} / {limit}",
   "budgetProjection": "Prognose zum Abschluss",
   "budgetEstimatedLeft": "Was dir übrig bleiben sollte",
+  "budgetProjectionBasis": "Gibst du wie bisher {amount} am Tag aus, bleibt so viel.",
+  "budgetSavedThisCycle": "In diesem Zyklus gespart",
+  "budgetClosedCyclesResult": "In früheren Zyklen übrig",
+  "homeProjectionLead": "In diesem Tempo zum Abschluss am {date}",
+  "homeProjectionLeft": "bleiben dir {amount}",
+  "homeProjectionShort": "fehlen dir {amount}",
 
   "continueLabel": "Weiter",
   "saving": "Speichert…",
@@ -640,6 +649,10 @@
   "releaseNote1016Keeps": "Einmal erhalten, gehören sie dir dauerhaft.",
 
   "releaseNote1017Delete": "Du kannst eine Ausgabe jetzt direkt beim Bearbeiten löschen.",
+
+  "releaseNote1017Dates": "Du kannst das Datum einer Ausgabe oder Einnahme ändern, und Einnahmen lassen sich jetzt auch bearbeiten.",
+
+  "releaseNote1017Projection": "Die Startseite zeigt, wie viel dir in diesem Tempo zum Zyklusende bleibt.",
 
   "releaseNote1014FirstExpense": "Direkt nach der Begrüßung trägst du deine erste Ausgabe in zwei Schritten ein, und dieser Tag zählt schon, um deinen zweiten Begleiter zu holen.",
 

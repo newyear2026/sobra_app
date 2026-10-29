@@ -386,6 +386,9 @@
   "delete": "Supprimer",
   "identifyDifference": "Expliquer l’écart",
   "editMovement": "Modifier l’opération",
+  "editIncome": "Modifier la rentrée",
+  "editPaidDate": "Jour du paiement",
+  "editFixedOccurrence": "Il compte toujours comme le paiement du {date}.",
   "amount": "Montant",
   "editPendingHint": "Le montant vient de ton comptage du liquide. Tu peux quand même changer la catégorie et la note.",
   "category": "Catégorie",
@@ -443,6 +446,12 @@
   "budgetSpentOfLimit": "{spent} / {limit}",
   "budgetProjection": "Prévision à la clôture",
   "budgetEstimatedLeft": "Ce qu’il devrait te rester",
+  "budgetProjectionBasis": "En dépensant {amount} par jour comme jusqu’ici, il te reste ça.",
+  "budgetSavedThisCycle": "Mis de côté ce cycle",
+  "budgetClosedCyclesResult": "Ce qu’il t’est resté les cycles passés",
+  "homeProjectionLead": "À ce rythme, à la clôture du {date}",
+  "homeProjectionLeft": "il te restera {amount}",
+  "homeProjectionShort": "il te manquera {amount}",
 
   "continueLabel": "Continuer",
   "saving": "Enregistrement…",
@@ -640,6 +649,10 @@
   "releaseNote1016Keeps": "Une fois reçues, ces tenues sont à toi pour toujours.",
 
   "releaseNote1017Delete": "Tu peux maintenant supprimer une dépense depuis son écran de modification.",
+
+  "releaseNote1017Dates": "Tu peux changer la date d’une dépense ou d’une rentrée, et les rentrées se modifient aussi maintenant.",
+
+  "releaseNote1017Projection": "L’accueil montre ce qu’il te restera à la clôture du cycle à ce rythme.",
 
   "releaseNote1014FirstExpense": "Juste après l’accueil, votre première dépense se note en deux étapes, et ce jour compte déjà pour faire venir votre autre compagnon.",
 

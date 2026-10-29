@@ -416,6 +416,9 @@
   "delete": "Delete",
   "identifyDifference": "Sort out difference",
   "editMovement": "Edit entry",
+  "editIncome": "Edit income",
+  "editPaidDate": "Day you paid",
+  "editFixedOccurrence": "It still counts as the {date} payment.",
   "amount": "Amount",
   "editPendingHint": "The amount comes from your cash count. You can still change the category and the note.",
   "category": "Category",
@@ -473,6 +476,12 @@
   "budgetSpentOfLimit": "{spent} / {limit}",
   "budgetProjection": "Projected at close",
   "budgetEstimatedLeft": "What you should have left",
+  "budgetProjectionBasis": "Spending {amount} a day, as you have so far, leaves this.",
+  "budgetSavedThisCycle": "Put into savings this cycle",
+  "budgetClosedCyclesResult": "Left over in past cycles",
+  "homeProjectionLead": "At this pace, by {date}",
+  "homeProjectionLeft": "you'll have {amount} left",
+  "homeProjectionShort": "you'll be {amount} short",
 
   "continueLabel": "Continue",
   "saving": "Saving…",
@@ -673,6 +682,10 @@
   "releaseNote1016Keeps": "Once received, they are yours to keep.",
 
   "releaseNote1017Delete": "You can now delete an expense from the screen where you edit it.",
+
+  "releaseNote1017Dates": "You can change the date of an expense or an income, and incomes can now be edited too.",
+
+  "releaseNote1017Projection": "Home shows how much you’ll have left when the cycle closes at your current pace.",
 
   "releaseNote1014FirstExpense": "Right after the welcome, your first expense takes two steps, and that day already counts towards bringing your other companion over.",
 

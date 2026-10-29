@@ -1323,6 +1323,17 @@ class AppLocalizationsPt extends AppLocalizations {
   String get editMovement => 'Editar registro';
 
   @override
+  String get editIncome => 'Editar entrada';
+
+  @override
+  String get editPaidDate => 'Dia em que você pagou';
+
+  @override
+  String editFixedOccurrence(String date) {
+    return 'Continua valendo como o pagamento de $date.';
+  }
+
+  @override
   String get amount => 'Valor';
 
   @override
@@ -1530,6 +1541,32 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get budgetEstimatedLeft => 'O que deve sobrar';
+
+  @override
+  String budgetProjectionBasis(String amount) {
+    return 'Gastando $amount por dia, como até agora, sobra isso.';
+  }
+
+  @override
+  String get budgetSavedThisCycle => 'Guardado como poupança neste ciclo';
+
+  @override
+  String get budgetClosedCyclesResult => 'O que sobrou nos ciclos anteriores';
+
+  @override
+  String homeProjectionLead(String date) {
+    return 'Nesse ritmo, no fechamento de $date';
+  }
+
+  @override
+  String homeProjectionLeft(String amount) {
+    return 'sobram $amount';
+  }
+
+  @override
+  String homeProjectionShort(String amount) {
+    return 'faltam $amount';
+  }
 
   @override
   String get continueLabel => 'Continuar';
@@ -2172,6 +2209,14 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get releaseNote1017Delete =>
       'Agora dá para apagar um gasto na mesma tela em que você o edita.';
+
+  @override
+  String get releaseNote1017Dates =>
+      'Dá para mudar a data de um gasto ou de uma entrada, e agora as entradas também podem ser editadas.';
+
+  @override
+  String get releaseNote1017Projection =>
+      'O Início mostra quanto vai sobrar no fechamento do ciclo nesse ritmo.';
 
   @override
   String get releaseNote1014FirstExpense =>

@@ -243,6 +243,15 @@ class HomeScreen extends StatelessWidget {
                           : AppColors.muted,
                     ),
                   ),
+                  // Over budget, the line above already is the cycle's end;
+                  // a projection of the same deficit would only repeat it.
+                  if (!overCycleBudget) ...[
+                    const SizedBox(height: 12),
+                    _HomeProjection(
+                      store: store,
+                      onTap: () => shell.select(AppTab.budget),
+                    ),
+                  ],
                 ],
                 if (fixedDue.isNotEmpty) ...[
                   const SizedBox(height: 16),
@@ -486,6 +495,67 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Where the cycle is heading, from the budget tab's projection.
+///
+/// It lived at the foot of Presupuesto, under every category, and a Play
+/// review asked for savings estimates the app already made. One line under
+/// today's figure puts it where people look; the tap leads to the full card.
+class _HomeProjection extends StatelessWidget {
+  const _HomeProjection({required this.store, required this.onTap});
+
+  final SobraStore store;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final projected = store.projectedRemainderCentavos;
+    final amount = formatMoney(
+      store.currency,
+      projected.abs(),
+      showCode: false,
+    );
+    return PixelCard(
+      elevation: PixelElevation.none,
+      color: AppColors.cashSoft,
+      borderColor: AppColors.cashInk,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+      onTap: onTap,
+      child: Row(
+        children: [
+          const Icon(Icons.savings_outlined, color: AppColors.cashInk),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.homeProjectionLead(shortCycleDate(l10n, store.cycleEnd)),
+                  style: pixelText(size: 12, color: AppColors.cashInk),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  projected >= 0
+                      ? l10n.homeProjectionLeft(amount)
+                      : l10n.homeProjectionShort(amount),
+                  style: pixelText(
+                    size: 16,
+                    bold: true,
+                    color: projected >= 0
+                        ? AppColors.tealInk
+                        : AppColors.dangerInk,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Icon(Icons.chevron_right, color: AppColors.cashInk),
         ],
       ),
     );

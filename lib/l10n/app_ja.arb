@@ -386,6 +386,9 @@
   "delete": "削除",
   "identifyDifference": "差額を確認",
   "editMovement": "記録を編集",
+  "editIncome": "収入を編集",
+  "editPaidDate": "支払った日",
+  "editFixedOccurrence": "{date}分の支払いとして残ります。",
   "amount": "金額",
   "editPendingHint": "金額は現金チェックから来ています。カテゴリーとメモは変更できます。",
   "category": "カテゴリー",
@@ -443,6 +446,12 @@
   "budgetSpentOfLimit": "{spent} / {limit}",
   "budgetProjection": "締めの見込み",
   "budgetEstimatedLeft": "残りそうな額",
+  "budgetProjectionBasis": "これまでどおり1日{amount}ずつ使うと、これだけ残ります。",
+  "budgetSavedThisCycle": "今回の周期で貯金に回したお金",
+  "budgetClosedCyclesResult": "これまでの周期で残したお金",
+  "homeProjectionLead": "このペースなら{date}の締めに",
+  "homeProjectionLeft": "{amount}残ります",
+  "homeProjectionShort": "{amount}足りません",
 
   "continueLabel": "続ける",
   "saving": "保存中…",
@@ -640,6 +649,10 @@
   "releaseNote1016Keeps": "受け取った衣装はずっと使えます。",
 
   "releaseNote1017Delete": "支出の編集画面からも、そのまま削除できるようになりました。",
+
+  "releaseNote1017Dates": "支出と収入の日付を変えられるようになり、収入も編集できるようになりました。",
+
+  "releaseNote1017Projection": "ホームで、今のペースなら周期の締めにいくら残るかがすぐ分かります。",
 
   "releaseNote1014FirstExpense": "ようこそ画面のあと、はじめての支出を2ステップで記録できます。その日から、もう一匹の仲間を迎える記録日に数えます。",
 

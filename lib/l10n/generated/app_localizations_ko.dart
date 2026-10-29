@@ -1263,6 +1263,17 @@ class AppLocalizationsKo extends AppLocalizations {
   String get editMovement => '내역 수정';
 
   @override
+  String get editIncome => '수입 수정';
+
+  @override
+  String get editPaidDate => '낸 날';
+
+  @override
+  String editFixedOccurrence(String date) {
+    return '$date 납부분으로 남아요.';
+  }
+
+  @override
   String get amount => '금액';
 
   @override
@@ -1462,6 +1473,32 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get budgetEstimatedLeft => '남을 것으로 보이는 금액';
+
+  @override
+  String budgetProjectionBasis(String amount) {
+    return '지금처럼 하루 평균 $amount씩 쓰면 이만큼 남아요.';
+  }
+
+  @override
+  String get budgetSavedThisCycle => '이번 주기에 저축으로 넣은 돈';
+
+  @override
+  String get budgetClosedCyclesResult => '지난 주기들에 남긴 돈';
+
+  @override
+  String homeProjectionLead(String date) {
+    return '이 속도면 $date 마감에';
+  }
+
+  @override
+  String homeProjectionLeft(String amount) {
+    return '$amount 남아요';
+  }
+
+  @override
+  String homeProjectionShort(String amount) {
+    return '$amount 모자라요';
+  }
 
   @override
   String get continueLabel => '계속';
@@ -2075,6 +2112,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get releaseNote1017Delete => '지출을 수정하는 화면에서도 바로 삭제할 수 있어요.';
+
+  @override
+  String get releaseNote1017Dates => '지출과 수입의 날짜를 바꿀 수 있고, 이제 수입도 수정할 수 있어요.';
+
+  @override
+  String get releaseNote1017Projection => '홈에서 지금 속도라면 주기 마감 때 얼마가 남을지 바로 보여요.';
 
   @override
   String get releaseNote1014FirstExpense =>

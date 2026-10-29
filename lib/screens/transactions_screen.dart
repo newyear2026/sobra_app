@@ -6,6 +6,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/currency.dart';
 import '../models/expense_entry.dart';
+import '../models/income_entry.dart';
 import '../models/money_movement.dart';
 import '../models/pay_schedule.dart';
 import '../services/native_ad_service.dart';
@@ -119,7 +120,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     final l10n = AppLocalizations.of(context);
     final expense = movement.expense;
     final income = movement.income;
-    final canEdit = expense != null;
+    final canEdit =
+        expense != null || (income != null && !income.isLinkedToCashCount);
     // Either half of a cash count measures money that already moved, so there
     // is nothing to undo here.
     final canDelete =
@@ -133,8 +135,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       constraints: const BoxConstraints.tightFor(width: 28, height: 22),
       iconSize: 17,
       onSelected: (value) async {
-        if (value == 'edit' && expense != null) {
-          await _editExpense(context, store, movement);
+        if (value == 'edit') {
+          await _edit(context, store, movement);
           return;
         }
         if (value != 'delete') return;
@@ -152,31 +154,48 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     );
   }
 
-  /// Opens the editor for an expense row.
+  /// Whether tapping the row opens an editor. A cash-count income has
+  /// nothing the user could change, so it has no sheet to open.
+  bool _canEdit(MoneyMovement movement) =>
+      movement.expense != null ||
+      (movement.income != null && !movement.income!.isLinkedToCashCount);
+
+  /// Opens the editor for an expense or income row.
   ///
   /// Tapping the row is where people look for delete, so the sheet carries it
   /// too, through the same path as the ⋮ menu. The messenger is the ledger's:
   /// the undo has to outlive the sheet that asked for it.
-  Future<void> _editExpense(
+  Future<void> _edit(
     BuildContext context,
     SobraStore store,
     MoneyMovement movement,
   ) {
     final messenger = ScaffoldMessenger.of(context);
     final l10n = AppLocalizations.of(context);
+    Future<bool> delete() => _deleteMovement(messenger, l10n, store, movement);
+    final expense = movement.expense;
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
+      // The income editor can run the full height; it stops under the status
+      // bar instead of putting its title behind it.
+      useSafeArea: true,
       backgroundColor: AppColors.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.zero,
         side: BorderSide(color: AppColors.ink, width: 3),
       ),
-      builder: (_) => _EditExpenseSheet(
-        entry: movement.expense!,
-        currency: store.currency,
-        onDelete: () => _deleteMovement(messenger, l10n, store, movement),
-      ),
+      builder: (_) => expense != null
+          ? _EditExpenseSheet(
+              entry: expense,
+              currency: store.currency,
+              onDelete: delete,
+            )
+          : _EditIncomeSheet(
+              entry: movement.income!,
+              currency: store.currency,
+              onDelete: delete,
+            ),
     );
   }
 
@@ -211,9 +230,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         ledger.add(
           MovementRow(
             movement: movement,
-            onTap: movement.expense == null
-                ? null
-                : () => _editExpense(context, store, movement),
+            onTap: _canEdit(movement)
+                ? () => _edit(context, store, movement)
+                : null,
             trailing: _rowMenu(context, store, movement),
           ),
         );
@@ -297,10 +316,12 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
   late final TextEditingController _noteController;
   late ExpenseCategory _category;
   late String? _receiptFileName;
+  late DateTime _occurredAt;
 
   @override
   void initState() {
     super.initState();
+    _occurredAt = widget.entry.occurredAt;
     _amountController = TextEditingController(
       text: amountFieldText(widget.currency, widget.entry.amountCentavos),
     );
@@ -340,6 +361,7 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
           amountCentavos: amount ?? widget.entry.amountCentavos,
           category: _category,
           note: _noteController.text.trim(),
+          occurredAt: _occurredAt,
           receiptFileName: _receiptFileName,
           clearReceipt: _receiptFileName == null,
         ),
@@ -356,108 +378,407 @@ class _EditExpenseSheetState extends State<_EditExpenseSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          20,
-          22,
-          20,
-          MediaQuery.viewInsetsOf(context).bottom + 22,
+    final entry = widget.entry;
+    final dueDate = entry.occurrenceDate;
+    return _SheetFrame(
+      children: [
+        Text(
+          widget.entry.isPendingCashAdjustment
+              ? l10n.identifyDifference
+              : l10n.editMovement,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.entry.isPendingCashAdjustment
-                  ? l10n.identifyDifference
-                  : l10n.editMovement,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 18),
-            TextField(
-              controller: _amountController,
-              enabled: !widget.entry.isLinkedToCashCount,
-              keyboardType: amountKeyboardType(widget.currency),
-              inputFormatters: amountInputFormattersFor(widget.currency),
-              decoration: InputDecoration(
-                labelText: l10n.amount,
-                suffixText: widget.currency.code,
+        const SizedBox(height: 18),
+        TextField(
+          controller: _amountController,
+          enabled: !widget.entry.isLinkedToCashCount,
+          keyboardType: amountKeyboardType(widget.currency),
+          inputFormatters: amountInputFormattersFor(widget.currency),
+          decoration: InputDecoration(
+            labelText: l10n.amount,
+            suffixText: widget.currency.code,
+          ),
+        ),
+        if (widget.entry.isLinkedToCashCount) ...[
+          const SizedBox(height: 10),
+          PixelHint(tone: PixelHintTone.cash, text: l10n.editPendingHint),
+        ],
+        const SizedBox(height: 12),
+        DropdownButtonFormField<ExpenseCategory>(
+          initialValue: _category,
+          decoration: InputDecoration(labelText: l10n.category),
+          items: ExpenseCategory.values
+              .map(
+                (category) => DropdownMenuItem(
+                  value: category,
+                  child: Text(category.label(l10n)),
+                ),
+              )
+              .toList(),
+          onChanged: (value) {
+            if (value != null) setState(() => _category = value);
+          },
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          controller: _noteController,
+          decoration: InputDecoration(
+            labelText: l10n.note,
+            hintText: l10n.noteExample,
+          ),
+        ),
+        const SizedBox(height: 14),
+        ReceiptField(
+          fileName: _receiptFileName,
+          onChanged: (value) => setState(() => _receiptFileName = value),
+        ),
+        const SizedBox(height: 16),
+        // A fixed payment can move the day it was paid; the due date it
+        // settles is a separate field, so its installment stays put. A
+        // cash count's date is the count itself, pinned like its amount.
+        _DateField(
+          label: entry.isFixedPayment ? l10n.editPaidDate : l10n.registerDate,
+          date: _occurredAt,
+          hint: entry.isLinkedToCashCount
+              ? null
+              : entry.isFixedPayment && dueDate != null
+              ? l10n.editFixedOccurrence(shortCycleDate(l10n, dueDate))
+              : l10n.registerNoFutureMovements,
+          onChanged: entry.isLinkedToCashCount
+              ? null
+              : (value) => setState(() => _occurredAt = value),
+        ),
+        if (widget.entry.isPendingCashAdjustment) ...[
+          const SizedBox(height: 12),
+          PixelCard(
+            elevation: PixelElevation.none,
+            color: AppColors.tealSoft,
+            child: Text(
+              l10n.replacesPendingHint,
+              style: const TextStyle(
+                color: AppColors.teal,
+                fontVariations: AppType.bold,
               ),
             ),
-            if (widget.entry.isLinkedToCashCount) ...[
-              const SizedBox(height: 10),
-              PixelHint(tone: PixelHintTone.cash, text: l10n.editPendingHint),
+          ),
+        ],
+        const SizedBox(height: 20),
+        PixelButton(
+          label: widget.entry.isPendingCashAdjustment
+              ? l10n.saveWithoutDuplicating
+              : l10n.saveChanges,
+          onPressed: _save,
+        ),
+        const SizedBox(height: 8),
+        // A cash-count expense keeps its place in the sheet with the reason
+        // it cannot go; a missing button read as a broken delete.
+        if (widget.entry.isLinkedToCashCount)
+          PixelHint(
+            tone: PixelHintTone.cash,
+            icon: Icons.lock_outline,
+            text: l10n.transactionsExpensePinned,
+          )
+        else
+          PixelButton(
+            label: l10n.delete,
+            icon: Icons.delete_outline,
+            variant: PixelButtonVariant.danger,
+            onPressed: _delete,
+          ),
+      ],
+    );
+  }
+}
+
+/// An income on file, opened from its row.
+///
+/// The same fields the register screen asks for, so changing an income reads
+/// like recording it. A cash-count income never gets here: its amount and day
+/// are the count, and there is nothing else on it to change.
+class _EditIncomeSheet extends StatefulWidget {
+  const _EditIncomeSheet({
+    required this.entry,
+    required this.currency,
+    required this.onDelete,
+  });
+  final IncomeEntry entry;
+  final Currency currency;
+
+  /// Deletes the entry, reporting whether it went.
+  final Future<bool> Function() onDelete;
+
+  @override
+  State<_EditIncomeSheet> createState() => _EditIncomeSheetState();
+}
+
+class _EditIncomeSheetState extends State<_EditIncomeSheet> {
+  late final TextEditingController _amountController;
+  late final TextEditingController _noteController;
+  late IncomeKind _kind;
+  late IncomeAllocation _allocation;
+  late PaymentMethod _destination;
+  late DateTime _occurredAt;
+
+  @override
+  void initState() {
+    super.initState();
+    final entry = widget.entry;
+    _amountController = TextEditingController(
+      text: amountFieldText(widget.currency, entry.amountCentavos),
+    );
+    _noteController = TextEditingController(text: entry.note);
+    _kind = entry.kind;
+    _allocation = entry.allocation;
+    _destination = entry.destination;
+    _occurredAt = entry.occurredAt;
+  }
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    final amount = parseAmount(widget.currency, _amountController.text);
+    if (amount == null) return;
+    final store = SobraScope.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context);
+    final entry = widget.entry;
+    final saved = await guardStoreWrite(
+      messenger,
+      l10n,
+      () => store.updateIncome(
+        IncomeEntry(
+          id: entry.id,
+          amountCentavos: amount,
+          kind: _kind,
+          note: _noteController.text.trim(),
+          occurredAt: _occurredAt,
+          destination: _destination,
+          allocation: _allocation,
+        ),
+      ),
+    );
+    if (saved && mounted) Navigator.pop(context);
+  }
+
+  Future<void> _delete() async {
+    final removed = await widget.onDelete();
+    if (removed && mounted) Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final titleStyle = Theme.of(context).textTheme.titleMedium;
+    return _SheetFrame(
+      children: [
+        Text(l10n.editIncome, style: Theme.of(context).textTheme.titleLarge),
+        const SizedBox(height: 18),
+        TextField(
+          controller: _amountController,
+          keyboardType: amountKeyboardType(widget.currency),
+          inputFormatters: amountInputFormattersFor(widget.currency),
+          decoration: InputDecoration(
+            labelText: l10n.amount,
+            suffixText: widget.currency.code,
+          ),
+        ),
+        // Only the two kinds the register screen offers can be swapped. A
+        // refund or a cash income keeps the kind it came in with.
+        if (_kind == IncomeKind.salary || _kind == IncomeKind.extra) ...[
+          const SizedBox(height: 16),
+          Text(l10n.registerIncomeKind, style: titleStyle),
+          const SizedBox(height: 8),
+          PixelSegmented<IncomeKind>(
+            segments: [
+              for (final kind in const [IncomeKind.salary, IncomeKind.extra])
+                PixelSegment(value: kind, label: kind.label(l10n)),
             ],
-            const SizedBox(height: 12),
-            DropdownButtonFormField<ExpenseCategory>(
-              initialValue: _category,
-              decoration: InputDecoration(labelText: l10n.category),
-              items: ExpenseCategory.values
-                  .map(
-                    (category) => DropdownMenuItem(
-                      value: category,
-                      child: Text(category.label(l10n)),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (value) {
-                if (value != null) setState(() => _category = value);
-              },
+            selected: _kind,
+            onChanged: (value) => setState(() => _kind = value),
+          ),
+        ],
+        const SizedBox(height: 16),
+        Text(l10n.registerWhatToDo, style: titleStyle),
+        const SizedBox(height: 8),
+        PixelSegmented<IncomeAllocation>(
+          segments: [
+            PixelSegment(
+              value: IncomeAllocation.cycle,
+              label: l10n.registerThisCycle,
             ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _noteController,
-              decoration: InputDecoration(
-                labelText: l10n.note,
-                hintText: l10n.noteExample,
+            PixelSegment(
+              value: IncomeAllocation.savings,
+              label: l10n.registerSaveIt,
+            ),
+          ],
+          selected: _allocation,
+          onChanged: (value) => setState(() => _allocation = value),
+        ),
+        const SizedBox(height: 16),
+        Text(l10n.registerReceivedIn, style: titleStyle),
+        const SizedBox(height: 8),
+        PixelSegmented<PaymentMethod>(
+          segments: [
+            PixelSegment(
+              value: PaymentMethod.cash,
+              label: PaymentMethod.cash.label(l10n),
+              icon: Icons.payments,
+            ),
+            PixelSegment(
+              value: PaymentMethod.card,
+              label: l10n.registerAccount,
+              icon: Icons.account_balance,
+            ),
+          ],
+          selected: _destination,
+          onChanged: (value) => setState(() => _destination = value),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          controller: _noteController,
+          decoration: InputDecoration(
+            labelText: l10n.note,
+            hintText: l10n.registerNoteIncomeExample,
+          ),
+        ),
+        const SizedBox(height: 16),
+        _DateField(
+          label: l10n.registerDate,
+          date: _occurredAt,
+          hint: l10n.registerNoFutureMovements,
+          onChanged: (value) => setState(() => _occurredAt = value),
+        ),
+        const SizedBox(height: 20),
+        PixelButton(label: l10n.saveChanges, onPressed: _save),
+        const SizedBox(height: 8),
+        PixelButton(
+          label: l10n.delete,
+          icon: Icons.delete_outline,
+          variant: PixelButtonVariant.danger,
+          onPressed: _delete,
+        ),
+      ],
+    );
+  }
+}
+
+/// The bottom sheet's padding and scroll, shared by both editors.
+///
+/// Scrolls because the income editor runs taller than a small phone with the
+/// keyboard up, and an edit sheet whose save button sits under the keyboard
+/// cannot be saved.
+class _SheetFrame extends StatelessWidget {
+  const _SheetFrame({required this.children});
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => SafeArea(
+    child: SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(
+        20,
+        22,
+        20,
+        MediaQuery.viewInsetsOf(context).bottom + 22,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    ),
+  );
+}
+
+/// The register screen's date row, for a movement already on file.
+///
+/// [onChanged] null locks it: the row stays, greyed with a lock, so the date
+/// is still there to read and its absence never looks like a missing feature.
+class _DateField extends StatelessWidget {
+  const _DateField({
+    required this.label,
+    required this.date,
+    required this.onChanged,
+    this.hint,
+  });
+
+  final String label;
+  final DateTime date;
+  final ValueChanged<DateTime>? onChanged;
+  final String? hint;
+
+  /// Picks a day in the range the register screen offers, and keeps the
+  /// moment's time when the day does not change. A new day today takes the
+  /// clock's time; any other takes noon, as a new past entry would.
+  Future<void> _pick(
+    BuildContext context,
+    ValueChanged<DateTime> onChanged,
+  ) async {
+    final store = SobraScope.of(context);
+    final today = store.today;
+    final firstDate = DateTime(today.year - 1);
+    final current = dateOnly(date);
+    final selected = await showDatePicker(
+      context: context,
+      initialDate: current.isBefore(firstDate) ? firstDate : current,
+      firstDate: current.isBefore(firstDate) ? current : firstDate,
+      lastDate: today,
+    );
+    if (selected == null || dateOnly(selected) == current) return;
+    onChanged(
+      dateOnly(selected) == today
+          ? store.currentMoment
+          : DateTime(selected.year, selected.month, selected.day, 12),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final change = onChanged;
+    final locked = change == null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 8),
+        PixelCard(
+          elevation: PixelElevation.none,
+          color: locked ? AppColors.beige : AppColors.surface,
+          onTap: locked ? null : () => _pick(context, change),
+          child: Row(
+            children: [
+              Icon(
+                Icons.calendar_month,
+                color: locked ? AppColors.muted : AppColors.blue,
               ),
-            ),
-            const SizedBox(height: 14),
-            ReceiptField(
-              fileName: _receiptFileName,
-              onChanged: (value) => setState(() => _receiptFileName = value),
-            ),
-            if (widget.entry.isPendingCashAdjustment) ...[
-              const SizedBox(height: 12),
-              PixelCard(
-                elevation: PixelElevation.none,
-                color: AppColors.tealSoft,
+              const SizedBox(width: 12),
+              Expanded(
                 child: Text(
-                  l10n.replacesPendingHint,
-                  style: const TextStyle(
-                    color: AppColors.teal,
-                    fontVariations: AppType.bold,
+                  fullDate(l10n, date),
+                  style: pixelText(
+                    size: 15,
+                    bold: true,
+                    color: locked ? AppColors.muted : AppColors.ink,
                   ),
                 ),
               ),
-            ],
-            const SizedBox(height: 20),
-            PixelButton(
-              label: widget.entry.isPendingCashAdjustment
-                  ? l10n.saveWithoutDuplicating
-                  : l10n.saveChanges,
-              onPressed: _save,
-            ),
-            const SizedBox(height: 8),
-            // A cash-count expense keeps its place in the sheet with the reason
-            // it cannot go; a missing button read as a broken delete.
-            if (widget.entry.isLinkedToCashCount)
-              PixelHint(
-                tone: PixelHintTone.cash,
-                icon: Icons.lock_outline,
-                text: l10n.transactionsExpensePinned,
-              )
-            else
-              PixelButton(
-                label: l10n.delete,
-                icon: Icons.delete_outline,
-                variant: PixelButtonVariant.danger,
-                onPressed: _delete,
+              Icon(
+                locked ? Icons.lock_outline : Icons.expand_more,
+                color: locked ? AppColors.muted : AppColors.ink,
               ),
-          ],
+            ],
+          ),
         ),
-      ),
+        if (hint != null) ...[
+          const SizedBox(height: 8),
+          Text(hint!, style: Theme.of(context).textTheme.bodySmall),
+        ],
+      ],
     );
   }
 }

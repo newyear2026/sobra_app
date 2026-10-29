@@ -238,7 +238,9 @@ void main() {
 
   group('the shell', () {
     Future<void> pumpShell(WidgetTester tester, SobraStore store) async {
-      tester.view.physicalSize = const Size(520, 1100);
+      // Tall enough that the card's buttons clear the nav bar under the
+      // projection line and the room.
+      tester.view.physicalSize = const Size(520, 1200);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);

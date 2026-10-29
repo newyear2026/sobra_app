@@ -1319,6 +1319,17 @@ class AppLocalizationsFr extends AppLocalizations {
   String get editMovement => 'Modifier l’opération';
 
   @override
+  String get editIncome => 'Modifier la rentrée';
+
+  @override
+  String get editPaidDate => 'Jour du paiement';
+
+  @override
+  String editFixedOccurrence(String date) {
+    return 'Il compte toujours comme le paiement du $date.';
+  }
+
+  @override
   String get amount => 'Montant';
 
   @override
@@ -1525,6 +1536,33 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get budgetEstimatedLeft => 'Ce qu’il devrait te rester';
+
+  @override
+  String budgetProjectionBasis(String amount) {
+    return 'En dépensant $amount par jour comme jusqu’ici, il te reste ça.';
+  }
+
+  @override
+  String get budgetSavedThisCycle => 'Mis de côté ce cycle';
+
+  @override
+  String get budgetClosedCyclesResult =>
+      'Ce qu’il t’est resté les cycles passés';
+
+  @override
+  String homeProjectionLead(String date) {
+    return 'À ce rythme, à la clôture du $date';
+  }
+
+  @override
+  String homeProjectionLeft(String amount) {
+    return 'il te restera $amount';
+  }
+
+  @override
+  String homeProjectionShort(String amount) {
+    return 'il te manquera $amount';
+  }
 
   @override
   String get continueLabel => 'Continuer';
@@ -2180,6 +2218,14 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get releaseNote1017Delete =>
       'Tu peux maintenant supprimer une dépense depuis son écran de modification.';
+
+  @override
+  String get releaseNote1017Dates =>
+      'Tu peux changer la date d’une dépense ou d’une rentrée, et les rentrées se modifient aussi maintenant.';
+
+  @override
+  String get releaseNote1017Projection =>
+      'L’accueil montre ce qu’il te restera à la clôture du cycle à ce rythme.';
 
   @override
   String get releaseNote1014FirstExpense =>

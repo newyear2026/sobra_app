@@ -772,13 +772,38 @@ class SobraStore extends ChangeNotifier {
       ? 0
       : totalSpentCentavos / totalBudgetCentavos;
 
+  /// What the cycle should leave at this pace, in whole units.
+  ///
+  /// Rounded like the daily average it comes from: an estimate printed to
+  /// the centavo claims a precision it does not have.
   int get projectedRemainderCentavos {
     if (!_hasBudget) return 0;
     if (elapsedDays <= 0) return remainingBudgetCentavos;
     final average = totalSpentCentavos / elapsedDays;
     final futureDays = daysRemaining > 0 ? daysRemaining - 1 : 0;
-    return remainingBudgetCentavos - (average * futureDays).round();
+    final projected = remainingBudgetCentavos - average * futureDays;
+    return (projected / 100).round() * 100;
   }
+
+  /// Income set aside as savings during the current cycle.
+  ///
+  /// It never reaches the budget, so nothing else on screen counts it; this
+  /// is the one place the money the user put away shows up as a figure.
+  int get savedThisCycleCentavos => _incomes
+      .where(
+        (entry) =>
+            entry.allocation == IncomeAllocation.savings &&
+            cycleBounds.contains(entry.occurredAt),
+      )
+      .fold(0, (total, entry) => total + entry.amountCentavos);
+
+  /// What the closed cycles left over, net of the ones that ran past budget.
+  ///
+  /// The overruns count against it: a total that only added the good cycles
+  /// would promise savings the user never actually kept.
+  int get closedCyclesResultCentavos => cycleRecords
+      .where((record) => record.budgetCentavos > 0)
+      .fold(0, (total, record) => total + record.resultCentavos);
 
   int spentFor(ExpenseCategory category) => cycleSpending
       .where((entry) => entry.category == category)
@@ -1676,6 +1701,26 @@ class SobraStore extends ChangeNotifier {
     if (_incomes[index].isLinkedToCashCount) return false;
     final removed = _incomes.removeAt(index);
     _applyIncome(removed, -1);
+    await _save();
+    notifyListeners();
+    return true;
+  });
+
+  /// Rewrites an income, reporting whether it was allowed to change.
+  ///
+  /// Refuses an income created by a cash count, for the reason
+  /// [deleteIncome] does. Anything else is taken back out of the wallet and
+  /// the cycle it was in, then applied again as it now reads, so a new date
+  /// or a switch to savings moves the money with it.
+  Future<bool> updateIncome(IncomeEntry updated) => _write(() async {
+    _validateMovement(updated.amountCentavos, updated.occurredAt);
+    final index = _incomes.indexWhere((entry) => entry.id == updated.id);
+    if (index == -1) return false;
+    final previous = _incomes[index];
+    if (previous.isLinkedToCashCount) return false;
+    _applyIncome(previous, -1);
+    _incomes[index] = updated;
+    _applyIncome(updated, 1);
     await _save();
     notifyListeners();
     return true;
