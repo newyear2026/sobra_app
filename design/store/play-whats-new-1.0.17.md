@@ -72,6 +72,8 @@ Shipped too, but not announced:
 
 - The projection is rounded to whole units, like the daily average.
 - Edit sheets stop under the status bar and scroll when they run tall.
+- A moved date keeps the entry's time of day, so moving it away and back
+  lands where it started. A time still to come today is pulled back to now.
 - The delete notice replaces whatever snack bar is up, so its undo no longer
   waits unseen behind the XP notice from the expense just recorded.
 

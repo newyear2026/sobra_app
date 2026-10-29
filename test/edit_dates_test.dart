@@ -206,26 +206,19 @@ void main() {
       await tester.pump();
     }
 
-    testWidgets('an expense takes a new day from its sheet', (tester) async {
-      now = DateTime(2026, 3, 10, 9);
-      final store = await newUser();
-      await store.addExpense(
-        amountCentavos: 12000,
-        category: ExpenseCategory.food,
-        note: 'Tacos',
-        occurredAt: now,
-        paymentMethod: PaymentMethod.card,
-      );
-
-      await openLedger(tester, store);
-      await tester.tap(find.text('Tacos'));
+    /// Opens the row's sheet, moves its date to [day] of the same month,
+    /// and saves.
+    Future<void> moveTo(
+      WidgetTester tester,
+      String note,
+      String shownDate,
+      String day,
+    ) async {
+      await tester.tap(find.text(note));
       await settle(tester);
-      expect(find.text('Fecha'), findsOneWidget);
-      expect(find.text('10 mar 2026'), findsOneWidget);
-
-      await tester.tap(find.text('10 mar 2026'));
+      await tester.tap(find.text(shownDate));
       await settle(tester);
-      await tester.tap(find.text('8'));
+      await tester.tap(find.text(day));
       // The picker's confirm button, whatever Material calls it in Spanish.
       await tester.tap(
         find
@@ -236,12 +229,59 @@ void main() {
             .last,
       );
       await settle(tester);
-      expect(find.text('8 mar 2026'), findsOneWidget);
-
       await tester.tap(find.text('Guardar cambios'));
       await settle(tester);
-      // A past day files at noon, the way a new past expense would.
-      expect(store.transactions.single.occurredAt, DateTime(2026, 3, 8, 12));
+    }
+
+    testWidgets('a moved expense keeps its time, there and back', (
+      tester,
+    ) async {
+      now = DateTime(2026, 3, 10, 9);
+      final store = await newUser();
+      await store.addExpense(
+        amountCentavos: 12000,
+        category: ExpenseCategory.food,
+        note: 'Tacos',
+        occurredAt: DateTime(2026, 3, 10, 7, 15),
+        paymentMethod: PaymentMethod.card,
+      );
+
+      await openLedger(tester, store);
+      await tester.tap(find.text('Tacos'));
+      await settle(tester);
+      expect(find.text('Fecha'), findsOneWidget);
+      expect(find.text('10 mar 2026'), findsOneWidget);
+      Navigator.of(tester.element(find.byType(BottomSheet))).pop();
+      await settle(tester);
+
+      await moveTo(tester, 'Tacos', '10 mar 2026', '8');
+      expect(store.transactions.single.occurredAt, DateTime(2026, 3, 8, 7, 15));
+
+      // Two saves apart, and still the breakfast it was.
+      await moveTo(tester, 'Tacos', '8 mar 2026', '10');
+      expect(
+        store.transactions.single.occurredAt,
+        DateTime(2026, 3, 10, 7, 15),
+      );
+    });
+
+    testWidgets('a time still to come today is pulled back to now', (
+      tester,
+    ) async {
+      now = DateTime(2026, 3, 10, 9);
+      final store = await newUser();
+      await store.addExpense(
+        amountCentavos: 12000,
+        category: ExpenseCategory.food,
+        note: 'Cena',
+        occurredAt: DateTime(2026, 3, 9, 20, 30),
+        paymentMethod: PaymentMethod.card,
+      );
+
+      await openLedger(tester, store);
+      await moveTo(tester, 'Cena', '9 mar 2026', '10');
+
+      expect(store.transactions.single.occurredAt, now);
     });
 
     testWidgets('a cash-count expense shows its date locked', (tester) async {

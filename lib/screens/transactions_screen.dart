@@ -711,9 +711,12 @@ class _DateField extends StatelessWidget {
   final ValueChanged<DateTime>? onChanged;
   final String? hint;
 
-  /// Picks a day in the range the register screen offers, and keeps the
-  /// moment's time when the day does not change. A new day today takes the
-  /// clock's time; any other takes noon, as a new past entry would.
+  /// Picks a day in the range the register screen offers.
+  ///
+  /// The time of day travels with the entry, so a date moved away and back
+  /// lands where it started and keeps its place among that day's entries.
+  /// Only a time still to come today is pulled back to now: the store refuses
+  /// nothing dated later today, but a cash count would read it as unspent.
   Future<void> _pick(
     BuildContext context,
     ValueChanged<DateTime> onChanged,
@@ -729,11 +732,18 @@ class _DateField extends StatelessWidget {
       lastDate: today,
     );
     if (selected == null || dateOnly(selected) == current) return;
-    onChanged(
-      dateOnly(selected) == today
-          ? store.currentMoment
-          : DateTime(selected.year, selected.month, selected.day, 12),
+    final moved = DateTime(
+      selected.year,
+      selected.month,
+      selected.day,
+      date.hour,
+      date.minute,
+      date.second,
+      date.millisecond,
+      date.microsecond,
     );
+    final now = store.currentMoment;
+    onChanged(moved.isAfter(now) ? now : moved);
   }
 
   @override
