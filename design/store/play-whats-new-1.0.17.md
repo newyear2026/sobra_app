@@ -1,4 +1,4 @@
-# Play "What's new" — 1.0.17 (build 28)
+# Play "What's new" — 1.0.17 (build 29)
 
 Paste the block below into Play Console → Release → Release notes. Play
 reads the language tags itself; each entry stays under its 500-character
