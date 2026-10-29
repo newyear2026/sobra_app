@@ -2178,6 +2178,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Une fois reçues, ces tenues sont à toi pour toujours.';
 
   @override
+  String get releaseNote1017Delete =>
+      'Tu peux maintenant supprimer une dépense depuis son écran de modification.';
+
+  @override
   String get releaseNote1014FirstExpense =>
       'Juste après l’accueil, votre première dépense se note en deux étapes, et ce jour compte déjà pour faire venir votre autre compagnon.';
 
@@ -2207,25 +2211,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get releaseNote1013Fixes =>
       'La lampe ne se cache plus derrière la bibliothèque, et la bulle ne cache plus votre compagnon.';
-
-  @override
-  String get releaseNote104Fixed =>
-      'Les dépenses fixes restent à part du budget du jour. Elles apparaissent sur l’Accueil et peuvent te prévenir avant l’échéance.';
-
-  @override
-  String get releaseNote104Decor =>
-      'La maison a plus à placer : un panier, une étagère, un tapis, un buffet, un bocal et un pouf.';
-
-  @override
-  String get releaseNote104Names =>
-      'Miru, Yoshi et Cookie ont enfin un nom, et le titre de niveau porte celui de ton compagnon.';
-
-  @override
-  String get releaseNote104Widget => 'Le widget affiche le montant en entier.';
-
-  @override
-  String get releaseNote104Languages =>
-      'Sobrita parle maintenant portugais, allemand, français et japonais.';
 
   @override
   String get updateAvailableTitle => 'Une nouvelle version est là';

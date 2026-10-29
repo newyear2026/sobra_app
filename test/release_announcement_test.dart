@@ -405,7 +405,11 @@ void main() {
             'sobra_notes_announced_version': '1.0.15',
             'sobra_notes_read_version': '1.0.15',
           }),
-          versionLoader: _reports(releaseNotes.first.version),
+          // The note that brought the gift, not the newest: a later release
+          // with no gift of its own would leave this card without the button.
+          versionLoader: _reports(
+            releaseNotes.firstWhere((note) => note.seasonalGift).version,
+          ),
         );
         await announcements.start();
         await tester.pumpWidget(

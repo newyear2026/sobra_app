@@ -955,6 +955,8 @@
   "releaseNote1016Costumes": "Llegaron 12 disfraces de temporada para tus amigos. Son gratis hasta el 3 de noviembre.",
   "releaseNote1016Keeps": "Una vez recibidos, son tuyos para siempre.",
 
+  "releaseNote1017Delete": "Ahora puedes eliminar un gasto desde la pantalla donde lo editas.",
+
   "releaseNote1014FirstExpense": "Al terminar la bienvenida, tu primer gasto se anota en dos pasos, y ese día ya cuenta para que llegue tu otro compañero.",
 
   "releaseNote1014Currency": "Una cuenta nueva empieza en la moneda de tu país.",
@@ -971,11 +973,6 @@
 
   "releaseNote1013Fixes": "La lámpara ya no se esconde tras la estantería y el globo ya no tapa a tu compañero.",
 
-  "releaseNote104Fixed": "Los gastos fijos van aparte del gasto diario. Aparecen en Inicio y pueden avisarte antes de vencer.",
-  "releaseNote104Decor": "La casa tiene más para colocar: una cama, una repisa, un tapete, un aparador, un frasco y un puf.",
-  "releaseNote104Names": "Miru, Yoshi y Cookie ya tienen nombre, y el título de nivel lleva el de quien te acompaña.",
-  "releaseNote104Widget": "El widget de inicio muestra el monto completo.",
-  "releaseNote104Languages": "Sobrita ahora habla portugués, alemán, francés y japonés.",
 
   "updateAvailableTitle": "Hay una versión nueva",
   "@updateAvailableTitle": {

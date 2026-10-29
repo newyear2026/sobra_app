@@ -2075,6 +2075,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get releaseNote1016Keeps => '受け取った衣装はずっと使えます。';
 
   @override
+  String get releaseNote1017Delete => '支出の編集画面からも、そのまま削除できるようになりました。';
+
+  @override
   String get releaseNote1014FirstExpense =>
       'ようこそ画面のあと、はじめての支出を2ステップで記録できます。その日から、もう一匹の仲間を迎える記録日に数えます。';
 
@@ -2099,24 +2102,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get releaseNote1013Fixes => 'ランプが本棚の後ろに隠れず、吹き出しが仲間に重なりません。';
-
-  @override
-  String get releaseNote104Fixed =>
-      '固定費を毎日の予算と分けて管理できるようになりました。ホームに表示され、支払い日の前にお知らせもできます。';
-
-  @override
-  String get releaseNote104Decor =>
-      'お部屋に置けるものが増えました。ペットベッド、棚、ラグ、キャビネット、ビン、スツール。';
-
-  @override
-  String get releaseNote104Names =>
-      'Miru、Yoshi、Cookieに名前がつき、レベルの称号にそばにいる仲間の名前が入るようになりました。';
-
-  @override
-  String get releaseNote104Widget => 'ホームウィジェットに金額がすべて表示されるようになりました。';
-
-  @override
-  String get releaseNote104Languages => 'Sobritaがポルトガル語、ドイツ語、フランス語、日本語に対応しました。';
 
   @override
   String get updateAvailableTitle => '新しいバージョンがあります';

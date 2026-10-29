@@ -2074,6 +2074,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get releaseNote1016Keeps => '한 번 받으면 이벤트가 끝나도 영구 소장해요.';
 
   @override
+  String get releaseNote1017Delete => '지출을 수정하는 화면에서도 바로 삭제할 수 있어요.';
+
+  @override
   String get releaseNote1014FirstExpense =>
       '환영 화면이 끝나면 첫 지출을 두 단계로 기록해요. 그날부터 다른 친구를 데려오는 기록일로 쳐요.';
 
@@ -2099,24 +2102,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get releaseNote1013Fixes => '조명이 책장 뒤에 숨지 않고, 말풍선이 친구를 가리지 않아요.';
-
-  @override
-  String get releaseNote104Fixed =>
-      '고정 지출은 하루 지출과 따로 다녀요. 홈에 보이고, 나가기 전에 알려줄 수 있어요.';
-
-  @override
-  String get releaseNote104Decor =>
-      '집에 놓을 것이 더 생겼어요. 침대, 선반, 러그, 수납장, 저금통, 푸프.';
-
-  @override
-  String get releaseNote104Names =>
-      'Miru, Yoshi, Cookie가 이름을 가졌고, 레벨 칭호에도 함께하는 친구 이름이 붙어요.';
-
-  @override
-  String get releaseNote104Widget => '홈 위젯에 금액이 잘리지 않고 전부 보여요.';
-
-  @override
-  String get releaseNote104Languages => '이제 포르투갈어, 독일어, 프랑스어, 일본어로도 쓸 수 있어요.';
 
   @override
   String get updateAvailableTitle => '새 버전이 있어요';

@@ -2170,6 +2170,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get releaseNote1016Keeps => 'Depois de receber, são seus para sempre.';
 
   @override
+  String get releaseNote1017Delete =>
+      'Agora dá para apagar um gasto na mesma tela em que você o edita.';
+
+  @override
   String get releaseNote1014FirstExpense =>
       'Logo depois das boas-vindas, seu primeiro gasto leva dois passos, e esse dia já conta para trazer seu outro companheiro.';
 
@@ -2198,26 +2202,6 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get releaseNote1013Fixes =>
       'O abajur não se esconde mais atrás da estante, e o balão não cobre mais seu companheiro.';
-
-  @override
-  String get releaseNote104Fixed =>
-      'Os gastos fixos ficam separados do gasto diário. Aparecem no Início e podem te avisar antes do vencimento.';
-
-  @override
-  String get releaseNote104Decor =>
-      'A casa tem mais coisas para colocar: uma caminha, uma prateleira, um tapete, um aparador, um pote e um pufe.';
-
-  @override
-  String get releaseNote104Names =>
-      'Miru, Yoshi e Cookie agora têm nome, e o título de nível leva o nome de quem te faz companhia.';
-
-  @override
-  String get releaseNote104Widget =>
-      'O widget da tela inicial mostra o valor completo.';
-
-  @override
-  String get releaseNote104Languages =>
-      'O Sobrita agora fala português, alemão, francês e japonês.';
 
   @override
   String get updateAvailableTitle => 'Tem versão nova';

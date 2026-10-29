@@ -639,6 +639,8 @@
   "releaseNote1016Costumes": "12 tenues de saison sont arrivées pour tes amis. Elles sont gratuites jusqu'au 3 novembre.",
   "releaseNote1016Keeps": "Une fois reçues, ces tenues sont à toi pour toujours.",
 
+  "releaseNote1017Delete": "Tu peux maintenant supprimer une dépense depuis son écran de modification.",
+
   "releaseNote1014FirstExpense": "Juste après l’accueil, votre première dépense se note en deux étapes, et ce jour compte déjà pour faire venir votre autre compagnon.",
 
   "releaseNote1014Currency": "Un nouveau carnet démarre dans la monnaie de votre pays.",
@@ -655,11 +657,6 @@
 
   "releaseNote1013Fixes": "La lampe ne se cache plus derrière la bibliothèque, et la bulle ne cache plus votre compagnon.",
 
-  "releaseNote104Fixed": "Les dépenses fixes restent à part du budget du jour. Elles apparaissent sur l’Accueil et peuvent te prévenir avant l’échéance.",
-  "releaseNote104Decor": "La maison a plus à placer\u00a0: un panier, une étagère, un tapis, un buffet, un bocal et un pouf.",
-  "releaseNote104Names": "Miru, Yoshi et Cookie ont enfin un nom, et le titre de niveau porte celui de ton compagnon.",
-  "releaseNote104Widget": "Le widget affiche le montant en entier.",
-  "releaseNote104Languages": "Sobrita parle maintenant portugais, allemand, français et japonais.",
 
   "updateAvailableTitle": "Une nouvelle version est là",
   "updateAvailableBody": "Mets à jour pour avoir le dernier Sobrita.",

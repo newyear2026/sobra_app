@@ -2153,6 +2153,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get releaseNote1016Keeps => 'Once received, they are yours to keep.';
 
   @override
+  String get releaseNote1017Delete =>
+      'You can now delete an expense from the screen where you edit it.';
+
+  @override
   String get releaseNote1014FirstExpense =>
       'Right after the welcome, your first expense takes two steps, and that day already counts towards bringing your other companion over.';
 
@@ -2182,25 +2186,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get releaseNote1013Fixes =>
       'The lamp no longer hides behind the bookcase, and the bubble no longer covers your companion.';
-
-  @override
-  String get releaseNote104Fixed =>
-      'Fixed expenses stay apart from the daily spend. They show on Home and can remind you before they are due.';
-
-  @override
-  String get releaseNote104Decor =>
-      'The house has more to place: a bed, a shelf, a rug, a cabinet, a jar and a pouf.';
-
-  @override
-  String get releaseNote104Names =>
-      'Miru, Yoshi and Cookie have names now, and the level title wears whoever sits with you.';
-
-  @override
-  String get releaseNote104Widget => 'The home widget shows the whole amount.';
-
-  @override
-  String get releaseNote104Languages =>
-      'Sobrita now speaks Portuguese, German, French and Japanese.';
 
   @override
   String get updateAvailableTitle => 'There\'s a new version';

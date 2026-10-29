@@ -672,6 +672,8 @@
   "releaseNote1016Costumes": "12 seasonal outfits arrived for your friends. They're free until November 3.",
   "releaseNote1016Keeps": "Once received, they are yours to keep.",
 
+  "releaseNote1017Delete": "You can now delete an expense from the screen where you edit it.",
+
   "releaseNote1014FirstExpense": "Right after the welcome, your first expense takes two steps, and that day already counts towards bringing your other companion over.",
 
   "releaseNote1014Currency": "A new ledger starts in your country's currency.",
@@ -688,11 +690,6 @@
 
   "releaseNote1013Fixes": "The lamp no longer hides behind the bookcase, and the bubble no longer covers your companion.",
 
-  "releaseNote104Fixed": "Fixed expenses stay apart from the daily spend. They show on Home and can remind you before they are due.",
-  "releaseNote104Decor": "The house has more to place: a bed, a shelf, a rug, a cabinet, a jar and a pouf.",
-  "releaseNote104Names": "Miru, Yoshi and Cookie have names now, and the level title wears whoever sits with you.",
-  "releaseNote104Widget": "The home widget shows the whole amount.",
-  "releaseNote104Languages": "Sobrita now speaks Portuguese, German, French and Japanese.",
 
   "updateAvailableTitle": "There's a new version",
   "updateAvailableBody": "Update to get the latest Sobrita.",

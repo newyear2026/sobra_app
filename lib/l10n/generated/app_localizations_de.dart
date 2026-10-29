@@ -2171,6 +2171,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Einmal erhalten, gehören sie dir dauerhaft.';
 
   @override
+  String get releaseNote1017Delete =>
+      'Du kannst eine Ausgabe jetzt direkt beim Bearbeiten löschen.';
+
+  @override
   String get releaseNote1014FirstExpense =>
       'Direkt nach der Begrüßung trägst du deine erste Ausgabe in zwei Schritten ein, und dieser Tag zählt schon, um deinen zweiten Begleiter zu holen.';
 
@@ -2199,25 +2203,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get releaseNote1013Fixes =>
       'Die Lampe steht nicht mehr hinter dem Regal, die Sprechblase verdeckt niemanden.';
-
-  @override
-  String get releaseNote104Fixed =>
-      'Fixkosten laufen getrennt vom Tagesbudget. Sie erscheinen auf dem Startbildschirm und können dich vor der Fälligkeit erinnern.';
-
-  @override
-  String get releaseNote104Decor =>
-      'Im Zuhause gibt es mehr zu platzieren: ein Bett, ein Regal, einen Teppich, ein Sideboard, ein Glas und einen Pouf.';
-
-  @override
-  String get releaseNote104Names =>
-      'Miru, Yoshi und Cookie haben jetzt Namen, und der Level-Titel trägt den Namen deines Begleiters.';
-
-  @override
-  String get releaseNote104Widget => 'Das Widget zeigt den vollen Betrag.';
-
-  @override
-  String get releaseNote104Languages =>
-      'Sobrita spricht jetzt Portugiesisch, Deutsch, Französisch und Japanisch.';
 
   @override
   String get updateAvailableTitle => 'Es gibt eine neue Version';

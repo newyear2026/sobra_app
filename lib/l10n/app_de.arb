@@ -639,6 +639,8 @@
   "releaseNote1016Costumes": "12 saisonale Kostüme sind für deine Freunde da. Bis zum 3. November kostenlos.",
   "releaseNote1016Keeps": "Einmal erhalten, gehören sie dir dauerhaft.",
 
+  "releaseNote1017Delete": "Du kannst eine Ausgabe jetzt direkt beim Bearbeiten löschen.",
+
   "releaseNote1014FirstExpense": "Direkt nach der Begrüßung trägst du deine erste Ausgabe in zwei Schritten ein, und dieser Tag zählt schon, um deinen zweiten Begleiter zu holen.",
 
   "releaseNote1014Currency": "Ein neues Haushaltsbuch startet in der Währung deines Landes.",
@@ -655,11 +657,6 @@
 
   "releaseNote1013Fixes": "Die Lampe steht nicht mehr hinter dem Regal, die Sprechblase verdeckt niemanden.",
 
-  "releaseNote104Fixed": "Fixkosten laufen getrennt vom Tagesbudget. Sie erscheinen auf dem Startbildschirm und können dich vor der Fälligkeit erinnern.",
-  "releaseNote104Decor": "Im Zuhause gibt es mehr zu platzieren: ein Bett, ein Regal, einen Teppich, ein Sideboard, ein Glas und einen Pouf.",
-  "releaseNote104Names": "Miru, Yoshi und Cookie haben jetzt Namen, und der Level-Titel trägt den Namen deines Begleiters.",
-  "releaseNote104Widget": "Das Widget zeigt den vollen Betrag.",
-  "releaseNote104Languages": "Sobrita spricht jetzt Portugiesisch, Deutsch, Französisch und Japanisch.",
 
   "updateAvailableTitle": "Es gibt eine neue Version",
   "updateAvailableBody": "Aktualisiere, um das neueste Sobrita zu bekommen.",

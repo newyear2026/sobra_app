@@ -3670,6 +3670,12 @@ abstract class AppLocalizations {
   /// **'Una vez recibidos, son tuyos para siempre.'**
   String get releaseNote1016Keeps;
 
+  /// No description provided for @releaseNote1017Delete.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora puedes eliminar un gasto desde la pantalla donde lo editas.'**
+  String get releaseNote1017Delete;
+
   /// No description provided for @releaseNote1014FirstExpense.
   ///
   /// In es, this message translates to:
@@ -3717,36 +3723,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'La lámpara ya no se esconde tras la estantería y el globo ya no tapa a tu compañero.'**
   String get releaseNote1013Fixes;
-
-  /// No description provided for @releaseNote104Fixed.
-  ///
-  /// In es, this message translates to:
-  /// **'Los gastos fijos van aparte del gasto diario. Aparecen en Inicio y pueden avisarte antes de vencer.'**
-  String get releaseNote104Fixed;
-
-  /// No description provided for @releaseNote104Decor.
-  ///
-  /// In es, this message translates to:
-  /// **'La casa tiene más para colocar: una cama, una repisa, un tapete, un aparador, un frasco y un puf.'**
-  String get releaseNote104Decor;
-
-  /// No description provided for @releaseNote104Names.
-  ///
-  /// In es, this message translates to:
-  /// **'Miru, Yoshi y Cookie ya tienen nombre, y el título de nivel lleva el de quien te acompaña.'**
-  String get releaseNote104Names;
-
-  /// No description provided for @releaseNote104Widget.
-  ///
-  /// In es, this message translates to:
-  /// **'El widget de inicio muestra el monto completo.'**
-  String get releaseNote104Widget;
-
-  /// No description provided for @releaseNote104Languages.
-  ///
-  /// In es, this message translates to:
-  /// **'Sobrita ahora habla portugués, alemán, francés y japonés.'**
-  String get releaseNote104Languages;
 
   /// Heading of the dialog shown on launch when Google Play has a newer build waiting.
   ///
