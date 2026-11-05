@@ -170,6 +170,7 @@
   "collectionAdProgressLine": "{progress}/{target}",
   "collectionAdUnlockDaily": "Belohnungswerbung ansehen · {progress}/{target} · eine pro Tag",
   "collectionAdUnavailable": "KEINE WERBUNG",
+  "collectionAdRetry": "ERNEUT VERSUCHEN",
   "collectionAdDailyCap": "LIMIT HEUTE",
   "collectionAdTomorrow": "MORGEN WEITER",
   "collectionUnlockedNotice": "{name} gehört dir!",

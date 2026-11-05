@@ -540,6 +540,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get collectionAdUnavailable => 'NO ADS NOW';
 
   @override
+  String get collectionAdRetry => 'TRY AGAIN';
+
+  @override
   String get collectionAdDailyCap => 'TODAY\'S LIMIT';
 
   @override

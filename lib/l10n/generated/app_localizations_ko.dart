@@ -525,6 +525,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get collectionAdUnavailable => '현재 광고 없음';
 
   @override
+  String get collectionAdRetry => '다시 시도';
+
+  @override
   String get collectionAdDailyCap => '오늘 한도 도달';
 
   @override

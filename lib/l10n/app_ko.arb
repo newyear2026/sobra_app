@@ -204,6 +204,7 @@
   "collectionAdProgressLine": "{progress}/{target}",
   "collectionAdUnlockDaily": "보상형 광고 보기 · {progress}/{target} · 하루 1편씩",
   "collectionAdUnavailable": "현재 광고 없음",
+  "collectionAdRetry": "다시 시도",
   "collectionAdDailyCap": "오늘 한도 도달",
   "collectionAdTomorrow": "내일 이어서",
   "collectionUnlockedNotice": "{name}을(를) 해금했어요!",

@@ -545,6 +545,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get collectionAdUnavailable => 'PAS DE PUB';
 
   @override
+  String get collectionAdRetry => 'RÉESSAYER';
+
+  @override
   String get collectionAdDailyCap => 'LIMITE DU JOUR';
 
   @override

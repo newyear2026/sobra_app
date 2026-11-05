@@ -995,6 +995,12 @@ abstract class AppLocalizations {
   /// **'SIN ANUNCIOS'**
   String get collectionAdUnavailable;
 
+  /// No description provided for @collectionAdRetry.
+  ///
+  /// In es, this message translates to:
+  /// **'REINTENTAR'**
+  String get collectionAdRetry;
+
   /// No description provided for @collectionAdDailyCap.
   ///
   /// In es, this message translates to:

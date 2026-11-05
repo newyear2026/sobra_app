@@ -543,6 +543,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get collectionAdUnavailable => 'SEM ANÚNCIOS';
 
   @override
+  String get collectionAdRetry => 'TENTAR DE NOVO';
+
+  @override
   String get collectionAdDailyCap => 'LIMITE DE HOJE';
 
   @override

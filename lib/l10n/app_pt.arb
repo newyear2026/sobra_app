@@ -170,6 +170,7 @@
   "collectionAdProgressLine": "{progress}/{target}",
   "collectionAdUnlockDaily": "Veja anúncios premiados · {progress}/{target} · um por dia",
   "collectionAdUnavailable": "SEM ANÚNCIOS",
+  "collectionAdRetry": "TENTAR DE NOVO",
   "collectionAdDailyCap": "LIMITE DE HOJE",
   "collectionAdTomorrow": "CONTINUA AMANHÃ",
   "collectionUnlockedNotice": "{name} é seu!",

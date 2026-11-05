@@ -354,10 +354,9 @@ void main() {
     expect(find.text('PAQUETE'), findsNothing);
   });
 
-  // The progress lives on the button, so a blocked run replaces it. The
-  // number is still one tap away in the detail dialog, and the button says
-  // the more useful thing: there is nothing to watch.
-  testWidgets('with no ad loaded the card says so instead of counting', (
+  // A temporary no-fill keeps the existing retry route available. The
+  // action names that route while the card retains its progress count.
+  testWidgets('with no ad loaded the card offers retry and keeps progress', (
     tester,
   ) async {
     final store = await loadStore();
@@ -366,21 +365,21 @@ void main() {
 
     await pump(tester, store, ads: ads);
 
-    expect(find.text('SIN ANUNCIOS'), findsAtLeastNWidgets(2));
+    expect(find.text('REINTENTAR'), findsAtLeastNWidgets(2));
     // Blocked, but the run is still legible.
     expect(find.text('0/2'), findsAtLeastNWidgets(2));
   });
 
   // No ad system above the screen at all — the design gallery, and every
   // widget test that does not ask for one.
-  testWidgets('with no ad provider the cards are locked, not counting', (
+  testWidgets('the preview without an ad provider uses the same retry label', (
     tester,
   ) async {
     final store = await loadStore();
 
     await pump(tester, store);
 
-    expect(find.text('SIN ANUNCIOS'), findsAtLeastNWidgets(2));
+    expect(find.text('REINTENTAR'), findsAtLeastNWidgets(2));
   });
 
   testWidgets('a spent daily cap is what every ad card says', (tester) async {
@@ -694,7 +693,7 @@ void main() {
     port.fills = true;
     await tester.tap(find.text('Libros'));
     await tester.pumpAndSettle();
-    await tester.tap(inDialog('SIN ANUNCIOS'));
+    await tester.tap(inDialog('REINTENTAR'));
     await tester.pumpAndSettle();
 
     expect(store.ownsCatalogEntry(entryById('decor-shelf-books')), isTrue);

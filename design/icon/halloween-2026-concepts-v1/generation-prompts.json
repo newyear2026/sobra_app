@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-27",
+  "tool": "built-in image_gen",
+  "status": "Three preview concepts; launcher configuration unchanged",
+  "referenceImages": [
+    {
+      "path": "design/icon/sobra-icon-grid-master-1024.png",
+      "role": "Current launcher identity, calico markings, green eyes, budget ledger and gold coin"
+    },
+    {
+      "path": "design/seasonal/2026-halloween-dia-de-muertos/michi-dracula-v1.png",
+      "role": "Seasonal costume mood only; fur and eye identity not transferred"
+    }
+  ],
+  "variants": [
+    {
+      "id": "01-dracula",
+      "name": "드라큘라",
+      "file": "01-dracula.png",
+      "prompt": "Use case: logo-brand.\nAsset type: one square 1024x1024 Halloween launcher app icon concept for Sobrita, a friendly personal budgeting app.\nPrimary request: create a seasonal Dracula treatment of the CURRENT APP ICON in reference image 1. This is concept 1 of 3, but output ONLY ONE standalone icon. Do not output a comparison sheet.\nReference image 1 is the identity and composition reference: preserve its recognizable large cream CALICO CAT FACE with an orange patch over the viewer-left eye/ear, brown patch at viewer-right, coral cheeks, two large green eyes, cream budget ledger held in exactly TWO small cream paws, colored budget cells, and round gold dollar coin in the lower-right of the ledger. Preserve the broad silhouette and approximate face-to-ledger proportions. Reference image 2 is ONLY a costume reference for a red-and-black vampire cape/collar and cheerful small fangs; do NOT borrow its blue fur or amber eyes.\nDesign: give the calico cat a simple red-lined black Dracula collar behind its cheeks, two very tiny cute fangs, and a red bow at the neck partly hidden behind the ledger. Dark navy square background with very subtle pixel grid, one small golden crescent in an upper corner. Keep ledger and coin very legible. Friendly and festive, not frightening.\nStyle: polished chunky pixel art matching reference 1, visible square pixels, restrained stepped shading, strong near-black pixel outline; no smooth vector outlines, no painterly furry detail.\nComposition: centered face and ledger fill roughly central 76% of canvas, important details within central 70% for circle/squircle icon masks. Background extends edge to edge, no pre-rounded corners, no outer frame, no transparent corners, no external shadow or phone mockup. Strong contrast at 48px.\nConstraints: exactly two ears, two eyes, exactly two visible paws holding ledger, no extra limbs. No full body. No text other than the original dollar sign on the gold coin. No labels, numbers, banners, watermark, pumpkins competing with the focal face."
+    },
+    {
+      "id": "02-moon-witch",
+      "name": "달빛 마녀",
+      "file": "02-moon-witch.png",
+      "prompt": "Use case: logo-brand.\nAsset type: one square 1024x1024 Halloween launcher app icon concept for Sobrita, a friendly personal budgeting app.\nPrimary request: create a seasonal MOONLIGHT WITCH treatment of the CURRENT APP ICON in reference image 1. This is concept 2 of 3, output ONLY ONE standalone square app icon.\nReference image 1 is the identity and composition reference. Preserve the recognizable cream calico cat with orange patch at viewer-left ear, brown patch at viewer-right, coral cheeks, large GREEN eyes, cream ledger with colored budget cells, and gold dollar coin lower-right. Exactly two cream paws visibly holding the ledger. Keep cat face large. Reference image 2 is optional Halloween costume mood only; do not borrow its blue fur, amber eyes or vampire cape.\nDesign: put a single simple crooked dark-purple witch hat with teal band and a golden crescent badge on the calico cat, with both cat ears visibly peeking naturally beside the hat. Hat should be compact and fit safely within icon masks, not hide eyes or force the face to become tiny. Rich plum-violet full-bleed background with extremely subtle pixel grid, just two small golden pixel stars in open corners. Keep original cream budget ledger and gold coin prominent, so the budgeting function remains obvious. A short violet cape neckline may peek out behind the ledger; no broom, wand, floating objects or extra hands.\nStyle: polished chunky pixel art consistent with reference 1, visible square pixels, restrained stepped shading, heavy near-black pixel outlines, clean big shapes, crisp high contrast at 48px, no smooth illustration, no 3D render.\nComposition: centered cat face plus budget ledger in the central 76% of canvas, important identity and accounting symbols within central 70% for circle/squircle cropping. Solid square edge-to-edge background; no rounded corners, no frame, no mockup, no transparent corners or external shadow.\nConstraints: two cat ears, two eyes, exactly TWO visible paws, no human fingers, no extra limbs. No full body. No text except original dollar sign on the coin. No labels, numbers, captions, watermark."
+    },
+    {
+      "id": "03-pumpkin",
+      "name": "호박 축제",
+      "file": "03-pumpkin.png",
+      "prompt": "Use case: logo-brand.\nAsset type: one square 1024x1024 Halloween launcher app icon concept for Sobrita, a friendly personal budgeting app.\nPrimary request: create a warm PUMPKIN FESTIVAL treatment of the CURRENT APP ICON in reference image 1. Concept 3 of 3; output ONLY ONE standalone icon, no sheet or mockup.\nReference image 1 is the strict brand identity/composition reference: same large cream calico cat face with orange patch at viewer-left, brown patch at viewer-right, coral cheeks, two big green eyes, budget ledger with colored cells, and lower-right gold dollar coin. Same two small cream paws holding the ledger. Reference image 2 is a general Halloween mood reference only; do not borrow blue fur or amber eyes.\nDesign: a simple orange pumpkin costume hood framing the calico face, leaving both triangular cat ears clearly visible through two natural ear openings. One small dark green stem and leaf centered atop the hood. The orange hood should read as a pumpkin silhouette with subtle darker orange pixel segments, not another face. Make the ledger pale cream with dark teal outline, its budget cells green and coral, and preserve the large gold dollar coin. Warm muted burnt-orange full-bleed background with extremely subtle darker orange pixel grid, darker than hood so silhouette stays clear. No carved jack-o-lantern mouth on the face, no extra pumpkin props, no candy clutter.\nStyle: polished chunky pixel art matching reference 1, strong near-black stepped pixel outlines, visible square pixels, restrained stepped highlights, charming and welcoming. Simple readable shapes at 48px; not furry painterly illustration, not 3D, not smooth vector.\nComposition: preserve original cat-head-and-ledger proportions and central large face, entire subject within central 76%, essential face and ledger inside central 70% for circular adaptive-icon masks. Square artwork full-bleed with no rounded corners, no outer frame, no phone screen, no transparent corners or drop shadow.\nConstraints: exactly two ears, two eyes, exactly two cream paws holding ledger, no extra hands or human fingers, no full body. No text other than the original dollar sign. No labels, variant numbers, captions, watermark."
+    }
+  ],
+  "review": {
+    "inspected": "All three generated outputs visually reviewed",
+    "checks": [
+      "Recognizable calico face, green eyes, budget ledger and coin preserved",
+      "Exactly two visible paws per icon",
+      "Three distinct seasonal palettes and costumes",
+      "No text other than dollar coin symbol",
+      "Full-bleed square artwork, no pre-rounded corners"
+    ],
+    "nextStep": "Chosen concept can be prepared as launcher master and adaptive icon layers."
+  }
+}

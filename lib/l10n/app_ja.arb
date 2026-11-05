@@ -170,6 +170,7 @@
   "collectionAdProgressLine": "{progress}/{target}",
   "collectionAdUnlockDaily": "リワード広告を見る · {progress}/{target} · 1日1回",
   "collectionAdUnavailable": "広告なし",
+  "collectionAdRetry": "再試行",
   "collectionAdDailyCap": "今日の上限",
   "collectionAdTomorrow": "続きは明日",
   "collectionUnlockedNotice": "{name}が仲間になりました！",

@@ -545,6 +545,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get collectionAdUnavailable => 'KEINE WERBUNG';
 
   @override
+  String get collectionAdRetry => 'ERNEUT VERSUCHEN';
+
+  @override
   String get collectionAdDailyCap => 'LIMIT HEUTE';
 
   @override

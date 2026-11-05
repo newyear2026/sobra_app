@@ -200,6 +200,7 @@
   "collectionAdProgressLine": "{progress}/{target}",
   "collectionAdUnlockDaily": "Watch rewarded ads · {progress}/{target} · one a day",
   "collectionAdUnavailable": "NO ADS NOW",
+  "collectionAdRetry": "TRY AGAIN",
   "collectionAdDailyCap": "TODAY'S LIMIT",
   "collectionAdTomorrow": "CONTINUES TOMORROW",
   "collectionUnlockedNotice": "{name} is yours!",

@@ -530,6 +530,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get collectionAdUnavailable => '広告なし';
 
   @override
+  String get collectionAdRetry => '再試行';
+
+  @override
   String get collectionAdDailyCap => '今日の上限';
 
   @override

@@ -296,6 +296,7 @@
   "collectionAdUnlockDaily": "Mira anuncios de recompensa · {progress}/{target} · uno por día",
   "@collectionAdUnlockDaily": {"placeholders": {"progress": {"type": "int"}, "target": {"type": "int"}}},
   "collectionAdUnavailable": "SIN ANUNCIOS",
+  "collectionAdRetry": "REINTENTAR",
   "collectionAdDailyCap": "LÍMITE DE HOY",
   "collectionAdTomorrow": "SIGUE MAÑANA",
   "collectionUnlockedNotice": "¡{name} es tuyo!",

@@ -170,6 +170,7 @@
   "collectionAdProgressLine": "{progress}/{target}",
   "collectionAdUnlockDaily": "Regarde des pubs récompensées · {progress}/{target} · une par jour",
   "collectionAdUnavailable": "PAS DE PUB",
+  "collectionAdRetry": "RÉESSAYER",
   "collectionAdDailyCap": "LIMITE DU JOUR",
   "collectionAdTomorrow": "SUITE DEMAIN",
   "collectionUnlockedNotice": "{name} est à toi\u00a0!",

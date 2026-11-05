@@ -1242,7 +1242,7 @@ String _dialogActionLabel(AppLocalizations l10n, CatalogEntryState state) {
 
 String _adBlockLabel(AppLocalizations l10n, RewardedAdBlock blocked) =>
     switch (blocked) {
-      RewardedAdBlock.noAdAvailable => l10n.collectionAdUnavailable,
+      RewardedAdBlock.noAdAvailable => l10n.collectionAdRetry,
       RewardedAdBlock.dailyCapReached => l10n.collectionAdDailyCap,
       RewardedAdBlock.alreadyEarnedToday => l10n.collectionAdTomorrow,
     };
