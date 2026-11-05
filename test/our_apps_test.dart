@@ -10,6 +10,7 @@ import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/screens/our_apps_screen.dart';
 import 'package:sobra_app/services/app_review_service.dart';
+import 'package:sobra_app/services/app_telemetry.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/theme/app_theme.dart';
 
@@ -41,6 +42,11 @@ void main() {
     expect(
       ourApps.map((app) => app.packageName).toSet(),
       hasLength(ourApps.length),
+    );
+    expect(
+      ourApps.map((app) => app.id).toSet(),
+      hasLength(ourApps.length),
+      reason: 'analytics could not tell two cards apart',
     );
     for (final app in ourApps) {
       expect(File(app.icon).existsSync(), isTrue, reason: app.icon);
@@ -92,6 +98,29 @@ void main() {
 
       expect(opened, [(ourApps.last.packageName, ourAppsReferrer)]);
       expect(find.byType(SnackBar), findsNothing);
+    });
+
+    testWidgets('reports the visit and which card was tapped', (tester) async {
+      final sent = <(String, Map<String, Object>)>[];
+      AppTelemetry.instance = AppTelemetry(
+        sendEvent: (name, parameters) async => sent.add((name, parameters)),
+      );
+      addTearDown(() => AppTelemetry.instance = AppTelemetry());
+
+      await pumpScreen(tester, (_, {referrer}) async => false);
+      expect(sent.single.$1, 'screen_view');
+      expect(sent.single.$2, {
+        'screen_name': 'ourApps',
+        'screen_class': 'Sobrita',
+      });
+
+      // A failed open still counts: the tap is the interest being measured.
+      await tester.tap(find.text('Ver en Google Play').last);
+      await tester.pump();
+
+      expect(sent, hasLength(2));
+      expect(sent.last.$1, 'our_app_opened');
+      expect(sent.last.$2, {'app': ourApps.last.id.name});
     });
 
     testWidgets('says so when Play cannot be opened', (tester) async {

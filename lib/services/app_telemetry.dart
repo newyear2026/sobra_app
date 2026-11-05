@@ -13,6 +13,9 @@ enum TelemetryScreen {
   /// Pushed over a tab rather than one itself. `origin`: a
   /// `CollectionOrigin`.
   collection,
+
+  /// "Apps recomendadas", pushed from Ajustes.
+  ourApps,
 }
 
 enum TelemetryEvent {
@@ -51,7 +54,12 @@ enum TelemetryEvent {
 
   /// The share sheet closed. `origin`: a `ShareOrigin`; `result`: the
   /// platform's `ShareResultStatus`.
-  shared('share');
+  shared('share'),
+
+  /// A card's Play button on "Apps recomendadas" was tapped. `app`: an
+  /// `OurAppId`. Set against the other app's `first_open` with source
+  /// `sobrita / our_apps` for the share that installs and opens it.
+  ourAppOpened('our_app_opened');
 
   const TelemetryEvent(this.eventName);
   final String eventName;

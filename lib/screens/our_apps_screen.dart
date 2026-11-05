@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../data/our_apps.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../services/app_telemetry.dart';
 import '../services/play_listing.dart';
 import '../theme/app_theme.dart';
 import '../widgets/pixel_ui.dart';
@@ -15,7 +18,7 @@ typedef ListingOpener =
 /// Reached only from its Ajustes row, the same posture as the release notes:
 /// no dot, no card on Inicio, no reward for installing — Play forbids that
 /// last one outright. Somebody who comes here came to look.
-class OurAppsScreen extends StatelessWidget {
+class OurAppsScreen extends StatefulWidget {
   const OurAppsScreen({
     super.key,
     this.apps,
@@ -29,10 +32,30 @@ class OurAppsScreen extends StatelessWidget {
   /// url_launcher channel.
   final ListingOpener openListing;
 
+  @override
+  State<OurAppsScreen> createState() => _OurAppsScreenState();
+}
+
+class _OurAppsScreenState extends State<OurAppsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    unawaited(AppTelemetry.instance.screen(TelemetryScreen.ourApps));
+  }
+
   Future<void> _open(BuildContext context, OurApp app) async {
     final messenger = ScaffoldMessenger.of(context);
     final l10n = AppLocalizations.of(context);
-    if (await openListing(app.packageName, referrer: ourAppsReferrer)) return;
+    // Counted at the tap, whether or not Play then opens: it is the interest
+    // in the app being measured, and a failure already says so on screen.
+    unawaited(
+      AppTelemetry.instance.event(TelemetryEvent.ourAppOpened, {'app': app.id}),
+    );
+    final opened = await widget.openListing(
+      app.packageName,
+      referrer: ourAppsReferrer,
+    );
+    if (opened) return;
     messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(l10n.updateStoreFailed)));
@@ -61,7 +84,7 @@ class OurAppsScreen extends StatelessWidget {
                   style: pixelText(size: 13, color: AppColors.inkSoft),
                 ),
                 const SizedBox(height: 18),
-                for (final app in apps ?? ourApps)
+                for (final app in widget.apps ?? ourApps)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 16),
                     child: _AppCard(

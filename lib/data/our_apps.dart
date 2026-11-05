@@ -1,5 +1,12 @@
 import '../l10n/generated/app_localizations.dart';
 
+/// Which card was tapped, as analytics records it.
+///
+/// An enum rather than the package name because telemetry parameters are
+/// enum values only (see `AppTelemetry.event`), and a name that never changes
+/// keeps the report readable after a listing moves.
+enum OurAppId { multiCal, loopet }
+
 /// Another app from the people who make Sobra, as the "more apps" screen
 /// shows it.
 ///
@@ -9,12 +16,15 @@ import '../l10n/generated/app_localizations.dart';
 /// a map to look a key up in.
 class OurApp {
   const OurApp({
+    required this.id,
     required this.packageName,
     required this.name,
     required this.icon,
     required this.kind,
     required this.blurb,
   });
+
+  final OurAppId id;
 
   /// The Play application id the listing is opened by.
   final String packageName;
@@ -41,6 +51,7 @@ const ourAppsReferrer = 'utm_source=sobrita&utm_medium=our_apps';
 /// "item not found" is worse than no card.
 final ourApps = <OurApp>[
   OurApp(
+    id: OurAppId.multiCal,
     packageName: 'com.casewen.multi_calc',
     name: 'MultiCal',
     icon: 'assets/apps/multical.png',
@@ -48,6 +59,7 @@ final ourApps = <OurApp>[
     blurb: (l10n) => l10n.ourAppsMultiCalBlurb,
   ),
   OurApp(
+    id: OurAppId.loopet,
     packageName: 'com.dayround.app',
     name: 'LOOPET',
     icon: 'assets/apps/loopet.png',
