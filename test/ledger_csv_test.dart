@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -182,6 +183,29 @@ void main() {
         ledgerCsvFileName(DateTime(2026, 11, 9, 23, 59)),
         'sobrita_2026-11-09.csv',
       );
+    });
+  });
+
+  group('the export file', () {
+    test('is the only file left in its folder, however many exports', () async {
+      final root = await Directory.systemTemp.createTemp('sobrita_export');
+      addTearDown(() => root.delete(recursive: true));
+      final folder = Directory('${root.path}/$ledgerExportFolder');
+      final bytes = Uint8List.fromList(utf8.encode('a,b\r\n'));
+
+      await writeLedgerExportFile(folder, bytes, 'sobrita_2026-11-08.csv');
+      await writeLedgerExportFile(folder, bytes, 'sobrita_2026-11-09.csv');
+      final last = await writeLedgerExportFile(
+        folder,
+        bytes,
+        'sobrita_2026-11-09.csv',
+      );
+
+      final left = folder.listSync().map((e) => e.uri.pathSegments.last);
+      expect(left, ['sobrita_2026-11-09.csv']);
+      expect(await last.readAsBytes(), bytes);
+      // Nothing else under the temp root, unlike share_plus's random folders.
+      expect(root.listSync(), hasLength(1));
     });
   });
 
