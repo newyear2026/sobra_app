@@ -1687,7 +1687,56 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get receiptBackupNote =>
-      'O backup não inclui as fotos dos comprovantes.';
+      'O backup e o CSV não incluem as fotos dos comprovantes.';
+
+  @override
+  String get csvExportTooltip => 'Exportar para CSV';
+
+  @override
+  String get settingsCsvExport => 'Exportar extrato (CSV)';
+
+  @override
+  String get settingsCsvExportValue => 'Compartilhar';
+
+  @override
+  String get csvExportEmpty => 'Ainda não há registros para exportar.';
+
+  @override
+  String get csvExportFailed =>
+      'Não conseguimos abrir o compartilhamento. Tente de novo.';
+
+  @override
+  String get csvHeaderDate => 'Data';
+
+  @override
+  String get csvHeaderTime => 'Hora';
+
+  @override
+  String get csvHeaderType => 'Tipo';
+
+  @override
+  String get csvHeaderCategory => 'Categoria';
+
+  @override
+  String get csvHeaderNote => 'Nota';
+
+  @override
+  String get csvHeaderPayment => 'Pagamento';
+
+  @override
+  String get csvHeaderAmount => 'Valor';
+
+  @override
+  String get csvHeaderCurrency => 'Moeda';
+
+  @override
+  String get csvTypeExpense => 'Gasto';
+
+  @override
+  String get csvTypeFixedExpense => 'Gasto fixo';
+
+  @override
+  String get csvTypeIncome => 'Entrada';
 
   @override
   String get registerPayment => 'Pagamento';

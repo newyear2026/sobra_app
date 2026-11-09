@@ -12,6 +12,7 @@ import '../models/pay_schedule.dart';
 import '../services/native_ad_service.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
+import '../widgets/ledger_export_button.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/receipt_field.dart';
 import '../widgets/sobra_native_ad.dart';
@@ -255,7 +256,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         key: const PageStorageKey('movements-scroll'),
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
         children: [
-          PixelTopBar(title: l10n.transactionsTitle),
+          PixelTopBar(
+            title: l10n.transactionsTitle,
+            trailing: const LedgerExportButton(),
+          ),
           const SizedBox(height: 18),
           PixelSegmented<_LedgerKind>(
             segments: [

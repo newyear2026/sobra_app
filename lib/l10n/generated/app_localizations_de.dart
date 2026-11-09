@@ -1680,7 +1680,57 @@ class AppLocalizationsDe extends AppLocalizations {
   String get receiptFailed => 'Das Foto konnte nicht gespeichert werden.';
 
   @override
-  String get receiptBackupNote => 'Die Sicherung enthält keine Belegfotos.';
+  String get receiptBackupNote =>
+      'Sicherung und CSV enthalten keine Belegfotos.';
+
+  @override
+  String get csvExportTooltip => 'Als CSV exportieren';
+
+  @override
+  String get settingsCsvExport => 'Verlauf exportieren (CSV)';
+
+  @override
+  String get settingsCsvExportValue => 'Teilen';
+
+  @override
+  String get csvExportEmpty => 'Noch nichts zum Exportieren.';
+
+  @override
+  String get csvExportFailed =>
+      'Teilen konnte nicht geöffnet werden. Versuch es noch einmal.';
+
+  @override
+  String get csvHeaderDate => 'Datum';
+
+  @override
+  String get csvHeaderTime => 'Uhrzeit';
+
+  @override
+  String get csvHeaderType => 'Art';
+
+  @override
+  String get csvHeaderCategory => 'Kategorie';
+
+  @override
+  String get csvHeaderNote => 'Notiz';
+
+  @override
+  String get csvHeaderPayment => 'Zahlung';
+
+  @override
+  String get csvHeaderAmount => 'Betrag';
+
+  @override
+  String get csvHeaderCurrency => 'Währung';
+
+  @override
+  String get csvTypeExpense => 'Ausgabe';
+
+  @override
+  String get csvTypeFixedExpense => 'Fixkosten';
+
+  @override
+  String get csvTypeIncome => 'Einnahme';
 
   @override
   String get registerPayment => 'Zahlung';

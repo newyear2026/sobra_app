@@ -56,6 +56,10 @@ enum TelemetryEvent {
   /// platform's `ShareResultStatus`.
   shared('share'),
 
+  /// The CSV export ended. `origin`: a `LedgerExportOrigin`; `result`: a
+  /// `LedgerExportResult`. Never the file, its size or how many rows.
+  ledgerExported('ledger_exported'),
+
   /// A card's Play button on "Apps recomendadas" was tapped. `app`: an
   /// `OurAppId`. Set against the other app's `first_open` with source
   /// `sobrita / our_apps` for the share that installs and opens it.

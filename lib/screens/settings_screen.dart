@@ -20,8 +20,10 @@ import '../services/purchase_service.dart';
 import '../services/sobra_quick_entry.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
+import '../services/ledger_export.dart';
 import '../widgets/cat_sprite.dart';
 import '../widgets/pack_offer_dialog.dart';
+import '../widgets/ledger_export_button.dart';
 import '../widgets/pixel_ui.dart';
 import '../widgets/store_refresh_button.dart';
 import '../widgets/update_prompt.dart';
@@ -385,6 +387,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(height: 10),
           _SectionHeader(l10n.settingsSectionData),
+          // First in the section: what people look for under "Datos" is a
+          // way to take their records elsewhere, and the backup pair below
+          // only moves them between copies of Sobrita.
+          _SettingsRow(
+            icon: Icons.ios_share,
+            iconColor: AppColors.teal,
+            label: l10n.settingsCsvExport,
+            value: l10n.settingsCsvExportValue,
+            onTap: () => exportLedger(context, LedgerExportOrigin.settings),
+          ),
           _SettingsRow(
             icon: Icons.cloud_upload,
             iconColor: AppColors.teal,
@@ -426,7 +438,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           // The backup is a JSON string on the clipboard, so receipt photos —
           // which live as files outside it — cannot travel with it. Saying so
-          // here is cheaper than a user discovering it on a new phone.
+          // here is cheaper than a user discovering it on a new phone. The CSV
+          // leaves them out too, so the one line covers all three rows.
           Padding(
             // Tighter above than below, so the line reads as a footnote to the
             // backup row rather than a preamble to the next section header.

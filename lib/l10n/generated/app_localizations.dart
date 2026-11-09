@@ -2864,8 +2864,104 @@ abstract class AppLocalizations {
   /// No description provided for @receiptBackupNote.
   ///
   /// In es, this message translates to:
-  /// **'La copia no incluye las fotos de tickets.'**
+  /// **'La copia y el CSV no incluyen las fotos de tickets.'**
   String get receiptBackupNote;
+
+  /// No description provided for @csvExportTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar a CSV'**
+  String get csvExportTooltip;
+
+  /// No description provided for @settingsCsvExport.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar movimientos (CSV)'**
+  String get settingsCsvExport;
+
+  /// No description provided for @settingsCsvExportValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir'**
+  String get settingsCsvExportValue;
+
+  /// No description provided for @csvExportEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay movimientos para exportar.'**
+  String get csvExportEmpty;
+
+  /// No description provided for @csvExportFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abrir el menú para compartir. Vuelve a intentarlo.'**
+  String get csvExportFailed;
+
+  /// No description provided for @csvHeaderDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha'**
+  String get csvHeaderDate;
+
+  /// No description provided for @csvHeaderTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Hora'**
+  String get csvHeaderTime;
+
+  /// No description provided for @csvHeaderType.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo'**
+  String get csvHeaderType;
+
+  /// No description provided for @csvHeaderCategory.
+  ///
+  /// In es, this message translates to:
+  /// **'Categoría'**
+  String get csvHeaderCategory;
+
+  /// No description provided for @csvHeaderNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Nota'**
+  String get csvHeaderNote;
+
+  /// No description provided for @csvHeaderPayment.
+  ///
+  /// In es, this message translates to:
+  /// **'Pago'**
+  String get csvHeaderPayment;
+
+  /// No description provided for @csvHeaderAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto'**
+  String get csvHeaderAmount;
+
+  /// No description provided for @csvHeaderCurrency.
+  ///
+  /// In es, this message translates to:
+  /// **'Moneda'**
+  String get csvHeaderCurrency;
+
+  /// No description provided for @csvTypeExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto'**
+  String get csvTypeExpense;
+
+  /// No description provided for @csvTypeFixedExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto fijo'**
+  String get csvTypeFixedExpense;
+
+  /// No description provided for @csvTypeIncome.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingreso'**
+  String get csvTypeIncome;
 
   /// No description provided for @registerPayment.
   ///

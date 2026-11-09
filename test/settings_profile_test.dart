@@ -58,7 +58,9 @@ void main() {
     tester,
   ) async {
     useSpanishDevice(tester);
-    tester.view.physicalSize = const Size(520, 1360);
+    // Tall enough that the first view still reaches Acerca de and its
+    // version with the CSV export row in Datos.
+    tester.view.physicalSize = const Size(520, 1450);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);

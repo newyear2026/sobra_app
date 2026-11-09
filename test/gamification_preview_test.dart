@@ -82,6 +82,8 @@ void main() {
     await tester.pumpWidget(SobraApp(store: store));
     await tester.tap(find.text('Mi Sobrita'));
     await tester.pump(const Duration(milliseconds: 100));
+    // The debug rows close the page, below whatever Datos has grown to.
+    await tester.scrollUntilVisible(find.text('Vista previa XP'), 200);
     await tester.tap(find.text('Vista previa XP'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));

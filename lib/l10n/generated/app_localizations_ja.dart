@@ -1619,7 +1619,55 @@ class AppLocalizationsJa extends AppLocalizations {
   String get receiptFailed => '写真を保存できませんでした。';
 
   @override
-  String get receiptBackupNote => 'バックアップにレシートの写真は含まれません。';
+  String get receiptBackupNote => 'バックアップとCSVにレシートの写真は含まれません。';
+
+  @override
+  String get csvExportTooltip => 'CSVで書き出す';
+
+  @override
+  String get settingsCsvExport => '履歴を書き出す（CSV）';
+
+  @override
+  String get settingsCsvExportValue => '共有';
+
+  @override
+  String get csvExportEmpty => '書き出せる記録はまだありません。';
+
+  @override
+  String get csvExportFailed => '共有画面を開けませんでした。もう一度お試しください。';
+
+  @override
+  String get csvHeaderDate => '日付';
+
+  @override
+  String get csvHeaderTime => '時刻';
+
+  @override
+  String get csvHeaderType => '種類';
+
+  @override
+  String get csvHeaderCategory => 'カテゴリー';
+
+  @override
+  String get csvHeaderNote => 'メモ';
+
+  @override
+  String get csvHeaderPayment => '支払い';
+
+  @override
+  String get csvHeaderAmount => '金額';
+
+  @override
+  String get csvHeaderCurrency => '通貨';
+
+  @override
+  String get csvTypeExpense => '支出';
+
+  @override
+  String get csvTypeFixedExpense => '固定費';
+
+  @override
+  String get csvTypeIncome => '収入';
 
   @override
   String get registerPayment => '支払い方法';

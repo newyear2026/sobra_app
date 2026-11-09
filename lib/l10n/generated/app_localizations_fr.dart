@@ -1684,7 +1684,55 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get receiptBackupNote =>
-      'La sauvegarde n’inclut pas les photos des tickets.';
+      'La sauvegarde et le CSV n’incluent pas les photos des tickets.';
+
+  @override
+  String get csvExportTooltip => 'Exporter en CSV';
+
+  @override
+  String get settingsCsvExport => 'Exporter l’activité (CSV)';
+
+  @override
+  String get settingsCsvExportValue => 'Partager';
+
+  @override
+  String get csvExportEmpty => 'Rien à exporter pour l’instant.';
+
+  @override
+  String get csvExportFailed => 'Impossible d’ouvrir le partage. Réessaie.';
+
+  @override
+  String get csvHeaderDate => 'Date';
+
+  @override
+  String get csvHeaderTime => 'Heure';
+
+  @override
+  String get csvHeaderType => 'Type';
+
+  @override
+  String get csvHeaderCategory => 'Catégorie';
+
+  @override
+  String get csvHeaderNote => 'Note';
+
+  @override
+  String get csvHeaderPayment => 'Paiement';
+
+  @override
+  String get csvHeaderAmount => 'Montant';
+
+  @override
+  String get csvHeaderCurrency => 'Devise';
+
+  @override
+  String get csvTypeExpense => 'Dépense';
+
+  @override
+  String get csvTypeFixedExpense => 'Dépense fixe';
+
+  @override
+  String get csvTypeIncome => 'Rentrée';
 
   @override
   String get registerPayment => 'Paiement';

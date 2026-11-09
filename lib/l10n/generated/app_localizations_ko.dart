@@ -1617,7 +1617,55 @@ class AppLocalizationsKo extends AppLocalizations {
   String get receiptFailed => '사진을 저장하지 못했어요.';
 
   @override
-  String get receiptBackupNote => '백업에는 영수증 사진이 포함되지 않아요.';
+  String get receiptBackupNote => 'CSV와 백업에는 영수증 사진이 포함되지 않아요.';
+
+  @override
+  String get csvExportTooltip => 'CSV로 내보내기';
+
+  @override
+  String get settingsCsvExport => '내역 내보내기 (CSV)';
+
+  @override
+  String get settingsCsvExportValue => '공유';
+
+  @override
+  String get csvExportEmpty => '아직 내보낼 기록이 없어요.';
+
+  @override
+  String get csvExportFailed => '공유 화면을 열지 못했어요. 다시 시도해 주세요.';
+
+  @override
+  String get csvHeaderDate => '날짜';
+
+  @override
+  String get csvHeaderTime => '시간';
+
+  @override
+  String get csvHeaderType => '유형';
+
+  @override
+  String get csvHeaderCategory => '분류';
+
+  @override
+  String get csvHeaderNote => '메모';
+
+  @override
+  String get csvHeaderPayment => '결제';
+
+  @override
+  String get csvHeaderAmount => '금액';
+
+  @override
+  String get csvHeaderCurrency => '통화';
+
+  @override
+  String get csvTypeExpense => '지출';
+
+  @override
+  String get csvTypeFixedExpense => '고정 지출';
+
+  @override
+  String get csvTypeIncome => '수입';
 
   @override
   String get registerPayment => '결제';
