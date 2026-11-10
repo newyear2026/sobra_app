@@ -2,17 +2,22 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
+import '../models/native_ad_slot.dart';
 import '../state/sobra_store.dart';
 
-/// Where a native slot sits. Each has its own AdMob unit, so the console
-/// reports them apart, and its own visits; the gap between impressions is
-/// kept in the store and shared by all of them.
+/// Where an in-screen native slot sits. Each has its own AdMob unit, so the
+/// console reports them apart, its own visits, and its own gap between
+/// impressions, kept in the store under its [slot].
 enum NativeAdPlacement {
   /// Movimientos, under the third row.
-  ledger,
+  ledger(NativeAdSlot.ledger),
 
   /// Presupuesto, under the last category.
-  budget,
+  budget(NativeAdSlot.budget);
+
+  const NativeAdPlacement(this.slot);
+
+  final NativeAdSlot slot;
 }
 
 /// Applies Sobra's placement rules independently of the ad SDK widget.
@@ -51,7 +56,7 @@ class NativeAds extends ChangeNotifier {
       !_impressionThisVisit &&
       !_ownsNoAds &&
       _store.nativeAdGraceComplete(graceDays) &&
-      _store.nativeAdIntervalElapsed(minInterval);
+      _store.nativeAdIntervalElapsed(placement.slot, minInterval);
 
   /// Keeps an already-impressed card visible until the user leaves the tab.
   bool get shouldPlace =>
@@ -97,7 +102,7 @@ class NativeAds extends ChangeNotifier {
 
   Future<void> _saveImpression() async {
     try {
-      await _store.recordNativeAdImpression();
+      await _store.recordNativeAdImpression(placement.slot);
     } on Object {
       // The network impression already happened, so it must stay spent for
       // this visit even when local storage is temporarily unavailable.

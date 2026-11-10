@@ -10,6 +10,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/l10n/generated/app_localizations.dart';
 import 'package:sobra_app/models/expense_entry.dart';
+import 'package:sobra_app/models/native_ad_slot.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/screens/app_shell.dart';
 import 'package:sobra_app/services/admob_config.dart';
@@ -174,7 +175,7 @@ Future<void> main() async {
       );
       return creative;
     },
-    onImpression: () => unawaited(store.recordNativeAdImpression()),
+    onImpression: () => unawaited(store.recordNativeAdImpression(NativeAdSlot.exit)),
   );
   runApp(
     SobraScope(

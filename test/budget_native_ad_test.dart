@@ -233,14 +233,33 @@ void main() {
     expect(ads.budget.visitId, first + 1);
   });
 
-  testWidgets('an impression in Movimientos holds Presupuesto for five '
-      'minutes', (tester) async {
+  // Each slot keeps its own gap. The shared one let a single Movimientos ad
+  // leave Presupuesto empty for the rest of a short session.
+  testWidgets('an impression in Movimientos does not hold Presupuesto', (
+    tester,
+  ) async {
     final store = await _store();
     final ads = await _pumpApp(tester, store);
 
     await _openTab(tester, 'Movim.');
     ads.ledger.recordImpression();
     await tester.pump();
+
+    await _openTab(tester, 'Presup.');
+    expect(ads.budget.canOffer, isTrue);
+    expect(ads.budget.shouldPlace, isTrue);
+    expect(_budgetAd, findsOneWidget);
+  });
+
+  testWidgets('an impression in Presupuesto holds Presupuesto for five '
+      'minutes', (tester) async {
+    final store = await _store();
+    final ads = await _pumpApp(tester, store);
+
+    await _openTab(tester, 'Presup.');
+    ads.budget.recordImpression();
+    await tester.pump();
+    await _openTab(tester, 'Inicio');
 
     await _openTab(tester, 'Presup.');
     expect(ads.budget.canOffer, isFalse);

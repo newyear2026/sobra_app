@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 import 'package:sobra_app/data/catalog_preview_data.dart';
 import 'package:sobra_app/l10n/generated/app_localizations.dart';
+import 'package:sobra_app/models/native_ad_slot.dart';
 import 'package:sobra_app/services/admob_consent_service.dart';
 import 'package:sobra_app/services/exit_native_ad_service.dart';
 import 'package:sobra_app/state/sobra_store.dart';
@@ -317,7 +318,7 @@ void main() {
       final store = await pumpGuard(tester);
       final creative = loader.requests.single.fill();
       await tester.pump();
-      await store.recordNativeAdImpression();
+      await store.recordNativeAdImpression(NativeAdSlot.exit);
       await back(tester);
       expect(find.byKey(const ValueKey('exit-native-ad-slot')), findsNothing);
       await tester.tap(find.byKey(const ValueKey('exit-cancel')));
@@ -331,6 +332,22 @@ void main() {
       await tester.pumpAndSettle();
     },
   );
+
+  // Each slot keeps its own gap: an ad just seen in Movimientos or
+  // Presupuesto does not empty the exit dialog.
+  testWidgets('an in-screen impression does not hold back the exit ad', (
+    tester,
+  ) async {
+    final store = await pumpGuard(tester);
+    loader.requests.single.fill();
+    await tester.pump();
+    await store.recordNativeAdImpression(NativeAdSlot.ledger);
+    await store.recordNativeAdImpression(NativeAdSlot.budget);
+    await back(tester);
+    expect(find.byKey(const ValueKey('exit-native-ad-slot')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('exit-cancel')));
+    await tester.pumpAndSettle();
+  });
 
   testWidgets(
     'failed impression save keeps exit usable and preserves the session gap',
@@ -353,7 +370,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       expect(disk.stateWrites, writes + 1);
-      expect(store.lastNativeAdImpressionAt, isNull);
+      expect(store.lastNativeAdImpressionAt(NativeAdSlot.exit), isNull);
       await tester.tap(find.byKey(const ValueKey('exit-cancel')));
       await tester.pumpAndSettle();
 
@@ -375,7 +392,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       expect(disk.stateWrites, writes + 2);
-      expect(store.lastNativeAdImpressionAt, now);
+      expect(store.lastNativeAdImpressionAt(NativeAdSlot.exit), now);
       await tester.tap(find.byKey(const ValueKey('exit-cancel')));
       await tester.pumpAndSettle();
     },

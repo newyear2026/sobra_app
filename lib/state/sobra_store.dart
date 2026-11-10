@@ -18,6 +18,7 @@ import '../models/expense_entry.dart';
 import '../models/language.dart';
 import '../models/income_entry.dart';
 import '../models/money_movement.dart';
+import '../models/native_ad_slot.dart';
 import '../models/pay_schedule.dart';
 import '../models/recurring_expense.dart';
 import '../models/room_design.dart';
@@ -224,12 +225,15 @@ class SobraStore extends ChangeNotifier {
   /// grace period can be introduced without another state migration.
   String? _nativeAdInstallDay;
 
-  /// When Google last reported a native impression, or null for never.
+  /// When Google last reported a native impression in each slot. A slot that
+  /// is absent has never had one.
   ///
   /// A moment rather than a per-day count: the limit is a gap between ads,
   /// not a number of them, so somebody who opens the ledger again in the
-  /// evening sees one while somebody flipping tabs does not.
-  DateTime? _lastNativeAdImpressionAt;
+  /// evening sees one while somebody flipping tabs does not. Kept per slot so
+  /// an ad in Movimientos does not leave Presupuesto and the exit dialog
+  /// empty for the next five minutes.
+  final Map<NativeAdSlot, DateTime> _nativeAdImpressionsAt = {};
 
   /// The local day the user answered "Todavía no" on Inicio's fixed-expense
   /// card, which keeps the card away for the rest of that day only.
@@ -2989,17 +2993,19 @@ class SobraStore extends ChangeNotifier {
   String? rewardedAdLastEarnedDateFor(String id) =>
       _rewardedAdLastEarnedDate[id];
 
-  /// When the last native impression was reported, or null for never.
-  DateTime? get lastNativeAdImpressionAt => _lastNativeAdImpressionAt;
+  /// When [slot] last reported a native impression, or null for never.
+  DateTime? lastNativeAdImpressionAt(NativeAdSlot slot) =>
+      _nativeAdImpressionsAt[slot];
 
-  /// Whether at least [interval] has passed since the last native impression.
+  /// Whether at least [interval] has passed since [slot]'s last impression.
+  /// The other slots' impressions do not count.
   ///
   /// Asked from inside a build, like [nativeAdGraceComplete], so it answers
   /// rather than throws. A stored moment later than now means the clock was
   /// set back; it reads as elapsed, because holding ads until the clock
   /// catches up would hide them for as long as the clock was wrong.
-  bool nativeAdIntervalElapsed(Duration interval) {
-    final last = _lastNativeAdImpressionAt;
+  bool nativeAdIntervalElapsed(NativeAdSlot slot, Duration interval) {
+    final last = _nativeAdImpressionsAt[slot];
     if (last == null) return true;
     final now = _now();
     return last.isAfter(now) || now.difference(last) >= interval;
@@ -3022,13 +3028,14 @@ class SobraStore extends ChangeNotifier {
     return daysBetween(start, today) >= days;
   }
 
-  /// Records a native ad only after the SDK reports a real impression.
+  /// Records a native ad in [slot] only after the SDK reports a real
+  /// impression.
   ///
   /// Always moves the moment forward. An impression Google has counted
   /// starts the gap whether or not the previous one had ended, so two
   /// callbacks racing one another settle on the later of them.
-  Future<void> recordNativeAdImpression() => _write(() async {
-    _lastNativeAdImpressionAt = _now();
+  Future<void> recordNativeAdImpression(NativeAdSlot slot) => _write(() async {
+    _nativeAdImpressionsAt[slot] = _now();
     await _save();
     notifyListeners();
   });
@@ -3636,7 +3643,7 @@ class SobraStore extends ChangeNotifier {
     _rewardedAdsWatchedOnDay = 0;
     _rewardedAdLastEarnedDate.clear();
     _nativeAdInstallDay = todayKey;
-    _lastNativeAdImpressionAt = null;
+    _nativeAdImpressionsAt.clear();
     _fixedHomeSnoozedDay = null;
     _firstExpenseCardSnoozedDay = null;
     countedCashCentavos = 0;
@@ -3759,7 +3766,9 @@ class SobraStore extends ChangeNotifier {
       ..clear()
       ..addAll(other._rewardedAdLastEarnedDate);
     _nativeAdInstallDay = other._nativeAdInstallDay;
-    _lastNativeAdImpressionAt = other._lastNativeAdImpressionAt;
+    _nativeAdImpressionsAt
+      ..clear()
+      ..addAll(other._nativeAdImpressionsAt);
     _fixedHomeSnoozedDay = other._fixedHomeSnoozedDay;
     _firstExpenseCardSnoozedDay = other._firstExpenseCardSnoozedDay;
     _baseBudgetCentavos = other._baseBudgetCentavos;
@@ -4001,10 +4010,28 @@ class SobraStore extends ChangeNotifier {
     // States from the daily-cap builds carry nativeAdDay and a count instead.
     // Neither says when the last ad was, so they are left behind and the
     // first visit after the update may show one.
-    final lastNativeAd = json['lastNativeAdImpressionAt'] as String?;
-    _lastNativeAdImpressionAt = lastNativeAd == null
-        ? null
-        : DateTime.tryParse(lastNativeAd);
+    _nativeAdImpressionsAt.clear();
+    final bySlot = json['nativeAdImpressionsAt'];
+    if (bySlot is Map<String, dynamic>) {
+      // A slot name this build does not know, or a moment that will not
+      // parse, is dropped: that slot simply has no gap running.
+      for (final slot in NativeAdSlot.values) {
+        final raw = bySlot[slot.name];
+        final at = raw is String ? DateTime.tryParse(raw) : null;
+        if (at != null) _nativeAdImpressionsAt[slot] = at;
+      }
+    } else {
+      // States from before the per-slot gap kept one moment for every slot.
+      // It is copied to all of them, so the first five minutes after the
+      // update hold exactly what the old build would have held.
+      final legacy = json['lastNativeAdImpressionAt'];
+      final at = legacy is String ? DateTime.tryParse(legacy) : null;
+      if (at != null) {
+        for (final slot in NativeAdSlot.values) {
+          _nativeAdImpressionsAt[slot] = at;
+        }
+      }
+    }
     _fixedHomeSnoozedDay = json['fixedHomeSnoozedDay'] as String?;
     _firstExpenseCardSnoozedDay = json['firstExpenseCardSnoozedDay'] as String?;
     countedCashCentavos = (json['countedCashCentavos'] as num).toInt();
@@ -4196,7 +4223,10 @@ class SobraStore extends ChangeNotifier {
     'rewardedAdsWatchedOnDay': _rewardedAdsWatchedOnDay,
     'rewardedAdLastEarnedDate': _rewardedAdLastEarnedDate,
     'nativeAdInstallDay': _nativeAdInstallDay,
-    'lastNativeAdImpressionAt': _lastNativeAdImpressionAt?.toIso8601String(),
+    'nativeAdImpressionsAt': {
+      for (final entry in _nativeAdImpressionsAt.entries)
+        entry.key.name: entry.value.toIso8601String(),
+    },
     'fixedHomeSnoozedDay': _fixedHomeSnoozedDay,
     'firstExpenseCardSnoozedDay': _firstExpenseCardSnoozedDay,
     'cycleBudgetExtras': _cycleBudgetExtras,

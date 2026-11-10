@@ -5,6 +5,7 @@ import 'package:shared_preferences_platform_interface/shared_preferences_platfor
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/data/catalog_preview_data.dart';
 import 'package:sobra_app/main.dart';
+import 'package:sobra_app/models/native_ad_slot.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/services/native_ad_service.dart';
 import 'package:sobra_app/state/sobra_store.dart';
@@ -43,7 +44,7 @@ void main() {
     expect(ads.canOffer, isTrue);
     ads.recordImpression();
     await Future<void>.delayed(Duration.zero);
-    expect(store.lastNativeAdImpressionAt, now);
+    expect(store.lastNativeAdImpressionAt(NativeAdSlot.ledger), now);
     expect(ads.canOffer, isFalse);
     expect(ads.shouldPlace, isTrue);
 
@@ -103,13 +104,16 @@ void main() {
 
   test('the last impression survives a restart', () async {
     final store = await loadStore();
-    expect(store.lastNativeAdImpressionAt, isNull);
+    expect(store.lastNativeAdImpressionAt(NativeAdSlot.ledger), isNull);
 
-    await store.recordNativeAdImpression();
+    await store.recordNativeAdImpression(NativeAdSlot.ledger);
     final reopened = await loadStore();
-    expect(reopened.lastNativeAdImpressionAt, now);
+    expect(reopened.lastNativeAdImpressionAt(NativeAdSlot.ledger), now);
     expect(
-      reopened.nativeAdIntervalElapsed(const Duration(minutes: 5)),
+      reopened.nativeAdIntervalElapsed(
+        NativeAdSlot.ledger,
+        const Duration(minutes: 5),
+      ),
       isFalse,
     );
   });
@@ -122,7 +126,7 @@ void main() {
         jsonDecode(preferences.getString('sobra_state_v2')!)
             as Map<String, dynamic>;
     saved
-      ..remove('lastNativeAdImpressionAt')
+      ..remove('nativeAdImpressionsAt')
       ..['nativeAdDay'] = '2026-09-15'
       ..['nativeAdImpressionsOnDay'] = 2;
     await preferences.setString('sobra_state_v2', jsonEncode(saved));
@@ -130,8 +134,149 @@ void main() {
     final store = await loadStore();
 
     expect(store.hasStorageError, isFalse);
-    expect(store.lastNativeAdImpressionAt, isNull);
-    expect(store.nativeAdIntervalElapsed(const Duration(minutes: 5)), isTrue);
+    for (final slot in NativeAdSlot.values) {
+      expect(store.lastNativeAdImpressionAt(slot), isNull, reason: slot.name);
+      expect(
+        store.nativeAdIntervalElapsed(slot, const Duration(minutes: 5)),
+        isTrue,
+        reason: slot.name,
+      );
+    }
+  });
+
+  // The gap used to be one moment for every slot, so an ad in Movimientos
+  // left Presupuesto and the exit dialog empty for the next five minutes.
+  test('each slot keeps its own gap', () async {
+    final store = await loadStore();
+    final ledger = NativeAds(store: store, graceDays: 0)..setSdkReady(true);
+    final budget = NativeAds(
+      store: store,
+      placement: NativeAdPlacement.budget,
+      graceDays: 0,
+    )..setSdkReady(true);
+
+    ledger.startVisit();
+    ledger.recordImpression();
+    await pumpEventQueue();
+    ledger.endVisit();
+
+    now = now.add(const Duration(minutes: 1));
+    budget.startVisit();
+    expect(budget.canOffer, isTrue);
+    expect(
+      store.nativeAdIntervalElapsed(
+        NativeAdSlot.exit,
+        const Duration(minutes: 5),
+      ),
+      isTrue,
+    );
+    budget.recordImpression();
+    await pumpEventQueue();
+
+    expect(
+      store.lastNativeAdImpressionAt(NativeAdSlot.ledger),
+      now.subtract(const Duration(minutes: 1)),
+    );
+    expect(store.lastNativeAdImpressionAt(NativeAdSlot.budget), now);
+    expect(store.lastNativeAdImpressionAt(NativeAdSlot.exit), isNull);
+
+    // The ledger's own gap still holds four minutes after its ad.
+    now = now.add(const Duration(minutes: 3, seconds: 59));
+    ledger.startVisit();
+    expect(ledger.canOffer, isFalse);
+    now = now.add(const Duration(seconds: 1));
+    ledger.endVisit();
+    ledger.startVisit();
+    expect(ledger.canOffer, isTrue);
+  });
+
+  test('each slot survives a restart on its own', () async {
+    final store = await loadStore();
+    await store.recordNativeAdImpression(NativeAdSlot.budget);
+    now = now.add(const Duration(minutes: 2));
+    await store.recordNativeAdImpression(NativeAdSlot.exit);
+
+    final reopened = await loadStore();
+
+    expect(reopened.lastNativeAdImpressionAt(NativeAdSlot.ledger), isNull);
+    expect(
+      reopened.lastNativeAdImpressionAt(NativeAdSlot.budget),
+      DateTime(2026, 9, 15, 10),
+    );
+    expect(
+      reopened.lastNativeAdImpressionAt(NativeAdSlot.exit),
+      DateTime(2026, 9, 15, 10, 2),
+    );
+  });
+
+  // A state from the shared-gap builds holds one moment. Copying it to every
+  // slot keeps the first five minutes after the update as they were.
+  test('a state from the shared-gap builds holds every slot', () async {
+    await loadStore();
+    final preferences = await SharedPreferences.getInstance();
+    final saved =
+        jsonDecode(preferences.getString('sobra_state_v2')!)
+            as Map<String, dynamic>;
+    saved
+      ..remove('nativeAdImpressionsAt')
+      ..['lastNativeAdImpressionAt'] = DateTime(
+        2026,
+        9,
+        15,
+        9,
+        58,
+      ).toIso8601String();
+    await preferences.setString('sobra_state_v2', jsonEncode(saved));
+
+    final store = await loadStore();
+
+    for (final slot in NativeAdSlot.values) {
+      expect(
+        store.lastNativeAdImpressionAt(slot),
+        DateTime(2026, 9, 15, 9, 58),
+        reason: slot.name,
+      );
+      expect(
+        store.nativeAdIntervalElapsed(slot, const Duration(minutes: 5)),
+        isFalse,
+        reason: slot.name,
+      );
+    }
+    // Written back per slot, so the legacy key is not read again.
+    await store.recordNativeAdImpression(NativeAdSlot.ledger);
+    final written =
+        jsonDecode(preferences.getString('sobra_state_v2')!)
+            as Map<String, dynamic>;
+    expect(written.containsKey('lastNativeAdImpressionAt'), isFalse);
+    expect(
+      (written['nativeAdImpressionsAt'] as Map).keys,
+      unorderedEquals(['ledger', 'budget', 'exit']),
+    );
+  });
+
+  test('an unreadable slot moment is dropped, not fatal', () async {
+    await loadStore();
+    final preferences = await SharedPreferences.getInstance();
+    final saved =
+        jsonDecode(preferences.getString('sobra_state_v2')!)
+            as Map<String, dynamic>;
+    saved['nativeAdImpressionsAt'] = {
+      'ledger': 'not-a-date',
+      'budget': 42,
+      'exit': DateTime(2026, 9, 15, 9, 58).toIso8601String(),
+      'somewhereNew': DateTime(2026, 9, 15, 9, 58).toIso8601String(),
+    };
+    await preferences.setString('sobra_state_v2', jsonEncode(saved));
+
+    final store = await loadStore();
+
+    expect(store.hasStorageError, isFalse);
+    expect(store.lastNativeAdImpressionAt(NativeAdSlot.ledger), isNull);
+    expect(store.lastNativeAdImpressionAt(NativeAdSlot.budget), isNull);
+    expect(
+      store.lastNativeAdImpressionAt(NativeAdSlot.exit),
+      DateTime(2026, 9, 15, 9, 58),
+    );
   });
 
   testWidgets('only a real transition into transactions starts a visit', (
@@ -179,7 +324,7 @@ void main() {
       ads.recordImpression();
       await pumpEventQueue();
 
-      expect(store.lastNativeAdImpressionAt, now);
+      expect(store.lastNativeAdImpressionAt(NativeAdSlot.ledger), now);
       ads.startVisit();
       expect(ads.canOffer, isFalse);
     },
@@ -197,7 +342,10 @@ void main() {
     await pumpEventQueue();
 
     // The second callback did not move the gap's start a minute later.
-    expect(store.lastNativeAdImpressionAt, DateTime(2026, 9, 15, 10));
+    expect(
+      store.lastNativeAdImpressionAt(NativeAdSlot.ledger),
+      DateTime(2026, 9, 15, 10),
+    );
   });
 
   // Asked from inside a build, so it must answer rather than throw. A state

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../l10n/generated/app_localizations.dart';
+import '../models/native_ad_slot.dart';
 import '../services/admob_config.dart';
 import '../services/admob_consent_service.dart';
 import '../services/admob_exit_native_ad_loader.dart';
@@ -78,7 +79,7 @@ class _AppExitGuardState extends State<AppExitGuard>
 
   Future<void> _saveImpression(SobraStore store) async {
     try {
-      await store.recordNativeAdImpression();
+      await store.recordNativeAdImpression(NativeAdSlot.exit);
     } on Object {
       // The SDK impression already happened. ExitNativeAds retains its
       // session cooldown even if disk storage is temporarily unavailable.
@@ -118,7 +119,10 @@ class _AppExitGuardState extends State<AppExitGuard>
     final ad = ads?.beginPresentation(
       canShow:
           _allowed &&
-          (_store?.nativeAdIntervalElapsed(const Duration(minutes: 5)) ??
+          (_store?.nativeAdIntervalElapsed(
+                NativeAdSlot.exit,
+                ExitNativeAds.impressionInterval,
+              ) ??
               false),
     );
     final usableAd = ad?.size == layout.adSize ? ad : null;
