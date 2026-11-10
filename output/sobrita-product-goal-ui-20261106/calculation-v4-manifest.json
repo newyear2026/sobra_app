@@ -1,0 +1,20 @@
+{
+  "method": "built-in image_gen",
+  "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-f478fca4-49b0-4c03-83cf-c22eee011684.png",
+  "file": "/Users/jaewook/dev_app/sobra_app/output/sobrita-product-goal-ui-20261106/03-calculation-preview-v4.png",
+  "width": 852,
+  "height": 1846,
+  "prompt": "calculation-v4-prompt.txt",
+  "example": {
+    "cycle_budget_mxn": 3000,
+    "cycle_expenses_mxn": 2700,
+    "cycle_surplus_mxn": 300,
+    "goal_target_mxn": 1500,
+    "previous_saved_mxn": 600,
+    "proposed_allocation_mxn": 150,
+    "preview_saved_mxn": 750,
+    "preview_progress_percent": 50,
+    "surplus_unassigned_mxn": 150,
+    "goal_remaining_mxn": 750
+  }
+}

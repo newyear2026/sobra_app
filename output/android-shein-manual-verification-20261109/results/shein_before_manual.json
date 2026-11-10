@@ -1,0 +1,3331 @@
+{
+  "runId": "shein_before_manual",
+  "requestedUrl": "https:\/\/www.shein.com.mx\/Women-Long-Dresses-p-568117802.html",
+  "startedAtUtc": "2026-11-10T00:27:48.189Z",
+  "androidSdk": 36,
+  "androidRelease": "16",
+  "targetSdk": 36,
+  "deviceModel": "sdk_gphone64_arm64",
+  "userAgent": "Mozilla\/5.0 (Linux; Android 16; sdk_gphone64_arm64 Build\/BE2A.250530.026.D1; wv) AppleWebKit\/537.36 (KHTML, like Gecko) Version\/4.0 Chrome\/156.0.8078.47 Mobile Safari\/537.36",
+  "webViewPackage": "com.google.android.webview",
+  "webViewVersion": "156.0.8078.47",
+  "extractorVersion": "0.2-user-triggered-public-dom-diagnostic",
+  "manualVerificationCompleted": null,
+  "manualVerificationEvidence": "unknown; pressing inspect does not establish completion",
+  "extractorOverrideUsed": false,
+  "inspectionTrigger": "intent_action_inspect",
+  "pageReloadedForInspection": false,
+  "cookiesClearedForInspection": false,
+  "uaOverride": false,
+  "officialApiUsed": false,
+  "manualLoginUsed": false,
+  "securityPromptAutomated": false,
+  "cookiePolicy": "Default WebView state retained; values are not inspected or exported.",
+  "observations": [
+    {
+      "accountVerification": false,
+      "bodyInspected": true,
+      "bodyTextExcerpt": "GET\n×\nSHEIN-FASHION CLOTHING\nDownload the APP for more exclusive benefits.\n(37,496)\n1\/8\n$MXN463.56\n-26%\n$MXN625.00\nWomen Long Dresses\nSize\n\nS\n\nM\n\nL\n\nXL\n\nShipping Warehouse\nlocal shipping\ninternational\nThe item will be shipped from local shipping. Different shipping malls will have different freight rates, timeliness and activities.\n\nSHEIN Info\n\nShipping Info\nReturns\nHow to Order\nSustainability\nAdd to Cart\nRegister\n\nBy registering, you agree to our Privacy & Cookie Policy and Terms & Conditions.\nI'd like to receive exclusive offers and SHEIN news by email. I understand I can contact SHEIN to unsubscribe at anytime.",
+      "challenge": false,
+      "extractionConfirmed": false,
+      "headings": [
+        {
+          "ancestors": [
+            {
+              "class": "goods-name",
+              "tag": "div"
+            },
+            {
+              "class": "NEW_BFF_COMPONENT",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top__info-container mt-0",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top not-fsp-element",
+              "tag": "div"
+            },
+            {
+              "class": "mgds-goodsd-bg j-mgds-goodsd product-intro",
+              "tag": "main"
+            },
+            {
+              "class": "sh-goods-detail-container shipping-theme-wrapper",
+              "tag": "div"
+            }
+          ],
+          "class": "detail-title-h1 title-line-camp title-line-sellpoint",
+          "id": null,
+          "text": "Women Long Dresses"
+        }
+      ],
+      "interpretation": "Public product DOM candidate evidence only. Positive natural image dimensions mean loaded, not image quality. No automatic extraction or verification-success claim.",
+      "invalidJsonLd": 0,
+      "largeImageCandidates": [
+        {
+          "alt": "icon",
+          "ancestors": [
+            {
+              "class": "journey-icon",
+              "tag": "div"
+            },
+            {
+              "class": "journey-left",
+              "tag": "div"
+            },
+            {
+              "class": "journey-content",
+              "tag": "div"
+            },
+            {
+              "class": "journey-contain scrollfix-sub",
+              "tag": "div"
+            },
+            {
+              "class": "journey-eu-site",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 126,
+          "naturalWidth": 126,
+          "src": "https:\/\/img.ltwebstatic.com\/banner3\/2021\/03\/22\/161639337118fe541b57db8a67b5825d185efc57d8_thumbnail_126x.avif"
+        },
+        {
+          "alt": "icon",
+          "ancestors": [
+            {
+              "class": "journey-stars",
+              "tag": "div"
+            },
+            {
+              "class": "journey-count-wrap",
+              "tag": "div"
+            },
+            {
+              "class": "journey-details",
+              "tag": "div"
+            },
+            {
+              "class": "journey-left",
+              "tag": "div"
+            },
+            {
+              "class": "journey-content",
+              "tag": "div"
+            },
+            {
+              "class": "journey-contain scrollfix-sub",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 78,
+          "naturalWidth": 84,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/star_full.png"
+        },
+        {
+          "alt": "icon",
+          "ancestors": [
+            {
+              "class": "journey-stars",
+              "tag": "div"
+            },
+            {
+              "class": "journey-count-wrap",
+              "tag": "div"
+            },
+            {
+              "class": "journey-details",
+              "tag": "div"
+            },
+            {
+              "class": "journey-left",
+              "tag": "div"
+            },
+            {
+              "class": "journey-content",
+              "tag": "div"
+            },
+            {
+              "class": "journey-contain scrollfix-sub",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 78,
+          "naturalWidth": 84,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/star_full.png"
+        },
+        {
+          "alt": "icon",
+          "ancestors": [
+            {
+              "class": "journey-stars",
+              "tag": "div"
+            },
+            {
+              "class": "journey-count-wrap",
+              "tag": "div"
+            },
+            {
+              "class": "journey-details",
+              "tag": "div"
+            },
+            {
+              "class": "journey-left",
+              "tag": "div"
+            },
+            {
+              "class": "journey-content",
+              "tag": "div"
+            },
+            {
+              "class": "journey-contain scrollfix-sub",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 78,
+          "naturalWidth": 84,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/star_full.png"
+        },
+        {
+          "alt": "icon",
+          "ancestors": [
+            {
+              "class": "journey-stars",
+              "tag": "div"
+            },
+            {
+              "class": "journey-count-wrap",
+              "tag": "div"
+            },
+            {
+              "class": "journey-details",
+              "tag": "div"
+            },
+            {
+              "class": "journey-left",
+              "tag": "div"
+            },
+            {
+              "class": "journey-content",
+              "tag": "div"
+            },
+            {
+              "class": "journey-contain scrollfix-sub",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 78,
+          "naturalWidth": 84,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/star_full.png"
+        },
+        {
+          "alt": "icon",
+          "ancestors": [
+            {
+              "class": "journey-stars",
+              "tag": "div"
+            },
+            {
+              "class": "journey-count-wrap",
+              "tag": "div"
+            },
+            {
+              "class": "journey-details",
+              "tag": "div"
+            },
+            {
+              "class": "journey-left",
+              "tag": "div"
+            },
+            {
+              "class": "journey-content",
+              "tag": "div"
+            },
+            {
+              "class": "journey-contain scrollfix-sub",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 78,
+          "naturalWidth": 84,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/star_full.png"
+        },
+        {
+          "alt": "cart",
+          "ancestors": [
+            {
+              "class": "bsc-header-cart__svg",
+              "tag": "span"
+            },
+            {
+              "class": "bsc-header-cart__wrapper",
+              "tag": "span"
+            },
+            {
+              "class": "bsc-header-cart bsc-header-cart__24px whole-center full-hotzone-icon app-header__icon-right app-header__icon-right-last",
+              "tag": "a"
+            },
+            {
+              "class": "bsc-common-header__right",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-common-header__wrap common-logo-header j-common-logo-header",
+              "tag": "header"
+            },
+            {
+              "class": "bsc-common-header j-common-header-dom",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 24,
+          "naturalWidth": 24,
+          "src": "https:\/\/shein.ltwebstatic.com\/svgicons\/2025\/10\/17\/17606729433555630991.svg"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 8",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 1",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img fsp-element",
+          "naturalHeight": 999,
+          "naturalWidth": 750,
+          "src": "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_750x999.avif"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 2",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 3",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 4",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 5",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 6",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 7",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 8",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 1",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img fsp-element",
+          "naturalHeight": 999,
+          "naturalWidth": 750,
+          "src": "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_750x999.avif"
+        },
+        {
+          "alt": "store",
+          "ancestors": [
+            {
+              "class": "add-cart__store-btn a11y-focus add-cart__store-btn_detailRedesignTitleRegionNew",
+              "tag": "div"
+            },
+            {
+              "class": "product-intro__add-cart fixed self-animated-medium j-btn-add-to-bag-wrapper j-da-event-box NEW_BFF_COMPONENT",
+              "tag": "div"
+            },
+            {
+              "class": "shipping-theme-wrapper add-cart__animation-normal",
+              "tag": "div"
+            },
+            {
+              "class": "sh-goods-detail-container shipping-theme-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 28,
+          "naturalWidth": 28,
+          "src": "https:\/\/shein.ltwebstatic.com\/svgicons\/2026\/06\/22\/17821189804025737076.svg"
+        }
+      ],
+      "metadata": {
+        "og:description": "Women Long Dresses. $MXN463.56. Free shipping & returns | SHEIN",
+        "og:image": "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_405x552_thumbnail_720x.jpg",
+        "og:title": "Women Long Dresses | SHEIN",
+        "og:url": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html",
+        "product:price:amount": "463.56",
+        "product:price:currency": "MXN"
+      },
+      "pageTitle": "Women's & Men's Clothing, Shop Online Fashion | SHEIN",
+      "pageUrl": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html",
+      "priceCandidates": [
+        {
+          "ancestors": [
+            {
+              "class": "goods-detail-top__info-container mt-0",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top not-fsp-element",
+              "tag": "div"
+            },
+            {
+              "class": "mgds-goodsd-bg j-mgds-goodsd product-intro",
+              "tag": "main"
+            },
+            {
+              "class": "sh-goods-detail-container shipping-theme-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "productPriceContainer productPriceContainer--concise",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56 -26% $MXN625.00 Women Long Dresses Size S M L XL Shipping Warehouse local shipping international The item will be shipped from local shipping. Different shipping malls will have different freight rates, timeliness and activities.",
+          "tag": "div",
+          "text": "$MXN463.56 -26% $MXN625.00"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "productPriceContainer productPriceContainer--concise",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top__info-container mt-0",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top not-fsp-element",
+              "tag": "div"
+            },
+            {
+              "class": "mgds-goodsd-bg j-mgds-goodsd product-intro",
+              "tag": "main"
+            },
+            {
+              "class": "sh-goods-detail-container shipping-theme-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-price bsc-price--visual-bottom",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56 -26% $MXN625.00",
+          "tag": "div",
+          "text": "$MXN463.56 -26% $MXN625.00"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-price bsc-price--visual-bottom",
+              "tag": "div"
+            },
+            {
+              "class": "productPriceContainer productPriceContainer--concise",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top__info-container mt-0",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top not-fsp-element",
+              "tag": "div"
+            },
+            {
+              "class": "mgds-goodsd-bg j-mgds-goodsd product-intro",
+              "tag": "main"
+            },
+            {
+              "class": "sh-goods-detail-container shipping-theme-wrapper",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-default-belt bsc-price__belt",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56 -26% $MXN625.00",
+          "tag": "div",
+          "text": "$MXN463.56 -26% $MXN625.00"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-price bsc-price--visual-bottom",
+              "tag": "div"
+            },
+            {
+              "class": "productPriceContainer productPriceContainer--concise",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top__info-container mt-0",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-price__content",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56 -26% $MXN625.00",
+          "tag": "div",
+          "text": "$MXN463.56 -26% $MXN625.00"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-price__content",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-price bsc-price--visual-bottom",
+              "tag": "div"
+            },
+            {
+              "class": "productPriceContainer productPriceContainer--concise",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-price__atom",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56 -26% $MXN625.00",
+          "tag": "span",
+          "text": "$MXN463.56"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-price__atom",
+              "tag": "span"
+            },
+            {
+              "class": "bsc-price__content",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-price bsc-price--visual-bottom",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-main-price bsc-price-ltr",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56",
+          "tag": "span",
+          "text": "$MXN463.56"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-price__content",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-price bsc-price--visual-bottom",
+              "tag": "div"
+            },
+            {
+              "class": "productPriceContainer productPriceContainer--concise",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-price-badge bsc-price__atom bsc-price__atom--badge",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56 -26% $MXN625.00",
+          "tag": "span",
+          "text": "-26%"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-discount-tag",
+              "tag": "span"
+            },
+            {
+              "class": "bsc-price-badge bsc-price__atom bsc-price__atom--badge",
+              "tag": "span"
+            },
+            {
+              "class": "bsc-price__content",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-discount-tag__content bsc-price-ltr",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "-26%",
+          "tag": "span",
+          "text": "-26%"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-price__content",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-price bsc-price--visual-bottom",
+              "tag": "div"
+            },
+            {
+              "class": "productPriceContainer productPriceContainer--concise",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-price__atom",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56 -26% $MXN625.00",
+          "tag": "span",
+          "text": "$MXN625.00"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-price__atom",
+              "tag": "span"
+            },
+            {
+              "class": "bsc-price__content",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-price bsc-price--visual-bottom",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-strikethrough-price bsc-strikethrough-price--black",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN625.00",
+          "tag": "div",
+          "text": "$MXN625.00"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-strikethrough-price bsc-strikethrough-price--black",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-price__atom",
+              "tag": "span"
+            },
+            {
+              "class": "bsc-price__content",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-strikethrough-price__value",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN625.00",
+          "tag": "span",
+          "text": "$MXN625.00"
+        }
+      ],
+      "readyState": "complete",
+      "structuredProducts": [
+        {
+          "image": [
+            "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_405x552.jpg"
+          ],
+          "name": "Women Long Dresses - Size XL",
+          "offers": {
+            "@type": "Offer",
+            "availability": "https:\/\/schema.org\/InStock",
+            "price": "463.56",
+            "priceCurrency": "MXN",
+            "url": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html?goods_id=568117802&ref=www&rep=dir&ret=m&skucode=I8mu7d7yksigd8"
+          },
+          "sku": "I8mu7d7yksigd8",
+          "url": null
+        },
+        {
+          "image": [
+            "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_405x552.jpg"
+          ],
+          "name": "Women Long Dresses - Size L",
+          "offers": {
+            "@type": "Offer",
+            "availability": "https:\/\/schema.org\/InStock",
+            "price": "463.56",
+            "priceCurrency": "MXN",
+            "url": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html?goods_id=568117802&ref=www&rep=dir&ret=m&skucode=I6mu7d7yklvk8y"
+          },
+          "sku": "I6mu7d7yklvk8y",
+          "url": null
+        },
+        {
+          "image": [
+            "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_405x552.jpg"
+          ],
+          "name": "Women Long Dresses - Size S",
+          "offers": {
+            "@type": "Offer",
+            "availability": "https:\/\/schema.org\/InStock",
+            "price": "463.56",
+            "priceCurrency": "MXN",
+            "url": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html?goods_id=568117802&ref=www&rep=dir&ret=m&skucode=I3mu7d7yk57ick"
+          },
+          "sku": "I3mu7d7yk57ick",
+          "url": null
+        },
+        {
+          "image": [
+            "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_405x552.jpg"
+          ],
+          "name": "Women Long Dresses - Size M",
+          "offers": {
+            "@type": "Offer",
+            "availability": "https:\/\/schema.org\/InStock",
+            "price": "463.56",
+            "priceCurrency": "MXN",
+            "url": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html?goods_id=568117802&ref=www&rep=dir&ret=m&skucode=I1mu7d7yke82rj"
+          },
+          "sku": "I1mu7d7yke82rj",
+          "url": null
+        }
+      ],
+      "observedAtUtc": "2026-11-10T00:27:48.268Z",
+      "sampleIndex": 1
+    },
+    {
+      "accountVerification": false,
+      "bodyInspected": true,
+      "bodyTextExcerpt": "GET\n×\nSHEIN-FASHION CLOTHING\nDownload the APP for more exclusive benefits.\n(37,496)\n1\/8\n$MXN463.56\n-26%\n$MXN625.00\nWomen Long Dresses\nSize\n\nS\n\nM\n\nL\n\nXL\n\nShipping Warehouse\nlocal shipping\ninternational\nThe item will be shipped from local shipping. Different shipping malls will have different freight rates, timeliness and activities.\n\nSHEIN Info\n\nShipping Info\nReturns\nHow to Order\nSustainability\nAdd to Cart\nRegister\n\nBy registering, you agree to our Privacy & Cookie Policy and Terms & Conditions.\nI'd like to receive exclusive offers and SHEIN news by email. I understand I can contact SHEIN to unsubscribe at anytime.",
+      "challenge": false,
+      "extractionConfirmed": false,
+      "headings": [
+        {
+          "ancestors": [
+            {
+              "class": "goods-name",
+              "tag": "div"
+            },
+            {
+              "class": "NEW_BFF_COMPONENT",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top__info-container mt-0",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top not-fsp-element",
+              "tag": "div"
+            },
+            {
+              "class": "mgds-goodsd-bg j-mgds-goodsd product-intro",
+              "tag": "main"
+            },
+            {
+              "class": "sh-goods-detail-container shipping-theme-wrapper",
+              "tag": "div"
+            }
+          ],
+          "class": "detail-title-h1 title-line-camp title-line-sellpoint",
+          "id": null,
+          "text": "Women Long Dresses"
+        }
+      ],
+      "interpretation": "Public product DOM candidate evidence only. Positive natural image dimensions mean loaded, not image quality. No automatic extraction or verification-success claim.",
+      "invalidJsonLd": 0,
+      "largeImageCandidates": [
+        {
+          "alt": "icon",
+          "ancestors": [
+            {
+              "class": "journey-icon",
+              "tag": "div"
+            },
+            {
+              "class": "journey-left",
+              "tag": "div"
+            },
+            {
+              "class": "journey-content",
+              "tag": "div"
+            },
+            {
+              "class": "journey-contain scrollfix-sub",
+              "tag": "div"
+            },
+            {
+              "class": "journey-eu-site",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 126,
+          "naturalWidth": 126,
+          "src": "https:\/\/img.ltwebstatic.com\/banner3\/2021\/03\/22\/161639337118fe541b57db8a67b5825d185efc57d8_thumbnail_126x.avif"
+        },
+        {
+          "alt": "icon",
+          "ancestors": [
+            {
+              "class": "journey-stars",
+              "tag": "div"
+            },
+            {
+              "class": "journey-count-wrap",
+              "tag": "div"
+            },
+            {
+              "class": "journey-details",
+              "tag": "div"
+            },
+            {
+              "class": "journey-left",
+              "tag": "div"
+            },
+            {
+              "class": "journey-content",
+              "tag": "div"
+            },
+            {
+              "class": "journey-contain scrollfix-sub",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 78,
+          "naturalWidth": 84,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/star_full.png"
+        },
+        {
+          "alt": "icon",
+          "ancestors": [
+            {
+              "class": "journey-stars",
+              "tag": "div"
+            },
+            {
+              "class": "journey-count-wrap",
+              "tag": "div"
+            },
+            {
+              "class": "journey-details",
+              "tag": "div"
+            },
+            {
+              "class": "journey-left",
+              "tag": "div"
+            },
+            {
+              "class": "journey-content",
+              "tag": "div"
+            },
+            {
+              "class": "journey-contain scrollfix-sub",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 78,
+          "naturalWidth": 84,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/star_full.png"
+        },
+        {
+          "alt": "icon",
+          "ancestors": [
+            {
+              "class": "journey-stars",
+              "tag": "div"
+            },
+            {
+              "class": "journey-count-wrap",
+              "tag": "div"
+            },
+            {
+              "class": "journey-details",
+              "tag": "div"
+            },
+            {
+              "class": "journey-left",
+              "tag": "div"
+            },
+            {
+              "class": "journey-content",
+              "tag": "div"
+            },
+            {
+              "class": "journey-contain scrollfix-sub",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 78,
+          "naturalWidth": 84,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/star_full.png"
+        },
+        {
+          "alt": "icon",
+          "ancestors": [
+            {
+              "class": "journey-stars",
+              "tag": "div"
+            },
+            {
+              "class": "journey-count-wrap",
+              "tag": "div"
+            },
+            {
+              "class": "journey-details",
+              "tag": "div"
+            },
+            {
+              "class": "journey-left",
+              "tag": "div"
+            },
+            {
+              "class": "journey-content",
+              "tag": "div"
+            },
+            {
+              "class": "journey-contain scrollfix-sub",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 78,
+          "naturalWidth": 84,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/star_full.png"
+        },
+        {
+          "alt": "icon",
+          "ancestors": [
+            {
+              "class": "journey-stars",
+              "tag": "div"
+            },
+            {
+              "class": "journey-count-wrap",
+              "tag": "div"
+            },
+            {
+              "class": "journey-details",
+              "tag": "div"
+            },
+            {
+              "class": "journey-left",
+              "tag": "div"
+            },
+            {
+              "class": "journey-content",
+              "tag": "div"
+            },
+            {
+              "class": "journey-contain scrollfix-sub",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 78,
+          "naturalWidth": 84,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/star_full.png"
+        },
+        {
+          "alt": "cart",
+          "ancestors": [
+            {
+              "class": "bsc-header-cart__svg",
+              "tag": "span"
+            },
+            {
+              "class": "bsc-header-cart__wrapper",
+              "tag": "span"
+            },
+            {
+              "class": "bsc-header-cart bsc-header-cart__24px whole-center full-hotzone-icon app-header__icon-right app-header__icon-right-last",
+              "tag": "a"
+            },
+            {
+              "class": "bsc-common-header__right",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-common-header__wrap common-logo-header j-common-logo-header",
+              "tag": "header"
+            },
+            {
+              "class": "bsc-common-header j-common-header-dom",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 24,
+          "naturalWidth": 24,
+          "src": "https:\/\/shein.ltwebstatic.com\/svgicons\/2025\/10\/17\/17606729433555630991.svg"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 8",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 1",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img fsp-element",
+          "naturalHeight": 999,
+          "naturalWidth": 750,
+          "src": "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_750x999.avif"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 2",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 3",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 4",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 5",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 6",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 7",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 8",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img lazyload",
+          "naturalHeight": 450,
+          "naturalWidth": 339,
+          "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+        },
+        {
+          "alt": "Women Long Dresses - Grey - View 1",
+          "ancestors": [
+            {
+              "class": "crop-image-container",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture__slide-item",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "slide-swiper",
+              "tag": "div"
+            },
+            {
+              "class": "main-picture",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": "crop-image-container__img fsp-element",
+          "naturalHeight": 999,
+          "naturalWidth": 750,
+          "src": "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_750x999.avif"
+        },
+        {
+          "alt": "store",
+          "ancestors": [
+            {
+              "class": "add-cart__store-btn a11y-focus add-cart__store-btn_detailRedesignTitleRegionNew",
+              "tag": "div"
+            },
+            {
+              "class": "product-intro__add-cart fixed self-animated-medium j-btn-add-to-bag-wrapper j-da-event-box NEW_BFF_COMPONENT",
+              "tag": "div"
+            },
+            {
+              "class": "shipping-theme-wrapper add-cart__animation-normal",
+              "tag": "div"
+            },
+            {
+              "class": "sh-goods-detail-container shipping-theme-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "naturalHeight": 28,
+          "naturalWidth": 28,
+          "src": "https:\/\/shein.ltwebstatic.com\/svgicons\/2026\/06\/22\/17821189804025737076.svg"
+        }
+      ],
+      "metadata": {
+        "og:description": "Women Long Dresses. $MXN463.56. Free shipping & returns | SHEIN",
+        "og:image": "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_405x552_thumbnail_720x.jpg",
+        "og:title": "Women Long Dresses | SHEIN",
+        "og:url": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html",
+        "product:price:amount": "463.56",
+        "product:price:currency": "MXN"
+      },
+      "pageTitle": "Women's & Men's Clothing, Shop Online Fashion | SHEIN",
+      "pageUrl": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html",
+      "priceCandidates": [
+        {
+          "ancestors": [
+            {
+              "class": "goods-detail-top__info-container mt-0",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top not-fsp-element",
+              "tag": "div"
+            },
+            {
+              "class": "mgds-goodsd-bg j-mgds-goodsd product-intro",
+              "tag": "main"
+            },
+            {
+              "class": "sh-goods-detail-container shipping-theme-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "productPriceContainer productPriceContainer--concise",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56 -26% $MXN625.00 Women Long Dresses Size S M L XL Shipping Warehouse local shipping international The item will be shipped from local shipping. Different shipping malls will have different freight rates, timeliness and activities.",
+          "tag": "div",
+          "text": "$MXN463.56 -26% $MXN625.00"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "productPriceContainer productPriceContainer--concise",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top__info-container mt-0",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top not-fsp-element",
+              "tag": "div"
+            },
+            {
+              "class": "mgds-goodsd-bg j-mgds-goodsd product-intro",
+              "tag": "main"
+            },
+            {
+              "class": "sh-goods-detail-container shipping-theme-wrapper",
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-price bsc-price--visual-bottom",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56 -26% $MXN625.00",
+          "tag": "div",
+          "text": "$MXN463.56 -26% $MXN625.00"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-price bsc-price--visual-bottom",
+              "tag": "div"
+            },
+            {
+              "class": "productPriceContainer productPriceContainer--concise",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top__info-container mt-0",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top not-fsp-element",
+              "tag": "div"
+            },
+            {
+              "class": "mgds-goodsd-bg j-mgds-goodsd product-intro",
+              "tag": "main"
+            },
+            {
+              "class": "sh-goods-detail-container shipping-theme-wrapper",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-default-belt bsc-price__belt",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56 -26% $MXN625.00",
+          "tag": "div",
+          "text": "$MXN463.56 -26% $MXN625.00"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-price bsc-price--visual-bottom",
+              "tag": "div"
+            },
+            {
+              "class": "productPriceContainer productPriceContainer--concise",
+              "tag": "div"
+            },
+            {
+              "class": "goods-detail-top__info-container mt-0",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-price__content",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56 -26% $MXN625.00",
+          "tag": "div",
+          "text": "$MXN463.56 -26% $MXN625.00"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-price__content",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-price bsc-price--visual-bottom",
+              "tag": "div"
+            },
+            {
+              "class": "productPriceContainer productPriceContainer--concise",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-price__atom",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56 -26% $MXN625.00",
+          "tag": "span",
+          "text": "$MXN463.56"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-price__atom",
+              "tag": "span"
+            },
+            {
+              "class": "bsc-price__content",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-price bsc-price--visual-bottom",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-main-price bsc-price-ltr",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56",
+          "tag": "span",
+          "text": "$MXN463.56"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-price__content",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-price bsc-price--visual-bottom",
+              "tag": "div"
+            },
+            {
+              "class": "productPriceContainer productPriceContainer--concise",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-price-badge bsc-price__atom bsc-price__atom--badge",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56 -26% $MXN625.00",
+          "tag": "span",
+          "text": "-26%"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-discount-tag",
+              "tag": "span"
+            },
+            {
+              "class": "bsc-price-badge bsc-price__atom bsc-price__atom--badge",
+              "tag": "span"
+            },
+            {
+              "class": "bsc-price__content",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-discount-tag__content bsc-price-ltr",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "-26%",
+          "tag": "span",
+          "text": "-26%"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-price__content",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-price bsc-price--visual-bottom",
+              "tag": "div"
+            },
+            {
+              "class": "productPriceContainer productPriceContainer--concise",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-price__atom",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN463.56 -26% $MXN625.00",
+          "tag": "span",
+          "text": "$MXN625.00"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-price__atom",
+              "tag": "span"
+            },
+            {
+              "class": "bsc-price__content",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-price bsc-price--visual-bottom",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-strikethrough-price bsc-strikethrough-price--black",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN625.00",
+          "tag": "div",
+          "text": "$MXN625.00"
+        },
+        {
+          "ancestors": [
+            {
+              "class": "bsc-strikethrough-price bsc-strikethrough-price--black",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-price__atom",
+              "tag": "span"
+            },
+            {
+              "class": "bsc-price__content",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__main",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt__body",
+              "tag": "div"
+            },
+            {
+              "class": "bsc-default-belt bsc-price__belt",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "bsc-strikethrough-price__value",
+          "dataPrice": null,
+          "itemprop": null,
+          "parentText": "$MXN625.00",
+          "tag": "span",
+          "text": "$MXN625.00"
+        }
+      ],
+      "readyState": "complete",
+      "structuredProducts": [
+        {
+          "image": [
+            "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_405x552.jpg"
+          ],
+          "name": "Women Long Dresses - Size XL",
+          "offers": {
+            "@type": "Offer",
+            "availability": "https:\/\/schema.org\/InStock",
+            "price": "463.56",
+            "priceCurrency": "MXN",
+            "url": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html?goods_id=568117802&ref=www&rep=dir&ret=m&skucode=I8mu7d7yksigd8"
+          },
+          "sku": "I8mu7d7yksigd8",
+          "url": null
+        },
+        {
+          "image": [
+            "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_405x552.jpg"
+          ],
+          "name": "Women Long Dresses - Size L",
+          "offers": {
+            "@type": "Offer",
+            "availability": "https:\/\/schema.org\/InStock",
+            "price": "463.56",
+            "priceCurrency": "MXN",
+            "url": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html?goods_id=568117802&ref=www&rep=dir&ret=m&skucode=I6mu7d7yklvk8y"
+          },
+          "sku": "I6mu7d7yklvk8y",
+          "url": null
+        },
+        {
+          "image": [
+            "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_405x552.jpg"
+          ],
+          "name": "Women Long Dresses - Size S",
+          "offers": {
+            "@type": "Offer",
+            "availability": "https:\/\/schema.org\/InStock",
+            "price": "463.56",
+            "priceCurrency": "MXN",
+            "url": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html?goods_id=568117802&ref=www&rep=dir&ret=m&skucode=I3mu7d7yk57ick"
+          },
+          "sku": "I3mu7d7yk57ick",
+          "url": null
+        },
+        {
+          "image": [
+            "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_405x552.jpg"
+          ],
+          "name": "Women Long Dresses - Size M",
+          "offers": {
+            "@type": "Offer",
+            "availability": "https:\/\/schema.org\/InStock",
+            "price": "463.56",
+            "priceCurrency": "MXN",
+            "url": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html?goods_id=568117802&ref=www&rep=dir&ret=m&skucode=I1mu7d7yke82rj"
+          },
+          "sku": "I1mu7d7yke82rj",
+          "url": null
+        }
+      ],
+      "observedAtUtc": "2026-11-10T00:27:50.278Z",
+      "sampleIndex": 2
+    }
+  ],
+  "mainFrameErrors": [],
+  "finishedAtUtc": "2026-11-10T00:27:50.281Z",
+  "completionReason": "two_snapshots_recorded",
+  "diagnosticComplete": true,
+  "extractionConfirmed": false,
+  "finalObservation": {
+    "accountVerification": false,
+    "bodyInspected": true,
+    "bodyTextExcerpt": "GET\n×\nSHEIN-FASHION CLOTHING\nDownload the APP for more exclusive benefits.\n(37,496)\n1\/8\n$MXN463.56\n-26%\n$MXN625.00\nWomen Long Dresses\nSize\n\nS\n\nM\n\nL\n\nXL\n\nShipping Warehouse\nlocal shipping\ninternational\nThe item will be shipped from local shipping. Different shipping malls will have different freight rates, timeliness and activities.\n\nSHEIN Info\n\nShipping Info\nReturns\nHow to Order\nSustainability\nAdd to Cart\nRegister\n\nBy registering, you agree to our Privacy & Cookie Policy and Terms & Conditions.\nI'd like to receive exclusive offers and SHEIN news by email. I understand I can contact SHEIN to unsubscribe at anytime.",
+    "challenge": false,
+    "extractionConfirmed": false,
+    "headings": [
+      {
+        "ancestors": [
+          {
+            "class": "goods-name",
+            "tag": "div"
+          },
+          {
+            "class": "NEW_BFF_COMPONENT",
+            "tag": "div"
+          },
+          {
+            "class": "goods-detail-top__info-container mt-0",
+            "tag": "div"
+          },
+          {
+            "class": "goods-detail-top not-fsp-element",
+            "tag": "div"
+          },
+          {
+            "class": "mgds-goodsd-bg j-mgds-goodsd product-intro",
+            "tag": "main"
+          },
+          {
+            "class": "sh-goods-detail-container shipping-theme-wrapper",
+            "tag": "div"
+          }
+        ],
+        "class": "detail-title-h1 title-line-camp title-line-sellpoint",
+        "id": null,
+        "text": "Women Long Dresses"
+      }
+    ],
+    "interpretation": "Public product DOM candidate evidence only. Positive natural image dimensions mean loaded, not image quality. No automatic extraction or verification-success claim.",
+    "invalidJsonLd": 0,
+    "largeImageCandidates": [
+      {
+        "alt": "icon",
+        "ancestors": [
+          {
+            "class": "journey-icon",
+            "tag": "div"
+          },
+          {
+            "class": "journey-left",
+            "tag": "div"
+          },
+          {
+            "class": "journey-content",
+            "tag": "div"
+          },
+          {
+            "class": "journey-contain scrollfix-sub",
+            "tag": "div"
+          },
+          {
+            "class": "journey-eu-site",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          }
+        ],
+        "class": null,
+        "naturalHeight": 126,
+        "naturalWidth": 126,
+        "src": "https:\/\/img.ltwebstatic.com\/banner3\/2021\/03\/22\/161639337118fe541b57db8a67b5825d185efc57d8_thumbnail_126x.avif"
+      },
+      {
+        "alt": "icon",
+        "ancestors": [
+          {
+            "class": "journey-stars",
+            "tag": "div"
+          },
+          {
+            "class": "journey-count-wrap",
+            "tag": "div"
+          },
+          {
+            "class": "journey-details",
+            "tag": "div"
+          },
+          {
+            "class": "journey-left",
+            "tag": "div"
+          },
+          {
+            "class": "journey-content",
+            "tag": "div"
+          },
+          {
+            "class": "journey-contain scrollfix-sub",
+            "tag": "div"
+          }
+        ],
+        "class": null,
+        "naturalHeight": 78,
+        "naturalWidth": 84,
+        "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/star_full.png"
+      },
+      {
+        "alt": "icon",
+        "ancestors": [
+          {
+            "class": "journey-stars",
+            "tag": "div"
+          },
+          {
+            "class": "journey-count-wrap",
+            "tag": "div"
+          },
+          {
+            "class": "journey-details",
+            "tag": "div"
+          },
+          {
+            "class": "journey-left",
+            "tag": "div"
+          },
+          {
+            "class": "journey-content",
+            "tag": "div"
+          },
+          {
+            "class": "journey-contain scrollfix-sub",
+            "tag": "div"
+          }
+        ],
+        "class": null,
+        "naturalHeight": 78,
+        "naturalWidth": 84,
+        "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/star_full.png"
+      },
+      {
+        "alt": "icon",
+        "ancestors": [
+          {
+            "class": "journey-stars",
+            "tag": "div"
+          },
+          {
+            "class": "journey-count-wrap",
+            "tag": "div"
+          },
+          {
+            "class": "journey-details",
+            "tag": "div"
+          },
+          {
+            "class": "journey-left",
+            "tag": "div"
+          },
+          {
+            "class": "journey-content",
+            "tag": "div"
+          },
+          {
+            "class": "journey-contain scrollfix-sub",
+            "tag": "div"
+          }
+        ],
+        "class": null,
+        "naturalHeight": 78,
+        "naturalWidth": 84,
+        "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/star_full.png"
+      },
+      {
+        "alt": "icon",
+        "ancestors": [
+          {
+            "class": "journey-stars",
+            "tag": "div"
+          },
+          {
+            "class": "journey-count-wrap",
+            "tag": "div"
+          },
+          {
+            "class": "journey-details",
+            "tag": "div"
+          },
+          {
+            "class": "journey-left",
+            "tag": "div"
+          },
+          {
+            "class": "journey-content",
+            "tag": "div"
+          },
+          {
+            "class": "journey-contain scrollfix-sub",
+            "tag": "div"
+          }
+        ],
+        "class": null,
+        "naturalHeight": 78,
+        "naturalWidth": 84,
+        "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/star_full.png"
+      },
+      {
+        "alt": "icon",
+        "ancestors": [
+          {
+            "class": "journey-stars",
+            "tag": "div"
+          },
+          {
+            "class": "journey-count-wrap",
+            "tag": "div"
+          },
+          {
+            "class": "journey-details",
+            "tag": "div"
+          },
+          {
+            "class": "journey-left",
+            "tag": "div"
+          },
+          {
+            "class": "journey-content",
+            "tag": "div"
+          },
+          {
+            "class": "journey-contain scrollfix-sub",
+            "tag": "div"
+          }
+        ],
+        "class": null,
+        "naturalHeight": 78,
+        "naturalWidth": 84,
+        "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/star_full.png"
+      },
+      {
+        "alt": "cart",
+        "ancestors": [
+          {
+            "class": "bsc-header-cart__svg",
+            "tag": "span"
+          },
+          {
+            "class": "bsc-header-cart__wrapper",
+            "tag": "span"
+          },
+          {
+            "class": "bsc-header-cart bsc-header-cart__24px whole-center full-hotzone-icon app-header__icon-right app-header__icon-right-last",
+            "tag": "a"
+          },
+          {
+            "class": "bsc-common-header__right",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-common-header__wrap common-logo-header j-common-logo-header",
+            "tag": "header"
+          },
+          {
+            "class": "bsc-common-header j-common-header-dom",
+            "tag": "div"
+          }
+        ],
+        "class": null,
+        "naturalHeight": 24,
+        "naturalWidth": 24,
+        "src": "https:\/\/shein.ltwebstatic.com\/svgicons\/2025\/10\/17\/17606729433555630991.svg"
+      },
+      {
+        "alt": "Women Long Dresses - Grey - View 8",
+        "ancestors": [
+          {
+            "class": "crop-image-container",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture__slide-item",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper-wrapper",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          }
+        ],
+        "class": "crop-image-container__img lazyload",
+        "naturalHeight": 450,
+        "naturalWidth": 339,
+        "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+      },
+      {
+        "alt": "Women Long Dresses - Grey - View 1",
+        "ancestors": [
+          {
+            "class": "crop-image-container",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture__slide-item",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper-wrapper",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          }
+        ],
+        "class": "crop-image-container__img fsp-element",
+        "naturalHeight": 999,
+        "naturalWidth": 750,
+        "src": "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_750x999.avif"
+      },
+      {
+        "alt": "Women Long Dresses - Grey - View 2",
+        "ancestors": [
+          {
+            "class": "crop-image-container",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture__slide-item",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper-wrapper",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          }
+        ],
+        "class": "crop-image-container__img lazyload",
+        "naturalHeight": 450,
+        "naturalWidth": 339,
+        "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+      },
+      {
+        "alt": "Women Long Dresses - Grey - View 3",
+        "ancestors": [
+          {
+            "class": "crop-image-container",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture__slide-item",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper-wrapper",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          }
+        ],
+        "class": "crop-image-container__img lazyload",
+        "naturalHeight": 450,
+        "naturalWidth": 339,
+        "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+      },
+      {
+        "alt": "Women Long Dresses - Grey - View 4",
+        "ancestors": [
+          {
+            "class": "crop-image-container",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture__slide-item",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper-wrapper",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          }
+        ],
+        "class": "crop-image-container__img lazyload",
+        "naturalHeight": 450,
+        "naturalWidth": 339,
+        "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+      },
+      {
+        "alt": "Women Long Dresses - Grey - View 5",
+        "ancestors": [
+          {
+            "class": "crop-image-container",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture__slide-item",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper-wrapper",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          }
+        ],
+        "class": "crop-image-container__img lazyload",
+        "naturalHeight": 450,
+        "naturalWidth": 339,
+        "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+      },
+      {
+        "alt": "Women Long Dresses - Grey - View 6",
+        "ancestors": [
+          {
+            "class": "crop-image-container",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture__slide-item",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper-wrapper",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          }
+        ],
+        "class": "crop-image-container__img lazyload",
+        "naturalHeight": 450,
+        "naturalWidth": 339,
+        "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+      },
+      {
+        "alt": "Women Long Dresses - Grey - View 7",
+        "ancestors": [
+          {
+            "class": "crop-image-container",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture__slide-item",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper-wrapper",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          }
+        ],
+        "class": "crop-image-container__img lazyload",
+        "naturalHeight": 450,
+        "naturalWidth": 339,
+        "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+      },
+      {
+        "alt": "Women Long Dresses - Grey - View 8",
+        "ancestors": [
+          {
+            "class": "crop-image-container",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture__slide-item",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper-wrapper",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          }
+        ],
+        "class": "crop-image-container__img lazyload",
+        "naturalHeight": 450,
+        "naturalWidth": 339,
+        "src": "https:\/\/sheinm.ltwebstatic.com\/pwa_dist\/images\/bg-logo-5ab25d7379.png"
+      },
+      {
+        "alt": "Women Long Dresses - Grey - View 1",
+        "ancestors": [
+          {
+            "class": "crop-image-container",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture__slide-item",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper-wrapper",
+            "tag": "div"
+          },
+          {
+            "class": "slide-swiper",
+            "tag": "div"
+          },
+          {
+            "class": "main-picture",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          }
+        ],
+        "class": "crop-image-container__img fsp-element",
+        "naturalHeight": 999,
+        "naturalWidth": 750,
+        "src": "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_750x999.avif"
+      },
+      {
+        "alt": "store",
+        "ancestors": [
+          {
+            "class": "add-cart__store-btn a11y-focus add-cart__store-btn_detailRedesignTitleRegionNew",
+            "tag": "div"
+          },
+          {
+            "class": "product-intro__add-cart fixed self-animated-medium j-btn-add-to-bag-wrapper j-da-event-box NEW_BFF_COMPONENT",
+            "tag": "div"
+          },
+          {
+            "class": "shipping-theme-wrapper add-cart__animation-normal",
+            "tag": "div"
+          },
+          {
+            "class": "sh-goods-detail-container shipping-theme-wrapper",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          }
+        ],
+        "class": null,
+        "naturalHeight": 28,
+        "naturalWidth": 28,
+        "src": "https:\/\/shein.ltwebstatic.com\/svgicons\/2026\/06\/22\/17821189804025737076.svg"
+      }
+    ],
+    "metadata": {
+      "og:description": "Women Long Dresses. $MXN463.56. Free shipping & returns | SHEIN",
+      "og:image": "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_405x552_thumbnail_720x.jpg",
+      "og:title": "Women Long Dresses | SHEIN",
+      "og:url": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html",
+      "product:price:amount": "463.56",
+      "product:price:currency": "MXN"
+    },
+    "pageTitle": "Women's & Men's Clothing, Shop Online Fashion | SHEIN",
+    "pageUrl": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html",
+    "priceCandidates": [
+      {
+        "ancestors": [
+          {
+            "class": "goods-detail-top__info-container mt-0",
+            "tag": "div"
+          },
+          {
+            "class": "goods-detail-top not-fsp-element",
+            "tag": "div"
+          },
+          {
+            "class": "mgds-goodsd-bg j-mgds-goodsd product-intro",
+            "tag": "main"
+          },
+          {
+            "class": "sh-goods-detail-container shipping-theme-wrapper",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": null,
+        "class": "productPriceContainer productPriceContainer--concise",
+        "dataPrice": null,
+        "itemprop": null,
+        "parentText": "$MXN463.56 -26% $MXN625.00 Women Long Dresses Size S M L XL Shipping Warehouse local shipping international The item will be shipped from local shipping. Different shipping malls will have different freight rates, timeliness and activities.",
+        "tag": "div",
+        "text": "$MXN463.56 -26% $MXN625.00"
+      },
+      {
+        "ancestors": [
+          {
+            "class": "productPriceContainer productPriceContainer--concise",
+            "tag": "div"
+          },
+          {
+            "class": "goods-detail-top__info-container mt-0",
+            "tag": "div"
+          },
+          {
+            "class": "goods-detail-top not-fsp-element",
+            "tag": "div"
+          },
+          {
+            "class": "mgds-goodsd-bg j-mgds-goodsd product-intro",
+            "tag": "main"
+          },
+          {
+            "class": "sh-goods-detail-container shipping-theme-wrapper",
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": null,
+        "class": "bsc-price bsc-price--visual-bottom",
+        "dataPrice": null,
+        "itemprop": null,
+        "parentText": "$MXN463.56 -26% $MXN625.00",
+        "tag": "div",
+        "text": "$MXN463.56 -26% $MXN625.00"
+      },
+      {
+        "ancestors": [
+          {
+            "class": "bsc-price bsc-price--visual-bottom",
+            "tag": "div"
+          },
+          {
+            "class": "productPriceContainer productPriceContainer--concise",
+            "tag": "div"
+          },
+          {
+            "class": "goods-detail-top__info-container mt-0",
+            "tag": "div"
+          },
+          {
+            "class": "goods-detail-top not-fsp-element",
+            "tag": "div"
+          },
+          {
+            "class": "mgds-goodsd-bg j-mgds-goodsd product-intro",
+            "tag": "main"
+          },
+          {
+            "class": "sh-goods-detail-container shipping-theme-wrapper",
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": null,
+        "class": "bsc-default-belt bsc-price__belt",
+        "dataPrice": null,
+        "itemprop": null,
+        "parentText": "$MXN463.56 -26% $MXN625.00",
+        "tag": "div",
+        "text": "$MXN463.56 -26% $MXN625.00"
+      },
+      {
+        "ancestors": [
+          {
+            "class": "bsc-default-belt__main",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt__body",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt bsc-price__belt",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-price bsc-price--visual-bottom",
+            "tag": "div"
+          },
+          {
+            "class": "productPriceContainer productPriceContainer--concise",
+            "tag": "div"
+          },
+          {
+            "class": "goods-detail-top__info-container mt-0",
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": null,
+        "class": "bsc-price__content",
+        "dataPrice": null,
+        "itemprop": null,
+        "parentText": "$MXN463.56 -26% $MXN625.00",
+        "tag": "div",
+        "text": "$MXN463.56 -26% $MXN625.00"
+      },
+      {
+        "ancestors": [
+          {
+            "class": "bsc-price__content",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt__main",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt__body",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt bsc-price__belt",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-price bsc-price--visual-bottom",
+            "tag": "div"
+          },
+          {
+            "class": "productPriceContainer productPriceContainer--concise",
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": null,
+        "class": "bsc-price__atom",
+        "dataPrice": null,
+        "itemprop": null,
+        "parentText": "$MXN463.56 -26% $MXN625.00",
+        "tag": "span",
+        "text": "$MXN463.56"
+      },
+      {
+        "ancestors": [
+          {
+            "class": "bsc-price__atom",
+            "tag": "span"
+          },
+          {
+            "class": "bsc-price__content",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt__main",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt__body",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt bsc-price__belt",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-price bsc-price--visual-bottom",
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": null,
+        "class": "bsc-main-price bsc-price-ltr",
+        "dataPrice": null,
+        "itemprop": null,
+        "parentText": "$MXN463.56",
+        "tag": "span",
+        "text": "$MXN463.56"
+      },
+      {
+        "ancestors": [
+          {
+            "class": "bsc-price__content",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt__main",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt__body",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt bsc-price__belt",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-price bsc-price--visual-bottom",
+            "tag": "div"
+          },
+          {
+            "class": "productPriceContainer productPriceContainer--concise",
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": null,
+        "class": "bsc-price-badge bsc-price__atom bsc-price__atom--badge",
+        "dataPrice": null,
+        "itemprop": null,
+        "parentText": "$MXN463.56 -26% $MXN625.00",
+        "tag": "span",
+        "text": "-26%"
+      },
+      {
+        "ancestors": [
+          {
+            "class": "bsc-discount-tag",
+            "tag": "span"
+          },
+          {
+            "class": "bsc-price-badge bsc-price__atom bsc-price__atom--badge",
+            "tag": "span"
+          },
+          {
+            "class": "bsc-price__content",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt__main",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt__body",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt bsc-price__belt",
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": null,
+        "class": "bsc-discount-tag__content bsc-price-ltr",
+        "dataPrice": null,
+        "itemprop": null,
+        "parentText": "-26%",
+        "tag": "span",
+        "text": "-26%"
+      },
+      {
+        "ancestors": [
+          {
+            "class": "bsc-price__content",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt__main",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt__body",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt bsc-price__belt",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-price bsc-price--visual-bottom",
+            "tag": "div"
+          },
+          {
+            "class": "productPriceContainer productPriceContainer--concise",
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": null,
+        "class": "bsc-price__atom",
+        "dataPrice": null,
+        "itemprop": null,
+        "parentText": "$MXN463.56 -26% $MXN625.00",
+        "tag": "span",
+        "text": "$MXN625.00"
+      },
+      {
+        "ancestors": [
+          {
+            "class": "bsc-price__atom",
+            "tag": "span"
+          },
+          {
+            "class": "bsc-price__content",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt__main",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt__body",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt bsc-price__belt",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-price bsc-price--visual-bottom",
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": null,
+        "class": "bsc-strikethrough-price bsc-strikethrough-price--black",
+        "dataPrice": null,
+        "itemprop": null,
+        "parentText": "$MXN625.00",
+        "tag": "div",
+        "text": "$MXN625.00"
+      },
+      {
+        "ancestors": [
+          {
+            "class": "bsc-strikethrough-price bsc-strikethrough-price--black",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-price__atom",
+            "tag": "span"
+          },
+          {
+            "class": "bsc-price__content",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt__main",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt__body",
+            "tag": "div"
+          },
+          {
+            "class": "bsc-default-belt bsc-price__belt",
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": null,
+        "class": "bsc-strikethrough-price__value",
+        "dataPrice": null,
+        "itemprop": null,
+        "parentText": "$MXN625.00",
+        "tag": "span",
+        "text": "$MXN625.00"
+      }
+    ],
+    "readyState": "complete",
+    "structuredProducts": [
+      {
+        "image": [
+          "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_405x552.jpg"
+        ],
+        "name": "Women Long Dresses - Size XL",
+        "offers": {
+          "@type": "Offer",
+          "availability": "https:\/\/schema.org\/InStock",
+          "price": "463.56",
+          "priceCurrency": "MXN",
+          "url": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html?goods_id=568117802&ref=www&rep=dir&ret=m&skucode=I8mu7d7yksigd8"
+        },
+        "sku": "I8mu7d7yksigd8",
+        "url": null
+      },
+      {
+        "image": [
+          "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_405x552.jpg"
+        ],
+        "name": "Women Long Dresses - Size L",
+        "offers": {
+          "@type": "Offer",
+          "availability": "https:\/\/schema.org\/InStock",
+          "price": "463.56",
+          "priceCurrency": "MXN",
+          "url": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html?goods_id=568117802&ref=www&rep=dir&ret=m&skucode=I6mu7d7yklvk8y"
+        },
+        "sku": "I6mu7d7yklvk8y",
+        "url": null
+      },
+      {
+        "image": [
+          "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_405x552.jpg"
+        ],
+        "name": "Women Long Dresses - Size S",
+        "offers": {
+          "@type": "Offer",
+          "availability": "https:\/\/schema.org\/InStock",
+          "price": "463.56",
+          "priceCurrency": "MXN",
+          "url": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html?goods_id=568117802&ref=www&rep=dir&ret=m&skucode=I3mu7d7yk57ick"
+        },
+        "sku": "I3mu7d7yk57ick",
+        "url": null
+      },
+      {
+        "image": [
+          "https:\/\/img.ltwebstatic.com\/v4\/j\/spmp\/2026\/09\/19\/a9\/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_405x552.jpg"
+        ],
+        "name": "Women Long Dresses - Size M",
+        "offers": {
+          "@type": "Offer",
+          "availability": "https:\/\/schema.org\/InStock",
+          "price": "463.56",
+          "priceCurrency": "MXN",
+          "url": "https:\/\/m.shein.com.mx\/Women-Long-Dresses-p-568117802.html?goods_id=568117802&ref=www&rep=dir&ret=m&skucode=I1mu7d7yke82rj"
+        },
+        "sku": "I1mu7d7yke82rj",
+        "url": null
+      }
+    ],
+    "observedAtUtc": "2026-11-10T00:27:50.278Z",
+    "sampleIndex": 2
+  }
+}

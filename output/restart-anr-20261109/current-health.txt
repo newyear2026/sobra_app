@@ -1,0 +1,59 @@
+5258
+Applications Memory Usage (in Kilobytes):
+Uptime: 344865 Realtime: 344865
+
+** MEMINFO in pid 5258 [com.sobra.app.sobra_app] **
+ 
+ App Summary
+                       Pss(KB)                        Rss(KB)
+                        ------                         ------
+           Java Heap:    26600                          39696
+         Native Heap:    50708                          51572
+                Code:    24488                         109988
+               Stack:     2356                           2360
+            Graphics:        0                              0
+       Private Other:   254560
+              System:    23508
+             Unknown:                                  262876
+ 
+           TOTAL PSS:   382220            TOTAL RSS:   466492       TOTAL SWAP PSS:      407
+ 
+ Objects
+               Views:       10         ViewRootImpl:        1
+         AppContexts:       14           Activities:        1
+              Assets:       32        AssetManagers:        0
+       Local Binders:       36        Proxy Binders:       74
+       Parcel memory:       14         Parcel count:       59
+    Death Recipients:        3             WebViews:        0
+ 
+ Native Allocations
+                         Count                       Total(kB)
+                        ------                         ------
+    Other (malloced):      343                             31
+ Other (nonmalloced):      118                             82
+ 
+ SQL
+         MEMORY_USED:      342
+  PAGECACHE_OVERFLOW:       92          MALLOC_SIZE:       46
+ 
+ DATABASES
+      pgsz     dbsz   Lookaside(b) cache hits cache misses cache size  Dbname
+PER CONNECTION STATS
+         4       96            123     7    37     9  /data/user/0/com.sobra.app.sobra_app/no_backup/androidx.work.workdb
+         4        8                    0     0     0    (attached) temp
+         4       96             32     2    15     3  /data/user/0/com.sobra.app.sobra_app/no_backup/androidx.work.workdb (2)
+         4       56             32     1    21     2  /data/user/0/com.sobra.app.sobra_app/databases/com.google.android.datatransport.events
+POOL STATS
+     cache hits  cache misses    cache size  Dbname
+             11            73            84  /data/user/0/com.sobra.app.sobra_app/no_backup/androidx.work.workdb
+              1            22            23  /data/user/0/com.sobra.app.sobra_app/databases/com.google.android.datatransport.events
+ 
+ Asset Allocations
+    : 79K
+    : 1560K
+    : 1321K
+    : 1222K
+    : 1607K
+    : 17K
+ACTIVITY MANAGER LAST ANR (dumpsys activity lastanr)
+  <no ANR has occurred since boot>

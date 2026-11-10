@@ -1,0 +1,12 @@
+{
+  "runId": "shein_before_manual",
+  "visualReview": {
+    "challengeOverlayPresent": true,
+    "productPageLoadedBehindOverlay": true,
+    "humanVerificationCompleted": null,
+    "domChallengeFlagAccurate": false,
+    "source": "results/shein_before_manual.png"
+  },
+  "interpretation": "Security confirmation is still pending. Public product candidate fields observed before confirmation are not counted as post-verification success.",
+  "environmentNote": "Android 16 / WebView 156.0.8078.47 on visible emulator-5554; earlier SHEIN test used WebView134 on emulator-5556."
+}

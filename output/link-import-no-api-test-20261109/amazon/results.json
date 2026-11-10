@@ -1,0 +1,470 @@
+[
+  {
+    "url": "https://www.amazon.com.mx/adidas-Tenis-Hombre-Casual-Negro/dp/B0DHZVB27Q",
+    "tested_at_utc": "2026-11-09T20:02:30.659061+00:00",
+    "request_headers": {
+      "User-Agent": "Sobrita-LinkPreview-Test/1.0",
+      "Accept": "text/html",
+      "Accept-Language": "es-MX,es;q=0.9"
+    },
+    "api_used": false,
+    "login_used": false,
+    "cookies_sent": false,
+    "javascript_executed": false,
+    "proxy_used": false,
+    "status": 200,
+    "final_url": "https://www.amazon.com.mx/adidas-Tenis-Hombre-Casual-Negro/dp/B0DHZVB27Q",
+    "content_type": "text/html;charset=UTF-8",
+    "bytes_read": 2213361,
+    "html_sha256": "d7bb23d10f9ba7ef2995c2f7ad5281050965b06ac12c21f4c62531a8921a1e66",
+    "page_title": "adidas 60s 4.0 Tenis para Hombre, Color Negro de Adulto 24.5 cm : Amazon.com.mx: Ropa, Zapatos y Accesorios",
+    "product_title": "adidas 60s 4.0 Tenis para Hombre, Color Negro de Adulto",
+    "availability": [
+      "Disponible"
+    ],
+    "metadata": {},
+    "main_images": [
+      {
+        "alt": "adidas 60s 4.0 Tenis para Hombre, Color Negro de Adulto",
+        "src": "https://m.media-amazon.com/images/I/41htbB8LhEL._AC_SY395_SX395_QL70_ML2_.jpg",
+        "data-old-hires": "https://m.media-amazon.com/images/I/41htbB8LhEL._AC_SL1100_.jpg",
+        "id": "landingImage",
+        "data-a-dynamic-image": "{\"https://m.media-amazon.com/images/I/41htbB8LhEL._AC_SY395_.jpg\":[395,274],\"https://m.media-amazon.com/images/I/41htbB8LhEL._AC_SY500_.jpg\":[500,346],\"https://m.media-amazon.com/images/I/41htbB8LhEL._AC_SY535_.jpg\":[535,371],\"https://m.media-amazon.com/images/I/41htbB8LhEL._AC_SY575_.jpg\":[575,398],\"https://m.media-amazon.com/images/I/41htbB8LhEL._AC_SY625_.jpg\":[625,433],\"https://m.media-amazon.com/images/I/41htbB8LhEL._AC_SY675_.jpg\":[675,468],\"https://m.media-amazon.com/images/I/41htbB8LhEL._AC_SY695_.jpg\":[695,481]}"
+      }
+    ],
+    "structured_data": [],
+    "primary_price_candidates": [
+      {
+        "kind": "price_candidate",
+        "text": "$224.83",
+        "tag": "span",
+        "attrs": {
+          "class": "a-offscreen"
+        },
+        "ancestors": [
+          {
+            "tag": "div",
+            "id": "ppd",
+            "class": "a-section a-spacing-base font-smoothing"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-row"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-column a-span7 a-span-last"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-fixed-right-grid"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-fixed-right-grid-inner"
+          },
+          {
+            "tag": "div",
+            "id": "centerCol",
+            "class": "a-fixed-right-grid-col ie7-width-935 a-col-left"
+          },
+          {
+            "tag": "div",
+            "id": "apex_desktop",
+            "class": "celwidget"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": null
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": null
+          },
+          {
+            "tag": "div",
+            "id": "installmentCalculatorCentral_feature_div",
+            "class": "celwidget"
+          },
+          {
+            "tag": "span",
+            "id": "best-offer-string-cc",
+            "class": "best-offer-number-of-payments"
+          },
+          {
+            "tag": "span",
+            "id": null,
+            "class": "a-price"
+          }
+        ]
+      },
+      {
+        "kind": "price_candidate",
+        "text": "$1,349.00",
+        "tag": "span",
+        "attrs": {
+          "class": "a-offscreen"
+        },
+        "ancestors": [
+          {
+            "tag": "form",
+            "id": "addToCart",
+            "class": "a-content"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-box-group"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-box a-last"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-box-inner"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-section a-spacing-none a-padding-none"
+          },
+          {
+            "tag": "div",
+            "id": "apex_offerDisplay_desktop",
+            "class": "celwidget"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": null
+          },
+          {
+            "tag": "div",
+            "id": "corePrice_feature_div",
+            "class": "celwidget"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": null
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-section a-spacing-micro"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-section apex-core-price-identifier"
+          },
+          {
+            "tag": "span",
+            "id": null,
+            "class": "a-price aok-align-center apex-pricetopay-value"
+          }
+        ]
+      }
+    ],
+    "challenge_indicators": [],
+    "image_check": {
+      "status": 206,
+      "final_url": "https://m.media-amazon.com/images/I/41htbB8LhEL._AC_SL1100_.jpg",
+      "content_type": "image/jpeg",
+      "bytes_read": 128,
+      "magic_hex": "ffd8ffe000104a464946000101000001",
+      "source": "main image HTML attribute"
+    },
+    "primary_offer_price": {
+      "display": "$1,349.00",
+      "source_css": "#corePrice_feature_div .apex-pricetopay-value .a-offscreen"
+    },
+    "excluded_price_candidates": [
+      {
+        "display": "$224.83",
+        "reason": "installment amount"
+      }
+    ],
+    "price_currency": "MXN (inferred from amazon.com.mx marketplace, not from a structured currency field)"
+  },
+  {
+    "url": "https://www.amazon.com.mx/dp/B0F1X7M849",
+    "tested_at_utc": "2026-11-09T20:02:34.234096+00:00",
+    "request_headers": {
+      "User-Agent": "Sobrita-LinkPreview-Test/1.0",
+      "Accept": "text/html",
+      "Accept-Language": "es-MX,es;q=0.9"
+    },
+    "api_used": false,
+    "login_used": false,
+    "cookies_sent": false,
+    "javascript_executed": false,
+    "proxy_used": false,
+    "status": 200,
+    "final_url": "https://www.amazon.com.mx/dp/B0F1X7M849",
+    "content_type": "text/html;charset=UTF-8",
+    "bytes_read": 2066766,
+    "html_sha256": "7c939562a220bf68df7d903a5d18946b0430b088b798c3a5b6dd89c329c6af15",
+    "page_title": "adidas Tenis Response Runner 2 Unisex Correr Negro 26.5 cm : Amazon.com.mx: Ropa, Zapatos y Accesorios",
+    "product_title": "adidas Response Runner 2 Zapatillas para Unisex-Adulto",
+    "availability": [
+      "Disponible"
+    ],
+    "metadata": {},
+    "main_images": [
+      {
+        "alt": "adidas Response Runner 2 Zapatillas para Unisex-Adulto",
+        "src": "https://m.media-amazon.com/images/I/61IrMdcYjaL._AC_SY395_SX395_QL70_ML2_.jpg",
+        "data-old-hires": "https://m.media-amazon.com/images/I/61IrMdcYjaL._AC_SL1500_.jpg",
+        "id": "landingImage",
+        "data-a-dynamic-image": "{\"https://m.media-amazon.com/images/I/61IrMdcYjaL._AC_SY395_.jpg\":[395,274],\"https://m.media-amazon.com/images/I/61IrMdcYjaL._AC_SY500_.jpg\":[500,346],\"https://m.media-amazon.com/images/I/61IrMdcYjaL._AC_SY535_.jpg\":[535,371],\"https://m.media-amazon.com/images/I/61IrMdcYjaL._AC_SY575_.jpg\":[575,398],\"https://m.media-amazon.com/images/I/61IrMdcYjaL._AC_SY625_.jpg\":[625,433],\"https://m.media-amazon.com/images/I/61IrMdcYjaL._AC_SY675_.jpg\":[675,468],\"https://m.media-amazon.com/images/I/61IrMdcYjaL._AC_SY695_.jpg\":[695,481]}"
+      }
+    ],
+    "structured_data": [],
+    "primary_price_candidates": [
+      {
+        "kind": "price_candidate",
+        "text": "$1,499.00",
+        "tag": "span",
+        "attrs": {
+          "class": "a-offscreen"
+        },
+        "ancestors": [
+          {
+            "tag": "div",
+            "id": "centerCol",
+            "class": "a-fixed-right-grid-col ie7-width-935 a-col-left"
+          },
+          {
+            "tag": "div",
+            "id": "apex_desktop",
+            "class": "celwidget"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": null
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": null
+          },
+          {
+            "tag": "div",
+            "id": "corePriceDisplay_desktop_feature_div",
+            "class": "celwidget"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-section apex-core-price-identifier"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-section a-spacing-small aok-align-center"
+          },
+          {
+            "tag": "span",
+            "id": null,
+            "class": null
+          },
+          {
+            "tag": "span",
+            "id": null,
+            "class": "apex-basisprice-feature"
+          },
+          {
+            "tag": "span",
+            "id": null,
+            "class": "aok-relative"
+          },
+          {
+            "tag": "span",
+            "id": null,
+            "class": "a-size-small a-color-secondary aok-align-center basisPrice"
+          },
+          {
+            "tag": "span",
+            "id": null,
+            "class": "a-price a-text-price apex-basisprice-value"
+          }
+        ]
+      },
+      {
+        "kind": "price_candidate",
+        "text": "$414.22",
+        "tag": "span",
+        "attrs": {
+          "class": "a-offscreen"
+        },
+        "ancestors": [
+          {
+            "tag": "div",
+            "id": "ppd",
+            "class": "a-section a-spacing-base font-smoothing"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-row"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-column a-span7 a-span-last"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-fixed-right-grid"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-fixed-right-grid-inner"
+          },
+          {
+            "tag": "div",
+            "id": "centerCol",
+            "class": "a-fixed-right-grid-col ie7-width-935 a-col-left"
+          },
+          {
+            "tag": "div",
+            "id": "apex_desktop",
+            "class": "celwidget"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": null
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": null
+          },
+          {
+            "tag": "div",
+            "id": "installmentCalculatorCentral_feature_div",
+            "class": "celwidget"
+          },
+          {
+            "tag": "span",
+            "id": "best-offer-string-cc",
+            "class": "best-offer-number-of-payments"
+          },
+          {
+            "tag": "span",
+            "id": null,
+            "class": "a-price"
+          }
+        ]
+      },
+      {
+        "kind": "price_candidate",
+        "text": "$1,242.66",
+        "tag": "span",
+        "attrs": {
+          "class": "a-offscreen"
+        },
+        "ancestors": [
+          {
+            "tag": "form",
+            "id": "addToCart",
+            "class": "a-content"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-box-group"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-box a-last"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-box-inner"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-section a-spacing-none a-padding-none"
+          },
+          {
+            "tag": "div",
+            "id": "apex_offerDisplay_desktop",
+            "class": "celwidget"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": null
+          },
+          {
+            "tag": "div",
+            "id": "corePrice_feature_div",
+            "class": "celwidget"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": null
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-section a-spacing-micro"
+          },
+          {
+            "tag": "div",
+            "id": null,
+            "class": "a-section apex-core-price-identifier"
+          },
+          {
+            "tag": "span",
+            "id": null,
+            "class": "a-price aok-align-center apex-pricetopay-value"
+          }
+        ]
+      }
+    ],
+    "challenge_indicators": [],
+    "image_check": {
+      "status": 206,
+      "final_url": "https://m.media-amazon.com/images/I/61IrMdcYjaL._AC_SL1500_.jpg",
+      "content_type": "image/jpeg",
+      "bytes_read": 128,
+      "magic_hex": "ffd8ffe000104a464946000101000001",
+      "source": "main image HTML attribute"
+    },
+    "primary_offer_price": {
+      "display": "$1,242.66",
+      "source_css": "#corePrice_feature_div .apex-pricetopay-value .a-offscreen"
+    },
+    "excluded_price_candidates": [
+      {
+        "display": "$1,499.00",
+        "reason": "reference/list price"
+      },
+      {
+        "display": "$414.22",
+        "reason": "installment amount"
+      }
+    ],
+    "price_currency": "MXN (inferred from amazon.com.mx marketplace, not from a structured currency field)"
+  }
+]

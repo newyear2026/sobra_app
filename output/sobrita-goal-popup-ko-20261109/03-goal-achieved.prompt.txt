@@ -1,0 +1,26 @@
+Use case: ui-mockup, precise overlay edit.
+Create the SAVINGS GOAL ACHIEVED state of the Sobrita Korean mobile app, continuing the two popup mockups in this conversation. This is an additional outcome state of the same flow, not a redesign.
+Canvas EXACT reference aspect ratio: 780 x 1688 pixels (390 x 844 logical), app content only. No phone bezel, OS status bar, browser chrome or watermark.
+Reference image 1 is the actual Sobrita Korean HOME and exact background layout. Reference image 2 is the existing-goal popup and supplies its dialog typography, square cream panel, navy outline and subdued scrim.
+Keep the ORIGINAL home geometry and all character room art at original scale/position: full large square room with teal curtains, skyline window, wooden floor, rug, same dark kitten. Keep logo/settings, budget summary, forecast and fixed FIVE-slot navigation. Do not shorten or shrink the room or introduce new page layout. Apply the same translucent navy modal scrim as reference 2. Lower part of the room/kitten and the goal card must remain recognizable below the modal.
+Current date anchor 2026-11-09; this is illustrative completion data and original background date text can remain.
+The user has just recorded the last 20,000원 toward the 1억 goal: previously 99,980,000원, now exactly 100,000,000원. No actual bank transfer is shown or claimed.
+CHANGE ONLY the compact goal card under the room to the completed state:
+- small checkmark/flag icon
+- title "달성 완료 · 1억 모으기"
+- amount "₩100,000,000 / ₩100,000,000"
+- "100%" at right
+- fully filled thin teal progress bar.
+Keep that card compact, in its original location and same size, below full room. No large new banner.
+Place ONE compact modal above the room, about 342 logical px wide and 335-350 tall, near y=205 logical px, so the kitten is visible below. Match the previous popup shape, cream #FFFDF7, navy #202848 outline, restrained offset shadow, teal #0E7A72. PixelifySans / SobraHangul-like crisp readable Korean. Close X at top-right. Subtle small golden pixel sparkles near a small success flag/check icon in the modal header, no full-screen confetti.
+Exact modal content in order:
+Small eyebrow "목표 달성"
+Heading in two balanced lines:
+"드디어 1억을"
+"모았어요!"
+Prominent teal amount: "₩100,000,000"
+Supporting copy: "차곡차곡 모은 기록으로 해냈어요."
+One full-width teal primary button: "확인"
+Secondary text action: "새 목표 만들기"
+Small footer: "달성한 목표는 기록에 남아요."
+All text legible, whitespace intentional, no nested heavy cards. Do not add a purchase CTA, withdrawal, prize, financial interest or bank verification. Confirm button closes popup, completed goal stays on home; creating new goal is optional. Render all numbers accurately.

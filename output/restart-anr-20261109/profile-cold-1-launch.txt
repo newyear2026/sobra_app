@@ -1,0 +1,1 @@
+Starting: Intent { cmp=com.sobra.app.sobra_app/.MainActivity }

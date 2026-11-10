@@ -1,0 +1,15 @@
+{
+  "sha256": {
+    "README.md": "f475b20f0eeb5e66fa21591c84a2f5e4f67e4bb7ab4a1c9c9e6725b61764785f",
+    "report.html": "b2624773196741960a0c2455654204ae2ff625e62e7f214f893c61fdf19b2df0",
+    "summary.json": "ac5cacd7539810c9aeab83b2cead61771e8bcfd61d142ced4c97a6979ed6a919",
+    "before_review.json": "1045e7887a83b1c6267d88951d0069c8f84441cbd47ef902296950c3a49fc29b",
+    "scripts/extract-product-reviewed.js": "bdf0938ac34d7ef02a2e1577c9fd3450b53c0d8fbe497616848873d06fb98a4b",
+    "sobrita-shein-manual-debug.apk": "a768aebb83519701e3146061db6e6a9c09108c4882f54d7434d12ed7a245a302",
+    "results/shein_before_manual.json": "d6ea7e6244e756e13a2b0c4b6235f3d1b147d26ac5f2ff17fe434e2f62473665",
+    "results/shein_before_manual.png": "eb0d580ca268bb8a6ec8077a67374412e5949d2102a82a2bb84860fa93caedc2",
+    "results/shein_after_manual_reviewed.json": "c479e71c65ed1b84eff11625e13b50ef39b347da9d165727c71d3bc9b778e366",
+    "results/shein_after_manual_reviewed.png": "691dff0e072980219539eee1efd972e9522c221c5546ddb16503a2c257ab4ee6"
+  },
+  "validation": "Two consistent post-verification observations; PNG chunk CRC and IEND verified; current screen selling price remains unconfirmed."
+}

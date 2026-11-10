@@ -1,0 +1,18 @@
+Use case: ui-mockup. Create ONE revised Sobrita native Android app screen showing the calculation of a cycle surplus allocation into a personal product-saving goal, based on the attached existing mockups. Primary edit target is the first allocation screen; second compact home mock anchors the subtle product thumbnail and source styling. This screen must visually explain the MATH clearly while being usable product UI, NOT an infographic, marketing poster, spreadsheet, comparison collage, or multi-screen board.
+Viewport: logical390 x844, natural390:844portrait ratio, high-resolution. App content only edge-to-edge, no device/bezel/status bar/notch/OS indicators/shadows/browser/chrome. Current date6November2026 America/Mexico_City; display no date.
+Style must faithfully match Sobrita references: offwhite cream #FFFDF7, dark navy #202848 PixelifySans-like readable typography, fine angular pixel borders, teal #0E7A72 highlights and square primary button, beige and pale teal accents, clean group spacing16px. Main title22logicalpx, body14–16, labels12–13; no giant poster fonts. Product image is a SMALL photographic thumbnail of same unbranded off-white/teal sneakers in references. At most one small Michi head or glass-jar accent; no large decorative character illustration.
+USER STORY: the user has ended a quincena budget cycle, sees recorded budget3000 minus expenses2700 leaves300. User chooses to set aside150 of that surplus for shoes that cost1500. Existing saved money600 + chosen150 becomes750, 40%→50%. The other150 of the surplus remains unassigned. This is PRE-CONFIRMATION preview. It is not a bank transfer; no new income or expense is created. No automatic savings before confirmation. Show the remaining-to-goal and remaining-unassigned-surplus as distinctly labeled different numbers.
+Layout and exact text, all Spanish Mexico:
+Top small wordmark "Sobrita", then back arrow and title "Cierre de quincena".
+SECTION A: plain grouped mini-receipt on cream (not nested cards), three aligned rows:
+"Presupuesto" on left, "MX$3,000" on right.
+"Gastado" on left, "− MX$2,700" on right.
+Thin divider, bold result "Sobrante" left and "MX$300" right in teal.
+Small helper underneath: "Según tus registros. Confirma que aún lo tienes."
+SECTION B: clear input question "¿Cuánto apartas para tu meta?"
+Full width squared outlined input shows "MX$150" in teal.
+Below concise helper "De los MX$300 que sobraron."
+Then a plain small row with emphasized remaining surplus: "Quedarían MX$150 sin asignar."
+SECTION C: one subtle pale-teal preview area (not cards inside cards) with small56x56 shoe thumbnail left and title "Mis tenis", below it "Meta: MX$1,500". Under product summary small label "Al confirmar", an easy-to-read horizontal arithmetic line "MX$600 + MX$150 = MX$750". Below show "40% → 50%" plus segmented progressbar10segments with5filled teal,5empty, and "Te faltarían MX$750 para la meta." Do not confuse goal remaining750 with unassigned surplus150. Arithmetic must be exact. No duplicate progress bars or extra stats. Progress text18–20logicalpx max.
+FOOTER: short readable line "Solo lo registramos. Tu dinero no se mueve." Then one prominent fixed full-width teal square button "Apartar MX$150". Secondary text action "Ahora no" below. There is no bottom navigation on this action screen.
+Fit everything naturally in844logicalpx with breathing room and no clipping. If it is too crowded, omit decorative mascot/illustrations and reduce spacer heights rather than shrinking typography. No other features, product search, shopping checkout, reward XP, automatic transfer, or ads. Keep all math visible in one clean functional app screen.

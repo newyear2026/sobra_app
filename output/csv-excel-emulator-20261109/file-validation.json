@@ -1,0 +1,28 @@
+[
+  {
+    "file": "ledger-usd.csv",
+    "rows": 8,
+    "matches_device_ledger": true
+  },
+  {
+    "file": "settings-usd.csv",
+    "rows": 8,
+    "matches_device_ledger": true
+  },
+  {
+    "file": "ledger-usd.xlsx",
+    "rows": 8,
+    "numeric_amounts": true,
+    "notes_are_text": true,
+    "formulas": 0,
+    "matches_device_ledger": true
+  },
+  {
+    "file": "settings-usd.xlsx",
+    "rows": 8,
+    "numeric_amounts": true,
+    "notes_are_text": true,
+    "formulas": 0,
+    "matches_device_ledger": true
+  }
+]

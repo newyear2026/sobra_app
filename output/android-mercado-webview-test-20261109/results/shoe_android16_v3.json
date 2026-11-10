@@ -1,0 +1,608 @@
+{
+  "runId": "shoe_android16_v3",
+  "requestedUrl": "https:\/\/articulo.mercadolibre.com.mx\/MLM-3990889244-tenis-adidas-correr-hombre-negro-jq8645-_JM?searchVariation=190036940257",
+  "startedAtUtc": "2026-11-09T20:39:56.380Z",
+  "androidSdk": 36,
+  "androidRelease": "16",
+  "deviceModel": "sdk_gphone64_arm64",
+  "userAgent": "Mozilla\/5.0 (Linux; Android 16; sdk_gphone64_arm64 Build\/BE4B.251210.005; wv) AppleWebKit\/537.36 (KHTML, like Gecko) Version\/4.0 Chrome\/134.0.6998.135 Mobile Safari\/537.36",
+  "targetSdk": 36,
+  "extractorVersion": "0.3-exclude-variant-option-prices",
+  "webViewPackage": "com.google.android.webview",
+  "webViewVersion": "134.0.6998.135",
+  "javascriptEnabled": true,
+  "domStorageEnabled": true,
+  "uaOverride": false,
+  "officialApiUsed": false,
+  "manualLoginUsed": false,
+  "cookiesImported": false,
+  "cookiePolicy": "Default WebView behavior; site may set ordinary cookies. No cookie values inspected or exported.",
+  "observations": [
+    {
+      "accountVerification": false,
+      "challenge": false,
+      "errorPage": false,
+      "imageCandidates": [],
+      "mainImage": null,
+      "pageTitle": "Tenis adidas Correr Hombre Negro Jq8645",
+      "pageUrl": "https:\/\/articulo.mercadolibre.com.mx\/MLM-3990889244-tenis-adidas-correr-hombre-negro-jq8645-_JM",
+      "photoAndPriceReadable": false,
+      "priceCandidates": [],
+      "primaryPrice": null,
+      "productTitle": null,
+      "productTitleSource": "h1.micro-landing-title",
+      "readyState": "complete",
+      "variantText": [],
+      "observedAtUtc": "2026-11-09T20:40:04.073Z",
+      "trigger": "page_finished"
+    },
+    {
+      "accountVerification": false,
+      "challenge": false,
+      "errorPage": false,
+      "imageCandidates": [],
+      "mainImage": null,
+      "pageTitle": "Tenis adidas Correr Hombre Negro Jq8645",
+      "pageUrl": "https:\/\/articulo.mercadolibre.com.mx\/MLM-3990889244-tenis-adidas-correr-hombre-negro-jq8645-_JM",
+      "photoAndPriceReadable": false,
+      "priceCandidates": [],
+      "primaryPrice": null,
+      "productTitle": null,
+      "productTitleSource": "h1.micro-landing-title",
+      "readyState": "complete",
+      "variantText": [],
+      "observedAtUtc": "2026-11-09T20:40:04.393Z",
+      "trigger": "timer"
+    },
+    {
+      "accountVerification": false,
+      "challenge": false,
+      "errorPage": false,
+      "imageCandidates": [
+        {
+          "alt": "Tenis adidas Correr Hombre Negro Jq8645",
+          "naturalHeight": 411,
+          "naturalWidth": 411,
+          "source": "rendered product gallery img",
+          "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_777778-MLM94008622651_102025-F-tenis-adidas-correr-hombre-negro-jq8645.webp"
+        },
+        {
+          "alt": "Tenis adidas Correr Hombre Negro Jq8645",
+          "naturalHeight": 411,
+          "naturalWidth": 411,
+          "source": "rendered product gallery img",
+          "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_711328-MLM94008622657_102025-F-tenis-adidas-correr-hombre-negro-jq8645.webp"
+        }
+      ],
+      "mainImage": {
+        "alt": "Tenis adidas Correr Hombre Negro Jq8645",
+        "naturalHeight": 411,
+        "naturalWidth": 411,
+        "source": "rendered product gallery img",
+        "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_777778-MLM94008622651_102025-F-tenis-adidas-correr-hombre-negro-jq8645.webp"
+      },
+      "pageTitle": "Tenis adidas Correr Hombre Negro Jq8645 | MercadoLibre",
+      "pageUrl": "https:\/\/articulo.mercadolibre.com.mx\/MLM-3990889244-tenis-adidas-correr-hombre-negro-jq8645-_JM",
+      "photoAndPriceReadable": true,
+      "priceCandidates": [
+        {
+          "ancestors": [
+            {
+              "class": "ui-pdp-price__part__container",
+              "tag": "span"
+            },
+            {
+              "class": "ui-pdp-price__second-line",
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-price__main-container",
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-price spacing-layout mt-16 ui-pdp-price--size-large",
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-container__row ui-pdp-container__row--price",
+              "tag": "div"
+            },
+            {
+              "class": null,
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-container ui-pdp-container--top",
+              "tag": "div"
+            },
+            {
+              "class": "ui-vip-core",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": "1699 pesos",
+          "cents": "",
+          "context": "$ 1,699",
+          "display": "$ 1,699",
+          "fraction": "1,699",
+          "inPrimaryPriceRow": true,
+          "numeric": "1699",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount",
+          "variantContainerClass": null
+        },
+        {
+          "ancestors": [
+            {
+              "class": "ui-pdp-price__part__container",
+              "tag": "span"
+            },
+            {
+              "class": "ui-pdp-price__subtitle ui-pdp-color--BLACK ui-pdp-family--REGULAR ui-pdp-size--XSMALL spacing-layout mt-0",
+              "tag": "span"
+            },
+            {
+              "class": "ui-pdp-price__subtitles",
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-price__main-container",
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-price spacing-layout mt-16 ui-pdp-price--size-large",
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-container__row ui-pdp-container__row--price",
+              "tag": "div"
+            },
+            {
+              "class": null,
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-container ui-pdp-container--top",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": "102 pesos con 67 centavos",
+          "cents": "67",
+          "context": "$ 102 . 67",
+          "display": "$ 102 . 67",
+          "fraction": "102",
+          "inPrimaryPriceRow": false,
+          "numeric": "102.67",
+          "rejected": true,
+          "rejectedReason": "outside_primary_price_row",
+          "selector": ".ui-pdp-price .andes-money-amount",
+          "variantContainerClass": null
+        }
+      ],
+      "primaryPrice": {
+        "ancestors": [
+          {
+            "class": "ui-pdp-price__part__container",
+            "tag": "span"
+          },
+          {
+            "class": "ui-pdp-price__second-line",
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-price__main-container",
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-price spacing-layout mt-16 ui-pdp-price--size-large",
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-container__row ui-pdp-container__row--price",
+            "tag": "div"
+          },
+          {
+            "class": null,
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-container ui-pdp-container--top",
+            "tag": "div"
+          },
+          {
+            "class": "ui-vip-core",
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": "1699 pesos",
+        "cents": "",
+        "context": "$ 1,699",
+        "display": "$ 1,699",
+        "fraction": "1,699",
+        "inPrimaryPriceRow": true,
+        "numeric": "1699",
+        "rejected": false,
+        "rejectedReason": null,
+        "selector": ".ui-pdp-price__second-line .andes-money-amount",
+        "variantContainerClass": null
+      },
+      "productTitle": "Tenis adidas Correr Hombre Negro Jq8645",
+      "productTitleSource": "h1.ui-pdp-title",
+      "readyState": "complete",
+      "variantText": [
+        "Color:Negro Talla:Elige Guía de tallas 10,0 MX 12,0 US 11,0 MX 13,0 US 5,0 MX 7,0 US 5,5 MX 7,5 US 6,0 MX 8,0 US 6,5 MX 8,5 US 7,0 MX 9,0 US 7,5 MX 9,5 US 8,0 MX 10,0 US 8,5 MX 10,5 US 9,0 MX 11,0 US 9,5 MX 11,5 US"
+      ],
+      "observedAtUtc": "2026-11-09T20:40:10.841Z",
+      "trigger": "page_finished"
+    },
+    {
+      "accountVerification": false,
+      "challenge": false,
+      "errorPage": false,
+      "imageCandidates": [
+        {
+          "alt": "Tenis adidas Correr Hombre Negro Jq8645",
+          "naturalHeight": 411,
+          "naturalWidth": 411,
+          "source": "rendered product gallery img",
+          "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_777778-MLM94008622651_102025-F-tenis-adidas-correr-hombre-negro-jq8645.webp"
+        },
+        {
+          "alt": "Tenis adidas Correr Hombre Negro Jq8645",
+          "naturalHeight": 411,
+          "naturalWidth": 411,
+          "source": "rendered product gallery img",
+          "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_711328-MLM94008622657_102025-F-tenis-adidas-correr-hombre-negro-jq8645.webp"
+        }
+      ],
+      "mainImage": {
+        "alt": "Tenis adidas Correr Hombre Negro Jq8645",
+        "naturalHeight": 411,
+        "naturalWidth": 411,
+        "source": "rendered product gallery img",
+        "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_777778-MLM94008622651_102025-F-tenis-adidas-correr-hombre-negro-jq8645.webp"
+      },
+      "pageTitle": "Tenis adidas Correr Hombre Negro Jq8645 | MercadoLibre",
+      "pageUrl": "https:\/\/articulo.mercadolibre.com.mx\/MLM-3990889244-tenis-adidas-correr-hombre-negro-jq8645-_JM",
+      "photoAndPriceReadable": true,
+      "priceCandidates": [
+        {
+          "ancestors": [
+            {
+              "class": "ui-pdp-price__part__container",
+              "tag": "span"
+            },
+            {
+              "class": "ui-pdp-price__second-line",
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-price__main-container",
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-price spacing-layout mt-16 ui-pdp-price--size-large",
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-container__row ui-pdp-container__row--price",
+              "tag": "div"
+            },
+            {
+              "class": null,
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-container ui-pdp-container--top",
+              "tag": "div"
+            },
+            {
+              "class": "ui-vip-core",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": "1699 pesos",
+          "cents": "",
+          "context": "$ 1,699",
+          "display": "$ 1,699",
+          "fraction": "1,699",
+          "inPrimaryPriceRow": true,
+          "numeric": "1699",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount",
+          "variantContainerClass": null
+        },
+        {
+          "ancestors": [
+            {
+              "class": "ui-pdp-price__part__container",
+              "tag": "span"
+            },
+            {
+              "class": "ui-pdp-price__subtitle ui-pdp-color--BLACK ui-pdp-family--REGULAR ui-pdp-size--XSMALL spacing-layout mt-0",
+              "tag": "span"
+            },
+            {
+              "class": "ui-pdp-price__subtitles",
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-price__main-container",
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-price spacing-layout mt-16 ui-pdp-price--size-large",
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-container__row ui-pdp-container__row--price",
+              "tag": "div"
+            },
+            {
+              "class": null,
+              "tag": "div"
+            },
+            {
+              "class": "ui-pdp-container ui-pdp-container--top",
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": "102 pesos con 67 centavos",
+          "cents": "67",
+          "context": "$ 102 . 67",
+          "display": "$ 102 . 67",
+          "fraction": "102",
+          "inPrimaryPriceRow": false,
+          "numeric": "102.67",
+          "rejected": true,
+          "rejectedReason": "outside_primary_price_row",
+          "selector": ".ui-pdp-price .andes-money-amount",
+          "variantContainerClass": null
+        }
+      ],
+      "primaryPrice": {
+        "ancestors": [
+          {
+            "class": "ui-pdp-price__part__container",
+            "tag": "span"
+          },
+          {
+            "class": "ui-pdp-price__second-line",
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-price__main-container",
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-price spacing-layout mt-16 ui-pdp-price--size-large",
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-container__row ui-pdp-container__row--price",
+            "tag": "div"
+          },
+          {
+            "class": null,
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-container ui-pdp-container--top",
+            "tag": "div"
+          },
+          {
+            "class": "ui-vip-core",
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": "1699 pesos",
+        "cents": "",
+        "context": "$ 1,699",
+        "display": "$ 1,699",
+        "fraction": "1,699",
+        "inPrimaryPriceRow": true,
+        "numeric": "1699",
+        "rejected": false,
+        "rejectedReason": null,
+        "selector": ".ui-pdp-price__second-line .andes-money-amount",
+        "variantContainerClass": null
+      },
+      "productTitle": "Tenis adidas Correr Hombre Negro Jq8645",
+      "productTitleSource": "h1.ui-pdp-title",
+      "readyState": "complete",
+      "variantText": [
+        "Color:Negro Talla:Elige Guía de tallas 10,0 MX 12,0 US 11,0 MX 13,0 US 5,0 MX 7,0 US 5,5 MX 7,5 US 6,0 MX 8,0 US 6,5 MX 8,5 US 7,0 MX 9,0 US 7,5 MX 9,5 US 8,0 MX 10,0 US 8,5 MX 10,5 US 9,0 MX 11,0 US 9,5 MX 11,5 US"
+      ],
+      "observedAtUtc": "2026-11-09T20:40:12.398Z",
+      "trigger": "timer"
+    }
+  ],
+  "mainFrameErrors": [],
+  "finishedAtUtc": "2026-11-09T20:40:12.399Z",
+  "completionReason": "photo_and_price_readable",
+  "success": true,
+  "finalObservation": {
+    "accountVerification": false,
+    "challenge": false,
+    "errorPage": false,
+    "imageCandidates": [
+      {
+        "alt": "Tenis adidas Correr Hombre Negro Jq8645",
+        "naturalHeight": 411,
+        "naturalWidth": 411,
+        "source": "rendered product gallery img",
+        "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_777778-MLM94008622651_102025-F-tenis-adidas-correr-hombre-negro-jq8645.webp"
+      },
+      {
+        "alt": "Tenis adidas Correr Hombre Negro Jq8645",
+        "naturalHeight": 411,
+        "naturalWidth": 411,
+        "source": "rendered product gallery img",
+        "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_711328-MLM94008622657_102025-F-tenis-adidas-correr-hombre-negro-jq8645.webp"
+      }
+    ],
+    "mainImage": {
+      "alt": "Tenis adidas Correr Hombre Negro Jq8645",
+      "naturalHeight": 411,
+      "naturalWidth": 411,
+      "source": "rendered product gallery img",
+      "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_777778-MLM94008622651_102025-F-tenis-adidas-correr-hombre-negro-jq8645.webp"
+    },
+    "pageTitle": "Tenis adidas Correr Hombre Negro Jq8645 | MercadoLibre",
+    "pageUrl": "https:\/\/articulo.mercadolibre.com.mx\/MLM-3990889244-tenis-adidas-correr-hombre-negro-jq8645-_JM",
+    "photoAndPriceReadable": true,
+    "priceCandidates": [
+      {
+        "ancestors": [
+          {
+            "class": "ui-pdp-price__part__container",
+            "tag": "span"
+          },
+          {
+            "class": "ui-pdp-price__second-line",
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-price__main-container",
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-price spacing-layout mt-16 ui-pdp-price--size-large",
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-container__row ui-pdp-container__row--price",
+            "tag": "div"
+          },
+          {
+            "class": null,
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-container ui-pdp-container--top",
+            "tag": "div"
+          },
+          {
+            "class": "ui-vip-core",
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": "1699 pesos",
+        "cents": "",
+        "context": "$ 1,699",
+        "display": "$ 1,699",
+        "fraction": "1,699",
+        "inPrimaryPriceRow": true,
+        "numeric": "1699",
+        "rejected": false,
+        "rejectedReason": null,
+        "selector": ".ui-pdp-price__second-line .andes-money-amount",
+        "variantContainerClass": null
+      },
+      {
+        "ancestors": [
+          {
+            "class": "ui-pdp-price__part__container",
+            "tag": "span"
+          },
+          {
+            "class": "ui-pdp-price__subtitle ui-pdp-color--BLACK ui-pdp-family--REGULAR ui-pdp-size--XSMALL spacing-layout mt-0",
+            "tag": "span"
+          },
+          {
+            "class": "ui-pdp-price__subtitles",
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-price__main-container",
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-price spacing-layout mt-16 ui-pdp-price--size-large",
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-container__row ui-pdp-container__row--price",
+            "tag": "div"
+          },
+          {
+            "class": null,
+            "tag": "div"
+          },
+          {
+            "class": "ui-pdp-container ui-pdp-container--top",
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": "102 pesos con 67 centavos",
+        "cents": "67",
+        "context": "$ 102 . 67",
+        "display": "$ 102 . 67",
+        "fraction": "102",
+        "inPrimaryPriceRow": false,
+        "numeric": "102.67",
+        "rejected": true,
+        "rejectedReason": "outside_primary_price_row",
+        "selector": ".ui-pdp-price .andes-money-amount",
+        "variantContainerClass": null
+      }
+    ],
+    "primaryPrice": {
+      "ancestors": [
+        {
+          "class": "ui-pdp-price__part__container",
+          "tag": "span"
+        },
+        {
+          "class": "ui-pdp-price__second-line",
+          "tag": "div"
+        },
+        {
+          "class": "ui-pdp-price__main-container",
+          "tag": "div"
+        },
+        {
+          "class": "ui-pdp-price spacing-layout mt-16 ui-pdp-price--size-large",
+          "tag": "div"
+        },
+        {
+          "class": "ui-pdp-container__row ui-pdp-container__row--price",
+          "tag": "div"
+        },
+        {
+          "class": null,
+          "tag": "div"
+        },
+        {
+          "class": "ui-pdp-container ui-pdp-container--top",
+          "tag": "div"
+        },
+        {
+          "class": "ui-vip-core",
+          "tag": "div"
+        }
+      ],
+      "ariaLabel": "1699 pesos",
+      "cents": "",
+      "context": "$ 1,699",
+      "display": "$ 1,699",
+      "fraction": "1,699",
+      "inPrimaryPriceRow": true,
+      "numeric": "1699",
+      "rejected": false,
+      "rejectedReason": null,
+      "selector": ".ui-pdp-price__second-line .andes-money-amount",
+      "variantContainerClass": null
+    },
+    "productTitle": "Tenis adidas Correr Hombre Negro Jq8645",
+    "productTitleSource": "h1.ui-pdp-title",
+    "readyState": "complete",
+    "variantText": [
+      "Color:Negro Talla:Elige Guía de tallas 10,0 MX 12,0 US 11,0 MX 13,0 US 5,0 MX 7,0 US 5,5 MX 7,5 US 6,0 MX 8,0 US 6,5 MX 8,5 US 7,0 MX 9,0 US 7,5 MX 9,5 US 8,0 MX 10,0 US 8,5 MX 10,5 US 9,0 MX 11,0 US 9,5 MX 11,5 US"
+    ],
+    "observedAtUtc": "2026-11-09T20:40:12.398Z",
+    "trigger": "timer"
+  }
+}

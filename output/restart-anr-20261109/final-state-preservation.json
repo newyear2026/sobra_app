@@ -1,0 +1,9 @@
+{
+  "existing_keys_preserved_except_impression": true,
+  "new_empty_defaults": {
+    "goalCompletionAcknowledgements": [],
+    "goalCycleAllocations": [],
+    "completedSavingsGoals": [],
+    "goalPromptedCycleStarts": []
+  }
+}

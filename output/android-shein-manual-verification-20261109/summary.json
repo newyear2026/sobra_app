@@ -1,0 +1,41 @@
+{
+  "result": "partial_verification",
+  "requestedUrl": "https://www.shein.com.mx/Women-Long-Dresses-p-568117802.html",
+  "observedAtUtc": "2026-11-10T00:31:51.747Z",
+  "environment": {
+    "android": "16",
+    "webView": "156.0.8078.47",
+    "serial": "emulator-5554"
+  },
+  "userConfirmedVerification": true,
+  "visualChallengePresentBefore": true,
+  "visualChallengePresentAfter": false,
+  "pageReloadedForInspection": false,
+  "cookiesClearedForInspection": false,
+  "officialApiUsed": false,
+  "productTitle": "Women Long Dresses",
+  "image": {
+    "url": "https://img.ltwebstatic.com/v4/j/spmp/2026/09/19/a9/1789760533f1e04584a89a7e7d7700f879c3d6507b_thumbnail_750x999.avif",
+    "naturalWidth": 750,
+    "naturalHeight": 999,
+    "loaded": true
+  },
+  "productDataPrice": {
+    "amount": 463.56,
+    "currency": "MXN",
+    "sources": [
+      "product price metadata",
+      "4 matching current-product JSON-LD offers"
+    ],
+    "requiresUserConfirmation": true
+  },
+  "displayedCurrentSellingPriceVerified": false,
+  "strictAllFieldsReadable": false,
+  "productionAppIntegrated": false,
+  "limitations": [
+    "One product on Android16/WebView156; earlier SHEIN failure used WebView134 on a different emulator.",
+    "Product metadata existed before the human confirmation too, so the test does not establish that verification itself unlocked it.",
+    "Visible selling-price DOM was absent in two post-verification snapshots; checkout/options/shipping/coupons were not verified.",
+    "Initial DOM challenge detector missed an overlay; human confirmation and visual before/after evidence establish the handoff outcome."
+  ]
+}

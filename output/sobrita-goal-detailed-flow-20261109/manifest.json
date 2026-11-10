@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-09",
+  "method": "built-in image_gen",
+  "new_screens": 3,
+  "reused_screens": 2,
+  "files": [
+    {
+      "file": "01-product-confirm.png",
+      "key": "detailedGoalImportImage",
+      "kind": "new",
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-ae89bf68-24af-40c1-a1a1-0bc0c3556a7c.png",
+      "width": 852,
+      "height": 1846,
+      "bytes": 1248116
+    },
+    {
+      "file": "02-saving-plan.png",
+      "key": "detailedGoalPlanImage",
+      "kind": "new",
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-29e85413-b90a-404b-907c-a84e9ed4be79.png",
+      "width": 852,
+      "height": 1846,
+      "bytes": 1363198
+    },
+    {
+      "file": "03-home-compact.png",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-product-goal-ui-20261106/02-home-goal-compact-v2.png",
+      "kind": "reused_approved_mockup",
+      "width": 853,
+      "height": 1844,
+      "bytes": 1330892
+    },
+    {
+      "file": "04-allocate-preview.png",
+      "source": "/Users/jaewook/dev_app/sobra_app/output/sobrita-product-goal-ui-20261106/03-calculation-preview-v4.png",
+      "kind": "reused_calculation_mockup",
+      "width": 852,
+      "height": 1846,
+      "bytes": 1411096
+    },
+    {
+      "file": "05-goal-detail.png",
+      "key": "detailedGoalDetailImage",
+      "kind": "new",
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-a5ab6a63-cc33-4c5c-b4a9-8e3d9f9a656b.png",
+      "width": 852,
+      "height": 1846,
+      "bytes": 1324278
+    }
+  ]
+}

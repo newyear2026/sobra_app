@@ -1,0 +1,383 @@
+{
+  "testDate": "2026-11-09",
+  "environment": "Android 16 / API 36 emulator · Android WebView 134",
+  "officialApiUsed": false,
+  "manualLoginUsed": false,
+  "uaOverride": false,
+  "cookiesImported": false,
+  "testAppDataResetBeforeFinalRuns": true,
+  "productionAppIntegrated": false,
+  "scope": "Two Amazon product links and one Walmart product link; one Android emulator environment",
+  "runs": [
+    {
+      "label": "Amazon · 운동화 1",
+      "runId": "amazon1_v4_capture_retry2",
+      "requestedUrl": "https://www.amazon.com.mx/adidas-Tenis-Hombre-Casual-Negro/dp/B0DHZVB27Q",
+      "observedAtUtc": "2026-11-09T22:02:16.195Z",
+      "androidRelease": "16",
+      "androidSdk": 36,
+      "webViewVersion": "134.0.6998.135",
+      "extractorVersion": "0.4-amazon-loaded-primary-gallery-with-natural-dimensions",
+      "screenshot": "results/amazon1_v4_capture_retry2.png",
+      "screenshotDimensions": [
+        1080,
+        2400
+      ],
+      "evidence": "results/amazon1_v4_capture_retry2.json",
+      "completionReason": "stable_photo_and_price_readable",
+      "mainFrameErrors": [],
+      "status": "success",
+      "productTitle": "adidas 60s 4.0 Tenis para Hombre, Color Negro de Adulto 24.5 cm",
+      "productTitleSource": "document.title (Amazon marketplace suffix removed)",
+      "primaryPrice": {
+        "amount": "1349.00",
+        "currency": "MXN",
+        "currencyInferred": true,
+        "display": "$1,349.00",
+        "sources": [
+          "#corePriceDisplay_mobile_feature_div .apex-pricetopay-value"
+        ]
+      },
+      "mainImage": {
+        "alt": "adidas 60s 4.0 Tenis para Hombre, Color Negro de Adulto. Ver contenido multimedia en pantalla completa",
+        "ancestorStyles": [
+          {
+            "class": "image-size-wrapper fp-image-wrapper image-block-display-flex",
+            "display": "flex",
+            "hidden": false,
+            "id": "landing-image-wrapper",
+            "tag": "div",
+            "visibility": "visible"
+          },
+          {
+            "class": "image-wrapper",
+            "display": "block",
+            "hidden": false,
+            "id": null,
+            "tag": "div",
+            "visibility": "visible"
+          },
+          {
+            "class": "a-image-wrapper hide-image ",
+            "display": "block",
+            "hidden": false,
+            "id": null,
+            "tag": "div",
+            "visibility": "visible"
+          },
+          {
+            "class": "a-link-normal imageControlLink",
+            "display": "block",
+            "hidden": false,
+            "id": null,
+            "tag": "a",
+            "visibility": "visible"
+          },
+          {
+            "class": "a-declarative",
+            "display": "block",
+            "hidden": false,
+            "id": null,
+            "tag": "span",
+            "visibility": "visible"
+          },
+          {
+            "class": "carousel-img-relative-parent aok-inline-block aok-relative celwidget  variant-MAIN",
+            "display": "block",
+            "hidden": false,
+            "id": "image-block-product-image-0",
+            "tag": "div",
+            "visibility": "visible"
+          },
+          {
+            "class": "a-carousel-card",
+            "display": "inline-block",
+            "hidden": false,
+            "id": null,
+            "tag": "li",
+            "visibility": "visible"
+          },
+          {
+            "class": "a-carousel",
+            "display": "block",
+            "hidden": false,
+            "id": null,
+            "tag": "ol",
+            "visibility": "visible"
+          }
+        ],
+        "ancestors": [
+          {
+            "class": "image-size-wrapper fp-image-wrapper image-block-display-flex",
+            "id": "landing-image-wrapper",
+            "tag": "div"
+          },
+          {
+            "class": "image-wrapper",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "a-image-wrapper hide-image ",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "a-link-normal imageControlLink",
+            "id": null,
+            "tag": "a"
+          },
+          {
+            "class": "a-declarative",
+            "id": null,
+            "tag": "span"
+          },
+          {
+            "class": "carousel-img-relative-parent aok-inline-block aok-relative celwidget  variant-MAIN",
+            "id": "image-block-product-image-0",
+            "tag": "div"
+          },
+          {
+            "class": "a-carousel-card",
+            "id": null,
+            "tag": "li"
+          },
+          {
+            "class": "a-carousel",
+            "id": null,
+            "tag": "ol"
+          }
+        ],
+        "complete": true,
+        "elementStyle": {
+          "display": "block",
+          "opacity": "1",
+          "visibility": "visible"
+        },
+        "gallerySource": "landing-image-wrapper",
+        "id": "main-image",
+        "layout": {
+          "height": 450,
+          "width": 411
+        },
+        "loadedPrimaryGalleryImage": true,
+        "naturalHeight": 900,
+        "naturalWidth": 2165,
+        "renderedVisible": true,
+        "selector": "img#main-image",
+        "src": "https://m.media-amazon.com/images/I/41htbB8LhEL._AC_UY900_.jpg"
+      },
+      "priceDisplay": "MX$1,349.00",
+      "currencyNote": "MXN: amazon.com.mx 마켓을 근거로 추정",
+      "currencyEvidence": {
+        "currency": "MXN",
+        "inferred": true,
+        "source": "amazon.com.mx marketplace; not an extracted structured currency field"
+      }
+    },
+    {
+      "label": "Amazon · 운동화 2",
+      "runId": "amazon2_v4",
+      "requestedUrl": "https://www.amazon.com.mx/dp/B0F1X7M849",
+      "observedAtUtc": "2026-11-09T21:59:01.187Z",
+      "androidRelease": "16",
+      "androidSdk": 36,
+      "webViewVersion": "134.0.6998.135",
+      "extractorVersion": "0.4-amazon-loaded-primary-gallery-with-natural-dimensions",
+      "screenshot": "results/amazon2_v4.png",
+      "screenshotDimensions": [
+        1080,
+        2400
+      ],
+      "evidence": "results/amazon2_v4.json",
+      "completionReason": "stable_photo_and_price_readable",
+      "mainFrameErrors": [],
+      "status": "success",
+      "productTitle": "adidas Tenis Response Runner 2 Unisex Correr Negro 26.5 cm",
+      "productTitleSource": "document.title (Amazon marketplace suffix removed)",
+      "primaryPrice": {
+        "amount": "1242.66",
+        "currency": "MXN",
+        "currencyInferred": true,
+        "display": "$1,242.66",
+        "sources": [
+          "#corePriceDisplay_mobile_feature_div .apex-pricetopay-value"
+        ]
+      },
+      "mainImage": {
+        "alt": "adidas Response Runner 2 Zapatillas para Unisex-Adulto. Ver contenido multimedia en pantalla completa",
+        "ancestorStyles": [
+          {
+            "class": "image-size-wrapper fp-image-wrapper image-block-display-flex",
+            "display": "flex",
+            "hidden": false,
+            "id": "landing-image-wrapper",
+            "tag": "div",
+            "visibility": "visible"
+          },
+          {
+            "class": "image-wrapper",
+            "display": "block",
+            "hidden": false,
+            "id": null,
+            "tag": "div",
+            "visibility": "visible"
+          },
+          {
+            "class": "a-image-wrapper hide-image ",
+            "display": "block",
+            "hidden": false,
+            "id": null,
+            "tag": "div",
+            "visibility": "visible"
+          },
+          {
+            "class": "a-link-normal imageControlLink",
+            "display": "block",
+            "hidden": false,
+            "id": null,
+            "tag": "a",
+            "visibility": "visible"
+          },
+          {
+            "class": "a-declarative",
+            "display": "block",
+            "hidden": false,
+            "id": null,
+            "tag": "span",
+            "visibility": "visible"
+          },
+          {
+            "class": "carousel-img-relative-parent aok-inline-block aok-relative celwidget  variant-MAIN",
+            "display": "block",
+            "hidden": false,
+            "id": "image-block-product-image-0",
+            "tag": "div",
+            "visibility": "visible"
+          },
+          {
+            "class": "a-carousel-card",
+            "display": "inline-block",
+            "hidden": false,
+            "id": null,
+            "tag": "li",
+            "visibility": "visible"
+          },
+          {
+            "class": "a-carousel",
+            "display": "block",
+            "hidden": false,
+            "id": null,
+            "tag": "ol",
+            "visibility": "visible"
+          }
+        ],
+        "ancestors": [
+          {
+            "class": "image-size-wrapper fp-image-wrapper image-block-display-flex",
+            "id": "landing-image-wrapper",
+            "tag": "div"
+          },
+          {
+            "class": "image-wrapper",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "a-image-wrapper hide-image ",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "a-link-normal imageControlLink",
+            "id": null,
+            "tag": "a"
+          },
+          {
+            "class": "a-declarative",
+            "id": null,
+            "tag": "span"
+          },
+          {
+            "class": "carousel-img-relative-parent aok-inline-block aok-relative celwidget  variant-MAIN",
+            "id": "image-block-product-image-0",
+            "tag": "div"
+          },
+          {
+            "class": "a-carousel-card",
+            "id": null,
+            "tag": "li"
+          },
+          {
+            "class": "a-carousel",
+            "id": null,
+            "tag": "ol"
+          }
+        ],
+        "complete": true,
+        "elementStyle": {
+          "display": "block",
+          "opacity": "1",
+          "visibility": "visible"
+        },
+        "gallerySource": "landing-image-wrapper",
+        "id": "main-image",
+        "layout": {
+          "height": 450,
+          "width": 411
+        },
+        "loadedPrimaryGalleryImage": true,
+        "naturalHeight": 158,
+        "naturalWidth": 337,
+        "renderedVisible": true,
+        "selector": "img#main-image",
+        "src": "https://m.media-amazon.com/images/I/31Ji3DNh8qL._AC_SY900_.jpg"
+      },
+      "priceDisplay": "MX$1,242.66",
+      "currencyNote": "MXN: amazon.com.mx 마켓을 근거로 추정",
+      "currencyEvidence": {
+        "currency": "MXN",
+        "inferred": true,
+        "source": "amazon.com.mx marketplace; not an extracted structured currency field"
+      }
+    },
+    {
+      "label": "Walmart · AirPods 4",
+      "runId": "walmart_diagnostic",
+      "requestedUrl": "https://www.walmart.com.mx/ip/audifonos-inalambricos-apple-airpods-4-blancos/00019594968846",
+      "observedAtUtc": "2026-11-09T21:49:41.833Z",
+      "androidRelease": "16",
+      "androidSdk": 36,
+      "webViewVersion": "134.0.6998.135",
+      "extractorVersion": "0.1-amazon-walmart-diagnostic-only",
+      "screenshot": "results/walmart_diagnostic.png",
+      "screenshotDimensions": [
+        1080,
+        2400
+      ],
+      "evidence": "results/walmart_diagnostic.json",
+      "completionReason": "account_or_challenge_screen",
+      "mainFrameErrors": [],
+      "status": "blocked",
+      "productTitle": "Apple AirPods 4 — 요청한 상품",
+      "priceDisplay": "가져오지 못함",
+      "primaryPrice": null,
+      "mainImage": null,
+      "pageTitle": "Verifica tu identidad",
+      "pageUrl": "https://www.walmart.com.mx/blocked",
+      "reason": "본인/로봇 확인 화면에서 테스트 중단; 확인 절차를 우회하지 않음"
+    }
+  ],
+  "additionalAttempts": [
+    {
+      "runId": "amazon1_v4_capture_retry",
+      "error": "net::ERR_NAME_NOT_RESOLVED",
+      "followup": "An unchanged retry succeeded."
+    }
+  ],
+  "limitations": [
+    "Amazon MXN currency is inferred from the marketplace, not asserted as an explicit page currency field.",
+    "Walmart anonymous host HTML succeeded earlier, but this Android WebView run stopped at a security challenge.",
+    "Physical devices, other Android/WebView versions, shortened share links, changed options and checkout totals were not verified."
+  ]
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "file": "sobrita_qa_ko_usd.xlsx",
+    "rows": 13,
+    "numeric_total": "10370.90",
+    "formulas": 0,
+    "xml_valid": true
+  },
+  {
+    "file": "sobrita_qa_ko_krw.xlsx",
+    "rows": 13,
+    "numeric_total": "10371",
+    "formulas": 0,
+    "xml_valid": true
+  },
+  {
+    "file": "sobrita_qa_pt_brl.xlsx",
+    "rows": 13,
+    "numeric_total": "10370.90",
+    "formulas": 0,
+    "xml_valid": true
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "index": 1,
+    "pid": "7174",
+    "launch": "Starting: Intent { cmp=com.sobra.app.sobra_app/.MainActivity }\n",
+    "home_wait_seconds": 52.3,
+    "ledger_wait_seconds": 11.15,
+    "no_anr_since_boot": true,
+    "rewarded_preload": false,
+    "fatal_exception": false
+  }
+]

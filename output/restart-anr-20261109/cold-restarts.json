@@ -1,0 +1,26 @@
+[
+  {
+    "index": 1,
+    "pid": "5007",
+    "launch": "Starting: Intent { cmp=com.sobra.app.sobra_app/.MainActivity }\nStatus: timeout\nLaunchState: UNKNOWN (-1)\nActivity: com.sobra.app.sobra_app/.MainActivity\nWaitTime: 19453\nComplete\n",
+    "no_anr_since_boot": true,
+    "rewarded_preload": false,
+    "fatal_exception": false
+  },
+  {
+    "index": 2,
+    "pid": "5138",
+    "launch": "Starting: Intent { cmp=com.sobra.app.sobra_app/.MainActivity }\nStatus: timeout\nLaunchState: UNKNOWN (-1)\nActivity: com.sobra.app.sobra_app/.MainActivity\nWaitTime: 16759\nComplete\n",
+    "no_anr_since_boot": true,
+    "rewarded_preload": false,
+    "fatal_exception": false
+  },
+  {
+    "index": 3,
+    "pid": "5258",
+    "launch": "Starting: Intent { cmp=com.sobra.app.sobra_app/.MainActivity }\nStatus: timeout\nLaunchState: UNKNOWN (-1)\nActivity: com.sobra.app.sobra_app/.MainActivity\nWaitTime: 10776\nComplete\n",
+    "no_anr_since_boot": true,
+    "rewarded_preload": false,
+    "fatal_exception": false
+  }
+]

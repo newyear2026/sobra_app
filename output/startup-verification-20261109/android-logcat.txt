@@ -1,0 +1,148 @@
+--------- beginning of main
+I/Zygote  (26757): Process 26757 created for com.sobra.app.sobra_app
+I/a.app.sobra_app(26757): Late-enabling -Xcheck:jni
+I/a.app.sobra_app(26757): Using CollectorTypeCMC GC.
+D/nativeloader(26757): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+D/ApplicationLoaders(26757): Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+D/ApplicationLoaders(26757): Returning zygote-cached class loader: /system_ext/framework/androidx.window.sidecar.jar
+D/nativeloader(26757): Configuring clns-9 for other apk /data/app/~~-HKM6TjfQenNyekQ2ed9cw==/com.sobra.app.sobra_app-0FwJZWE-d1yahYgC7gV7qQ==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~-HKM6TjfQenNyekQ2ed9cw==/com.sobra.app.sobra_app-0FwJZWE-d1yahYgC7gV7qQ==/lib/arm64:/data/app/~~-HKM6TjfQenNyekQ2ed9cw==/com.sobra.app.sobra_app-0FwJZWE-d1yahYgC7gV7qQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.sobra.app.sobra_app
+V/GraphicsEnvironment(26757): Currently set values for:
+V/GraphicsEnvironment(26757):   angle_gl_driver_selection_pkgs=[]
+V/GraphicsEnvironment(26757):   angle_gl_driver_selection_values=[]
+V/GraphicsEnvironment(26757): com.sobra.app.sobra_app is not listed in per-application setting
+V/GraphicsEnvironment(26757): ANGLE allowlist from config: com.dreamgames.royalmatch com.dts.freefiremax com.dxx.firenow com.gramgames.mergedragons com.ludo.king com.mojang.minecraftpe com.my.defense com.nintendo.zaka com.os.airforce com.playrix.fishdomdd.gplay io.teslatech.callbreak jp.konami.prospia net.peakgames.toonblast
+V/GraphicsEnvironment(26757): No special selections for ANGLE, returning default driver choice
+V/GraphicsEnvironment(26757): Neither updatable production driver nor prerelease driver is supported.
+D/FirebaseSessions(26757): Dependency to CRASHLYTICS added.
+I/FirebaseApp(26757): Device unlocked: initializing all Firebase APIs for app [DEFAULT]
+D/nativeloader(26757): Load /data/app/~~-HKM6TjfQenNyekQ2ed9cw==/com.sobra.app.sobra_app-0FwJZWE-d1yahYgC7gV7qQ==/base.apk!/lib/arm64-v8a/libdatastore_shared_counter.so using class loader ns clns-9 (caller=/data/app/~~-HKM6TjfQenNyekQ2ed9cw==/com.sobra.app.sobra_app-0FwJZWE-d1yahYgC7gV7qQ==/base.apk!classes20.dex): ok
+D/FirebaseSessions(26757): Initializing Firebase Sessions 3.0.8.
+I/FirebaseCrashlytics(26757): Initializing Firebase Crashlytics 20.1.1 for com.sobra.app.sobra_app
+D/FirebaseSessions(26757): Subscriber CRASHLYTICS registered.
+D/FirebaseSessions(26757): No Sessions subscribers. Not listening to lifecycle events.
+D/FirebaseSessions(26757): Notified CRASHLYTICS of new session 5af4e74d87a149f5ba2771a872c9b339
+E/ashmem  (26757): Pinning is deprecated since Android Q. Please use trim or other methods.
+I/FirebaseInitProvider(26757): FirebaseApp initialization successful
+W/a.app.sobra_app(26757): ClassLoaderContext classpath size mismatch. expected=1, found=0 (DLC[];PCL[base.apk*2587602534]{PCL[/system/framework/org.apache.http.legacy.jar*3808638674]#PCL[/system/framework/com.android.location.provider.jar*1880069816]#PCL[/system/framework/com.android.media.remotedisplay.jar*1838754544]#PCL[/system_ext/framework/com.android.extensions.appfunctions.jar*1527718805]#PCL[/system_ext/framework/androidx.window.extensions.jar*27366443]#PCL[/system_ext/framework/androidx.window.sidecar.jar*3917221785]} | DLC[];PCL[])
+I/DynamiteModule(26757): Considering local module com.google.android.gms.measurement.dynamite:185 and remote module com.google.android.gms.measurement.dynamite:218
+I/DynamiteModule(26757): Selected remote version of com.google.android.gms.measurement.dynamite, version >= 218
+V/DynamiteModule(26757): Dynamite loader version >= 2, using loadModule2NoCrashUtils
+W/System  (26757): ClassLoader referenced unknown path: 
+D/nativeloader(26757): Configuring clns-10 for other apk . target_sdk_version=37, uses_libraries=, library_path=/data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/lib/arm64:/data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+W/com.facebook.UserSettingsManager(26757): The value for AdvertiserIDCollectionEnabled is currently set to FALSE so you're sending app events without collecting Advertiser ID. This can affect the quality of your advertising and analytics results.
+W/a.app.sobra_app(26757): ClassLoaderContext classpath element checksum mismatch. expected=2587602534, found=3594643455 (DLC[];PCL[base.apk*2587602534]{PCL[/system/framework/org.apache.http.legacy.jar*3808638674]#PCL[/system/framework/com.android.location.provider.jar*1880069816]#PCL[/system/framework/com.android.media.remotedisplay.jar*1838754544]#PCL[/system_ext/framework/com.android.extensions.appfunctions.jar*1527718805]#PCL[/system_ext/framework/androidx.window.extensions.jar*27366443]#PCL[/system_ext/framework/androidx.window.sidecar.jar*3917221785]} | DLC[];PCL[/data/app/~~-HKM6TjfQenNyekQ2ed9cw==/com.sobra.app.sobra_app-0FwJZWE-d1yahYgC7gV7qQ==/base.apk*3594643455]{PCL[/system_ext/framework/androidx.window.extensions.jar*27366443]#PCL[/system_ext/framework/androidx.window.sidecar.jar*3917221785]})
+D/CompatChangeReporter(26757): Compat change id reported: 288912692; UID 10229; state: ENABLED
+D/DesktopExperienceFlags(26757): Toggle override initialized to: false
+D/WM-WrkMgrInitializer(26757): Initializing WorkManager with default configuration.
+W/com.facebook.internal.NativeProtocol(26757): Apps that target Android API 30+ (Android 11+) cannot call Facebook native apps unless the package visibility needs are declared. Please follow https://developers.facebook.com/docs/android/troubleshooting/#faq_267321845055988 to make the declaration.
+--------- beginning of system
+I/DisplayManager(26757): Choreographer implicitly registered for the refresh rate.
+I/GFXSTREAM(26757): [eglDisplay.cpp(297)] Opening libGLESv1_CM_emulation.so
+I/GFXSTREAM(26757): [eglDisplay.cpp(297)] Opening libGLESv2_emulation.so
+I/a.app.sobra_app(26757): hiddenapi: Accessing hidden method Ldalvik/system/VMStack;->getStackClass2()Ljava/lang/Class; (runtime_flags=0, domain=core-platform, api=unsupported) from Lm7/ang; (domain=app, TargetSdkVersion=36) using reflection: allowed
+I/FirebaseCrashlytics(26757): Saved version control info
+D/FlutterJNI(26757): Beginning load of flutter...
+I/PhClient(26757): Unable to retrieve flag snapshot for com.google.android.gms.measurement#com.sobra.app.sobra_app, using defaults.
+I/FA      (26757): App measurement disabled via the manifest
+E/a.app.sobra_app(26757): No package ID 6b found for resource ID 0x6b0b0013.
+I/ResourceExtractor(26757): Resource version mismatch res_timestamp-29-1794258033463
+W/HWUI    (26757): Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+W/HWUI    (26757): Failed to initialize 101010-2 format, error = EGL_SUCCESS
+I/FA      (26757): App measurement initialized, version: 194006
+I/FA      (26757): To enable debug logging run: adb shell setprop log.tag.FA VERBOSE
+I/FA      (26757): To enable faster debug mode event logging run:
+I/FA      (26757):   adb shell setprop debug.firebase.analytics.app com.sobra.app.sobra_app
+D/nativeloader(26757): Load /data/app/~~-HKM6TjfQenNyekQ2ed9cw==/com.sobra.app.sobra_app-0FwJZWE-d1yahYgC7gV7qQ==/base.apk!/lib/arm64-v8a/libflutter.so using class loader ns clns-9 (caller=/data/app/~~-HKM6TjfQenNyekQ2ed9cw==/com.sobra.app.sobra_app-0FwJZWE-d1yahYgC7gV7qQ==/base.apk): ok
+D/FlutterJNI(26757): flutter (null) was loaded normally!
+W/FlagStore(26757): Failed to commit to updated flags for com.google.android.gms.measurement#com.sobra.app.sobra_app
+W/FlagStore(26757): java.lang.SecurityException: GoogleCertificatesRslt: not allowed: pkg=com.sobra.app.sobra_app, sha256=[a1e897d445a694b089adc52b1c4fe063b3398505d0937515b260e526bad8ab95], atk=false, ver=264330035.true (go/gsrlt)
+W/FlagStore(26757): 	at android.os.Parcel.createExceptionOrNull(Parcel.java:3373)
+W/FlagStore(26757): 	at android.os.Parcel.createException(Parcel.java:3357)
+W/FlagStore(26757): 	at android.os.Parcel.readException(Parcel.java:3340)
+W/FlagStore(26757): 	at android.os.Parcel.readException(Parcel.java:3282)
+W/FlagStore(26757): 	at m7.ag.c(:com.google.android.gms.dynamite_measurementdynamite@264330035@26.43.30 (260400-0):11)
+W/FlagStore(26757): 	at m7.vw.a(:com.google.android.gms.dynamite_measurementdynamite@264330035@26.43.30 (260400-0):31)
+W/FlagStore(26757): 	at m7.cm.g(:com.google.android.gms.dynamite_measurementdynamite@264330035@26.43.30 (260400-0):11)
+W/FlagStore(26757): 	at m7.dh.v(:com.google.android.gms.dynamite_measurementdynamite@264330035@26.43.30 (260400-0):10)
+W/FlagStore(26757): 	at m7.dh.w(:com.google.android.gms.dynamite_measurementdynamite@264330035@26.43.30 (260400-0):413)
+W/FlagStore(26757): 	at m7.dh.e(:com.google.android.gms.dynamite_measurementdynamite@264330035@26.43.30 (260400-0):16)
+W/FlagStore(26757): 	at m7.dn.handleMessage(:com.google.android.gms.dynamite_measurementdynamite@264330035@26.43.30 (260400-0):814)
+W/FlagStore(26757): 	at android.os.Handler.dispatchMessage(Handler.java:128)
+W/FlagStore(26757): 	at android.os.Looper.dispatchMessage(Looper.java:333)
+W/FlagStore(26757): 	at android.os.Looper.loopOnce(Looper.java:263)
+W/FlagStore(26757): 	at android.os.Looper.loop(Looper.java:367)
+W/FlagStore(26757): 	at android.os.HandlerThread.run(HandlerThread.java:139)
+I/ResourceExtractor(26757): Extracted baseline resource assets/flutter_assets/kernel_blob.bin
+I/ResourceExtractor(26757): Extracted baseline resource assets/flutter_assets/vm_snapshot_data
+I/ResourceExtractor(26757): Extracted baseline resource assets/flutter_assets/isolate_snapshot_data
+W/a.app.sobra_app(26757): type=1400 audit(0.0:312): avc:  denied  { read } for  name="max_map_count" dev="proc" ino=24233 scontext=u:r:untrusted_app:s0:c229,c256,c512,c768 tcontext=u:object_r:proc_max_map_count:s0 tclass=file permissive=0 app=com.sobra.app.sobra_app
+D/DesktopModeFlags(26757): Toggle override initialized to: OVERRIDE_UNSET
+I/flutter (26757): [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
+I/flutter (26757): The Dart VM service is listening on http://127.0.0.1:37907/qMDvphbQzrI=/
+D/nativeloader(26757): Load /data/app/~~-HKM6TjfQenNyekQ2ed9cw==/com.sobra.app.sobra_app-0FwJZWE-d1yahYgC7gV7qQ==/base.apk!/lib/arm64-v8a/libdartjni.so using class loader ns clns-9 (caller=/data/app/~~-HKM6TjfQenNyekQ2ed9cw==/com.sobra.app.sobra_app-0FwJZWE-d1yahYgC7gV7qQ==/base.apk!classes10.dex): ok
+I/a.app.sobra_app(26757): hiddenapi: Accessing hidden method Landroid/view/accessibility/AccessibilityNodeInfo;->getSourceNodeId()J (runtime_flags=0, domain=platform, api=unsupported,test-api) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+I/a.app.sobra_app(26757): hiddenapi: Accessing hidden method Landroid/view/accessibility/AccessibilityRecord;->getSourceNodeId()J (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+I/a.app.sobra_app(26757): hiddenapi: Accessing hidden field Landroid/view/accessibility/AccessibilityNodeInfo;->mChildNodeIds:Landroid/util/LongArray; (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+I/a.app.sobra_app(26757): hiddenapi: Accessing hidden method Landroid/util/LongArray;->get(I)J (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+D/FlutterRenderer(26757): Width is zero. 0,0
+D/CompatChangeReporter(26757): Compat change id reported: 377864165; UID 10229; state: ENABLED
+D/FirebaseSessions(26757): App foregrounded on com.sobra.app.sobra_app
+D/FirebaseSessions(26757): Session 5af4e74d87a149f5ba2771a872c9b339 has not backgrounded yet
+D/FirebaseSessions(26757): No process data for com.sobra.app.sobra_app
+D/FirebaseSessions(26757): Session 6b5dd9580fe64897bbde465d20e3ca91 has not backgrounded yet
+D/FirebaseSessions(26757): No process data map
+D/FirebaseSessions(26757): No process data for com.sobra.app.sobra_app
+D/FirebaseSessions(26757): Sessions SDK disabled through data collection. Events will not be sent.
+W/HWUI    (26757): Unknown dataspace 0
+D/FirebaseSessions(26757): Notified CRASHLYTICS of new session 5cf16fc0f20f48b398c2b0d33a4a30b3
+I/Choreographer(26757): Skipped 85 frames!  The application may be doing too much work on its main thread.
+D/WindowOnBackDispatcher(26757): setTopOnBackInvokedCallback (unwrapped): android.app.Activity$$ExternalSyntheticLambda0@5478de8
+I/WindowExtensionsImpl(26757): Initializing Window Extensions, vendor API level=9, activity embedding enabled=true
+D/VRI[MainActivity](26757): WindowInsets changed: 1080x2400 statusBars:[0,63,0,0] navigationBars:[0,0,0,63] mandatorySystemGestures:[0,63,0,84] 
+D/FlutterRenderer(26757): Width is zero. 0,0
+I/a.app.sobra_app(26757): Compiler allocated 5155KB to compile void android.view.ViewRootImpl.performTraversals()
+D/FlutterRenderer(26757): Width is zero. 0,0
+D/FlutterJNI(26757): Sending viewport metrics to the engine.
+I/Choreographer(26757): Skipped 45 frames!  The application may be doing too much work on its main thread.
+D/WindowLayoutComponentImpl(26757): Register WindowLayoutInfoListener on Context=com.sobra.app.sobra_app.MainActivity@45dddb2, of which baseContext=android.app.ContextImpl@cc7f4db
+I/HWUI    (26757): Davey! duration=825ms; Flags=1, FrameTimelineVsyncId=356982, IntendedVsync=81138784324593, Vsync=81139534324563, InputEventId=0, HandleInputStart=81139545586856, AnimationStart=81139545588023, PerformTraversalsStart=81139545588398, DrawStart=81139554922606, FrameDeadline=81138800991259, FrameStartTime=81139544534690, FrameInterval=16666666, WorkloadTarget=16666666, SyncQueued=81139555381315, SyncStart=81139564399023, IssueDrawCommandsStart=81139564602190, SwapBuffers=81139602121731, FrameCompleted=81139618419440, DequeueBufferDuration=11152792, QueueBufferDuration=302417, GpuCompleted=81139618419440, SwapBuffersCompleted=81139615086065, DisplayPresentTime=946, CommandSubmissionCompleted=81139602121731, 
+D/FlutterJNI(26757): Sending viewport metrics to the engine.
+D/InsetsController(26757): hide(ime())
+I/ImeTracker(26757): com.sobra.app.sobra_app:4c673559: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+W/BillingClient(26757): In-app billing API version 3 is not supported on this device.
+I/UserMessagingPlatform(26757): Use new ConsentDebugSettings.Builder().addTestDeviceHashedId("B3EEABB8EE11C2BE770B684D95219ECB") to set this as a debug device.
+D/UserMessagingPlatform(26757): Stored info not exists: IABTCF_TCString
+D/UserMessagingPlatform(26757): Stored info not exists: IABGPP_HDR_GppString
+D/UserMessagingPlatform(26757): Stored info not exists: IABGPP_GppSID
+D/UserMessagingPlatform(26757): Stored info not exists: IABUSPrivacy_String
+I/WebViewFactory(26757): Loading com.google.android.webview version 134.0.6998.135 (code 699813532)
+V/ResourcesManager(26757): The following library key has been added: ResourcesKey{ mHash=6f9c7c3f mResDir=null mSplitDirs=[] mOverlayDirs=[] mLibDirs=[/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk,/data/app/~~2_KdbZSHdC3B_CdOium6gA==/com.google.android.trichromelibrary_699813532-5BlfZixpeb0kv0TuoVY7xg==/TrichromeLibrary.apk,/system_ext/framework/androidx.window.extensions.jar] mDisplayId=0 mOverrideConfig=v36 mCompatInfo={420dpi always-compat} mLoaders=[]}
+W/a.app.sobra_app(26757): Failed to find entry 'classes.dex': Entry not found
+D/nativeloader(26757): Configuring clns-11 for other apk /data/app/~~2_KdbZSHdC3B_CdOium6gA==/com.google.android.trichromelibrary_699813532-5BlfZixpeb0kv0TuoVY7xg==/TrichromeLibrary.apk. target_sdk_version=35, uses_libraries=ALL, library_path=/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/lib/arm64:/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk!/lib/arm64-v8a:/data/app/~~2_KdbZSHdC3B_CdOium6gA==/com.google.android.trichromelibrary_699813532-5BlfZixpeb0kv0TuoVY7xg==/TrichromeLibrary.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand
+D/ApplicationLoaders(26757): Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+D/nativeloader(26757): Configuring clns-12 for other apk /data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/lib/arm64:/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk!/lib/arm64-v8a:/data/app/~~2_KdbZSHdC3B_CdOium6gA==/com.google.android.trichromelibrary_699813532-5BlfZixpeb0kv0TuoVY7xg==/TrichromeLibrary.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand
+I/cr_WVCFactoryProvider(26757): version=134.0.6998.135 (699813532) minSdkVersion=29 isBundle=false multiprocess=true packageId=2
+D/nativeloader(26757): Load /data/app/~~2_KdbZSHdC3B_CdOium6gA==/com.google.android.trichromelibrary_699813532-5BlfZixpeb0kv0TuoVY7xg==/TrichromeLibrary.apk!/lib/arm64-v8a/libmonochrome_64.so using class loader ns clns-12 (caller=/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk): ok
+D/nativeloader(26757): Load /system/lib64/libwebviewchromium_plat_support.so using class loader ns clns-12 (caller=/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk): ok
+I/chromium(26757): [1109/150058.818382:INFO:variations_seed_loader.cc(67)] Failed to open file for reading.: No such file or directory (2)
+I/chromium(26757): [1109/150058.818614:INFO:variations_seed_loader.cc(67)] Failed to open file for reading.: No such file or directory (2)
+I/cr_LibraryLoader(26757): Successfully loaded native library
+I/cr_CachingUmaRecorder(26757): Flushed 6 samples from 6 histograms, 0 samples were dropped.
+I/cr_CombinedPProvider(26757): #registerProvider() provider:WV.I8@471b54e isPolicyCacheEnabled:false policyProvidersSize:0
+I/cr_PolicyProvider(26757): #setManagerAndSource() 0
+I/cr_CombinedPProvider(26757): #linkNativeInternal() 1
+I/cr_AppResProvider(26757): #getApplicationRestrictionsFromUserManager() Bundle[EMPTY_PARCEL]
+I/cr_PolicyProvider(26757): #notifySettingsAvailable() 0
+I/cr_CombinedPProvider(26757): #onSettingsAvailable() 0
+I/cr_CombinedPProvider(26757): #flushPolicies()
+E/chromium(26757): [ERROR:simple_file_enumerator.cc(21)] opendir /data/user/0/com.sobra.app.sobra_app/cache/WebView/Default/HTTP Cache/Code Cache/js: No such file or directory (2)
+E/chromium(26757): [ERROR:simple_index_file.cc(613)] Could not reconstruct index from disk
+E/adservices(26757): Failed to bind to measurement service: com.android.adservices.shared.common.exception.ServiceUnavailableException: Service is not available.
+I/CameraManagerGlobal(26757): Connecting to camera service
+D/ProfileInstaller(26757): Installing profile for com.sobra.app.sobra_app
+W/UserMessagingPlatform(26757): Metrics reporting URL is not set yet.
+W/UserMessagingPlatform(26757): Error making request.
+I/flutter (26757): AdMob consent update unavailable: Error making request.
+W/a.app.sobra_app(26757): userfaultfd: MOVE ioctl seems unsupported: Connection timed out
+W/UserMessagingPlatform(26757): No available form can be built.
+I/flutter (26757): AdMob consent form unavailable: No available form can be built.

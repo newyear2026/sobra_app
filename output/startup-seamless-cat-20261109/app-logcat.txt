@@ -1,0 +1,369 @@
+--------- beginning of main
+11-09 16:25:54.538  8115  8115 I Zygote  : Process 8115 created for com.sobra.app.sobra_app
+11-09 16:25:54.538  8115  8115 I a.app.sobra_app: Late-enabling -Xcheck:jni
+11-09 16:25:54.561  8115  8115 I a.app.sobra_app: Using CollectorTypeCMC GC.
+11-09 16:25:54.564  8115  8115 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+11-09 16:25:54.645  8115  8115 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+11-09 16:25:54.645  8115  8115 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.sidecar.jar
+11-09 16:25:55.285  8115  8115 D nativeloader: Configuring clns-9 for other apk /data/app/~~zHla38hLpBdpaQdT02jUxg==/com.sobra.app.sobra_app-4vV31DC0IFFW090NYmb5sw==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~zHla38hLpBdpaQdT02jUxg==/com.sobra.app.sobra_app-4vV31DC0IFFW090NYmb5sw==/lib/arm64:/data/app/~~zHla38hLpBdpaQdT02jUxg==/com.sobra.app.sobra_app-4vV31DC0IFFW090NYmb5sw==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.sobra.app.sobra_app
+11-09 16:25:55.320  8115  8115 V GraphicsEnvironment: Currently set values for:
+11-09 16:25:55.320  8115  8115 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+11-09 16:25:55.320  8115  8115 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+11-09 16:25:55.320  8115  8115 V GraphicsEnvironment: com.sobra.app.sobra_app is not listed in per-application setting
+11-09 16:25:55.320  8115  8115 V GraphicsEnvironment: ANGLE allowlist from config: com.dreamgames.royalmatch com.dts.freefiremax com.dxx.firenow com.gramgames.mergedragons com.ludo.king com.mojang.minecraftpe com.my.defense com.nintendo.zaka com.os.airforce com.playrix.fishdomdd.gplay io.teslatech.callbreak jp.konami.prospia net.peakgames.toonblast
+11-09 16:25:55.320  8115  8115 V GraphicsEnvironment: No special selections for ANGLE, returning default driver choice
+11-09 16:25:55.320  8115  8115 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+11-09 16:25:55.390  8115  8115 D FirebaseSessions: Dependency to CRASHLYTICS added.
+11-09 16:25:55.407  8115  8115 I FirebaseApp: Device unlocked: initializing all Firebase APIs for app [DEFAULT]
+11-09 16:25:55.410  8115  8115 I FirebaseCrashlytics: Initializing Firebase Crashlytics 20.1.1 for com.sobra.app.sobra_app
+11-09 16:25:55.510  8115  8115 D FirebaseSessions: Subscriber CRASHLYTICS registered.
+11-09 16:25:55.567  8115  8161 W a.app.sobra_app: ClassLoaderContext classpath size mismatch. expected=1, found=0 (DLC[];PCL[base.apk*2587602534]{PCL[/system/framework/org.apache.http.legacy.jar*3808638674]#PCL[/system/framework/com.android.location.provider.jar*1880069816]#PCL[/system/framework/com.android.media.remotedisplay.jar*1838754544]#PCL[/system_ext/framework/com.android.extensions.appfunctions.jar*1527718805]#PCL[/system_ext/framework/androidx.window.extensions.jar*27366443]#PCL[/system_ext/framework/androidx.window.sidecar.jar*3917221785]} | DLC[];PCL[])
+11-09 16:25:55.568  8115  8161 I DynamiteModule: Considering local module com.google.android.gms.measurement.dynamite:185 and remote module com.google.android.gms.measurement.dynamite:218
+11-09 16:25:55.568  8115  8161 I DynamiteModule: Selected remote version of com.google.android.gms.measurement.dynamite, version >= 218
+11-09 16:25:55.568  8115  8161 V DynamiteModule: Dynamite loader version >= 2, using loadModule2NoCrashUtils
+11-09 16:25:55.578  8115  8161 W System  : ClassLoader referenced unknown path: 
+11-09 16:25:55.578  8115  8161 D nativeloader: Configuring clns-10 for other apk . target_sdk_version=37, uses_libraries=, library_path=/data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/lib/arm64:/data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+11-09 16:25:55.594  8115  8161 W a.app.sobra_app: ClassLoaderContext classpath element checksum mismatch. expected=2587602534, found=3309179346 (DLC[];PCL[base.apk*2587602534]{PCL[/system/framework/org.apache.http.legacy.jar*3808638674]#PCL[/system/framework/com.android.location.provider.jar*1880069816]#PCL[/system/framework/com.android.media.remotedisplay.jar*1838754544]#PCL[/system_ext/framework/com.android.extensions.appfunctions.jar*1527718805]#PCL[/system_ext/framework/androidx.window.extensions.jar*27366443]#PCL[/system_ext/framework/androidx.window.sidecar.jar*3917221785]} | DLC[];PCL[/data/app/~~zHla38hLpBdpaQdT02jUxg==/com.sobra.app.sobra_app-4vV31DC0IFFW090NYmb5sw==/base.apk*3309179346]{PCL[/system_ext/framework/androidx.window.extensions.jar*27366443]#PCL[/system_ext/framework/androidx.window.sidecar.jar*3917221785]})
+11-09 16:25:55.609  8115  8161 D DesktopExperienceFlags: Toggle override initialized to: false
+11-09 16:25:55.613  8115  8162 E ashmem  : Pinning is deprecated since Android Q. Please use trim or other methods.
+11-09 16:25:55.632  8115  8166 I FirebaseCrashlytics: Saved version control info
+11-09 16:25:55.661  8115  8115 D nativeloader: Load /data/app/~~zHla38hLpBdpaQdT02jUxg==/com.sobra.app.sobra_app-4vV31DC0IFFW090NYmb5sw==/base.apk!/lib/arm64-v8a/libdatastore_shared_counter.so using class loader ns clns-9 (caller=/data/app/~~zHla38hLpBdpaQdT02jUxg==/com.sobra.app.sobra_app-4vV31DC0IFFW090NYmb5sw==/base.apk!classes20.dex): ok
+11-09 16:25:55.740  8115  8115 D FirebaseSessions: Initializing Firebase Sessions 3.0.8.
+11-09 16:25:55.740  8115  8115 I FirebaseInitProvider: FirebaseApp initialization successful
+11-09 16:25:55.757  8115  8115 W com.facebook.UserSettingsManager: The value for AdvertiserIDCollectionEnabled is currently set to FALSE so you're sending app events without collecting Advertiser ID. This can affect the quality of your advertising and analytics results.
+11-09 16:25:55.760  8115  8177 I a.app.sobra_app: hiddenapi: Accessing hidden method Ldalvik/system/VMStack;->getStackClass2()Ljava/lang/Class; (runtime_flags=0, domain=core-platform, api=unsupported) from Lm7/ang; (domain=app, TargetSdkVersion=36) using reflection: allowed
+11-09 16:25:55.779  8115  8180 W com.facebook.internal.NativeProtocol: Apps that target Android API 30+ (Android 11+) cannot call Facebook native apps unless the package visibility needs are declared. Please follow https://developers.facebook.com/docs/android/troubleshooting/#faq_267321845055988 to make the declaration.
+11-09 16:25:55.782  8115  8166 D FirebaseSessions: No Sessions subscribers. Not listening to lifecycle events.
+11-09 16:25:55.795  8115  8115 D WM-WrkMgrInitializer: Initializing WorkManager with default configuration.
+11-09 16:25:55.795  8115  8186 D CompatChangeReporter: Compat change id reported: 288912692; UID 10229; state: ENABLED
+11-09 16:25:55.804  8115  8165 D FirebaseSessions: Notified CRASHLYTICS of new session bdff9a4b56ce4014a39318efeade828f
+11-09 16:25:55.822  8115  8172 I FA      : App measurement disabled by setAnalyticsCollectionEnabled(false)
+--------- beginning of system
+11-09 16:25:55.856  8115  8196 I DisplayManager: Choreographer implicitly registered for the refresh rate.
+11-09 16:25:55.898  8115  8172 E a.app.sobra_app: No package ID 6b found for resource ID 0x6b0b0013.
+11-09 16:25:55.900  8115  8172 I FA      : App measurement initialized, version: 194006
+11-09 16:25:55.900  8115  8172 I FA      : To enable debug logging run: adb shell setprop log.tag.FA VERBOSE
+11-09 16:25:55.900  8115  8172 I FA      : To enable faster debug mode event logging run:
+11-09 16:25:55.900  8115  8172 I FA      :   adb shell setprop debug.firebase.analytics.app com.sobra.app.sobra_app
+11-09 16:25:55.926  8115  8206 D FlutterJNI: Beginning load of flutter...
+11-09 16:25:55.926  8115  8207 I ResourceExtractor: Found extracted resources res_timestamp-29-1794262423491
+11-09 16:25:55.926  8115  8207 I ResourceExtractor: Resource version mismatch res_timestamp-29-1794263137625
+11-09 16:25:55.947  8115  8206 D nativeloader: Load /data/app/~~zHla38hLpBdpaQdT02jUxg==/com.sobra.app.sobra_app-4vV31DC0IFFW090NYmb5sw==/base.apk!/lib/arm64-v8a/libflutter.so using class loader ns clns-9 (caller=/data/app/~~zHla38hLpBdpaQdT02jUxg==/com.sobra.app.sobra_app-4vV31DC0IFFW090NYmb5sw==/base.apk): ok
+11-09 16:25:55.951  8115  8206 D FlutterJNI: flutter (null) was loaded normally!
+11-09 16:25:55.973  8115  8196 I GFXSTREAM: [eglDisplay.cpp(297)] Opening libGLESv1_CM_emulation.so
+11-09 16:25:55.973  8115  8196 I GFXSTREAM: [eglDisplay.cpp(297)] Opening libGLESv2_emulation.so
+11-09 16:25:55.992  8115  8196 W HWUI    : Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+11-09 16:25:55.992  8115  8196 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+11-09 16:25:57.238  8115  8207 I ResourceExtractor: Extracted baseline resource assets/flutter_assets/kernel_blob.bin
+11-09 16:25:57.241  8115  8207 I ResourceExtractor: Extracted baseline resource assets/flutter_assets/vm_snapshot_data
+11-09 16:25:57.370  8115  8207 I ResourceExtractor: Extracted baseline resource assets/flutter_assets/isolate_snapshot_data
+11-09 16:25:57.444  8115  8115 W a.app.sobra_app: type=1400 audit(0.0:424): avc:  denied  { read } for  name="max_map_count" dev="proc" ino=24233 scontext=u:r:untrusted_app:s0:c229,c256,c512,c768 tcontext=u:object_r:proc_max_map_count:s0 tclass=file permissive=0 app=com.sobra.app.sobra_app
+11-09 16:25:57.509  8115  8270 I flutter : [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
+11-09 16:25:57.512  8115  8115 D DesktopModeFlags: Toggle override initialized to: OVERRIDE_UNSET
+11-09 16:25:57.701  8115  8287 I flutter : The Dart VM service is listening on http://127.0.0.1:42859/vvWZsrHbiYI=/
+11-09 16:25:58.620  8115  8115 D nativeloader: Load /data/app/~~zHla38hLpBdpaQdT02jUxg==/com.sobra.app.sobra_app-4vV31DC0IFFW090NYmb5sw==/base.apk!/lib/arm64-v8a/libdartjni.so using class loader ns clns-9 (caller=/data/app/~~zHla38hLpBdpaQdT02jUxg==/com.sobra.app.sobra_app-4vV31DC0IFFW090NYmb5sw==/base.apk!classes10.dex): ok
+11-09 16:25:58.699  8115  8115 I a.app.sobra_app: hiddenapi: Accessing hidden method Landroid/view/accessibility/AccessibilityNodeInfo;->getSourceNodeId()J (runtime_flags=0, domain=platform, api=unsupported,test-api) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+11-09 16:25:58.699  8115  8115 I a.app.sobra_app: hiddenapi: Accessing hidden method Landroid/view/accessibility/AccessibilityRecord;->getSourceNodeId()J (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+11-09 16:25:58.699  8115  8115 I a.app.sobra_app: hiddenapi: Accessing hidden field Landroid/view/accessibility/AccessibilityNodeInfo;->mChildNodeIds:Landroid/util/LongArray; (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+11-09 16:25:58.699  8115  8115 I a.app.sobra_app: hiddenapi: Accessing hidden method Landroid/util/LongArray;->get(I)J (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+11-09 16:25:58.714  8115  8115 D FlutterRenderer: Width is zero. 0,0
+11-09 16:25:58.715  8115  8115 D CompatChangeReporter: Compat change id reported: 377864165; UID 10229; state: ENABLED
+11-09 16:25:58.722  8115  8115 D FirebaseSessions: App foregrounded on com.sobra.app.sobra_app
+11-09 16:25:58.722  8115  8115 D FirebaseSessions: Session bdff9a4b56ce4014a39318efeade828f has not backgrounded yet
+11-09 16:25:58.722  8115  8115 D FirebaseSessions: Process com.sobra.app.sobra_app is stale
+11-09 16:25:58.734  8115  8167 D FirebaseSessions: Session bdff9a4b56ce4014a39318efeade828f has not backgrounded yet
+11-09 16:25:58.734  8115  8167 D FirebaseSessions: Cold app start detected
+11-09 16:25:58.734  8115  8167 D FirebaseSessions: Process com.sobra.app.sobra_app is stale
+11-09 16:25:58.736  8115  8165 D FirebaseSessions: Sessions SDK disabled through data collection. Events will not be sent.
+11-09 16:25:58.746  8115  8115 W HWUI    : Unknown dataspace 0
+11-09 16:25:58.871  8115  8166 D FirebaseSessions: Notified CRASHLYTICS of new session 6d9715456e844364a84169e772babca5
+11-09 16:26:00.629  8115  8115 I Choreographer: Skipped 112 frames!  The application may be doing too much work on its main thread.
+11-09 16:26:00.629  8115  8115 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): android.app.Activity$$ExternalSyntheticLambda0@ae396bc
+11-09 16:26:00.643  8115  8115 I WindowExtensionsImpl: Initializing Window Extensions, vendor API level=9, activity embedding enabled=true
+11-09 16:26:00.649  8115  8115 D VRI[MainActivity]: WindowInsets changed: 1080x2400 statusBars:[0,63,0,0] navigationBars:[0,0,0,63] mandatorySystemGestures:[0,63,0,84] 
+11-09 16:26:00.649  8115  8115 D FlutterRenderer: Width is zero. 0,0
+11-09 16:26:00.652  8115  8120 I a.app.sobra_app: Compiler allocated 5155KB to compile void android.view.ViewRootImpl.performTraversals()
+11-09 16:26:00.660  8115  8115 D FlutterRenderer: Width is zero. 0,0
+11-09 16:26:00.677  8115  8115 D FlutterJNI: Sending viewport metrics to the engine.
+11-09 16:26:03.865  8115  8115 I Choreographer: Skipped 192 frames!  The application may be doing too much work on its main thread.
+11-09 16:26:04.019  8115  8197 I HWUI    : Davey! duration=3330ms; Flags=1, FrameTimelineVsyncId=510349, IntendedVsync=86242784120433, Vsync=86245984120305, InputEventId=0, HandleInputStart=86245995582749, AnimationStart=86245995583874, PerformTraversalsStart=86245995584291, DrawStart=86246017121999, FrameDeadline=86242800787099, FrameStartTime=86245995099041, FrameInterval=16666666, WorkloadTarget=16666666, SyncQueued=86246017495041, SyncStart=86246028894749, IssueDrawCommandsStart=86246031108083, SwapBuffers=86246094026750, FrameCompleted=86246126004000, DequeueBufferDuration=24728792, QueueBufferDuration=153500, GpuCompleted=86246107351625, SwapBuffersCompleted=86246126004000, DisplayPresentTime=0, CommandSubmissionCompleted=86246094026750, 
+11-09 16:26:04.043  8115  8577 D ProfileInstaller: Installing profile for com.sobra.app.sobra_app
+11-09 16:26:04.272  8115  8115 D WindowLayoutComponentImpl: Register WindowLayoutInfoListener on Context=com.sobra.app.sobra_app.MainActivity@74f9b6b, of which baseContext=android.app.ContextImpl@25df768
+11-09 16:26:04.392  8115  8115 D FlutterJNI: Sending viewport metrics to the engine.
+11-09 16:26:04.501  8115  8115 D InsetsController: hide(ime())
+11-09 16:26:04.501  8115  8115 I ImeTracker: com.sobra.app.sobra_app:e8b09b72: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+11-09 16:26:04.659  8115  8121 W a.app.sobra_app: userfaultfd: MOVE ioctl seems unsupported: Connection timed out
+11-09 16:26:05.809  8115  8651 I UserMessagingPlatform: Use new ConsentDebugSettings.Builder().addTestDeviceHashedId("B3EEABB8EE11C2BE770B684D95219ECB") to set this as a debug device.
+11-09 16:26:05.825  8115  8651 D UserMessagingPlatform: Stored info not exists: IABTCF_TCString
+11-09 16:26:05.825  8115  8651 D UserMessagingPlatform: Stored info not exists: IABGPP_HDR_GppString
+11-09 16:26:05.825  8115  8651 D UserMessagingPlatform: Stored info not exists: IABGPP_GppSID
+11-09 16:26:05.825  8115  8651 D UserMessagingPlatform: Stored info not exists: IABUSPrivacy_String
+11-09 16:26:05.854  8115  8651 I WebViewFactory: Loading com.google.android.webview version 134.0.6998.135 (code 699813532)
+11-09 16:26:05.857  8115  8651 W ResourcesManager: Found a null ResourcesImpl, skipped.
+11-09 16:26:05.858  8115  8651 W ResourcesManager: Found a null ResourcesImpl, skipped.
+11-09 16:26:05.858  8115  8651 W ResourcesManager: Found a null ResourcesImpl, skipped.
+11-09 16:26:05.858  8115  8651 W ResourcesManager: Found a null ResourcesImpl, skipped.
+11-09 16:26:05.862  8115  8651 V ResourcesManager: The following library key has been added: ResourcesKey{ mHash=6f9c7c3f mResDir=null mSplitDirs=[] mOverlayDirs=[] mLibDirs=[/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk,/data/app/~~2_KdbZSHdC3B_CdOium6gA==/com.google.android.trichromelibrary_699813532-5BlfZixpeb0kv0TuoVY7xg==/TrichromeLibrary.apk,/system_ext/framework/androidx.window.extensions.jar] mDisplayId=0 mOverrideConfig=v36 mCompatInfo={420dpi always-compat} mLoaders=[]}
+11-09 16:26:05.866  8115  8651 W a.app.sobra_app: Failed to find entry 'classes.dex': Entry not found
+11-09 16:26:05.866  8115  8651 D nativeloader: Configuring clns-11 for other apk /data/app/~~2_KdbZSHdC3B_CdOium6gA==/com.google.android.trichromelibrary_699813532-5BlfZixpeb0kv0TuoVY7xg==/TrichromeLibrary.apk. target_sdk_version=35, uses_libraries=ALL, library_path=/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/lib/arm64:/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk!/lib/arm64-v8a:/data/app/~~2_KdbZSHdC3B_CdOium6gA==/com.google.android.trichromelibrary_699813532-5BlfZixpeb0kv0TuoVY7xg==/TrichromeLibrary.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand
+11-09 16:26:05.866  8115  8651 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+11-09 16:26:05.867  8115  8651 D nativeloader: Configuring clns-12 for other apk /data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/lib/arm64:/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk!/lib/arm64-v8a:/data/app/~~2_KdbZSHdC3B_CdOium6gA==/com.google.android.trichromelibrary_699813532-5BlfZixpeb0kv0TuoVY7xg==/TrichromeLibrary.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand
+11-09 16:26:06.008  8115  8651 I cr_WVCFactoryProvider: version=134.0.6998.135 (699813532) minSdkVersion=29 isBundle=false multiprocess=true packageId=2
+11-09 16:26:06.013  8115  8651 D nativeloader: Load /data/app/~~2_KdbZSHdC3B_CdOium6gA==/com.google.android.trichromelibrary_699813532-5BlfZixpeb0kv0TuoVY7xg==/TrichromeLibrary.apk!/lib/arm64-v8a/libmonochrome_64.so using class loader ns clns-12 (caller=/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk): ok
+11-09 16:26:06.015  8115  8651 D nativeloader: Load /system/lib64/libwebviewchromium_plat_support.so using class loader ns clns-12 (caller=/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk): ok
+11-09 16:26:06.015  8115  8661 I chromium: [1109/162606.015865:INFO:variations_seed_loader.cc(67)] Failed to open file for reading.: No such file or directory (2)
+11-09 16:26:06.020  8115  8115 I cr_LibraryLoader: Successfully loaded native library
+11-09 16:26:06.020  8115  8115 I cr_CachingUmaRecorder: Flushed 6 samples from 6 histograms, 0 samples were dropped.
+11-09 16:26:06.021  8115  8115 I cr_CombinedPProvider: #registerProvider() provider:WV.I8@b37840 isPolicyCacheEnabled:false policyProvidersSize:0
+11-09 16:26:06.022  8115  8115 I cr_PolicyProvider: #setManagerAndSource() 0
+11-09 16:26:06.037  8115  8115 I cr_CombinedPProvider: #linkNativeInternal() 1
+11-09 16:26:06.039  8115  8115 I cr_AppResProvider: #getApplicationRestrictionsFromUserManager() Bundle[EMPTY_PARCEL]
+11-09 16:26:06.039  8115  8115 I cr_PolicyProvider: #notifySettingsAvailable() 0
+11-09 16:26:06.039  8115  8115 I cr_CombinedPProvider: #onSettingsAvailable() 0
+11-09 16:26:06.039  8115  8115 I cr_CombinedPProvider: #flushPolicies()
+11-09 16:26:06.114  8115  8707 I CameraManagerGlobal: Connecting to camera service
+11-09 16:26:06.117  8115  8703 E adservices: Failed to bind to measurement service: com.android.adservices.shared.common.exception.ServiceUnavailableException: Service is not available.
+11-09 16:26:06.126  8115  8650 W BillingClient: In-app billing API version 3 is not supported on this device.
+11-09 16:26:07.347  8115  8651 W UserMessagingPlatform: Metrics reporting URL is not set yet.
+11-09 16:26:07.347  8115  8115 W UserMessagingPlatform: Publisher misconfiguration: Failed to read publisher's account configuration; no form(s) configured for the input app ID. Verify that you have configured one or more forms for this application and try again. Received app ID: `ca-app-pub-2706404530136726~6701842938`.
+11-09 16:26:07.350  8115  8115 I flutter : AdMob consent update unavailable: Publisher misconfiguration: Failed to read publisher's account configuration; no form(s) configured for the input app ID. Verify that you have configured one or more forms for this application and try again. Received app ID: `ca-app-pub-2706404530136726~6701842938`.
+11-09 16:26:07.378  8115  8793 I DynamiteModule: Considering local module com.google.android.gms.ads.dynamite:0 and remote module com.google.android.gms.ads.dynamite:263500502
+11-09 16:26:07.378  8115  8793 I DynamiteModule: Selected remote version of com.google.android.gms.ads.dynamite, version >= 263500502
+11-09 16:26:07.378  8115  8793 V DynamiteModule: Dynamite loader version >= 2, using loadModule2NoCrashUtils
+11-09 16:26:07.380  8115  8793 W a.app.sobra_app: ClassLoaderContext classpath element checksum mismatch. expected=2587602534, found=3309179346 (DLC[];PCL[base.apk*2587602534]{PCL[/system/framework/org.apache.http.legacy.jar*3808638674]#PCL[/system/framework/com.android.location.provider.jar*1880069816]#PCL[/system/framework/com.android.media.remotedisplay.jar*1838754544]#PCL[/system_ext/framework/com.android.extensions.appfunctions.jar*1527718805]#PCL[/system_ext/framework/androidx.window.extensions.jar*27366443]#PCL[/system_ext/framework/androidx.window.sidecar.jar*3917221785]} | DLC[];PCL[/data/app/~~zHla38hLpBdpaQdT02jUxg==/com.sobra.app.sobra_app-4vV31DC0IFFW090NYmb5sw==/base.apk*3309179346]{PCL[/system_ext/framework/androidx.window.extensions.jar*27366443]#PCL[/system_ext/framework/androidx.window.sidecar.jar*3917221785]})
+11-09 16:26:07.383  8115  8793 I a.app.sobra_app: Waiting for a blocking GC ClassLinker
+11-09 16:26:07.385  8115  8121 W a.app.sobra_app: Cleared Reference was only reachable from finalizer (only reported once)
+11-09 16:26:07.391  8115  8793 I a.app.sobra_app: WaitForGcToComplete blocked ClassLinker on Background for 8.564ms
+11-09 16:26:07.391  8115  8122 I libbinder.BpBinder: onLastStrongRef automatically unlinking death recipients for descriptor: '(not cached)'
+11-09 16:26:07.400  8115  8793 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/org.apache.http.legacy.jar
+11-09 16:26:07.400  8115  8793 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/com.android.location.provider.jar
+11-09 16:26:07.400  8115  8793 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/com.android.media.remotedisplay.jar
+11-09 16:26:07.401  8115  8793 D nativeloader: Configuring clns-13 for other apk /system_ext/framework/com.android.extensions.appfunctions.jar. target_sdk_version=37, uses_libraries=ALL, library_path=/data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/lib/arm64:/data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+11-09 16:26:07.401  8115  8793 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+11-09 16:26:07.402  8115  8793 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.sidecar.jar
+11-09 16:26:07.404  8115  8793 W a.app.sobra_app: Loading /data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/oat/arm64/base.odex non-executable as it requires an image which we failed to load
+11-09 16:26:07.405  8115  8793 D nativeloader: Configuring clns-14 for other apk /data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/base.apk. target_sdk_version=37, uses_libraries=, library_path=/data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/lib/arm64:/data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+11-09 16:26:07.423  8115  8793 I DynamiteModule: Considering local module com.google.android.gms.ads.dynamite:0 and remote module com.google.android.gms.ads.dynamite:263500502
+11-09 16:26:07.423  8115  8793 I DynamiteModule: Selected remote version of com.google.android.gms.ads.dynamite, version >= 263500502
+11-09 16:26:07.423  8115  8793 V DynamiteModule: Dynamite loader version >= 2, using loadModule2NoCrashUtils
+11-09 16:26:07.475  8115  8115 I flutter : Rewarded ad loadRequested
+11-09 16:26:07.481  8115  8689 W cr_media: BLUETOOTH_CONNECT permission is missing.
+11-09 16:26:07.481  8115  8689 W cr_media: getBluetoothAdapter() requires BLUETOOTH permission
+11-09 16:26:07.481  8115  8689 W cr_media: registerBluetoothIntentsIfNeeded: Requires BLUETOOTH permission
+11-09 16:26:07.487  8115  8819 W libc    : Access denied finding property "vendor.mesa.log"
+11-09 16:26:07.487  8115  8819 W libc    : Access denied finding property "vendor.mesa.log.file"
+11-09 16:26:07.487  8115  8819 E MESA    : Failed to open rendernode: No such file or directory
+11-09 16:26:07.487  8115  8819 E MESA    : Failed to open rendernode: No such file or directory
+11-09 16:26:07.501  8115  8827 I DynamiteModule: Considering local module com.google.android.gms.ads.dynamite:0 and remote module com.google.android.gms.ads.dynamite:263500502
+11-09 16:26:07.501  8115  8827 I DynamiteModule: Selected remote version of com.google.android.gms.ads.dynamite, version >= 263500502
+11-09 16:26:07.501  8115  8827 V DynamiteModule: Dynamite loader version >= 2, using loadModule2NoCrashUtils
+11-09 16:26:07.503  8115  8819 D vulkan  : searching for layers in '/data/app/~~zHla38hLpBdpaQdT02jUxg==/com.sobra.app.sobra_app-4vV31DC0IFFW090NYmb5sw==/lib/arm64'
+11-09 16:26:07.503  8115  8819 D vulkan  : searching for layers in '/data/app/~~zHla38hLpBdpaQdT02jUxg==/com.sobra.app.sobra_app-4vV31DC0IFFW090NYmb5sw==/base.apk!/lib/arm64-v8a'
+11-09 16:26:07.509  8115  8827 I Ads     : This request is sent from a test device.
+11-09 16:26:07.537  8115  8819 D vulkan  : added global layer 'VK_LAYER_KHRONOS_validation' from library '/data/app/~~zHla38hLpBdpaQdT02jUxg==/com.sobra.app.sobra_app-4vV31DC0IFFW090NYmb5sw==/base.apk!/lib/arm64-v8a/libVkLayer_khronos_validation.so'
+11-09 16:26:07.538  8115  8819 E MESA    : Failed to open rendernode: No such file or directory
+11-09 16:26:07.538  8115  8819 E MESA    : Failed to open rendernode: No such file or directory
+11-09 16:26:07.539  8115  8819 E MESA    : Failed to open rendernode: No such file or directory
+11-09 16:26:07.539  8115  8819 E MESA    : Failed to open rendernode: No such file or directory
+11-09 16:26:07.540  8115  8819 E MESA    : Failed to open rendernode: No such file or directory
+11-09 16:26:07.540  8115  8819 E MESA    : Failed to open rendernode: No such file or directory
+11-09 16:26:07.541  8115  8819 W libc    : Access denied finding property "vendor.mesa.vk.trace.per.submit"
+11-09 16:26:07.541  8115  8819 W libc    : Access denied finding property "vendor.mesa.gallium.print.optio"
+11-09 16:26:07.541  8115  8819 W libc    : Access denied finding property "vendor.mesa.vk.trace.frame"
+11-09 16:26:07.555  8115  8819 E MESA    : Failed to open rendernode: No such file or directory
+11-09 16:26:07.556  8115  8819 W libc    : Access denied finding property "vendor.mesa.vk.wsi.headless.swa"
+11-09 16:26:07.557  8115  8819 E MESA    : Failed to open rendernode: No such file or directory
+11-09 16:26:07.557  8115  8819 E MESA    : Failed to open rendernode: No such file or directory
+11-09 16:26:07.591  8115  8819 W chromium: [WARNING:viz_main_impl.cc(85)] VizNullHypothesis is disabled (not a warning)
+11-09 16:26:07.593  8115  8161 E a.app.sobra_app: No package ID 6b found for resource ID 0x6b0b0013.
+11-09 16:26:07.631  8115  8836 I a.app.sobra_app: Waiting for a blocking GC ClassLinker
+11-09 16:26:07.643  8115  8827 W ServiceBindIntentUtils: Dynamic lookup for intent failed for action: com.google.android.gms.ads.service.CACHE
+11-09 16:26:07.680  8115  8121 I a.app.sobra_app: Background concurrent mark compact GC freed 2888KB AllocSpace bytes, 11(268KB) LOS objects, 49% free, 7664KB/14MB, paused 4.226ms,1.762ms total 104.522ms
+11-09 16:26:07.680  8115  8850 W Ads     : Not retrying to fetch app settings
+11-09 16:26:07.682  8115  8869 W ServiceBindIntentUtils: Dynamic lookup for intent failed for action: com.google.android.gms.ads.service.START
+11-09 16:26:07.687  8115  8836 I a.app.sobra_app: WaitForGcToComplete blocked ClassLinker on Background for 55.419ms
+11-09 16:26:07.709  8115  8836 D nativeloader: Configuring clns-15 for other apk . target_sdk_version=36, uses_libraries=ALL, library_path=, permitted_path=/data:/mnt/expand
+11-09 16:26:07.704  8115  8115 W AdWorker(Defaul: type=1400 audit(0.0:425): avc:  granted  { execute } for  path="/data/data/com.sobra.app.sobra_app/app_pccache/5/7F4D878FDE1BC005BD654BCE73F77A6D6143E514/pcam.jar" dev="dm-54" ino=362517 scontext=u:r:untrusted_app:s0:c229,c256,c512,c768 tcontext=u:object_r:app_data_file:s0:c229,c256,c512,c768 tclass=file app=com.sobra.app.sobra_app
+11-09 16:26:07.710  8115  8836 D nativeloader: Load /data/user/0/com.sobra.app.sobra_app/app_pccache/5/7F4D878FDE1BC005BD654BCE73F77A6D6143E514/pcam.jar!/libdEF8FF1422D86.so using isolated ns clns-15 (caller=/data/user/0/com.sobra.app.sobra_app/app_pccache/5/7F4D878FDE1BC005BD654BCE73F77A6D6143E514/pcam.jar): ok
+11-09 16:26:07.832  8115  8115 I Ads     : JS: The jsLoaded GMSG has been sent (https://googleads.g.doubleclick.net/mads/static/sdk/native/sdk-core-v40.html:1108)
+11-09 16:26:07.832  8115  8115 I chromium: [INFO:CONSOLE(1108)] "The jsLoaded GMSG has been sent", source: https://googleads.g.doubleclick.net/mads/static/sdk/native/sdk-core-v40.html (1108)
+11-09 16:26:09.687  8115  8819 E GFXSTREAM: [GLClientState.cpp(298)] set vao to self, no-op (1)
+11-09 16:26:09.747  8115  8115 I Ads     : JS: The jsLoaded GMSG has been sent (https://googleads.g.doubleclick.net/mads/static/sdk/native/sdk-core-v40.html:1108)
+11-09 16:26:09.748  8115  8115 I chromium: [INFO:CONSOLE(1108)] "The jsLoaded GMSG has been sent", source: https://googleads.g.doubleclick.net/mads/static/sdk/native/sdk-core-v40.html (1108)
+11-09 16:26:09.826  8115  8689 D AudioSystem: onNewServiceWithAdapter: media.audio_flinger service obtained 0xb400006dd22f3f20
+11-09 16:26:09.826  8115  8689 D AudioSystem: getService: IAudioFlingerService retrieved: 0xb400006f42259650  IAudioFlinger cached: 0xb400006dd22f3f20
+11-09 16:26:09.828  8115  8689 D AudioSystem: onNewService: media.audio_policy service obtained 0xb400006f42259a10
+11-09 16:26:09.829  8115  8689 D AudioSystem: getService: IAudioPolicyService retrieved: 0xb400006f42259a10  cached: 0xb400006f42259a10
+11-09 16:26:09.843  8115  8689 I AAudio  : AAudioStreamBuilder_openStream() called ----------------------------------------
+11-09 16:26:09.843  8115  8689 I AudioStreamBuilder: rate   =  44100, channels  = 2, channelMask = 0x3, format   = 0x5, sharing = SH, dir = OUTPUT
+11-09 16:26:09.843  8115  8689 I AudioStreamBuilder: devices = AUDIO_PORT_HANDLE_NONE, sessionId = -1, perfMode = 11, callback: ON with frames = 4360
+11-09 16:26:09.843  8115  8689 I AudioStreamBuilder: usage  =      1, contentType = 0, inputPreset = 0, allowedCapturePolicy = 0
+11-09 16:26:09.843  8115  8689 I AudioStreamBuilder: privacy sensitive = false, opPackageName = (null), attributionTag = (null)
+11-09 16:26:09.843  8115  8689 D AudioStreamBuilder: build, global mmap policy is 0
+11-09 16:26:09.843  8115  8689 D AudioStreamBuilder: build, system mmap policy is 1
+11-09 16:26:09.843  8115  8689 D AudioStreamBuilder: build, final mmap policy is 1
+11-09 16:26:09.844  8115  8689 D AudioStreamBuilder: build, system mmap exclusive policy is 1
+11-09 16:26:09.844  8115  8689 D AudioStreamBuilder: build, final mmap exclusive policy is 1
+11-09 16:26:09.844  8115  8689 D AudioStreamBuilder: build() MMAP not used because AAUDIO_PERFORMANCE_MODE_LOW_LATENCY or AAUDIO_PERFORMANCE_MODE_POWER_SAVING_OFFLOADED not requested.
+11-09 16:26:09.844  8115  8689 D a.app.sobra_app: PlayerBase::PlayerBase()
+11-09 16:26:09.844  8115  8689 D AudioStreamTrack: open(), request notificationFrames = 0, frameCount = 0
+11-09 16:26:09.844  8115  8678 I cr_MediaCodecBridge: create MediaCodec video decoder, mime video/x-vnd.on2.vp9, decoder name c2.goldfish.vp9.decoder, block_model=false
+11-09 16:26:09.851  8115  8921 D CCodec  : allocate(c2.goldfish.vp9.decoder)
+11-09 16:26:09.852  8115  8689 D AudioStreamTrack: open() flags changed from 0x00000008 to 0x00000000
+11-09 16:26:09.853  8115  8689 D AudioStreamTrack: open() perfMode changed from 11 to 10
+11-09 16:26:09.853  8115  8689 D AAudioStream: setState(s#1) from 0 to 2
+11-09 16:26:09.853  8115  8689 I AAudio  : AAudioStreamBuilder_openStream() got Legacy, devIds = [2], perf = NO, burst = 2006
+11-09 16:26:09.854  8115  8689 I AAudio  : AAudioStreamBuilder_openStream() returns 0 = AAUDIO_OK for s#1 ----------------
+11-09 16:26:09.856  8115  8921 I ApexCodecsLazy: ApexCodecs loaded
+11-09 16:26:09.856  8115  8921 I Codec2Client: Available Codec2 services: "default" "software" "__ApexCodecs__"
+11-09 16:26:09.856  8115  8689 D AAudio  : AAudioStream_requestStart(s#1) called --------------
+11-09 16:26:09.856  8115  8689 D AAudioStream: setState(s#1) from 2 to 3
+11-09 16:26:09.857  8115  8921 I CCodec  : setting up 'default' as default (vendor) store
+11-09 16:26:09.859  8115  8906 D AAudioStream: setState(s#1) from 3 to 4
+11-09 16:26:09.859  8115  8921 I CCodec  : Created component [c2.goldfish.vp9.decoder] for [c2.goldfish.vp9.decoder]
+11-09 16:26:09.860  8115  8128 D AudioStreamLegacy: onAudioDeviceUpdate() devices 2 => 2
+11-09 16:26:09.860  8115  8921 D CCodecConfig: read media type: video/x-vnd.on2.vp9
+11-09 16:26:09.860  8115  8921 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.max-count.values
+11-09 16:26:09.860  8115  8921 D ReflectedParamUpdater: extent() != 1 for single value type: output.subscribed-indices.values
+11-09 16:26:09.860  8115  8921 D ReflectedParamUpdater: extent() != 1 for single value type: input.buffers.allocator-ids.values
+11-09 16:26:09.860  8115  8921 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.allocator-ids.values
+11-09 16:26:09.860  8115  8921 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.allocator-ids.values
+11-09 16:26:09.860  8115  8921 D ReflectedParamUpdater: extent() != 1 for single value type: output.buffers.pool-ids.values
+11-09 16:26:09.860  8115  8921 D ReflectedParamUpdater: extent() != 1 for single value type: algo.buffers.pool-ids.values
+11-09 16:26:09.860  8115  8921 D ReflectedParamUpdater: ignored struct field coded.color-format.locations
+11-09 16:26:09.861  8115  8921 D CCodecConfig: ignoring local param raw.size (0xd2001800) as it is already supported
+11-09 16:26:09.861  8115  8921 D CCodecConfig: ignoring local param default.color (0x5200180b) as it is already supported
+11-09 16:26:09.861  8115  8921 D ReflectedParamUpdater: ignored struct field raw.hdr-static-info.mastering
+11-09 16:26:09.861  8115  8921 I CCodecConfig: query failed after returning 13 values (BAD_INDEX)
+11-09 16:26:09.861  8115  8921 D CCodecConfig: c2 config diff is Dict {
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 coded.pl.level = 28680
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 coded.pl.profile = 28672
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 coded.vui.color.matrix = 0
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 coded.vui.color.primaries = 0
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 coded.vui.color.range = 2
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 coded.vui.color.transfer = 0
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 default.color.matrix = 0
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 default.color.primaries = 0
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 default.color.range = 0
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 default.color.transfer = 0
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 input.buffers.max-size.value = 6291456
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 input.delay.value = 0
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   Buffer input.hdr10-plus-info.value = {
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   }
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   string input.media-type.value = "video/x-vnd.on2.vp9"
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   Buffer output.hdr10-plus-info.value = {
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   }
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   string output.media-type.value = "video/raw"
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 raw.color.matrix = 0
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 raw.color.primaries = 0
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 raw.color.range = 2
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 raw.color.transfer = 0
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 raw.max-size.height = 240
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 raw.max-size.width = 320
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 raw.pixel-format.value = 35
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::i32 raw.rotation.flip = 0
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::i32 raw.rotation.value = 0
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 raw.sar.height = 1
+11-09 16:26:09.861  8115  8921 D CCodecConfig:   c2::u32 raw.sar.width = 1
+11-09 16:26:09.861  8115  8921 W ColorUtils: expected specified color aspects (2:0:0:0)
+11-09 16:26:09.862  8115  8689 D AAudio  : AAudioStream_requestStart(s#1) returned 0 ---------
+11-09 16:26:09.865  8115  8919 I MediaCodec: MediaCodec will operate in async mode
+11-09 16:26:09.866  8115  8678 I MediaCodec: media_quality service unavailable, skipping updatePictureProfile
+11-09 16:26:09.866  8115  8919 D SurfaceUtils: connecting to surface 0xb400006d8224c2a0, reason connectToSurface
+11-09 16:26:09.866  8115  8919 I MediaCodec: [c2.goldfish.vp9.decoder] setting surface generation to 8309761
+11-09 16:26:09.866  8115  8919 D SurfaceUtils: disconnecting from surface 0xb400006d8224c2a0, reason connectToSurface(reconnect)
+11-09 16:26:09.866  8115  8919 D SurfaceUtils: connecting to surface 0xb400006d8224c290, reason connectToSurface(reconnect-with-listener)
+11-09 16:26:09.867  8115  8921 D CCodec  : [c2.goldfish.vp9.decoder] buffers are bound to CCodec for this session
+11-09 16:26:09.867  8115  8921 D CCodecConfig: no c2 equivalents for native-window
+11-09 16:26:09.867  8115  8921 D CCodecConfig: no c2 equivalents for native-window-generation
+11-09 16:26:09.867  8115  8921 D CCodecConfig: no c2 equivalents for flags
+11-09 16:26:09.868  8115  8921 D CCodecConfig: config failed => CORRUPTED
+11-09 16:26:09.868  8115  8921 D CCodecConfig: c2 config diff is   c2::u32 raw.max-size.height = 360
+11-09 16:26:09.868  8115  8921 D CCodecConfig:   c2::u32 raw.max-size.width = 640
+11-09 16:26:09.868  8115  8921 D CCodecConfig:   c2::u32 raw.size.height = 360
+11-09 16:26:09.868  8115  8921 D CCodecConfig:   c2::u32 raw.size.width = 640
+11-09 16:26:09.869  8115  8921 W Codec2Client: query -- param skipped: index = 1107298332.
+11-09 16:26:09.869  8115  8921 D CCodec  : client requested max input size 86400, which is smaller than what component recommended (6291456); overriding with component recommendation.
+11-09 16:26:09.869  8115  8921 W CCodec  : This behavior is subject to change. It is recommended that app developers double check whether the requested max input size is in reasonable range.
+11-09 16:26:09.869  8115  8921 D CCodec  : encoding statistics level = 0
+11-09 16:26:09.869  8115  8921 D CCodec  : setup formats input: AMessage(what = 0x00000000) = {
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t height = 360
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t level = 256
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t max-input-size = 6291456
+11-09 16:26:09.869  8115  8921 D CCodec  :   string mime = "video/x-vnd.on2.vp9"
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t profile = 1
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t width = 640
+11-09 16:26:09.869  8115  8921 D CCodec  :   Rect crop(0, 0, 639, 359)
+11-09 16:26:09.869  8115  8921 D CCodec  : }
+11-09 16:26:09.869  8115  8921 D CCodec  : setup formats output: AMessage(what = 0x00000000) = {
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t android._color-format = 2135033992
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t android._video-scaling = 1
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t rotation-degrees = 0
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t color-standard = 4
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t color-range = 2
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t color-transfer = 3
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t sar-height = 1
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t sar-width = 1
+11-09 16:26:09.869  8115  8921 D CCodec  :   Rect crop(0, 0, 639, 359)
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t width = 640
+11-09 16:26:09.869  8115  8921 D CCodec  :   Buffer hdr10-plus-info = {
+11-09 16:26:09.869  8115  8921 D CCodec  :   }
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t height = 360
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t max-height = 360
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t max-width = 640
+11-09 16:26:09.869  8115  8921 D CCodec  :   string mime = "video/raw"
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t android._dataspace = 259
+11-09 16:26:09.869  8115  8921 D CCodec  :   int32_t color-format = 2130708361
+11-09 16:26:09.869  8115  8921 D CCodec  : }
+11-09 16:26:09.869  8115  8921 I CCodecConfig: query failed after returning 13 values (BAD_INDEX)
+11-09 16:26:09.871  8115  8921 E a.app.sobra_app: Failed to query component interface for required system resources: 6
+11-09 16:26:09.873  8115  8678 D MediaCodec: keep callback message for reclaim
+11-09 16:26:09.873  8115  8921 W Codec2Client: query -- param skipped: index = 1342179345.
+11-09 16:26:09.873  8115  8921 W Codec2Client: query -- param skipped: index = 2415921170.
+11-09 16:26:09.873  8115  8921 W Codec2Client: query -- param skipped: index = 2684356609.
+11-09 16:26:09.873  8115  8921 D C2Store : Using DMABUF Heaps
+11-09 16:26:09.874  8115  8921 D CCodecBufferChannel: [c2.goldfish.vp9.decoder#512] Created input block pool with allocatorID 16 => poolID 17 - OK (0)
+11-09 16:26:09.874  8115  8921 D CCodecBufferChannel: [c2.goldfish.vp9.decoder#512] Query output surface allocator returned 0 params => BAD_INDEX (6)
+11-09 16:26:09.874  8115  8921 I CCodecBufferChannel: [c2.goldfish.vp9.decoder#512] Created output block pool with allocatorID 18 => poolID 32 - OK
+11-09 16:26:09.874  8115  8921 D CCodecBufferChannel: [c2.goldfish.vp9.decoder#512] Configured output block pool ids 32 => OK
+11-09 16:26:09.874  8115  8921 D Codec2-OutputBufferQueue: remote graphic buffer migration 0/0
+11-09 16:26:09.874  8115  8921 D Codec2Client: setOutputSurface -- failed to set consumer usage (6/BAD_INDEX)
+11-09 16:26:09.874  8115  8921 D Codec2Client: setOutputSurface -- generation=8309761 consumer usage=0x900
+11-09 16:26:09.876  8115  8921 D Codec2Client: Surface configure completed
+11-09 16:26:09.876  8115  8921 I DMABUFHEAPS: Using DMA-BUF heap named: system
+11-09 16:26:09.893  8115  8921 D CCodecConfig: c2 config diff is   c2::u32 raw.crop.height = 360
+11-09 16:26:09.893  8115  8921 D CCodecConfig:   c2::u32 raw.crop.left = 0
+11-09 16:26:09.893  8115  8921 D CCodecConfig:   c2::u32 raw.crop.top = 0
+11-09 16:26:09.893  8115  8921 D CCodecConfig:   c2::u32 raw.crop.width = 640
+11-09 16:26:09.962  8115  8115 I DynamiteModule: Considering local module com.google.android.gms.ads.dynamite:0 and remote module com.google.android.gms.ads.dynamite:263500502
+11-09 16:26:09.962  8115  8115 I DynamiteModule: Selected remote version of com.google.android.gms.ads.dynamite, version >= 263500502
+11-09 16:26:09.966  8115  8689 D AAudio  : AAudioStream_requestStop(s#1) called
+11-09 16:26:09.966  8115  8689 D AAudioStream: setState(s#1) from 4 to 9
+11-09 16:26:09.966  8115  8689 D AudioTrack: stop(32): called with 10009 frames delivered
+11-09 16:26:09.971  8115  8689 D AAudioStream: setState(s#1) from 9 to 10
+11-09 16:26:09.972  8115  8689 W chromium: [WARNING:sync_reader.cc(148)] ASR: No room in socket buffer.: Broken pipe (32)
+11-09 16:26:09.973  8115  8678 W cr_MediaCodecBridge: Releasing: c2.goldfish.vp9.decoder
+11-09 16:26:09.973  8115  8919 D SurfaceUtils: connecting to surface 0xb400006d82249c00, reason connectToSurface
+11-09 16:26:09.973  8115  8919 I MediaCodec: [c2.goldfish.vp9.decoder] setting surface generation to 8309762
+11-09 16:26:09.973  8115  8919 D SurfaceUtils: disconnecting from surface 0xb400006d82249c00, reason connectToSurface(reconnect)
+11-09 16:26:09.973  8115  8919 D SurfaceUtils: connecting to surface 0xb400006d82249bf0, reason connectToSurface(reconnect-with-listener)
+11-09 16:26:09.974  8115  8919 D Codec2-OutputBufferQueue: remote graphic buffer migration 1/1
+11-09 16:26:09.975  8115  8919 D Codec2Client: setOutputSurface -- failed to set consumer usage (6/BAD_INDEX)
+11-09 16:26:09.975  8115  8919 D Codec2Client: setOutputSurface -- generation=8309762 consumer usage=0x900
+11-09 16:26:09.975  8115  8931 W Codec2-OutputBufferQueue: receiving stale buffer: generation 8309762 , diff 1 : slot 2
+11-09 16:26:09.976  8115  8931 W Codec2-OutputBufferQueue: receiving stale buffer: generation 8309762 , diff 1 : slot 3
+11-09 16:26:09.978  8115  8931 W Codec2-OutputBufferQueue: receiving stale buffer: generation 8309762 , diff 1 : slot 4
+11-09 16:26:09.980  8115  8919 D Codec2Client: Surface configure completed
+11-09 16:26:09.980  8115  8919 D SurfaceUtils: disconnecting from surface 0xb400006d8224c2a0, reason disconnectFromSurface
+11-09 16:26:09.980  8115  8919 D CCodecBufferChannel: [c2.goldfish.vp9.decoder#512] MediaCodec discarded an unknown buffer
+11-09 16:26:09.980  8115  8919 D CCodecBufferChannel: [c2.goldfish.vp9.decoder#512] MediaCodec discarded an unknown buffer
+11-09 16:26:09.980  8115  8919 D CCodecBufferChannel: [c2.goldfish.vp9.decoder#512] MediaCodec discarded an unknown buffer
+11-09 16:26:09.980  8115  8919 D CCodecBufferChannel: [c2.goldfish.vp9.decoder#512] MediaCodec discarded an unknown buffer
+11-09 16:26:09.980  8115  8919 D CCodecBufferChannel: [c2.goldfish.vp9.decoder#512] MediaCodec discarded an unknown buffer
+11-09 16:26:09.981  8115  8678 W cr_MediaCodecBridge: Codec released
+11-09 16:26:09.981  8115  8919 D CCodecBufferChannel: [c2.goldfish.vp9.decoder#512] MediaCodec discarded an unknown buffer
+11-09 16:26:09.981  8115  8919 D CCodecBufferChannel: [c2.goldfish.vp9.decoder#512] MediaCodec discarded an unknown buffer
+11-09 16:26:09.981  8115  8919 D CCodecBufferChannel: [c2.goldfish.vp9.decoder#512] MediaCodec discarded an unknown buffer
+11-09 16:26:09.982  8115  8919 D SurfaceUtils: disconnecting from surface 0xb400006d82249c00, reason disconnectFromSurface
+11-09 16:26:09.982  8115  8921 I hw-BpHwBinder: onLastStrongRef automatically unlinking death recipients
+11-09 16:26:09.995  8115  8115 I flutter : Rewarded ad loaded

@@ -1,0 +1,22 @@
+[
+  {
+    "index": 4,
+    "pid": "6060",
+    "launch": "Starting: Intent { cmp=com.sobra.app.sobra_app/.MainActivity }\n",
+    "home_wait_seconds": 69.49,
+    "ledger_wait_seconds": 7.18,
+    "no_anr_since_boot": true,
+    "rewarded_preload": false,
+    "fatal_exception": false
+  },
+  {
+    "index": 5,
+    "pid": "6438",
+    "launch": "Starting: Intent { cmp=com.sobra.app.sobra_app/.MainActivity }\n",
+    "home_wait_seconds": 63.68,
+    "ledger_wait_seconds": 6.69,
+    "no_anr_since_boot": true,
+    "rewarded_preload": false,
+    "fatal_exception": false
+  }
+]

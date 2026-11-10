@@ -1,0 +1,51 @@
+{
+  "spreadsheetId": "1Xsw3OKDcTkwTy8fV8W4Aze5Ndr9AR4spEaeGoWhkSBg",
+  "ko": {
+    "locale": "ko_KR",
+    "rows": 13,
+    "sum": 10370.9,
+    "firstAmount": {
+      "formattedValue": "-123.45",
+      "userEnteredValue": {
+        "numberValue": -123.45
+      },
+      "effectiveValue": {
+        "numberValue": -123.45
+      }
+    },
+    "firstNote": {
+      "formattedValue": "=1+1",
+      "userEnteredValue": {
+        "stringValue": "=1+1"
+      },
+      "effectiveValue": {
+        "stringValue": "=1+1"
+      }
+    },
+    "firstDate": "2026-11-01"
+  },
+  "pt": {
+    "locale": "pt_BR",
+    "rows": 13,
+    "sum": 10370.9,
+    "firstAmount": {
+      "formattedValue": "-123,45",
+      "userEnteredValue": {
+        "numberValue": -123.45
+      },
+      "effectiveValue": {
+        "numberValue": -123.45
+      }
+    },
+    "firstNote": {
+      "formattedValue": "=1+1",
+      "userEnteredValue": {
+        "stringValue": "=1+1"
+      },
+      "effectiveValue": {
+        "stringValue": "=1+1"
+      }
+    },
+    "firstDate": "2026-11-01"
+  }
+}

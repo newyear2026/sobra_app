@@ -1,0 +1,115 @@
+ACTIVITY MANAGER LAST ANR (dumpsys activity lastanr)
+  ANR time: Nov 9, 2026 7:15:24 PM
+  Reason: Input dispatching timed out (bba7727 com.sobra.app.sobra_app/com.sobra.app.sobra_app.MainActivity is not responding. Waited 5006ms for MotionEvent).
+
+  * Task{6337a00 #438 type=standard I=com.sobra.app.sobra_app/.MainActivity U=0 visible=true visibleRequested=true mode=fullscreen translucent=false sz=1}
+    mLastNonFullscreenBounds=Rect(253, 540 - 828, 1620)
+    isSleeping=false
+    topResumedActivity=ActivityRecord{198574898 u0 com.sobra.app.sobra_app/.MainActivity t438}
+
+  mLastHomeActivityStartResult=2
+  mLastStarter:
+    mCurrentUser=0
+    mLastStartReason=startActivityAsUser
+    mLastStartActivityTimeMs=Nov 9, 2026 7:14:37 PM
+    mLastStartActivityResult=2
+    mStartActivity:
+      packageName=com.sobra.app.sobra_app processName=com.sobra.app.sobra_app
+      launchedFromUid=2000 launchedFromPackage=com.android.shell launchedFromFeature=null userId=0
+      app=null
+      Intent { flg=0x10400000 xflg=0x5 cmp=com.sobra.app.sobra_app/.MainActivity }
+      rootOfTask=false task=null
+      taskAffinity=null
+      mActivityComponent=com.sobra.app.sobra_app/.MainActivity
+      baseDir=/data/app/~~bVnF41G4jEd8eaqae7Wfxw==/com.sobra.app.sobra_app-WrlbddmpFTRZpdzmwAzSOA==/base.apk
+      dataDir=/data/user/0/com.sobra.app.sobra_app
+      stateNotNeeded=false componentSpecified=true mActivityType=undefined
+      compat={440dpi} theme=0x7f1100a2
+      mLastReportedConfigurations:
+        mGlobalConfig={1.0 310mcc260mnc [en_US] ldltr sw393dp w393dp h785dp 440dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2160) mAppBounds=Rect(0, 0 - 1080, 2160) mMaxBounds=Rect(0, 0 - 1080, 2160) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.141 fontWeightAdjustment=0}
+        mOverrideConfig={0.0 ?mcc0mnc ?localeList ?layoutDir ?swdp ?wdp ?hdp ?density ?lsize ?long ?ldr ?wideColorGamut ?orien ?uimode ?night ?touch ?keyb/?/? ?nav/? winConfig={ mBounds=Rect(0, 0 - 0, 0) mAppBounds=null mMaxBounds=Rect(0, 0 - 0, 0) mDisplayRotation=undefined mWindowingMode=undefined mActivityType=undefined mAlwaysOnTop=undefined mRotation=undefined} ?fontWeightAdjustment}
+      mLastReportedActivityWindowInfo=ActivityWindowInfo{isEmbedded=false, taskBounds=Rect(0, 0 - 0, 0), taskFragmentBounds=Rect(0, 0 - 0, 0)}
+      CurrentConfiguration={0.0 ?mcc0mnc ?localeList ?layoutDir ?swdp ?wdp ?hdp ?density ?lsize ?long ?ldr ?wideColorGamut ?orien ?uimode ?night ?touch ?keyb/?/? ?nav/? winConfig={ mBounds=Rect(0, 0 - 0, 0) mAppBounds=null mMaxBounds=Rect(0, 0 - 0, 0) mDisplayRotation=undefined mWindowingMode=undefined mActivityType=undefined mAlwaysOnTop=undefined mRotation=undefined} s.1 ?fontWeightAdjustment}
+      RequestedOverrideConfiguration={0.0 ?mcc0mnc ?localeList ?layoutDir ?swdp ?wdp ?hdp ?density ?lsize ?long ?ldr ?wideColorGamut ?orien ?uimode ?night ?touch ?keyb/?/? ?nav/? winConfig={ mBounds=Rect(0, 0 - 0, 0) mAppBounds=null mMaxBounds=Rect(0, 0 - 0, 0) mDisplayRotation=undefined mWindowingMode=undefined mActivityType=undefined mAlwaysOnTop=undefined mRotation=undefined} ?fontWeightAdjustment}
+      launchFailed=false launchCount=0 lastLaunchTime=0
+      mHaveState=true mIcicle=null
+      state=INITIALIZING delayedResume=false finishing=false
+      keysPaused=false inHistory=false idle=false
+      occludesParent=true mNoDisplay=false immersive=false launchMode=1
+      mActivityType=undefined
+      windows=[]
+      windowType=2
+      mOccludesParent=true
+      overrideOrientation=SCREEN_ORIENTATION_UNSPECIFIED
+      requestedOrientation=SCREEN_ORIENTATION_UNSPECIFIED
+      mVisibleRequested=false mVisible=false mClientVisible=true reportedDrawn=false reportedVisible=false
+      resizeMode=RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION
+      mLastReportedMultiWindowMode=false mLastReportedPictureInPictureMode=false
+      supportsSizeChanges=SIZE_CHANGES_UNSUPPORTED_METADATA
+      configChanges=0x40003fb7
+      neverSandboxDisplayApis=false
+      alwaysSandboxDisplayApis=false
+      isTransparentPolicyRunning=false
+    mIntent=Intent { flg=0x10400000 xflg=0x5 cmp=com.sobra.app.sobra_app/.MainActivity }
+    mLaunchMode=LAUNCH_SINGLE_TOP    mLaunchFlags=0x10000000 mDoResume=true mAddingToTask=false mInTaskFragment=null
+  packageName=com.sobra.app.sobra_app processName=com.sobra.app.sobra_app
+  launchedFromUid=2000 launchedFromPackage=com.android.shell launchedFromFeature=null userId=0
+  app=ProcessRecord{3068918 16455:com.sobra.app.sobra_app/u0a228}
+  Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x30000000 xflg=0x4 cmp=com.sobra.app.sobra_app/.MainActivity (has extras) }
+  rootOfTask=true task=Task{6337a00 #438 type=standard I=com.sobra.app.sobra_app/.MainActivity}
+  taskAffinity=null
+  mActivityComponent=com.sobra.app.sobra_app/.MainActivity
+  baseDir=/data/app/~~bVnF41G4jEd8eaqae7Wfxw==/com.sobra.app.sobra_app-WrlbddmpFTRZpdzmwAzSOA==/base.apk
+  dataDir=/data/user/0/com.sobra.app.sobra_app
+  stateNotNeeded=false componentSpecified=true mActivityType=standard
+  compat={440dpi} theme=0x7f1100a2
+  mLastReportedConfigurations:
+    mGlobalConfig={1.0 310mcc260mnc [en_US] ldltr sw393dp w393dp h785dp 440dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2160) mAppBounds=Rect(0, 0 - 1080, 2160) mMaxBounds=Rect(0, 0 - 1080, 2160) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.202 fontWeightAdjustment=0}
+    mOverrideConfig={1.0 310mcc260mnc [en_US] ldltr sw393dp w393dp h785dp 440dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2160) mAppBounds=Rect(0, 0 - 1080, 2160) mMaxBounds=Rect(0, 0 - 1080, 2160) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.2 fontWeightAdjustment=0}
+  mLastReportedActivityWindowInfo=ActivityWindowInfo{isEmbedded=false, taskBounds=Rect(0, 0 - 1080, 2160), taskFragmentBounds=Rect(0, 0 - 1080, 2160)}
+  CurrentConfiguration={1.0 310mcc260mnc [en_US] ldltr sw393dp w393dp h785dp 440dpi nrml long port finger qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 1080, 2160) mAppBounds=Rect(0, 0 - 1080, 2160) mMaxBounds=Rect(0, 0 - 1080, 2160) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.2 fontWeightAdjustment=0}
+  RequestedOverrideConfiguration={0.0 ?mcc0mnc ?localeList ?layoutDir ?swdp ?wdp ?hdp ?density ?lsize ?long ?ldr ?wideColorGamut ?orien ?uimode ?night ?touch ?keyb/?/? ?nav/? winConfig={ mBounds=Rect(0, 0 - 0, 0) mAppBounds=null mMaxBounds=Rect(0, 0 - 0, 0) mDisplayRotation=undefined mWindowingMode=undefined mActivityType=standard mAlwaysOnTop=undefined mRotation=undefined} ?fontWeightAdjustment}
+  ResolvedOverrideConfiguration={0.0 ?mcc0mnc ?localeList ?layoutDir ?swdp ?wdp ?hdp ?density ?lsize ?long ?ldr ?wideColorGamut ?orien ?uimode ?night ?touch ?keyb/?/? ?nav/? winConfig={ mBounds=Rect(0, 0 - 0, 0) mAppBounds=null mMaxBounds=Rect(0, 0 - 0, 0) mDisplayRotation=undefined mWindowingMode=undefined mActivityType=undefined mAlwaysOnTop=undefined mRotation=undefined} s.2 ?fontWeightAdjustment}
+  taskDescription: label="Sobrita" icon=null iconResource=com.sobra.app.sobra_app/0 iconFilename=null primaryColor=ff0e7a72
+    backgroundColor=ffffffff statusBarColor=ff000000 navigationBarColor=808080
+   backgroundColorFloating=ffffffff
+  launchFailed=false launchCount=0 lastLaunchTime=-2h12m47s682ms
+  mHaveState=false mIcicle=null
+  state=RESUMED delayedResume=false finishing=false
+  keysPaused=false inHistory=true idle=true
+  occludesParent=true mNoDisplay=false immersive=false launchMode=1
+  mActivityType=standard
+  windows=[Window{bba7727 u0 com.sobra.app.sobra_app/com.sobra.app.sobra_app.MainActivity}]
+  windowType=2
+  mOccludesParent=true
+  overrideOrientation=SCREEN_ORIENTATION_UNSPECIFIED
+  requestedOrientation=SCREEN_ORIENTATION_UNSPECIFIED
+  mVisibleRequested=true mVisible=true mClientVisible=true reportedDrawn=true reportedVisible=true
+  mNumInterestingWindows=1 mNumDrawnWindows=1 allDrawn=true)
+  startingData=null firstWindowDrawn=true
+  nowVisible=true lastVisibleTime=-31s894ms
+  resizeMode=RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION
+  mLastReportedMultiWindowMode=false mLastReportedPictureInPictureMode=false
+  supportsSizeChanges=SIZE_CHANGES_UNSUPPORTED_METADATA
+  configChanges=0x40003fb7
+  neverSandboxDisplayApis=false
+  alwaysSandboxDisplayApis=false
+  isTransparentPolicyRunning=false
+  areBoundsLetterboxed=false
+  isLetterboxRunning=false
+
+  ResumedActivity: ActivityRecord{198574898 u0 com.sobra.app.sobra_app/.MainActivity t438}
+  LockTaskController:
+    mLockTaskModeState=NONE
+    mLockTaskModeTasks=
+    mLockTaskPackages (userId:packages)=
+
+  KeyguardController:
+    mKeyguardShowing=false
+    mAodShowing=false
+    mKeyguardGoingAway=false
+   KeyguardShowing=false AodShowing=false KeyguardGoingAway=false DismissalRequested=false  Occluded=false DismissingKeyguardActivity=null TurnScreenOnActivity=null at display=0
+    mDismissalRequested=false
+
+-------------------------------------------------------------------------------
+

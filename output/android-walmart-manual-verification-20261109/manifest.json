@@ -1,0 +1,14 @@
+{
+  "sha256": {
+    "README.md": "9436f3a28e05f9537cc7780460f6703c3b36fbfe5d969118e50d0ed0622e45e1",
+    "report.html": "0f0f342120c5c6d9ac3049c872850d988e00ae90c53bec6dabce3b2d4045fc57",
+    "summary.json": "22dd7ac7971e3fcad1378c2c6c4785e224fa990d353b7228ee7e4e55296cc32e",
+    "scripts/extract-product-reviewed.js": "f161ae153fce9412fed896595333e8699e19e181906c1491618dde25c853a9cb",
+    "sobrita-walmart-manual-debug.apk": "c95a7f5f24fb7c2ad283e42804c2d1d1de23e15b52d85428ed70da605a94e421",
+    "results/walmart_direct_reviewed.json": "c86dd9163f3a42b347a444ace39fcb388a8db72cd83441dec697c64039ae4118",
+    "results/walmart_direct_reviewed.png": "91f9a1281d4b12fd7f74568e1b335a93e137a3c1e6ef399e593156803d186426",
+    "results/walmart_before_manual.json": "061a4e55bbf24782290a2906daccab6f8d2c0796a90ea250ae713d5b5d3373bd",
+    "results/walmart_before_manual.png": "329a3708b786d83266ffdd5572681925e96fa4d437f3503326c5f6ca19473040"
+  },
+  "validation": "Two matching observations; explicit no-manual-verification user response; full screenshot PNG CRC/IEND; local report links checked."
+}
