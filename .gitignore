@@ -72,3 +72,10 @@ design/store/icon-vs-mascot.png
 /design/marketing/social-v2/
 /design/marketing/social-v2-en/
 /tool/render_promo_video_en_test.dart
+
+# Other git worktrees that Claude Code sessions check out (release
+# branches and the like). They are separate checkouts with their own builds.
+/.claude/worktrees/
+
+# APKs built to check a change on a device. Rebuild them from the source.
+*.apk
