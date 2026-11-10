@@ -36,7 +36,7 @@ void main() {
     expect(ads.canOffer, isTrue);
   });
 
-  test('one impression per visit and five minutes between ads', () async {
+  test('one impression per visit and three minutes between ads', () async {
     final store = await loadStore();
     final ads = NativeAds(store: store, graceDays: 0)..setSdkReady(true);
 
@@ -49,7 +49,7 @@ void main() {
     expect(ads.shouldPlace, isTrue);
 
     // Flipping tabs inside the gap serves nothing.
-    now = now.add(const Duration(minutes: 4, seconds: 59));
+    now = now.add(const Duration(minutes: 2, seconds: 59));
     ads.endVisit();
     ads.startVisit();
     expect(ads.canOffer, isFalse);
@@ -110,10 +110,7 @@ void main() {
     final reopened = await loadStore();
     expect(reopened.lastNativeAdImpressionAt(NativeAdSlot.ledger), now);
     expect(
-      reopened.nativeAdIntervalElapsed(
-        NativeAdSlot.ledger,
-        const Duration(minutes: 5),
-      ),
+      reopened.nativeAdIntervalElapsed(NativeAdSlot.ledger, nativeAdGap),
       isFalse,
     );
   });
@@ -137,7 +134,7 @@ void main() {
     for (final slot in NativeAdSlot.values) {
       expect(store.lastNativeAdImpressionAt(slot), isNull, reason: slot.name);
       expect(
-        store.nativeAdIntervalElapsed(slot, const Duration(minutes: 5)),
+        store.nativeAdIntervalElapsed(slot, nativeAdGap),
         isTrue,
         reason: slot.name,
       );
@@ -145,7 +142,7 @@ void main() {
   });
 
   // The gap used to be one moment for every slot, so an ad in Movimientos
-  // left Presupuesto and the exit dialog empty for the next five minutes.
+  // left Presupuesto and the exit dialog empty for the whole gap.
   test('each slot keeps its own gap', () async {
     final store = await loadStore();
     final ledger = NativeAds(store: store, graceDays: 0)..setSdkReady(true);
@@ -164,10 +161,7 @@ void main() {
     budget.startVisit();
     expect(budget.canOffer, isTrue);
     expect(
-      store.nativeAdIntervalElapsed(
-        NativeAdSlot.exit,
-        const Duration(minutes: 5),
-      ),
+      store.nativeAdIntervalElapsed(NativeAdSlot.exit, nativeAdGap),
       isTrue,
     );
     budget.recordImpression();
@@ -180,8 +174,8 @@ void main() {
     expect(store.lastNativeAdImpressionAt(NativeAdSlot.budget), now);
     expect(store.lastNativeAdImpressionAt(NativeAdSlot.exit), isNull);
 
-    // The ledger's own gap still holds four minutes after its ad.
-    now = now.add(const Duration(minutes: 3, seconds: 59));
+    // The ledger's own gap still holds just short of three minutes.
+    now = now.add(const Duration(minutes: 1, seconds: 59));
     ledger.startVisit();
     expect(ledger.canOffer, isFalse);
     now = now.add(const Duration(seconds: 1));
@@ -210,7 +204,7 @@ void main() {
   });
 
   // A state from the shared-gap builds holds one moment. Copying it to every
-  // slot keeps the first five minutes after the update as they were.
+  // slot keeps an ad the old build just showed from repeating at once.
   test('a state from the shared-gap builds holds every slot', () async {
     await loadStore();
     final preferences = await SharedPreferences.getInstance();
@@ -237,7 +231,7 @@ void main() {
         reason: slot.name,
       );
       expect(
-        store.nativeAdIntervalElapsed(slot, const Duration(minutes: 5)),
+        store.nativeAdIntervalElapsed(slot, nativeAdGap),
         isFalse,
         reason: slot.name,
       );

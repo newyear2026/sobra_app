@@ -251,8 +251,8 @@ void main() {
     expect(_budgetAd, findsOneWidget);
   });
 
-  testWidgets('an impression in Presupuesto holds Presupuesto for five '
-      'minutes', (tester) async {
+  testWidgets('an impression in Presupuesto holds Presupuesto for the '
+      'gap', (tester) async {
     final store = await _store();
     final ads = await _pumpApp(tester, store);
 

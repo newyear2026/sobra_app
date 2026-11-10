@@ -25,7 +25,7 @@ class NativeAds extends ChangeNotifier {
   NativeAds({
     required SobraStore store,
     this.placement = NativeAdPlacement.ledger,
-    this.minInterval = const Duration(minutes: 5),
+    this.minInterval = nativeAdGap,
     this.graceDays = 7,
   }) : _store = store;
 

@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
+import '../models/native_ad_slot.dart';
+
 enum ExitAdSize {
   small(100),
   medium(350);
@@ -42,7 +44,7 @@ class ExitNativeAds {
   final DateTime Function() _now;
   final Duration maxAge;
   final Duration retryDelay;
-  static const impressionInterval = Duration(minutes: 5);
+  static const impressionInterval = nativeAdGap;
   ExitAdSize? _size;
   ExitAdCreative? _ready;
   DateTime? _loadedAt;

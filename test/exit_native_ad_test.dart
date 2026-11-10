@@ -377,7 +377,7 @@ void main() {
       final next = loader.requests.last;
       next.fill();
       await tester.pump();
-      now = now.add(const Duration(minutes: 4, seconds: 59));
+      now = now.add(const Duration(minutes: 2, seconds: 59));
       await back(tester);
       expect(find.byKey(const ValueKey('exit-native-ad-slot')), findsNothing);
       await tester.tap(find.byKey(const ValueKey('exit-cancel')));

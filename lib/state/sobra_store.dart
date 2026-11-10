@@ -232,7 +232,7 @@ class SobraStore extends ChangeNotifier {
   /// not a number of them, so somebody who opens the ledger again in the
   /// evening sees one while somebody flipping tabs does not. Kept per slot so
   /// an ad in Movimientos does not leave Presupuesto and the exit dialog
-  /// empty for the next five minutes.
+  /// empty for the next [nativeAdGap].
   final Map<NativeAdSlot, DateTime> _nativeAdImpressionsAt = {};
 
   /// The local day the user answered "Todavía no" on Inicio's fixed-expense
@@ -4022,8 +4022,8 @@ class SobraStore extends ChangeNotifier {
       }
     } else {
       // States from before the per-slot gap kept one moment for every slot.
-      // It is copied to all of them, so the first five minutes after the
-      // update hold exactly what the old build would have held.
+      // It is copied to all of them, so no slot serves inside the gap of an
+      // ad the old build had just shown.
       final legacy = json['lastNativeAdImpressionAt'];
       final at = legacy is String ? DateTime.tryParse(legacy) : null;
       if (at != null) {
