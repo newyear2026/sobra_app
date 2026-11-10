@@ -362,30 +362,36 @@ class _LoginCopy {
     ),
     'pt' => const _LoginCopy(
       title: 'Seus registros,\nsempre com você',
-      body: 'Conecte sua conta Google para continuar no Sobrita mesmo trocando de celular.',
+      body:
+          'Conecte sua conta Google para continuar no Sobrita mesmo trocando de celular.',
       googleButton: 'Continuar com o Google',
       connecting: 'Conectando ao Google…',
-      privacyNote: 'Seus dados de acesso e seus gastos ficam guardados separadamente.',
+      privacyNote:
+          'Seus dados de acesso e seus gastos ficam guardados separadamente.',
       guestButton: 'Começar sem conta',
       dismissButton: 'Agora não',
       heroLabel: 'Michi leva seus registros para um celular novo',
     ),
     'de' => const _LoginCopy(
       title: 'Deine Einträge,\nimmer dabei',
-      body: 'Verbinde dein Google-Konto, um Sobrita auch auf einem neuen Handy weiterzuführen.',
+      body:
+          'Verbinde dein Google-Konto, um Sobrita auch auf einem neuen Handy weiterzuführen.',
       googleButton: 'Weiter mit Google',
       connecting: 'Verbindung zu Google…',
-      privacyNote: 'Deine Anmeldung und deine Ausgaben werden getrennt gespeichert.',
+      privacyNote:
+          'Deine Anmeldung und deine Ausgaben werden getrennt gespeichert.',
       guestButton: 'Ohne Konto starten',
       dismissButton: 'Jetzt nicht',
       heroLabel: 'Michi bringt deine Einträge auf ein neues Handy',
     ),
     'fr' => const _LoginCopy(
       title: 'Tes données,\ntoujours avec toi',
-      body: 'Connecte ton compte Google pour retrouver Sobrita même sur un nouveau téléphone.',
+      body:
+          'Connecte ton compte Google pour retrouver Sobrita même sur un nouveau téléphone.',
       googleButton: 'Continuer avec Google',
       connecting: 'Connexion à Google…',
-      privacyNote: 'Tes identifiants et tes dépenses sont conservés séparément.',
+      privacyNote:
+          'Tes identifiants et tes dépenses sont conservés séparément.',
       guestButton: 'Commencer sans compte',
       dismissButton: 'Plus tard',
       heroLabel: 'Michi emporte tes données sur un nouveau téléphone',

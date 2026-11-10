@@ -447,7 +447,8 @@ const costumeMotionAtlases = <String, Map<String, CostumeMotionAtlas>>{
       ],
     ),
     'processing': CostumeMotionAtlas(
-      asset: 'assets/costumes/autumn_2026/motion_v2/schnauzer/processing-12.webp',
+      asset:
+          'assets/costumes/autumn_2026/motion_v2/schnauzer/processing-12.webp',
       durationMs: 3600,
       posterFrame: 7,
       loop: true,
@@ -604,7 +605,8 @@ const costumeMotionAtlases = <String, Map<String, CostumeMotionAtlas>>{
       ],
     ),
     'activity': CostumeMotionAtlas(
-      asset: 'assets/costumes/autumn_2026/motion_v2/guinea-pig/activity-12.webp',
+      asset:
+          'assets/costumes/autumn_2026/motion_v2/guinea-pig/activity-12.webp',
       durationMs: 1800,
       posterFrame: 0,
       loop: true,
@@ -638,7 +640,8 @@ const costumeMotionAtlases = <String, Map<String, CostumeMotionAtlas>>{
       ],
     ),
     'processing': CostumeMotionAtlas(
-      asset: 'assets/costumes/autumn_2026/motion_v2/guinea-pig/processing-12.webp',
+      asset:
+          'assets/costumes/autumn_2026/motion_v2/guinea-pig/processing-12.webp',
       durationMs: 3600,
       posterFrame: 7,
       loop: true,
@@ -672,7 +675,8 @@ const costumeMotionAtlases = <String, Map<String, CostumeMotionAtlas>>{
       ],
     ),
     'positive': CostumeMotionAtlas(
-      asset: 'assets/costumes/autumn_2026/motion_v2/guinea-pig/positive-12.webp',
+      asset:
+          'assets/costumes/autumn_2026/motion_v2/guinea-pig/positive-12.webp',
       durationMs: 4000,
       posterFrame: 6,
       loop: true,
@@ -829,7 +833,8 @@ const costumeMotionAtlases = <String, Map<String, CostumeMotionAtlas>>{
       ],
     ),
     'processing': CostumeMotionAtlas(
-      asset: 'assets/costumes/autumn_2026/motion_v2/capybara/processing-12.webp',
+      asset:
+          'assets/costumes/autumn_2026/motion_v2/capybara/processing-12.webp',
       durationMs: 3600,
       posterFrame: 7,
       loop: true,
@@ -1402,7 +1407,8 @@ const costumeMotionAtlases = <String, Map<String, CostumeMotionAtlas>>{
       ],
     ),
     'processing': CostumeMotionAtlas(
-      asset: 'assets/costumes/autumn_2026/motion_v2/platypus/processing-12.webp',
+      asset:
+          'assets/costumes/autumn_2026/motion_v2/platypus/processing-12.webp',
       durationMs: 3600,
       posterFrame: 7,
       loop: true,

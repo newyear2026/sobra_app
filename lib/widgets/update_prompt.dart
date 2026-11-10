@@ -110,8 +110,7 @@ class _UpdatePromptDialog extends StatelessWidget {
             PixelButton(
               label: l10n.updateAction,
               icon: Icons.open_in_new,
-              onPressed: () =>
-                  Navigator.of(context).pop(_UpdateChoice.update),
+              onPressed: () => Navigator.of(context).pop(_UpdateChoice.update),
             ),
             // Clear of the primary button's own shadow, which otherwise runs
             // straight into this border and reads as one stacked control.
