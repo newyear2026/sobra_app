@@ -9,6 +9,8 @@ abstract final class AdMobConfig {
 
   static const _androidNativeProduction =
       'ca-app-pub-2706404530136726/9277878691';
+  static const _androidExitNativeProduction =
+      'ca-app-pub-2706404530136726/3965250332';
   static const _androidRewardedProduction =
       'ca-app-pub-2706404530136726/2239406637';
 
@@ -46,6 +48,16 @@ abstract final class AdMobConfig {
 
   static String get nativeAdUnitId =>
       kReleaseMode ? _androidNativeProduction : _androidNativeTest;
+
+  /// Small and medium share native_exit, which allows images and video.
+  /// The Android small factory rejects video before presentation; medium
+  /// renders either media type. Debug/profile continue to use test ads.
+  static String get exitNativeAdUnitId => kReleaseMode
+      ? const String.fromEnvironment(
+          'SOBRA_EXIT_NATIVE_AD_UNIT_ID',
+          defaultValue: _androidExitNativeProduction,
+        )
+      : _androidNativeTest;
 
   static String get rewardedAdUnitId =>
       kReleaseMode ? _androidRewardedProduction : _androidRewardedTest;

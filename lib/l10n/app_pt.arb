@@ -493,12 +493,26 @@
   "receiptClose": "Fechar",
   "receiptMissing": "A foto não está mais neste aparelho.",
   "receiptFailed": "Não foi possível salvar a foto.",
-  "receiptBackupNote": "O backup e o CSV não incluem as fotos dos comprovantes.",
-  "csvExportTooltip": "Exportar para CSV",
-  "settingsCsvExport": "Exportar extrato (CSV)",
+  "receiptBackupNote": "O backup e os arquivos exportados não incluem fotos dos comprovantes.",
+  "csvExportTooltip": "Exportar extrato",
+  "settingsCsvExport": "Exportar extrato",
   "settingsCsvExportValue": "Compartilhar",
   "csvExportEmpty": "Ainda não há registros para exportar.",
   "csvExportFailed": "Não conseguimos abrir o compartilhamento. Tente de novo.",
+  "exitAppTitle": "Fechar o app?",
+  "exitAppBody": "Até a próxima.",
+  "exitAppAction": "Sair",
+  "startupTagline": "Pequenos registros,\ngrandes passos.",
+  "startupLoading": "Carregando…",
+  "startupFailed": "Não foi possível abrir o Sobrita.\nTente novamente.",
+  "exportFormatTitle": "Escolher formato",
+  "exportAllHistory": "Todo o histórico será exportado.",
+  "exportCsvTitle": "CSV (.csv)",
+  "exportCsvDescription": "Para importar em outros apps. Os números dependem da configuração regional.",
+  "exportExcelTitle": "Excel (.xlsx)",
+  "exportExcelDescription": "Pronto para calcular no Excel e no Google Sheets.",
+  "csvExportPreparing": "Preparando…",
+  "releaseNote1018Export": "Exporte seu extrato em CSV ou Excel pelo Extrato ou pelo Meu Sobrita.",
   "csvHeaderDate": "Data",
   "csvHeaderTime": "Hora",
   "csvHeaderType": "Tipo",
@@ -675,17 +689,10 @@
 
   "releaseNote1014Currency": "Uma conta nova começa na moeda do seu país.",
 
-  "releaseNote1013Rewards": "Cada nível traz móveis novos, e alguns enfeites saem com um anúncio.",
 
-  "releaseNote1013Rooms": "As casas também se ganham: jardim e praia com um anúncio, montanha e jardim de inverno por nível.",
 
-  "releaseNote1013Kept": "O que você já tinha continua seu.",
 
-  "releaseNote1013Home": "A casa no Início muda com a hora do dia.",
 
-  "releaseNote1013Share": "Você pode indicar o Sobrita a um amigo em Meu Sobrita ou ao fechar um ciclo em que sobrou dinheiro.",
-
-  "releaseNote1013Fixes": "O abajur não se esconde mais atrás da estante, e o balão não cobre mais seu companheiro.",
 
 
   "updateAvailableTitle": "Tem versão nova",

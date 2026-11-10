@@ -493,12 +493,26 @@
   "receiptClose": "閉じる",
   "receiptMissing": "写真はもうこの端末にありません。",
   "receiptFailed": "写真を保存できませんでした。",
-  "receiptBackupNote": "バックアップとCSVにレシートの写真は含まれません。",
-  "csvExportTooltip": "CSVで書き出す",
-  "settingsCsvExport": "履歴を書き出す（CSV）",
+  "receiptBackupNote": "バックアップと書き出しファイルにレシートの写真は含まれません。",
+  "csvExportTooltip": "履歴を書き出す",
+  "settingsCsvExport": "履歴を書き出す",
   "settingsCsvExportValue": "共有",
   "csvExportEmpty": "書き出せる記録はまだありません。",
   "csvExportFailed": "共有画面を開けませんでした。もう一度お試しください。",
+  "exitAppTitle": "アプリを終了しますか？",
+  "exitAppBody": "またお会いしましょう。",
+  "exitAppAction": "終了",
+  "startupTagline": "小さな記録が\nこつこつ積み重なる",
+  "startupLoading": "読み込み中…",
+  "startupFailed": "アプリを起動できませんでした。\nもう一度お試しください。",
+  "exportFormatTitle": "形式を選ぶ",
+  "exportAllHistory": "すべての履歴を書き出します。",
+  "exportCsvTitle": "CSV (.csv)",
+  "exportCsvDescription": "他のアプリへの取り込みに。数値の認識は地域設定によって変わります。",
+  "exportExcelTitle": "Excel (.xlsx)",
+  "exportExcelDescription": "Excel・Google Sheetsですぐに計算できます。",
+  "csvExportPreparing": "準備中…",
+  "releaseNote1018Export": "履歴をCSVまたはExcelで書き出せます。履歴またはマイSobritaからどうぞ。",
   "csvHeaderDate": "日付",
   "csvHeaderTime": "時刻",
   "csvHeaderType": "種類",
@@ -675,17 +689,10 @@
 
   "releaseNote1014Currency": "新しく始めると、お住まいの国の通貨で始まります。",
 
-  "releaseNote1013Rewards": "レベルごとに新しい家具が届き、一部の小物は広告1回で手に入ります。",
 
-  "releaseNote1013Rooms": "お部屋も集められます。庭・海辺は広告1回、山の別荘・温室はレベルで開きます。",
 
-  "releaseNote1013Kept": "持っていたものはそのままです。",
 
-  "releaseNote1013Home": "ホーム画面のお部屋も時間で昼と夜が変わります。",
 
-  "releaseNote1013Share": "マイSobritaから、またはお金が残ったサイクルの締めくくりに、友だちにSobritaを紹介できます。",
-
-  "releaseNote1013Fixes": "ランプが本棚の後ろに隠れず、吹き出しが仲間に重なりません。",
 
 
   "updateAvailableTitle": "新しいバージョンがあります",

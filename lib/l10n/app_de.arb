@@ -493,12 +493,26 @@
   "receiptClose": "Schließen",
   "receiptMissing": "Das Foto ist nicht mehr auf diesem Gerät.",
   "receiptFailed": "Das Foto konnte nicht gespeichert werden.",
-  "receiptBackupNote": "Sicherung und CSV enthalten keine Belegfotos.",
-  "csvExportTooltip": "Als CSV exportieren",
-  "settingsCsvExport": "Verlauf exportieren (CSV)",
+  "receiptBackupNote": "Sicherungen und Exporte enthalten keine Belegfotos.",
+  "csvExportTooltip": "Verlauf exportieren",
+  "settingsCsvExport": "Verlauf exportieren",
   "settingsCsvExportValue": "Teilen",
   "csvExportEmpty": "Noch nichts zum Exportieren.",
   "csvExportFailed": "Teilen konnte nicht geöffnet werden. Versuch es noch einmal.",
+  "exitAppTitle": "App schließen?",
+  "exitAppBody": "Bis zum nächsten Mal.",
+  "exitAppAction": "Beenden",
+  "startupTagline": "Kleine Einträge,\nSchritt für Schritt.",
+  "startupLoading": "Wird geladen…",
+  "startupFailed": "Sobrita konnte nicht geöffnet werden.\nBitte versuche es erneut.",
+  "exportFormatTitle": "Format wählen",
+  "exportAllHistory": "Der gesamte Verlauf wird exportiert.",
+  "exportCsvTitle": "CSV (.csv)",
+  "exportCsvDescription": "Zum Import in andere Apps. Die Zahlenerkennung hängt von den Regionseinstellungen ab.",
+  "exportExcelTitle": "Excel (.xlsx)",
+  "exportExcelDescription": "Direkt in Excel und Google Sheets rechnen.",
+  "csvExportPreparing": "Vorbereiten…",
+  "releaseNote1018Export": "Exportiere deinen Verlauf als CSV oder Excel – im Verlauf oder unter Mein Sobrita.",
   "csvHeaderDate": "Datum",
   "csvHeaderTime": "Uhrzeit",
   "csvHeaderType": "Art",
@@ -675,17 +689,10 @@
 
   "releaseNote1014Currency": "Ein neues Haushaltsbuch startet in der Währung deines Landes.",
 
-  "releaseNote1013Rewards": "Jedes Level bringt neue Möbel, und manche Deko gibt es für eine Werbung.",
 
-  "releaseNote1013Rooms": "Auch Häuser lassen sich verdienen: Garten und Strand für eine Werbung, Berghütte und Wintergarten über Level.",
 
-  "releaseNote1013Kept": "Was du schon hattest, bleibt deins.",
 
-  "releaseNote1013Home": "Das Haus im Start folgt der Tageszeit.",
 
-  "releaseNote1013Share": "Sobrita weiterempfehlen: in Mein Sobrita oder am Zyklusende.",
-
-  "releaseNote1013Fixes": "Die Lampe steht nicht mehr hinter dem Regal, die Sprechblase verdeckt niemanden.",
 
 
   "updateAvailableTitle": "Es gibt eine neue Version",

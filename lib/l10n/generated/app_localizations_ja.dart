@@ -1619,13 +1619,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get receiptFailed => '写真を保存できませんでした。';
 
   @override
-  String get receiptBackupNote => 'バックアップとCSVにレシートの写真は含まれません。';
+  String get receiptBackupNote => 'バックアップと書き出しファイルにレシートの写真は含まれません。';
 
   @override
-  String get csvExportTooltip => 'CSVで書き出す';
+  String get csvExportTooltip => '履歴を書き出す';
 
   @override
-  String get settingsCsvExport => '履歴を書き出す（CSV）';
+  String get settingsCsvExport => '履歴を書き出す';
 
   @override
   String get settingsCsvExportValue => '共有';
@@ -1635,6 +1635,49 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get csvExportFailed => '共有画面を開けませんでした。もう一度お試しください。';
+
+  @override
+  String get exitAppTitle => 'アプリを終了しますか？';
+
+  @override
+  String get exitAppBody => 'またお会いしましょう。';
+
+  @override
+  String get exitAppAction => '終了';
+
+  @override
+  String get startupTagline => '小さな記録が\nこつこつ積み重なる';
+
+  @override
+  String get startupLoading => '読み込み中…';
+
+  @override
+  String get startupFailed => 'アプリを起動できませんでした。\nもう一度お試しください。';
+
+  @override
+  String get exportFormatTitle => '形式を選ぶ';
+
+  @override
+  String get exportAllHistory => 'すべての履歴を書き出します。';
+
+  @override
+  String get exportCsvTitle => 'CSV (.csv)';
+
+  @override
+  String get exportCsvDescription => '他のアプリへの取り込みに。数値の認識は地域設定によって変わります。';
+
+  @override
+  String get exportExcelTitle => 'Excel (.xlsx)';
+
+  @override
+  String get exportExcelDescription => 'Excel・Google Sheetsですぐに計算できます。';
+
+  @override
+  String get csvExportPreparing => '準備中…';
+
+  @override
+  String get releaseNote1018Export =>
+      '履歴をCSVまたはExcelで書き出せます。履歴またはマイSobritaからどうぞ。';
 
   @override
   String get csvHeaderDate => '日付';
@@ -2177,25 +2220,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get releaseNote1014Currency => '新しく始めると、お住まいの国の通貨で始まります。';
-
-  @override
-  String get releaseNote1013Rewards => 'レベルごとに新しい家具が届き、一部の小物は広告1回で手に入ります。';
-
-  @override
-  String get releaseNote1013Rooms => 'お部屋も集められます。庭・海辺は広告1回、山の別荘・温室はレベルで開きます。';
-
-  @override
-  String get releaseNote1013Kept => '持っていたものはそのままです。';
-
-  @override
-  String get releaseNote1013Home => 'ホーム画面のお部屋も時間で昼と夜が変わります。';
-
-  @override
-  String get releaseNote1013Share =>
-      'マイSobritaから、またはお金が残ったサイクルの締めくくりに、友だちにSobritaを紹介できます。';
-
-  @override
-  String get releaseNote1013Fixes => 'ランプが本棚の後ろに隠れず、吹き出しが仲間に重なりません。';
 
   @override
   String get updateAvailableTitle => '新しいバージョンがあります';

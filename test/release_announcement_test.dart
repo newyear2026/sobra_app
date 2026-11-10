@@ -364,7 +364,13 @@ void main() {
       ) async {
         await showNotes(tester, await store(claimed: false));
 
-        await tester.ensureVisible(notesGift);
+        // The gift note sits below newer releases, so scroll the list to it
+        // rather than relying on the button already being on screen.
+        await tester.scrollUntilVisible(
+          notesGift.hitTestable(),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
         await tester.tap(notesGift);
         await tester.pumpAndSettle();
 

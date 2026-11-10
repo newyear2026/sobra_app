@@ -1,8 +1,8 @@
 import '../l10n/generated/app_localizations.dart';
-import '../l10n/labels.dart';
 import '../models/currency.dart';
 import '../models/expense_entry.dart';
 import '../models/income_entry.dart';
+import 'ledger_export_data.dart';
 
 /// Excel on Windows reads a CSV without this mark as the system code page,
 /// which turns every accent, every Hangul syllable and every kana into noise.
@@ -25,8 +25,8 @@ String ledgerCsvFileName(DateTime now) => 'sobrita_${_date(now)}.csv';
 /// Labels follow the app's language; numbers follow [currency]. Amounts are
 /// signed — spending negative, income positive — so one SUM over the column is
 /// the net, and carry no thousands mark, which a spreadsheet would otherwise
-/// have to guess at. Dates are ISO, which every spreadsheet reads in every
-/// locale and then shows in its own format.
+/// have to guess at. Dates use ISO YYYY-MM-DD; automatic type recognition still
+/// depends on the importing spreadsheet's settings.
 ///
 /// Cash-count reconciliations that moved no money (a transfer, a corrected
 /// count) are not rows: they are neither spending nor income. Receipt photos
@@ -38,55 +38,27 @@ String ledgerCsv({
   required Iterable<IncomeEntry> incomes,
 }) {
   final delimiter = ledgerCsvDelimiter(currency);
-  final rows = <({DateTime at, List<String> cells})>[
-    for (final expense in expenses)
-      (
-        at: expense.occurredAt,
-        cells: [
-          _date(expense.occurredAt),
-          _time(expense.occurredAt),
-          expense.isFixedPayment
-              ? l10n.csvTypeFixedExpense
-              : l10n.csvTypeExpense,
-          expense.category.label(l10n),
-          // A count that came up short has a placeholder note, not the
-          // user's; the ledger shows it as "to identify", and so does this.
-          expense.isPendingCashAdjustment
-              ? l10n.cashResolutionPending
-              : expense.note.trim(),
-          expense.paymentMethod.label(l10n),
-          _amount(currency, -expense.amountCentavos),
-          currency.code,
-        ],
-      ),
-    for (final income in incomes)
-      (
-        at: income.occurredAt,
-        cells: [
-          _date(income.occurredAt),
-          _time(income.occurredAt),
-          l10n.csvTypeIncome,
-          income.kind.label(l10n),
-          income.note.trim(),
-          income.destination.label(l10n),
-          _amount(currency, income.amountCentavos),
-          currency.code,
-        ],
-      ),
-  ]..sort((a, b) => a.at.compareTo(b.at));
-
-  final header = [
-    l10n.csvHeaderDate,
-    l10n.csvHeaderTime,
-    l10n.csvHeaderType,
-    l10n.csvHeaderCategory,
-    l10n.csvHeaderNote,
-    l10n.csvHeaderPayment,
-    l10n.csvHeaderAmount,
-    l10n.csvHeaderCurrency,
-  ];
+  final data = LedgerExportData(
+    l10n: l10n,
+    currency: currency,
+    expenses: expenses,
+    incomes: incomes,
+  );
   final buffer = StringBuffer(ledgerCsvByteOrderMark);
-  for (final cells in [header, for (final row in rows) row.cells]) {
+  for (final cells in [
+    data.headers,
+    for (final row in data.rows)
+      [
+        _date(row.at),
+        _time(row.at),
+        row.type,
+        row.category,
+        _spreadsheetNote(row.note),
+        row.payment,
+        _amount(currency, row.centavos),
+        currency.code,
+      ],
+  ]) {
     buffer
       ..write(cells.map((cell) => _escape(cell, delimiter)).join(delimiter))
       // RFC 4180 line ends; Excel is the reader that cares.
@@ -95,11 +67,26 @@ String ledgerCsv({
   return buffer.toString();
 }
 
-/// Quotes a cell when it holds anything that would end it early.
+// Some spreadsheet importers skip whitespace/control characters before deciding
+// whether a cell is a formula. Include full-width prefixes used in CJK text.
+final _formulaPrefix = RegExp(r'^[\s\x00-\x1f\x7f\uFEFF]*[=+\-@＝＋－＠]');
+
+/// Protects user-written notes when Excel opens the CSV. The leading tab must
+/// stay inside a quoted field; quoting alone does not prevent formula parsing.
+/// This changes only the exported note, never the saved entry or numeric amount.
+/// The tab remains part of the CSV value for other consumers.
+String _spreadsheetNote(String note) {
+  final text = note.trim();
+  return _formulaPrefix.hasMatch(text) ? '\t$text' : text;
+}
+
+/// Quotes delimiters and line breaks, and keeps a note's protective tab inside
+/// the quoted field.
 String _escape(String cell, String delimiter) {
   final needsQuotes =
       cell.contains(delimiter) ||
       cell.contains('"') ||
+      cell.contains('\t') ||
       cell.contains('\n') ||
       cell.contains('\r');
   return needsQuotes ? '"${cell.replaceAll('"', '""')}"' : cell;
@@ -120,9 +107,7 @@ String _amount(Currency currency, int centavos) {
   if (currency.decimalDigits == 0) {
     // Same half-up integer rounding as the screen, so a yen relabelled from a
     // currency with hundredths exports the figure the ledger shows.
-    final whole =
-        (magnitude + Currency.minorUnitsPerUnit ~/ 2) ~/
-        Currency.minorUnitsPerUnit;
+    final whole = ledgerWholeAmount(magnitude);
     return '$sign$whole';
   }
   final whole = magnitude ~/ Currency.minorUnitsPerUnit;

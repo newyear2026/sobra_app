@@ -771,12 +771,26 @@
   "receiptClose": "Cerrar",
   "receiptMissing": "La foto ya no está en este dispositivo.",
   "receiptFailed": "No se pudo guardar la foto.",
-  "receiptBackupNote": "La copia y el CSV no incluyen las fotos de tickets.",
-  "csvExportTooltip": "Exportar a CSV",
-  "settingsCsvExport": "Exportar movimientos (CSV)",
+  "receiptBackupNote": "La copia y las exportaciones no incluyen las fotos de tickets.",
+  "csvExportTooltip": "Exportar movimientos",
+  "settingsCsvExport": "Exportar movimientos",
   "settingsCsvExportValue": "Compartir",
   "csvExportEmpty": "Todavía no hay movimientos para exportar.",
   "csvExportFailed": "No se pudo abrir el menú para compartir. Vuelve a intentarlo.",
+  "exitAppTitle": "¿Cerrar la app?",
+  "exitAppBody": "Nos vemos pronto.",
+  "exitAppAction": "Salir",
+  "startupTagline": "Pequeños registros,\ngrandes pasos.",
+  "startupLoading": "Cargando…",
+  "startupFailed": "No pudimos abrir Sobrita.\nInténtalo de nuevo.",
+  "exportFormatTitle": "Elegir formato",
+  "exportAllHistory": "Se exporta todo el historial.",
+  "exportCsvTitle": "CSV (.csv)",
+  "exportCsvDescription": "Para importar a otras apps. Los números dependen de la configuración regional.",
+  "exportExcelTitle": "Excel (.xlsx)",
+  "exportExcelDescription": "Listo para calcular en Excel y Google Sheets.",
+  "csvExportPreparing": "Preparando…",
+  "releaseNote1018Export": "Exporta tus movimientos a CSV o Excel desde Movimientos o Mi Sobrita.",
   "csvHeaderDate": "Fecha",
   "csvHeaderTime": "Hora",
   "csvHeaderType": "Tipo",
@@ -1021,17 +1035,10 @@
 
   "releaseNote1014Currency": "Una cuenta nueva empieza en la moneda de tu país.",
 
-  "releaseNote1013Rewards": "Cada nivel trae muebles nuevos, y algunos adornos se ganan con un anuncio.",
 
-  "releaseNote1013Rooms": "Las casas también se ganan: jardín y playa con un anuncio, montaña e invernadero por nivel.",
 
-  "releaseNote1013Kept": "Lo que ya tenías se queda contigo.",
 
-  "releaseNote1013Home": "La casa en Inicio cambia con la hora del día.",
 
-  "releaseNote1013Share": "Puedes recomendar Sobrita a un amigo desde Mi Sobrita, o al cerrar un ciclo en el que te sobró.",
-
-  "releaseNote1013Fixes": "La lámpara ya no se esconde tras la estantería y el globo ya no tapa a tu compañero.",
 
 
   "updateAvailableTitle": "Hay una versión nueva",

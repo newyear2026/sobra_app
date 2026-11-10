@@ -1672,13 +1672,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get receiptBackupNote =>
-      'The backup and the CSV do not include receipt photos.';
+      'Backups and exports do not include receipt photos.';
 
   @override
-  String get csvExportTooltip => 'Export to CSV';
+  String get csvExportTooltip => 'Export activity';
 
   @override
-  String get settingsCsvExport => 'Export activity (CSV)';
+  String get settingsCsvExport => 'Export activity';
 
   @override
   String get settingsCsvExportValue => 'Share';
@@ -1689,6 +1689,51 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get csvExportFailed =>
       'We couldn\'t open the share sheet. Please try again.';
+
+  @override
+  String get exitAppTitle => 'Close the app?';
+
+  @override
+  String get exitAppBody => 'See you next time.';
+
+  @override
+  String get exitAppAction => 'Exit';
+
+  @override
+  String get startupTagline => 'Little entries,\nsteady progress.';
+
+  @override
+  String get startupLoading => 'Loading…';
+
+  @override
+  String get startupFailed => 'We couldn’t open Sobrita.\nPlease try again.';
+
+  @override
+  String get exportFormatTitle => 'Choose a format';
+
+  @override
+  String get exportAllHistory => 'Exports your entire history.';
+
+  @override
+  String get exportCsvTitle => 'CSV (.csv)';
+
+  @override
+  String get exportCsvDescription =>
+      'For importing into other apps. Number recognition depends on regional settings.';
+
+  @override
+  String get exportExcelTitle => 'Excel (.xlsx)';
+
+  @override
+  String get exportExcelDescription =>
+      'Ready for calculations in Excel and Google Sheets.';
+
+  @override
+  String get csvExportPreparing => 'Preparing…';
+
+  @override
+  String get releaseNote1018Export =>
+      'Export your activity to CSV or Excel from Activity or My Sobrita.';
 
   @override
   String get csvHeaderDate => 'Date';
@@ -2261,29 +2306,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get releaseNote1014Currency =>
       'A new ledger starts in your country\'s currency.';
-
-  @override
-  String get releaseNote1013Rewards =>
-      'Each level brings new furniture, and some decorations take one ad.';
-
-  @override
-  String get releaseNote1013Rooms =>
-      'Houses are earned too: garden and beach for one ad, mountain and conservatory by level.';
-
-  @override
-  String get releaseNote1013Kept => 'Everything you already had stays yours.';
-
-  @override
-  String get releaseNote1013Home =>
-      'The house on Home follows the time of day.';
-
-  @override
-  String get releaseNote1013Share =>
-      'You can tell a friend about Sobrita from My Sobrita, or when a cycle closes with money left over.';
-
-  @override
-  String get releaseNote1013Fixes =>
-      'The lamp no longer hides behind the bookcase, and the bubble no longer covers your companion.';
 
   @override
   String get updateAvailableTitle => 'There\'s a new version';

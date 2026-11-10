@@ -527,12 +527,26 @@
   "receiptClose": "닫기",
   "receiptMissing": "사진이 이 기기에 더 이상 없어요.",
   "receiptFailed": "사진을 저장하지 못했어요.",
-  "receiptBackupNote": "CSV와 백업에는 영수증 사진이 포함되지 않아요.",
-  "csvExportTooltip": "CSV로 내보내기",
-  "settingsCsvExport": "내역 내보내기 (CSV)",
+  "receiptBackupNote": "내보내기 파일과 백업에는 영수증 사진이 포함되지 않아요.",
+  "csvExportTooltip": "내역 내보내기",
+  "settingsCsvExport": "내역 내보내기",
   "settingsCsvExportValue": "공유",
   "csvExportEmpty": "아직 내보낼 기록이 없어요.",
   "csvExportFailed": "공유 화면을 열지 못했어요. 다시 시도해 주세요.",
+  "exitAppTitle": "앱을 종료할까요?",
+  "exitAppBody": "다음에 또 만나요.",
+  "exitAppAction": "종료",
+  "startupTagline": "작은 기록이\n차곡차곡 쌓여요",
+  "startupLoading": "불러오는 중…",
+  "startupFailed": "앱을 시작하지 못했어요.\n다시 시도해 주세요.",
+  "exportFormatTitle": "내보내기 형식",
+  "exportAllHistory": "전체 내역을 내보내요.",
+  "exportCsvTitle": "CSV (.csv)",
+  "exportCsvDescription": "다른 앱에 가져올 때 · 숫자 인식은 지역 설정에 따라 달라요.",
+  "exportExcelTitle": "Excel (.xlsx)",
+  "exportExcelDescription": "Excel·Google Sheets에서 바로 계산할 수 있어요.",
+  "csvExportPreparing": "준비 중…",
+  "releaseNote1018Export": "내역을 CSV나 엑셀 파일로 내보낼 수 있어요. 내역 화면이나 내 정보에서 할 수 있어요.",
   "csvHeaderDate": "날짜",
   "csvHeaderTime": "시간",
   "csvHeaderType": "유형",
@@ -710,17 +724,10 @@
 
   "releaseNote1014Currency": "새로 시작하면 내 나라 통화로 시작해요.",
 
-  "releaseNote1013Rewards": "레벨마다 새 가구가 생기고, 일부 소품은 광고 한 번으로 받아요.",
 
-  "releaseNote1013Rooms": "방도 모을 수 있어요. 정원·해변 방은 광고 한 번, 산속 별장·온실 방은 레벨로 열려요.",
 
-  "releaseNote1013Kept": "이미 가진 건 모두 그대로예요.",
 
-  "releaseNote1013Home": "홈 화면의 방도 시간에 맞춰 밤낮이 바뀌어요.",
 
-  "releaseNote1013Share": "내 정보에서, 또는 돈이 남은 주기를 마감할 때 친구에게 Sobrita를 알려줄 수 있어요.",
-
-  "releaseNote1013Fixes": "조명이 책장 뒤에 숨지 않고, 말풍선이 친구를 가리지 않아요.",
 
 
   "updateAvailableTitle": "새 버전이 있어요",

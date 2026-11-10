@@ -13,6 +13,7 @@ import '../services/app_telemetry.dart';
 import '../services/app_update_service.dart';
 import '../services/app_version_service.dart';
 import '../services/native_ad_service.dart';
+import '../services/exit_native_ad_service.dart';
 import '../services/release_announcement_service.dart';
 import '../services/sobra_quick_entry.dart';
 import '../services/sobra_widget_sync.dart';
@@ -22,6 +23,7 @@ import '../widgets/gamification_ui.dart';
 import '../widgets/launch_gift_dialog.dart';
 import '../widgets/starter_friend.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/app_exit_guard.dart';
 import '../widgets/release_announcement.dart';
 import '../widgets/update_prompt.dart';
 import 'budget_screen.dart';
@@ -81,7 +83,9 @@ class AppShellScope extends InheritedWidget {
 }
 
 class AppShell extends StatefulWidget {
-  const AppShell({super.key});
+  const AppShell({super.key, this.exitAds});
+
+  final ExitNativeAds? exitAds;
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -632,35 +636,38 @@ class _AppShellState extends State<AppShell> {
     return AppShellScope(
       select: _select,
       current: _selected,
-      child: Scaffold(
-        backgroundColor: AppColors.paper,
-        body: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 520),
-            child: DecoratedBox(
-              decoration: const BoxDecoration(color: AppColors.surface),
-              child: Column(
-                children: [
-                  // Inicio only. The line is a small interruption on the
-                  // screen the app opens on, and would be a running one if it
-                  // sat above every tab.
-                  if (_selected == AppTab.home &&
-                      (_updates?.showBanner ?? false))
-                    UpdateBanner(
-                      onUpdate: () => unawaited(_openStoreFromBanner()),
-                      onDismiss: () => _updates?.hideBanner(),
+      child: AppExitGuard(
+        ads: widget.exitAds,
+        child: Scaffold(
+          backgroundColor: AppColors.paper,
+          body: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 520),
+              child: DecoratedBox(
+                decoration: const BoxDecoration(color: AppColors.surface),
+                child: Column(
+                  children: [
+                    // Inicio only. The line is a small interruption on the
+                    // screen the app opens on, and would be a running one if it
+                    // sat above every tab.
+                    if (_selected == AppTab.home &&
+                        (_updates?.showBanner ?? false))
+                      UpdateBanner(
+                        onUpdate: () => unawaited(_openStoreFromBanner()),
+                        onDismiss: () => _updates?.hideBanner(),
+                      ),
+                    Expanded(
+                      child: IndexedStack(
+                        index: _selected.index,
+                        children: screens,
+                      ),
                     ),
-                  Expanded(
-                    child: IndexedStack(
-                      index: _selected.index,
-                      children: screens,
+                    PixelBottomNavigation(
+                      selected: _selected,
+                      onSelected: _select,
                     ),
-                  ),
-                  PixelBottomNavigation(
-                    selected: _selected,
-                    onSelected: _select,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

@@ -1687,13 +1687,13 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get receiptBackupNote =>
-      'O backup e o CSV não incluem as fotos dos comprovantes.';
+      'O backup e os arquivos exportados não incluem fotos dos comprovantes.';
 
   @override
-  String get csvExportTooltip => 'Exportar para CSV';
+  String get csvExportTooltip => 'Exportar extrato';
 
   @override
-  String get settingsCsvExport => 'Exportar extrato (CSV)';
+  String get settingsCsvExport => 'Exportar extrato';
 
   @override
   String get settingsCsvExportValue => 'Compartilhar';
@@ -1704,6 +1704,52 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get csvExportFailed =>
       'Não conseguimos abrir o compartilhamento. Tente de novo.';
+
+  @override
+  String get exitAppTitle => 'Fechar o app?';
+
+  @override
+  String get exitAppBody => 'Até a próxima.';
+
+  @override
+  String get exitAppAction => 'Sair';
+
+  @override
+  String get startupTagline => 'Pequenos registros,\ngrandes passos.';
+
+  @override
+  String get startupLoading => 'Carregando…';
+
+  @override
+  String get startupFailed =>
+      'Não foi possível abrir o Sobrita.\nTente novamente.';
+
+  @override
+  String get exportFormatTitle => 'Escolher formato';
+
+  @override
+  String get exportAllHistory => 'Todo o histórico será exportado.';
+
+  @override
+  String get exportCsvTitle => 'CSV (.csv)';
+
+  @override
+  String get exportCsvDescription =>
+      'Para importar em outros apps. Os números dependem da configuração regional.';
+
+  @override
+  String get exportExcelTitle => 'Excel (.xlsx)';
+
+  @override
+  String get exportExcelDescription =>
+      'Pronto para calcular no Excel e no Google Sheets.';
+
+  @override
+  String get csvExportPreparing => 'Preparando…';
+
+  @override
+  String get releaseNote1018Export =>
+      'Exporte seu extrato em CSV ou Excel pelo Extrato ou pelo Meu Sobrita.';
 
   @override
   String get csvHeaderDate => 'Data';
@@ -2277,28 +2323,6 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get releaseNote1014Currency =>
       'Uma conta nova começa na moeda do seu país.';
-
-  @override
-  String get releaseNote1013Rewards =>
-      'Cada nível traz móveis novos, e alguns enfeites saem com um anúncio.';
-
-  @override
-  String get releaseNote1013Rooms =>
-      'As casas também se ganham: jardim e praia com um anúncio, montanha e jardim de inverno por nível.';
-
-  @override
-  String get releaseNote1013Kept => 'O que você já tinha continua seu.';
-
-  @override
-  String get releaseNote1013Home => 'A casa no Início muda com a hora do dia.';
-
-  @override
-  String get releaseNote1013Share =>
-      'Você pode indicar o Sobrita a um amigo em Meu Sobrita ou ao fechar um ciclo em que sobrou dinheiro.';
-
-  @override
-  String get releaseNote1013Fixes =>
-      'O abajur não se esconde mais atrás da estante, e o balão não cobre mais seu companheiro.';
 
   @override
   String get updateAvailableTitle => 'Tem versão nova';

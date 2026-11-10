@@ -523,12 +523,26 @@
   "receiptClose": "Close",
   "receiptMissing": "The photo is no longer on this device.",
   "receiptFailed": "The photo could not be saved.",
-  "receiptBackupNote": "The backup and the CSV do not include receipt photos.",
-  "csvExportTooltip": "Export to CSV",
-  "settingsCsvExport": "Export activity (CSV)",
+  "receiptBackupNote": "Backups and exports do not include receipt photos.",
+  "csvExportTooltip": "Export activity",
+  "settingsCsvExport": "Export activity",
   "settingsCsvExportValue": "Share",
   "csvExportEmpty": "There's no activity to export yet.",
   "csvExportFailed": "We couldn't open the share sheet. Please try again.",
+  "exitAppTitle": "Close the app?",
+  "exitAppBody": "See you next time.",
+  "exitAppAction": "Exit",
+  "startupTagline": "Little entries,\nsteady progress.",
+  "startupLoading": "Loading…",
+  "startupFailed": "We couldn’t open Sobrita.\nPlease try again.",
+  "exportFormatTitle": "Choose a format",
+  "exportAllHistory": "Exports your entire history.",
+  "exportCsvTitle": "CSV (.csv)",
+  "exportCsvDescription": "For importing into other apps. Number recognition depends on regional settings.",
+  "exportExcelTitle": "Excel (.xlsx)",
+  "exportExcelDescription": "Ready for calculations in Excel and Google Sheets.",
+  "csvExportPreparing": "Preparing…",
+  "releaseNote1018Export": "Export your activity to CSV or Excel from Activity or My Sobrita.",
   "csvHeaderDate": "Date",
   "csvHeaderTime": "Time",
   "csvHeaderType": "Type",
@@ -708,17 +722,10 @@
 
   "releaseNote1014Currency": "A new ledger starts in your country's currency.",
 
-  "releaseNote1013Rewards": "Each level brings new furniture, and some decorations take one ad.",
 
-  "releaseNote1013Rooms": "Houses are earned too: garden and beach for one ad, mountain and conservatory by level.",
 
-  "releaseNote1013Kept": "Everything you already had stays yours.",
 
-  "releaseNote1013Home": "The house on Home follows the time of day.",
 
-  "releaseNote1013Share": "You can tell a friend about Sobrita from My Sobrita, or when a cycle closes with money left over.",
-
-  "releaseNote1013Fixes": "The lamp no longer hides behind the bookcase, and the bubble no longer covers your companion.",
 
 
   "updateAvailableTitle": "There's a new version",

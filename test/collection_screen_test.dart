@@ -7,6 +7,7 @@ import 'package:sobra_app/data/catalog_preview_data.dart';
 import 'package:sobra_app/models/catalog_entry.dart';
 import 'package:sobra_app/models/room_design.dart';
 import 'package:sobra_app/screens/collection_screen.dart';
+import 'package:sobra_app/services/admob_consent_service.dart';
 import 'package:sobra_app/services/app_telemetry.dart';
 import 'package:sobra_app/services/rewarded_ad_service.dart';
 import 'package:sobra_app/state/sobra_store.dart';
@@ -57,6 +58,7 @@ void main() {
     WidgetTester tester,
     SobraStore store, {
     RewardedAds? ads,
+    AdMobConsentController? consent,
     CollectionOrigin origin = CollectionOrigin.settings,
     String? initialEntryId,
     CatalogPriceSource prices = const PreviewCatalogPriceSource(),
@@ -80,6 +82,9 @@ void main() {
       ),
     );
     if (ads != null) app = RewardedAdScope(ads: ads, child: app);
+    if (consent != null) {
+      app = AdMobConsentScope(consent: consent, child: app);
+    }
     await tester.pumpWidget(app);
     await tester.pumpAndSettle();
   }
@@ -712,6 +717,30 @@ void main() {
     expect(ads.isReady, isTrue);
   });
 
+  testWidgets('collection waits for consent and preloads only once', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    final port = FakeRewardedAdPort()..fills = false;
+    final ads = RewardedAds(port: port, store: store);
+    final consent = _DelayedConsent();
+    await pump(tester, store, ads: ads, consent: consent);
+    expect(port.loads, 0);
+
+    consent.allow();
+    await tester.pumpAndSettle();
+    expect(port.loads, 1);
+
+    consent.allow();
+    await tester.pumpAndSettle();
+    expect(port.loads, 1);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    consent.dispose();
+    ads.dispose();
+    store.dispose();
+  });
+
   // The real rules still close the button. Only an empty network stays open.
   testWidgets('a rule-blocked card still refuses the tap', (tester) async {
     final store = await loadCappedStore();
@@ -778,6 +807,18 @@ void main() {
       ]),
     );
   });
+}
+
+class _DelayedConsent extends AdMobConsentController {
+  bool _allowed = false;
+
+  @override
+  bool get canRequestAds => _allowed;
+
+  void allow() {
+    _allowed = true;
+    notifyListeners();
+  }
 }
 
 /// A network whose fetch can be held open, so a test can look at the screen

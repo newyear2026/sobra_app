@@ -493,12 +493,26 @@
   "receiptClose": "Fermer",
   "receiptMissing": "La photo n’est plus sur cet appareil.",
   "receiptFailed": "Impossible d’enregistrer la photo.",
-  "receiptBackupNote": "La sauvegarde et le CSV n’incluent pas les photos des tickets.",
-  "csvExportTooltip": "Exporter en CSV",
-  "settingsCsvExport": "Exporter l’activité (CSV)",
+  "receiptBackupNote": "Les sauvegardes et les exports n’incluent pas les photos des tickets.",
+  "csvExportTooltip": "Exporter l’activité",
+  "settingsCsvExport": "Exporter l’activité",
   "settingsCsvExportValue": "Partager",
   "csvExportEmpty": "Rien à exporter pour l’instant.",
   "csvExportFailed": "Impossible d’ouvrir le partage. Réessaie.",
+  "exitAppTitle": "Fermer l’application ?",
+  "exitAppBody": "À bientôt.",
+  "exitAppAction": "Quitter",
+  "startupTagline": "De petites notes,\nde grands progrès.",
+  "startupLoading": "Chargement…",
+  "startupFailed": "Impossible d’ouvrir Sobrita.\nVeuillez réessayer.",
+  "exportFormatTitle": "Choisir un format",
+  "exportAllHistory": "Tout l’historique sera exporté.",
+  "exportCsvTitle": "CSV (.csv)",
+  "exportCsvDescription": "Pour importer dans d’autres applis. Les nombres dépendent des paramètres régionaux.",
+  "exportExcelTitle": "Excel (.xlsx)",
+  "exportExcelDescription": "Prêt pour les calculs dans Excel et Google Sheets.",
+  "csvExportPreparing": "Préparation…",
+  "releaseNote1018Export": "Exporte ton activité en CSV ou Excel depuis Activité ou Mon Sobrita.",
   "csvHeaderDate": "Date",
   "csvHeaderTime": "Heure",
   "csvHeaderType": "Type",
@@ -675,17 +689,10 @@
 
   "releaseNote1014Currency": "Un nouveau carnet démarre dans la monnaie de votre pays.",
 
-  "releaseNote1013Rewards": "Chaque niveau apporte de nouveaux meubles, et certaines décorations s'obtiennent avec une pub.",
 
-  "releaseNote1013Rooms": "Les maisons se gagnent aussi : jardin et plage avec une pub, chalet et véranda par niveau.",
 
-  "releaseNote1013Kept": "Ce que vous aviez déjà reste à vous.",
 
-  "releaseNote1013Home": "La maison sur l'accueil suit l'heure du jour.",
 
-  "releaseNote1013Share": "Recommandez Sobrita depuis Mon Sobrita ou en fin de cycle avec un reste.",
-
-  "releaseNote1013Fixes": "La lampe ne se cache plus derrière la bibliothèque, et la bulle ne cache plus votre compagnon.",
 
 
   "updateAvailableTitle": "Une nouvelle version est là",

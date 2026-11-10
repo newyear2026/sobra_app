@@ -2864,19 +2864,19 @@ abstract class AppLocalizations {
   /// No description provided for @receiptBackupNote.
   ///
   /// In es, this message translates to:
-  /// **'La copia y el CSV no incluyen las fotos de tickets.'**
+  /// **'La copia y las exportaciones no incluyen las fotos de tickets.'**
   String get receiptBackupNote;
 
   /// No description provided for @csvExportTooltip.
   ///
   /// In es, this message translates to:
-  /// **'Exportar a CSV'**
+  /// **'Exportar movimientos'**
   String get csvExportTooltip;
 
   /// No description provided for @settingsCsvExport.
   ///
   /// In es, this message translates to:
-  /// **'Exportar movimientos (CSV)'**
+  /// **'Exportar movimientos'**
   String get settingsCsvExport;
 
   /// No description provided for @settingsCsvExportValue.
@@ -2896,6 +2896,90 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se pudo abrir el menú para compartir. Vuelve a intentarlo.'**
   String get csvExportFailed;
+
+  /// No description provided for @exitAppTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cerrar la app?'**
+  String get exitAppTitle;
+
+  /// No description provided for @exitAppBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Nos vemos pronto.'**
+  String get exitAppBody;
+
+  /// No description provided for @exitAppAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Salir'**
+  String get exitAppAction;
+
+  /// No description provided for @startupTagline.
+  ///
+  /// In es, this message translates to:
+  /// **'Pequeños registros,\ngrandes pasos.'**
+  String get startupTagline;
+
+  /// No description provided for @startupLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando…'**
+  String get startupLoading;
+
+  /// No description provided for @startupFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos abrir Sobrita.\nInténtalo de nuevo.'**
+  String get startupFailed;
+
+  /// No description provided for @exportFormatTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir formato'**
+  String get exportFormatTitle;
+
+  /// No description provided for @exportAllHistory.
+  ///
+  /// In es, this message translates to:
+  /// **'Se exporta todo el historial.'**
+  String get exportAllHistory;
+
+  /// No description provided for @exportCsvTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'CSV (.csv)'**
+  String get exportCsvTitle;
+
+  /// No description provided for @exportCsvDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Para importar a otras apps. Los números dependen de la configuración regional.'**
+  String get exportCsvDescription;
+
+  /// No description provided for @exportExcelTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Excel (.xlsx)'**
+  String get exportExcelTitle;
+
+  /// No description provided for @exportExcelDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo para calcular en Excel y Google Sheets.'**
+  String get exportExcelDescription;
+
+  /// No description provided for @csvExportPreparing.
+  ///
+  /// In es, this message translates to:
+  /// **'Preparando…'**
+  String get csvExportPreparing;
+
+  /// No description provided for @releaseNote1018Export.
+  ///
+  /// In es, this message translates to:
+  /// **'Exporta tus movimientos a CSV o Excel desde Movimientos o Mi Sobrita.'**
+  String get releaseNote1018Export;
 
   /// No description provided for @csvHeaderDate.
   ///
@@ -3855,42 +3939,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Una cuenta nueva empieza en la moneda de tu país.'**
   String get releaseNote1014Currency;
-
-  /// No description provided for @releaseNote1013Rewards.
-  ///
-  /// In es, this message translates to:
-  /// **'Cada nivel trae muebles nuevos, y algunos adornos se ganan con un anuncio.'**
-  String get releaseNote1013Rewards;
-
-  /// No description provided for @releaseNote1013Rooms.
-  ///
-  /// In es, this message translates to:
-  /// **'Las casas también se ganan: jardín y playa con un anuncio, montaña e invernadero por nivel.'**
-  String get releaseNote1013Rooms;
-
-  /// No description provided for @releaseNote1013Kept.
-  ///
-  /// In es, this message translates to:
-  /// **'Lo que ya tenías se queda contigo.'**
-  String get releaseNote1013Kept;
-
-  /// No description provided for @releaseNote1013Home.
-  ///
-  /// In es, this message translates to:
-  /// **'La casa en Inicio cambia con la hora del día.'**
-  String get releaseNote1013Home;
-
-  /// No description provided for @releaseNote1013Share.
-  ///
-  /// In es, this message translates to:
-  /// **'Puedes recomendar Sobrita a un amigo desde Mi Sobrita, o al cerrar un ciclo en el que te sobró.'**
-  String get releaseNote1013Share;
-
-  /// No description provided for @releaseNote1013Fixes.
-  ///
-  /// In es, this message translates to:
-  /// **'La lámpara ya no se esconde tras la estantería y el globo ya no tapa a tu compañero.'**
-  String get releaseNote1013Fixes;
 
   /// Heading of the dialog shown on launch when Google Play has a newer build waiting.
   ///

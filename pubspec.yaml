@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.17+29
+version: 1.0.18+30
 
 environment:
   sdk: ^3.11.1
@@ -75,6 +75,8 @@ dependencies:
   # The system share sheet behind "tell a friend": a line of text and Sobra's
   # Play link, nothing the user recorded.
   share_plus: ^13.3.1
+  # Typed XLSX cells preserve numeric amounts regardless of spreadsheet locale.
+  excel_community: ^2.6.2
 
 dev_dependencies:
   flutter_test:
@@ -150,6 +152,7 @@ flutter:
     - assets/costumes/autumn_2026/motion_v2/quokka/
     - assets/costumes/autumn_2026/motion_v2/maltese/
     - assets/login/
+    - assets/startup/
     - assets/pack/
     - assets/rooms/casa_clara/
     - assets/rooms/casa_clara/items/

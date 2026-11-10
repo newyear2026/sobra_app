@@ -4,17 +4,47 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.Bundle
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
+    private var startupSplash: StartupSplash? = null
+    private var exitNativeAds: ExitNativeAdFactory? = null
     private var widgetChannel: MethodChannel? = null
     private var pendingQuickEntryResult: MethodChannel.Result? = null
     private var pendingReminderPermission: MethodChannel.Result? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            startupSplash = StartupSplash(this).also { it.install() }
+        }
+        super.onCreate(savedInstanceState)
+    }
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.sobra.app/startup")
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "read" -> {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            startupSplash?.read(result) ?: result.success(null)
+                        } else {
+                            result.success(null)
+                        }
+                    }
+                    "release" -> {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            startupSplash?.release()
+                        }
+                        result.success(null)
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+        exitNativeAds = ExitNativeAdFactory(this, flutterEngine)
         widgetChannel = MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             WIDGET_CHANNEL,
@@ -142,6 +172,16 @@ class MainActivity : FlutterActivity() {
             }
         }
         SobraQuickEntryNotification.restore(this)
+    }
+
+    override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            startupSplash?.close()
+        }
+        startupSplash = null
+        exitNativeAds?.close(flutterEngine)
+        exitNativeAds = null
+        super.cleanUpFlutterEngine(flutterEngine)
     }
 
     override fun onNewIntent(intent: Intent) {
