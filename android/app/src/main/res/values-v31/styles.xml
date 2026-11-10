@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SobraAnimatedLaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@drawable/launch_background</item>
+        <item name="android:windowSplashScreenBackground">@color/sobra_launch_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/startup_cat_motion</item>
+        <item name="android:windowSplashScreenAnimationDuration">@integer/startup_cycle_duration</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@color/sobra_launch_background</item>
+        <item name="android:navigationBarColor">@color/sobra_launch_background</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+    <style name="LaunchTheme" parent="SobraAnimatedLaunchTheme" />
+</resources>

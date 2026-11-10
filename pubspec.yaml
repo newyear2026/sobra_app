@@ -65,6 +65,8 @@ dependencies:
   google_mobile_ads: ^9.1.0
   in_app_update: ^4.2.5
   url_launcher: ^6.3.2
+  # User-visible shopping pages for importing a product into a savings goal.
+  webview_flutter: ^4.14.1
   # Play's in-app review sheet, asked for once after a cycle that closed well.
   # The Ajustes row does not use it: Play may decline to show the sheet, and a
   # row the user tapped has to open something.
@@ -75,6 +77,8 @@ dependencies:
   # The system share sheet behind "tell a friend": a line of text and Sobra's
   # Play link, nothing the user recorded.
   share_plus: ^13.3.1
+  # Typed XLSX cells preserve numeric amounts regardless of spreadsheet locale.
+  excel_community: ^2.6.2
 
 dev_dependencies:
   flutter_test:
@@ -150,6 +154,7 @@ flutter:
     - assets/costumes/autumn_2026/motion_v2/quokka/
     - assets/costumes/autumn_2026/motion_v2/maltese/
     - assets/login/
+    - assets/startup/
     - assets/pack/
     - assets/rooms/casa_clara/
     - assets/rooms/casa_clara/items/

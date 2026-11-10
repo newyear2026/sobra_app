@@ -9,6 +9,24 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get exitAppTitle => '¿Cerrar la app?';
+
+  @override
+  String get exitAppBody => 'Nos vemos pronto.';
+
+  @override
+  String get exitAppAction => 'Salir';
+
+  @override
+  String get startupTagline => 'Pequeños registros,\ngrandes pasos.';
+
+  @override
+  String get startupLoading => 'Cargando…';
+
+  @override
+  String get startupFailed => 'No pudimos abrir Sobrita.\nInténtalo de nuevo.';
+
+  @override
   String get categoryFood => 'Comida';
 
   @override
@@ -1672,13 +1690,36 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get receiptBackupNote =>
-      'La copia y el CSV no incluyen las fotos de tickets.';
+      'La copia y las exportaciones no incluyen las fotos de tickets.';
 
   @override
-  String get csvExportTooltip => 'Exportar a CSV';
+  String get csvExportTooltip => 'Exportar movimientos';
 
   @override
-  String get settingsCsvExport => 'Exportar movimientos (CSV)';
+  String get exportFormatTitle => 'Elegir formato';
+
+  @override
+  String get exportAllHistory => 'Se exporta todo el historial.';
+
+  @override
+  String get exportCsvTitle => 'CSV (.csv)';
+
+  @override
+  String get exportCsvDescription =>
+      'Para importar a otras apps. Los números dependen de la configuración regional.';
+
+  @override
+  String get exportExcelTitle => 'Excel (.xlsx)';
+
+  @override
+  String get exportExcelDescription =>
+      'Listo para calcular en Excel y Google Sheets.';
+
+  @override
+  String get csvExportPreparing => 'Preparando…';
+
+  @override
+  String get settingsCsvExport => 'Exportar movimientos';
 
   @override
   String get settingsCsvExportValue => 'Compartir';
@@ -2855,4 +2896,394 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get costumeLittleGhost => 'Fantasmita';
+
+  @override
+  String get goalTitle => 'Mi meta';
+
+  @override
+  String get goalEmptyPrompt => '¿Para qué te gustaría ahorrar?';
+
+  @override
+  String get goalCreate => 'Crear meta';
+
+  @override
+  String get goalEdit => 'Editar meta';
+
+  @override
+  String get goalNameLabel => 'Nombre de la meta';
+
+  @override
+  String get goalNameHint => 'Ej. Unos tenis nuevos';
+
+  @override
+  String get goalNameRequired => 'Escribe un nombre de hasta 60 caracteres.';
+
+  @override
+  String get goalTargetAmount => 'Monto de la meta';
+
+  @override
+  String get goalTargetAmountInvalid => 'Escribe un monto mayor que cero.';
+
+  @override
+  String get goalStartingAmount => 'Lo que ya tienes ahorrado';
+
+  @override
+  String get goalStartingHint =>
+      'Incluye solo dinero que ya apartaste de tus gastos diarios.';
+
+  @override
+  String get goalStartingAmountInvalid => 'Escribe cero o un monto positivo.';
+
+  @override
+  String get goalOptionalPlan => 'Plan de ahorro (opcional)';
+
+  @override
+  String get goalTargetDate => 'Fecha de la meta';
+
+  @override
+  String get goalDateUnset => 'Elegir después';
+
+  @override
+  String get goalDateClear => 'Quitar fecha';
+
+  @override
+  String get goalProductLink => 'Enlace del producto';
+
+  @override
+  String get goalProductLinkHint => 'Pega el enlace de un producto';
+
+  @override
+  String get goalPasteLink => 'Pegar enlace';
+
+  @override
+  String get goalOpenProduct => 'Ver producto';
+
+  @override
+  String get goalImportFromLink => 'Traer datos del enlace';
+
+  @override
+  String get goalManualEntry => 'Escribir a mano';
+
+  @override
+  String get goalPhotoRemove => 'Quitar foto';
+
+  @override
+  String get goalPriceReview =>
+      'Revisa la foto y el monto que trajimos. Puedes incluir el envío y ajustar el monto. El precio no se actualiza automáticamente.';
+
+  @override
+  String goalCurrencyMismatch(String currency) {
+    return 'El precio del producto está en $currency. Escribe el monto de tu meta en la moneda de la app.';
+  }
+
+  @override
+  String get goalSaved => 'Meta guardada';
+
+  @override
+  String get goalSave => 'Guardar meta';
+
+  @override
+  String get goalDelete => 'Eliminar meta';
+
+  @override
+  String get goalDeleteTitle => '¿Eliminar esta meta?';
+
+  @override
+  String get goalDeleteBody =>
+      'Solo se elimina la meta. Tus registros de ingresos y gastos se conservan.';
+
+  @override
+  String goalRemaining(String amount) {
+    return 'Te faltan $amount';
+  }
+
+  @override
+  String get goalReached => '¡Meta alcanzada!';
+
+  @override
+  String get goalRecordSavings => 'Registrar ahorro';
+
+  @override
+  String get goalProgressExplanation =>
+      'Se suman el monto inicial, los ingresos registrados como ahorro después de crear la meta y los montos que confirmes al cerrar un ciclo. No se transfiere dinero.';
+
+  @override
+  String get goalBrowserTitle => 'Revisar producto';
+
+  @override
+  String get goalBrowserInstructions =>
+      'Abre el producto y toca el botón de abajo. Si la tienda pide una verificación, complétala tú.';
+
+  @override
+  String get goalBrowserRead => 'Leer datos del producto';
+
+  @override
+  String get goalBrowserManual => 'Continuar a mano';
+
+  @override
+  String get goalBrowserLoading => 'Cargando la tienda…';
+
+  @override
+  String get goalBrowserLoadFailed =>
+      'No pudimos abrir la página. Puedes volver a intentar o escribir los datos a mano.';
+
+  @override
+  String get goalBrowserRetry => 'Volver a intentar';
+
+  @override
+  String get goalBrowserVerification =>
+      'La tienda pide una verificación. Complétala tú y vuelve a leer los datos cuando aparezca el producto.';
+
+  @override
+  String get goalBrowserNoProduct =>
+      'No encontramos datos claros del producto. Puedes volver a intentar desde su página o escribirlos a mano.';
+
+  @override
+  String get goalBrowserUnsupported =>
+      'Este dispositivo no permite abrir la tienda dentro de la app. Puedes escribir los datos a mano.';
+
+  @override
+  String get goalInvalidLink =>
+      'Pega un enlace válido de un producto que empiece con https://.';
+
+  @override
+  String get goalChooseType => '¿Qué meta quieres crear?';
+
+  @override
+  String get goalAmountType => 'Ahorrar una cantidad';
+
+  @override
+  String get goalAmountTypeDescription =>
+      'Junta dinero para emergencias, un viaje o lo que tú elijas.';
+
+  @override
+  String get goalProductType => 'Algo que quiero comprar';
+
+  @override
+  String get goalProductTypeDescription =>
+      'Trae la foto y el precio desde el enlace del producto.';
+
+  @override
+  String get goalChangeType => 'Cambiar tipo de meta';
+
+  @override
+  String get goalAmountNameHint =>
+      'Ej. Fondo de emergencia, ahorro para un viaje';
+
+  @override
+  String get goalAmountIntro =>
+      'Solo escribe un nombre y el monto de tu meta, sin foto ni enlace.';
+
+  @override
+  String get goalCyclePopupTitle => 'Cierre de este ciclo';
+
+  @override
+  String goalCycleLeftover(String amount) {
+    return '¡Te sobraron $amount!';
+  }
+
+  @override
+  String goalCycleApplyTo(String name) {
+    return '¿Los guardamos para «$name»?';
+  }
+
+  @override
+  String get goalCurrentAmount => 'Llevas ahorrado';
+
+  @override
+  String get goalAfterAmount => 'Después de guardar';
+
+  @override
+  String goalAllocateAll(String amount) {
+    return 'Guardar todo: $amount';
+  }
+
+  @override
+  String goalAllocateAmount(String amount) {
+    return 'Sumar $amount a mi meta';
+  }
+
+  @override
+  String get goalChangeAmount => 'Cambiar monto';
+
+  @override
+  String get goalLater => 'Más tarde';
+
+  @override
+  String get goalAllocationNotice =>
+      'Se registra en tu meta. No se transfiere dinero.';
+
+  @override
+  String get goalNoGoalInvitation =>
+      '¿Empezamos tu primera meta con este dinero?';
+
+  @override
+  String get goalNoGoalExamples =>
+      'Emergencias · Viajes · Algo que quieres comprar';
+
+  @override
+  String get goalCreateAndAllocate => 'Crear meta y ahorrar';
+
+  @override
+  String get goalCreateThenConfirm =>
+      'Después de crear la meta, confirma cuánto quieres guardar.';
+
+  @override
+  String get goalAllocationAmount => 'Monto que quieres guardar';
+
+  @override
+  String goalAllocationMaximum(String amount) {
+    return 'Puedes registrar hasta $amount';
+  }
+
+  @override
+  String goalAllocationInvalid(String amount) {
+    return 'Ingresa un monto mayor que cero y no mayor que $amount.';
+  }
+
+  @override
+  String goalAllocationSaved(String amount) {
+    return 'Sumaste $amount a tu meta';
+  }
+
+  @override
+  String get goalAllocateFromCycle => 'Guardar para mi meta';
+
+  @override
+  String goalCycleAllocated(String amount) {
+    return 'Registrado en tu meta: $amount';
+  }
+
+  @override
+  String get goalCompleted => 'Completada';
+
+  @override
+  String get goalCompletionTitle => 'Meta cumplida';
+
+  @override
+  String goalCompletionHeadline(String name) {
+    return '¡Cumpliste tu meta «$name»!';
+  }
+
+  @override
+  String get goalCompletionBody => 'Lo lograste, ahorro a ahorro.';
+
+  @override
+  String get goalNewGoal => 'Crear nueva meta';
+
+  @override
+  String get goalCompletionKept => 'La meta cumplida queda en tu historial.';
+
+  @override
+  String get goalCompletedHistory => 'Metas cumplidas';
+
+  @override
+  String goalCompletedOn(String date) {
+    return 'Cumplida el $date';
+  }
+
+  @override
+  String get goalNoCompletedHistory => 'Todavía no has cumplido ninguna meta.';
+
+  @override
+  String get goalCycleUnavailable =>
+      'No queda dinero de este ciclo para guardar.';
+
+  @override
+  String get goalNextGoalInvitation =>
+      '¿Empezamos tu próxima meta con lo que sobró?';
+
+  @override
+  String goalCardDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days días',
+      one: '1 día',
+      zero: 'Hoy',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String goalCardUntil(String date, String amount) {
+    return 'Hasta el $date: faltan $amount';
+  }
+
+  @override
+  String goalCardDatePassed(String date, String amount) {
+    return 'Ya pasó el $date · faltan $amount';
+  }
+
+  @override
+  String goalCardPerCycle(String date, String amount) {
+    return 'Hasta el $date: $amount por ciclo';
+  }
+
+  @override
+  String get goalPurchaseAction => 'Ya lo compré';
+
+  @override
+  String get goalPurchaseTitle => 'Lo compré con mi meta';
+
+  @override
+  String get goalPurchaseAmount => 'Lo que pagaste';
+
+  @override
+  String goalPurchaseAmountHelper(String amount) {
+    return 'Hasta $amount, lo que juntaste';
+  }
+
+  @override
+  String get goalPurchaseRefreshPrice => 'Leer el precio de hoy en el enlace';
+
+  @override
+  String goalPurchasePriceRead(String amount) {
+    return 'Precio de hoy: $amount';
+  }
+
+  @override
+  String get goalPurchasePriceMissing =>
+      'No encontramos el precio. Escríbelo tú.';
+
+  @override
+  String get goalPurchaseSaved => 'Lo que juntaste';
+
+  @override
+  String get goalPurchaseLeft => 'Te sobra';
+
+  @override
+  String get goalPurchaseOutsideBudget =>
+      'Lo pagas con lo que juntaste: lo que te queda hoy y el presupuesto del ciclo no cambian.';
+
+  @override
+  String goalPurchaseTooMuch(String amount) {
+    return 'Juntaste $amount. Lo que pase de eso regístralo como un gasto normal.';
+  }
+
+  @override
+  String get goalPurchaseConfirm => 'Registrar y cerrar la meta';
+
+  @override
+  String get goalPurchaseConfirmNext =>
+      'Registrar y empezar otra meta con lo que sobra';
+
+  @override
+  String goalPurchaseRecorded(String name) {
+    return 'Compra registrada: $name';
+  }
+
+  @override
+  String get goalPurchaseBadge => 'Meta';
+
+  @override
+  String get csvTypeGoalPurchase => 'Compra con meta';
+
+  @override
+  String goalCompletedPurchased(String amount) {
+    return 'Comprado por $amount';
+  }
+
+  @override
+  String get goalCycleDetails => 'Ver el cierre completo';
 }

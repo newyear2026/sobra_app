@@ -179,9 +179,64 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
+    // A green cycle opens the goal popup over Inicio. It still announces
+    // the cycle's XP, and links to the full summary. Inicio's room keeps
+    // animating, so the test steps time instead of settling.
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(
+      find.byKey(const ValueKey('goal-allocation-dialog')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const ValueKey('goal-allocation-xp')), findsOneWidget);
+    expect(find.text('+130 XP'), findsOneWidget);
+    expect(find.byType(SettlementScreen), findsNothing);
+
+    final details = find.byKey(const ValueKey('goal-allocation-details'));
+    await tester.ensureVisible(details);
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.tap(details);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(find.byKey(const ValueKey('goal-allocation-dialog')), findsNothing);
     expect(find.byType(SettlementScreen), findsOneWidget);
     expect(find.text('Ciclo cerrado'), findsOneWidget);
     expect(find.text('+130 XP'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a green cycle with nothing left to assign shows the summary', (
+    tester,
+  ) async {
+    useSpanishDevice(tester);
+    usePhoneSize(tester);
+    var now = DateTime(2026, 9, 1, 9);
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load(now: () => now);
+    await store.configureOnboarding(
+      budgetCentavos: 700000,
+      schedule: PaySchedule.irregular(
+        planningHorizonDays: 7,
+        irregularCycleStart: DateTime(2026, 9, 1),
+      ),
+    );
+    await store.completeOnboarding();
+    now = DateTime(2026, 9, 8, 8);
+    await store.settleCycles();
+    // The popup was already answered (say, from Movimientos) before the
+    // XP notice was shown: the close must not pass in silence.
+    await store.acknowledgeSavingsGoalCyclePrompt(
+      store.cycleRecords.single.start,
+    );
+    expect(store.pendingSavingsGoalCycle, isNull);
+    expect(store.pendingXpNotice, isNotNull);
+
+    await tester.pumpWidget(SobraApp(store: store));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.byType(SettlementScreen), findsOneWidget);
+    expect(find.text('+130 XP'), findsOneWidget);
+    expect(find.byKey(const ValueKey('goal-allocation-dialog')), findsNothing);
     expect(tester.takeException(), isNull);
   });
 }

@@ -22,11 +22,13 @@ class RegisterScreen extends StatefulWidget {
     super.key,
     required this.onSaved,
     this.initialMode = RegisterMode.expense,
+    this.initialIncomeAllocation = IncomeAllocation.cycle,
     this.focusAmountOnOpen = false,
   });
 
   final VoidCallback onSaved;
   final RegisterMode initialMode;
+  final IncomeAllocation initialIncomeAllocation;
   final bool focusAmountOnOpen;
 
   @override
@@ -51,6 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void initState() {
     super.initState();
     _mode = widget.initialMode;
+    _incomeAllocation = widget.initialIncomeAllocation;
     if (widget.focusAmountOnOpen) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) _amountFocusNode.requestFocus();

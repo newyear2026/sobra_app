@@ -128,6 +128,13 @@ String movementSubtitle(AppLocalizations l10n, MoneyMovement movement) {
         expense.paymentMethod.label(l10n),
       );
     }
+    // Paid with a savings goal's money, which is why the budget ignores it.
+    if (expense.isGoalPurchase) {
+      return l10n.movementSubtitle(
+        l10n.goalPurchaseBadge,
+        expense.paymentMethod.label(l10n),
+      );
+    }
     // Without a note the headline is already the category, and repeating it
     // here gives a row that reads "Comida / Comida · Efectivo". The line
     // drops to what the headline is not saying.

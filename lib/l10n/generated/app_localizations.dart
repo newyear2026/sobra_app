@@ -108,6 +108,42 @@ abstract class AppLocalizations {
     Locale('pt'),
   ];
 
+  /// No description provided for @exitAppTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cerrar la app?'**
+  String get exitAppTitle;
+
+  /// No description provided for @exitAppBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Nos vemos pronto.'**
+  String get exitAppBody;
+
+  /// No description provided for @exitAppAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Salir'**
+  String get exitAppAction;
+
+  /// No description provided for @startupTagline.
+  ///
+  /// In es, this message translates to:
+  /// **'Pequeños registros,\ngrandes pasos.'**
+  String get startupTagline;
+
+  /// No description provided for @startupLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando…'**
+  String get startupLoading;
+
+  /// No description provided for @startupFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos abrir Sobrita.\nInténtalo de nuevo.'**
+  String get startupFailed;
+
   /// No description provided for @categoryFood.
   ///
   /// In es, this message translates to:
@@ -2864,19 +2900,61 @@ abstract class AppLocalizations {
   /// No description provided for @receiptBackupNote.
   ///
   /// In es, this message translates to:
-  /// **'La copia y el CSV no incluyen las fotos de tickets.'**
+  /// **'La copia y las exportaciones no incluyen las fotos de tickets.'**
   String get receiptBackupNote;
 
   /// No description provided for @csvExportTooltip.
   ///
   /// In es, this message translates to:
-  /// **'Exportar a CSV'**
+  /// **'Exportar movimientos'**
   String get csvExportTooltip;
+
+  /// No description provided for @exportFormatTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir formato'**
+  String get exportFormatTitle;
+
+  /// No description provided for @exportAllHistory.
+  ///
+  /// In es, this message translates to:
+  /// **'Se exporta todo el historial.'**
+  String get exportAllHistory;
+
+  /// No description provided for @exportCsvTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'CSV (.csv)'**
+  String get exportCsvTitle;
+
+  /// No description provided for @exportCsvDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Para importar a otras apps. Los números dependen de la configuración regional.'**
+  String get exportCsvDescription;
+
+  /// No description provided for @exportExcelTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Excel (.xlsx)'**
+  String get exportExcelTitle;
+
+  /// No description provided for @exportExcelDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo para calcular en Excel y Google Sheets.'**
+  String get exportExcelDescription;
+
+  /// No description provided for @csvExportPreparing.
+  ///
+  /// In es, this message translates to:
+  /// **'Preparando…'**
+  String get csvExportPreparing;
 
   /// No description provided for @settingsCsvExport.
   ///
   /// In es, this message translates to:
-  /// **'Exportar movimientos (CSV)'**
+  /// **'Exportar movimientos'**
   String get settingsCsvExport;
 
   /// No description provided for @settingsCsvExportValue.
@@ -4863,6 +4941,642 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Fantasmita'**
   String get costumeLittleGhost;
+
+  /// No description provided for @goalTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi meta'**
+  String get goalTitle;
+
+  /// No description provided for @goalEmptyPrompt.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Para qué te gustaría ahorrar?'**
+  String get goalEmptyPrompt;
+
+  /// No description provided for @goalCreate.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear meta'**
+  String get goalCreate;
+
+  /// No description provided for @goalEdit.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar meta'**
+  String get goalEdit;
+
+  /// No description provided for @goalNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre de la meta'**
+  String get goalNameLabel;
+
+  /// No description provided for @goalNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Unos tenis nuevos'**
+  String get goalNameHint;
+
+  /// No description provided for @goalNameRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un nombre de hasta 60 caracteres.'**
+  String get goalNameRequired;
+
+  /// No description provided for @goalTargetAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto de la meta'**
+  String get goalTargetAmount;
+
+  /// No description provided for @goalTargetAmountInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un monto mayor que cero.'**
+  String get goalTargetAmountInvalid;
+
+  /// No description provided for @goalStartingAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que ya tienes ahorrado'**
+  String get goalStartingAmount;
+
+  /// No description provided for @goalStartingHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Incluye solo dinero que ya apartaste de tus gastos diarios.'**
+  String get goalStartingHint;
+
+  /// No description provided for @goalStartingAmountInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe cero o un monto positivo.'**
+  String get goalStartingAmountInvalid;
+
+  /// No description provided for @goalOptionalPlan.
+  ///
+  /// In es, this message translates to:
+  /// **'Plan de ahorro (opcional)'**
+  String get goalOptionalPlan;
+
+  /// No description provided for @goalTargetDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de la meta'**
+  String get goalTargetDate;
+
+  /// No description provided for @goalDateUnset.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir después'**
+  String get goalDateUnset;
+
+  /// No description provided for @goalDateClear.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar fecha'**
+  String get goalDateClear;
+
+  /// No description provided for @goalProductLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Enlace del producto'**
+  String get goalProductLink;
+
+  /// No description provided for @goalProductLinkHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Pega el enlace de un producto'**
+  String get goalProductLinkHint;
+
+  /// No description provided for @goalPasteLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Pegar enlace'**
+  String get goalPasteLink;
+
+  /// No description provided for @goalOpenProduct.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver producto'**
+  String get goalOpenProduct;
+
+  /// No description provided for @goalImportFromLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Traer datos del enlace'**
+  String get goalImportFromLink;
+
+  /// No description provided for @goalManualEntry.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribir a mano'**
+  String get goalManualEntry;
+
+  /// No description provided for @goalPhotoRemove.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar foto'**
+  String get goalPhotoRemove;
+
+  /// No description provided for @goalPriceReview.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa la foto y el monto que trajimos. Puedes incluir el envío y ajustar el monto. El precio no se actualiza automáticamente.'**
+  String get goalPriceReview;
+
+  /// No description provided for @goalCurrencyMismatch.
+  ///
+  /// In es, this message translates to:
+  /// **'El precio del producto está en {currency}. Escribe el monto de tu meta en la moneda de la app.'**
+  String goalCurrencyMismatch(String currency);
+
+  /// No description provided for @goalSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Meta guardada'**
+  String get goalSaved;
+
+  /// No description provided for @goalSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar meta'**
+  String get goalSave;
+
+  /// No description provided for @goalDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar meta'**
+  String get goalDelete;
+
+  /// No description provided for @goalDeleteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar esta meta?'**
+  String get goalDeleteTitle;
+
+  /// No description provided for @goalDeleteBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo se elimina la meta. Tus registros de ingresos y gastos se conservan.'**
+  String get goalDeleteBody;
+
+  /// No description provided for @goalRemaining.
+  ///
+  /// In es, this message translates to:
+  /// **'Te faltan {amount}'**
+  String goalRemaining(String amount);
+
+  /// No description provided for @goalReached.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Meta alcanzada!'**
+  String get goalReached;
+
+  /// No description provided for @goalRecordSavings.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrar ahorro'**
+  String get goalRecordSavings;
+
+  /// No description provided for @goalProgressExplanation.
+  ///
+  /// In es, this message translates to:
+  /// **'Se suman el monto inicial, los ingresos registrados como ahorro después de crear la meta y los montos que confirmes al cerrar un ciclo. No se transfiere dinero.'**
+  String get goalProgressExplanation;
+
+  /// No description provided for @goalBrowserTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisar producto'**
+  String get goalBrowserTitle;
+
+  /// No description provided for @goalBrowserInstructions.
+  ///
+  /// In es, this message translates to:
+  /// **'Abre el producto y toca el botón de abajo. Si la tienda pide una verificación, complétala tú.'**
+  String get goalBrowserInstructions;
+
+  /// No description provided for @goalBrowserRead.
+  ///
+  /// In es, this message translates to:
+  /// **'Leer datos del producto'**
+  String get goalBrowserRead;
+
+  /// No description provided for @goalBrowserManual.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar a mano'**
+  String get goalBrowserManual;
+
+  /// No description provided for @goalBrowserLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando la tienda…'**
+  String get goalBrowserLoading;
+
+  /// No description provided for @goalBrowserLoadFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos abrir la página. Puedes volver a intentar o escribir los datos a mano.'**
+  String get goalBrowserLoadFailed;
+
+  /// No description provided for @goalBrowserRetry.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a intentar'**
+  String get goalBrowserRetry;
+
+  /// No description provided for @goalBrowserVerification.
+  ///
+  /// In es, this message translates to:
+  /// **'La tienda pide una verificación. Complétala tú y vuelve a leer los datos cuando aparezca el producto.'**
+  String get goalBrowserVerification;
+
+  /// No description provided for @goalBrowserNoProduct.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos datos claros del producto. Puedes volver a intentar desde su página o escribirlos a mano.'**
+  String get goalBrowserNoProduct;
+
+  /// No description provided for @goalBrowserUnsupported.
+  ///
+  /// In es, this message translates to:
+  /// **'Este dispositivo no permite abrir la tienda dentro de la app. Puedes escribir los datos a mano.'**
+  String get goalBrowserUnsupported;
+
+  /// No description provided for @goalInvalidLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Pega un enlace válido de un producto que empiece con https://.'**
+  String get goalInvalidLink;
+
+  /// No description provided for @goalChooseType.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué meta quieres crear?'**
+  String get goalChooseType;
+
+  /// No description provided for @goalAmountType.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahorrar una cantidad'**
+  String get goalAmountType;
+
+  /// No description provided for @goalAmountTypeDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Junta dinero para emergencias, un viaje o lo que tú elijas.'**
+  String get goalAmountTypeDescription;
+
+  /// No description provided for @goalProductType.
+  ///
+  /// In es, this message translates to:
+  /// **'Algo que quiero comprar'**
+  String get goalProductType;
+
+  /// No description provided for @goalProductTypeDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Trae la foto y el precio desde el enlace del producto.'**
+  String get goalProductTypeDescription;
+
+  /// No description provided for @goalChangeType.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar tipo de meta'**
+  String get goalChangeType;
+
+  /// No description provided for @goalAmountNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Fondo de emergencia, ahorro para un viaje'**
+  String get goalAmountNameHint;
+
+  /// No description provided for @goalAmountIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo escribe un nombre y el monto de tu meta, sin foto ni enlace.'**
+  String get goalAmountIntro;
+
+  /// No description provided for @goalCyclePopupTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cierre de este ciclo'**
+  String get goalCyclePopupTitle;
+
+  /// No description provided for @goalCycleLeftover.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Te sobraron {amount}!'**
+  String goalCycleLeftover(String amount);
+
+  /// No description provided for @goalCycleApplyTo.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Los guardamos para «{name}»?'**
+  String goalCycleApplyTo(String name);
+
+  /// No description provided for @goalCurrentAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Llevas ahorrado'**
+  String get goalCurrentAmount;
+
+  /// No description provided for @goalAfterAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Después de guardar'**
+  String get goalAfterAmount;
+
+  /// No description provided for @goalAllocateAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar todo: {amount}'**
+  String goalAllocateAll(String amount);
+
+  /// No description provided for @goalAllocateAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Sumar {amount} a mi meta'**
+  String goalAllocateAmount(String amount);
+
+  /// No description provided for @goalChangeAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar monto'**
+  String get goalChangeAmount;
+
+  /// No description provided for @goalLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Más tarde'**
+  String get goalLater;
+
+  /// No description provided for @goalAllocationNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'Se registra en tu meta. No se transfiere dinero.'**
+  String get goalAllocationNotice;
+
+  /// No description provided for @goalNoGoalInvitation.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Empezamos tu primera meta con este dinero?'**
+  String get goalNoGoalInvitation;
+
+  /// No description provided for @goalNoGoalExamples.
+  ///
+  /// In es, this message translates to:
+  /// **'Emergencias · Viajes · Algo que quieres comprar'**
+  String get goalNoGoalExamples;
+
+  /// No description provided for @goalCreateAndAllocate.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear meta y ahorrar'**
+  String get goalCreateAndAllocate;
+
+  /// No description provided for @goalCreateThenConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Después de crear la meta, confirma cuánto quieres guardar.'**
+  String get goalCreateThenConfirm;
+
+  /// No description provided for @goalAllocationAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto que quieres guardar'**
+  String get goalAllocationAmount;
+
+  /// No description provided for @goalAllocationMaximum.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes registrar hasta {amount}'**
+  String goalAllocationMaximum(String amount);
+
+  /// No description provided for @goalAllocationInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa un monto mayor que cero y no mayor que {amount}.'**
+  String goalAllocationInvalid(String amount);
+
+  /// No description provided for @goalAllocationSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Sumaste {amount} a tu meta'**
+  String goalAllocationSaved(String amount);
+
+  /// No description provided for @goalAllocateFromCycle.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar para mi meta'**
+  String get goalAllocateFromCycle;
+
+  /// No description provided for @goalCycleAllocated.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrado en tu meta: {amount}'**
+  String goalCycleAllocated(String amount);
+
+  /// No description provided for @goalCompleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Completada'**
+  String get goalCompleted;
+
+  /// No description provided for @goalCompletionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Meta cumplida'**
+  String get goalCompletionTitle;
+
+  /// No description provided for @goalCompletionHeadline.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Cumpliste tu meta «{name}»!'**
+  String goalCompletionHeadline(String name);
+
+  /// No description provided for @goalCompletionBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo lograste, ahorro a ahorro.'**
+  String get goalCompletionBody;
+
+  /// No description provided for @goalNewGoal.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear nueva meta'**
+  String get goalNewGoal;
+
+  /// No description provided for @goalCompletionKept.
+  ///
+  /// In es, this message translates to:
+  /// **'La meta cumplida queda en tu historial.'**
+  String get goalCompletionKept;
+
+  /// No description provided for @goalCompletedHistory.
+  ///
+  /// In es, this message translates to:
+  /// **'Metas cumplidas'**
+  String get goalCompletedHistory;
+
+  /// No description provided for @goalCompletedOn.
+  ///
+  /// In es, this message translates to:
+  /// **'Cumplida el {date}'**
+  String goalCompletedOn(String date);
+
+  /// No description provided for @goalNoCompletedHistory.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no has cumplido ninguna meta.'**
+  String get goalNoCompletedHistory;
+
+  /// No description provided for @goalCycleUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'No queda dinero de este ciclo para guardar.'**
+  String get goalCycleUnavailable;
+
+  /// No description provided for @goalNextGoalInvitation.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Empezamos tu próxima meta con lo que sobró?'**
+  String get goalNextGoalInvitation;
+
+  /// Chip on the Inicio goal card: whole days until the goal date. 0 is the goal date itself.
+  ///
+  /// In es, this message translates to:
+  /// **'{days, plural, =0{Hoy} =1{1 día} other{{days} días}}'**
+  String goalCardDaysLeft(int days);
+
+  /// Line on the Inicio goal card when the goal has a date that has not passed. {date} is written short; {amount} is formatted money still missing.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta el {date}: faltan {amount}'**
+  String goalCardUntil(String date, String amount);
+
+  /// Line on the Inicio goal card when the goal date has passed and the goal is not reached yet.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya pasó el {date} · faltan {amount}'**
+  String goalCardDatePassed(String date, String amount);
+
+  /// Line on the Inicio goal card when the goal date is more than a month away. {date} may include the year; {amount} is the missing money split over the pay cycles left, rounded up to a whole unit.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta el {date}: {amount} por ciclo'**
+  String goalCardPerCycle(String date, String amount);
+
+  /// Button on the goal screen: record buying the thing with the goal's money.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya lo compré'**
+  String get goalPurchaseAction;
+
+  /// Title of the goal purchase screen.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo compré con mi meta'**
+  String get goalPurchaseTitle;
+
+  /// Label of the amount paid.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que pagaste'**
+  String get goalPurchaseAmount;
+
+  /// Helper under the amount: the most that can be paid from the goal.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta {amount}, lo que juntaste'**
+  String goalPurchaseAmountHelper(String amount);
+
+  /// Button: read the current price from the saved product link (prices change, e.g. Buen Fin).
+  ///
+  /// In es, this message translates to:
+  /// **'Leer el precio de hoy en el enlace'**
+  String get goalPurchaseRefreshPrice;
+
+  /// Shown after reading the price from the link.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio de hoy: {amount}'**
+  String goalPurchasePriceRead(String amount);
+
+  /// The product page had no readable price.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos el precio. Escríbelo tú.'**
+  String get goalPurchasePriceMissing;
+
+  /// Summary row: the goal's progress.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que juntaste'**
+  String get goalPurchaseSaved;
+
+  /// Summary row: progress minus the price.
+  ///
+  /// In es, this message translates to:
+  /// **'Te sobra'**
+  String get goalPurchaseLeft;
+
+  /// Explains that the purchase does not touch today's money or the cycle budget.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo pagas con lo que juntaste: lo que te queda hoy y el presupuesto del ciclo no cambian.'**
+  String get goalPurchaseOutsideBudget;
+
+  /// Error when the price is above what the goal saved.
+  ///
+  /// In es, this message translates to:
+  /// **'Juntaste {amount}. Lo que pase de eso regístralo como un gasto normal.'**
+  String goalPurchaseTooMuch(String amount);
+
+  /// Primary button: record the expense and move the goal to history.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrar y cerrar la meta'**
+  String get goalPurchaseConfirm;
+
+  /// Secondary button when money is left over: record, then open a new goal starting with the rest.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrar y empezar otra meta con lo que sobra'**
+  String get goalPurchaseConfirmNext;
+
+  /// Snack bar after recording. {name} is the goal name.
+  ///
+  /// In es, this message translates to:
+  /// **'Compra registrada: {name}'**
+  String goalPurchaseRecorded(String name);
+
+  /// Marks a goal purchase in the movements list, like the fixed-expense badge.
+  ///
+  /// In es, this message translates to:
+  /// **'Meta'**
+  String get goalPurchaseBadge;
+
+  /// Type column of the ledger export for a goal purchase.
+  ///
+  /// In es, this message translates to:
+  /// **'Compra con meta'**
+  String get csvTypeGoalPurchase;
+
+  /// Goal history row of a goal that ended in a purchase.
+  ///
+  /// In es, this message translates to:
+  /// **'Comprado por {amount}'**
+  String goalCompletedPurchased(String amount);
+
+  /// Link in the cycle-close goal popup that opens the full settlement screen (XP breakdown, collection, share).
+  ///
+  /// In es, this message translates to:
+  /// **'Ver el cierre completo'**
+  String get goalCycleDetails;
 }
 
 class _AppLocalizationsDelegate

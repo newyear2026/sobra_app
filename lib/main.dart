@@ -17,6 +17,7 @@ import 'screens/app_shell.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/recovery_screen.dart';
+import 'screens/startup_screen.dart';
 import 'services/app_review_service.dart';
 import 'services/app_telemetry.dart';
 import 'services/firebase_telemetry.dart';
@@ -36,29 +37,29 @@ import 'services/seasonal_gift_reminder.dart';
 import 'services/sobra_quick_entry.dart';
 import 'services/sobra_widget_sync.dart';
 import 'state/sobra_store.dart';
+import 'startup.dart';
 import 'theme/app_theme.dart';
 
-Future<void> main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(StartupScreen.overlayStyle);
+  runApp(SobraStartup(initialize: _initializeApp));
+}
+
+Future<Widget> _initializeApp(
+  ValueChanged<StartupPreferences> onPreferencesReady,
+) async {
   await initializeFirebaseTelemetry();
-  // Nothing in the app uses an AppBar, so Flutter never sets an overlay style
-  // of its own and the status bar can end up with light icons over Sobra's
-  // near-white paper.
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      statusBarBrightness: Brightness.light,
-      systemNavigationBarColor: AppColors.surface,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ),
-  );
   // The phone's country only seeds a brand-new ledger's currency; Ajustes
   // changes it, and an existing ledger never follows the phone.
   final store = await SobraStore.load(
     deviceCountry:
         WidgetsBinding.instance.platformDispatcher.locale.countryCode,
   );
+  onPreferencesReady((
+    languageCode: store.languageCode,
+    reducedMotion: store.reducedMotion,
+  ));
   await SobraWidgetSync.initialize(store);
   await SobraQuickEntry.initialize();
   SobraFixedReminders.initialize(store);
@@ -109,6 +110,13 @@ Future<void> main() async {
   final nativeAds = adConsent == null
       ? null
       : NativeAds(store: store, graceDays: AdMobConfig.nativeGraceDays);
+  final budgetNativeAds = adConsent == null
+      ? null
+      : NativeAds(
+          store: store,
+          placement: NativeAdPlacement.budget,
+          graceDays: AdMobConfig.nativeGraceDays,
+        );
   final ads = RewardedAds(
     port: adConsent == null
         ? const UnavailableRewardedAdPort()
@@ -118,29 +126,24 @@ Future<void> main() async {
   if (adConsent != null) {
     adConsent.addListener(() {
       nativeAds!.setSdkReady(adConsent.canRequestAds);
-      if (adConsent.canRequestAds) unawaited(ads.prepare());
+      budgetNativeAds!.setSdkReady(adConsent.canRequestAds);
+      // CollectionScreen prepares rewarded ads when they are actually needed.
+      // Loading another WebView here competes with the first screen and the
+      // exit-ad preload, especially on memory-constrained Android devices.
     });
   }
-  runApp(
-    SobraApp(
-      store: store,
-      receipts: receipts,
-      purchases: purchases,
-      ads: ads,
-      adConsent: adConsent,
-      nativeAds: nativeAds,
-      updates: updates,
-      reviews: reviews,
-      announcements: announcements,
-    ),
+  return SobraApp(
+    store: store,
+    receipts: receipts,
+    purchases: purchases,
+    ads: ads,
+    adConsent: adConsent,
+    nativeAds: nativeAds,
+    budgetNativeAds: budgetNativeAds,
+    updates: updates,
+    reviews: reviews,
+    announcements: announcements,
   );
-  // UMP can need an Activity to display its form. Waiting until the first
-  // frame keeps startup responsive and guarantees Android has attached one.
-  if (adConsent != null) {
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => unawaited(adConsent.initialize()),
-    );
-  }
 }
 
 /// Resolves the receipts directory and clears what nothing points at.
@@ -175,6 +178,7 @@ class SobraApp extends StatefulWidget {
     this.ads,
     this.adConsent,
     this.nativeAds,
+    this.budgetNativeAds,
     this.updates,
     this.reviews,
     this.announcements,
@@ -194,6 +198,7 @@ class SobraApp extends StatefulWidget {
   final RewardedAds? ads;
   final AdMobConsentController? adConsent;
   final NativeAds? nativeAds;
+  final NativeAds? budgetNativeAds;
 
   /// Null in a harness that pumps the app without one. The shell then never
   /// offers an update and never draws the banner, which is the same app a
@@ -229,6 +234,22 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    // The loading screen owns its mint system bars; the ready app uses paper.
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: AppColors.surface,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+    );
+    // A consent form belongs to the ready app, after the splash is removed.
+    if (widget.adConsent case final consent?) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) unawaited(consent.initialize());
+      });
+    }
     WidgetsBinding.instance.addObserver(this);
     _languageCode = widget.store.languageCode;
     widget.store.addListener(_onStoreChanged);
@@ -339,6 +360,10 @@ class _SobraAppState extends State<SobraApp> with WidgetsBindingObserver {
     if (ads != null) wrapped = RewardedAdScope(ads: ads, child: wrapped);
     if (nativeAds != null) {
       wrapped = NativeAdScope(ads: nativeAds, child: wrapped);
+    }
+    final budgetNativeAds = widget.budgetNativeAds;
+    if (budgetNativeAds != null) {
+      wrapped = BudgetNativeAdScope(ads: budgetNativeAds, child: wrapped);
     }
     if (adConsent != null) {
       wrapped = AdMobConsentScope(consent: adConsent, child: wrapped);

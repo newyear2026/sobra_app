@@ -26,7 +26,8 @@ class ExpenseEntry {
     this.receiptFileName,
     this.recurringId,
     this.occurrenceDate,
-  });
+    this.savingsGoalId,
+  }) : assert(recurringId == null || savingsGoalId == null);
 
   final String id;
   final int amountCentavos;
@@ -64,6 +65,20 @@ class ExpenseEntry {
   /// spending, category limits and the cycle's result.
   bool get isFixedPayment => recurringId != null;
 
+  /// The savings goal this purchase spent, or null.
+  ///
+  /// Buying the thing a goal saved for spends money set aside cycle after
+  /// cycle, not this cycle's budget. Like a fixed payment it stays in the
+  /// ledger and the wallet, and out of every budget figure. The id outlives
+  /// the goal: the purchase was still the goal's money after it is archived.
+  final String? savingsGoalId;
+
+  bool get isGoalPurchase => savingsGoalId != null;
+
+  /// Whether the budget leaves this expense out: a fixed payment or a goal
+  /// purchase. Every budget figure filters on this, never on one of the two.
+  bool get isOutsideBudget => isFixedPayment || isGoalPurchase;
+
   /// Whether this expense exists because a physical cash count came up short.
   ///
   /// Its amount is a measurement of money that already left the wallet, not a
@@ -100,6 +115,7 @@ class ExpenseEntry {
       // Not editable: an edit changes what was paid, never what it paid for.
       recurringId: recurringId,
       occurrenceDate: occurrenceDate,
+      savingsGoalId: savingsGoalId,
     );
   }
 
@@ -115,6 +131,9 @@ class ExpenseEntry {
     'receiptFileName': receiptFileName,
     'recurringId': recurringId,
     'occurrenceDate': occurrenceDate?.toIso8601String(),
+    // Written only when set, so every existing expense keeps its exact JSON
+    // (and the ledger fingerprint that backup import undo compares).
+    if (savingsGoalId != null) 'savingsGoalId': savingsGoalId,
   };
 
   factory ExpenseEntry.fromJson(Map<String, dynamic> json) {
@@ -136,6 +155,7 @@ class ExpenseEntry {
         final String value => DateTime.parse(value),
         _ => null,
       },
+      savingsGoalId: json['savingsGoalId'] as String?,
     );
   }
 }

@@ -8,6 +8,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/catalog_entry.dart';
 import '../models/room_design.dart';
+import '../services/admob_consent_service.dart';
 import '../services/app_telemetry.dart';
 import '../services/purchase_service.dart';
 import '../services/rewarded_ad_service.dart';
@@ -92,11 +93,10 @@ class _CollectionScreenState extends State<CollectionScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Asked for on the way in. The app otherwise requests one ad at launch and
-    // never again, so a single empty answer — a phone that was offline for
-    // that second — left every card reading "no ads" until the process was
-    // restarted.
-    if (!_askedForAd) {
+    // Preload on entry instead of at app startup. Depend on consent so opening
+    // this screen before UMP finishes still loads once access becomes ready.
+    final consent = AdMobConsentScope.maybeOf(context);
+    if (!_askedForAd && (consent == null || consent.canRequestAds)) {
       _askedForAd = true;
       unawaited(RewardedAdScope.maybeOf(context)?.prepare() ?? Future.value());
     }

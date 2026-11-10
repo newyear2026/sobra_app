@@ -1,0 +1,35 @@
+{
+  "name": "small-image-test",
+  "size": "small",
+  "pid": "11884",
+  "unitId": "ca-app-pub-3940256099942544/2247696110",
+  "outcome": "ready",
+  "events": [
+    {
+      "stage": "requesting",
+      "size": "small",
+      "adUnitId": "ca-app-pub-3940256099942544/2247696110",
+      "time": "2026-11-09T05:23:02.542454Z"
+    },
+    {
+      "stage": "ready",
+      "size": "small",
+      "adUnitId": "ca-app-pub-3940256099942544/2247696110",
+      "time": "2026-11-09T05:23:06.753577Z"
+    },
+    {
+      "stage": "impression",
+      "size": "small",
+      "adUnitId": "ca-app-pub-3940256099942544/2247696110",
+      "time": "2026-11-09T05:23:08.597699Z"
+    }
+  ],
+  "testDevice": true,
+  "nativeViewBounds": [
+    "[53,606][893,869]"
+  ],
+  "buttons": {
+    "취소": "[53,1000][457,1137]",
+    "종료": "[488,1000][893,1137]"
+  }
+}

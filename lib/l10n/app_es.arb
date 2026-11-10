@@ -1,4 +1,10 @@
 {
+  "exitAppTitle": "¿Cerrar la app?",
+  "exitAppBody": "Nos vemos pronto.",
+  "exitAppAction": "Salir",
+  "startupTagline": "Pequeños registros,\ngrandes pasos.",
+  "startupLoading": "Cargando…",
+  "startupFailed": "No pudimos abrir Sobrita.\nInténtalo de nuevo.",
   "@@locale": "es",
 
   "categoryFood": "Comida",
@@ -771,9 +777,16 @@
   "receiptClose": "Cerrar",
   "receiptMissing": "La foto ya no está en este dispositivo.",
   "receiptFailed": "No se pudo guardar la foto.",
-  "receiptBackupNote": "La copia y el CSV no incluyen las fotos de tickets.",
-  "csvExportTooltip": "Exportar a CSV",
-  "settingsCsvExport": "Exportar movimientos (CSV)",
+  "receiptBackupNote": "La copia y las exportaciones no incluyen las fotos de tickets.",
+  "csvExportTooltip": "Exportar movimientos",
+  "exportFormatTitle": "Elegir formato",
+  "exportAllHistory": "Se exporta todo el historial.",
+  "exportCsvTitle": "CSV (.csv)",
+  "exportCsvDescription": "Para importar a otras apps. Los números dependen de la configuración regional.",
+  "exportExcelTitle": "Excel (.xlsx)",
+  "exportExcelDescription": "Listo para calcular en Excel y Google Sheets.",
+  "csvExportPreparing": "Preparando…",
+  "settingsCsvExport": "Exportar movimientos",
   "settingsCsvExportValue": "Compartir",
   "csvExportEmpty": "Todavía no hay movimientos para exportar.",
   "csvExportFailed": "No se pudo abrir el menú para compartir. Vuelve a intentarlo.",
@@ -1348,5 +1361,218 @@
   "costumeMoonWitch": "Bruja lunar",
   "costumeCalaveraMusician": "Músico calavera",
   "costumeScarecrow": "Espantapájaros",
-  "costumeLittleGhost": "Fantasmita"
+  "costumeLittleGhost": "Fantasmita",
+
+  "goalTitle": "Mi meta",
+  "goalEmptyPrompt": "¿Para qué te gustaría ahorrar?",
+  "goalCreate": "Crear meta",
+  "goalEdit": "Editar meta",
+  "goalNameLabel": "Nombre de la meta",
+  "goalNameHint": "Ej. Unos tenis nuevos",
+  "goalNameRequired": "Escribe un nombre de hasta 60 caracteres.",
+  "goalTargetAmount": "Monto de la meta",
+  "goalTargetAmountInvalid": "Escribe un monto mayor que cero.",
+  "goalStartingAmount": "Lo que ya tienes ahorrado",
+  "goalStartingHint": "Incluye solo dinero que ya apartaste de tus gastos diarios.",
+  "goalStartingAmountInvalid": "Escribe cero o un monto positivo.",
+  "goalOptionalPlan": "Plan de ahorro (opcional)",
+  "goalTargetDate": "Fecha de la meta",
+  "goalDateUnset": "Elegir después",
+  "goalDateClear": "Quitar fecha",
+  "goalProductLink": "Enlace del producto",
+  "goalProductLinkHint": "Pega el enlace de un producto",
+  "goalPasteLink": "Pegar enlace",
+  "goalOpenProduct": "Ver producto",
+  "goalImportFromLink": "Traer datos del enlace",
+  "goalManualEntry": "Escribir a mano",
+  "goalPhotoRemove": "Quitar foto",
+  "goalPriceReview": "Revisa la foto y el monto que trajimos. Puedes incluir el envío y ajustar el monto. El precio no se actualiza automáticamente.",
+  "goalCurrencyMismatch": "El precio del producto está en {currency}. Escribe el monto de tu meta en la moneda de la app.",
+  "goalSaved": "Meta guardada",
+  "goalSave": "Guardar meta",
+  "goalDelete": "Eliminar meta",
+  "goalDeleteTitle": "¿Eliminar esta meta?",
+  "goalDeleteBody": "Solo se elimina la meta. Tus registros de ingresos y gastos se conservan.",
+  "goalRemaining": "Te faltan {amount}",
+  "goalReached": "¡Meta alcanzada!",
+  "goalRecordSavings": "Registrar ahorro",
+  "goalProgressExplanation": "Se suman el monto inicial, los ingresos registrados como ahorro después de crear la meta y los montos que confirmes al cerrar un ciclo. No se transfiere dinero.",
+  "goalBrowserTitle": "Revisar producto",
+  "goalBrowserInstructions": "Abre el producto y toca el botón de abajo. Si la tienda pide una verificación, complétala tú.",
+  "goalBrowserRead": "Leer datos del producto",
+  "goalBrowserManual": "Continuar a mano",
+  "goalBrowserLoading": "Cargando la tienda…",
+  "goalBrowserLoadFailed": "No pudimos abrir la página. Puedes volver a intentar o escribir los datos a mano.",
+  "goalBrowserRetry": "Volver a intentar",
+  "goalBrowserVerification": "La tienda pide una verificación. Complétala tú y vuelve a leer los datos cuando aparezca el producto.",
+  "goalBrowserNoProduct": "No encontramos datos claros del producto. Puedes volver a intentar desde su página o escribirlos a mano.",
+  "goalBrowserUnsupported": "Este dispositivo no permite abrir la tienda dentro de la app. Puedes escribir los datos a mano.",
+  "goalInvalidLink": "Pega un enlace válido de un producto que empiece con https://.",
+  "@goalCurrencyMismatch": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "@goalRemaining": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "goalChooseType": "¿Qué meta quieres crear?",
+  "goalAmountType": "Ahorrar una cantidad",
+  "goalAmountTypeDescription": "Junta dinero para emergencias, un viaje o lo que tú elijas.",
+  "goalProductType": "Algo que quiero comprar",
+  "goalProductTypeDescription": "Trae la foto y el precio desde el enlace del producto.",
+  "goalChangeType": "Cambiar tipo de meta",
+  "goalAmountNameHint": "Ej. Fondo de emergencia, ahorro para un viaje",
+  "goalAmountIntro": "Solo escribe un nombre y el monto de tu meta, sin foto ni enlace.",
+  "goalCyclePopupTitle": "Cierre de este ciclo",
+  "goalCycleLeftover": "¡Te sobraron {amount}!",
+  "@goalCycleLeftover": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "goalCycleApplyTo": "¿Los guardamos para «{name}»?",
+  "@goalCycleApplyTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "goalCurrentAmount": "Llevas ahorrado",
+  "goalAfterAmount": "Después de guardar",
+  "goalAllocateAll": "Guardar todo: {amount}",
+  "@goalAllocateAll": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "goalAllocateAmount": "Sumar {amount} a mi meta",
+  "@goalAllocateAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "goalChangeAmount": "Cambiar monto",
+  "goalLater": "Más tarde",
+  "goalAllocationNotice": "Se registra en tu meta. No se transfiere dinero.",
+  "goalNoGoalInvitation": "¿Empezamos tu primera meta con este dinero?",
+  "goalNoGoalExamples": "Emergencias · Viajes · Algo que quieres comprar",
+  "goalCreateAndAllocate": "Crear meta y ahorrar",
+  "goalCreateThenConfirm": "Después de crear la meta, confirma cuánto quieres guardar.",
+  "goalAllocationAmount": "Monto que quieres guardar",
+  "goalAllocationMaximum": "Puedes registrar hasta {amount}",
+  "@goalAllocationMaximum": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "goalAllocationInvalid": "Ingresa un monto mayor que cero y no mayor que {amount}.",
+  "@goalAllocationInvalid": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "goalAllocationSaved": "Sumaste {amount} a tu meta",
+  "@goalAllocationSaved": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "goalAllocateFromCycle": "Guardar para mi meta",
+  "goalCycleAllocated": "Registrado en tu meta: {amount}",
+  "@goalCycleAllocated": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "goalCompleted": "Completada",
+  "goalCompletionTitle": "Meta cumplida",
+  "goalCompletionHeadline": "¡Cumpliste tu meta «{name}»!",
+  "@goalCompletionHeadline": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "goalCompletionBody": "Lo lograste, ahorro a ahorro.",
+  "goalNewGoal": "Crear nueva meta",
+  "goalCompletionKept": "La meta cumplida queda en tu historial.",
+  "goalCompletedHistory": "Metas cumplidas",
+  "goalCompletedOn": "Cumplida el {date}",
+  "@goalCompletedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "goalNoCompletedHistory": "Todavía no has cumplido ninguna meta.",
+  "goalCycleUnavailable": "No queda dinero de este ciclo para guardar.",
+  "goalNextGoalInvitation": "¿Empezamos tu próxima meta con lo que sobró?",
+  "goalCardDaysLeft": "{days, plural, =0{Hoy} =1{1 día} other{{days} días}}",
+  "@goalCardDaysLeft": {"description": "Chip on the Inicio goal card: whole days until the goal date. 0 is the goal date itself.", "placeholders": {"days": {"type": "int"}}},
+  "goalCardUntil": "Hasta el {date}: faltan {amount}",
+  "@goalCardUntil": {"description": "Line on the Inicio goal card when the goal has a date that has not passed. {date} is written short; {amount} is formatted money still missing.", "placeholders": {"date": {"type": "String"}, "amount": {"type": "String"}}},
+  "goalCardDatePassed": "Ya pasó el {date} · faltan {amount}",
+  "@goalCardDatePassed": {"description": "Line on the Inicio goal card when the goal date has passed and the goal is not reached yet.", "placeholders": {"date": {"type": "String"}, "amount": {"type": "String"}}},
+  "goalCardPerCycle": "Hasta el {date}: {amount} por ciclo",
+  "@goalCardPerCycle": {"description": "Line on the Inicio goal card when the goal date is more than a month away. {date} may include the year; {amount} is the missing money split over the pay cycles left, rounded up to a whole unit.", "placeholders": {"date": {"type": "String"}, "amount": {"type": "String"}}},
+  "goalPurchaseAction": "Ya lo compré",
+  "@goalPurchaseAction": {"description": "Button on the goal screen: record buying the thing with the goal's money."},
+  "goalPurchaseTitle": "Lo compré con mi meta",
+  "@goalPurchaseTitle": {"description": "Title of the goal purchase screen."},
+  "goalPurchaseAmount": "Lo que pagaste",
+  "@goalPurchaseAmount": {"description": "Label of the amount paid."},
+  "goalPurchaseAmountHelper": "Hasta {amount}, lo que juntaste",
+  "@goalPurchaseAmountHelper": {"description": "Helper under the amount: the most that can be paid from the goal.", "placeholders": {"amount": {"type": "String"}}},
+  "goalPurchaseRefreshPrice": "Leer el precio de hoy en el enlace",
+  "@goalPurchaseRefreshPrice": {"description": "Button: read the current price from the saved product link (prices change, e.g. Buen Fin)."},
+  "goalPurchasePriceRead": "Precio de hoy: {amount}",
+  "@goalPurchasePriceRead": {"description": "Shown after reading the price from the link.", "placeholders": {"amount": {"type": "String"}}},
+  "goalPurchasePriceMissing": "No encontramos el precio. Escríbelo tú.",
+  "@goalPurchasePriceMissing": {"description": "The product page had no readable price."},
+  "goalPurchaseSaved": "Lo que juntaste",
+  "@goalPurchaseSaved": {"description": "Summary row: the goal's progress."},
+  "goalPurchaseLeft": "Te sobra",
+  "@goalPurchaseLeft": {"description": "Summary row: progress minus the price."},
+  "goalPurchaseOutsideBudget": "Lo pagas con lo que juntaste: lo que te queda hoy y el presupuesto del ciclo no cambian.",
+  "@goalPurchaseOutsideBudget": {"description": "Explains that the purchase does not touch today's money or the cycle budget."},
+  "goalPurchaseTooMuch": "Juntaste {amount}. Lo que pase de eso regístralo como un gasto normal.",
+  "@goalPurchaseTooMuch": {"description": "Error when the price is above what the goal saved.", "placeholders": {"amount": {"type": "String"}}},
+  "goalPurchaseConfirm": "Registrar y cerrar la meta",
+  "@goalPurchaseConfirm": {"description": "Primary button: record the expense and move the goal to history."},
+  "goalPurchaseConfirmNext": "Registrar y empezar otra meta con lo que sobra",
+  "@goalPurchaseConfirmNext": {"description": "Secondary button when money is left over: record, then open a new goal starting with the rest."},
+  "goalPurchaseRecorded": "Compra registrada: {name}",
+  "@goalPurchaseRecorded": {"description": "Snack bar after recording. {name} is the goal name.", "placeholders": {"name": {"type": "String"}}},
+  "goalPurchaseBadge": "Meta",
+  "@goalPurchaseBadge": {"description": "Marks a goal purchase in the movements list, like the fixed-expense badge."},
+  "csvTypeGoalPurchase": "Compra con meta",
+  "@csvTypeGoalPurchase": {"description": "Type column of the ledger export for a goal purchase."},
+  "goalCompletedPurchased": "Comprado por {amount}",
+  "@goalCompletedPurchased": {"description": "Goal history row of a goal that ended in a purchase.", "placeholders": {"amount": {"type": "String"}}},
+  "goalCycleDetails": "Ver el cierre completo",
+  "@goalCycleDetails": {"description": "Link in the cycle-close goal popup that opens the full settlement screen (XP breakdown, collection, share)."}
 }

@@ -21,6 +21,7 @@ import '../models/money_movement.dart';
 import '../models/pay_schedule.dart';
 import '../models/recurring_expense.dart';
 import '../models/room_design.dart';
+import '../models/savings_goal.dart';
 import '../models/store_failure.dart';
 import '../models/xp_event.dart';
 import '../services/app_telemetry.dart';
@@ -177,6 +178,13 @@ class SobraStore extends ChangeNotifier {
   final Map<String, int> _cycleBudgetExtras = {};
   final List<CycleRecord> _cycleRecords = [];
   final List<RecurringExpense> _recurringExpenses = [];
+  SavingsGoal? _activeSavingsGoal;
+  final List<SavingsGoalCycleAllocation> _goalCycleAllocations = [];
+  final List<CompletedSavingsGoal> _completedSavingsGoals = [];
+  final Set<String> _goalPromptedCycleKeys = {};
+  final Map<String, DateTime> _goalCompletionDates = {};
+  final Map<DateTime, Map<String, int>> _goalCycleIncomeBaselines = {};
+  bool _goalIncomeBaselinesNeedSave = false;
 
   /// Catalog entries the user actually acquired — a real-money purchase, or a
   /// rewarded-ad run they finished.
@@ -472,6 +480,18 @@ class SobraStore extends ChangeNotifier {
     // An unreadable ledger stays byte-for-byte intact until explicit recovery.
     // No migrations, settlement, gifts or other background writes may run.
     if (store.hasStorageError) return store;
+    if (store._goalIncomeBaselinesNeedSave) {
+      // Persist the legacy baseline before any subsequent income edit can
+      // become a new baseline on the next launch. A full disk must not block
+      // opening a readable ledger: every later mutation serializes this same
+      // baseline atomically, and a failed mutation restores the old income.
+      try {
+        await store._save();
+        store._goalIncomeBaselinesNeedSave = false;
+      } on Object catch (error) {
+        debugPrint('Sobra: goal income baseline migration deferred: $error');
+      }
+    }
     // One-time migration for states written before native ads existed. Saving
     // now matters: if the missing value were only filled in memory, every
     // restart would begin a fresh configured grace period forever.
@@ -683,6 +703,8 @@ class SobraStore extends ChangeNotifier {
     var fixedPaid = 0;
     for (final entry in _transactions) {
       if (!bounds.contains(entry.occurredAt)) continue;
+      // Saved money, not this cycle's: see [ExpenseEntry.isGoalPurchase].
+      if (entry.isGoalPurchase) continue;
       if (entry.isFixedPayment) {
         fixedPaid += entry.amountCentavos;
       } else {
@@ -699,14 +721,15 @@ class SobraStore extends ChangeNotifier {
     );
   }
 
-  /// Everyday spending: every expense except fixed-expense payments.
+  /// Everyday spending: every expense except fixed-expense payments and
+  /// purchases made with a savings goal's money.
   ///
   /// Every figure the budget is measured with folds over this and never over
   /// [_transactions] directly. Paying rent must not move "Hoy te queda", a
   /// category limit or whether a cycle closes green — the budget is what is
   /// left to spend once the fixed expenses are paid.
   Iterable<ExpenseEntry> get _spending =>
-      _transactions.where((entry) => !entry.isFixedPayment);
+      _transactions.where((entry) => !entry.isOutsideBudget);
 
   /// The current cycle's everyday spending — see [_spending].
   List<ExpenseEntry> get cycleSpending => _spending
@@ -796,6 +819,370 @@ class SobraStore extends ChangeNotifier {
             cycleBounds.contains(entry.occurredAt),
       )
       .fold(0, (total, entry) => total + entry.amountCentavos);
+
+  SavingsGoal? get activeSavingsGoal => _activeSavingsGoal;
+
+  /// Pay cycles from the current one through the one holding [date], both
+  /// counted, on today's schedule. Capped so a date centuries away cannot
+  /// walk thousands of cycles on every rebuild of Inicio.
+  int payCyclesThrough(DateTime date, {int cap = 600}) {
+    final last = dateOnly(date);
+    var bounds = boundsFor(today);
+    var count = 1;
+    while (count < cap && bounds.end.isBefore(last)) {
+      final next = boundsFor(addDays(bounds.end, 1));
+      if (!next.end.isAfter(bounds.end)) break;
+      bounds = next;
+      count++;
+    }
+    return count;
+  }
+
+  /// Progress follows actual savings records across cycles. Old income is
+  /// excluded by ID, and backdated records before creation do not newly fill
+  /// a goal. Updating or deleting an eligible record changes this sum too.
+  int get savingsGoalProgressCentavos {
+    final goal = _activeSavingsGoal;
+    if (goal == null) return 0;
+    final start = dateOnly(goal.createdAt);
+    return _incomes
+        .where(
+          (entry) =>
+              entry.allocation == IncomeAllocation.savings &&
+              !goal.excludedIncomeIds.contains(entry.id) &&
+              !dateOnly(entry.occurredAt).isBefore(start),
+        )
+        .fold(
+          goal.startingCentavos +
+              _goalCycleAllocations
+                  .where((entry) => entry.goalId == goal.id)
+                  .fold(
+                    0,
+                    (total, entry) =>
+                        total + goalAllocationForCycle(entry.cycleStart),
+                  ),
+          (total, entry) => total + entry.amountCentavos,
+        );
+  }
+
+  bool get isSavingsGoalComplete =>
+      _activeSavingsGoal != null &&
+      savingsGoalProgressCentavos >= _activeSavingsGoal!.targetCentavos;
+
+  List<CompletedSavingsGoal> get completedSavingsGoals =>
+      List.unmodifiable(_completedSavingsGoals.reversed);
+
+  /// Only the newest closed cycle can interrupt automatically. Dismissing it
+  /// never produces a backlog of older prompts on the next home visit.
+  CycleRecord? get pendingSavingsGoalCycle {
+    CycleRecord? latest;
+    for (final record in cycleRecords) {
+      if (latest == null || record.start.isAfter(latest.start)) latest = record;
+    }
+    if (latest == null ||
+        !latest.end.isBefore(today) ||
+        availableGoalAllocationForCycle(latest.start) <= 0 ||
+        _goalPromptedCycleKeys.contains(_cycleKey(latest.start)) ||
+        _goalCycleAllocations.any(
+          (entry) => entry.cycleStart == latest!.start,
+        )) {
+      return null;
+    }
+    return latest;
+  }
+
+  CycleRecord? _goalCycle(DateTime start) {
+    final key = dateOnly(start);
+    for (final record in _cycleRecords) {
+      if (record.start == key) return _recordWithCurrentSpending(record);
+    }
+    return null;
+  }
+
+  Future<void> acknowledgeSavingsGoalCyclePrompt(DateTime cycleStart) =>
+      _write(() async {
+        final record = _goalCycle(cycleStart);
+        if (record == null || !record.end.isBefore(today)) {
+          throw StateError('The closed cycle no longer exists');
+        }
+        if (!_goalPromptedCycleKeys.add(_cycleKey(record.start))) return;
+        await _save();
+        notifyListeners();
+      });
+
+  /// Existing amounts assigned to other goals stay reserved, including after
+  /// deletion. Editing an old expense can reduce this maximum; it cannot
+  /// manufacture extra savings or count the same money for two goals.
+  int availableGoalAllocationForCycle(DateTime cycleStart) {
+    final record = _goalCycle(cycleStart);
+    if (record == null || !record.end.isBefore(today)) return 0;
+    final reserved = _goalCycleAllocations
+        .where(
+          (entry) =>
+              entry.cycleStart == record.start &&
+              entry.goalId != _activeSavingsGoal?.id,
+        )
+        .fold(0, (total, entry) => total + entry.amountCentavos);
+    final available =
+        record.resultCentavos - _removedGoalCycleIncome(record) - reserved;
+    return available > 0 ? available : 0;
+  }
+
+  Map<String, int> _goalIncomeBaseline(CycleBounds bounds) => Map.unmodifiable({
+    for (final income in _incomes)
+      if (income.allocation == IncomeAllocation.cycle &&
+          bounds.contains(income.occurredAt))
+        income.id: income.amountCentavos,
+  });
+
+  /// Older ledgers did not retain which incomes funded a closed cycle. Seed
+  /// them once from the records still present; edits predating this migration
+  /// cannot be reconstructed. New cycles always capture at settlement time.
+  bool _ensureGoalCycleIncomeBaselines() {
+    var changed = false;
+    for (final record in _cycleRecords) {
+      if (_goalCycleIncomeBaselines.containsKey(record.start)) continue;
+      _goalCycleIncomeBaselines[record.start] = _goalIncomeBaseline(
+        CycleBounds(start: record.start, end: record.end),
+      );
+      changed = true;
+    }
+    return changed;
+  }
+
+  /// History keeps its original budget. Only the amount that may fund goals
+  /// follows corrections to the incomes that actually funded that budget.
+  /// New/backdated income and later increases never inflate an old surplus.
+  int _removedGoalCycleIncome(CycleRecord record) {
+    final baseline = _goalCycleIncomeBaselines[record.start];
+    if (baseline == null || baseline.isEmpty) return 0;
+    final bounds = CycleBounds(start: record.start, end: record.end);
+    final current = {
+      for (final income in _incomes)
+        if (income.allocation == IncomeAllocation.cycle &&
+            bounds.contains(income.occurredAt))
+          income.id: income.amountCentavos,
+    };
+    return baseline.entries.fold(0, (removed, entry) {
+      final retained = (current[entry.key] ?? 0).clamp(0, entry.value);
+      return removed + entry.value - retained;
+    });
+  }
+
+  /// Effective recorded amount for the current goal. The original earmark is
+  /// retained, while progress follows corrections to the cycle's ledger.
+  int goalAllocationForCycle(DateTime cycleStart) {
+    final start = dateOnly(cycleStart);
+    for (final entry in _goalCycleAllocations) {
+      if (entry.cycleStart == start && entry.goalId == _activeSavingsGoal?.id) {
+        return entry.amountCentavos.clamp(
+          0,
+          availableGoalAllocationForCycle(start),
+        );
+      }
+    }
+    return 0;
+  }
+
+  Future<void> allocateCycleToSavingsGoal({
+    required DateTime cycleStart,
+    required String goalId,
+    required int amountCentavos,
+  }) => _write(() async {
+    if (_activeSavingsGoal?.id != goalId) {
+      throw StateError('The active savings goal changed');
+    }
+    final record = _goalCycle(cycleStart);
+    if (record == null || !record.end.isBefore(today)) {
+      throw StateError('The closed cycle no longer exists');
+    }
+    final available = availableGoalAllocationForCycle(record.start);
+    if (amountCentavos <= 0 ||
+        amountCentavos > available ||
+        amountCentavos > SavingsGoal.maxAmountCentavos) {
+      throw ArgumentError.value(amountCentavos, 'amountCentavos');
+    }
+    final index = _goalCycleAllocations.indexWhere(
+      (entry) => entry.cycleStart == record.start && entry.goalId == goalId,
+    );
+    final previous = index < 0 ? null : _goalCycleAllocations[index];
+    if (previous?.amountCentavos == amountCentavos) return;
+    final entry = SavingsGoalCycleAllocation(
+      cycleStart: record.start,
+      goalId: goalId,
+      amountCentavos: amountCentavos,
+      createdAt: previous?.createdAt ?? currentMoment,
+    );
+    if (index < 0) {
+      _goalCycleAllocations.add(entry);
+    } else {
+      _goalCycleAllocations[index] = entry;
+    }
+    _goalPromptedCycleKeys.add(_cycleKey(record.start));
+    await _save();
+    notifyListeners();
+  });
+
+  String? get pendingSavingsGoalCompletionId =>
+      isSavingsGoalComplete &&
+          !_goalCompletionDates.containsKey(_activeSavingsGoal!.id)
+      ? _activeSavingsGoal!.id
+      : null;
+
+  Future<void> acknowledgeSavingsGoalCompletion(String goalId) =>
+      _write(() async {
+        if (_activeSavingsGoal?.id != goalId || !isSavingsGoalComplete) {
+          throw StateError('The completed savings goal changed');
+        }
+        if (_goalCompletionDates.containsKey(goalId)) return;
+        _goalCompletionDates[goalId] = currentMoment;
+        await _save();
+        notifyListeners();
+      });
+
+  /// Saving a goal labels recorded money; it does not create income or move
+  /// today's allowance, the cycle budget, cash, or character progress.
+  Future<SavingsGoal> saveSavingsGoal({
+    String? id,
+    String? replacingCompletedGoalId,
+    SavingsGoalKind? kind,
+    required String name,
+    required int targetCentavos,
+    required int startingCentavos,
+    DateTime? targetDate,
+    String? productUrl,
+    String? imageUrl,
+    String? merchantName,
+  }) => _write(() async {
+    var previous = _activeSavingsGoal;
+    if (replacingCompletedGoalId != null) {
+      if (id != null ||
+          previous?.id != replacingCompletedGoalId ||
+          !isSavingsGoalComplete) {
+        throw StateError('The completed savings goal changed');
+      }
+      _completedSavingsGoals.add(
+        CompletedSavingsGoal(
+          goal: previous!,
+          progressCentavos: savingsGoalProgressCentavos,
+          completedAt: _goalCompletionDates[previous.id] ?? currentMoment,
+        ),
+      );
+      previous = null;
+    } else if ((id == null && previous != null) ||
+        (id != null && previous?.id != id)) {
+      throw StateError('The active savings goal changed');
+    }
+    final selectedKind =
+        kind ??
+        previous?.kind ??
+        SavingsGoal.inferKind(
+          productUrl: productUrl,
+          imageUrl: imageUrl,
+          merchantName: merchantName,
+        );
+    final isProduct = selectedKind == SavingsGoalKind.product;
+    final goal = SavingsGoal(
+      id: previous?.id ?? _newId('goal'),
+      kind: selectedKind,
+      name: name,
+      targetCentavos: targetCentavos,
+      startingCentavos: startingCentavos,
+      createdAt: previous?.createdAt ?? currentMoment,
+      targetDate: targetDate == null ? null : dateOnly(targetDate),
+      productUrl: isProduct ? productUrl : null,
+      imageUrl: isProduct ? imageUrl : null,
+      merchantName: isProduct ? merchantName : null,
+      excludedIncomeIds:
+          previous?.excludedIncomeIds ??
+          _incomes.map((entry) => entry.id).toSet(),
+    );
+    _activeSavingsGoal = goal;
+    await _save();
+    notifyListeners();
+    return goal;
+  });
+
+  /// Records buying the thing the active goal saved for, and closes the goal.
+  ///
+  /// The money was set aside over past cycles, so the expense stays out of
+  /// today's allowance and this cycle's budget (see
+  /// [ExpenseEntry.isGoalPurchase]). It is real money leaving, so it lands in
+  /// the ledger and, when paid in cash, comes out of the expected cash. The
+  /// goal moves to the history with what it had saved and what was spent.
+  ///
+  /// Only saved money can be spent this way: anything above the progress is
+  /// everyday spending and the user records it as such.
+  Future<ExpenseEntry> recordSavingsGoalPurchase({
+    required String goalId,
+    required int amountCentavos,
+    required PaymentMethod paymentMethod,
+  }) => _write(() async {
+    final goal = _activeSavingsGoal;
+    if (goal == null || goal.id != goalId) {
+      throw StateError('The active savings goal changed');
+    }
+    final progress = savingsGoalProgressCentavos;
+    if (amountCentavos <= 0 || amountCentavos > progress) {
+      throw ArgumentError.value(amountCentavos, 'amountCentavos');
+    }
+    final moment = currentMoment;
+    _validateMovement(amountCentavos, moment);
+    final entry = ExpenseEntry(
+      id: _newId('expense'),
+      amountCentavos: amountCentavos,
+      category: ExpenseCategory.shopping,
+      note: goal.name,
+      occurredAt: moment,
+      paymentMethod: paymentMethod,
+      savingsGoalId: goal.id,
+    );
+    _transactions.add(entry);
+    if (_affectsCurrentCash(entry)) expectedCashCentavos -= amountCentavos;
+    _completedSavingsGoals.add(
+      CompletedSavingsGoal(
+        goal: goal,
+        progressCentavos: progress,
+        completedAt: moment,
+        purchaseCentavos: amountCentavos,
+        purchaseExpenseId: entry.id,
+      ),
+    );
+    _activeSavingsGoal = null;
+    _noteRecordedDay(moment);
+    await _save();
+    notifyListeners();
+    return entry;
+  });
+
+  /// Keeps a finished goal's purchase in step with an edit of its expense.
+  /// The new price still has to fit in what the goal had saved.
+  void _repriceGoalPurchase(String expenseId, int amountCentavos) {
+    final index = _completedSavingsGoals.indexWhere(
+      (entry) => entry.purchaseExpenseId == expenseId,
+    );
+    if (index < 0) return;
+    final record = _completedSavingsGoals[index];
+    if (amountCentavos > record.progressCentavos) {
+      throw ArgumentError.value(amountCentavos, 'amountCentavos');
+    }
+    _completedSavingsGoals[index] = CompletedSavingsGoal(
+      goal: record.goal,
+      progressCentavos: record.progressCentavos,
+      completedAt: record.completedAt,
+      purchaseCentavos: amountCentavos,
+      purchaseExpenseId: expenseId,
+    );
+  }
+
+  Future<void> removeSavingsGoal(String id) => _write(() async {
+    if (_activeSavingsGoal?.id != id) {
+      throw StateError('The active savings goal changed');
+    }
+    _activeSavingsGoal = null;
+    await _save();
+    notifyListeners();
+  });
 
   /// What the closed cycles left over, net of the ones that ran past budget.
   ///
@@ -1078,6 +1465,7 @@ class SobraStore extends ChangeNotifier {
         fixedPaidCentavos: fixedPaid,
       ),
     );
+    _goalCycleIncomeBaselines[bounds.start] = _goalIncomeBaseline(bounds);
   }
 
   int _normalizedCycleXp(int days) {
@@ -1305,6 +1693,7 @@ class SobraStore extends ChangeNotifier {
     required IncomeAllocation allocation,
   }) => _write(() async {
     _validateMovement(amountCentavos, occurredAt);
+    _ensureGoalCycleIncomeBaselines();
     final entry = IncomeEntry(
       id: _newId('income'),
       amountCentavos: amountCentavos,
@@ -1328,6 +1717,12 @@ class SobraStore extends ChangeNotifier {
     final index = _transactions.indexWhere((entry) => entry.id == updated.id);
     if (index == -1) return;
     final previous = _transactions[index];
+    if (updated.savingsGoalId != previous.savingsGoalId) {
+      throw ArgumentError('A goal purchase stays linked to its goal');
+    }
+    if (previous.isGoalPurchase) {
+      _repriceGoalPurchase(previous.id, updated.amountCentavos);
+    }
 
     // An expense that came out of a cash count carries a measured amount and
     // date. Only what the user actually knows — the category and the note —
@@ -1352,7 +1747,7 @@ class SobraStore extends ChangeNotifier {
     // Dated today: the same habits a new save would complete. Cash-count
     // rows keep their own weekly XP and must not also fill today's missions.
     if (!next.isLinkedToCashCount &&
-        !next.isFixedPayment &&
+        !next.isOutsideBudget &&
         _isSameDay(dateOnly(next.occurredAt), today)) {
       _awardDailyMissionsForMovement(
         next.occurredAt,
@@ -1525,7 +1920,7 @@ class SobraStore extends ChangeNotifier {
   /// habit the first-expense prompts are there to start.
   bool get hasRecordedEverydayExpense => _transactions.any(
     (entry) =>
-        !entry.isFixedPayment &&
+        !entry.isOutsideBudget &&
         !entry.isLinkedToCashCount &&
         !entry.isPendingCashAdjustment,
   );
@@ -1699,6 +2094,7 @@ class SobraStore extends ChangeNotifier {
     final index = _incomes.indexWhere((entry) => entry.id == id);
     if (index == -1) return false;
     if (_incomes[index].isLinkedToCashCount) return false;
+    _ensureGoalCycleIncomeBaselines();
     final removed = _incomes.removeAt(index);
     _applyIncome(removed, -1);
     await _save();
@@ -1718,6 +2114,7 @@ class SobraStore extends ChangeNotifier {
     if (index == -1) return false;
     final previous = _incomes[index];
     if (previous.isLinkedToCashCount) return false;
+    _ensureGoalCycleIncomeBaselines();
     _applyIncome(previous, -1);
     _incomes[index] = updated;
     _applyIncome(updated, 1);
@@ -1728,6 +2125,7 @@ class SobraStore extends ChangeNotifier {
 
   Future<void> restoreIncome(IncomeEntry entry) => _write(() async {
     if (_incomes.any((existing) => existing.id == entry.id)) return;
+    _ensureGoalCycleIncomeBaselines();
     _incomes.add(entry);
     _applyIncome(entry, 1);
     await _save();
@@ -2033,7 +2431,7 @@ class SobraStore extends ChangeNotifier {
     if (version != null && (version is! int || version < 1)) {
       throw const FormatException('Invalid backup version');
     }
-    if (version is int && version > 11) {
+    if (version is int && version > 12) {
       throw UnsupportedError('Backup requires a newer app');
     }
     try {
@@ -2073,6 +2471,11 @@ class SobraStore extends ChangeNotifier {
       'rewardedAdDay',
       'fixedHomeSnoozedDay',
       'firstExpenseCardSnoozedDay',
+      'createdAt',
+      'completedAt',
+      'cycleStart',
+      'goalPromptedCycleStarts',
+      'targetDate',
       'recordedDays',
     };
     if (value is String && dateKeys.contains(key)) {
@@ -2143,10 +2546,21 @@ class SobraStore extends ChangeNotifier {
     );
     final ids = <String>{};
     void id(String value) => require(value.isNotEmpty && ids.add(value));
+    if (_activeSavingsGoal != null) id(_activeSavingsGoal!.id);
+    for (final completed in _completedSavingsGoals) {
+      id(completed.goal.id);
+    }
     for (final entry in _transactions) {
       id(entry.id);
       require(entry.amountCentavos > 0);
       require((entry.recurringId == null) == (entry.occurrenceDate == null));
+      final goalId = entry.savingsGoalId;
+      require(
+        goalId == null ||
+            (goalId.isNotEmpty &&
+                goalId.length <= 256 &&
+                entry.recurringId == null),
+      );
       final photo = entry.receiptFileName;
       require(
         photo == null ||
@@ -2184,10 +2598,88 @@ class SobraStore extends ChangeNotifier {
             record.fixedPaidCentavos >= 0,
       );
     }
+    _validateSavingsGoalState();
     require(
       starterCharacterId == null ||
           CatalogPreviewData.isStarter(starterCharacterId!),
     );
+  }
+
+  /// Validate the additive goal records on local restore as well as import.
+  /// Legacy ledger validation stays unchanged for installs predating goals.
+  void _validateSavingsGoalState() {
+    void require(bool valid) {
+      if (!valid) throw const FormatException('Invalid savings goal state');
+    }
+
+    final ids = <String>{};
+    void id(String value) => require(value.isNotEmpty && ids.add(value));
+    if (_activeSavingsGoal != null) id(_activeSavingsGoal!.id);
+    for (final entry in _completedSavingsGoals) {
+      id(entry.goal.id);
+    }
+    final ledgerIds = {
+      ..._transactions.map((entry) => entry.id),
+      ..._incomes.map((entry) => entry.id),
+      ..._cashReconciliations.map((entry) => entry.id),
+      ..._xpEvents.map((entry) => entry.id),
+      ..._recurringExpenses.map((entry) => entry.id),
+    };
+    require(!ids.any(ledgerIds.contains));
+    ids.addAll(ledgerIds);
+    final cycleStarts = _cycleRecords.map((entry) => entry.start).toSet();
+    require(_goalCycleIncomeBaselines.length == cycleStarts.length);
+    final incomeIds = _incomes.map((entry) => entry.id).toSet();
+    for (final baseline in _goalCycleIncomeBaselines.entries) {
+      require(cycleStarts.contains(baseline.key));
+      for (final entry in baseline.value.entries) {
+        require(entry.key.isNotEmpty && entry.key.length <= 256);
+        require(entry.value > 0 && entry.value <= 9007199254740991);
+        require(incomeIds.contains(entry.key) || !ids.contains(entry.key));
+      }
+    }
+    final allocationKeys = <String>{};
+    final allocatedPerCycle = <DateTime, int>{};
+    final knownGoalIds = {
+      if (_activeSavingsGoal != null) _activeSavingsGoal!.id,
+      for (final completed in _completedSavingsGoals) completed.goal.id,
+    };
+    for (final entry in _goalCycleAllocations) {
+      require(cycleStarts.contains(entry.cycleStart));
+      require(
+        allocationKeys.add('${_cycleKey(entry.cycleStart)}:${entry.goalId}'),
+      );
+      // An orphan goal ID is an intentional reservation after deletion, but
+      // must not collide with the ID of an unrelated ledger entry.
+      require(
+        knownGoalIds.contains(entry.goalId) || !ids.contains(entry.goalId),
+      );
+      allocatedPerCycle.update(
+        entry.cycleStart,
+        (total) => total + entry.amountCentavos,
+        ifAbsent: () => entry.amountCentavos,
+      );
+    }
+    for (final record in _cycleRecords) {
+      require((allocatedPerCycle[record.start] ?? 0) <= record.budgetCentavos);
+    }
+    require(
+      _goalPromptedCycleKeys.every(
+        (key) => cycleStarts.any((start) => _cycleKey(start) == key),
+      ),
+    );
+    for (final entry in _goalCompletionDates.entries) {
+      require(entry.key.isNotEmpty && entry.key.length <= 256);
+      require(knownGoalIds.contains(entry.key) || !ids.contains(entry.key));
+      require(entry.value.year >= 1900 && entry.value.year <= 9999);
+      final goal = _activeSavingsGoal?.id == entry.key
+          ? _activeSavingsGoal
+          : _completedSavingsGoals
+                .where((item) => item.goal.id == entry.key)
+                .map((item) => item.goal)
+                .firstOrNull;
+      require(goal == null || !entry.value.isBefore(goal.createdAt));
+    }
   }
 
   /// Imports only after validation and durable storage. A failed write keeps
@@ -3120,6 +3612,13 @@ class SobraStore extends ChangeNotifier {
     _xpEvents.clear();
     _cycleRecords.clear();
     _recurringExpenses.clear();
+    _activeSavingsGoal = null;
+    _goalCycleAllocations.clear();
+    _completedSavingsGoals.clear();
+    _goalPromptedCycleKeys.clear();
+    _goalCompletionDates.clear();
+    _goalCycleIncomeBaselines.clear();
+    _goalIncomeBaselinesNeedSave = false;
     _cycleBudgetExtras.clear();
     _baseBudgetCentavos = 600000;
     _hasBudget = true;
@@ -3228,6 +3727,23 @@ class SobraStore extends ChangeNotifier {
     _recurringExpenses
       ..clear()
       ..addAll(other._recurringExpenses);
+    _activeSavingsGoal = other._activeSavingsGoal;
+    _goalCycleAllocations
+      ..clear()
+      ..addAll(other._goalCycleAllocations);
+    _completedSavingsGoals
+      ..clear()
+      ..addAll(other._completedSavingsGoals);
+    _goalPromptedCycleKeys
+      ..clear()
+      ..addAll(other._goalPromptedCycleKeys);
+    _goalCompletionDates
+      ..clear()
+      ..addAll(other._goalCompletionDates);
+    _goalCycleIncomeBaselines
+      ..clear()
+      ..addAll(other._goalCycleIncomeBaselines);
+    _goalIncomeBaselinesNeedSave = other._goalIncomeBaselinesNeedSave;
     _cycleBudgetExtras
       ..clear()
       ..addAll(other._cycleBudgetExtras);
@@ -3300,6 +3816,46 @@ class SobraStore extends ChangeNotifier {
   }
 
   void _restore(Map<String, dynamic> json) {
+    final goal = json['activeSavingsGoal'];
+    _activeSavingsGoal = goal == null
+        ? null
+        : SavingsGoal.fromJson(goal as Map<String, dynamic>);
+    _goalCycleAllocations
+      ..clear()
+      ..addAll(
+        (json['goalCycleAllocations'] as List<dynamic>? ?? const []).map(
+          (item) =>
+              SavingsGoalCycleAllocation.fromJson(item as Map<String, dynamic>),
+        ),
+      );
+    _completedSavingsGoals
+      ..clear()
+      ..addAll(
+        (json['completedSavingsGoals'] as List<dynamic>? ?? const []).map(
+          (item) => CompletedSavingsGoal.fromJson(item as Map<String, dynamic>),
+        ),
+      );
+    final prompted =
+        (json['goalPromptedCycleStarts'] as List<dynamic>? ?? const [])
+            .cast<String>();
+    if (prompted.toSet().length != prompted.length) {
+      throw const FormatException('Duplicate goal cycle prompt');
+    }
+    _goalPromptedCycleKeys
+      ..clear()
+      ..addAll(prompted);
+    _goalCompletionDates.clear();
+    for (final item
+        in (json['goalCompletionAcknowledgements'] as List<dynamic>? ??
+            const [])) {
+      final entry = item as Map<String, dynamic>;
+      final id = entry['goalId'] as String;
+      if (_goalCompletionDates.containsKey(id)) {
+        throw const FormatException('Duplicate goal completion');
+      }
+      _validateBackupJson(entry['completedAt'], 'completedAt');
+      _goalCompletionDates[id] = DateTime.parse(entry['completedAt'] as String);
+    }
     _transactions
       ..clear()
       ..addAll(
@@ -3548,10 +4104,54 @@ class SobraStore extends ChangeNotifier {
       for (final category in ExpenseCategory.values)
         category: (limits[category.name] as num?)?.toInt() ?? 0,
     };
+    _goalCycleIncomeBaselines.clear();
+    final baselineJson = json['goalCycleIncomeBaselines'];
+    _goalIncomeBaselinesNeedSave =
+        baselineJson == null && _cycleRecords.isNotEmpty;
+    if (baselineJson == null) {
+      _ensureGoalCycleIncomeBaselines();
+    } else {
+      for (final raw in baselineJson as List<dynamic>) {
+        final entry = raw as Map<String, dynamic>;
+        _validateBackupJson(entry['cycleStart'], 'cycleStart');
+        final start = DateTime.parse(entry['cycleStart'] as String);
+        if (start != dateOnly(start) ||
+            _goalCycleIncomeBaselines.containsKey(start)) {
+          throw const FormatException('Invalid goal income baseline cycle');
+        }
+        final amounts = entry['incomes'] as Map<String, dynamic>;
+        _goalCycleIncomeBaselines[start] = Map.unmodifiable({
+          for (final income in amounts.entries) income.key: income.value as int,
+        });
+      }
+    }
+    _validateSavingsGoalState();
   }
 
   Map<String, Object?> _toJson() => {
-    'schemaVersion': 11,
+    'schemaVersion': 12,
+    'activeSavingsGoal': _activeSavingsGoal?.toJson(),
+    'goalCycleIncomeBaselines': [
+      for (final start in (_goalCycleIncomeBaselines.keys.toList()..sort()))
+        {
+          'cycleStart': start.toIso8601String(),
+          'incomes': _goalCycleIncomeBaselines[start],
+        },
+    ],
+    'goalCycleAllocations': _goalCycleAllocations
+        .map((entry) => entry.toJson())
+        .toList(),
+    'completedSavingsGoals': _completedSavingsGoals
+        .map((entry) => entry.toJson())
+        .toList(),
+    'goalPromptedCycleStarts': _goalPromptedCycleKeys.toList()..sort(),
+    'goalCompletionAcknowledgements': [
+      for (final id in (_goalCompletionDates.keys.toList()..sort()))
+        {
+          'goalId': id,
+          'completedAt': _goalCompletionDates[id]!.toIso8601String(),
+        },
+    ],
     'transactions': _transactions.map((entry) => entry.toJson()).toList(),
     'incomes': _incomes.map((entry) => entry.toJson()).toList(),
     'cashReconciliations': _cashReconciliations
@@ -3667,6 +4267,21 @@ class SobraStore extends ChangeNotifier {
       for (final entry in _incomes) entry.toJson(),
       for (final entry in _recurringExpenses) entry.toJson(),
       for (final entry in _cashReconciliations) entry.toJson(),
+      if (_activeSavingsGoal != null) _activeSavingsGoal!.toJson(),
+      for (final entry in _goalCycleAllocations) entry.toJson(),
+      for (final entry in _completedSavingsGoals) entry.toJson(),
+      // Only user-assigned cycles belong to the ledger fingerprint. Merely
+      // settling another cycle must not disable undoing a backup import.
+      for (final start
+          in (_goalCycleAllocations
+              .map((entry) => entry.cycleStart)
+              .toSet()
+              .toList()
+            ..sort()))
+        {
+          'cycleStart': start.toIso8601String(),
+          'incomes': _goalCycleIncomeBaselines[start],
+        },
     ]);
     // FNV-1a, 32-bit.
     var hash = 0x811c9dc5;
@@ -3703,6 +4318,13 @@ class SobraStore extends ChangeNotifier {
   }
 
   bool _isIdTaken(String id) =>
+      _activeSavingsGoal?.id == id ||
+      _completedSavingsGoals.any((entry) => entry.goal.id == id) ||
+      _goalCycleAllocations.any((entry) => entry.goalId == id) ||
+      _goalCompletionDates.containsKey(id) ||
+      _goalCycleIncomeBaselines.values.any(
+        (incomes) => incomes.containsKey(id),
+      ) ||
       _transactions.any((entry) => entry.id == id) ||
       _incomes.any((entry) => entry.id == id) ||
       _cashReconciliations.any((entry) => entry.id == id) ||

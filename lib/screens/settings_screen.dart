@@ -390,12 +390,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // First in the section: what people look for under "Datos" is a
           // way to take their records elsewhere, and the backup pair below
           // only moves them between copies of Sobrita.
-          _SettingsRow(
-            icon: Icons.ios_share,
-            iconColor: AppColors.teal,
-            label: l10n.settingsCsvExport,
-            value: l10n.settingsCsvExportValue,
-            onTap: () => exportLedger(context, LedgerExportOrigin.settings),
+          ListenableBuilder(
+            listenable: LedgerExport.instance,
+            builder: (context, _) {
+              final busy = LedgerExport.instance.isSharing;
+              return Semantics(
+                enabled: !busy,
+                liveRegion: busy,
+                child: _SettingsRow(
+                  icon: busy ? Icons.hourglass_top : Icons.ios_share,
+                  iconColor: busy ? AppColors.muted : AppColors.teal,
+                  label: l10n.settingsCsvExport,
+                  value: busy
+                      ? l10n.csvExportPreparing
+                      : l10n.settingsCsvExportValue,
+                  onTap: busy
+                      ? null
+                      : () =>
+                            exportLedger(context, LedgerExportOrigin.settings),
+                ),
+              );
+            },
           ),
           _SettingsRow(
             icon: Icons.cloud_upload,

@@ -13,6 +13,7 @@ import '../services/app_telemetry.dart';
 import '../services/app_update_service.dart';
 import '../services/app_version_service.dart';
 import '../services/native_ad_service.dart';
+import '../services/exit_native_ad_service.dart';
 import '../services/release_announcement_service.dart';
 import '../services/sobra_quick_entry.dart';
 import '../services/sobra_widget_sync.dart';
@@ -22,6 +23,8 @@ import '../widgets/gamification_ui.dart';
 import '../widgets/launch_gift_dialog.dart';
 import '../widgets/starter_friend.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/savings_goal_dialog.dart';
+import '../widgets/app_exit_guard.dart';
 import '../widgets/release_announcement.dart';
 import '../widgets/update_prompt.dart';
 import 'budget_screen.dart';
@@ -81,7 +84,9 @@ class AppShellScope extends InheritedWidget {
 }
 
 class AppShell extends StatefulWidget {
-  const AppShell({super.key});
+  const AppShell({super.key, this.exitAds});
+
+  final ExitNativeAds? exitAds;
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -93,6 +98,9 @@ class _AppShellState extends State<AppShell> {
   AppUpdates? _updates;
   ReleaseAnnouncements? _announcements;
   bool _xpNoticeScheduled = false;
+  bool _xpNoticePresenting = false;
+  bool _goalNoticeScheduled = false;
+  bool _goalNoticePresenting = false;
   bool _firstExpenseScheduled = false;
   bool _firstExpensePresenting = false;
   bool _launchGiftScheduled = false;
@@ -171,6 +179,7 @@ class _AppShellState extends State<AppShell> {
     );
     _scheduleFirstExpenseGuide();
     _scheduleXpNotice();
+    _scheduleSavingsGoalNotice();
     _scheduleLaunchGiftNotice();
     _scheduleStarterArrival();
     _scheduleReviewRequest();
@@ -215,6 +224,7 @@ class _AppShellState extends State<AppShell> {
   void _onStoreChanged() {
     _scheduleFirstExpenseGuide();
     _scheduleXpNotice();
+    _scheduleSavingsGoalNotice();
     _scheduleLaunchGiftNotice();
     _scheduleStarterArrival();
     _scheduleReviewRequest();
@@ -243,6 +253,8 @@ class _AppShellState extends State<AppShell> {
     final announcements = _announcements;
     if (_announcementScheduled ||
         _announcementPresenting ||
+        _goalNoticesAhead ||
+        _xpNoticePresenting ||
         announcements == null ||
         !_announcementDue ||
         _firstExpenseAhead ||
@@ -254,7 +266,13 @@ class _AppShellState extends State<AppShell> {
     _announcementScheduled = true;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _announcementScheduled = false;
-      if (!mounted || !_announcementDue) return;
+      if (!mounted ||
+          !_announcementDue ||
+          _goalNoticesAhead ||
+          _xpNoticePresenting ||
+          !(ModalRoute.of(context)?.isCurrent ?? true)) {
+        return;
+      }
       _announcementPresenting = true;
       try {
         await showReleaseAnnouncement(context, announcements: announcements);
@@ -290,6 +308,8 @@ class _AppShellState extends State<AppShell> {
   void _scheduleUpdatePrompt() {
     final updates = _updates;
     if (_updatePromptScheduled ||
+        _goalNoticesAhead ||
+        _xpNoticePresenting ||
         updates == null ||
         !updates.shouldPrompt ||
         _firstExpenseAhead ||
@@ -308,7 +328,13 @@ class _AppShellState extends State<AppShell> {
       // won, and a dialog that is one line taller on some launches than on
       // others looks like a bug to the person reading it.
       await _versionReady;
-      if (!mounted || !updates.shouldPrompt) return;
+      if (!mounted ||
+          !updates.shouldPrompt ||
+          _goalNoticesAhead ||
+          _xpNoticePresenting ||
+          !(ModalRoute.of(context)?.isCurrent ?? true)) {
+        return;
+      }
       await showUpdatePrompt(
         context,
         updates: updates,
@@ -361,6 +387,8 @@ class _AppShellState extends State<AppShell> {
         (ModalRoute.of(context)?.isCurrent ?? true) &&
         !_firstExpenseAhead &&
         store.pendingXpNotice == null &&
+        !_xpNoticePresenting &&
+        !_goalNoticesAhead &&
         !store.launchGiftNoticePending &&
         store.starterArrivalId == null &&
         !_launchGiftPresenting &&
@@ -424,6 +452,7 @@ class _AppShellState extends State<AppShell> {
       _firstExpensePresenting = false;
       if (mounted) {
         _scheduleXpNotice();
+        _scheduleSavingsGoalNotice();
         _scheduleLaunchGiftNotice();
         _scheduleStarterArrival();
         _scheduleAnnouncement();
@@ -435,6 +464,8 @@ class _AppShellState extends State<AppShell> {
 
   void _scheduleXpNotice() {
     if (_xpNoticeScheduled ||
+        _xpNoticePresenting ||
+        _goalNoticePresenting ||
         _firstExpenseAhead ||
         _store?.pendingXpNotice == null) {
       return;
@@ -442,9 +473,15 @@ class _AppShellState extends State<AppShell> {
     _xpNoticeScheduled = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _xpNoticeScheduled = false;
-      if (!mounted) return;
+      if (!mounted ||
+          _goalNoticePresenting ||
+          !(ModalRoute.of(context)?.isCurrent ?? true)) {
+        return;
+      }
       unawaited(
         _presentXpNotice().whenComplete(() {
+          if (!mounted) return;
+          _scheduleSavingsGoalNotice();
           _scheduleLaunchGiftNotice();
           _scheduleStarterArrival();
           if (mounted) _scheduleReviewRequest();
@@ -455,6 +492,8 @@ class _AppShellState extends State<AppShell> {
 
   void _scheduleLaunchGiftNotice() {
     if (_launchGiftScheduled ||
+        _goalNoticesAhead ||
+        _xpNoticePresenting ||
         _launchGiftPresenting ||
         _firstExpenseAhead ||
         !(_store?.launchGiftNoticePending ?? false) ||
@@ -470,7 +509,13 @@ class _AppShellState extends State<AppShell> {
 
   Future<void> _presentLaunchGift() async {
     final store = _store;
-    if (_launchGiftPresenting || store == null || !mounted) return;
+    if (_launchGiftPresenting ||
+        store == null ||
+        !mounted ||
+        _goalNoticesAhead ||
+        _xpNoticePresenting) {
+      return;
+    }
     _launchGiftPresenting = true;
     try {
       if (!store.launchGiftNoticePending) return;
@@ -488,6 +533,7 @@ class _AppShellState extends State<AppShell> {
     } finally {
       _launchGiftPresenting = false;
       if (mounted) {
+        _scheduleSavingsGoalNotice();
         _scheduleStarterArrival();
         _scheduleAnnouncement();
         _scheduleUpdatePrompt();
@@ -502,6 +548,8 @@ class _AppShellState extends State<AppShell> {
   void _scheduleStarterArrival() {
     final store = _store;
     if (_starterArrivalScheduled ||
+        _goalNoticesAhead ||
+        _xpNoticePresenting ||
         _starterArrivalPresenting ||
         _launchGiftPresenting ||
         _firstExpenseAhead ||
@@ -521,7 +569,13 @@ class _AppShellState extends State<AppShell> {
   Future<void> _presentStarterArrival() async {
     final store = _store;
     final arrived = store?.starterArrivalId;
-    if (_starterArrivalPresenting || store == null || arrived == null) return;
+    if (_starterArrivalPresenting ||
+        store == null ||
+        arrived == null ||
+        _goalNoticesAhead ||
+        _xpNoticePresenting) {
+      return;
+    }
     _starterArrivalPresenting = true;
     try {
       final switchTo = await showStarterArrivalDialog(
@@ -537,6 +591,7 @@ class _AppShellState extends State<AppShell> {
     } finally {
       _starterArrivalPresenting = false;
       if (mounted) {
+        _scheduleSavingsGoalNotice();
         _scheduleAnnouncement();
         _scheduleUpdatePrompt();
         _scheduleReviewRequest();
@@ -544,7 +599,82 @@ class _AppShellState extends State<AppShell> {
     }
   }
 
+  bool get _goalNoticesAhead =>
+      _goalNoticeScheduled ||
+      _goalNoticePresenting ||
+      _store?.pendingSavingsGoalCycle != null ||
+      _store?.pendingSavingsGoalCompletionId != null;
+
+  void _scheduleSavingsGoalNotice() {
+    if (!mounted ||
+        _goalNoticeScheduled ||
+        _goalNoticePresenting ||
+        _xpNoticePresenting ||
+        _firstExpenseAhead ||
+        _store?.pendingXpNotice != null ||
+        _launchGiftPresenting ||
+        _starterArrivalPresenting ||
+        _announcementPresenting ||
+        _selected != AppTab.home ||
+        !_goalNoticesAhead) {
+      return;
+    }
+    _goalNoticeScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _goalNoticeScheduled = false;
+      if (!mounted ||
+          _goalNoticePresenting ||
+          _xpNoticePresenting ||
+          _firstExpenseAhead ||
+          _launchGiftPresenting ||
+          _starterArrivalPresenting ||
+          _announcementPresenting ||
+          _store?.pendingXpNotice != null ||
+          _selected != AppTab.home ||
+          !(ModalRoute.of(context)?.isCurrent ?? true)) {
+        return;
+      }
+      final store = _store;
+      if (store == null) return;
+      _goalNoticePresenting = true;
+      final completion = store.pendingSavingsGoalCompletionId;
+      final cycle = store.pendingSavingsGoalCycle;
+      try {
+        if (completion != null) {
+          await showSavingsGoalCompletion(context);
+        } else if (cycle != null) {
+          await showCycleGoalAllocation(context, cycleStart: cycle.start);
+        }
+      } finally {
+        _goalNoticePresenting = false;
+        if (mounted) {
+          // Retry a different queued notice, never loop on a failed save.
+          if (completion != store.pendingSavingsGoalCompletionId ||
+              cycle?.start != store.pendingSavingsGoalCycle?.start) {
+            _scheduleSavingsGoalNotice();
+          }
+          _scheduleXpNotice();
+          _scheduleLaunchGiftNotice();
+          _scheduleStarterArrival();
+          _scheduleAnnouncement();
+          _scheduleUpdatePrompt();
+          _scheduleReviewRequest();
+        }
+      }
+    });
+  }
+
   Future<void> _presentXpNotice() async {
+    if (_xpNoticePresenting) return;
+    _xpNoticePresenting = true;
+    try {
+      await _presentXpNoticeContent();
+    } finally {
+      _xpNoticePresenting = false;
+    }
+  }
+
+  Future<void> _presentXpNoticeContent() async {
     final notice = _store?.takePendingXpNotice();
     if (notice == null || !mounted) return;
     final newLevel = notice.newLevel;
@@ -567,9 +697,22 @@ class _AppShellState extends State<AppShell> {
       if (!mounted) return;
     }
     if (notice.kind == XpNoticeKind.cyclesClosed) {
-      // The celebration of a closed cycle is a screen, not a snack bar.
-      // Ads are not played here; the card only opens the collection.
       final record = _store?.cycleRecords.firstOrNull;
+      // A leftover that can still go to a goal gets the goal popup, which
+      // also carries the cycle's XP and a link to the full summary.
+      if (record != null &&
+          record.resultCentavos > 0 &&
+          _store?.pendingSavingsGoalCycle?.start == record.start) {
+        _changeSelection(AppTab.home);
+        await showCycleGoalAllocation(
+          context,
+          cycleStart: record.start,
+          settlement: notice,
+        );
+        return;
+      }
+      // Anything else (an overrun, or a leftover with nothing left to
+      // assign) gets the settlement screen, so a closed cycle is never silent.
       await Navigator.of(context).push(
         MaterialPageRoute<void>(
           builder: (_) => SettlementScreen(notice: notice, record: record),
@@ -601,17 +744,21 @@ class _AppShellState extends State<AppShell> {
     );
     _noteTabTransition(tab);
     setState(() => _selected = tab);
-    if (tab == AppTab.home) _scheduleReviewRequest();
+    if (tab == AppTab.home) {
+      _scheduleSavingsGoalNotice();
+      _scheduleReviewRequest();
+    }
   }
 
   void _noteTabTransition(AppTab next) {
-    final nativeAds = NativeAdScope.maybeOf(context);
-    if (_selected == AppTab.movements && next != AppTab.movements) {
-      nativeAds?.endVisit();
-    }
-    if (_selected != AppTab.movements && next == AppTab.movements) {
-      nativeAds?.startVisit();
-    }
+    _noteVisit(NativeAdScope.maybeOf(context), AppTab.movements, next);
+    _noteVisit(BudgetNativeAdScope.maybeOf(context), AppTab.budget, next);
+  }
+
+  /// A visit is a real move into [tab]; tapping it again is not a new one.
+  void _noteVisit(NativeAds? ads, AppTab tab, AppTab next) {
+    if (_selected == tab && next != tab) ads?.endVisit();
+    if (_selected != tab && next == tab) ads?.startVisit();
   }
 
   @override
@@ -632,35 +779,38 @@ class _AppShellState extends State<AppShell> {
     return AppShellScope(
       select: _select,
       current: _selected,
-      child: Scaffold(
-        backgroundColor: AppColors.paper,
-        body: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 520),
-            child: DecoratedBox(
-              decoration: const BoxDecoration(color: AppColors.surface),
-              child: Column(
-                children: [
-                  // Inicio only. The line is a small interruption on the
-                  // screen the app opens on, and would be a running one if it
-                  // sat above every tab.
-                  if (_selected == AppTab.home &&
-                      (_updates?.showBanner ?? false))
-                    UpdateBanner(
-                      onUpdate: () => unawaited(_openStoreFromBanner()),
-                      onDismiss: () => _updates?.hideBanner(),
+      child: AppExitGuard(
+        ads: widget.exitAds,
+        child: Scaffold(
+          backgroundColor: AppColors.paper,
+          body: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 520),
+              child: DecoratedBox(
+                decoration: const BoxDecoration(color: AppColors.surface),
+                child: Column(
+                  children: [
+                    // Inicio only. The line is a small interruption on the
+                    // screen the app opens on, and would be a running one if it
+                    // sat above every tab.
+                    if (_selected == AppTab.home &&
+                        (_updates?.showBanner ?? false))
+                      UpdateBanner(
+                        onUpdate: () => unawaited(_openStoreFromBanner()),
+                        onDismiss: () => _updates?.hideBanner(),
+                      ),
+                    Expanded(
+                      child: IndexedStack(
+                        index: _selected.index,
+                        children: screens,
+                      ),
                     ),
-                  Expanded(
-                    child: IndexedStack(
-                      index: _selected.index,
-                      children: screens,
+                    PixelBottomNavigation(
+                      selected: _selected,
+                      onSelected: _select,
                     ),
-                  ),
-                  PixelBottomNavigation(
-                    selected: _selected,
-                    onSelected: _select,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

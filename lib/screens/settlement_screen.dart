@@ -11,6 +11,7 @@ import '../services/app_share.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/savings_goal_dialog.dart';
 import 'collection_screen.dart';
 
 /// The moment a cycle closes, not the list of past ones.
@@ -20,11 +21,7 @@ import 'collection_screen.dart';
 /// left money over also offers the share sheet — the one moment worth telling
 /// a friend about, so it is not offered after one that ran over.
 class SettlementScreen extends StatelessWidget {
-  const SettlementScreen({
-    super.key,
-    required this.notice,
-    this.record,
-  });
+  const SettlementScreen({super.key, required this.notice, this.record});
 
   final XpNotice notice;
   final CycleRecord? record;
@@ -114,6 +111,22 @@ class SettlementScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (closed != null &&
+                    store.availableGoalAllocationForCycle(closed.start) >
+                        0) ...[
+                  const SizedBox(height: 14),
+                  PixelButton(
+                    key: const ValueKey('settlement-goal-allocate'),
+                    label: store.goalAllocationForCycle(closed.start) > 0
+                        ? l10n.goalChangeAmount
+                        : l10n.goalAllocateFromCycle,
+                    icon: Icons.flag_outlined,
+                    onPressed: () => showCycleGoalAllocation(
+                      context,
+                      cycleStart: closed.start,
+                    ),
+                  ),
+                ],
                 if (recommended != null) ...[
                   const SizedBox(height: 14),
                   PixelCard(

@@ -108,7 +108,19 @@ void main() {
     await tester.tap(find.text('Seguir'));
     await tester.pumpAndSettle();
     expect(find.text('¡NIVEL $level!'), findsNothing);
-    expect(find.byType(SettlementScreen), findsOneWidget);
+    // A fully tracked positive cycle now offers the home goal popup after
+    // the level celebration. Its dismissal is durable and does not expose
+    // a backlog of older completed cycles.
+    expect(find.byType(SettlementScreen), findsNothing);
+    expect(find.byKey(const ValueKey('goal-allocation-dialog')), findsOneWidget);
+    expect(find.byKey(const ValueKey('goal-allocation-create')), findsOneWidget);
+    expect(store.pendingSavingsGoalCycle, isNull);
+    await tester.tap(find.byKey(const ValueKey('goal-allocation-later')));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byKey(const ValueKey('goal-allocation-dialog')), findsNothing);
+    expect(find.text('¡NIVEL $level!'), findsNothing);
+    expect(store.pendingSavingsGoalCycle, isNull);
     expect(tester.takeException(), isNull);
   });
 

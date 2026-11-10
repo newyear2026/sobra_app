@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -9,9 +10,23 @@ import '../l10n/generated/app_localizations.dart';
 import '../state/sobra_store.dart';
 import 'app_telemetry.dart';
 import 'ledger_csv.dart';
+import 'ledger_export_data.dart';
+import 'ledger_xlsx.dart';
 
 /// Where the export was started from.
 enum LedgerExportOrigin { movements, settings }
+
+enum LedgerExportFormat {
+  csv('csv', 'text/csv'),
+  xlsx(
+    'xlsx',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  );
+
+  const LedgerExportFormat(this.extension, this.mimeType);
+  final String extension;
+  final String mimeType;
+}
 
 /// How an export ended, for the caller's message and for telemetry.
 enum LedgerExportResult {
@@ -38,6 +53,10 @@ typedef LedgerFileSender =
 /// The cache folder the export is written to, under the app's temp directory.
 const ledgerExportFolder = 'ledger_export';
 
+// Serialize cache replacement even if a caller bypasses the shared service.
+// A failed write must not prevent the next export from trying again.
+Future<void> _fileWrites = Future<void>.value();
+
 /// Writes [bytes] as [fileName] in [folder], leaving nothing else in it.
 ///
 /// One file at a time, deliberately: handing share_plus bytes instead of a
@@ -48,12 +67,16 @@ Future<File> writeLedgerExportFile(
   Directory folder,
   Uint8List bytes,
   String fileName,
-) async {
-  if (await folder.exists()) await folder.delete(recursive: true);
-  await folder.create(recursive: true);
-  final file = File('${folder.path}/$fileName');
-  await file.writeAsBytes(bytes, flush: true);
-  return file;
+) {
+  final write = _fileWrites.then((_) async {
+    if (await folder.exists()) await folder.delete(recursive: true);
+    await folder.create(recursive: true);
+    final file = File('${folder.path}/$fileName');
+    await file.writeAsBytes(bytes, flush: true);
+    return file;
+  });
+  _fileWrites = write.then<void>((_) {}, onError: (Object _, StackTrace _) {});
+  return write;
 }
 
 Future<ShareResultStatus> _shareWithPlatform(
@@ -67,14 +90,22 @@ Future<ShareResultStatus> _shareWithPlatform(
     fileName,
   );
   final result = await SharePlus.instance.share(
-    ShareParams(files: [XFile(file.path, mimeType: 'text/csv')]),
+    ShareParams(
+      files: [
+        XFile(
+          file.path,
+          mimeType: LedgerExportFormat.values
+              .firstWhere((format) => fileName.endsWith('.${format.extension}'))
+              .mimeType,
+        ),
+      ],
+    ),
   );
   return result.status;
 }
 
-/// "Export to CSV": builds the file and hands it straight to the share
-/// sheet, with no screen in between — the same shape as "tell a friend".
-class LedgerExport {
+/// Shares one export at a time, including while its format picker is open.
+class LedgerExport extends ChangeNotifier {
   LedgerExport({LedgerFileSender? send, DateTime Function()? clock})
     : _send = send ?? _shareWithPlatform,
       _clock = clock ?? DateTime.now;
@@ -83,37 +114,96 @@ class LedgerExport {
 
   final LedgerFileSender _send;
   final DateTime Function() _clock;
+  Future<LedgerExportResult>? _pending;
+
+  /// Shared by both entry points, including while the native sheet is open.
+  bool get isSharing => _pending != null;
 
   Future<LedgerExportResult> share(
     AppLocalizations l10n,
     SobraStore store,
+    LedgerExportOrigin origin, {
+    LedgerExportFormat format = LedgerExportFormat.csv,
+    Future<LedgerExportFormat?> Function()? chooseFormat,
+  }) {
+    final pending = _pending;
+    if (pending != null) return pending;
+    final completion = Completer<LedgerExportResult>();
+    _pending = completion.future;
+    notifyListeners();
+    unawaited(
+      _finishShare(l10n, store, origin, completion, format, chooseFormat),
+    );
+    return completion.future;
+  }
+
+  Future<void> _finishShare(
+    AppLocalizations l10n,
+    SobraStore store,
     LedgerExportOrigin origin,
+    Completer<LedgerExportResult> completion,
+    LedgerExportFormat format,
+    Future<LedgerExportFormat?> Function()? chooseFormat,
   ) async {
-    final result = await _share(l10n, store);
-    await AppTelemetry.instance.event(TelemetryEvent.ledgerExported, {
-      'origin': origin,
-      'result': result,
-    });
-    return result;
+    try {
+      LedgerExportResult result;
+      if (store.transactions.isEmpty && store.incomes.isEmpty) {
+        result = LedgerExportResult.empty;
+      } else {
+        final selected = chooseFormat == null ? format : await chooseFormat();
+        result = selected == null
+            ? LedgerExportResult.dismissed
+            : await _share(l10n, store, selected);
+      }
+      await AppTelemetry.instance.event(TelemetryEvent.ledgerExported, {
+        'origin': origin,
+        'result': result,
+      });
+      completion.complete(result);
+    } catch (error) {
+      debugPrint('Sobra: could not choose an export: ${error.runtimeType}');
+      completion.complete(LedgerExportResult.failed);
+    } finally {
+      _pending = null;
+      notifyListeners();
+    }
   }
 
   Future<LedgerExportResult> _share(
     AppLocalizations l10n,
     SobraStore store,
+    LedgerExportFormat format,
   ) async {
     final expenses = store.transactions;
     final incomes = store.incomes;
     if (expenses.isEmpty && incomes.isEmpty) return LedgerExportResult.empty;
     try {
-      final csv = ledgerCsv(
-        l10n: l10n,
-        currency: store.currency,
-        expenses: expenses,
-        incomes: incomes,
-      );
+      final bytes = switch (format) {
+        LedgerExportFormat.csv => Uint8List.fromList(
+          utf8.encode(
+            ledgerCsv(
+              l10n: l10n,
+              currency: store.currency,
+              expenses: expenses,
+              incomes: incomes,
+            ),
+          ),
+        ),
+        LedgerExportFormat.xlsx => await compute(
+          ledgerXlsx,
+          LedgerExportData(
+            l10n: l10n,
+            currency: store.currency,
+            expenses: expenses,
+            incomes: incomes,
+          ),
+        ),
+      };
       final status = await _send(
-        Uint8List.fromList(utf8.encode(csv)),
-        ledgerCsvFileName(_clock()),
+        bytes,
+        ledgerCsvFileName(
+          _clock(),
+        ).replaceFirst(RegExp(r'\.csv$'), '.${format.extension}'),
       );
       return switch (status) {
         ShareResultStatus.success => LedgerExportResult.shared,

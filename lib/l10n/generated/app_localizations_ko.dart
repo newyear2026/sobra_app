@@ -9,6 +9,24 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
+  String get exitAppTitle => '앱을 종료할까요?';
+
+  @override
+  String get exitAppBody => '다음에 또 만나요.';
+
+  @override
+  String get exitAppAction => '종료';
+
+  @override
+  String get startupTagline => '작은 기록이\n차곡차곡 쌓여요';
+
+  @override
+  String get startupLoading => '불러오는 중…';
+
+  @override
+  String get startupFailed => '앱을 시작하지 못했어요.\n다시 시도해 주세요.';
+
+  @override
   String get categoryFood => '식비';
 
   @override
@@ -1617,13 +1635,34 @@ class AppLocalizationsKo extends AppLocalizations {
   String get receiptFailed => '사진을 저장하지 못했어요.';
 
   @override
-  String get receiptBackupNote => 'CSV와 백업에는 영수증 사진이 포함되지 않아요.';
+  String get receiptBackupNote => '내보내기 파일과 백업에는 영수증 사진이 포함되지 않아요.';
 
   @override
-  String get csvExportTooltip => 'CSV로 내보내기';
+  String get csvExportTooltip => '내역 내보내기';
 
   @override
-  String get settingsCsvExport => '내역 내보내기 (CSV)';
+  String get exportFormatTitle => '내보내기 형식';
+
+  @override
+  String get exportAllHistory => '전체 내역을 내보내요.';
+
+  @override
+  String get exportCsvTitle => 'CSV (.csv)';
+
+  @override
+  String get exportCsvDescription => '다른 앱에 가져올 때 · 숫자 인식은 지역 설정에 따라 달라요.';
+
+  @override
+  String get exportExcelTitle => 'Excel (.xlsx)';
+
+  @override
+  String get exportExcelDescription => 'Excel·Google Sheets에서 바로 계산할 수 있어요.';
+
+  @override
+  String get csvExportPreparing => '준비 중…';
+
+  @override
+  String get settingsCsvExport => '내역 내보내기';
 
   @override
   String get settingsCsvExportValue => '공유';
@@ -2751,4 +2790,377 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get costumeLittleGhost => '꼬마 유령';
+
+  @override
+  String get goalTitle => '내 목표';
+
+  @override
+  String get goalEmptyPrompt => '무엇을 위해 모으고 싶나요?';
+
+  @override
+  String get goalCreate => '목표 만들기';
+
+  @override
+  String get goalEdit => '목표 수정';
+
+  @override
+  String get goalNameLabel => '목표 이름';
+
+  @override
+  String get goalNameHint => '예: 새 운동화';
+
+  @override
+  String get goalNameRequired => '목표 이름을 60자 이내로 입력해 주세요.';
+
+  @override
+  String get goalTargetAmount => '목표 금액';
+
+  @override
+  String get goalTargetAmountInvalid => '0보다 큰 금액을 입력해 주세요.';
+
+  @override
+  String get goalStartingAmount => '이미 모은 금액';
+
+  @override
+  String get goalStartingHint => '생활비와 따로 모아 둔 돈만 입력해 주세요.';
+
+  @override
+  String get goalStartingAmountInvalid => '0 이상의 금액을 입력해 주세요.';
+
+  @override
+  String get goalOptionalPlan => '저축 계획 (선택)';
+
+  @override
+  String get goalTargetDate => '목표 날짜';
+
+  @override
+  String get goalDateUnset => '나중에 설정';
+
+  @override
+  String get goalDateClear => '날짜 지우기';
+
+  @override
+  String get goalProductLink => '상품 링크';
+
+  @override
+  String get goalProductLinkHint => '상품 링크를 붙여넣어 주세요';
+
+  @override
+  String get goalPasteLink => '링크 붙여넣기';
+
+  @override
+  String get goalOpenProduct => '상품 페이지 보기';
+
+  @override
+  String get goalImportFromLink => '링크에서 정보 가져오기';
+
+  @override
+  String get goalManualEntry => '직접 입력하기';
+
+  @override
+  String get goalPhotoRemove => '사진 삭제';
+
+  @override
+  String get goalPriceReview =>
+      '가져온 사진과 금액을 확인해 주세요. 배송비 등을 포함해 수정할 수 있어요. 가격은 자동 갱신되지 않아요.';
+
+  @override
+  String goalCurrencyMismatch(String currency) {
+    return '상품 가격은 $currency 기준이에요. 앱 통화의 목표 금액을 직접 입력해 주세요.';
+  }
+
+  @override
+  String get goalSaved => '목표를 저장했어요';
+
+  @override
+  String get goalSave => '목표 저장하기';
+
+  @override
+  String get goalDelete => '목표 삭제';
+
+  @override
+  String get goalDeleteTitle => '이 목표를 삭제할까요?';
+
+  @override
+  String get goalDeleteBody => '목표만 삭제하며 수입·지출 기록은 그대로 유지해요.';
+
+  @override
+  String goalRemaining(String amount) {
+    return '$amount 더 모으면 돼요';
+  }
+
+  @override
+  String get goalReached => '목표를 달성했어요!';
+
+  @override
+  String get goalRecordSavings => '저축 기록하기';
+
+  @override
+  String get goalProgressExplanation =>
+      '시작 금액과 목표를 만든 뒤 기록한 저축 수입, 주기 마감에서 확인해 반영한 금액이 합산돼요. 실제 돈이 이체되지는 않아요.';
+
+  @override
+  String get goalBrowserTitle => '상품 확인';
+
+  @override
+  String get goalBrowserInstructions =>
+      '상품 화면을 연 뒤 아래 버튼을 눌러 주세요. 쇼핑몰에서 보안 확인을 요청하면 직접 완료해 주세요.';
+
+  @override
+  String get goalBrowserRead => '상품 정보 읽기';
+
+  @override
+  String get goalBrowserManual => '직접 입력으로 계속';
+
+  @override
+  String get goalBrowserLoading => '쇼핑몰을 여는 중…';
+
+  @override
+  String get goalBrowserLoadFailed => '페이지를 열지 못했어요. 다시 시도하거나 정보를 직접 입력해 주세요.';
+
+  @override
+  String get goalBrowserRetry => '다시 시도';
+
+  @override
+  String get goalBrowserVerification =>
+      '쇼핑몰에서 보안 확인을 요청했어요. 직접 완료하고 상품 화면이 보이면 정보를 다시 읽어 주세요.';
+
+  @override
+  String get goalBrowserNoProduct =>
+      '상품 정보를 명확하게 확인하지 못했어요. 상품 페이지에서 다시 시도하거나 직접 입력해 주세요.';
+
+  @override
+  String get goalBrowserUnsupported =>
+      '이 기기에서는 앱 안에서 쇼핑몰을 열 수 없어요. 상품 정보를 직접 입력할 수 있어요.';
+
+  @override
+  String get goalInvalidLink => 'https://로 시작하는 올바른 상품 링크를 붙여넣어 주세요.';
+
+  @override
+  String get goalChooseType => '어떤 목표를 만들까요?';
+
+  @override
+  String get goalAmountType => '금액 목표';
+
+  @override
+  String get goalAmountTypeDescription => '비상금, 여행 자금처럼 원하는 금액을 모아요.';
+
+  @override
+  String get goalProductType => '사고 싶은 물건';
+
+  @override
+  String get goalProductTypeDescription => '상품 링크로 사진과 가격을 가져올 수 있어요.';
+
+  @override
+  String get goalChangeType => '목표 종류 변경';
+
+  @override
+  String get goalAmountNameHint => '예: 1억 모으기, 비상금, 여행 자금';
+
+  @override
+  String get goalAmountIntro => '사진이나 링크 없이 이름과 목표 금액만 입력하세요.';
+
+  @override
+  String get goalCyclePopupTitle => '이번 주기 마감';
+
+  @override
+  String goalCycleLeftover(String amount) {
+    return '$amount 남았어요!';
+  }
+
+  @override
+  String goalCycleApplyTo(String name) {
+    return '‘$name’에 모아볼까요?';
+  }
+
+  @override
+  String get goalCurrentAmount => '현재 모은 금액';
+
+  @override
+  String get goalAfterAmount => '반영 후 금액';
+
+  @override
+  String goalAllocateAll(String amount) {
+    return '$amount 전부 모으기';
+  }
+
+  @override
+  String goalAllocateAmount(String amount) {
+    return '$amount 목표에 반영';
+  }
+
+  @override
+  String get goalChangeAmount => '금액 바꾸기';
+
+  @override
+  String get goalLater => '나중에';
+
+  @override
+  String get goalAllocationNotice => '목표에 기록되며, 실제 돈이 이체되지는 않아요.';
+
+  @override
+  String get goalNoGoalInvitation => '이 돈으로 첫 목표를 시작해볼까요?';
+
+  @override
+  String get goalNoGoalExamples => '비상금 · 여행 · 사고 싶은 물건';
+
+  @override
+  String get goalCreateAndAllocate => '목표 만들고 모으기';
+
+  @override
+  String get goalCreateThenConfirm => '목표를 만든 뒤, 모을 금액을 확인하고 반영해요.';
+
+  @override
+  String get goalAllocationAmount => '이번에 모을 금액';
+
+  @override
+  String goalAllocationMaximum(String amount) {
+    return '최대 $amount까지 기록할 수 있어요';
+  }
+
+  @override
+  String goalAllocationInvalid(String amount) {
+    return '0보다 크고 $amount 이하인 금액을 입력해 주세요.';
+  }
+
+  @override
+  String goalAllocationSaved(String amount) {
+    return '목표에 $amount 반영했어요';
+  }
+
+  @override
+  String get goalAllocateFromCycle => '목표에 모으기';
+
+  @override
+  String goalCycleAllocated(String amount) {
+    return '목표에 기록한 금액 $amount';
+  }
+
+  @override
+  String get goalCompleted => '달성 완료';
+
+  @override
+  String get goalCompletionTitle => '목표 달성';
+
+  @override
+  String goalCompletionHeadline(String name) {
+    return '‘$name’ 목표를 달성했어요!';
+  }
+
+  @override
+  String get goalCompletionBody => '차곡차곡 모은 기록으로 해냈어요.';
+
+  @override
+  String get goalNewGoal => '새 목표 만들기';
+
+  @override
+  String get goalCompletionKept => '달성한 목표는 기록에 남아요.';
+
+  @override
+  String get goalCompletedHistory => '달성한 목표';
+
+  @override
+  String goalCompletedOn(String date) {
+    return '$date 달성';
+  }
+
+  @override
+  String get goalNoCompletedHistory => '아직 달성한 목표가 없어요.';
+
+  @override
+  String get goalCycleUnavailable => '이 주기에 모을 수 있는 금액이 없어요.';
+
+  @override
+  String get goalNextGoalInvitation => '남은 돈으로 다음 목표를 시작해볼까요?';
+
+  @override
+  String goalCardDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'D-$days',
+      zero: 'D-DAY',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String goalCardUntil(String date, String amount) {
+    return '$date까지 $amount 더';
+  }
+
+  @override
+  String goalCardDatePassed(String date, String amount) {
+    return '$date 지났어요 · $amount 더';
+  }
+
+  @override
+  String goalCardPerCycle(String date, String amount) {
+    return '$date까지 주기마다 $amount';
+  }
+
+  @override
+  String get goalPurchaseAction => '목표로 샀어요';
+
+  @override
+  String get goalPurchaseTitle => '목표로 샀어요';
+
+  @override
+  String get goalPurchaseAmount => '산 금액';
+
+  @override
+  String goalPurchaseAmountHelper(String amount) {
+    return '모은 돈 $amount까지';
+  }
+
+  @override
+  String get goalPurchaseRefreshPrice => '링크에서 지금 가격 다시 읽기';
+
+  @override
+  String goalPurchasePriceRead(String amount) {
+    return '오늘 가격 $amount';
+  }
+
+  @override
+  String get goalPurchasePriceMissing => '가격을 찾지 못했어요. 직접 입력해 주세요.';
+
+  @override
+  String get goalPurchaseSaved => '목표에 모은 돈';
+
+  @override
+  String get goalPurchaseLeft => '남는 돈';
+
+  @override
+  String get goalPurchaseOutsideBudget =>
+      '모아 둔 돈으로 산 거라 오늘 남은 돈과 이번 주기 예산은 그대로예요.';
+
+  @override
+  String goalPurchaseTooMuch(String amount) {
+    return '모은 돈은 $amount까지예요. 넘는 금액은 일반 지출로 기록해 주세요.';
+  }
+
+  @override
+  String get goalPurchaseConfirm => '기록하고 목표 마무리';
+
+  @override
+  String get goalPurchaseConfirmNext => '기록하고 남는 돈으로 다음 목표';
+
+  @override
+  String goalPurchaseRecorded(String name) {
+    return '구매를 기록했어요: $name';
+  }
+
+  @override
+  String get goalPurchaseBadge => '목표';
+
+  @override
+  String get csvTypeGoalPurchase => '목표 구매';
+
+  @override
+  String goalCompletedPurchased(String amount) {
+    return '$amount에 샀어요';
+  }
+
+  @override
+  String get goalCycleDetails => '마감 결과 자세히 보기';
 }

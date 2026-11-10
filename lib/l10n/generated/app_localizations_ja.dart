@@ -9,6 +9,24 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
+  String get exitAppTitle => 'アプリを終了しますか？';
+
+  @override
+  String get exitAppBody => 'またお会いしましょう。';
+
+  @override
+  String get exitAppAction => '終了';
+
+  @override
+  String get startupTagline => '小さな記録が\nこつこつ積み重なる';
+
+  @override
+  String get startupLoading => '読み込み中…';
+
+  @override
+  String get startupFailed => 'アプリを起動できませんでした。\nもう一度お試しください。';
+
+  @override
   String get categoryFood => '食費';
 
   @override
@@ -1619,13 +1637,34 @@ class AppLocalizationsJa extends AppLocalizations {
   String get receiptFailed => '写真を保存できませんでした。';
 
   @override
-  String get receiptBackupNote => 'バックアップとCSVにレシートの写真は含まれません。';
+  String get receiptBackupNote => 'バックアップと書き出しファイルにレシートの写真は含まれません。';
 
   @override
-  String get csvExportTooltip => 'CSVで書き出す';
+  String get csvExportTooltip => '履歴を書き出す';
 
   @override
-  String get settingsCsvExport => '履歴を書き出す（CSV）';
+  String get exportFormatTitle => '形式を選ぶ';
+
+  @override
+  String get exportAllHistory => 'すべての履歴を書き出します。';
+
+  @override
+  String get exportCsvTitle => 'CSV (.csv)';
+
+  @override
+  String get exportCsvDescription => '他のアプリへの取り込みに。数値の認識は地域設定によって変わります。';
+
+  @override
+  String get exportExcelTitle => 'Excel (.xlsx)';
+
+  @override
+  String get exportExcelDescription => 'Excel・Google Sheetsですぐに計算できます。';
+
+  @override
+  String get csvExportPreparing => '準備中…';
+
+  @override
+  String get settingsCsvExport => '履歴を書き出す';
 
   @override
   String get settingsCsvExportValue => '共有';
@@ -2749,4 +2788,375 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get costumeLittleGhost => '小さな幽霊';
+
+  @override
+  String get goalTitle => '目標';
+
+  @override
+  String get goalEmptyPrompt => '何のために貯めたいですか？';
+
+  @override
+  String get goalCreate => '目標を作る';
+
+  @override
+  String get goalEdit => '目標を編集';
+
+  @override
+  String get goalNameLabel => '目標の名前';
+
+  @override
+  String get goalNameHint => '例：新しいスニーカー';
+
+  @override
+  String get goalNameRequired => '目標の名前を60文字以内で入力してください。';
+
+  @override
+  String get goalTargetAmount => '目標金額';
+
+  @override
+  String get goalTargetAmountInvalid => '0より大きい金額を入力してください。';
+
+  @override
+  String get goalStartingAmount => 'すでに貯めた金額';
+
+  @override
+  String get goalStartingHint => '生活費とは別に取ってあるお金だけを入力してください。';
+
+  @override
+  String get goalStartingAmountInvalid => '0以上の金額を入力してください。';
+
+  @override
+  String get goalOptionalPlan => '貯蓄プラン（任意）';
+
+  @override
+  String get goalTargetDate => '目標日';
+
+  @override
+  String get goalDateUnset => '後で設定';
+
+  @override
+  String get goalDateClear => '日付を消す';
+
+  @override
+  String get goalProductLink => '商品リンク';
+
+  @override
+  String get goalProductLinkHint => '商品リンクを貼り付けてください';
+
+  @override
+  String get goalPasteLink => 'リンクを貼り付け';
+
+  @override
+  String get goalOpenProduct => '商品ページを見る';
+
+  @override
+  String get goalImportFromLink => 'リンクから情報を取得';
+
+  @override
+  String get goalManualEntry => '手入力する';
+
+  @override
+  String get goalPhotoRemove => '写真を削除';
+
+  @override
+  String get goalPriceReview =>
+      '取得した写真と金額を確認してください。送料などを含めて金額を変更できます。価格は自動更新されません。';
+
+  @override
+  String goalCurrencyMismatch(String currency) {
+    return '商品の価格は$currencyです。アプリの通貨で目標金額を入力してください。';
+  }
+
+  @override
+  String get goalSaved => '目標を保存しました';
+
+  @override
+  String get goalSave => '目標を保存';
+
+  @override
+  String get goalDelete => '目標を削除';
+
+  @override
+  String get goalDeleteTitle => 'この目標を削除しますか？';
+
+  @override
+  String get goalDeleteBody => '目標だけを削除します。収入・支出の記録は残ります。';
+
+  @override
+  String goalRemaining(String amount) {
+    return 'あと$amountで達成';
+  }
+
+  @override
+  String get goalReached => '目標を達成しました！';
+
+  @override
+  String get goalRecordSavings => '貯蓄を記録';
+
+  @override
+  String get goalProgressExplanation =>
+      '開始金額、目標作成後に貯蓄として記録した収入、サイクル終了時に確認して追加した金額を合計します。実際の送金は行われません。';
+
+  @override
+  String get goalBrowserTitle => '商品を確認';
+
+  @override
+  String get goalBrowserInstructions =>
+      '商品を開いて、下のボタンを押してください。ショップから認証を求められた場合は、ご自身で完了してください。';
+
+  @override
+  String get goalBrowserRead => '商品情報を読み取る';
+
+  @override
+  String get goalBrowserManual => '手入力で続ける';
+
+  @override
+  String get goalBrowserLoading => 'ショップを開いています…';
+
+  @override
+  String get goalBrowserLoadFailed => 'ページを開けませんでした。もう一度試すか、情報を手入力してください。';
+
+  @override
+  String get goalBrowserRetry => 'もう一度試す';
+
+  @override
+  String get goalBrowserVerification =>
+      'ショップから認証を求められています。ご自身で完了し、商品が表示されたらもう一度情報を読み取ってください。';
+
+  @override
+  String get goalBrowserNoProduct =>
+      '商品情報をはっきり確認できませんでした。商品ページでもう一度試すか、手入力してください。';
+
+  @override
+  String get goalBrowserUnsupported => 'この端末ではアプリ内でショップを開けません。商品情報を手入力できます。';
+
+  @override
+  String get goalInvalidLink => 'https://で始まる正しい商品リンクを貼り付けてください。';
+
+  @override
+  String get goalChooseType => 'どんな目標を作りますか？';
+
+  @override
+  String get goalAmountType => '金額の目標';
+
+  @override
+  String get goalAmountTypeDescription => '緊急時の備えや旅行資金など、好きな金額を目指して貯めます。';
+
+  @override
+  String get goalProductType => '買いたいもの';
+
+  @override
+  String get goalProductTypeDescription => '商品リンクから写真と価格を取り込めます。';
+
+  @override
+  String get goalChangeType => '目標の種類を変更';
+
+  @override
+  String get goalAmountNameHint => '例：緊急時の備え、旅行資金';
+
+  @override
+  String get goalAmountIntro => '写真やリンクは不要です。名前と目標金額だけを入力してください。';
+
+  @override
+  String get goalCyclePopupTitle => '今回のサイクルの締め';
+
+  @override
+  String goalCycleLeftover(String amount) {
+    return '$amount残りました！';
+  }
+
+  @override
+  String goalCycleApplyTo(String name) {
+    return '「$name」のために貯めますか？';
+  }
+
+  @override
+  String get goalCurrentAmount => '現在貯めた金額';
+
+  @override
+  String get goalAfterAmount => '追加後の金額';
+
+  @override
+  String goalAllocateAll(String amount) {
+    return '$amountを全額貯める';
+  }
+
+  @override
+  String goalAllocateAmount(String amount) {
+    return '$amountを目標に追加';
+  }
+
+  @override
+  String get goalChangeAmount => '金額を変更';
+
+  @override
+  String get goalLater => 'あとで';
+
+  @override
+  String get goalAllocationNotice => '目標の記録に反映されます。実際の送金は行われません。';
+
+  @override
+  String get goalNoGoalInvitation => 'このお金で最初の目標を始めませんか？';
+
+  @override
+  String get goalNoGoalExamples => '緊急用資金・旅行・欲しいもの';
+
+  @override
+  String get goalCreateAndAllocate => '目標を作って貯める';
+
+  @override
+  String get goalCreateThenConfirm => '目標を作成した後、貯める金額を確認して反映します。';
+
+  @override
+  String get goalAllocationAmount => '今回貯める金額';
+
+  @override
+  String goalAllocationMaximum(String amount) {
+    return '$amountまで記録できます';
+  }
+
+  @override
+  String goalAllocationInvalid(String amount) {
+    return '0より大きく、$amount以下の金額を入力してください。';
+  }
+
+  @override
+  String goalAllocationSaved(String amount) {
+    return '目標に$amountを追加しました';
+  }
+
+  @override
+  String get goalAllocateFromCycle => '目標のために貯める';
+
+  @override
+  String goalCycleAllocated(String amount) {
+    return '目標に記録した金額：$amount';
+  }
+
+  @override
+  String get goalCompleted => '達成済み';
+
+  @override
+  String get goalCompletionTitle => '目標達成';
+
+  @override
+  String goalCompletionHeadline(String name) {
+    return '「$name」の目標を達成しました！';
+  }
+
+  @override
+  String get goalCompletionBody => 'こつこつ積み重ねて達成できました。';
+
+  @override
+  String get goalNewGoal => '新しい目標を作る';
+
+  @override
+  String get goalCompletionKept => '達成した目標は履歴に残ります。';
+
+  @override
+  String get goalCompletedHistory => '達成した目標';
+
+  @override
+  String goalCompletedOn(String date) {
+    return '$dateに達成';
+  }
+
+  @override
+  String get goalNoCompletedHistory => 'まだ達成した目標はありません。';
+
+  @override
+  String get goalCycleUnavailable => 'このサイクルには貯められる残額がありません。';
+
+  @override
+  String get goalNextGoalInvitation => '残ったお金で次の目標を始めませんか？';
+
+  @override
+  String goalCardDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'あと$days日',
+      zero: '今日',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String goalCardUntil(String date, String amount) {
+    return '$dateまであと$amount';
+  }
+
+  @override
+  String goalCardDatePassed(String date, String amount) {
+    return '$dateを過ぎました · あと$amount';
+  }
+
+  @override
+  String goalCardPerCycle(String date, String amount) {
+    return '$dateまで周期ごとに$amount';
+  }
+
+  @override
+  String get goalPurchaseAction => '目標で買いました';
+
+  @override
+  String get goalPurchaseTitle => '目標のお金で買った';
+
+  @override
+  String get goalPurchaseAmount => '支払った金額';
+
+  @override
+  String goalPurchaseAmountHelper(String amount) {
+    return '$amountまで（貯めた金額）';
+  }
+
+  @override
+  String get goalPurchaseRefreshPrice => 'リンクから今日の価格を読む';
+
+  @override
+  String goalPurchasePriceRead(String amount) {
+    return '今日の価格：$amount';
+  }
+
+  @override
+  String get goalPurchasePriceMissing => '価格が見つかりません。入力してください。';
+
+  @override
+  String get goalPurchaseSaved => '目標に貯めたお金';
+
+  @override
+  String get goalPurchaseLeft => '残るお金';
+
+  @override
+  String get goalPurchaseOutsideBudget => '貯めたお金で買ったので、今日の残りと今回の周期の予算は変わりません。';
+
+  @override
+  String goalPurchaseTooMuch(String amount) {
+    return '貯めたのは$amountです。超えた分は通常の支出として記録してください。';
+  }
+
+  @override
+  String get goalPurchaseConfirm => '記録して目標を終える';
+
+  @override
+  String get goalPurchaseConfirmNext => '記録して残りで次の目標へ';
+
+  @override
+  String goalPurchaseRecorded(String name) {
+    return '購入を記録しました：$name';
+  }
+
+  @override
+  String get goalPurchaseBadge => '目標';
+
+  @override
+  String get csvTypeGoalPurchase => '目標での購入';
+
+  @override
+  String goalCompletedPurchased(String amount) {
+    return '$amountで購入';
+  }
+
+  @override
+  String get goalCycleDetails => '締めの結果を詳しく見る';
 }

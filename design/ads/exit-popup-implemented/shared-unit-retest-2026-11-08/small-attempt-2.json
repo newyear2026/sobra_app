@@ -1,0 +1,27 @@
+{
+  "name": "small-attempt-2",
+  "size": "small",
+  "pid": "7057",
+  "unitId": "ca-app-pub-2706404530136726/3965250332",
+  "outcome": "video_skipped",
+  "events": [
+    {
+      "stage": "requesting",
+      "size": "small",
+      "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+      "time": "2026-11-09T05:12:08.568765Z"
+    },
+    {
+      "stage": "no_fill",
+      "size": "small",
+      "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+      "time": "2026-11-09T05:12:10.832377Z"
+    }
+  ],
+  "testDevice": true,
+  "nativeViewBounds": [],
+  "buttons": {
+    "취소": "[53,803][457,940]",
+    "종료": "[488,803][893,940]"
+  }
+}

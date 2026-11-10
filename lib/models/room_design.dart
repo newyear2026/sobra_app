@@ -82,8 +82,8 @@ class RoomTheme {
       portraitAsset.lastIndexOf('/'),
     );
     return switch (phase) {
-      RoomTimeOfDay.dawn ||
-      RoomTimeOfDay.sunset => '$directory/background_portrait_sunset_unlit.webp',
+      RoomTimeOfDay.dawn || RoomTimeOfDay.sunset =>
+        '$directory/background_portrait_sunset_unlit.webp',
       RoomTimeOfDay.night => '$directory/background_portrait_night_unlit.webp',
       RoomTimeOfDay.day => '$directory/background_portrait_unlit.webp',
       null => portraitAsset,
@@ -335,7 +335,8 @@ abstract final class RoomDecorAssets {
   static const wallShelf = 'assets/rooms/shared_items/wall_shelf_empty.webp';
   static const shelfBooks = 'assets/rooms/shared_items/shelf_books.webp';
   static const trailingPlant = 'assets/rooms/shared_items/trailing_plant.webp';
-  static const terracottaPouf = 'assets/rooms/shared_items/terracotta_pouf.webp';
+  static const terracottaPouf =
+      'assets/rooms/shared_items/terracotta_pouf.webp';
   static const blueCreamRug = 'assets/rooms/shared_items/blue_cream_rug.webp';
   static const launchSofa = 'assets/rooms/shared_items/launch_sofa.webp';
   static const ivorySofa = 'assets/rooms/shared_items/ivory_sofa.webp';

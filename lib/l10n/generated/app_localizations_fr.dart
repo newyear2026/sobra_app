@@ -9,6 +9,25 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
+  String get exitAppTitle => 'Fermer l’application ?';
+
+  @override
+  String get exitAppBody => 'À bientôt.';
+
+  @override
+  String get exitAppAction => 'Quitter';
+
+  @override
+  String get startupTagline => 'De petites notes,\nde grands progrès.';
+
+  @override
+  String get startupLoading => 'Chargement…';
+
+  @override
+  String get startupFailed =>
+      'Impossible d’ouvrir Sobrita.\nVeuillez réessayer.';
+
+  @override
   String get categoryFood => 'Nourriture';
 
   @override
@@ -1684,13 +1703,36 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get receiptBackupNote =>
-      'La sauvegarde et le CSV n’incluent pas les photos des tickets.';
+      'Les sauvegardes et les exports n’incluent pas les photos des tickets.';
 
   @override
-  String get csvExportTooltip => 'Exporter en CSV';
+  String get csvExportTooltip => 'Exporter l’activité';
 
   @override
-  String get settingsCsvExport => 'Exporter l’activité (CSV)';
+  String get exportFormatTitle => 'Choisir un format';
+
+  @override
+  String get exportAllHistory => 'Tout l’historique sera exporté.';
+
+  @override
+  String get exportCsvTitle => 'CSV (.csv)';
+
+  @override
+  String get exportCsvDescription =>
+      'Pour importer dans d’autres applis. Les nombres dépendent des paramètres régionaux.';
+
+  @override
+  String get exportExcelTitle => 'Excel (.xlsx)';
+
+  @override
+  String get exportExcelDescription =>
+      'Prêt pour les calculs dans Excel et Google Sheets.';
+
+  @override
+  String get csvExportPreparing => 'Préparation…';
+
+  @override
+  String get settingsCsvExport => 'Exporter l’activité';
 
   @override
   String get settingsCsvExportValue => 'Partager';
@@ -2884,4 +2926,396 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get costumeLittleGhost => 'Petit fantôme';
+
+  @override
+  String get goalTitle => 'Mon objectif';
+
+  @override
+  String get goalEmptyPrompt => 'Pour quoi aimeriez-vous épargner ?';
+
+  @override
+  String get goalCreate => 'Créer un objectif';
+
+  @override
+  String get goalEdit => 'Modifier l’objectif';
+
+  @override
+  String get goalNameLabel => 'Nom de l’objectif';
+
+  @override
+  String get goalNameHint => 'Ex. : De nouvelles baskets';
+
+  @override
+  String get goalNameRequired => 'Saisissez un nom de 60 caractères maximum.';
+
+  @override
+  String get goalTargetAmount => 'Montant visé';
+
+  @override
+  String get goalTargetAmountInvalid =>
+      'Saisissez un montant supérieur à zéro.';
+
+  @override
+  String get goalStartingAmount => 'Déjà mis de côté';
+
+  @override
+  String get goalStartingHint =>
+      'Incluez uniquement l’argent déjà mis de côté, hors dépenses courantes.';
+
+  @override
+  String get goalStartingAmountInvalid =>
+      'Saisissez zéro ou un montant positif.';
+
+  @override
+  String get goalOptionalPlan => 'Plan d’épargne (facultatif)';
+
+  @override
+  String get goalTargetDate => 'Date cible';
+
+  @override
+  String get goalDateUnset => 'Définir plus tard';
+
+  @override
+  String get goalDateClear => 'Effacer la date';
+
+  @override
+  String get goalProductLink => 'Lien du produit';
+
+  @override
+  String get goalProductLinkHint => 'Collez le lien d’un produit';
+
+  @override
+  String get goalPasteLink => 'Coller le lien';
+
+  @override
+  String get goalOpenProduct => 'Voir le produit';
+
+  @override
+  String get goalImportFromLink => 'Importer depuis le lien';
+
+  @override
+  String get goalManualEntry => 'Saisir manuellement';
+
+  @override
+  String get goalPhotoRemove => 'Supprimer la photo';
+
+  @override
+  String get goalPriceReview =>
+      'Vérifiez la photo et le montant importés. Vous pouvez inclure la livraison et ajuster le montant. Le prix ne se met pas à jour automatiquement.';
+
+  @override
+  String goalCurrencyMismatch(String currency) {
+    return 'Le prix du produit est en $currency. Saisissez le montant visé dans la devise de l’app.';
+  }
+
+  @override
+  String get goalSaved => 'Objectif enregistré';
+
+  @override
+  String get goalSave => 'Enregistrer l’objectif';
+
+  @override
+  String get goalDelete => 'Supprimer l’objectif';
+
+  @override
+  String get goalDeleteTitle => 'Supprimer cet objectif ?';
+
+  @override
+  String get goalDeleteBody =>
+      'Seul l’objectif sera supprimé. Vos revenus et dépenses enregistrés seront conservés.';
+
+  @override
+  String goalRemaining(String amount) {
+    return 'Encore $amount à mettre de côté';
+  }
+
+  @override
+  String get goalReached => 'Objectif atteint !';
+
+  @override
+  String get goalRecordSavings => 'Enregistrer une épargne';
+
+  @override
+  String get goalProgressExplanation =>
+      'Le montant initial, les revenus enregistrés comme épargne après la création de l’objectif et les montants confirmés à la clôture des cycles sont additionnés. Aucun argent n’est transféré.';
+
+  @override
+  String get goalBrowserTitle => 'Vérifier le produit';
+
+  @override
+  String get goalBrowserInstructions =>
+      'Ouvrez le produit, puis touchez le bouton ci-dessous. Si la boutique demande une vérification, effectuez-la vous-même.';
+
+  @override
+  String get goalBrowserRead => 'Lire les infos du produit';
+
+  @override
+  String get goalBrowserManual => 'Continuer manuellement';
+
+  @override
+  String get goalBrowserLoading => 'Ouverture de la boutique…';
+
+  @override
+  String get goalBrowserLoadFailed =>
+      'Impossible d’ouvrir la page. Réessayez ou saisissez les informations manuellement.';
+
+  @override
+  String get goalBrowserRetry => 'Réessayer';
+
+  @override
+  String get goalBrowserVerification =>
+      'La boutique demande une vérification. Effectuez-la vous-même, puis relancez la lecture lorsque le produit s’affiche.';
+
+  @override
+  String get goalBrowserNoProduct =>
+      'Nous n’avons pas trouvé d’informations claires sur le produit. Réessayez depuis sa page ou saisissez-les manuellement.';
+
+  @override
+  String get goalBrowserUnsupported =>
+      'Cet appareil ne permet pas d’ouvrir la boutique dans l’app. Vous pouvez saisir les informations manuellement.';
+
+  @override
+  String get goalInvalidLink =>
+      'Collez un lien de produit valide commençant par https://.';
+
+  @override
+  String get goalChooseType => 'Quel objectif voulez-vous créer ?';
+
+  @override
+  String get goalAmountType => 'Montant à épargner';
+
+  @override
+  String get goalAmountTypeDescription =>
+      'Mettez de côté le montant de votre choix pour les imprévus, un voyage ou un autre projet.';
+
+  @override
+  String get goalProductType => 'Un achat';
+
+  @override
+  String get goalProductTypeDescription =>
+      'Récupérez la photo et le prix avec le lien du produit.';
+
+  @override
+  String get goalChangeType => 'Changer de type d’objectif';
+
+  @override
+  String get goalAmountNameHint =>
+      'Ex. : Fonds d’urgence, économies pour un voyage';
+
+  @override
+  String get goalAmountIntro =>
+      'Indiquez simplement un nom et un montant cible, sans photo ni lien.';
+
+  @override
+  String get goalCyclePopupTitle => 'Clôture du cycle';
+
+  @override
+  String goalCycleLeftover(String amount) {
+    return 'Il te reste $amount !';
+  }
+
+  @override
+  String goalCycleApplyTo(String name) {
+    return 'Les mettre de côté pour « $name » ?';
+  }
+
+  @override
+  String get goalCurrentAmount => 'Déjà épargné';
+
+  @override
+  String get goalAfterAmount => 'Après cet ajout';
+
+  @override
+  String goalAllocateAll(String amount) {
+    return 'Tout épargner : $amount';
+  }
+
+  @override
+  String goalAllocateAmount(String amount) {
+    return 'Ajouter $amount à l’objectif';
+  }
+
+  @override
+  String get goalChangeAmount => 'Modifier le montant';
+
+  @override
+  String get goalLater => 'Plus tard';
+
+  @override
+  String get goalAllocationNotice =>
+      'Le montant est enregistré pour ton objectif. Aucun argent n’est transféré.';
+
+  @override
+  String get goalNoGoalInvitation =>
+      'Commencer ton premier objectif avec cet argent ?';
+
+  @override
+  String get goalNoGoalExamples => 'Imprévus · Voyage · Un achat souhaité';
+
+  @override
+  String get goalCreateAndAllocate => 'Créer un objectif et épargner';
+
+  @override
+  String get goalCreateThenConfirm =>
+      'Crée ton objectif, puis confirme le montant à ajouter.';
+
+  @override
+  String get goalAllocationAmount => 'Montant à mettre de côté';
+
+  @override
+  String goalAllocationMaximum(String amount) {
+    return 'Tu peux enregistrer jusqu’à $amount';
+  }
+
+  @override
+  String goalAllocationInvalid(String amount) {
+    return 'Saisis un montant supérieur à zéro et inférieur ou égal à $amount.';
+  }
+
+  @override
+  String goalAllocationSaved(String amount) {
+    return '$amount ajoutés à ton objectif';
+  }
+
+  @override
+  String get goalAllocateFromCycle => 'Épargner pour mon objectif';
+
+  @override
+  String goalCycleAllocated(String amount) {
+    return 'Enregistré pour l’objectif : $amount';
+  }
+
+  @override
+  String get goalCompleted => 'Atteint';
+
+  @override
+  String get goalCompletionTitle => 'Objectif atteint';
+
+  @override
+  String goalCompletionHeadline(String name) {
+    return 'Tu as atteint ton objectif « $name » !';
+  }
+
+  @override
+  String get goalCompletionBody => 'Tu y es arrivé, une économie à la fois.';
+
+  @override
+  String get goalNewGoal => 'Créer un nouvel objectif';
+
+  @override
+  String get goalCompletionKept =>
+      'Ton objectif atteint reste dans ton historique.';
+
+  @override
+  String get goalCompletedHistory => 'Objectifs atteints';
+
+  @override
+  String goalCompletedOn(String date) {
+    return 'Atteint le $date';
+  }
+
+  @override
+  String get goalNoCompletedHistory => 'Aucun objectif atteint pour le moment.';
+
+  @override
+  String get goalCycleUnavailable =>
+      'Il ne reste rien à épargner pour ce cycle.';
+
+  @override
+  String get goalNextGoalInvitation =>
+      'Commencer ton prochain objectif avec l’argent restant ?';
+
+  @override
+  String goalCardDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days jours',
+      one: '1 jour',
+      zero: 'Aujourd\'hui',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String goalCardUntil(String date, String amount) {
+    return 'Encore $amount d\'ici le $date';
+  }
+
+  @override
+  String goalCardDatePassed(String date, String amount) {
+    return 'Le $date est passé · encore $amount';
+  }
+
+  @override
+  String goalCardPerCycle(String date, String amount) {
+    return '$amount par cycle jusqu\'au $date';
+  }
+
+  @override
+  String get goalPurchaseAction => 'Je l\'ai acheté';
+
+  @override
+  String get goalPurchaseTitle => 'Acheté avec mon objectif';
+
+  @override
+  String get goalPurchaseAmount => 'Ce que tu as payé';
+
+  @override
+  String goalPurchaseAmountHelper(String amount) {
+    return 'Jusqu\'à $amount, ce que tu as mis de côté';
+  }
+
+  @override
+  String get goalPurchaseRefreshPrice => 'Lire le prix du jour sur le lien';
+
+  @override
+  String goalPurchasePriceRead(String amount) {
+    return 'Prix du jour : $amount';
+  }
+
+  @override
+  String get goalPurchasePriceMissing =>
+      'Prix introuvable. Saisis-le toi-même.';
+
+  @override
+  String get goalPurchaseSaved => 'Ce que tu as mis de côté';
+
+  @override
+  String get goalPurchaseLeft => 'Il reste';
+
+  @override
+  String get goalPurchaseOutsideBudget =>
+      'Payé avec ce que tu as mis de côté : l\'argent du jour et le budget du cycle ne bougent pas.';
+
+  @override
+  String goalPurchaseTooMuch(String amount) {
+    return 'Tu as mis de côté $amount. Note le surplus comme une dépense normale.';
+  }
+
+  @override
+  String get goalPurchaseConfirm => 'Enregistrer et clore l\'objectif';
+
+  @override
+  String get goalPurchaseConfirmNext =>
+      'Enregistrer et commencer un objectif avec le reste';
+
+  @override
+  String goalPurchaseRecorded(String name) {
+    return 'Achat enregistré : $name';
+  }
+
+  @override
+  String get goalPurchaseBadge => 'Objectif';
+
+  @override
+  String get csvTypeGoalPurchase => 'Achat d\'objectif';
+
+  @override
+  String goalCompletedPurchased(String amount) {
+    return 'Acheté $amount';
+  }
+
+  @override
+  String get goalCycleDetails => 'Voir le bilan du cycle';
 }

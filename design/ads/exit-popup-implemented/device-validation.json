@@ -1,0 +1,57 @@
+{
+  "device": "Sobra_Fresh_Test, Android 16 / API 36",
+  "density": 2.625,
+  "test_unit": "ca-app-pub-3940256099942544/2247696110",
+  "method": "Raw adb screencap; real Google Mobile Ads platform views; debug preview with in-memory ledger",
+  "states": {
+    "medium": {
+      "screen_pixels": [
+        1080,
+        2400
+      ],
+      "native_bounds_pixels": "[120,740][960,1659]",
+      "measured_dp": [
+        320.0,
+        350.0952380952381
+      ],
+      "expected_dp": [
+        320,
+        350
+      ],
+      "headline": "Test Ad : Google Ads",
+      "buttons": {
+        "취소": "[120,1790][524,1927]",
+        "종료": "[556,1790][960,1927]"
+      },
+      "buttons_stable": true,
+      "sdk_impression_observed": true,
+      "sdk_impression_device_time": "2026-11-07 16:52:02.997"
+    },
+    "small": {
+      "screen_pixels": [
+        945,
+        1523
+      ],
+      "native_bounds_pixels": "[53,606][893,869]",
+      "measured_dp": [
+        320.0,
+        100.19047619047619
+      ],
+      "expected_dp": [
+        320,
+        100
+      ],
+      "headline": "Test Ad : Google Ads",
+      "buttons": {
+        "취소": "[53,1000][457,1137]",
+        "종료": "[488,1000][893,1137]"
+      },
+      "buttons_stable": true,
+      "sdk_impression_observed": true,
+      "sdk_impression_device_time": "2026-11-07 16:59:08.063"
+    }
+  },
+  "small_sdk_validator": "No implementation issues found",
+  "exit_button_verified": true,
+  "after_exit_activity": "com.google.android.apps.nexuslauncher/.NexusLauncherActivity"
+}

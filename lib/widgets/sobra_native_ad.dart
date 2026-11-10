@@ -5,13 +5,10 @@ import '../services/admob_config.dart';
 import '../services/native_ad_service.dart';
 import '../theme/app_theme.dart';
 
-/// A small Google native template styled to sit between ledger rows.
+/// A small Google native template styled to sit between ledger rows, and
+/// under Presupuesto's last category.
 class SobraNativeAd extends StatefulWidget {
-  const SobraNativeAd({
-    super.key,
-    required this.controller,
-    this.preview,
-  });
+  const SobraNativeAd({super.key, required this.controller, this.preview});
 
   final NativeAds controller;
 
@@ -65,7 +62,10 @@ class _SobraNativeAdState extends State<SobraNativeAd> {
     if (!AdMobConfig.isSupported || !widget.controller.canOffer) return;
     late final NativeAd ad;
     ad = NativeAd(
-      adUnitId: AdMobConfig.nativeAdUnitId,
+      adUnitId: switch (widget.controller.placement) {
+        NativeAdPlacement.ledger => AdMobConfig.nativeAdUnitId,
+        NativeAdPlacement.budget => AdMobConfig.budgetNativeAdUnitId,
+      },
       request: const AdRequest(),
       listener: NativeAdListener(
         onAdLoaded: (_) {

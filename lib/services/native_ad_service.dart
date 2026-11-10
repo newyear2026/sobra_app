@@ -4,15 +4,28 @@ import 'package:flutter/widgets.dart';
 
 import '../state/sobra_store.dart';
 
+/// Where a native slot sits. Each has its own AdMob unit, so the console
+/// reports them apart, and its own visits; the gap between impressions is
+/// kept in the store and shared by all of them.
+enum NativeAdPlacement {
+  /// Movimientos, under the third row.
+  ledger,
+
+  /// Presupuesto, under the last category.
+  budget,
+}
+
 /// Applies Sobra's placement rules independently of the ad SDK widget.
 class NativeAds extends ChangeNotifier {
   NativeAds({
     required SobraStore store,
+    this.placement = NativeAdPlacement.ledger,
     this.minInterval = const Duration(minutes: 5),
     this.graceDays = 7,
   }) : _store = store;
 
   final SobraStore _store;
+  final NativeAdPlacement placement;
 
   /// The least time between two native impressions.
   ///
@@ -53,7 +66,7 @@ class NativeAds extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// One visit starts only on a real transition into the transactions tab.
+  /// One visit starts only on a real transition into this placement's tab.
   void startVisit() {
     _visitActive = true;
     _impressionThisVisit = false;
@@ -92,10 +105,25 @@ class NativeAds extends ChangeNotifier {
   }
 }
 
+/// The Movimientos slot.
 class NativeAdScope extends InheritedNotifier<NativeAds> {
   const NativeAdScope({super.key, required NativeAds ads, required super.child})
     : super(notifier: ads);
 
   static NativeAds? maybeOf(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<NativeAdScope>()?.notifier;
+}
+
+/// The Presupuesto slot. A separate type so each tab finds its own
+/// controller without the other's notifications rebuilding it.
+class BudgetNativeAdScope extends InheritedNotifier<NativeAds> {
+  const BudgetNativeAdScope({
+    super.key,
+    required NativeAds ads,
+    required super.child,
+  }) : super(notifier: ads);
+
+  static NativeAds? maybeOf(BuildContext context) => context
+      .dependOnInheritedWidgetOfExactType<BudgetNativeAdScope>()
+      ?.notifier;
 }

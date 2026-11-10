@@ -17,6 +17,7 @@ import '../widgets/room_scene.dart';
 import '../widgets/room_time_of_day_builder.dart';
 import '../widgets/starter_friend.dart';
 import '../widgets/seasonal_costume_gift.dart';
+import '../widgets/savings_goal_card.dart';
 import '../widgets/transaction_row.dart';
 import 'app_shell.dart';
 import 'cash_count_screen.dart';
@@ -272,6 +273,8 @@ class HomeScreen extends StatelessWidget {
                     MaterialPageRoute<void>(builder: (_) => const RoomScreen()),
                   ),
                 ),
+                const SizedBox(height: 12),
+                const SavingsGoalCard(),
                 if (store.canClaimSeasonalCostumes) ...[
                   const SizedBox(height: 16),
                   const SeasonalCostumeGiftBanner(),

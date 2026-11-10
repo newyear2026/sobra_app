@@ -4,11 +4,13 @@ import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/currency.dart';
 import '../models/expense_entry.dart';
+import '../services/native_ad_service.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
 import '../widgets/fixed_expenses.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/sobra_native_ad.dart';
 import 'cycle_history_screen.dart';
 
 class BudgetScreen extends StatelessWidget {
@@ -146,6 +148,7 @@ class BudgetScreen extends StatelessWidget {
     final hasClosedCycles = store.cycleRecords.any(
       (record) => record.budgetCentavos > 0,
     );
+    final nativeAds = BudgetNativeAdScope.maybeOf(context);
     final motionToken = Object.hashAll([
       store.totalBudgetCentavos,
       ...store.categoryLimits.values,
@@ -404,6 +407,13 @@ class BudgetScreen extends StatelessWidget {
                 ),
               );
             }),
+            // Under the last category only: never between figures, and not
+            // on the prompt above, which has no budget to sit under yet.
+            if (nativeAds != null && nativeAds.shouldPlace)
+              SobraNativeAd(
+                key: ValueKey('budget-native-ad-${nativeAds.visitId}'),
+                controller: nativeAds,
+              ),
           ],
         ),
       ),

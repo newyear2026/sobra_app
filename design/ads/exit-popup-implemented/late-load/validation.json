@@ -1,0 +1,481 @@
+{
+  "method": "Actual Android SDK test ad; request start held only in the debug preview, then released while the unchanged production dialog remains open",
+  "device_serial": "emulator-5580",
+  "appearance_confirmed_ms_including_adb_rpc_overhead": 117.5,
+  "before": {
+    "time": "2026-11-07T23:32:49.145618Z",
+    "phase": "request_held",
+    "holdRequest": true,
+    "requestReleased": false,
+    "impressions": 0,
+    "density": 2.625,
+    "boxes": {
+      "exit-dialog-frame": {
+        "x": 21.714285714285722,
+        "y": 381.0238095238096,
+        "width": 368.0,
+        "height": 177.0
+      },
+      "exit-cancel": {
+        "x": 45.71428571428572,
+        "y": 482.0238095238096,
+        "width": 154.0,
+        "height": 52.0
+      },
+      "exit-confirm": {
+        "x": 211.71428571428572,
+        "y": 482.0238095238096,
+        "width": 154.0,
+        "height": 52.0
+      }
+    },
+    "events": [
+      {
+        "stage": "request_held",
+        "size": "medium",
+        "time": "2026-11-07T23:32:45.879722Z"
+      }
+    ]
+  },
+  "after": {
+    "time": "2026-11-07T23:32:53.820769Z",
+    "phase": "ready",
+    "holdRequest": true,
+    "requestReleased": true,
+    "impressions": 0,
+    "density": 2.625,
+    "boxes": {
+      "exit-dialog-frame": {
+        "x": 21.714285714285722,
+        "y": 381.0238095238096,
+        "width": 368.0,
+        "height": 177.0
+      },
+      "exit-cancel": {
+        "x": 45.71428571428572,
+        "y": 482.0238095238096,
+        "width": 154.0,
+        "height": 52.0
+      },
+      "exit-confirm": {
+        "x": 211.71428571428572,
+        "y": 482.0238095238096,
+        "width": 154.0,
+        "height": 52.0
+      }
+    },
+    "events": [
+      {
+        "stage": "request_held",
+        "size": "medium",
+        "time": "2026-11-07T23:32:45.879722Z"
+      },
+      {
+        "stage": "request_released",
+        "size": null,
+        "time": "2026-11-07T23:32:49.569325Z"
+      },
+      {
+        "stage": "requesting",
+        "size": "medium",
+        "time": "2026-11-07T23:32:49.572719Z"
+      },
+      {
+        "stage": "ready",
+        "size": "medium",
+        "time": "2026-11-07T23:32:52.502255Z"
+      }
+    ]
+  },
+  "samples_during_load": [
+    {
+      "time": "2026-11-07T23:32:49.621259Z",
+      "phase": "requesting",
+      "holdRequest": true,
+      "requestReleased": true,
+      "impressions": 0,
+      "density": 2.625,
+      "boxes": {
+        "exit-dialog-frame": {
+          "x": 21.714285714285722,
+          "y": 381.0238095238096,
+          "width": 368.0,
+          "height": 177.0
+        },
+        "exit-cancel": {
+          "x": 45.71428571428572,
+          "y": 482.0238095238096,
+          "width": 154.0,
+          "height": 52.0
+        },
+        "exit-confirm": {
+          "x": 211.71428571428572,
+          "y": 482.0238095238096,
+          "width": 154.0,
+          "height": 52.0
+        }
+      },
+      "events": [
+        {
+          "stage": "request_held",
+          "size": "medium",
+          "time": "2026-11-07T23:32:45.879722Z"
+        },
+        {
+          "stage": "request_released",
+          "size": null,
+          "time": "2026-11-07T23:32:49.569325Z"
+        },
+        {
+          "stage": "requesting",
+          "size": "medium",
+          "time": "2026-11-07T23:32:49.572719Z"
+        }
+      ]
+    },
+    {
+      "time": "2026-11-07T23:32:50.140706Z",
+      "phase": "requesting",
+      "holdRequest": true,
+      "requestReleased": true,
+      "impressions": 0,
+      "density": 2.625,
+      "boxes": {
+        "exit-dialog-frame": {
+          "x": 21.714285714285722,
+          "y": 381.0238095238096,
+          "width": 368.0,
+          "height": 177.0
+        },
+        "exit-cancel": {
+          "x": 45.71428571428572,
+          "y": 482.0238095238096,
+          "width": 154.0,
+          "height": 52.0
+        },
+        "exit-confirm": {
+          "x": 211.71428571428572,
+          "y": 482.0238095238096,
+          "width": 154.0,
+          "height": 52.0
+        }
+      },
+      "events": [
+        {
+          "stage": "request_held",
+          "size": "medium",
+          "time": "2026-11-07T23:32:45.879722Z"
+        },
+        {
+          "stage": "request_released",
+          "size": null,
+          "time": "2026-11-07T23:32:49.569325Z"
+        },
+        {
+          "stage": "requesting",
+          "size": "medium",
+          "time": "2026-11-07T23:32:49.572719Z"
+        }
+      ]
+    },
+    {
+      "time": "2026-11-07T23:32:50.673792Z",
+      "phase": "requesting",
+      "holdRequest": true,
+      "requestReleased": true,
+      "impressions": 0,
+      "density": 2.625,
+      "boxes": {
+        "exit-dialog-frame": {
+          "x": 21.714285714285722,
+          "y": 381.0238095238096,
+          "width": 368.0,
+          "height": 177.0
+        },
+        "exit-cancel": {
+          "x": 45.71428571428572,
+          "y": 482.0238095238096,
+          "width": 154.0,
+          "height": 52.0
+        },
+        "exit-confirm": {
+          "x": 211.71428571428572,
+          "y": 482.0238095238096,
+          "width": 154.0,
+          "height": 52.0
+        }
+      },
+      "events": [
+        {
+          "stage": "request_held",
+          "size": "medium",
+          "time": "2026-11-07T23:32:45.879722Z"
+        },
+        {
+          "stage": "request_released",
+          "size": null,
+          "time": "2026-11-07T23:32:49.569325Z"
+        },
+        {
+          "stage": "requesting",
+          "size": "medium",
+          "time": "2026-11-07T23:32:49.572719Z"
+        }
+      ]
+    },
+    {
+      "time": "2026-11-07T23:32:51.205134Z",
+      "phase": "requesting",
+      "holdRequest": true,
+      "requestReleased": true,
+      "impressions": 0,
+      "density": 2.625,
+      "boxes": {
+        "exit-dialog-frame": {
+          "x": 21.714285714285722,
+          "y": 381.0238095238096,
+          "width": 368.0,
+          "height": 177.0
+        },
+        "exit-cancel": {
+          "x": 45.71428571428572,
+          "y": 482.0238095238096,
+          "width": 154.0,
+          "height": 52.0
+        },
+        "exit-confirm": {
+          "x": 211.71428571428572,
+          "y": 482.0238095238096,
+          "width": 154.0,
+          "height": 52.0
+        }
+      },
+      "events": [
+        {
+          "stage": "request_held",
+          "size": "medium",
+          "time": "2026-11-07T23:32:45.879722Z"
+        },
+        {
+          "stage": "request_released",
+          "size": null,
+          "time": "2026-11-07T23:32:49.569325Z"
+        },
+        {
+          "stage": "requesting",
+          "size": "medium",
+          "time": "2026-11-07T23:32:49.572719Z"
+        }
+      ]
+    },
+    {
+      "time": "2026-11-07T23:32:51.739238Z",
+      "phase": "requesting",
+      "holdRequest": true,
+      "requestReleased": true,
+      "impressions": 0,
+      "density": 2.625,
+      "boxes": {
+        "exit-dialog-frame": {
+          "x": 21.714285714285722,
+          "y": 381.0238095238096,
+          "width": 368.0,
+          "height": 177.0
+        },
+        "exit-cancel": {
+          "x": 45.71428571428572,
+          "y": 482.0238095238096,
+          "width": 154.0,
+          "height": 52.0
+        },
+        "exit-confirm": {
+          "x": 211.71428571428572,
+          "y": 482.0238095238096,
+          "width": 154.0,
+          "height": 52.0
+        }
+      },
+      "events": [
+        {
+          "stage": "request_held",
+          "size": "medium",
+          "time": "2026-11-07T23:32:45.879722Z"
+        },
+        {
+          "stage": "request_released",
+          "size": null,
+          "time": "2026-11-07T23:32:49.569325Z"
+        },
+        {
+          "stage": "requesting",
+          "size": "medium",
+          "time": "2026-11-07T23:32:49.572719Z"
+        }
+      ]
+    },
+    {
+      "time": "2026-11-07T23:32:52.255220Z",
+      "phase": "requesting",
+      "holdRequest": true,
+      "requestReleased": true,
+      "impressions": 0,
+      "density": 2.625,
+      "boxes": {
+        "exit-dialog-frame": {
+          "x": 21.714285714285722,
+          "y": 381.0238095238096,
+          "width": 368.0,
+          "height": 177.0
+        },
+        "exit-cancel": {
+          "x": 45.71428571428572,
+          "y": 482.0238095238096,
+          "width": 154.0,
+          "height": 52.0
+        },
+        "exit-confirm": {
+          "x": 211.71428571428572,
+          "y": 482.0238095238096,
+          "width": 154.0,
+          "height": 52.0
+        }
+      },
+      "events": [
+        {
+          "stage": "request_held",
+          "size": "medium",
+          "time": "2026-11-07T23:32:45.879722Z"
+        },
+        {
+          "stage": "request_released",
+          "size": null,
+          "time": "2026-11-07T23:32:49.569325Z"
+        },
+        {
+          "stage": "requesting",
+          "size": "medium",
+          "time": "2026-11-07T23:32:49.572719Z"
+        }
+      ]
+    },
+    {
+      "time": "2026-11-07T23:32:52.790879Z",
+      "phase": "ready",
+      "holdRequest": true,
+      "requestReleased": true,
+      "impressions": 0,
+      "density": 2.625,
+      "boxes": {
+        "exit-dialog-frame": {
+          "x": 21.714285714285722,
+          "y": 381.0238095238096,
+          "width": 368.0,
+          "height": 177.0
+        },
+        "exit-cancel": {
+          "x": 45.71428571428572,
+          "y": 482.0238095238096,
+          "width": 154.0,
+          "height": 52.0
+        },
+        "exit-confirm": {
+          "x": 211.71428571428572,
+          "y": 482.0238095238096,
+          "width": 154.0,
+          "height": 52.0
+        }
+      },
+      "events": [
+        {
+          "stage": "request_held",
+          "size": "medium",
+          "time": "2026-11-07T23:32:45.879722Z"
+        },
+        {
+          "stage": "request_released",
+          "size": null,
+          "time": "2026-11-07T23:32:49.569325Z"
+        },
+        {
+          "stage": "requesting",
+          "size": "medium",
+          "time": "2026-11-07T23:32:49.572719Z"
+        },
+        {
+          "stage": "ready",
+          "size": "medium",
+          "time": "2026-11-07T23:32:52.502255Z"
+        }
+      ]
+    }
+  ],
+  "all_sampled_geometry_identical": true,
+  "ad_inserted_after_load": false,
+  "reopened": {
+    "time": "2026-11-07T23:33:15.105102Z",
+    "phase": "impression",
+    "holdRequest": true,
+    "requestReleased": true,
+    "impressions": 1,
+    "density": 2.625,
+    "boxes": {
+      "exit-dialog-frame": {
+        "x": 21.714285714285722,
+        "y": 181.02380952380958,
+        "width": 368.0,
+        "height": 577.0
+      },
+      "exit-native-ad-slot": {
+        "x": 45.71428571428572,
+        "y": 282.0238095238096,
+        "width": 320.0,
+        "height": 350.0
+      },
+      "exit-cancel": {
+        "x": 45.71428571428572,
+        "y": 682.0238095238096,
+        "width": 154.0,
+        "height": 52.0
+      },
+      "exit-confirm": {
+        "x": 211.71428571428572,
+        "y": 682.0238095238096,
+        "width": 154.0,
+        "height": 52.0
+      }
+    },
+    "events": [
+      {
+        "stage": "request_held",
+        "size": "medium",
+        "time": "2026-11-07T23:32:45.879722Z"
+      },
+      {
+        "stage": "request_released",
+        "size": null,
+        "time": "2026-11-07T23:32:49.569325Z"
+      },
+      {
+        "stage": "requesting",
+        "size": "medium",
+        "time": "2026-11-07T23:32:49.572719Z"
+      },
+      {
+        "stage": "ready",
+        "size": "medium",
+        "time": "2026-11-07T23:32:52.502255Z"
+      },
+      {
+        "stage": "impression",
+        "size": "medium",
+        "time": "2026-11-07T23:33:14.902355Z"
+      }
+    ]
+  },
+  "reopened_real_sdk_impression": true,
+  "independent_screenshot_sha256": {
+    "before.png": "bf1c59c3492ee6b147ee6720950743608326f9b7778eaae4129c1254cd4bf998",
+    "after.png": "bf1c59c3492ee6b147ee6720950743608326f9b7778eaae4129c1254cd4bf998"
+  },
+  "screenshots_byte_identical": true
+}
