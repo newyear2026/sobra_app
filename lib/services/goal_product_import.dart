@@ -149,7 +149,11 @@ const goalProductExtractionScript = r'''
     }
     return null;
   };
-  const heading = ['#productTitle','h1.ui-pdp-title','h1#main-title','h1'].map(s => document.querySelector(s)).find(visible);
+  // Amazon's mobile page has no #productTitle, and its first h1 is the
+  // "El resumen del producto…" summary, so Amazon never falls back to h1.
+  const titleSelectors = amazon ? ['#productTitle','#title_feature_div #title','#title_feature_div h1'] :
+    ['h1.ui-pdp-title','h1#main-title','h1'];
+  const heading = titleSelectors.map(s => document.querySelector(s)).find(visible);
   let title = text(heading) || meta('og:title');
   if (!title && amazon && knownProductPath) title = document.title.replace(/\s*:\s*Amazon\.com\.mx(?:\s*:.*)?$/i, '').trim();
   const normalized = value => String(value || '').replace(/\s+/g, ' ').trim().toLowerCase();
@@ -185,7 +189,9 @@ const goalProductExtractionScript = r'''
     const t = String(raw || '').replace(/(?:MXN|MX|\$|\s)/gi, '');
     return /^\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?$|^\d+(?:\.\d{1,2})?$/.test(t) ? decimal(t.replace(/,/g, '')) : null;
   };
-  const forbidden = el => !!el.closest('s,del,.a-text-price,.apex-basisprice-value,.andes-money-amount--previous,.ui-pdp-price__original-value,.ui-pdp-price__payments,[id*="installment"],[id*="Installment"],[id*="swatch"],[id*="Swatch"],[id^="twister"],.ui-pdp-variations');
+  // Mercado Libre repeats the price row inside its colour thumbnails
+  // (.ui-pdp-outside_variations), so those must not count as the price.
+  const forbidden = el => !!el.closest('s,del,.a-text-price,.apex-basisprice-value,.andes-money-amount--previous,.ui-pdp-price__original-value,.ui-pdp-price__payments,[id*="installment"],[id*="Installment"],[id*="swatch"],[id*="Swatch"],[id^="twister"],.ui-pdp-variations,.ui-pdp-outside_variations,.ui-pdp-outside-variations');
   const primary = [];
   const push = value => { if (value) primary.push(value); };
   if (amazon) {

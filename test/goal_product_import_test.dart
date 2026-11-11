@@ -186,6 +186,37 @@ void main() {
     });
   });
 
+  // The page script runs only inside a WebView. These pin the two rules
+  // learned on the live mobile pages (2026-11-10), checked there by hand.
+  group('page script rules', () {
+    test('Amazon reads the mobile title, never the first h1', () {
+      // Amazon's mobile page has no #productTitle and opens with an
+      // "El resumen del producto…" h1 that is not the product name.
+      expect(
+        goalProductExtractionScript,
+        contains(
+          "amazon ? ['#productTitle','#title_feature_div #title',"
+          "'#title_feature_div h1'] :",
+        ),
+      );
+    });
+
+    test('Mercado Libre colour thumbnails never count as the price', () {
+      // Their prices sit in the same .ui-pdp-price__second-line markup.
+      final forbidden = RegExp(
+        r"const forbidden = el => !!el\.closest\('([^']*)'\)",
+      ).firstMatch(goalProductExtractionScript)!.group(1)!;
+      expect(
+        forbidden.split(','),
+        containsAll([
+          '.ui-pdp-variations',
+          '.ui-pdp-outside_variations',
+          '.ui-pdp-outside-variations',
+        ]),
+      );
+    });
+  });
+
   testWidgets(
     'unsupported platform offers direct entry without a WebView',
     (tester) async {
