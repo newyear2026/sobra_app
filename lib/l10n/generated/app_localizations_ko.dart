@@ -1662,6 +1662,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get csvExportPreparing => '준비 중…';
 
   @override
+  String get releaseNote1018Export =>
+      '내역을 CSV나 엑셀 파일로 내보낼 수 있어요. 내역 화면이나 내 정보에서 할 수 있어요.';
+
+  @override
   String get settingsCsvExport => '내역 내보내기';
 
   @override
@@ -2215,26 +2219,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get releaseNote1014Currency => '새로 시작하면 내 나라 통화로 시작해요.';
-
-  @override
-  String get releaseNote1013Rewards => '레벨마다 새 가구가 생기고, 일부 소품은 광고 한 번으로 받아요.';
-
-  @override
-  String get releaseNote1013Rooms =>
-      '방도 모을 수 있어요. 정원·해변 방은 광고 한 번, 산속 별장·온실 방은 레벨로 열려요.';
-
-  @override
-  String get releaseNote1013Kept => '이미 가진 건 모두 그대로예요.';
-
-  @override
-  String get releaseNote1013Home => '홈 화면의 방도 시간에 맞춰 밤낮이 바뀌어요.';
-
-  @override
-  String get releaseNote1013Share =>
-      '내 정보에서, 또는 돈이 남은 주기를 마감할 때 친구에게 Sobrita를 알려줄 수 있어요.';
-
-  @override
-  String get releaseNote1013Fixes => '조명이 책장 뒤에 숨지 않고, 말풍선이 친구를 가리지 않아요.';
 
   @override
   String get updateAvailableTitle => '새 버전이 있어요';

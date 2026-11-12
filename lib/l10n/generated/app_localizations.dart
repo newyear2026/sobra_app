@@ -2951,6 +2951,12 @@ abstract class AppLocalizations {
   /// **'Preparando…'**
   String get csvExportPreparing;
 
+  /// No description provided for @releaseNote1018Export.
+  ///
+  /// In es, this message translates to:
+  /// **'Exporta tus movimientos a CSV o Excel desde Movimientos o Mi Sobrita.'**
+  String get releaseNote1018Export;
+
   /// No description provided for @settingsCsvExport.
   ///
   /// In es, this message translates to:
@@ -3933,42 +3939,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Una cuenta nueva empieza en la moneda de tu país.'**
   String get releaseNote1014Currency;
-
-  /// No description provided for @releaseNote1013Rewards.
-  ///
-  /// In es, this message translates to:
-  /// **'Cada nivel trae muebles nuevos, y algunos adornos se ganan con un anuncio.'**
-  String get releaseNote1013Rewards;
-
-  /// No description provided for @releaseNote1013Rooms.
-  ///
-  /// In es, this message translates to:
-  /// **'Las casas también se ganan: jardín y playa con un anuncio, montaña e invernadero por nivel.'**
-  String get releaseNote1013Rooms;
-
-  /// No description provided for @releaseNote1013Kept.
-  ///
-  /// In es, this message translates to:
-  /// **'Lo que ya tenías se queda contigo.'**
-  String get releaseNote1013Kept;
-
-  /// No description provided for @releaseNote1013Home.
-  ///
-  /// In es, this message translates to:
-  /// **'La casa en Inicio cambia con la hora del día.'**
-  String get releaseNote1013Home;
-
-  /// No description provided for @releaseNote1013Share.
-  ///
-  /// In es, this message translates to:
-  /// **'Puedes recomendar Sobrita a un amigo desde Mi Sobrita, o al cerrar un ciclo en el que te sobró.'**
-  String get releaseNote1013Share;
-
-  /// No description provided for @releaseNote1013Fixes.
-  ///
-  /// In es, this message translates to:
-  /// **'La lámpara ya no se esconde tras la estantería y el globo ya no tapa a tu compañero.'**
-  String get releaseNote1013Fixes;
 
   /// Heading of the dialog shown on launch when Google Play has a newer build waiting.
   ///

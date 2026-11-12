@@ -542,6 +542,7 @@
   "exportExcelTitle": "Excel (.xlsx)",
   "exportExcelDescription": "Excel·Google Sheets에서 바로 계산할 수 있어요.",
   "csvExportPreparing": "준비 중…",
+  "releaseNote1018Export": "내역을 CSV나 엑셀 파일로 내보낼 수 있어요. 내역 화면이나 내 정보에서 할 수 있어요.",
   "settingsCsvExport": "내역 내보내기",
   "settingsCsvExportValue": "공유",
   "csvExportEmpty": "아직 내보낼 기록이 없어요.",
@@ -722,19 +723,6 @@
   "releaseNote1014FirstExpense": "환영 화면이 끝나면 첫 지출을 두 단계로 기록해요. 그날부터 다른 친구를 데려오는 기록일로 쳐요.",
 
   "releaseNote1014Currency": "새로 시작하면 내 나라 통화로 시작해요.",
-
-  "releaseNote1013Rewards": "레벨마다 새 가구가 생기고, 일부 소품은 광고 한 번으로 받아요.",
-
-  "releaseNote1013Rooms": "방도 모을 수 있어요. 정원·해변 방은 광고 한 번, 산속 별장·온실 방은 레벨로 열려요.",
-
-  "releaseNote1013Kept": "이미 가진 건 모두 그대로예요.",
-
-  "releaseNote1013Home": "홈 화면의 방도 시간에 맞춰 밤낮이 바뀌어요.",
-
-  "releaseNote1013Share": "내 정보에서, 또는 돈이 남은 주기를 마감할 때 친구에게 Sobrita를 알려줄 수 있어요.",
-
-  "releaseNote1013Fixes": "조명이 책장 뒤에 숨지 않고, 말풍선이 친구를 가리지 않아요.",
-
 
   "updateAvailableTitle": "새 버전이 있어요",
   "updateAvailableBody": "업데이트하면 최신 Sobrita를 쓸 수 있어요.",

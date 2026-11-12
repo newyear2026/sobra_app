@@ -1732,6 +1732,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get csvExportPreparing => 'Préparation…';
 
   @override
+  String get releaseNote1018Export =>
+      'Exporte ton activité en CSV ou Excel depuis Activité ou Mon Sobrita.';
+
+  @override
   String get settingsCsvExport => 'Exporter l’activité';
 
   @override
@@ -2327,29 +2331,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get releaseNote1014Currency =>
       'Un nouveau carnet démarre dans la monnaie de votre pays.';
-
-  @override
-  String get releaseNote1013Rewards =>
-      'Chaque niveau apporte de nouveaux meubles, et certaines décorations s\'obtiennent avec une pub.';
-
-  @override
-  String get releaseNote1013Rooms =>
-      'Les maisons se gagnent aussi : jardin et plage avec une pub, chalet et véranda par niveau.';
-
-  @override
-  String get releaseNote1013Kept => 'Ce que vous aviez déjà reste à vous.';
-
-  @override
-  String get releaseNote1013Home =>
-      'La maison sur l\'accueil suit l\'heure du jour.';
-
-  @override
-  String get releaseNote1013Share =>
-      'Recommandez Sobrita depuis Mon Sobrita ou en fin de cycle avec un reste.';
-
-  @override
-  String get releaseNote1013Fixes =>
-      'La lampe ne se cache plus derrière la bibliothèque, et la bulle ne cache plus votre compagnon.';
 
   @override
   String get updateAvailableTitle => 'Une nouvelle version est là';

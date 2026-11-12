@@ -538,6 +538,7 @@
   "exportExcelTitle": "Excel (.xlsx)",
   "exportExcelDescription": "Ready for calculations in Excel and Google Sheets.",
   "csvExportPreparing": "Preparing…",
+  "releaseNote1018Export": "Export your activity to CSV or Excel from Activity or My Sobrita.",
   "settingsCsvExport": "Export activity",
   "settingsCsvExportValue": "Share",
   "csvExportEmpty": "There's no activity to export yet.",
@@ -720,19 +721,6 @@
   "releaseNote1014FirstExpense": "Right after the welcome, your first expense takes two steps, and that day already counts towards bringing your other companion over.",
 
   "releaseNote1014Currency": "A new ledger starts in your country's currency.",
-
-  "releaseNote1013Rewards": "Each level brings new furniture, and some decorations take one ad.",
-
-  "releaseNote1013Rooms": "Houses are earned too: garden and beach for one ad, mountain and conservatory by level.",
-
-  "releaseNote1013Kept": "Everything you already had stays yours.",
-
-  "releaseNote1013Home": "The house on Home follows the time of day.",
-
-  "releaseNote1013Share": "You can tell a friend about Sobrita from My Sobrita, or when a cycle closes with money left over.",
-
-  "releaseNote1013Fixes": "The lamp no longer hides behind the bookcase, and the bubble no longer covers your companion.",
-
 
   "updateAvailableTitle": "There's a new version",
   "updateAvailableBody": "Update to get the latest Sobrita.",

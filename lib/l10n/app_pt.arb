@@ -508,6 +508,7 @@
   "exportExcelTitle": "Excel (.xlsx)",
   "exportExcelDescription": "Pronto para calcular no Excel e no Google Sheets.",
   "csvExportPreparing": "Preparando…",
+  "releaseNote1018Export": "Exporte seu extrato em CSV ou Excel pelo Extrato ou pelo Meu Sobrita.",
   "settingsCsvExport": "Exportar extrato",
   "settingsCsvExportValue": "Compartilhar",
   "csvExportEmpty": "Ainda não há registros para exportar.",
@@ -687,19 +688,6 @@
   "releaseNote1014FirstExpense": "Logo depois das boas-vindas, seu primeiro gasto leva dois passos, e esse dia já conta para trazer seu outro companheiro.",
 
   "releaseNote1014Currency": "Uma conta nova começa na moeda do seu país.",
-
-  "releaseNote1013Rewards": "Cada nível traz móveis novos, e alguns enfeites saem com um anúncio.",
-
-  "releaseNote1013Rooms": "As casas também se ganham: jardim e praia com um anúncio, montanha e jardim de inverno por nível.",
-
-  "releaseNote1013Kept": "O que você já tinha continua seu.",
-
-  "releaseNote1013Home": "A casa no Início muda com a hora do dia.",
-
-  "releaseNote1013Share": "Você pode indicar o Sobrita a um amigo em Meu Sobrita ou ao fechar um ciclo em que sobrou dinheiro.",
-
-  "releaseNote1013Fixes": "O abajur não se esconde mais atrás da estante, e o balão não cobre mais seu companheiro.",
-
 
   "updateAvailableTitle": "Tem versão nova",
   "updateAvailableBody": "Atualize para ter o Sobrita mais recente.",

@@ -786,6 +786,7 @@
   "exportExcelTitle": "Excel (.xlsx)",
   "exportExcelDescription": "Listo para calcular en Excel y Google Sheets.",
   "csvExportPreparing": "Preparando…",
+  "releaseNote1018Export": "Exporta tus movimientos a CSV o Excel desde Movimientos o Mi Sobrita.",
   "settingsCsvExport": "Exportar movimientos",
   "settingsCsvExportValue": "Compartir",
   "csvExportEmpty": "Todavía no hay movimientos para exportar.",
@@ -1033,19 +1034,6 @@
   "releaseNote1014FirstExpense": "Al terminar la bienvenida, tu primer gasto se anota en dos pasos, y ese día ya cuenta para que llegue tu otro compañero.",
 
   "releaseNote1014Currency": "Una cuenta nueva empieza en la moneda de tu país.",
-
-  "releaseNote1013Rewards": "Cada nivel trae muebles nuevos, y algunos adornos se ganan con un anuncio.",
-
-  "releaseNote1013Rooms": "Las casas también se ganan: jardín y playa con un anuncio, montaña e invernadero por nivel.",
-
-  "releaseNote1013Kept": "Lo que ya tenías se queda contigo.",
-
-  "releaseNote1013Home": "La casa en Inicio cambia con la hora del día.",
-
-  "releaseNote1013Share": "Puedes recomendar Sobrita a un amigo desde Mi Sobrita, o al cerrar un ciclo en el que te sobró.",
-
-  "releaseNote1013Fixes": "La lámpara ya no se esconde tras la estantería y el globo ya no tapa a tu compañero.",
-
 
   "updateAvailableTitle": "Hay una versión nueva",
   "@updateAvailableTitle": {

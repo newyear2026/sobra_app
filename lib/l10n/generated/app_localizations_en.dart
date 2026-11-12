@@ -1719,6 +1719,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get csvExportPreparing => 'Preparing…';
 
   @override
+  String get releaseNote1018Export =>
+      'Export your activity to CSV or Excel from Activity or My Sobrita.';
+
+  @override
   String get settingsCsvExport => 'Export activity';
 
   @override
@@ -2302,29 +2306,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get releaseNote1014Currency =>
       'A new ledger starts in your country\'s currency.';
-
-  @override
-  String get releaseNote1013Rewards =>
-      'Each level brings new furniture, and some decorations take one ad.';
-
-  @override
-  String get releaseNote1013Rooms =>
-      'Houses are earned too: garden and beach for one ad, mountain and conservatory by level.';
-
-  @override
-  String get releaseNote1013Kept => 'Everything you already had stays yours.';
-
-  @override
-  String get releaseNote1013Home =>
-      'The house on Home follows the time of day.';
-
-  @override
-  String get releaseNote1013Share =>
-      'You can tell a friend about Sobrita from My Sobrita, or when a cycle closes with money left over.';
-
-  @override
-  String get releaseNote1013Fixes =>
-      'The lamp no longer hides behind the bookcase, and the bubble no longer covers your companion.';
 
   @override
   String get updateAvailableTitle => 'There\'s a new version';

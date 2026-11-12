@@ -1664,6 +1664,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get csvExportPreparing => '準備中…';
 
   @override
+  String get releaseNote1018Export =>
+      '履歴をCSVまたはExcelで書き出せます。履歴またはマイSobritaからどうぞ。';
+
+  @override
   String get settingsCsvExport => '履歴を書き出す';
 
   @override
@@ -2216,25 +2220,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get releaseNote1014Currency => '新しく始めると、お住まいの国の通貨で始まります。';
-
-  @override
-  String get releaseNote1013Rewards => 'レベルごとに新しい家具が届き、一部の小物は広告1回で手に入ります。';
-
-  @override
-  String get releaseNote1013Rooms => 'お部屋も集められます。庭・海辺は広告1回、山の別荘・温室はレベルで開きます。';
-
-  @override
-  String get releaseNote1013Kept => '持っていたものはそのままです。';
-
-  @override
-  String get releaseNote1013Home => 'ホーム画面のお部屋も時間で昼と夜が変わります。';
-
-  @override
-  String get releaseNote1013Share =>
-      'マイSobritaから、またはお金が残ったサイクルの締めくくりに、友だちにSobritaを紹介できます。';
-
-  @override
-  String get releaseNote1013Fixes => 'ランプが本棚の後ろに隠れず、吹き出しが仲間に重なりません。';
 
   @override
   String get updateAvailableTitle => '新しいバージョンがあります';

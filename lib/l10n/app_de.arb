@@ -508,6 +508,7 @@
   "exportExcelTitle": "Excel (.xlsx)",
   "exportExcelDescription": "Direkt in Excel und Google Sheets rechnen.",
   "csvExportPreparing": "Vorbereiten…",
+  "releaseNote1018Export": "Exportiere deinen Verlauf als CSV oder Excel – im Verlauf oder unter Mein Sobrita.",
   "settingsCsvExport": "Verlauf exportieren",
   "settingsCsvExportValue": "Teilen",
   "csvExportEmpty": "Noch nichts zum Exportieren.",
@@ -687,19 +688,6 @@
   "releaseNote1014FirstExpense": "Direkt nach der Begrüßung trägst du deine erste Ausgabe in zwei Schritten ein, und dieser Tag zählt schon, um deinen zweiten Begleiter zu holen.",
 
   "releaseNote1014Currency": "Ein neues Haushaltsbuch startet in der Währung deines Landes.",
-
-  "releaseNote1013Rewards": "Jedes Level bringt neue Möbel, und manche Deko gibt es für eine Werbung.",
-
-  "releaseNote1013Rooms": "Auch Häuser lassen sich verdienen: Garten und Strand für eine Werbung, Berghütte und Wintergarten über Level.",
-
-  "releaseNote1013Kept": "Was du schon hattest, bleibt deins.",
-
-  "releaseNote1013Home": "Das Haus im Start folgt der Tageszeit.",
-
-  "releaseNote1013Share": "Sobrita weiterempfehlen: in Mein Sobrita oder am Zyklusende.",
-
-  "releaseNote1013Fixes": "Die Lampe steht nicht mehr hinter dem Regal, die Sprechblase verdeckt niemanden.",
-
 
   "updateAvailableTitle": "Es gibt eine neue Version",
   "updateAvailableBody": "Aktualisiere, um das neueste Sobrita zu bekommen.",
