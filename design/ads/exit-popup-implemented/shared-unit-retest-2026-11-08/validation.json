@@ -1,0 +1,306 @@
+{
+  "build": {
+    "buildMode": "release",
+    "entrypoint": "tool/preview_exit_popup.dart",
+    "unitId": "ca-app-pub-2706404530136726/3965250332",
+    "unitOverrideUsed": false,
+    "apkSha256": "6ea3f797062b349977ba8363cf28d3836525257818f47bb863f7887bd36ac4d2",
+    "buildNumber": 2019,
+    "sdkData": "real test-device responses; seeded in-memory app data",
+    "serial": "emulator-5592",
+    "androidVersion": "16"
+  },
+  "publisherUnit": "ca-app-pub-2706404530136726/3965250332",
+  "publisherSmallAttempts": [
+    {
+      "name": "small-attempt-1",
+      "size": "small",
+      "pid": "5139",
+      "unitId": "ca-app-pub-2706404530136726/3965250332",
+      "outcome": "video_skipped",
+      "events": [
+        {
+          "stage": "requesting",
+          "size": "small",
+          "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+          "time": "2026-11-09T05:09:49.801092Z"
+        },
+        {
+          "stage": "no_fill",
+          "size": "small",
+          "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+          "time": "2026-11-09T05:09:56.220108Z"
+        }
+      ],
+      "testDevice": true,
+      "nativeViewBounds": [],
+      "buttons": {
+        "취소": "[53,803][457,940]",
+        "종료": "[488,803][893,940]"
+      }
+    },
+    {
+      "name": "small-attempt-2",
+      "size": "small",
+      "pid": "7057",
+      "unitId": "ca-app-pub-2706404530136726/3965250332",
+      "outcome": "video_skipped",
+      "events": [
+        {
+          "stage": "requesting",
+          "size": "small",
+          "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+          "time": "2026-11-09T05:12:08.568765Z"
+        },
+        {
+          "stage": "no_fill",
+          "size": "small",
+          "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+          "time": "2026-11-09T05:12:10.832377Z"
+        }
+      ],
+      "testDevice": true,
+      "nativeViewBounds": [],
+      "buttons": {
+        "취소": "[53,803][457,940]",
+        "종료": "[488,803][893,940]"
+      }
+    },
+    {
+      "name": "small-attempt-3",
+      "size": "small",
+      "pid": "7407",
+      "unitId": "ca-app-pub-2706404530136726/3965250332",
+      "outcome": "video_skipped",
+      "events": [
+        {
+          "stage": "requesting",
+          "size": "small",
+          "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+          "time": "2026-11-09T05:12:31.322346Z"
+        },
+        {
+          "stage": "no_fill",
+          "size": "small",
+          "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+          "time": "2026-11-09T05:12:33.345087Z"
+        }
+      ],
+      "testDevice": true,
+      "nativeViewBounds": [],
+      "buttons": {
+        "취소": "[53,803][457,940]",
+        "종료": "[488,803][893,940]"
+      }
+    },
+    {
+      "name": "small-fresh-request",
+      "size": "small",
+      "pid": "7990",
+      "unitId": "ca-app-pub-2706404530136726/3965250332",
+      "outcome": "video_skipped",
+      "events": [
+        {
+          "stage": "requesting",
+          "size": "small",
+          "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+          "time": "2026-11-09T05:13:33.351002Z"
+        },
+        {
+          "stage": "no_fill",
+          "size": "small",
+          "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+          "time": "2026-11-09T05:13:37.107151Z"
+        }
+      ],
+      "testDevice": true,
+      "nativeViewBounds": [],
+      "buttons": {
+        "취소": "[53,803][457,940]",
+        "종료": "[488,803][893,940]"
+      }
+    },
+    {
+      "name": "small-attempt-5",
+      "size": "small",
+      "pid": "9299",
+      "unitId": "ca-app-pub-2706404530136726/3965250332",
+      "outcome": "video_skipped",
+      "events": [
+        {
+          "stage": "requesting",
+          "size": "small",
+          "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+          "time": "2026-11-09T05:15:47.677755Z"
+        },
+        {
+          "stage": "no_fill",
+          "size": "small",
+          "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+          "time": "2026-11-09T05:15:56.326719Z"
+        }
+      ],
+      "testDevice": true,
+      "nativeViewBounds": [],
+      "buttons": {
+        "취소": "[53,803][457,940]",
+        "종료": "[488,803][893,940]"
+      }
+    },
+    {
+      "name": "small-restored-publisher",
+      "size": "small",
+      "pid": "12333",
+      "unitId": "ca-app-pub-2706404530136726/3965250332",
+      "outcome": "video_skipped",
+      "events": [
+        {
+          "stage": "requesting",
+          "size": "small",
+          "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+          "time": "2026-11-09T05:24:10.682891Z"
+        },
+        {
+          "stage": "no_fill",
+          "size": "small",
+          "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+          "time": "2026-11-09T05:24:12.794479Z"
+        }
+      ],
+      "testDevice": true,
+      "nativeViewBounds": [],
+      "buttons": {
+        "취소": "[53,803][457,940]",
+        "종료": "[488,803][893,940]"
+      }
+    }
+  ],
+  "publisherSmallImageCaptured": false,
+  "publisherMedium": {
+    "name": "medium-attempt-1",
+    "size": "medium",
+    "pid": "6632",
+    "unitId": "ca-app-pub-2706404530136726/3965250332",
+    "outcome": "ready",
+    "events": [
+      {
+        "stage": "requesting",
+        "size": "medium",
+        "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+        "time": "2026-11-09T05:10:49.268466Z"
+      },
+      {
+        "stage": "ready",
+        "size": "medium",
+        "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+        "time": "2026-11-09T05:10:52.331560Z"
+      },
+      {
+        "stage": "impression",
+        "size": "medium",
+        "adUnitId": "ca-app-pub-2706404530136726/3965250332",
+        "time": "2026-11-09T05:10:54.060735Z"
+      }
+    ],
+    "testDevice": true,
+    "nativeViewBounds": [
+      "[120,740][960,1659]"
+    ],
+    "buttons": {
+      "취소": "[120,1790][524,1927]",
+      "종료": "[556,1790][960,1927]"
+    }
+  },
+  "mediumValidator": "No implementation issues found",
+  "videoFallbackStability": {
+    "sameAppNodeBounds": true,
+    "appNodeCount": 16,
+    "nativeViewAbsent": true,
+    "before": "small-attempt-1.xml",
+    "after": "video-skipped-after.xml"
+  },
+  "mediumStability": {
+    "titleAdButtonsStable": true,
+    "bounds": [
+      [
+        "",
+        "앱을 종료할까요?",
+        "[120,538][450,614]"
+      ],
+      [
+        "",
+        "다음에 또 만나요.",
+        "[120,635][323,688]"
+      ],
+      [
+        "com.sobra.app.sobra_app:id/native_ad_view",
+        "",
+        "[120,740][960,1659]"
+      ],
+      [
+        "",
+        "취소",
+        "[120,1790][524,1927]"
+      ],
+      [
+        "",
+        "종료",
+        "[556,1790][960,1927]"
+      ]
+    ]
+  },
+  "exitAction": "topResumedActivity=ActivityRecord{212442173 u0 com.google.android.apps.nexuslauncher/.NexusLauncherActivity t2}",
+  "smallImageSupplementalStatus": "passed using separate official Google native-image test unit; publisher-unit image response not obtained",
+  "publisherSmallAttemptCount": 6,
+  "smallImageSupplemental": {
+    "name": "small-image-test",
+    "size": "small",
+    "pid": "11884",
+    "unitId": "ca-app-pub-3940256099942544/2247696110",
+    "outcome": "ready",
+    "events": [
+      {
+        "stage": "requesting",
+        "size": "small",
+        "adUnitId": "ca-app-pub-3940256099942544/2247696110",
+        "time": "2026-11-09T05:23:02.542454Z"
+      },
+      {
+        "stage": "ready",
+        "size": "small",
+        "adUnitId": "ca-app-pub-3940256099942544/2247696110",
+        "time": "2026-11-09T05:23:06.753577Z"
+      },
+      {
+        "stage": "impression",
+        "size": "small",
+        "adUnitId": "ca-app-pub-3940256099942544/2247696110",
+        "time": "2026-11-09T05:23:08.597699Z"
+      }
+    ],
+    "testDevice": true,
+    "nativeViewBounds": [
+      "[53,606][893,869]"
+    ],
+    "buttons": {
+      "취소": "[53,1000][457,1137]",
+      "종료": "[488,1000][893,1137]"
+    },
+    "validator": "No implementation issues found",
+    "slotDp": [
+      320,
+      100
+    ],
+    "buttonsAndSlotStable": true,
+    "screenshot": "small-image-test-clean.png",
+    "build": {
+      "unitId": "ca-app-pub-3940256099942544/2247696110",
+      "unitOverrideUsed": true,
+      "purpose": "supplemental small-image rendering check",
+      "productionConfigChanged": false,
+      "apkSha256": "8158cd6b1117a1a26fa10e6a2a8db6213b562206209e1158f469d9e6c4b8f523"
+    }
+  },
+  "publisherApkRestoredAfterSupplementalCheck": true,
+  "scope": "Real SDK emulator screenshots. Six small publisher-unit requests returned video and were rejected. Medium publisher-unit video served. Small image rendering verified with official Google test unit only. Source production ID is unchanged."
+}

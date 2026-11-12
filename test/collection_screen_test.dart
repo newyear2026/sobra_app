@@ -1,0 +1,854 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sobra_app/data/catalog_preview_data.dart';
+import 'package:sobra_app/models/catalog_entry.dart';
+import 'package:sobra_app/models/room_design.dart';
+import 'package:sobra_app/screens/collection_screen.dart';
+import 'package:sobra_app/services/admob_consent_service.dart';
+import 'package:sobra_app/services/app_telemetry.dart';
+import 'package:sobra_app/services/rewarded_ad_service.dart';
+import 'package:sobra_app/state/sobra_store.dart';
+import 'package:sobra_app/theme/app_theme.dart';
+import 'package:sobra_app/widgets/cat_sprite.dart';
+
+import 'support/fake_rewarded_ad.dart';
+import 'support/decorations.dart';
+import 'support/localizations.dart';
+
+void main() {
+  setUp(() {
+    SharedPreferences.setMockInitialValues({});
+  });
+
+  Future<SobraStore> loadStore() =>
+      SobraStore.load(now: () => DateTime(2026, 9, 14, 11));
+
+  /// A store with the daily limit switched on.
+  ///
+  /// The app ships without one, so this is the only way the "limit reached"
+  /// card is reachable. It stays tested because the limit is still a supported
+  /// setting, and a card nothing can render is a card that breaks unnoticed.
+  Future<SobraStore> loadCappedStore() => SobraStore.load(
+    now: () => DateTime(2026, 9, 14, 11),
+    rewardedAdsPerDay: 3,
+  );
+
+  CatalogEntry entryById(String id) =>
+      CatalogPreviewData.all.firstWhere((entry) => entry.id == id);
+
+  /// Text inside the open detail dialog.
+  ///
+  /// Scoped because the card the dialog was opened from is still mounted
+  /// behind it, carrying the very same action label.
+  Finder inDialog(String text) =>
+      find.descendant(of: find.byType(AlertDialog), matching: find.text(text));
+
+  /// An ad network with one ad loaded and ready.
+  Future<RewardedAds> readyAds(SobraStore store) async {
+    final port = FakeRewardedAdPort();
+    final ads = RewardedAds(port: port, store: store);
+    await ads.prepare();
+    return ads;
+  }
+
+  Future<void> pump(
+    WidgetTester tester,
+    SobraStore store, {
+    RewardedAds? ads,
+    AdMobConsentController? consent,
+    CollectionOrigin origin = CollectionOrigin.settings,
+    String? initialEntryId,
+    CatalogPriceSource prices = const PreviewCatalogPriceSource(),
+  }) async {
+    tester.view.physicalSize = const Size(520, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    useSpanishDevice(tester);
+    Widget app = SobraScope(
+      store: store,
+      child: MaterialApp(
+        localizationsDelegates: sobraLocalizationsDelegates,
+        supportedLocales: sobraSupportedLocales,
+        theme: buildSobraTheme(),
+        home: CollectionScreen(
+          origin: origin,
+          initialEntryId: initialEntryId,
+          priceSource: prices,
+        ),
+      ),
+    );
+    if (ads != null) app = RewardedAdScope(ads: ads, child: app);
+    if (consent != null) {
+      app = AdMobConsentScope(consent: consent, child: app);
+    }
+    await tester.pumpWidget(app);
+    await tester.pumpAndSettle();
+  }
+
+  // Pushed over a tab, the collection is invisible to the tab reporting; this
+  // visit and its way in are the only record that anyone opened it.
+  testWidgets('arriving reports the visit and where it came from', (
+    tester,
+  ) async {
+    final sent = <(String, Map<String, Object>)>[];
+    AppTelemetry.instance = AppTelemetry(
+      sendEvent: (name, parameters) async => sent.add((name, parameters)),
+    );
+    addTearDown(() => AppTelemetry.instance = AppTelemetry());
+
+    await pump(tester, await loadStore(), origin: CollectionOrigin.settlement);
+
+    expect(sent.single.$1, 'screen_view');
+    expect(sent.single.$2, {
+      'screen_name': 'collection',
+      'screen_class': 'Sobrita',
+      'origin': 'settlement',
+    });
+  });
+
+  // The header art is a picture of a room, so it has to be the user's room:
+  // pinned to Casa clara it went stale the moment another one was equipped.
+  testWidgets('the header shows the equipped room', (tester) async {
+    final store = await loadStore();
+    await ownAllRooms(store);
+    await store.saveRoomSelection(
+      roomId: RoomThemes.casaJardinId,
+      placementsByRoom: const {},
+    );
+    await pump(tester, store);
+
+    final art = tester
+        .widgetList<Image>(find.byType(Image))
+        .map((image) => (image.image as AssetImage).assetName);
+    expect(art, contains(RoomThemes.casaJardin.previewAsset));
+    expect(art, isNot(contains(RoomThemes.casaClara.previewAsset)));
+  });
+
+  // The screen used to hold ownership in its own State, so what it offered was
+  // the same two ids for everybody regardless of what the user had done.
+  // Owning it ends the collection's business with it: not for sale any more,
+  // and not for wearing either. Wearing belongs to the decorate screen, which
+  // is the one that can show the choice landing.
+  testWidgets('a granted character is neither for sale nor for equipping', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await store.grantCatalogEntry('capybara');
+    await pump(tester, store);
+
+    await tester.ensureVisible(find.text('Tranqui'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Tranqui'));
+    await tester.pumpAndSettle();
+
+    expect(inDialog('OBTENIDO'), findsOneWidget);
+    expect(inDialog('COMPRAR'), findsNothing);
+    expect(inDialog('EQUIPAR'), findsNothing);
+    expect(store.characterId, 'michi');
+  });
+
+  testWidgets('an unowned character still offers only its purchase', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store);
+
+    await tester.scrollUntilVisible(
+      find.text('Bunny'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Bunny'));
+    await tester.pumpAndSettle();
+
+    // The price is on the button, as it is on the pack's.
+    expect(inDialog(r'COMPRAR · MX$ 39'), findsOneWidget);
+    expect(inDialog('EQUIPAR'), findsNothing);
+  });
+
+  // Without a price from Play there is nothing to charge, so nothing is sold.
+  testWidgets('a paid character with no price cannot be bought', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    final unpriced = entryById('rabbit');
+    expect(store.ownsCatalogEntry(unpriced), isFalse);
+    await pump(
+      tester,
+      store,
+      initialEntryId: 'rabbit',
+      prices: const _NoPrices(),
+    );
+
+    expect(inDialog('Bunny'), findsOneWidget);
+    expect(inDialog('CONSULTANDO PRECIO'), findsOneWidget);
+    final buyButton = tester.widget<FilledButton>(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.byType(FilledButton),
+      ),
+    );
+    expect(buyButton.onPressed, isNull);
+  });
+
+  testWidgets(
+    'Penguin is listed but cannot be bought before Play has a price',
+    (tester) async {
+      final store = await loadStore();
+      await pump(tester, store, initialEntryId: 'penguin');
+
+      expect(inDialog('Penguin'), findsOneWidget);
+      expect(inDialog('CONSULTANDO PRECIO'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.byType(CharacterSprite),
+        ),
+        findsOneWidget,
+      );
+      final buyButton = tester.widget<FilledButton>(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.byType(FilledButton),
+        ),
+      );
+      expect(buyButton.onPressed, isNull);
+      expect(store.ownsCatalogEntry(entryById('penguin')), isFalse);
+    },
+  );
+
+  testWidgets('Bunny appears in the collection at the single price', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store, initialEntryId: 'rabbit');
+
+    expect(inDialog('Bunny'), findsOneWidget);
+    // The price is on the button, as it is on the pack's.
+    expect(inDialog(r'COMPRAR · MX$ 39'), findsOneWidget);
+    final buyButton = tester.widget<FilledButton>(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.byType(FilledButton),
+      ),
+    );
+    expect(buyButton.onPressed, isNotNull);
+  });
+
+  testWidgets('Pico appears in the collection at the single price', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store, initialEntryId: 'platypus');
+
+    expect(inDialog('Pico'), findsOneWidget);
+    // The price is on the button, as it is on the pack's.
+    expect(inDialog(r'COMPRAR · MX$ 39'), findsOneWidget);
+    final buyButton = tester.widget<FilledButton>(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.byType(FilledButton),
+      ),
+    );
+    expect(buyButton.onPressed, isNotNull);
+  });
+
+  testWidgets('Bandi is sold singly and points to the pack', (tester) async {
+    final store = await loadStore();
+    await pump(tester, store, initialEntryId: 'raccoon');
+
+    expect(inDialog('Bandi'), findsOneWidget);
+    // The price is on the button, as it is on the pack's.
+    expect(inDialog(r'COMPRAR · MX$ 39'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.byType(CharacterSprite),
+      ),
+      findsOneWidget,
+    );
+    final buy = tester.widget<FilledButton>(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.byType(FilledButton),
+      ),
+    );
+    expect(buy.onPressed, isNotNull);
+    expect(inDialog('También viene en Los amigos de Michi'), findsOneWidget);
+  });
+
+  // Pico is not in the pack, so its card has nothing to say about it.
+  testWidgets('a single outside the pack does not mention it', (tester) async {
+    final store = await loadStore();
+    await pump(tester, store, initialEntryId: 'platypus');
+
+    expect(inDialog('Pico'), findsOneWidget);
+    expect(inDialog('También viene en Los amigos de Michi'), findsNothing);
+  });
+
+  testWidgets('a stored ad count is what the card counts from', (tester) async {
+    final store = await loadStore();
+    await store.recordRewardedAdView(entryById('quokka'));
+
+    await pump(tester, store, ads: await readyAds(store));
+
+    // The count is its own line now, so the button says what it does and the
+    // line says how far along the run is.
+    // The lazy grid builds the visible cards; later entries load on scroll.
+    await tester.scrollUntilVisible(
+      find.text('Quokka'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('VER ANUNCIO'), findsWidgets);
+    expect(find.text('1/2'), findsOneWidget);
+    // The lazy grid has not necessarily built every later character card.
+    expect(find.text('0/2'), findsWidgets);
+  });
+
+  testWidgets('an owned item offers nothing to place', (tester) async {
+    final store = await loadStore();
+    await pump(tester, store);
+
+    await tester.tap(find.text('OBJETOS'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Estantería estrecha'));
+    await tester.pumpAndSettle();
+
+    expect(inDialog('OBTENIDO'), findsOneWidget);
+    expect(inDialog('EQUIPAR'), findsNothing);
+  });
+
+  // The decoration carries the pack's product id so the store can price the
+  // pack. If the card followed that id instead of the unlock method it would
+  // offer COMPRAR, and one room object would charge for the whole pack.
+  testWidgets('the pack friends sit together, each with its price', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store);
+
+    await tester.scrollUntilVisible(
+      find.text('Bandi'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('PAQUETE'), findsNothing);
+    // Tranqui and Lana share a row, and Bandi starts the next one.
+    final tranqui = tester.getTopLeft(find.text('Tranqui'));
+    final lana = tester.getTopLeft(find.text('Lana'));
+    final bandi = tester.getTopLeft(find.text('Bandi'));
+    expect(lana.dy, tranqui.dy);
+    expect(bandi.dy, greaterThan(tranqui.dy));
+  });
+
+  testWidgets('the star decoration is gone from the items', (tester) async {
+    final store = await loadStore();
+    await pump(tester, store);
+
+    await tester.tap(find.text('OBJETOS'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('PAQUETE'), findsNothing);
+  });
+
+  // A temporary no-fill keeps the existing retry route available. The
+  // action names that route while the card retains its progress count.
+  testWidgets('with no ad loaded the card offers retry and keeps progress', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    final port = FakeRewardedAdPort()..fills = false;
+    final ads = RewardedAds(port: port, store: store);
+
+    await pump(tester, store, ads: ads);
+
+    expect(find.text('REINTENTAR'), findsAtLeastNWidgets(2));
+    // Blocked, but the run is still legible.
+    expect(find.text('0/2'), findsAtLeastNWidgets(2));
+  });
+
+  // No ad system above the screen at all — the design gallery, and every
+  // widget test that does not ask for one.
+  testWidgets('the preview without an ad provider uses the same retry label', (
+    tester,
+  ) async {
+    final store = await loadStore();
+
+    await pump(tester, store);
+
+    expect(find.text('REINTENTAR'), findsAtLeastNWidgets(2));
+  });
+
+  testWidgets('a spent daily cap is what every ad card says', (tester) async {
+    final store = await loadCappedStore();
+    await store.recordRewardedAdView(entryById('decor-shelf-books'));
+    await store.recordRewardedAdView(entryById('item-05'));
+    await store.recordRewardedAdView(entryById('item-01'));
+    expect(store.rewardedAdsLeftToday, 0);
+
+    await pump(tester, store, ads: await readyAds(store));
+
+    expect(find.text('LÍMITE DE HOY'), findsAtLeastNWidgets(2));
+  });
+
+  testWidgets('watching an ad through counts and unlocks', (tester) async {
+    final store = await loadStore();
+    final item = entryById('decor-shelf-books');
+    expect(item.rewardedAdTarget, 1);
+
+    await pump(tester, store, ads: await readyAds(store));
+    await tester.tap(find.text('OBJETOS'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Libros'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Libros'));
+    await tester.pumpAndSettle();
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+
+    expect(store.ownsCatalogEntry(item), isTrue);
+    expect(store.rewardedAdsWatchedToday, 1);
+    expect(find.text('¡Libros es tuyo!'), findsOneWidget);
+  });
+
+  // Acquiring is this screen's work and placing is not, so the unlock hands
+  // the user back to the screen that can put the thing somewhere — but only
+  // when that screen is the one underneath. Reached from settings there is
+  // nothing to go back to, and pushing a decorate screen from inside the
+  // collection would stack the two surfaces in the order this split undoes.
+  testWidgets('an unlock offers the way back to decorate', (tester) async {
+    final store = await loadStore();
+
+    await pump(
+      tester,
+      store,
+      ads: await readyAds(store),
+      origin: CollectionOrigin.decorate,
+    );
+    await tester.tap(find.text('OBJETOS'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Libros'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Libros'));
+    await tester.pumpAndSettle();
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Colocarlo'), findsOneWidget);
+  });
+
+  testWidgets('reached from anywhere else the unlock offers no way back', (
+    tester,
+  ) async {
+    final store = await loadStore();
+
+    await pump(tester, store, ads: await readyAds(store));
+    await tester.tap(find.text('OBJETOS'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Libros'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Libros'));
+    await tester.pumpAndSettle();
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('¡Libros es tuyo!'), findsOneWidget);
+    expect(find.text('Colocarlo'), findsNothing);
+  });
+
+  testWidgets('closing an ad early explains why nothing moved', (tester) async {
+    final store = await loadStore();
+    final port = FakeRewardedAdPort()..script = [RewardedAdResult.dismissed];
+    final ads = RewardedAds(port: port, store: store);
+    await ads.prepare();
+
+    await pump(tester, store, ads: ads);
+    await tester.tap(find.text('OBJETOS'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Libros'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Libros'));
+    await tester.pumpAndSettle();
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+
+    expect(store.ownsCatalogEntry(entryById('decor-shelf-books')), isFalse);
+    expect(
+      find.text('Mira el anuncio completo para que cuente.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('an ordinary entry is not told it is once a day', (tester) async {
+    final store = await loadStore();
+
+    await pump(tester, store, ads: await readyAds(store));
+    await tester.scrollUntilVisible(
+      find.text('Quokka'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Quokka'));
+    await tester.pumpAndSettle();
+
+    expect(inDialog('Mira anuncios de recompensa · 0/2'), findsOneWidget);
+    expect(
+      inDialog('Mira anuncios de recompensa · 0/2 · uno por día'),
+      findsNothing,
+    );
+  });
+
+  testWidgets('Guinea Pig unlocks in the collection after two ads', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    final entry = entryById('guinea-pig');
+    await pump(
+      tester,
+      store,
+      ads: await readyAds(store),
+      initialEntryId: 'guinea-pig',
+    );
+
+    expect(find.text('Cookie'), findsWidgets);
+    expect(inDialog('Mira anuncios de recompensa · 0/2'), findsOneWidget);
+    expect(inDialog('VER ANUNCIO'), findsOneWidget);
+    expect(store.ownsCatalogEntry(entry), isFalse);
+
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+    expect(store.rewardedAdProgressFor(entry.id), 1);
+    expect(store.ownsCatalogEntry(entry), isFalse);
+
+    await tester.tap(find.text('Cookie'));
+    await tester.pumpAndSettle();
+    expect(inDialog('Mira anuncios de recompensa · 1/2'), findsOneWidget);
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+    expect(store.ownsCatalogEntry(entry), isTrue);
+    expect(find.text('¡Cookie es tuyo!'), findsOneWidget);
+  });
+
+  testWidgets('Quokka unlocks in the collection after two ads', (tester) async {
+    final store = await loadStore();
+    final entry = entryById('quokka');
+    await pump(
+      tester,
+      store,
+      ads: await readyAds(store),
+      initialEntryId: 'quokka',
+    );
+
+    expect(find.text('Quokka'), findsWidgets);
+    expect(inDialog('Mira anuncios de recompensa · 0/2'), findsOneWidget);
+    expect(inDialog('VER ANUNCIO'), findsOneWidget);
+    expect(store.ownsCatalogEntry(entry), isFalse);
+
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+    expect(store.rewardedAdProgressFor(entry.id), 1);
+    expect(store.ownsCatalogEntry(entry), isFalse);
+
+    await tester.scrollUntilVisible(
+      find.text('Quokka'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Quokka'));
+    await tester.pumpAndSettle();
+    expect(inDialog('Mira anuncios de recompensa · 1/2'), findsOneWidget);
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+    expect(store.ownsCatalogEntry(entry), isTrue);
+    expect(find.text('¡Quokka es tuyo!'), findsOneWidget);
+  });
+
+  testWidgets('Happy unlocks in the collection after two ads', (tester) async {
+    final store = await loadStore();
+    final entry = entryById('maltese');
+    await pump(
+      tester,
+      store,
+      ads: await readyAds(store),
+      initialEntryId: 'maltese',
+    );
+
+    expect(inDialog('Happy'), findsOneWidget);
+    expect(inDialog('Mira anuncios de recompensa · 0/2'), findsOneWidget);
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+    expect(store.rewardedAdProgressFor(entry.id), 1);
+    expect(store.ownsCatalogEntry(entry), isFalse);
+
+    await tester.scrollUntilVisible(
+      find.text('Happy'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Happy'));
+    await tester.pumpAndSettle();
+    expect(inDialog('Mira anuncios de recompensa · 1/2'), findsOneWidget);
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+    expect(store.ownsCatalogEntry(entry), isTrue);
+    expect(find.text('¡Happy es tuyo!'), findsOneWidget);
+  });
+
+  testWidgets('Casa de playa opens after one ad, from the rooms tab', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    final entry = entryById(RoomThemes.casaDePlayaId);
+    await pump(
+      tester,
+      store,
+      ads: await readyAds(store),
+      initialEntryId: RoomThemes.casaDePlayaId,
+    );
+
+    expect(store.ownsRoom(entry.id), isFalse);
+    await tester.tap(inDialog('VER ANUNCIO'));
+    await tester.pumpAndSettle();
+
+    expect(store.ownsRoom(entry.id), isTrue);
+    expect(find.text('¡Ya puedes mudarte a Casa de playa!'), findsOneWidget);
+  });
+
+  // The fetch in front of the ad is a network round trip. Before the card said
+  // so, the only feedback for a tap was an unchanged button.
+  testWidgets('the card says it is preparing while an ad is fetched', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    final port = _SlowRewardedAdPort();
+    final ads = RewardedAds(port: port, store: store);
+    await pump(tester, store, ads: ads);
+    await tester.scrollUntilVisible(
+      find.text('Quokka'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
+
+    // Not awaited: the assertion below is about what the screen shows while
+    // the run is still in flight.
+    final run = ads.watch(entryById('quokka'));
+    await tester.pump();
+
+    expect(find.text('PREPARANDO'), findsOneWidget);
+
+    port.finishLoad();
+    await run;
+    await tester.pumpAndSettle();
+
+    expect(find.text('PREPARANDO'), findsNothing);
+    expect(store.rewardedAdProgressFor('quokka'), 1);
+  });
+
+  // The dead end found on a device: one empty answer at launch left every
+  // rewarded card reading "no ads" for the rest of the process, because the
+  // card that would have asked for another ad had stopped accepting taps.
+  testWidgets('a no-fill at launch does not disable ads for the session', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    final port = FakeRewardedAdPort()..fills = false;
+    final ads = RewardedAds(port: port, store: store);
+    // The one request the app makes at launch, and it comes back empty.
+    await ads.prepare();
+    expect(ads.isReady, isFalse);
+
+    await pump(tester, store, ads: ads);
+    await tester.tap(find.text('OBJETOS'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Libros'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    // The network recovers while the user is looking at the screen.
+    port.fills = true;
+    await tester.tap(find.text('Libros'));
+    await tester.pumpAndSettle();
+    await tester.tap(inDialog('REINTENTAR'));
+    await tester.pumpAndSettle();
+
+    expect(store.ownsCatalogEntry(entryById('decor-shelf-books')), isTrue);
+  });
+
+  // Opening the screen asks for one, so the common case never reaches the tap.
+  testWidgets('opening the collection asks for an ad', (tester) async {
+    final store = await loadStore();
+    final port = FakeRewardedAdPort();
+    final ads = RewardedAds(port: port, store: store);
+    expect(port.loads, 0);
+
+    await pump(tester, store, ads: ads);
+
+    expect(port.loads, greaterThan(0));
+    expect(ads.isReady, isTrue);
+  });
+
+  testWidgets('collection waits for consent and preloads only once', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    final port = FakeRewardedAdPort()..fills = false;
+    final ads = RewardedAds(port: port, store: store);
+    final consent = _DelayedConsent();
+    await pump(tester, store, ads: ads, consent: consent);
+    expect(port.loads, 0);
+
+    consent.allow();
+    await tester.pumpAndSettle();
+    expect(port.loads, 1);
+
+    consent.allow();
+    await tester.pumpAndSettle();
+    expect(port.loads, 1);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    consent.dispose();
+    ads.dispose();
+    store.dispose();
+  });
+
+  // The real rules still close the button. Only an empty network stays open.
+  testWidgets('a rule-blocked card still refuses the tap', (tester) async {
+    final store = await loadCappedStore();
+    await store.recordRewardedAdView(entryById('decor-shelf-books'));
+    await store.recordRewardedAdView(entryById('item-05'));
+    await store.recordRewardedAdView(entryById('item-01'));
+    expect(store.rewardedAdsLeftToday, 0);
+
+    await pump(tester, store, ads: await readyAds(store));
+    await tester.scrollUntilVisible(
+      find.text('Quokka'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Quokka'));
+    await tester.pumpAndSettle();
+
+    // Asserted by behaviour rather than by widget type: pressing it must not
+    // start a run, whatever the button happens to be made of.
+    expect(inDialog('LÍMITE DE HOY'), findsOneWidget);
+    await tester.tap(inDialog('LÍMITE DE HOY'), warnIfMissed: false);
+    await tester.pumpAndSettle();
+
+    expect(store.rewardedAdProgressFor('quokka'), 0);
+    expect(store.rewardedAdsLeftToday, 0);
+  });
+
+  testWidgets('an initial entry opens its detail without playing an ad', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store, initialEntryId: 'decor-shelf-books');
+
+    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(inDialog('Libros'), findsOneWidget);
+    expect(store.rewardedAdProgressFor('decor-shelf-books'), 0);
+  });
+
+  testWidgets('new room items appear in Items with their own art', (
+    tester,
+  ) async {
+    final store = await loadStore();
+    await pump(tester, store, initialEntryId: RoomDecorAssets.slimBookcaseId);
+
+    expect(inDialog('Estantería estrecha'), findsOneWidget);
+    expect(inDialog('OBTENIDO'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Image &&
+            widget.image is AssetImage &&
+            (widget.image as AssetImage).assetName ==
+                RoomDecorAssets.slimBookcase,
+      ),
+      findsWidgets,
+    );
+    expect(
+      CatalogPreviewData.items.map((entry) => entry.id),
+      containsAll([
+        RoomDecorAssets.rattanChairId,
+        RoomDecorAssets.floorLampId,
+        RoomDecorAssets.wallClockId,
+      ]),
+    );
+  });
+}
+
+class _DelayedConsent extends AdMobConsentController {
+  bool _allowed = false;
+
+  @override
+  bool get canRequestAds => _allowed;
+
+  void allow() {
+    _allowed = true;
+    notifyListeners();
+  }
+}
+
+/// A network whose fetch can be held open, so a test can look at the screen
+/// while the run is still working.
+class _SlowRewardedAdPort implements RewardedAdPort {
+  final _loaded = Completer<void>();
+  bool _ready = false;
+
+  void finishLoad() {
+    _ready = true;
+    _loaded.complete();
+  }
+
+  @override
+  bool get isReady => _ready;
+
+  @override
+  Future<void> load() => _loaded.future;
+
+  @override
+  Future<RewardedAdResult> show() async {
+    _ready = false;
+    return RewardedAdResult.earned;
+  }
+}
+
+/// A store that has not answered, or has no listing: no price for anything.
+final class _NoPrices implements CatalogPriceSource {
+  const _NoPrices();
+
+  @override
+  String? localizedPriceFor(String storeProductId) => null;
+}

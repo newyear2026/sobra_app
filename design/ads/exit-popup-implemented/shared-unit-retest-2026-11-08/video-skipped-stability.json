@@ -1,0 +1,7 @@
+{
+  "sameAppNodeBounds": true,
+  "appNodeCount": 16,
+  "nativeViewAbsent": true,
+  "before": "small-attempt-1.xml",
+  "after": "video-skipped-after.xml"
+}

@@ -1,0 +1,15 @@
+﻿Data;Hora;Tipo;Categoria;Nota;Pagamento;Valor;Moeda
+2026-11-01;00:00;Gasto;Comida;"	=1+1";Dinheiro;-123,45;BRL
+2026-11-01;01:00;Gasto;Comida;"	+2+2";Dinheiro;-246,90;BRL
+2026-11-01;02:00;Gasto;Comida;"	-3+3";Dinheiro;-370,35;BRL
+2026-11-01;03:00;Gasto;Comida;"	@SUM(A1)";Dinheiro;-493,80;BRL
+2026-11-01;04:00;Gasto;Comida;"	＝1+1";Dinheiro;-617,25;BRL
+2026-11-01;05:00;Gasto;Comida;"	=1+1";Dinheiro;-740,70;BRL
+2026-11-01;06:00;Gasto;Comida;"	=1+1";Dinheiro;-864,15;BRL
+2026-11-01;07:00;Gasto;Comida;"점심, ""커피""";Dinheiro;-987,60;BRL
+2026-11-01;08:00;Gasto;Comida;"Cinema; pipoca";Dinheiro;-1111,05;BRL
+2026-11-01;09:00;Gasto;Comida;"pão
+leite";Dinheiro;-1234,50;BRL
+2026-11-01;10:00;Gasto;Comida;"	=IF(1,""한글"","""")";Dinheiro;-1357,95;BRL
+2026-11-01;11:00;Gasto;Comida;일반 메모;Dinheiro;-1481,40;BRL
+2026-11-02;09:00;Entrada;Meu pagamento de sempre;"	=2+2";Cartão;20000,00;BRL

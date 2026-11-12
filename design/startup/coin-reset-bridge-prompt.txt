@@ -1,0 +1,21 @@
+Use case: precise-object-edit.
+Asset type: production pixel-art animation transition sprite sheet.
+Primary request: create eight IN-BETWEEN poses to connect the FINAL pose of the existing coin deposit animation back to its FIRST pose naturally, so an endlessly repeated loading animation has no jump.
+
+Input image 1 is the ORIGINAL transparent 4-column 3-row atlas, 1448x1086, each cell 362x362. It is the exact character and style reference. Its row3 col4 is the starting endpoint (proud cat standing upright, empty paws by belly). Its row1 col1 is the ending endpoint (cat leaning gently toward jar holding a gold coin over its mouth). Input image 2 shows the starting endpoint at application size, input image 3 shows the ending endpoint. IGNORE all text, backgrounds and UI in inputs 2 and 3.
+
+Output ONLY one transparent RGBA sprite sheet of exactly EIGHT complete poses in 4 columns by 2 rows. Target 1448x724, square362x362 cells. No labels, text, borders, gridlines or drawn checkerboard.
+Preserve the exact navy-blue pixel-art cat, folded right ear, cream forehead stripes, amber eyes, teal collar, square gold charm, and aqua glass jar with paw label and three gold coins. Keep all color, detail, identity and pixel-art texture. Fixed camera. No character redesign, no enlarged eyes, no new bag, clothing, objects or background.
+
+REGISTRATION in each square cell (coordinates refer to a 362 square): jar left edge x=25, right edge x=182, opening center x=102 y=210, bottom y=341. Cat feet stay grounded on y=331, at x=213 and272. Tail is on right. All content fits x=18..340,y=15..345. Jar is identical, rigid and in exactly the same place in all cells. Keep frame size and character scale identical. Head transitions subtly from upright final pose to first tilted pose; feet remain planted; no whole-character translation or zoom. Original first and final poses in atlas must guide exact relative scale.
+
+Eight chronological transition frames, reading left to right then top to bottom:
+1. Almost identical to original final frame: upright proud cat, open eyes, empty paws relaxing down from belly.
+2. One paw lowers slightly toward the cat's far hip, other remains near chest; gaze briefly follows paw; gentle anticipatory head turn.
+3. Paw is briefly hidden by torso at hip, as though retrieving next coin from behind itself. No coin pulled OUT OF the jar; coins in jar remain still.
+4. Edge of a NEW gold coin emerges naturally from behind the paw near belly, never floating, other paw approaches to support it.
+5. Both paws now hold this coin near chest; head and shoulders begin gentle lean toward jar.
+6. Paws carry coin up and left toward jar mouth; head tilt and torso match the original initial pose more closely.
+7. Coin and paws almost reach the original first pose, just slightly to the right and lower, continuous movement.
+8. EXACT original first pose from atlas row1 col1: cat leans gently with both paws holding coin diagonally over jar opening, tiny gold sparkle.
+Motion must be smooth pose-to-pose, with no reverse falling coin and no teleporting. Output genuine transparency, no background, no UI, no text.

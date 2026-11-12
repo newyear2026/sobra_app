@@ -1,0 +1,395 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face{font-family:PixelifySans;src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");}
+@font-face{font-family:SobraHangul;src:url("../../assets/fonts/SobraHangul.ttf") format("truetype");font-weight:400;}
+@font-face{font-family:SobraHangul;src:url("../../assets/fonts/SobraHangul-Bold.ttf") format("truetype");font-weight:700;}
+/* Tokens copied from lib/theme/app_theme.dart. */
+:root{--paper:#F6EFE0;--paperLight:#FBF5E9;--surface:#FFFDF7;--beige:#EFE7D6;--line:#E7DDC8;
+      --ink:#202848;--inkSoft:#4E5878;--muted:#5F6885;
+      --teal:#0E7A72;--tealSoft:#D8EDEA;--tealInk:#0B6660;--cash:#C0873A;--cashSoft:#F7E9CE;--cashInk:#845A1E;
+      --danger:#D4553F;--dangerSoft:#FBE1DA;--dangerInk:#A63A25;--blue:#39558E;--blueSoft:#DCE4F2;
+      --violet:#6E4A8C;--violetSoft:#E7DCF0;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);font-family:PixelifySans,SobraHangul,monospace;color:var(--ink);
+     padding:32px 40px 40px;-webkit-font-smoothing:none;width:1660px}
+.head{display:flex;align-items:baseline;gap:14px;margin-bottom:20px;padding-left:6px}
+.head h1{font-size:26px;font-weight:900}
+.head span{font-size:14px;color:var(--inkSoft);font-weight:800}
+.row{display:flex;gap:30px;align-items:flex-start}
+.row+.row{margin-top:34px}
+.col{width:372px;flex:0 0 372px}
+.phone{width:372px;height:806px;background:var(--surface);border:5px solid var(--ink);
+       border-radius:26px;padding:14px 16px 0;display:flex;flex-direction:column;
+       box-shadow:7px 7px 0 rgba(32,40,72,.14);position:relative;overflow:hidden}
+.cap{font-size:12.5px;color:var(--inkSoft);line-height:1.5;margin-top:12px;padding:0 4px;font-weight:800}
+.cap b{color:var(--ink)}
+.status{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:900;padding:2px 4px 8px}
+.dots{display:flex;gap:3px;align-items:center}
+.dots i{width:7px;height:7px;background:var(--ink);border-radius:50%}
+.dots b{width:14px;height:8px;border:2px solid var(--ink);display:inline-block;margin-left:3px}
+.brand{display:flex;justify-content:space-between;align-items:center;margin:2px 0 14px}
+.brand b{font-size:24px;font-weight:900}
+.lbl{font-size:13px;font-weight:900;color:var(--inkSoft)}
+.big{font-size:40px;font-weight:900;color:var(--teal);line-height:1.1;margin:4px 0 4px}
+.big small{font-size:20px}
+.sub{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:14px}
+/* level card, same structure as Inicio */
+.lvl{border:2.5px solid var(--ink);background:var(--tealSoft)}
+.lvl .top{padding:11px 12px 10px}
+.lvl .who{display:flex;align-items:center;gap:10px}
+.lvl .n{width:34px;height:34px;background:var(--teal);color:#fff;border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900}
+.lvl .who b{display:block;font-size:14px;font-weight:900}
+.lvl .who s{display:block;text-decoration:none;font-size:12px;font-weight:800;color:var(--muted)}
+.lvl .who .chev{margin-left:auto;font-size:16px;font-weight:900}
+.xpbar{height:14px;border:2.5px solid var(--ink);background:var(--surface);padding:2px;display:flex;gap:2px;margin-top:9px}
+.xpbar s{flex:1;background:var(--line)}
+.xpbar s.f{background:var(--teal)}
+.lvl .xp{display:flex;justify-content:space-between;font-size:11.5px;font-weight:900;color:var(--muted);margin-top:5px}
+.lvl .xp em{font-style:normal;color:var(--tealInk)}
+.lvl .mis{border-top:2.5px solid var(--ink);padding:9px 12px;display:flex;align-items:center;gap:10px}
+.lvl .mis .box{width:22px;height:22px;border:2.5px solid var(--ink);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900}
+.lvl .mis .t{flex:1}
+.lvl .mis .t s{display:block;text-decoration:none;font-size:11.5px;font-weight:800;color:var(--muted)}
+.lvl .mis .t b{display:block;font-size:13px;font-weight:900}
+.lvl .mis em{font-style:normal;font-size:12px;font-weight:900;color:var(--tealInk)}
+/* NEW: streak row */
+.streak{border-top:2.5px solid var(--ink);padding:10px 12px 11px;background:var(--surface);position:relative}
+.streak.warn{background:var(--cashSoft)}
+.streak .hd{display:flex;align-items:baseline;gap:6px}
+.streak .hd b{font-size:13.5px;font-weight:900}
+.streak .hd s{text-decoration:none;font-size:11.5px;font-weight:800;color:var(--muted);margin-left:auto}
+.days{display:flex;gap:5px;margin-top:8px}
+.days div{flex:1;text-align:center}
+.days i{display:block;height:24px;border:2.5px solid var(--ink);background:var(--surface)}
+.days i.f{background:var(--teal)}
+.days i.today{border-style:dashed;border-color:var(--teal);background:var(--tealSoft)}
+.days i.todaywarn{border-style:dashed;border-color:var(--cash);background:var(--surface)}
+.days i.gift{background:var(--violetSoft);border-color:var(--violet);display:flex;align-items:center;justify-content:center}
+.days span{display:block;font-size:10.5px;font-weight:900;color:var(--muted);margin-top:3px}
+.new{position:absolute;top:-11px;right:10px;background:var(--violet);color:#fff;font-size:10.5px;font-weight:900;padding:1px 6px;border:2px solid var(--ink)}
+.acts{display:flex;gap:8px;margin-top:10px}
+.acts div{flex:1;text-align:center;border:2.5px solid var(--ink);padding:8px 0;font-size:12.5px;font-weight:900;box-shadow:0 3px 0 var(--ink)}
+.acts .p{background:var(--teal);color:#fff}
+.acts .g{background:var(--surface)}
+.cyc{margin-top:16px}
+.cyc .lblrow{display:flex;justify-content:space-between;font-size:13px;font-weight:900;margin-bottom:6px}
+.cyc .lblrow em{font-style:normal;color:var(--muted);font-size:12px}
+.spacer{flex:1}
+.tabbar{display:flex;border-top:3px solid var(--ink);margin:0 -16px;height:62px;background:var(--surface)}
+.tabbar div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:900}
+.tabbar div.on{background:var(--teal);color:#fff}
+.tabbar .plus{flex:0 0 58px;margin:8px 4px;background:var(--teal);border:3px solid var(--ink);color:#fff;font-size:26px;box-shadow:0 4px 0 var(--ink)}
+.dim{position:absolute;inset:0;background:rgba(32,40,72,.58)}
+.dialog{position:absolute;left:22px;right:22px;top:170px;background:var(--surface);border:4px solid var(--ink);
+        box-shadow:6px 6px 0 rgba(0,0,0,.3);padding:18px 16px 16px;text-align:center}
+.dialog .kick{font-size:12px;font-weight:900;color:var(--violet)}
+.dialog h3{font-size:21px;font-weight:900;margin:4px 0 12px}
+.dialog .stage{height:150px;background:var(--violetSoft);border:2.5px solid var(--ink);display:flex;align-items:flex-end;justify-content:center;gap:10px;padding-bottom:14px;position:relative}
+.dialog .stage .spark{position:absolute;font-size:16px;font-weight:900;color:var(--violet)}
+.dialog .nm{font-size:16px;font-weight:900;margin-top:12px}
+.dialog .ds{font-size:12.5px;font-weight:800;color:var(--inkSoft);margin-top:4px;line-height:1.5}
+.dialog .row7{display:flex;gap:4px;margin:12px 0 2px}
+.dialog .row7 i{flex:1;height:10px;background:var(--teal);border:2px solid var(--ink)}
+.btn{border:3px solid var(--ink);background:var(--teal);color:#fff;text-align:center;padding:11px 0;
+     font-size:14px;font-weight:900;box-shadow:0 5px 0 var(--ink);margin-top:14px}
+.btn.ghost{background:var(--surface);color:var(--ink);box-shadow:none;border-width:2.5px;margin-top:9px;padding:9px 0}
+/* collection */
+.nav{display:flex;align-items:center;justify-content:space-between;margin:2px 0 10px}
+.nav b{font-size:19px;font-weight:900}
+.nav em{font-style:normal;font-size:13px;font-weight:900;color:var(--tealInk)}
+.tabs{display:flex;border:3px solid var(--ink)}
+.tabs div{flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:900;background:var(--beige)}
+.tabs div.on{background:var(--surface);box-shadow:inset 0 -4px 0 var(--teal)}
+.tabs div+div{border-left:3px solid var(--ink)}
+.hint{font-size:11.5px;font-weight:800;color:var(--muted);margin:9px 0 9px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cell{border:2.5px solid var(--line);background:var(--paperLight);height:122px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 3px 7px;position:relative}
+.cell.own{border-color:var(--ink);background:var(--surface)}
+.cell .art{flex:1;display:flex;align-items:center;justify-content:center}
+.cell .nm{font-size:11.5px;font-weight:900;text-align:center;line-height:1.2}
+.cell .st{font-size:10.5px;font-weight:900;color:var(--muted);margin-top:3px;white-space:nowrap}
+.cell .st.v{color:var(--violet)}
+.cell .st.t{color:var(--tealInk)}
+.cell .badge{position:absolute;top:-2px;right:-2px;font-size:10px;font-weight:900;padding:0 5px;border:2px solid var(--ink)}
+.cell .badge.gift{background:var(--violetSoft);color:var(--violet);border-color:var(--violet)}
+.cell .badge.str{background:var(--tealSoft);color:var(--tealInk);border-color:var(--teal)}
+.cell.hl{outline:3px dashed var(--violet);outline-offset:3px}
+.ph{width:36px;height:36px;border:2.5px solid var(--line);background:var(--beige)}
+.minibar{display:flex;gap:2px;width:78%;height:8px;margin-top:4px}
+.minibar s{flex:1;background:var(--line)}
+.minibar s.f{background:var(--teal)}
+/* gift sheet */
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-top:4px solid var(--ink);padding:14px 16px 20px}
+.sheet .grab{width:44px;height:5px;background:var(--line);margin:0 auto 12px}
+.sheet h3{font-size:19px;font-weight:900}
+.sheet .sd{font-size:12.5px;font-weight:800;color:var(--inkSoft);margin:3px 0 12px}
+.giftrow{display:flex;gap:11px;align-items:center;border:2.5px solid var(--ink);padding:10px 11px;margin-bottom:9px;background:var(--surface);box-shadow:4px 4px 0 rgba(32,40,72,.14)}
+.giftrow .ga{width:54px;height:54px;background:var(--violetSoft);border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.giftrow b{display:block;font-size:14.5px;font-weight:900}
+.giftrow s{display:block;text-decoration:none;font-size:12px;font-weight:800;color:var(--muted);margin-top:2px;line-height:1.4}
+.src{display:inline-block;font-size:10.5px;font-weight:900;padding:0 5px;border:2px solid;margin-top:4px}
+.src.play{color:var(--blue);background:var(--blueSoft);border-color:var(--blue)}
+.src.ev{color:var(--cashInk);background:var(--cashSoft);border-color:var(--cash)}
+/* spec */
+.spec{flex:1;border:5px solid var(--ink);background:var(--surface);padding:16px 18px 18px;box-shadow:7px 7px 0 rgba(32,40,72,.14);min-width:0}
+.spec h2{font-size:19px;font-weight:900;margin-bottom:3px}
+.spec .sh{font-size:12px;color:var(--muted);font-weight:800;margin-bottom:6px}
+.spec h5{font-size:13px;font-weight:900;margin:14px 0 6px;padding-bottom:5px;border-bottom:2.5px solid var(--ink)}
+.two{display:flex;gap:22px}
+.two>div{flex:1;min-width:0}
+table.t{width:100%;border-collapse:collapse;font-size:12px}
+table.t td,table.t th{padding:6px 5px;border-bottom:2px solid var(--line);font-weight:800;vertical-align:top;line-height:1.45;text-align:left}
+table.t th{font-size:11.5px;color:var(--muted);font-weight:900}
+table.t td:first-child{color:var(--muted);font-weight:900;white-space:nowrap}
+.pill{display:inline-block;font-size:10.5px;font-weight:900;padding:0 5px;border:2px solid;white-space:nowrap}
+.pill.done{color:var(--tealInk);background:var(--tealSoft);border-color:var(--teal)}
+.pill.todo{color:var(--cashInk);background:var(--cashSoft);border-color:var(--cash)}
+.guard{border:2.5px solid var(--line);background:var(--paperLight);padding:7px 9px;margin-bottom:6px;font-size:12px;font-weight:800;color:var(--inkSoft);line-height:1.5}
+.guard b{color:var(--ink)}
+.q{display:flex;gap:8px;font-size:12px;font-weight:800;color:var(--inkSoft);padding:4px 0;line-height:1.45}
+.q em{font-style:normal;color:var(--violet);font-weight:900;flex:0 0 auto}
+.q b{color:var(--ink)}
+.michi{background:url("../../assets/characters/michi/success-8.png") 0 0/800% 100% no-repeat;image-rendering:pixelated}
+</style>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- Placeholder art for the three gifts. Final art is still to be drawn. -->
+    <symbol id="g-frame" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <rect x="1" y="2" width="14" height="12" fill="#845A1E"/><rect x="2" y="3" width="12" height="10" fill="#C0873A"/>
+      <rect x="3" y="4" width="10" height="8" fill="#DCE4F2"/><rect x="3" y="9" width="10" height="3" fill="#0E7A72"/>
+      <rect x="5" y="7" width="3" height="2" fill="#0E7A72"/><rect x="10" y="5" width="2" height="2" fill="#F7E9CE"/>
+      <rect x="7" y="0" width="2" height="2" fill="#202848"/>
+    </symbol>
+    <symbol id="g-cal" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <rect x="2" y="3" width="12" height="12" fill="#202848"/><rect x="3" y="6" width="10" height="8" fill="#FFFDF7"/>
+      <rect x="3" y="4" width="10" height="2" fill="#D4553F"/><rect x="4" y="2" width="2" height="3" fill="#4E5878"/><rect x="10" y="2" width="2" height="3" fill="#4E5878"/>
+      <rect x="6" y="8" width="4" height="4" fill="#6E4A8C"/><rect x="7" y="9" width="2" height="2" fill="#E7DCF0"/>
+    </symbol>
+    <symbol id="g-plant" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <rect x="7" y="4" width="2" height="6" fill="#0B6660"/><rect x="3" y="3" width="4" height="3" fill="#0E7A72"/><rect x="9" y="1" width="4" height="4" fill="#0E7A72"/>
+      <rect x="4" y="6" width="3" height="2" fill="#0E7A72"/><rect x="9" y="5" width="3" height="2" fill="#0E7A72"/>
+      <rect x="4" y="10" width="8" height="2" fill="#845A1E"/><rect x="5" y="12" width="6" height="3" fill="#C0873A"/>
+    </symbol>
+    <symbol id="g-plantdim" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <rect x="7" y="4" width="2" height="6" fill="#C9BFAB"/><rect x="3" y="3" width="4" height="3" fill="#D6CCB7"/><rect x="9" y="1" width="4" height="4" fill="#D6CCB7"/>
+      <rect x="4" y="10" width="8" height="2" fill="#C9BFAB"/><rect x="5" y="12" width="6" height="3" fill="#D6CCB7"/>
+    </symbol>
+    <symbol id="g-lamp" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <rect x="4" y="2" width="8" height="4" fill="#0E7A72"/><rect x="7" y="6" width="2" height="7" fill="#202848"/><rect x="4" y="13" width="8" height="2" fill="#202848"/>
+    </symbol>
+    <symbol id="g-gift" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <rect x="2" y="6" width="12" height="9" fill="#6E4A8C"/><rect x="1" y="4" width="14" height="3" fill="#8B64AA"/>
+      <rect x="7" y="4" width="2" height="11" fill="#F7E9CE"/><rect x="4" y="1" width="3" height="3" fill="#F7E9CE"/><rect x="9" y="1" width="3" height="3" fill="#F7E9CE"/>
+    </symbol>
+    <symbol id="t-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4v-9Z" fill="currentColor"/></symbol>
+    <symbol id="t-list" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" stroke="currentColor" stroke-width="2.4" fill="none"/><path d="M8 8h8M8 12h8M8 16h8" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="t-bars" viewBox="0 0 24 24"><rect x="4" y="12" width="4" height="8" fill="currentColor"/><rect x="10" y="4" width="4" height="16" fill="currentColor"/><rect x="16" y="9" width="4" height="11" fill="currentColor"/></symbol>
+    <symbol id="t-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="3" fill="none"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.8 2.8M16.2 16.2 19 19M5 19l2.8-2.8M16.2 7.8 19 5" stroke="currentColor" stroke-width="2.6"/></symbol>
+  </defs>
+</svg>
+
+<div class="head"><h1>Sobra · 출시 이벤트 시안 · 한국어</h1><span>사전예약 선물(구현됨) + 출시 기념 선물 + 7일 연속 기록 — 전부 꾸미기 아이템만, 돈·예산에는 절대 손대지 않는다</span></div>
+
+<!-- ============ ROW 1 ============ -->
+<div class="row">
+
+  <!-- 1. Inicio with streak row -->
+  <div class="col">
+    <div class="phone">
+      <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+      <div class="brand"><b>Sobra</b><svg width="22" height="22"><use href="#t-gear"/></svg></div>
+      <div class="lbl">오늘 남은 돈</div>
+      <div class="big">$186 <small>MXN</small></div>
+      <div class="sub">한도 $220 · 남은 $4,120</div>
+      <div class="lvl">
+        <div class="top">
+          <div class="who"><div class="n">8</div><div><b>절약하는 미치</b><s>310 XP 누적</s></div><span class="chev">›</span></div>
+          <div class="xpbar"><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s></s><s></s><s></s><s></s><s></s></div>
+          <div class="xp"><span>160 / 300 XP</span><em>140 XP</em></div>
+        </div>
+        <div class="mis"><div class="box">1</div><div class="t"><s>오늘의 미션</s><b>3개 중 1개 완료</b></div><em>+20 XP ›</em></div>
+        <div class="streak">
+          <span class="new">NEW</span>
+          <div class="hd"><b>연속 기록 3일째</b><s>4일 더 하면 선물</s></div>
+          <div class="days">
+            <div><i class="f"></i><span>목</span></div>
+            <div><i class="f"></i><span>금</span></div>
+            <div><i class="f"></i><span>토</span></div>
+            <div><i class="today"></i><span>오늘</span></div>
+            <div><i></i><span>월</span></div>
+            <div><i></i><span>화</span></div>
+            <div><i class="gift"><svg width="18" height="18"><use href="#g-gift"/></svg></i><span>수</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="cyc"><div class="lblrow"><span>주기 진행</span><em>9일 남음</em></div>
+        <div class="xpbar" style="margin-top:0"><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s></div></div>
+      <div class="spacer"></div>
+      <div class="tabbar">
+        <div class="on"><svg width="20" height="20"><use href="#t-home"/></svg>홈</div>
+        <div><svg width="20" height="20"><use href="#t-list"/></svg>내역</div>
+        <div class="plus">+</div>
+        <div><svg width="20" height="20"><use href="#t-bars"/></svg>예산</div>
+        <div><svg width="20" height="20"><use href="#t-gear"/></svg>내 정보</div>
+      </div>
+    </div>
+    <div class="cap"><b>1. 홈 — 레벨 카드 안에 한 줄 추가.</b> 새 화면을 만들지 않고, 이미 매일 보는 레벨·미션 카드 맨 아래에 7칸을 붙인다. 오늘 칸은 점선, 7번째 칸에 선물 상자가 보여서 <b>무엇을 향해 가는지</b> 바로 보인다.</div>
+  </div>
+
+  <!-- 2. Evening, nothing recorded -->
+  <div class="col">
+    <div class="phone">
+      <div class="status"><span>21:04</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+      <div class="brand"><b>Sobra</b><svg width="22" height="22"><use href="#t-gear"/></svg></div>
+      <div class="lbl">오늘 남은 돈</div>
+      <div class="big">$220 <small>MXN</small></div>
+      <div class="sub">한도 $220 · 남은 $4,306</div>
+      <div class="lvl">
+        <div class="top">
+          <div class="who"><div class="n">8</div><div><b>절약하는 미치</b><s>290 XP 누적</s></div><span class="chev">›</span></div>
+          <div class="xpbar"><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s class="f"></s><s></s><s></s><s></s><s></s><s></s><s></s></div>
+          <div class="xp"><span>140 / 300 XP</span><em>160 XP</em></div>
+        </div>
+        <div class="mis"><div class="box">0</div><div class="t"><s>오늘의 미션</s><b>3개 중 0개 완료</b></div><em>+30 XP ›</em></div>
+        <div class="streak warn">
+          <div class="hd"><b>오늘 기록이 아직 없어요</b><s>연속 5일째</s></div>
+          <div class="days">
+            <div><i class="f"></i><span>수</span></div>
+            <div><i class="f"></i><span>목</span></div>
+            <div><i class="f"></i><span>금</span></div>
+            <div><i class="f"></i><span>토</span></div>
+            <div><i class="f"></i><span>일</span></div>
+            <div><i class="todaywarn"></i><span>오늘</span></div>
+            <div><i class="gift"><svg width="18" height="18"><use href="#g-gift"/></svg></i><span>화</span></div>
+          </div>
+          <div class="acts"><div class="p">지출 기록</div><div class="g">오늘은 안 썼어요</div></div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="tabbar">
+        <div class="on"><svg width="20" height="20"><use href="#t-home"/></svg>홈</div>
+        <div><svg width="20" height="20"><use href="#t-list"/></svg>내역</div>
+        <div class="plus">+</div>
+        <div><svg width="20" height="20"><use href="#t-bars"/></svg>예산</div>
+        <div><svg width="20" height="20"><use href="#t-gear"/></svg>내 정보</div>
+      </div>
+    </div>
+    <div class="cap"><b>2. 저녁 7시 이후 기록이 없을 때만.</b> 줄이 노란색으로 바뀌고 버튼 두 개가 나온다. <b>《오늘은 안 썼어요》도 기록으로 인정</b> — 돈을 안 쓴 날이 연속을 끊으면, 가계부가 절약을 벌주는 셈이 된다. 누르면 한 번 더 묻지 않고 바로 칸이 찬다.</div>
+  </div>
+
+  <!-- 3. Day 7 reward -->
+  <div class="col">
+    <div class="phone">
+      <div class="status"><span>12:30</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+      <div class="brand"><b>Sobra</b><svg width="22" height="22"><use href="#t-gear"/></svg></div>
+      <div class="lbl">오늘 남은 돈</div>
+      <div class="big">$140 <small>MXN</small></div>
+      <div class="dim"></div>
+      <div class="dialog">
+        <div class="kick">연속 기록 7일 달성</div>
+        <h3>일주일 내내 기록했어요!</h3>
+        <div class="stage">
+          <span class="spark" style="left:44px;top:22px">+</span><span class="spark" style="right:52px;top:36px">+</span><span class="spark" style="right:90px;top:12px">·</span>
+          <div class="michi" style="width:92px;height:104px"></div>
+          <svg width="72" height="72"><use href="#g-plant"/></svg>
+        </div>
+        <div class="row7"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="nm">습관 화분을 받았어요</div>
+        <div class="ds">기록하는 습관이 자라는 중이에요.<br>방에 놓아볼까요?</div>
+        <div class="btn">방에 놓기</div>
+        <div class="btn ghost">나중에</div>
+      </div>
+    </div>
+    <div class="cap"><b>3. 7일째 기록하는 순간 한 번.</b> 레벨업 연출과 같은 무게. 미치가 success 동작을 하고, 《방에 놓기》는 꾸미기 화면의 화분 자리로 바로 연다. 보상은 <b>한 번 받으면 영구</b> — 나중에 연속이 끊겨도 뺏지 않는다.</div>
+  </div>
+
+  <!-- 4. Collection items -->
+  <div class="col">
+    <div class="phone">
+      <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+      <div class="nav"><b>컬렉션</b><em>닫기</em></div>
+      <div class="tabs"><div>캐릭터</div><div class="on">아이템</div></div>
+      <div class="hint">8 / 22 · 내 공간에 둘 물건을 모아요</div>
+      <div class="grid">
+        <div class="cell own"><div class="art"><svg width="40" height="40"><use href="#g-lamp"/></svg></div><div class="nm">스탠드</div><div class="st t">보유 중</div></div>
+        <div class="cell own hl"><span class="badge gift">선물</span><div class="art"><svg width="46" height="46"><use href="#g-frame"/></svg></div><div class="nm">환영 액자</div><div class="st v">사전예약 선물</div></div>
+        <div class="cell own hl"><span class="badge gift">선물</span><div class="art"><svg width="44" height="44"><use href="#g-cal"/></svg></div><div class="nm">첫 달 달력</div><div class="st v">출시 기념</div></div>
+        <div class="cell hl"><span class="badge str">연속</span><div class="art"><svg width="44" height="44"><use href="#g-plantdim"/></svg></div><div class="nm">습관 화분</div><div class="st t">연속 기록 3/7</div><div class="minibar"><s class="f"></s><s class="f"></s><s class="f"></s><s></s><s></s><s></s><s></s></div></div>
+        <div class="cell"><div class="art"><div class="ph"></div></div><div class="nm">아이템 02</div><div class="st">레벨 5</div></div>
+        <div class="cell"><div class="art"><div class="ph"></div></div><div class="nm">아이템 05</div><div class="st">광고 0/1</div></div>
+        <div class="cell"><div class="art"><div class="ph"></div></div><div class="nm">미치의 별</div><div class="st">팩 전용</div></div>
+        <div class="cell own"><div class="art"><div class="ph" style="border-color:var(--ink);background:var(--tealSoft)"></div></div><div class="nm">라탄 의자</div><div class="st t">보유 중</div></div>
+        <div class="cell own"><div class="art"><div class="ph" style="border-color:var(--ink);background:var(--cashSoft)"></div></div><div class="nm">저금통</div><div class="st t">보유 중</div></div>
+      </div>
+    </div>
+    <div class="cap"><b>4. 컬렉션 — 선물과 연속 기록의 차이.</b> <b>선물</b>(보라)은 이미 받은 사람에게만 보인다. 기간이 끝나면 얻을 방법이 없으니 잠긴 카드로 두지 않는다(오늘 구현한 규칙). <b>습관 화분</b>은 누구나 언제든 얻을 수 있으니 잠긴 채 <b>진행도를 보여준다</b> — 광고 진행도 카드와 같은 모양.</div>
+  </div>
+</div>
+
+<!-- ============ ROW 2 ============ -->
+<div class="row">
+
+  <!-- 5. Gifts arrived -->
+  <div class="col">
+    <div class="phone">
+      <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+      <div class="brand"><b>Sobra</b><svg width="22" height="22"><use href="#t-gear"/></svg></div>
+      <div class="lbl">오늘 남은 돈</div>
+      <div class="big">$220 <small>MXN</small></div>
+      <div class="dim"></div>
+      <div class="sheet">
+        <div class="grab"></div>
+        <h3>선물이 도착했어요</h3>
+        <div class="sd">처음 오신 걸 환영해요. 컬렉션에 넣어뒀어요.</div>
+        <div class="giftrow"><div class="ga"><svg width="40" height="40"><use href="#g-frame"/></svg></div>
+          <div><b>환영 액자</b><s>사전예약해 주셔서 고마워요.</s><span class="src play">Google Play 사전예약</span></div></div>
+        <div class="giftrow"><div class="ga"><svg width="38" height="38"><use href="#g-cal"/></svg></div>
+          <div><b>첫 달 달력</b><s>출시 후 4주 안에 시작한 분께만 드려요.</s><span class="src ev">출시 기념 · 11월 15일까지</span></div></div>
+        <div class="btn">방에 놓으러 가기</div>
+        <div class="btn ghost">닫기</div>
+      </div>
+    </div>
+    <div class="cap"><b>5. 온보딩 직후 첫 홈에서 한 번.</b> 받은 선물을 모아서 시트 하나로. 사전예약을 안 한 사람은 달력 한 줄만 보인다. 기간이 지나서 시작했으면 <b>시트 자체가 안 뜬다</b> — "놓치셨네요" 같은 말은 하지 않는다.</div>
+  </div>
+
+  <!-- Spec -->
+  <div class="spec">
+    <h2>세 가지 보상, 한 가지 원칙</h2>
+    <div class="sh">전부 꾸미기 아이템. 돈·예산·XP 계산에는 어떤 영향도 없다. 받은 건 절대 되돌리지 않는다.</div>
+
+    <h5>비교</h5>
+    <table class="t">
+      <tr><th></th><th>① 사전예약 선물 · 환영 액자</th><th>② 출시 기념 · 첫 달 달력</th><th>③ 연속 기록 · 습관 화분</th></tr>
+      <tr><td>받는 조건</td><td>Play에서 사전예약 → 첫 설치</td><td>출시 후 4주 안에 앱을 처음 시작</td><td>7일 연속 기록 (지출·수입 기록 또는 《오늘은 안 썼어요》)</td></tr>
+      <tr><td>기간</td><td>사전예약 기간 동안만</td><td>한정 (예: 11월 15일까지)</td><td><b>상시</b> — 습관이 목적이라 기간이 없다</td></tr>
+      <tr><td>누가 지급</td><td>Google Play (0원 구매)</td><td>앱이 직접</td><td>앱이 직접</td></tr>
+      <tr><td>안 가진 사람에게</td><td>안 보임</td><td>안 보임</td><td>잠긴 카드 + 진행도</td></tr>
+      <tr><td>해금 방식</td><td><code>gift</code></td><td><code>gift</code></td><td>새 방식 <code>streak</code></td></tr>
+      <tr><td>상태</td><td><span class="pill done">구현 완료</span> Play Console 상품 등록만 남음</td><td><span class="pill todo">예정</span></td><td><span class="pill todo">예정</span></td></tr>
+    </table>
+
+    <div class="two">
+      <div>
+        <h5>연속 기록 규칙</h5>
+        <div class="guard"><b>하루 = 폰의 날짜.</b> 그날 날짜로 기록 1건 이상, 또는 《오늘은 안 썼어요》를 누르면 채워진다. 어제 걸 오늘 기록해도 <b>어제 칸은 안 채운다</b>.</div>
+        <div class="guard"><b>놓치면 1일부터 다시.</b> 이미 받은 화분은 그대로다. 카드 문구는 "끊겼어요"가 아니라 "다시 1일째"로.</div>
+        <div class="guard"><b>《오늘은 안 썼어요》는 그날 기록이 0건일 때만.</b> 누르면 오늘의 미션 "기록하기"도 함께 완료. 나중에 지출을 기록하면 자연스럽게 덮인다.</div>
+        <div class="guard"><b>새로 저장하는 건 날짜 목록 하나뿐.</b> 이미 있는 기록 데이터로 과거 연속은 계산하고, 《안 썼어요》 누른 날만 따로 저장한다.</div>
+      </div>
+      <div>
+        <h5>출시 기념 선물 규칙</h5>
+        <div class="guard"><b>"처음 시작한 날"을 새로 저장.</b> 온보딩 완료 시점. 지금 테스터는 가장 오래된 기록 날짜로 채운다 → 테스터도 받는다.</div>
+        <div class="guard"><b>종료일은 앱 안에 고정.</b> 서버·Remote Config가 없어서, 기간을 바꾸려면 업데이트가 필요하다.</div>
+        <div class="guard"><b>폰 시계를 바꾸면 받을 수 있다.</b> 꾸미기 아이템이라 막지 않는다.</div>
+
+        <h5>정해줘야 할 것</h5>
+        <div class="q"><em>Q1</em><span><b>출시 예정일</b>과 출시 기념 기간(4주?)</span></div>
+        <div class="q"><em>Q2</em><span>7일 한 단계로 시작? 아니면 <b>3·7·30일</b> 단계까지 한 번에?</span></div>
+        <div class="q"><em>Q3</em><span>아이템 그림 — 여기 그림은 전부 <b>임시</b>. 직접 그릴지, 기존 소품 색만 바꿀지</span></div>
+        <div class="q"><em>Q4</em><span>저녁 알림 "오늘 기록이 없어요"까지 보낼지 — 지금 시안은 <b>앱 안에서만</b></span></div>
+      </div>
+    </div>
+  </div>
+</div>

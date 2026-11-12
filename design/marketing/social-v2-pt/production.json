@@ -1,0 +1,28 @@
+{
+  "title": "Sobrita — Um gatinho para o seu orçamento",
+  "language": "pt-BR",
+  "duration_seconds": 15,
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "source": "Production Flutter widgets rendered by tool/render_promo_video_pt_test.dart with the app in Portuguese, BRL and an isolated demo preferences store",
+  "currency": "BRL",
+  "editing": "Same sequence, reframing, original music and UI effects as social-v2-en; Portuguese app UI and promotional copy",
+  "opening": "Fiz um app de orçamento com um gatinho.",
+  "call_to_action": "Baixe grátis no Google Play.",
+  "availability": "Grátis / Android (live on Google Play since 2026-10-12; replaces the English cut's 'In testing / Follow for launch updates')",
+  "timeline": [
+    {"start": 0, "end": 3, "scene": "Animated Michi close-up"},
+    {"start": 3, "end": 6, "scene": "Record R$ 85 for Café com pão; show updated amount"},
+    {"start": 6, "end": 10, "scene": "Place furniture in the actual decorator"},
+    {"start": 10, "end": 12, "scene": "Michi, Miru, Tranqui with paid-character disclosure"},
+    {"start": 12, "end": 15, "scene": "Sobrita and download CTA"}
+  ],
+  "deliverables": [
+    "sobrita-tiktok-reels-pt-15s.mp4",
+    "sobrita-tiktok-reels-pt-15s-silent.mp4",
+    "sobrita-social-cover.jpg",
+    "caption-pt.txt"
+  ],
+  "publication": "Local files only; not uploaded or published"
+}

@@ -1,0 +1,365 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face{font-family:PixelifySans;src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");}
+:root{--paper:#F6EFE0;--paperLight:#FBF5E9;--surface:#FFFDF7;--ink:#202848;--inkSoft:#4E5878;--muted:#8F95AC;
+      --line:#E7DDC8;--teal:#0E7A72;--tealSoft:#D8EDEA;--tealInk:#0B6660;--cash:#C0873A;--cashSoft:#F7E9CE;
+      --cashInk:#845A1E;--danger:#D4553F;--dangerSoft:#FBE1DA;--blue:#39558E;--blueSoft:#DCE4F2;
+      --violet:#6E4A8C;--violetSoft:#E7DCF0;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);font-family:PixelifySans,monospace;color:var(--ink);
+     padding:32px 40px 40px;-webkit-font-smoothing:none;width:2010px}
+.head{display:flex;align-items:baseline;gap:14px;margin-bottom:20px;padding-left:6px}
+.head h1{font-size:26px;font-weight:900}
+.head span{font-size:14px;color:var(--inkSoft)}
+.row{display:flex;gap:30px;align-items:flex-start}
+.col{width:372px}
+.phone{width:372px;height:806px;background:var(--surface);border:5px solid var(--ink);
+       border-radius:26px;padding:14px 18px 16px;display:flex;flex-direction:column;
+       box-shadow:7px 7px 0 rgba(32,40,72,.14);position:relative;overflow:hidden}
+.phone.tabbed{padding-bottom:0}
+.cap{font-size:12px;color:var(--inkSoft);line-height:1.5;margin-top:12px;padding:0 4px;font-weight:800}
+.cap b{color:var(--ink)}
+.status{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:900;padding:2px 4px 8px}
+.dots{display:flex;gap:3px;align-items:center}
+.dots i{width:7px;height:7px;background:var(--ink);border-radius:50%}
+.dots b{width:14px;height:8px;border:2px solid var(--ink);display:inline-block;margin-left:3px}
+.nav{display:flex;align-items:center;gap:10px;height:28px;margin-bottom:8px}
+.nav .back{font-size:19px;font-weight:900;width:24px}
+.nav .ttl{flex:1;font-size:18px;font-weight:900}
+.h1{font-size:22px;font-weight:900;margin:2px 0 12px}
+.lbl{font-size:12.5px;font-weight:900;color:var(--inkSoft)}
+.lblrow{display:flex;justify-content:space-between;align-items:baseline}
+.lblrow em{font-style:normal;font-size:10.5px;font-weight:800;color:var(--muted)}
+.card{border:2.5px solid var(--ink);background:var(--surface);padding:12px;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.card.flat{box-shadow:none}
+/* equation */
+.eq{border:2.5px solid var(--ink);background:var(--paperLight);padding:12px 10px 10px;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.eq .cols{display:flex;align-items:flex-end;justify-content:space-between}
+.eq .c{text-align:center}
+.eq .c s{display:block;text-decoration:none;font-size:9.5px;font-weight:900;color:var(--inkSoft);line-height:1.25;margin-bottom:4px;min-height:24px;display:flex;align-items:flex-end;justify-content:center}
+.eq .c b{font-size:19px;font-weight:900}
+.eq .c.res b{font-size:22px;color:var(--teal)}
+.eq .op{font-size:18px;font-weight:900;color:var(--muted);padding-bottom:2px}
+.eq .foot{display:flex;justify-content:space-between;border-top:2px solid var(--line);margin-top:10px;padding-top:7px;font-size:10.5px;font-weight:800;color:var(--muted)}
+.eq .foot b{color:var(--tealInk)}
+.seg{display:flex;border:3px solid var(--ink)}
+.seg div{flex:1;text-align:center;padding:9px 0;font-size:12.5px;font-weight:900;background:var(--surface)}
+.seg div+div{border-left:3px solid var(--ink)}
+.seg div.on{background:var(--teal);color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;border:3px solid var(--ink);gap:3px;background:var(--ink)}
+.grid div{text-align:center;padding:9px 0;font-size:12.5px;font-weight:900;background:var(--surface)}
+.grid div.on{background:var(--teal);color:#fff}
+.amount{border:3px solid var(--ink);background:var(--surface);padding:10px 14px;
+        display:flex;align-items:baseline;gap:7px;box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.amount .n{font-size:32px;font-weight:900;color:var(--ink)}
+.amount .cur{font-size:13px;font-weight:900;color:var(--muted);margin-left:auto}
+.amount .aprox{font-size:11px;font-weight:900;color:var(--cashInk);background:var(--cashSoft);border:2px solid var(--cash);padding:1px 5px}
+.field{border:2.5px solid var(--ink);background:var(--surface);padding:9px 11px;font-size:13.5px;font-weight:900;
+       display:flex;align-items:center;gap:10px}
+.field .caret{margin-left:auto;font-size:10px}
+.field .fi{width:26px;height:26px;display:flex;align-items:center;justify-content:center;border:2px solid var(--ink);flex:0 0 auto}
+.trow{display:flex;align-items:center;gap:10px;padding:7px 2px;border-bottom:2px solid var(--line)}
+.trow:last-child{border-bottom:none}
+.trow .ic{width:32px;height:32px;border:2.5px solid var(--ink);display:flex;align-items:center;
+          justify-content:center;flex:0 0 auto}
+.trow .t{flex:1;font-size:12.5px;font-weight:900;line-height:1.35}
+.trow .t s{display:block;font-size:10px;color:var(--muted);font-weight:800;text-decoration:none}
+.trow .r{text-align:right}
+.trow .v{font-size:13.5px;font-weight:900;display:block}
+.trow .v small{font-size:9.5px;color:var(--muted)}
+.trow.off{opacity:.45}
+.trow.off .ic{border-style:dashed}
+.tag{display:inline-flex;align-items:center;gap:4px;border:2px solid var(--ink);background:var(--surface);
+     padding:1px 5px;font-size:9.5px;font-weight:900;margin-top:3px;white-space:nowrap}
+.tag.paid{background:var(--tealSoft);color:var(--tealInk);border-color:var(--teal)}
+.tag.due{background:var(--cashSoft);color:var(--cashInk);border-color:var(--cash)}
+.tag.next{border-style:dashed;color:var(--muted);border-color:var(--muted)}
+.toggle{display:flex;align-items:center;gap:10px;padding:10px 0 0}
+.toggle .sw{width:40px;height:22px;border:2.5px solid var(--ink);background:var(--teal);padding:2px;flex:0 0 auto;display:flex;justify-content:flex-end}
+.toggle .sw i{display:block;width:14px;height:14px;background:var(--surface)}
+.toggle .t{font-size:12.5px;font-weight:900}
+.toggle .d{font-size:10.5px;color:var(--muted);font-weight:800;margin-top:2px}
+.spacer{flex:1}
+.btn{border:3px solid var(--ink);background:var(--teal);color:#fff;text-align:center;padding:12px 0;
+     font-size:14.5px;font-weight:900;box-shadow:0 5px 0 var(--ink);margin-top:6px}
+.btn.ghost{background:var(--surface);color:var(--ink)}
+.btn.dash{background:transparent;color:var(--tealInk);border:2.5px dashed var(--teal);box-shadow:none;font-size:13px;padding:9px 0}
+.hint{font-size:11px;color:var(--muted);line-height:1.5;font-weight:800}
+.note{border:2.5px solid var(--line);background:var(--paperLight);padding:9px 10px;display:flex;gap:9px;align-items:flex-start}
+.tabbar{display:flex;border-top:3px solid var(--ink);margin:0 -18px;height:62px;background:var(--surface)}
+.tabbar div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10px;font-weight:900}
+.tabbar div.on{background:var(--teal);color:#fff}
+.tabbar .plus{flex:0 0 58px;margin:8px 4px;background:var(--teal);border:3px solid var(--ink);color:#fff;font-size:26px;box-shadow:0 4px 0 var(--ink)}
+.dim{position:absolute;inset:0;background:rgba(32,40,72,.55)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-top:4px solid var(--ink);
+       padding:14px 18px 18px}
+.sheet .grab{width:44px;height:5px;background:var(--line);margin:0 auto 12px}
+.opt{border:2.5px solid var(--ink);background:var(--surface);padding:10px 11px;margin-bottom:9px;
+     display:flex;gap:10px;align-items:flex-start}
+.opt.on{background:var(--tealSoft);box-shadow:4px 4px 0 rgba(32,40,72,.16)}
+.opt .t{font-size:13px;font-weight:900}
+.opt .d{font-size:10.5px;color:var(--inkSoft);font-weight:800;line-height:1.45;margin-top:3px}
+.opt .d b{color:var(--ink)}
+.opt .rd{width:18px;height:18px;border:2.5px solid var(--ink);flex:0 0 auto;margin-top:2px;
+         display:flex;align-items:center;justify-content:center;background:var(--surface)}
+.opt .rd i{width:8px;height:8px;background:var(--teal)}
+.delta{display:flex;align-items:center;font-size:11.5px;font-weight:900;color:var(--inkSoft)}
+.delta b{margin-left:auto;font-size:14px;color:var(--ink)}
+.delta b em{font-style:normal;color:var(--teal)}
+/* spec */
+.spec{width:466px;border:5px solid var(--ink);background:var(--surface);padding:16px 16px 18px;
+      box-shadow:7px 7px 0 rgba(32,40,72,.14)}
+.spec h2{font-size:19px;font-weight:900;margin-bottom:3px}
+.spec .sh{font-size:11.5px;color:var(--muted);font-weight:800;margin-bottom:10px}
+.spec h5{font-size:12.5px;font-weight:900;margin:13px 0 6px;padding-bottom:5px;border-bottom:2.5px solid var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+td{padding:5px 3px;border-bottom:2px solid var(--line);font-weight:800;vertical-align:top;line-height:1.4}
+td.x{text-align:right;color:var(--teal);font-weight:900;white-space:nowrap;font-size:12px}
+td.src{color:var(--muted);font-size:10px;font-weight:800;text-align:right}
+tr.later td{color:var(--muted)}
+tr.later td.x{color:var(--muted)}
+.guard{border:2.5px solid var(--line);background:var(--paperLight);padding:7px 9px;margin-bottom:6px;
+       font-size:11.5px;font-weight:800;color:var(--inkSoft);line-height:1.5}
+.guard b{color:var(--ink)}
+.no{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;font-weight:800;color:var(--inkSoft);
+    padding:3px 0;line-height:1.45}
+.no em{color:var(--danger);font-style:normal;font-weight:900;flex:0 0 auto}
+code{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;background:var(--tealSoft);padding:1px 4px}
+</style>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9H4v-9Z" fill="currentColor"/></symbol>
+    <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M5 2.5h14v19l-2.3-1.6-2.4 1.6-2.3-1.6-2.3 1.6-2.4-1.6L5 21.5v-19Z" fill="currentColor"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4" stroke="#FFFDF7" stroke-width="2"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" stroke="currentColor" stroke-width="2.6" fill="none"/><rect x="10.5" y="17" width="3" height="2" fill="currentColor"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8 8 0 0 1 11 0M10 16a3 3 0 0 1 4 0" stroke="currentColor" stroke-width="2.4" fill="none"/><rect x="11" y="18.5" width="2.4" height="2.4" fill="currentColor"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 5 13h6l-1 9 8-11h-6l1-9Z" fill="currentColor"/></symbol>
+    <symbol id="i-bottle" viewBox="0 0 24 24"><path d="M8 3h8M9 3v4l-3 4v10h12V11l-3-4V3" stroke="currentColor" stroke-width="2.4" fill="none"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 13H6L5 8Z" fill="currentColor"/><path d="M9 8V6a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="2.4" fill="none"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" stroke="currentColor" stroke-width="2.5" fill="none"/><path d="M3.5 10h17M8 2.5v5M16 2.5v5" stroke="currentColor" stroke-width="2.5"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="2.5" fill="none"/><rect x="10.8" y="10" width="2.4" height="8" fill="currentColor"/><rect x="10.8" y="6" width="2.4" height="2.4" fill="currentColor"/></symbol>
+    <symbol id="t-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4v-9Z" fill="currentColor"/></symbol>
+    <symbol id="t-list" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" stroke="currentColor" stroke-width="2.4" fill="none"/><path d="M8 8h8M8 12h8M8 16h8" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="t-bars" viewBox="0 0 24 24"><rect x="4" y="12" width="4" height="8" fill="currentColor"/><rect x="10" y="4" width="4" height="16" fill="currentColor"/><rect x="16" y="9" width="4" height="11" fill="currentColor"/></symbol>
+    <symbol id="t-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="3" fill="none"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.8 2.8M16.2 16.2 19 19M5 19l2.8-2.8M16.2 7.8 19 5" stroke="currentColor" stroke-width="2.6"/></symbol>
+  </defs>
+</svg>
+
+<div class="head"><h1>Sobra · Gastos fijos v2</h1><span>프리셋 4개 · 다음 기한일 입력 · 변동 금액은 고지서로 맞춘다</span></div>
+<div class="row">
+
+<!-- A: PRESUPUESTO -->
+<div class="col">
+<div class="phone tabbed">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="h1">Presupuesto</div>
+
+  <div class="eq">
+    <div class="cols">
+      <div class="c"><s>Total del ciclo</s><b>$6,900</b></div>
+      <span class="op">−</span>
+      <div class="c"><s>Apartado para<br>gastos fijos</s><b style="color:var(--violet)">$1,790</b></div>
+      <span class="op">=</span>
+      <div class="c res"><s>Para gastar</s><b>$5,110</b></div>
+    </div>
+    <div class="foot"><span>16 – 30 sep 2026</span><span><b>$340</b> al día</span></div>
+  </div>
+
+  <div class="lblrow" style="margin-top:15px"><span class="lbl" style="color:var(--ink);font-size:13.5px">Gastos fijos de este ciclo</span><em>1 de 5 pagado</em></div>
+  <div style="margin-top:4px">
+    <div class="trow"><span class="ic" style="background:var(--blueSoft);color:var(--blue)"><svg width="16" height="16"><use href="#i-bottle"/></svg></span>
+      <span class="t">Garrafón<s>Cada semana · viernes · $60 × 2</s></span>
+      <span class="r"><span class="v">$120</span><span class="tag paid">✓ 2 de 2</span></span></div>
+    <div class="trow"><span class="ic" style="background:var(--cashSoft);color:var(--cash)"><svg width="16" height="16"><use href="#i-phone"/></svg></span>
+      <span class="t">Celular<s>Cada mes · 28 sep · efectivo</s></span>
+      <span class="r"><span class="v">$200</span><span class="tag due">Hoy</span></span></div>
+    <div class="trow"><span class="ic" style="background:var(--cashSoft);color:var(--cash)"><svg width="16" height="16"><use href="#i-bolt"/></svg></span>
+      <span class="t">Luz (CFE)<s>Cada 2 meses · 29 sep · efectivo</s></span>
+      <span class="r"><span class="v"><small>aprox.</small> $620</span><span class="tag">Mañana</span></span></div>
+    <div class="trow"><span class="ic" style="background:var(--violetSoft);color:var(--violet)"><svg width="16" height="16"><use href="#i-bag"/></svg></span>
+      <span class="t">Abono Coppel<s>Cada quincena · 30 sep · efectivo</s></span>
+      <span class="r"><span class="v">$450</span><span class="tag">30 sep</span></span></div>
+    <div class="trow"><span class="ic" style="background:var(--blueSoft);color:var(--blue)"><svg width="16" height="16"><use href="#i-wifi"/></svg></span>
+      <span class="t">Internet<s>Cada mes · 30 sep · tarjeta</s></span>
+      <span class="r"><span class="v">$400</span><span class="tag">30 sep</span></span></div>
+    <div class="trow off"><span class="ic" style="background:var(--tealSoft);color:var(--teal)"><svg width="16" height="16"><use href="#i-home"/></svg></span>
+      <span class="t">Renta<s>Cada mes · 1 oct · tarjeta</s></span>
+      <span class="r"><span class="v">$3,500</span><span class="tag next">Siguiente ciclo</span></span></div>
+  </div>
+  <div class="btn dash" style="margin-top:8px">+ Agregar gasto fijo</div>
+  <div class="note" style="margin-top:10px;color:var(--teal)"><svg width="18" height="18" style="flex:0 0 auto"><use href="#i-info"/></svg>
+    <span class="hint">Se aparta ahora; se registra al pagar.</span></div>
+  <div class="spacer"></div>
+  <div class="tabbar">
+    <div><svg width="18" height="18"><use href="#t-home"/></svg>Inicio</div>
+    <div><svg width="18" height="18"><use href="#t-list"/></svg>Movim.</div>
+    <div class="plus">+</div>
+    <div class="on"><svg width="18" height="18"><use href="#t-bars"/></svg>Presup.</div>
+    <div><svg width="18" height="18"><use href="#t-gear"/></svg>Ajustes</div></div>
+</div>
+<div class="cap"><b>1. 예산 탭 — 수식 카드 + 하루 금액.</b><br>이번 사이클에 기한이 오는 회차만 떼어둔다. 네 가지 주기가 한 목록에 섞여 있고, 월세(1일)는 다음 quincena라 흐리게. 변동 금액은 <b>aprox.</b>로 표시.</div>
+</div>
+
+<!-- B: NUEVO GASTO FIJO -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="nav"><span class="back">←</span><span class="ttl">Nuevo gasto fijo</span></div>
+
+  <div class="lbl">Monto</div>
+  <div class="amount" style="margin-top:6px"><span class="n">$620</span><span class="aprox">aprox.</span><span class="cur">MXN</span></div>
+
+  <div class="lbl" style="margin-top:13px">Nombre</div>
+  <div class="field" style="margin-top:6px">Luz (CFE)</div>
+
+  <div class="lbl" style="margin-top:13px">¿Cada cuánto?</div>
+  <div class="grid" style="margin-top:6px">
+    <div>Cada semana</div><div>Cada quincena</div>
+    <div>Cada mes</div><div class="on">Cada 2 meses</div></div>
+
+  <div class="lbl" style="margin-top:13px">Próximo pago</div>
+  <div class="field" style="margin-top:6px"><svg width="18" height="18" style="color:var(--ink)"><use href="#i-cal"/></svg>29 sep 2026<span class="caret">▼</span></div>
+  <div class="hint" style="margin-top:4px">Después: 29 nov, 29 ene, 29 mar…</div>
+
+  <div style="display:flex;gap:10px;margin-top:11px">
+    <div style="flex:1.3"><div class="lbl">Categoría</div>
+      <div class="field" style="margin-top:6px;padding:6px 8px"><span class="fi" style="background:var(--cashSoft);color:var(--cash)"><svg width="14" height="14"><use href="#i-receipt"/></svg></span>Servicios<span class="caret">▼</span></div></div>
+    <div style="flex:1"><div class="lbl">¿Cómo lo pagas?</div>
+      <div class="seg" style="margin-top:6px"><div class="on" style="padding:10px 0">Efectivo</div><div style="padding:10px 0">Tarjeta</div></div></div>
+  </div>
+
+  <div class="toggle">
+    <span class="sw"><i></i></span>
+    <div><div class="t">El monto cambia cada vez</div><div class="d">Aparto el estimado y lo ajustas con cada recibo.</div></div>
+  </div>
+
+  <div class="note" style="margin-top:12px;background:var(--cashSoft);border-color:var(--cash);color:var(--cashInk)">
+    <svg width="20" height="20" style="flex:0 0 auto"><use href="#i-cal"/></svg>
+    <span class="hint" style="color:var(--cashInk)">Se apartan <b style="color:var(--ink)">$620</b> del ciclo <b style="color:var(--ink)">16 – 30 sep</b>.<br>Tu gasto diario queda en <b style="color:var(--ink)">$340</b>.</span></div>
+  <div class="spacer"></div>
+  <div class="btn">Guardar gasto fijo</div>
+</div>
+<div class="cap"><b>2. 등록 폼 — 프리셋 4개 + «다음 기한일».</b><br>«Día 28» 대신 날짜를 받는다. 격월은 짝·홀 달이 중요해서 이것 하나로 모든 주기가 풀린다. 다음 회차를 미리 보여줘 실수를 잡는다. 전기·수도·가스를 고르면 변동 토글이 <b>기본 ON</b>.</div>
+</div>
+
+<!-- C: CONFIRMAR PAGO / LLEGÓ EL RECIBO -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="h1">Presupuesto</div>
+  <div class="eq">
+    <div class="cols">
+      <div class="c"><s>Total del ciclo</s><b>$6,900</b></div><span class="op">−</span>
+      <div class="c"><s>Apartado para<br>gastos fijos</s><b style="color:var(--violet)">$1,790</b></div><span class="op">=</span>
+      <div class="c res"><s>Para gastar</s><b>$5,110</b></div></div>
+  </div>
+  <div class="dim"></div>
+  <div class="sheet">
+    <div class="grab"></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="width:38px;height:38px;border:2.5px solid var(--ink);background:var(--cashSoft);color:var(--cash);display:flex;align-items:center;justify-content:center;flex:0 0 auto"><svg width="18" height="18"><use href="#i-bolt"/></svg></span>
+      <div style="flex:1"><div style="font-size:16px;font-weight:900">Luz (CFE)</div>
+        <div style="font-size:10.5px;font-weight:800;color:var(--muted)">Cada 2 meses · vence mañana, 29 sep</div></div>
+    </div>
+
+    <div class="lbl" style="margin-top:14px">¿Cuánto fue el recibo?</div>
+    <div class="amount" style="margin-top:6px;padding:8px 14px"><span class="n" style="font-size:28px">$684</span><span class="cur">MXN</span></div>
+    <div class="hint" style="margin-top:4px">Estimado $620 · <b style="color:var(--danger)">+$64</b></div>
+
+    <div class="lbl" style="margin-top:11px">¿Cómo lo pagaste?</div>
+    <div class="seg" style="margin-top:6px"><div class="on">Efectivo</div><div>Tarjeta</div></div>
+
+    <div class="card flat" style="margin-top:12px;border-color:var(--line);background:var(--paperLight);padding:9px 10px">
+      <div class="delta">Hoy puedes gastar<b>$270 → <em>$248</em></b></div>
+      <div class="hint" style="margin-top:3px">Solo la diferencia sale de lo que tienes para gastar.</div>
+    </div>
+
+    <div class="btn" style="margin-top:14px">Ya lo pagué</div>
+    <div class="btn ghost" style="margin-top:12px">Solo llegó el recibo</div>
+    <div class="hint" style="text-align:center;margin-top:10px">La próxima vez aparto $684.</div>
+  </div>
+</div>
+<div class="cap"><b>3. 납부 확인 시트 — 목록에서 태그를 누르면.</b><br>«Ya lo pagué»는 <code>recurringId</code>가 붙은 지출을 만들고 떼어둔 돈과 상계(이중 차감 없음). <b>«Solo llegó el recibo»</b>는 금액만 고쳐 하루 금액을 바로 맞춘다. 고정 금액 항목은 금액 칸이 미리 채워져 있다.</div>
+</div>
+
+<!-- D: PRIMER FIJO -->
+<div class="col">
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="dots"><i></i><i></i><i></i><b></b></span></div>
+  <div class="h1">Presupuesto</div>
+  <div class="eq">
+    <div class="cols">
+      <div class="c"><s>Total del ciclo</s><b>$6,900</b></div><span class="op">−</span>
+      <div class="c"><s>Apartado para<br>gastos fijos</s><b style="color:var(--violet)">$0</b></div><span class="op">=</span>
+      <div class="c res"><s>Para gastar</s><b>$6,900</b></div></div>
+  </div>
+  <div class="dim"></div>
+  <div class="sheet">
+    <div class="grab"></div>
+    <div style="font-size:17px;font-weight:900;line-height:1.3">¿Tu presupuesto de $6,900 ya contaba la renta?</div>
+    <div class="hint" style="margin:6px 0 13px">Es tu primer gasto fijo. Solo te lo pregunto esta vez.</div>
+
+    <div class="opt on"><span class="rd"><i></i></span>
+      <div style="flex:1"><div class="t">Sí, ya estaba incluida</div>
+        <div class="d">El total sigue en $6,900. Para gastar baja a <b>$3,400</b> y tu gasto diario a <b>$226</b>.</div></div></div>
+    <div class="opt"><span class="rd"></span>
+      <div style="flex:1"><div class="t">No, súmala al total</div>
+        <div class="d">El total sube a $10,400. Tu gasto diario se queda en <b>$460</b>.</div></div></div>
+
+    <div class="card flat" style="margin-top:4px;border-color:var(--line);background:var(--paperLight);padding:9px 10px">
+      <div class="delta">Gasto diario<b>$460 → <em>$226</em></b></div>
+    </div>
+    <div class="btn" style="margin-top:14px">Listo</div>
+  </div>
+</div>
+<div class="cap"><b>4. 첫 고정지출 등록 — 기존 예산의 의미를 한 번 묻는다.</b><br>대부분 월세를 뺀 금액을 예산으로 적었을 것. 묻지 않고 빼면 <b>하루 금액이 하룻밤 사이에 반토막</b>. 사이클 1~15 oct, 월세 $3,500 기준.</div>
+</div>
+
+<!-- SPEC -->
+<div class="spec">
+  <h2>설계 규칙</h2>
+  <div class="sh">화면은 프리셋 4개, 모델은 «단위 × 간격 + 다음 기한일»</div>
+
+  <h5>주기 프리셋 → 모델</h5>
+  <table>
+    <tr><td><b>Cada semana</b></td><td class="x">week × 1</td><td class="src">quincena당 2~3회</td></tr>
+    <tr><td><b>Cada quincena</b></td><td class="x">semiMonth × 1</td><td class="src">15일·말일 · 매 사이클 1회</td></tr>
+    <tr><td><b>Cada mes</b></td><td class="x">month × 1</td><td class="src">2번 중 1번</td></tr>
+    <tr><td><b>Cada 2 meses</b></td><td class="x">month × 2</td><td class="src">4번 중 1번 · CFE, 수도</td></tr>
+    <tr class="later"><td>Otro… / Cada año</td><td class="x">같은 모델</td><td class="src">나중에 선택지만 추가</td></tr>
+  </table>
+  <div class="hint" style="margin-top:5px">격월은 짝·홀 달이 달라서 «매월 N일»로는 부족 → <b style="color:var(--ink)">다음 기한일</b>을 받는다. semiMonth는 <code>PaySchedule.semiMonthly</code> 계산 재사용. 31일은 말일로.</div>
+
+  <h5>계산</h5>
+  <table>
+    <tr><td>떼어둔 금액 <code>reservedFor(cycle)</code></td><td class="x">사이클 안 기한 회차 합</td></tr>
+    <tr><td>쓸 돈</td><td class="x">총액 − 떼어둔 금액</td></tr>
+    <tr><td>하루 금액</td><td class="x">(쓸 돈 − 자유 지출) ÷ 남은 날</td></tr>
+    <tr><td>정산 성공</td><td class="x">자유 지출 ≤ 쓸 돈</td></tr>
+  </table>
+
+  <h5>변동 금액 (luz · agua · gas natural)</h5>
+  <div class="guard"><b>예상액 = 지난번 실제액.</b> 처음만 사용자가 입력. 여름에 전기요금이 뛰면 다음 예상도 따라간다.</div>
+  <div class="guard"><b>«Solo llegó el recibo»</b> — 금액·기한만 수정. 하루 금액이 납부일이 아니라 고지서 받은 날 맞춰진다.</div>
+  <div class="guard"><b>차액만 반영</b> — $684 − $620 = $64만 쓸 돈에서 빠진다.</div>
+
+  <h5>경계 케이스</h5>
+  <div class="guard"><b>미납으로 사이클 종료</b> → 다음 사이클로 이월(«Vencido»). 남은 예약금은 절약액으로 치지 않는다.</div>
+  <div class="guard"><b>현금 납부</b> → 확인 순간 <code>expectedCash</code>에서 차감. 자동 기록을 안 하는 이유.</div>
+
+  <h5>데이터 모델</h5>
+  <table>
+    <tr><td><code>RecurringExpense</code></td><td class="src">unit · interval · nextDueDate · amount · isVariable · category · method</td></tr>
+    <tr><td><code>ExpenseEntry.recurringId</code></td><td class="src">+ occurrenceDate · 자유 지출 합산에서 제외</td></tr>
+    <tr><td><code>CycleRecord.fixedCentavos</code></td><td class="src">사이클 기록에 따로</td></tr>
+  </table>
+
+  <h5>만들지 않을 것 (v1)</h5>
+  <div class="no"><em>×</em><span>자동 지출 기록 — 금액·결제수단이 달라지고 현금 대사가 깨진다</span></div>
+  <div class="no"><em>×</em><span>Cada año · 나눠서 적립 — 한 사이클에 몰리는 문제는 v2에서 같이</span></div>
+  <div class="no"><em>×</em><span>자유 주기 입력 — 요청이 오면 «Otro…»로</span></div>
+  <div class="no"><em>×</em><span>LP 가스(통 가스) — 기한이 없다. 일반 지출로 기록</span></div>
+</div>
+
+</div>

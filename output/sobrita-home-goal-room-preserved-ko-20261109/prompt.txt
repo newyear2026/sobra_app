@@ -1,0 +1,24 @@
+EDIT the provided Sobrita screenshot faithfully. ONE narrow portrait mobile app image. The output canvas MUST have the identical aspect ratio as the reference: 426 wide × 919 high, or 852 × 1838 at 2x. Do not return a wider/shorter canvas. Do not redesign or compact the existing layout.
+
+This is a correction of a UI mockup: preserve the current character room and insert a tiny savings-goal row below it. The screenshot is the exact layout reference. The character-room viewport MUST remain SQUARE. This is the highest priority. No stretching or shortening of the room. Do not try to fit all the XP card on screen.
+
+Precise logical geometry at 426×919:
+- Source branding, settings gear, money headline, helper line, forecast card all stay where they already are.
+- Existing room OUTER card: x=20, y=278, width=386. Its header stays ~43 high.
+- Existing room IMAGE starts x=21, y=322, width=384, height=384. End near y=708. KEEP IT SQUARE and keep original window, rug, full floor, tiny dark blue Michi cat and speech bubble faithfully. Do not enlarge the cat. No new artwork.
+- Add ONE target card x=20, y=721, width=386, height=68. Square navy outline, very pale teal fill.
+- Move the existing XP card down to y=801. ONLY its top 48 pixels are visible before the bottom navigation covers the rest. This is fine; the user scrolls down for the rest. Do not make room smaller to show more XP.
+- Original FIVE-TAB nav stays fixed x=0, y=849, width=426, height=70. No goal tab.
+Everything scales uniformly for the rendered output. No OS status bar, phone bezel or captions outside the screen.
+
+Minimal exact Korean localization of existing text, preserving pixel typography scale and layout:
+'Sobrita' stays.
+'Hoy te queda' becomes '오늘 남은 돈'.
+Keep '$857.14 MXN'.
+Small helper '오늘 한도 $857.14 · 주기에 $6,000 남음'.
+Forecast line 1 '이번 주기 마감 예상', line 2 '$6,000 남아요'.
+Room title '내 방'; action '꾸미기'; speech bubble '잘 하고 있어요'.
+Bottom five labels: '홈', '내역', central '+' only, '예산', '내 정보'.
+New goal card content: tiny 36×36 white AirPods photo on left; on right '내 목표 · AirPods 4', then 'MX$300 / MX$1,499' and '20%'. One THIN progress bar filled 20%. Right chevron. No additional title, paragraph, button or padding.
+XP card only visible top: square level '1', '호기심 많은 Michi', '총 0 XP', chevron. Most of XP card MUST be below the visible viewport.
+Preserve navy #202848, cream #FFFDF7 and teal #0E7A72. Exact source hierarchy and pixel character-art identity, NOT a clean modern redesign. Date context 2026-11-09; don't show calendar dates.

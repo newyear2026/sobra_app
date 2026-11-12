@@ -1,0 +1,20 @@
+[
+  {
+    "file": "01-compact-home-ko.png",
+    "width": 852,
+    "height": 1846,
+    "sha256": "d01ad454c2ea945b3cffff2ed30139e781fb6426b80ecc310195f8f771c2a138"
+  },
+  {
+    "file": "02-review-goal-ko.png",
+    "width": 852,
+    "height": 1846,
+    "sha256": "b1fe35dbb9ab7e443dc6b791d62b1e5d040bcaea4b8f9dcf5019e4f98e0e73cd"
+  },
+  {
+    "file": "03-security-fallback-ko.png",
+    "width": 852,
+    "height": 1846,
+    "sha256": "8bbead42ae1b6d33a08abc644366deae02f4c4685f54723008f766ba49b6bda3"
+  }
+]

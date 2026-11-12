@@ -1,0 +1,32 @@
+[
+  {
+    "file": "sobrita_qa_ko_usd.csv",
+    "result": "pass",
+    "dataRows": 13,
+    "columns": 8,
+    "protectedMemoCells": 9,
+    "numericTotal": "10370.90",
+    "utf8Bom": true,
+    "quotedMultilineMemo": true
+  },
+  {
+    "file": "sobrita_qa_ko_krw.csv",
+    "result": "pass",
+    "dataRows": 13,
+    "columns": 8,
+    "protectedMemoCells": 9,
+    "numericTotal": "10371",
+    "utf8Bom": true,
+    "quotedMultilineMemo": true
+  },
+  {
+    "file": "sobrita_qa_pt_brl.csv",
+    "result": "pass",
+    "dataRows": 13,
+    "columns": 8,
+    "protectedMemoCells": 9,
+    "numericTotal": "10370.90",
+    "utf8Bom": true,
+    "quotedMultilineMemo": true
+  }
+]

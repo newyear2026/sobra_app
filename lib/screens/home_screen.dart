@@ -1,40 +1,167 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
+import '../models/recurring_expense.dart';
+import '../models/room_design.dart';
+import '../services/app_telemetry.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
-import '../widgets/character_room.dart';
+import '../widgets/fixed_expenses.dart';
 import '../widgets/gamification_ui.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/room_scene.dart';
+import '../widgets/room_time_of_day_builder.dart';
+import '../widgets/starter_friend.dart';
+import '../widgets/seasonal_costume_gift.dart';
+import '../widgets/savings_goal_card.dart';
 import '../widgets/transaction_row.dart';
 import 'app_shell.dart';
 import 'cash_count_screen.dart';
+import 'collection_screen.dart';
 import 'daily_mission_screen.dart';
+import 'first_expense_screen.dart';
+import 'room_screen.dart';
 import 'xp_history_screen.dart';
 
+/// What stands in for the headline while no budget has been set.
+///
+/// It leads to Presupuesto rather than opening an amount dialog of its own:
+/// that screen already asks this exact question, and one place to answer it
+/// keeps the two from drifting apart.
+class _BudgetQuest extends StatelessWidget {
+  const _BudgetQuest({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return PixelCard(
+      color: AppColors.tealSoft,
+      borderColor: AppColors.tealInk,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.homeFirstQuestLabel,
+            style: pixelText(size: 12, bold: true, color: AppColors.tealInk),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            l10n.homeBudgetQuestBody,
+            style: pixelText(size: 14, bold: true, height: 1.45),
+          ),
+          const SizedBox(height: 12),
+          PixelButton(label: l10n.budgetSetAction, onPressed: onTap),
+        ],
+      ),
+    );
+  }
+}
+
+/// The first expense, offered again on Inicio to somebody who has none yet.
+///
+/// Mostly for whoever answered "Aún no he gastado" at the end of onboarding,
+/// but also for installs from before the guided screen existed. It opens that
+/// same guided screen rather than the register tab, so the first record is
+/// asked for the same way wherever it starts.
+class _FirstExpenseCard extends StatelessWidget {
+  const _FirstExpenseCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final store = SobraScope.of(context);
+    return PixelCard(
+      color: AppColors.tealSoft,
+      borderColor: AppColors.tealInk,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.firstExpenseRecordTitle,
+            style: pixelText(size: 12, bold: true, color: AppColors.tealInk),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            l10n.homeFirstExpenseTitle,
+            style: pixelText(size: 17, bold: true),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            l10n.homeFirstExpenseBody,
+            style: pixelText(size: 13, color: AppColors.tealInk, height: 1.4),
+          ),
+          const SizedBox(height: 12),
+          PixelButton(
+            label: l10n.homeFirstExpenseAction,
+            onPressed: () => showFirstExpenseGuide(
+              context,
+              origin: FirstExpenseOrigin.homeCard,
+            ),
+          ),
+          const SizedBox(height: 4),
+          TextButton(
+            onPressed: () async {
+              final saved = await guardStoreWrite(
+                ScaffoldMessenger.of(context),
+                l10n,
+                store.snoozeFirstExpenseCard,
+              );
+              if (!saved) return;
+              unawaited(
+                AppTelemetry.instance.event(TelemetryEvent.firstExpense, {
+                  'origin': FirstExpenseOrigin.homeCard,
+                  'result': FirstExpenseResult.snoozed,
+                }),
+              );
+            },
+            child: Text(
+              l10n.homeFirstExpenseLater,
+              style: pixelText(size: 13, bold: true, color: AppColors.tealInk),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.active = true});
+
+  final bool active;
 
   @override
   Widget build(BuildContext context) {
     final store = SobraScope.of(context);
     final shell = AppShellScope.of(context);
     final recent = store.movements.take(3).toList();
+    final hasBudget = store.hasBudget;
     // Over budget the headline stops being about today and reports the
-    // cycle's own deficit, so the label and the colour follow it.
-    final overCycleBudget = store.remainingBudgetCentavos < 0;
+    // cycle's own deficit, so the label and the colour follow it. Nothing is
+    // over when nothing was set.
+    final overCycleBudget = hasBudget && store.remainingBudgetCentavos < 0;
     // The cat still reacts to the day itself: the headline now floors at
     // zero, so it can no longer tell a spent day from an untouched one.
+    // Without a budget the allowance is zero, and measuring the day against
+    // it would have the cat counselling restraint about a limit nobody set.
     final onTrack =
-        !overCycleBudget &&
-        store.spentTodayCentavos <= store.dailyAllowanceCentavos;
+        !hasBudget ||
+        (!overCycleBudget &&
+            store.spentTodayCentavos <= store.dailyAllowanceCentavos);
     final xp = store.xpProgress;
     final missions = store.dailyMissions;
     final l10n = AppLocalizations.of(context);
     final currency = store.currency;
     final textTheme = Theme.of(context).textTheme;
+    final fixedDue = store.isFixedHomeCardSnoozed
+        ? const <FixedOccurrence>[]
+        : store.fixedDueOnHome;
 
     return SafeArea(
       bottom: false,
@@ -60,54 +187,110 @@ class HomeScreen extends StatelessWidget {
                   style: textTheme.titleSmall,
                 ),
                 const SizedBox(height: 4),
-                FittedBox(
-                  alignment: Alignment.centerLeft,
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    formatMoney(currency, store.todayRemainingCentavos),
+                if (!hasBudget) ...[
+                  // The figure's place is kept rather than closed up, so the
+                  // screen still reads as the one it always was and the card
+                  // under it is plainly what fills the gap.
+                  Text(
+                    emDash,
                     style: textTheme.displayLarge?.copyWith(
-                      color: overCycleBudget
-                          ? AppColors.dangerInk
-                          : AppColors.teal,
+                      color: AppColors.line,
                     ),
                   ),
-                ),
-                const SizedBox(height: 6),
-                // Whichever figure the headline carries, the other one goes
-                // right under it: a zero day is only readable next to the
-                // limit it ran out of, and a deficit next to the budget it
-                // came from.
-                Text(
-                  overCycleBudget
-                      ? l10n.homeOverBudget(
-                          formatMoney(
-                            currency,
-                            store.totalBudgetCentavos,
-                            showCode: false,
+                  const SizedBox(height: 10),
+                  _BudgetQuest(onTap: () => shell.select(AppTab.budget)),
+                ] else ...[
+                  FittedBox(
+                    alignment: Alignment.centerLeft,
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      formatMoney(currency, store.todayRemainingCentavos),
+                      style: textTheme.displayLarge?.copyWith(
+                        color: overCycleBudget
+                            ? AppColors.dangerInk
+                            : AppColors.teal,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  // Whichever figure the headline carries, the other one goes
+                  // right under it: a zero day is only readable next to the
+                  // limit it ran out of, and a deficit next to the budget it
+                  // came from.
+                  Text(
+                    overCycleBudget
+                        ? l10n.homeOverBudget(
+                            formatMoney(
+                              currency,
+                              store.totalBudgetCentavos,
+                              showCode: false,
+                            ),
+                          )
+                        : l10n.homeDailyLimit(
+                            formatMoney(
+                              currency,
+                              store.dailyAllowanceCentavos,
+                              showCode: false,
+                            ),
+                            formatMoney(
+                              currency,
+                              store.remainingBudgetCentavos,
+                              showCode: false,
+                            ),
                           ),
-                        )
-                      : l10n.homeDailyLimit(
-                          formatMoney(
-                            currency,
-                            store.dailyAllowanceCentavos,
-                            showCode: false,
-                          ),
-                          formatMoney(
-                            currency,
-                            store.remainingBudgetCentavos,
-                            showCode: false,
-                          ),
-                        ),
-                  style: textTheme.bodySmall?.copyWith(
-                    color: overCycleBudget
-                        ? AppColors.dangerInk
-                        : AppColors.muted,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: overCycleBudget
+                          ? AppColors.dangerInk
+                          : AppColors.muted,
+                    ),
+                  ),
+                  // Over budget, the line above already is the cycle's end;
+                  // a projection of the same deficit would only repeat it.
+                  if (!overCycleBudget) ...[
+                    const SizedBox(height: 12),
+                    _HomeProjection(
+                      store: store,
+                      onTap: () => shell.select(AppTab.budget),
+                    ),
+                  ],
+                ],
+                if (fixedDue.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  FixedDueCard(
+                    occurrences: fixedDue,
+                    onSeeAll: () => shell.select(AppTab.budget),
+                  ),
+                ],
+                const SizedBox(height: 18),
+                _HomeRoomCard(
+                  active: active,
+                  message: onTrack ? l10n.homeGoingWell : l10n.homeAdjustCalmly,
+                  roomId: store.equippedRoomId,
+                  placements: store.roomDecorationsFor(),
+                  catMotion: onTrack ? CatMotion.idle : CatMotion.concern,
+                  catLoop: onTrack,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(builder: (_) => const RoomScreen()),
                   ),
                 ),
+                const SizedBox(height: 12),
+                const SavingsGoalCard(),
+                if (store.canClaimSeasonalCostumes) ...[
+                  const SizedBox(height: 16),
+                  const SeasonalCostumeGiftBanner(),
+                ],
+                if (store.showsFirstExpenseCard) ...[
+                  const SizedBox(height: 16),
+                  const _FirstExpenseCard(),
+                ],
                 const SizedBox(height: 18),
                 LevelStrip(
                   level: xp.level,
-                  title: xpLevelTitle(l10n, xp.level),
+                  title: xpLevelTitle(
+                    l10n,
+                    xp.level,
+                    CharacterCatalog.resolve(store.characterId).displayName,
+                  ),
                   subtitle: l10n.xpTotal(xp.totalXp),
                   currentXp: xp.currentLevelXp,
                   targetXp: xp.targetLevelXp,
@@ -135,6 +318,26 @@ class HomeScreen extends StatelessWidget {
                       builder: (_) => const DailyMissionScreen(),
                     ),
                   ),
+                  footer: switch (store.waitingStarter) {
+                    final waiting? => StarterWaitingRow(
+                      characterId: waiting.id,
+                      recordedDays: store.recordedDayCount,
+                      recordedToday: store.recordedToday,
+                      adProgress: store.rewardedAdProgressFor(waiting.id),
+                      adTarget: waiting.rewardedAdTarget!,
+                      // The collection is where rewarded ads play; this only
+                      // opens the starter's card there.
+                      onCallWithAds: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => CollectionScreen(
+                            origin: CollectionOrigin.home,
+                            initialEntryId: waiting.id,
+                          ),
+                        ),
+                      ),
+                    ),
+                    null => null,
+                  },
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -148,37 +351,50 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                SegmentedProgress(
-                  value: store.budgetProgress,
-                  danger: store.budgetProgress > 1,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _BudgetFigure(
-                        label: l10n.budget,
-                        value: formatMoney(
-                          currency,
-                          store.totalBudgetCentavos,
-                          showCode: false,
+                // The bar is a share of the budget, so it has nothing to fill
+                // without one. Days remaining and what was spent are both
+                // true either way, and they stay.
+                if (hasBudget) ...[
+                  SegmentedProgress(
+                    value: store.budgetProgress,
+                    danger: store.budgetProgress > 1,
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _BudgetFigure(
+                          label: l10n.budget,
+                          value: formatMoney(
+                            currency,
+                            store.totalBudgetCentavos,
+                            showCode: false,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: _BudgetFigure(
-                        label: l10n.spent,
-                        value: formatMoney(
-                          currency,
-                          store.totalSpentCentavos,
-                          showCode: false,
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _BudgetFigure(
+                          label: l10n.spent,
+                          value: formatMoney(
+                            currency,
+                            store.totalSpentCentavos,
+                            showCode: false,
+                          ),
+                          alignEnd: true,
                         ),
-                        alignEnd: true,
                       ),
+                    ],
+                  ),
+                ] else
+                  _BudgetFigure(
+                    label: l10n.spent,
+                    value: formatMoney(
+                      currency,
+                      store.totalSpentCentavos,
+                      showCode: false,
                     ),
-                  ],
-                ),
+                  ),
                 const SizedBox(height: 18),
                 PixelCard(
                   // The one card on the screen that leads somewhere else, so
@@ -279,22 +495,163 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ] else
                   ...recent.map((entry) => MovementRow(movement: entry)),
-                const SizedBox(height: 16),
-                CharacterRoom(
-                  message: onTrack ? l10n.homeGoingWell : l10n.homeAdjustCalmly,
-                  characterBuilder: (width) => CatSprite(
-                    motion: overCycleBudget
-                        ? CatMotion.concern
-                        : CatMotion.idle,
-                    width: width,
-                    animate: !reducedMotionOf(context),
-                    loop: !overCycleBudget,
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Where the cycle is heading, from the budget tab's projection.
+///
+/// It lived at the foot of Presupuesto, under every category, and a Play
+/// review asked for savings estimates the app already made. One line under
+/// today's figure puts it where people look; the tap leads to the full card.
+class _HomeProjection extends StatelessWidget {
+  const _HomeProjection({required this.store, required this.onTap});
+
+  final SobraStore store;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final projected = store.projectedRemainderCentavos;
+    final amount = formatMoney(
+      store.currency,
+      projected.abs(),
+      showCode: false,
+    );
+    return PixelCard(
+      elevation: PixelElevation.none,
+      color: AppColors.cashSoft,
+      borderColor: AppColors.cashInk,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+      onTap: onTap,
+      child: Row(
+        children: [
+          const Icon(Icons.savings_outlined, color: AppColors.cashInk),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.homeProjectionLead(shortCycleDate(l10n, store.cycleEnd)),
+                  style: pixelText(size: 12, color: AppColors.cashInk),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  projected >= 0
+                      ? l10n.homeProjectionLeft(amount)
+                      : l10n.homeProjectionShort(amount),
+                  style: pixelText(
+                    size: 16,
+                    bold: true,
+                    color: projected >= 0
+                        ? AppColors.tealInk
+                        : AppColors.dangerInk,
                   ),
                 ),
               ],
             ),
           ),
+          const Icon(Icons.chevron_right, color: AppColors.cashInk),
         ],
+      ),
+    );
+  }
+}
+
+class _HomeRoomCard extends StatelessWidget {
+  const _HomeRoomCard({
+    required this.active,
+    required this.message,
+    required this.roomId,
+    required this.placements,
+    required this.catMotion,
+    required this.catLoop,
+    required this.onTap,
+  });
+
+  final bool active;
+
+  final String message;
+  final String roomId;
+  final Map<RoomSlot, String> placements;
+  final CatMotion catMotion;
+  final bool catLoop;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Semantics(
+      button: true,
+      label: l10n.roomOpen,
+      child: PixelCard(
+        padding: EdgeInsets.zero,
+        elevation: PixelElevation.none,
+        onTap: onTap,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+              child: Row(
+                children: [
+                  const Icon(Icons.home, color: AppColors.ink, size: 24),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      l10n.roomTitle,
+                      style: pixelText(size: 16, bold: true),
+                    ),
+                  ),
+                  Text(
+                    l10n.roomDecorate,
+                    style: pixelText(
+                      size: 13,
+                      bold: true,
+                      color: AppColors.tealInk,
+                    ),
+                  ),
+                  const SizedBox(width: 3),
+                  const Icon(Icons.chevron_right, color: AppColors.ink),
+                ],
+              ),
+            ),
+            const Divider(height: 2.5, thickness: 2.5, color: AppColors.ink),
+            AspectRatio(
+              aspectRatio: 1,
+              child: DecoratedBox(
+                position: DecorationPosition.foreground,
+                decoration: const BoxDecoration(
+                  border: Border(
+                    left: BorderSide(color: AppColors.ink, width: 2.5),
+                    right: BorderSide(color: AppColors.ink, width: 2.5),
+                    bottom: BorderSide(color: AppColors.ink, width: 2.5),
+                  ),
+                ),
+                // The same light as the room it opens, so tapping through
+                // does not turn day into night.
+                child: RoomTimeOfDayBuilder(
+                  builder: (context, phase) => RoomScene(
+                    variant: RoomSceneVariant.preview,
+                    animateItems: active,
+                    roomId: roomId,
+                    placements: placements,
+                    message: message,
+                    catMotion: catMotion,
+                    catLoop: catLoop,
+                    timeOfDay: phase,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

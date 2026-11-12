@@ -1,0 +1,475 @@
+{
+  "tool": "built-in image_gen",
+  "created": "2026-10-20",
+  "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng",
+  "copy": [
+    {
+      "n": 1,
+      "ko": [
+        [
+          "A little joy in every budget.",
+          "가계부에 작은 즐거움을."
+        ],
+        [
+          "Expense tracking · Android",
+          "지출 관리 · Android"
+        ]
+      ],
+      "ja": [
+        [
+          "A little joy in every budget.",
+          "家計簿に、ちいさな楽しみを。"
+        ],
+        [
+          "Expense tracking · Android",
+          "支出管理 · Android"
+        ]
+      ]
+    },
+    {
+      "n": 2,
+      "ko": [
+        [
+          "Track your spending.",
+          "매일의 지출을 기록해요."
+        ],
+        [
+          "One small habit. Every day.",
+          "하루하루 쌓이는 작은 습관."
+        ]
+      ],
+      "ja": [
+        [
+          "Track your spending.",
+          "毎日の支出を記録しよう。"
+        ],
+        [
+          "One small habit. Every day.",
+          "毎日こつこつ、小さな習慣。"
+        ]
+      ]
+    },
+    {
+      "n": 3,
+      "ko": [
+        [
+          "Your spending, all in one place.",
+          "내 지출을 한눈에."
+        ],
+        [
+          "Today",
+          "오늘"
+        ],
+        [
+          "Lunch",
+          "점심"
+        ],
+        [
+          "Food · Cash",
+          "식비 · 현금"
+        ],
+        [
+          "Taxi",
+          "택시"
+        ],
+        [
+          "Transport · Cash",
+          "교통비 · 현금"
+        ],
+        [
+          "Coffee",
+          "커피"
+        ],
+        [
+          "-$35",
+          "-₩12,000"
+        ],
+        [
+          "-$80",
+          "-₩18,000"
+        ],
+        [
+          "-$45",
+          "-₩4,500"
+        ],
+        [
+          "Sample data",
+          "예시 데이터"
+        ],
+        [
+          "Expense tracking · Android",
+          "지출 관리 · Android"
+        ]
+      ],
+      "ja": [
+        [
+          "Your spending, all in one place.",
+          "毎日の支出を、ひと目で。"
+        ],
+        [
+          "Today",
+          "今日"
+        ],
+        [
+          "Lunch",
+          "ランチ"
+        ],
+        [
+          "Food · Cash",
+          "食費 · 現金"
+        ],
+        [
+          "Taxi",
+          "タクシー"
+        ],
+        [
+          "Transport · Cash",
+          "交通費 · 現金"
+        ],
+        [
+          "Coffee",
+          "コーヒー"
+        ],
+        [
+          "-$35",
+          "-¥900"
+        ],
+        [
+          "-$80",
+          "-¥1,800"
+        ],
+        [
+          "-$45",
+          "-¥450"
+        ],
+        [
+          "Sample data",
+          "サンプルデータ"
+        ],
+        [
+          "Expense tracking · Android",
+          "支出管理 · Android"
+        ]
+      ]
+    },
+    {
+      "n": 4,
+      "ko": [
+        [
+          "Track your spending.",
+          "지출을 기록하는 습관."
+        ],
+        [
+          "With a little friend by your side.",
+          "작은 친구와 함께해요."
+        ]
+      ],
+      "ja": [
+        [
+          "Track your spending.",
+          "毎日の支出を、かんたん記録。"
+        ],
+        [
+          "With a little friend by your side.",
+          "小さな相棒といっしょに。"
+        ]
+      ]
+    },
+    {
+      "n": 5,
+      "ko": [
+        [
+          "Your budget. Your pace.",
+          "내 예산, 내 속도대로."
+        ],
+        [
+          "Track and organize your spending.",
+          "지출을 기록하고 차근차근 정리해요."
+        ]
+      ],
+      "ja": [
+        [
+          "Your budget. Your pace.",
+          "家計管理は、自分のペースで。"
+        ],
+        [
+          "Track and organize your spending.",
+          "毎日の支出を記録・整理。"
+        ]
+      ]
+    },
+    {
+      "n": 6,
+      "ko": [
+        [
+          "See your spending clearly.",
+          "내 지출을\n한눈에."
+        ],
+        [
+          "Expense tracking · Android",
+          "지출 관리 · Android"
+        ]
+      ],
+      "ja": [
+        [
+          "See your spending clearly.",
+          "毎日の支出を\nひと目で。"
+        ],
+        [
+          "Expense tracking · Android",
+          "支出管理 · Android"
+        ]
+      ]
+    },
+    {
+      "n": 7,
+      "ko": [
+        [
+          "Every expense counts.",
+          "작은 지출도\n소중하니까."
+        ],
+        [
+          "Track your everyday spending.",
+          "매일의 지출을 기록해요."
+        ]
+      ],
+      "ja": [
+        [
+          "Every expense counts.",
+          "小さな出費も、\n大切に。"
+        ],
+        [
+          "Track your everyday spending.",
+          "毎日の支出を記録しよう。"
+        ]
+      ]
+    },
+    {
+      "n": 8,
+      "ko": [
+        [
+          "A daily habit.",
+          "매일의 기록,"
+        ],
+        [
+          "A little friend.",
+          "곁에 있는 친구."
+        ],
+        [
+          "Track your spending with your kitty.",
+          "고양이와 함께 쓰는 가계부."
+        ]
+      ],
+      "ja": [
+        [
+          "A daily habit.",
+          "毎日の習慣に、"
+        ],
+        [
+          "A little friend.",
+          "小さな相棒を。"
+        ],
+        [
+          "Track your spending with your kitty.",
+          "ねこといっしょに、家計簿を。"
+        ]
+      ]
+    },
+    {
+      "n": 9,
+      "ko": [
+        [
+          "Budgets & kitties.",
+          "가계부와\n고양이."
+        ],
+        [
+          "Your expense tracker for Android.",
+          "고양이와 함께하는 Android 가계부"
+        ]
+      ],
+      "ja": [
+        [
+          "Budgets & kitties.",
+          "家計簿と、\nねこ。"
+        ],
+        [
+          "Your expense tracker for Android.",
+          "ねこといっしょのAndroid家計簿"
+        ]
+      ]
+    },
+    {
+      "n": 10,
+      "ko": [
+        [
+          "Your money.",
+          "나의 가계부,"
+        ],
+        [
+          "Your kitty.",
+          "나의 고양이."
+        ],
+        [
+          "Track your spending, day by day.",
+          "하루하루, 고양이와 함께 지출 기록."
+        ]
+      ],
+      "ja": [
+        [
+          "Your money.",
+          "わたしの家計簿。"
+        ],
+        [
+          "Your kitty.",
+          "わたしのねこ。"
+        ],
+        [
+          "Track your spending, day by day.",
+          "ねこといっしょに、毎日の支出を記録。"
+        ]
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "id": "ko-01",
+      "lang": "ko",
+      "n": 1,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG01.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized mobile app advertisement, IMG01.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1200 square, aspect ratio 1:1 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Korean Hangul strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"A little joy in every budget.\" → \"가계부에 작은 즐거움을.\"\n\"Expense tracking · Android\" → \"지출 관리 · Android\"\nTypography: highly legible native Korean sans-serif Hangul with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ja-01",
+      "lang": "ja",
+      "n": 1,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG01.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Japanese localized mobile app advertisement, IMG01.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1200 square, aspect ratio 1:1 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Japanese strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"A little joy in every budget.\" → \"家計簿に、ちいさな楽しみを。\"\n\"Expense tracking · Android\" → \"支出管理 · Android\"\nTypography: highly legible native Japanese Gothic sans-serif with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ko-02",
+      "lang": "ko",
+      "n": 2,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG02.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized mobile app advertisement, IMG02.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1200 square, aspect ratio 1:1 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Korean Hangul strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"Track your spending.\" → \"매일의 지출을 기록해요.\"\n\"One small habit. Every day.\" → \"하루하루 쌓이는 작은 습관.\"\nTypography: highly legible native Korean sans-serif Hangul with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ja-02",
+      "lang": "ja",
+      "n": 2,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG02.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Japanese localized mobile app advertisement, IMG02.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1200 square, aspect ratio 1:1 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Japanese strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"Track your spending.\" → \"毎日の支出を記録しよう。\"\n\"One small habit. Every day.\" → \"毎日こつこつ、小さな習慣。\"\nTypography: highly legible native Japanese Gothic sans-serif with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ko-03",
+      "lang": "ko",
+      "n": 3,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG03.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized mobile app advertisement, IMG03.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1200 square, aspect ratio 1:1 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Korean Hangul strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"Your spending, all in one place.\" → \"내 지출을 한눈에.\"\n\"Today\" → \"오늘\"\n\"Lunch\" → \"점심\"\n\"Food · Cash\" → \"식비 · 현금\"\n\"Taxi\" → \"택시\"\n\"Transport · Cash\" → \"교통비 · 현금\"\n\"Coffee\" → \"커피\"\n\"-$35\" → \"-₩12,000\"\n\"-$80\" → \"-₩18,000\"\n\"-$45\" → \"-₩4,500\"\n\"Sample data\" → \"예시 데이터\"\n\"Expense tracking · Android\" → \"지출 관리 · Android\"\nTypography: highly legible native Korean sans-serif Hangul with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\nLocalize both occurrences of Food · Cash. Preserve the transaction-row layout, icons and menus. The provided local-currency amounts are illustrative sample data, not currency conversion, and retain the translated Sample data label.\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ja-03",
+      "lang": "ja",
+      "n": 3,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG03.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Japanese localized mobile app advertisement, IMG03.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1200 square, aspect ratio 1:1 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Japanese strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"Your spending, all in one place.\" → \"毎日の支出を、ひと目で。\"\n\"Today\" → \"今日\"\n\"Lunch\" → \"ランチ\"\n\"Food · Cash\" → \"食費 · 現金\"\n\"Taxi\" → \"タクシー\"\n\"Transport · Cash\" → \"交通費 · 現金\"\n\"Coffee\" → \"コーヒー\"\n\"-$35\" → \"-¥900\"\n\"-$80\" → \"-¥1,800\"\n\"-$45\" → \"-¥450\"\n\"Sample data\" → \"サンプルデータ\"\n\"Expense tracking · Android\" → \"支出管理 · Android\"\nTypography: highly legible native Japanese Gothic sans-serif with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\nLocalize both occurrences of Food · Cash. Preserve the transaction-row layout, icons and menus. The provided local-currency amounts are illustrative sample data, not currency conversion, and retain the translated Sample data label.\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ko-04",
+      "lang": "ko",
+      "n": 4,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG04.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized mobile app advertisement, IMG04.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 628 landscape, aspect ratio 300:157 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Korean Hangul strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"Track your spending.\" → \"지출을 기록하는 습관.\"\n\"With a little friend by your side.\" → \"작은 친구와 함께해요.\"\nTypography: highly legible native Korean sans-serif Hangul with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ja-04",
+      "lang": "ja",
+      "n": 4,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG04.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Japanese localized mobile app advertisement, IMG04.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 628 landscape, aspect ratio 300:157 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Japanese strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"Track your spending.\" → \"毎日の支出を、かんたん記録。\"\n\"With a little friend by your side.\" → \"小さな相棒といっしょに。\"\nTypography: highly legible native Japanese Gothic sans-serif with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ko-05",
+      "lang": "ko",
+      "n": 5,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG05.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized mobile app advertisement, IMG05.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1500 portrait, aspect ratio 4:5 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Korean Hangul strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"Your budget. Your pace.\" → \"내 예산, 내 속도대로.\"\n\"Track and organize your spending.\" → \"지출을 기록하고 차근차근 정리해요.\"\nTypography: highly legible native Korean sans-serif Hangul with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ja-05",
+      "lang": "ja",
+      "n": 5,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG05.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Japanese localized mobile app advertisement, IMG05.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1500 portrait, aspect ratio 4:5 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Japanese strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"Your budget. Your pace.\" → \"家計管理は、自分のペースで。\"\n\"Track and organize your spending.\" → \"毎日の支出を記録・整理。\"\nTypography: highly legible native Japanese Gothic sans-serif with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ko-06",
+      "lang": "ko",
+      "n": 6,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG06.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized mobile app advertisement, IMG06.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1200 square, aspect ratio 1:1 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Korean Hangul strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"See your spending clearly.\" → \"내 지출을\\n한눈에.\"\n\"Expense tracking · Android\" → \"지출 관리 · Android\"\nTypography: highly legible native Korean sans-serif Hangul with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ja-06",
+      "lang": "ja",
+      "n": 6,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG06.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Japanese localized mobile app advertisement, IMG06.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1200 square, aspect ratio 1:1 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Japanese strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"See your spending clearly.\" → \"毎日の支出を\\nひと目で。\"\n\"Expense tracking · Android\" → \"支出管理 · Android\"\nTypography: highly legible native Japanese Gothic sans-serif with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ko-07",
+      "lang": "ko",
+      "n": 7,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG07.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized mobile app advertisement, IMG07.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1200 square, aspect ratio 1:1 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Korean Hangul strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"Every expense counts.\" → \"작은 지출도\\n소중하니까.\"\n\"Track your everyday spending.\" → \"매일의 지출을 기록해요.\"\nTypography: highly legible native Korean sans-serif Hangul with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ja-07",
+      "lang": "ja",
+      "n": 7,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG07.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Japanese localized mobile app advertisement, IMG07.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1200 square, aspect ratio 1:1 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Japanese strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"Every expense counts.\" → \"小さな出費も、\\n大切に。\"\n\"Track your everyday spending.\" → \"毎日の支出を記録しよう。\"\nTypography: highly legible native Japanese Gothic sans-serif with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ko-08",
+      "lang": "ko",
+      "n": 8,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG08.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized mobile app advertisement, IMG08.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1200 square, aspect ratio 1:1 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Korean Hangul strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"A daily habit.\" → \"매일의 기록,\"\n\"A little friend.\" → \"곁에 있는 친구.\"\n\"Track your spending with your kitty.\" → \"고양이와 함께 쓰는 가계부.\"\nTypography: highly legible native Korean sans-serif Hangul with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ja-08",
+      "lang": "ja",
+      "n": 8,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG08.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Japanese localized mobile app advertisement, IMG08.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1200 square, aspect ratio 1:1 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Japanese strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"A daily habit.\" → \"毎日の習慣に、\"\n\"A little friend.\" → \"小さな相棒を。\"\n\"Track your spending with your kitty.\" → \"ねこといっしょに、家計簿を。\"\nTypography: highly legible native Japanese Gothic sans-serif with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ko-09",
+      "lang": "ko",
+      "n": 9,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG09.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized mobile app advertisement, IMG09.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 628 landscape, aspect ratio 300:157 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Korean Hangul strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"Budgets & kitties.\" → \"가계부와\\n고양이.\"\n\"Your expense tracker for Android.\" → \"고양이와 함께하는 Android 가계부\"\nTypography: highly legible native Korean sans-serif Hangul with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ja-09",
+      "lang": "ja",
+      "n": 9,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG09.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Japanese localized mobile app advertisement, IMG09.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 628 landscape, aspect ratio 300:157 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Japanese strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"Budgets & kitties.\" → \"家計簿と、\\nねこ。\"\n\"Your expense tracker for Android.\" → \"ねこといっしょのAndroid家計簿\"\nTypography: highly legible native Japanese Gothic sans-serif with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ko-10",
+      "lang": "ko",
+      "n": 10,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG10.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Korean localized mobile app advertisement, IMG10.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1500 portrait, aspect ratio 4:5 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Korean Hangul strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"Your money.\" → \"나의 가계부,\"\n\"Your kitty.\" → \"나의 고양이.\"\n\"Track your spending, day by day.\" → \"하루하루, 고양이와 함께 지출 기록.\"\nTypography: highly legible native Korean sans-serif Hangul with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    },
+    {
+      "id": "ja-10",
+      "lang": "ja",
+      "n": 10,
+      "source": "/Users/jaewook/Downloads/홍보 비디오/앱/sobrita/광고/Eng/IMG10.png",
+      "prompt": "Use case: text-localization.\nAsset type: final Japanese localized mobile app advertisement, IMG10.\nInput image 1 is the EDIT TARGET. Make ONE finished advertisement. Preserve its original 1200 × 1500 portrait, aspect ratio 4:5 canvas, composition, framing and visual content.\nPrimary request: replace only the English marketing copy and specified sample UI text with the exact Japanese strings below. These are intentional natural advertising translations, so render the supplied strings verbatim. Keep \"Sobrita\" and \"Android\" exactly as in the original, with the original logo lettering.\nExact text replacements:\n\"Your money.\" → \"わたしの家計簿。\"\n\"Your kitty.\" → \"わたしのねこ。\"\n\"Track your spending, day by day.\" → \"ねこといっしょに、毎日の支出を記録。\"\nTypography: highly legible native Japanese Gothic sans-serif with correct characters, clean professional typesetting, matching original font weights, text colors, size hierarchy, alignment and existing text areas. Use appropriate spacing and slight font-size adjustment to fit. Where \\n is present, use that line break; do not print a backslash. Leave comfortable side margins, never overlap art or clip text. Keep the original wordmark unchanged.\nInvariants: keep the EXACT kitten identity, pose, face, navy fur, cream markings, orange eyes, teal collar, golden bell, illustration detail, plants, furniture, notebook, props, lighting, shadows, colors, textured backgrounds, decorative shapes and all non-text content unchanged. Do not redraw or redesign the illustration. Seamlessly replace old lettering against the existing background; no text panels, patches, new badges, invented words, borders, new objects, watermark or collage.\n\nDeliver exactly ONE image in the original aspect ratio, as closely matching the source as possible."
+    }
+  ]
+}

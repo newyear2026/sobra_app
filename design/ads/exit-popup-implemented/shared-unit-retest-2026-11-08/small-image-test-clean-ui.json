@@ -1,0 +1,41 @@
+[
+  {
+    "content-desc": "앱을 종료할까요?",
+    "bounds": "[53,404][382,480]"
+  },
+  {
+    "content-desc": "다음에 또 만나요.",
+    "bounds": "[53,501][256,554]"
+  },
+  {
+    "resource-id": "com.sobra.app.sobra_app:id/native_ad_view",
+    "bounds": "[53,606][893,869]"
+  },
+  {
+    "text": "Test Ad : Flood-It!",
+    "resource-id": "com.sobra.app.sobra_app:id/primary",
+    "bounds": "[263,632][576,683]"
+  },
+  {
+    "text": "Ad",
+    "resource-id": "com.sobra.app.sobra_app:id/ad_notification_view",
+    "bounds": "[263,683][329,735]"
+  },
+  {
+    "text": "INSTALL",
+    "resource-id": "com.sobra.app.sobra_app:id/cta",
+    "bounds": "[263,735][841,790]"
+  },
+  {
+    "content-desc": "취소",
+    "bounds": "[53,1000][457,1137]"
+  },
+  {
+    "content-desc": "종료",
+    "bounds": "[488,1000][893,1137]"
+  },
+  {
+    "content-desc": "닫기",
+    "bounds": "[0,0][945,1523]"
+  }
+]

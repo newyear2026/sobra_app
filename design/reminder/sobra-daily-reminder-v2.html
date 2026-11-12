@@ -1,0 +1,361 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>Daily reminder v2</title>
+<style>
+@font-face{font-family:Pixel;src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");font-weight:100 900}
+@font-face{font-family:PixelKo;src:url("../../assets/fonts/SobraHangul-Bold.ttf") format("truetype");font-weight:700}
+@font-face{font-family:PixelKoR;src:url("../../assets/fonts/SobraHangul.ttf") format("truetype")}
+:root{
+  --ink:#202848;--paper:#FFFDF7;--cream:#F6EFE0;--teal:#0E7A72;--tealInk:#0B6660;--soft:#D8EDEA;
+  --coral:#D4553F;--coralInk:#A63A25;--cash:#C0873A;--cashSoft:#F7E9CE;--mute:#5b6178;--rule:#D9CFB9;
+  --shade:#E9E7EF;--shadeBg:#D8D7DE;--sysInk:#1D1B22;--sysDim:#5F5C68;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);font-family:-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:var(--ink)}
+.board{width:1500px;padding:40px 48px 52px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--teal);margin-bottom:6px}
+h1{font-size:30px;margin:0 0 8px}
+.sub{color:var(--mute);font-size:15px;line-height:1.6;margin:0;max-width:1100px}
+.sub b{color:var(--ink)}
+.changes{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 0}
+.chip{font-size:13px;background:var(--paper);border:2px solid var(--ink);padding:5px 10px}
+.chip b{color:var(--teal)}
+.sec{margin-top:40px}
+.sech{display:flex;align-items:baseline;gap:12px;border-top:2px solid var(--ink);padding-top:14px;margin-bottom:18px}
+.sech .no{font-size:13px;font-weight:700;color:var(--paper);background:var(--ink);padding:3px 8px}
+.sech h2{margin:0;font-size:21px}
+.sech .hint{font-size:14px;color:var(--mute)}
+.cols{display:flex;gap:28px;align-items:flex-start}
+.col{width:440px}
+.step{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--teal);margin-bottom:4px}
+.step.warm{color:var(--coralInk)}
+.title{font-size:18px;font-weight:700;margin-bottom:10px}
+.note{font-size:14px;line-height:1.6;margin-top:12px}
+.note b{color:var(--teal)}
+.note .warn{color:var(--coralInk);font-weight:700}
+
+/* Android shade backdrop + system card */
+.shadebg{background:var(--shadeBg);padding:18px 14px;border-radius:6px}
+.card{background:var(--shade);border-radius:28px;padding:16px 18px 18px;font-family:Roboto,"Noto Sans KR","Apple SD Gothic Neo",sans-serif;color:var(--sysInk)}
+.card + .card{margin-top:8px}
+.card .hd{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--sysDim)}
+.av{width:34px;height:34px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.av svg{width:21px;height:14px}
+.card .hd .chev{margin-left:auto;width:30px;height:30px;border-radius:50%;background:#D3D1DA;display:flex;align-items:center;justify-content:center;font-size:13px;color:#3d3b45}
+.card .body{padding-left:44px;margin-top:6px}
+.card .t{font-size:16.5px;font-weight:600;line-height:1.35}
+.card .b{font-size:14.5px;color:var(--sysDim);line-height:1.45;margin-top:3px}
+.btns{display:flex;gap:12px;margin-top:14px}
+.pbtn{flex:1;height:52px;position:relative;display:flex;align-items:center;justify-content:center;
+  clip-path:polygon(4px 0,calc(100% - 4px) 0,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0 calc(100% - 4px),0 4px);
+  background:var(--ink)}
+.pbtn i{position:absolute;inset:3px;background:var(--teal);box-shadow:inset 0 4px 0 #3D9A92,inset 0 -6px 0 var(--tealInk)}
+.pbtn.ex i{background:var(--coral);box-shadow:inset 0 4px 0 #E3806D,inset 0 -6px 0 var(--coralInk)}
+.pbtn span{position:relative;font-family:Pixel,PixelKo,sans-serif;font-weight:700;font-size:19px;color:#FFF8E8;text-shadow:2px 2px 0 var(--tealInk);margin-top:-2px}
+.pbtn.ex span{text-shadow:2px 2px 0 var(--coralInk)}
+.pbtn.sm{height:44px}.pbtn.sm span{font-size:17px}
+.badge{display:inline-block;font-size:11px;font-weight:700;color:var(--paper);background:var(--teal);padding:2px 7px;margin-left:6px;vertical-align:2px;font-family:-apple-system,sans-serif}
+
+/* copy table */
+.copy{width:100%;border-collapse:collapse;background:var(--paper);border:3px solid var(--ink);font-size:14px}
+.copy th{text-align:left;background:var(--ink);color:var(--paper);font-weight:600;padding:9px 12px;font-size:13px}
+.copy td{padding:10px 12px;border-top:1px solid var(--rule);vertical-align:top;line-height:1.5}
+.copy td.k{width:150px;font-weight:700;color:var(--teal);font-size:13px}
+.copy td .s{color:var(--mute);font-size:13px}
+.copy tr.pri td{background:#FBF3E2}
+.copy tr.pri td.k{color:var(--cash)}
+
+/* phones */
+.phone{position:relative;width:400px;height:800px;border:3px solid var(--ink);overflow:hidden;background:var(--paper)}
+.phone.lock{background:radial-gradient(120% 70% at 70% 100%,#1F4F5A 0%,#13213A 45%,#0B1020 100%);border-radius:26px}
+.lock .clock{color:#E8ECFF;font-family:Roboto,sans-serif;font-size:96px;font-weight:300;text-align:center;margin-top:70px;letter-spacing:-2px}
+.lock .date{color:#C9CFEA;font-family:Roboto,sans-serif;font-size:17px;text-align:center;margin-top:2px}
+.lock .stack{position:absolute;left:14px;right:14px;top:290px}
+.lock .card{background:rgba(236,234,242,.95)}
+.lock .swipe{position:absolute;bottom:26px;left:0;right:0;text-align:center;color:#9AA3C4;font-family:Roboto,sans-serif;font-size:14px}
+.lock .stars i{position:absolute;width:3px;height:3px;background:#5E6A95}
+.shot{position:absolute;left:0;top:0;width:100%}
+.dim{position:absolute;inset:0;background:rgba(20,22,30,.5)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);border-top:3px solid var(--ink);padding:22px 22px 26px}
+.sheet .row{display:flex;gap:14px;align-items:center}
+.sprite{width:88px;height:99px;background:url("../../assets/characters/michi/positive-8.png") 0 0/auto 99px no-repeat;image-rendering:pixelated;flex:0 0 auto}
+.sheet h3{font-family:PixelKo,sans-serif;font-size:21px;line-height:1.35;margin:0}
+.sheet p{font-family:PixelKoR,sans-serif;font-size:15px;line-height:1.55;color:var(--mute);margin:12px 0 0}
+.sheet .go{margin-top:18px;height:54px;background:var(--teal);border:3px solid var(--ink);box-shadow:0 5px 0 var(--ink);display:flex;align-items:center;justify-content:center;color:#FFF8E8;font-family:PixelKo,sans-serif;font-size:18px}
+.sheet .later{margin-top:16px;text-align:center;font-family:PixelKo,sans-serif;font-size:15px;color:var(--mute)}
+.tag{position:absolute;top:10px;left:10px;background:var(--ink);color:#fff;font-size:12px;padding:4px 8px;z-index:3}
+.perm{position:absolute;left:28px;right:28px;top:250px;background:#F3F1F7;border-radius:28px;padding:26px 24px 18px;font-family:Roboto,"Noto Sans KR",sans-serif;color:var(--sysInk);text-align:center}
+.perm .bell{width:30px;height:30px;margin:0 auto 14px;color:#3B4A7A}
+.perm h4{margin:0;font-size:20px;font-weight:400;line-height:1.4}
+.perm .pb{margin-top:20px;display:flex;flex-direction:column;gap:8px}
+.perm .pb span{display:block;padding:12px;border-radius:22px;background:#DCE3F5;font-size:15px;font-weight:500;color:#1C2B55}
+.perm .pb span.no{background:transparent;color:#3B4A7A}
+
+/* settings mock (pixel rows, matches Ajustes) */
+.set{padding:26px 18px}
+.set h5{font-family:Pixel,PixelKo,sans-serif;font-size:26px;margin:4px 0 18px}
+.set .grp{font-family:PixelKo,sans-serif;font-size:13px;color:var(--mute);margin:18px 2px 8px}
+.srow{border:3px solid var(--ink);background:var(--paper);display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:10px}
+.srow .ic{width:40px;height:40px;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:19px;flex:0 0 auto}
+.srow .tx{flex:1;font-family:PixelKo,sans-serif;font-size:15px;line-height:1.35}
+.srow .tx small{display:block;font-family:PixelKoR,sans-serif;font-size:12.5px;color:var(--mute);margin-top:3px}
+.srow .val{font-family:Pixel,sans-serif;font-weight:700;color:var(--teal);font-size:16px}
+.tog{width:54px;height:30px;border:3px solid var(--ink);background:var(--teal);position:relative;flex:0 0 auto}
+.tog::after{content:"";position:absolute;right:3px;top:3px;width:18px;height:18px;background:var(--paper);border:2px solid var(--ink)}
+.srow.new{outline:4px solid #E3A21A;outline-offset:3px}
+.srow.sub{margin-left:22px}
+.arrow{align-self:center;font-size:34px;margin-top:-80px}
+
+/* boxes */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.box{background:var(--paper);border:3px solid var(--ink);padding:18px 22px}
+.box h4{margin:0 0 10px;font-size:17px}
+.box ul{margin:0;padding-left:20px;font-size:14px;line-height:1.75}
+.box p{font-size:14px;line-height:1.65;margin:0 0 8px}
+.box b{color:var(--teal)}
+.box .warn{color:var(--coralInk)}
+.week{display:flex;gap:8px;margin:6px 0 12px}
+.day{flex:1;border:3px solid var(--ink);padding:8px 4px;text-align:center;font-size:12.5px;line-height:1.4;background:var(--paper)}
+.day .n{font-weight:700;font-size:13px}
+.day .m{font-size:18px;margin:2px 0}
+.day.send{background:var(--cashSoft);border-color:var(--cash)}
+.day.skip{background:var(--soft);border-color:var(--teal)}
+.day.off{background:#EEE9DD;border-style:dashed;color:var(--mute)}
+.legend{font-size:13px;color:var(--mute)}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:#EFE7D6;padding:1px 5px}
+</style></head><body><div class="board">
+
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="cat" viewBox="15 12 92 60"><path fill="#FFF8E8" d="M15,72 L15,36 L24,36 L24,12 L43,26 L76,26 L96,12 L96,34 L107,34 L107,72 Z"/></symbol></defs></svg>
+
+<div class="eyebrow">SOBRITA · 저녁 알림 · 시안 V2 · 2026-10-20</div>
+<h1>하루 한 번, 안 적은 날 밤 9시에만</h1>
+<p class="sub">그날 기록이 하나도 없을 때만 <b>밤 9시에 한 번</b> 와요. 기록을 저장하면 그날 알림은 바로 취소되고, 서버 없이 폰에서 다 처리돼요. 9/14 v1 시안(<code>sobra-daily-reminder.png</code>) 이후 바뀐 걸 반영했습니다.</p>
+<div class="changes">
+  <span class="chip"><b>카드</b> 지금 나가는 빠른 기록 모양 그대로 (시스템 카드 + 픽셀 버튼)</span>
+  <span class="chip"><b>켜는 흐름</b> 첫 기록 직후 한 번 묻기</span>
+  <span class="chip"><b>안 열면 줄이기</b> 1·2·3·5·7일째 후 멈춤</span>
+  <span class="chip"><b>Android만</b> iOS 64개 제한 얘기 삭제</span>
+  <span class="chip"><b>측정</b> Firebase로 알림 → 기록 전환 확인</span>
+</div>
+
+<!-- 01 -->
+<div class="sec">
+<div class="sech"><span class="no">01</span><h2>알림 카드</h2><span class="hint">Android가 그리는 카드 안에 우리 문구와 픽셀 버튼 두 개 · 스와이프로 지워지는 일반 알림</span></div>
+<div class="cols">
+  <div class="col">
+    <div class="step">A · 접힌 상태</div>
+    <div class="title">알림창, 헤드업</div>
+    <div class="shadebg">
+      <div class="card">
+        <div class="hd"><span class="av"><svg><use href="#cat"/></svg></span>Sobrita · 오후 9:00<span class="chev">⌄</span></div>
+        <div class="body"><div class="t">오늘 쓴 돈, 아직 비어 있어요</div><div class="b">하나만 적어도 오늘이 채워져요</div></div>
+      </div>
+    </div>
+    <div class="note">접혀 있을 땐 <b>문구가 주인공</b>이에요. 빠른 기록 카드는 접힌 상태에 버튼만 있지만, 이건 왜 왔는지부터 보여야 해서요.</div>
+  </div>
+  <div class="col">
+    <div class="step">B · 펼친 상태</div>
+    <div class="title">버튼에서 바로 입력 화면으로</div>
+    <div class="shadebg">
+      <div class="card">
+        <div class="hd"><span class="av"><svg><use href="#cat"/></svg></span>Sobrita · 오후 9:00<span class="chev">⌃</span></div>
+        <div class="body"><div class="t">오늘 쓴 돈, 아직 비어 있어요</div><div class="b">하나만 적어도 오늘이 채워져요</div>
+          <div class="btns"><div class="pbtn"><i></i><span>+ 수입</span></div><div class="pbtn ex"><i></i><span>− 지출</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="note">버튼은 빠른 기록과 같은 <code>register_income</code> / <code>register_expense</code>로, 카드를 누르면 홈으로 가요. 기록을 저장하면 이 알림도 사라져요.</div>
+  </div>
+  <div class="col">
+    <div class="step" style="color:var(--cash)">C · 친구가 오는 중일 때 <span class="badge" style="background:var(--cash)">문구 우선</span></div>
+    <div class="title">기다리는 친구가 있으면 그 얘기부터</div>
+    <div class="shadebg">
+      <div class="card">
+        <div class="hd"><span class="av"><svg><use href="#cat"/></svg></span>Sobrita · 오후 9:00<span class="chev">⌃</span></div>
+        <div class="body"><div class="t">하루만 더 적으면 Miru가 와요</div><div class="b">기록한 날 2/3 · 오늘 하나만 적어 주세요</div>
+          <div class="btns"><div class="pbtn"><i></i><span>+ 수입</span></div><div class="pbtn ex"><i></i><span>− 지출</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="note">고르지 않은 스타터가 문가에서 기다리는 동안(기록한 날 3일 전)엔 이 문구를 써요. 막 깔고 1~3일째 사람에게 <b>제일 확실한 이유</b>예요.</div>
+  </div>
+</div>
+
+<div style="margin-top:22px">
+<table class="copy">
+  <tr><th>문구</th><th>한국어</th><th>Español (MX)</th><th>Português (BR)</th></tr>
+  <tr class="pri"><td class="k">친구 대기 중<br><span class="s">해당될 때 항상</span></td>
+    <td>하루만 더 적으면 {name}가 와요<br><span class="s">기록한 날 {n}/3 · 오늘 하나만 적어 주세요</span></td>
+    <td>Un día más y llega {name}<br><span class="s">Días con registro: {n}/3 · Anota algo de hoy</span></td>
+    <td>Mais um dia e {name} chega<br><span class="s">Dias com registro: {n}/3 · Anote algo de hoje</span></td></tr>
+  <tr><td class="k">① 비어 있음</td>
+    <td>오늘 쓴 돈, 아직 비어 있어요<br><span class="s">하나만 적어도 오늘이 채워져요</span></td>
+    <td>Hoy sigue en blanco<br><span class="s">Con un gasto que anotes, hoy ya cuenta</span></td>
+    <td>Hoje ainda está em branco<br><span class="s">Anote um gasto e hoje já conta</span></td></tr>
+  <tr><td class="k">② 회상 질문</td>
+    <td>오늘 뭐 썼는지 기억나요?<br><span class="s">지금 적으면 아직 오늘 기록이에요</span></td>
+    <td>¿Recuerdas qué gastaste hoy?<br><span class="s">Si lo anotas ahora, todavía cuenta como hoy</span></td>
+    <td>Lembra o que você gastou hoje?<br><span class="s">Se anotar agora, ainda conta como hoje</span></td></tr>
+  <tr><td class="k">③ 캐릭터</td>
+    <td>{name}가 장부를 펴고 기다려요<br><span class="s">오늘 쓴 거 하나만 알려 주세요</span></td>
+    <td>{name} tiene el cuaderno abierto<br><span class="s">Cuéntale un gasto de hoy</span></td>
+    <td>{name} está com o caderno aberto<br><span class="s">Conte um gasto de hoje</span></td></tr>
+</table>
+<div class="note" style="margin-top:8px">①②③은 날짜마다 돌아가며 써서 같은 말이 매일 오지 않게 해요. {name}은 지금 방에 있는 친구 이름이에요. 잠금화면에도 보이는 알림이라 <span class="warn">금액은 넣지 않아요.</span></div>
+</div>
+</div>
+
+<!-- 02 -->
+<div class="sec">
+<div class="sech"><span class="no">02</span><h2>잠금화면, 그리고 빠른 기록을 켜 둔 사람</h2><span class="hint">카드가 두 장 겹치지 않게</span></div>
+<div class="cols">
+  <div class="col">
+    <div class="step">실제 크기 · es-MX</div>
+    <div class="title">21:00, 잠금화면</div>
+    <div class="phone lock">
+      <div class="stars"><i style="left:60px;top:40px"></i><i style="left:330px;top:110px"></i><i style="left:120px;top:220px"></i><i style="left:280px;top:600px"></i><i style="left:70px;top:660px"></i><i style="left:350px;top:470px"></i></div>
+      <div class="clock">21:00</div>
+      <div class="date">lunes, 20 de octubre</div>
+      <div class="stack">
+        <div class="card">
+          <div class="hd"><span class="av"><svg><use href="#cat"/></svg></span>Sobrita · ahora</div>
+          <div class="body"><div class="t">¿Recuerdas qué gastaste hoy?</div><div class="b">Si lo anotas ahora, todavía cuenta como hoy</div>
+            <div class="btns"><div class="pbtn sm"><i></i><span>+ Ingreso</span></div><div class="pbtn sm ex"><i></i><span>− Gasto</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="swipe">Desliza para desbloquear</div>
+    </div>
+    <div class="note">채널 중요도는 <b>기본</b>(소리 한 번, 화면 위로 튀어나오지 않음). 사용자가 Android 설정에서 이 채널만 따로 끌 수 있어요.</div>
+  </div>
+  <div class="col">
+    <div class="step warm">빠른 기록 OFF</div>
+    <div class="title">새 알림 한 장</div>
+    <div class="shadebg">
+      <div class="card">
+        <div class="hd"><span class="av"><svg><use href="#cat"/></svg></span>Sobrita · 오후 9:00<span class="chev">⌃</span></div>
+        <div class="body"><div class="t">오늘 뭐 썼는지 기억나요?</div><div class="b">지금 적으면 아직 오늘 기록이에요</div>
+          <div class="btns"><div class="pbtn"><i></i><span>+ 수입</span></div><div class="pbtn ex"><i></i><span>− 지출</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="note">대부분의 사용자는 이쪽이에요. 01의 카드가 그대로 와요.</div>
+  </div>
+  <div class="col">
+    <div class="step">빠른 기록 ON</div>
+    <div class="title">있던 카드를 깨워서 문구만 바꾸기</div>
+    <div class="shadebg">
+      <div class="card" style="opacity:.55">
+        <div class="hd"><span class="av"><svg><use href="#cat"/></svg></span>Sobrita<span style="margin-left:6px">· 낮 동안</span><span class="chev">⌃</span></div>
+        <div class="body"><div class="t" style="font-weight:400">무엇을 기록할까요?</div>
+          <div class="btns"><div class="pbtn sm"><i></i><span>+ 수입</span></div><div class="pbtn sm ex"><i></i><span>− 지출</span></div></div>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:20px;margin:6px 0">↓ 21:00</div>
+      <div class="card">
+        <div class="hd"><span class="av"><svg><use href="#cat"/></svg></span>Sobrita<span style="margin-left:6px">· 오후 9:00</span><span class="chev">⌃</span></div>
+        <div class="body"><div class="t">오늘 뭐 썼는지 기억나요?</div><div class="b">지금 적으면 아직 오늘 기록이에요</div>
+          <div class="btns"><div class="pbtn sm"><i></i><span>+ 수입</span></div><div class="pbtn sm ex"><i></i><span>− 지출</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="note">고정 카드 위에 한 장 더 쌓지 않아요. <b>같은 알림 ID(260911)</b>로 다시 올려 문구만 바꾸고 소리를 한 번 내요. 기록하거나 다음 날 아침이 되면 원래 문구로 돌아가요.</div>
+  </div>
+</div>
+</div>
+
+<!-- 03 -->
+<div class="sec">
+<div class="sech"><span class="no">03</span><h2>켜는 흐름</h2><span class="hint">Android 13부터는 알림 권한을 따로 받아야 해서, 권한을 언제 물을지가 핵심이에요</span></div>
+<div class="cols" style="gap:20px">
+  <div class="col" style="width:400px">
+    <div class="step">1 · 자동, 한 번만</div>
+    <div class="title">첫 기록을 저장한 직후, 홈에서</div>
+    <div class="phone">
+      <img class="shot" src="../store/shots/ko/1-home.png">
+      <div class="dim"></div>
+      <div class="sheet">
+        <div class="row"><div class="sprite"></div><h3>저녁에 안 적은 날만<br>알려 드릴까요?</h3></div>
+        <p>밤 9시에, 그날 기록이 없을 때만 한 번 와요. 적은 날엔 오지 않아요.</p>
+        <div class="go">알려 줘</div>
+        <div class="later">괜찮아요</div>
+      </div>
+    </div>
+    <div class="note">방금 기록을 해 본 사람한테 물어야 "알려 줘"를 고를 이유가 있어요. <b>괜찮아요</b>를 고르면 다시 묻지 않고, 설정에서만 켤 수 있어요.</div>
+  </div>
+  <div class="arrow">→</div>
+  <div class="col" style="width:400px">
+    <div class="step">2 · Android 13 이상</div>
+    <div class="title">「알려 줘」를 누르면 시스템 권한 창</div>
+    <div class="phone">
+      <img class="shot" src="../store/shots/ko/1-home.png">
+      <div class="dim"></div>
+      <div class="tag">Android 시스템 창 · 예시</div>
+      <div class="perm">
+        <svg class="bell" viewBox="0 0 24 24"><path fill="currentColor" d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2zm6-6V11c0-3.1-1.6-5.6-4.5-6.3V4a1.5 1.5 0 0 0-3 0v.7C7.6 5.4 6 7.9 6 11v5l-2 2v1h16v-1z"/></svg>
+        <h4><b style="font-weight:600">Sobrita</b>에서 알림을<br>보내도록 허용하시겠습니까?</h4>
+        <div class="pb"><span>허용</span><span class="no">허용 안함</span></div>
+      </div>
+    </div>
+    <div class="note">이미 허용한 사람(고정지출 알림이나 빠른 기록을 켠 사람, Android 12 이하)은 이 창 없이 바로 켜져요. 거절하면 꺼진 채로 두고 "설정에서 알림을 허용해 주세요" 스낵바를 띄워요(빠른 기록과 같은 방식).</div>
+  </div>
+  <div class="arrow">→</div>
+  <div class="col" style="width:400px">
+    <div class="step">언제든 · 직접</div>
+    <div class="title">내 정보 → 알림</div>
+    <div class="phone" style="background:var(--paper)">
+      <div class="set">
+        <h5>내 정보</h5>
+        <div class="grp">알림</div>
+        <div class="srow"><div class="ic" style="background:var(--soft)">🔔</div><div class="tx">빠른 기록<small>잠금화면에 수입·지출 버튼을 띄워요</small></div><div class="tog" style="background:#EFE7D6"></div></div>
+        <div class="srow new"><div class="ic" style="background:var(--cashSoft)">🌙</div><div class="tx">저녁 알림<small>안 적은 날만 밤에 한 번 알려 줘요</small></div><div class="tog"></div></div>
+        <div class="srow sub new"><div class="ic" style="background:#F1E6EF">⏰</div><div class="tx">알림 시간</div><div class="val">21:00 ›</div></div>
+        <div class="grp">기타</div>
+        <div class="srow"><div class="ic" style="background:var(--soft)">$</div><div class="tx">통화</div><div class="val" style="color:var(--mute)">MXN ›</div></div>
+        <div class="srow"><div class="ic" style="background:#E6E6F5">📅</div><div class="tx">예산 주기</div><div class="val" style="color:var(--mute)">보름 ›</div></div>
+      </div>
+    </div>
+    <div class="note">시간은 19:00 · 20:00 · 21:00 · 22:00 중에 골라요. 기본은 21:00이고, 「알림 시간」은 저녁 알림이 켜져 있을 때만 보여요.</div>
+  </div>
+</div>
+</div>
+
+<!-- 04 -->
+<div class="sec">
+<div class="sech"><span class="no">04</span><h2>보내는 규칙</h2><span class="hint">안 열어 보는 사람한테 매일 보내지 않기</span></div>
+<div class="grid">
+  <div class="box">
+    <h4>마지막으로 앱을 연 날부터 1·2·3·5·7일째, 그 뒤엔 멈춤</h4>
+    <div class="week">
+      <div class="day skip"><div class="n">0일 월</div><div class="m">✓</div>열고 기록</div>
+      <div class="day send"><div class="n">1 화</div><div class="m">🔔</div>21:00</div>
+      <div class="day send"><div class="n">2 수</div><div class="m">🔔</div>21:00</div>
+      <div class="day send"><div class="n">3 목</div><div class="m">🔔</div>21:00</div>
+      <div class="day off"><div class="n">4 금</div><div class="m">·</div>쉼</div>
+      <div class="day send"><div class="n">5 토</div><div class="m">🔔</div>21:00</div>
+      <div class="day off"><div class="n">6 일</div><div class="m">·</div>쉼</div>
+      <div class="day send"><div class="n">7 월</div><div class="m">🔔</div>마지막</div>
+    </div>
+    <p>앱을 열 때마다 일정을 다시 짜요. 그래서 매일 적는 사람은 <b>알림을 거의 받지 않고</b>, 잊은 날에만 받아요. 일주일을 통째로 안 연 사람은 5번 받고 끝나고, 다음에 앱을 열면 다시 시작해요.</p>
+    <p class="legend">기록한 날은 그날 알림 취소 · 앱을 연 날은 그날부터 다시 셈 · 폰을 껐다 켜도 남은 일정 복원</p>
+  </div>
+  <div class="box">
+    <h4>만드는 방법</h4>
+    <ul>
+      <li>고정지출 알림(<code>SobraFixedReminders</code>)과 같은 구조: Flutter가 7일치 문구를 정해 넘기고, Android는 알람만 들고 있다가 띄워요. 정확한 시각 알람 권한이 필요 없어서 몇 분 늦을 수 있어요.</li>
+      <li>채널은 따로 <code>sobra_daily_reminder</code> (이름 「저녁 알림」) · 고정지출, 빠른 기록과 분리</li>
+      <li>다시 짜는 때: 앱을 열 때 · 기록을 저장할 때 · 시간을 바꿀 때 · <span class="warn">언어를 바꿀 때</span>(예약 문구가 예약할 때의 언어로 굳어 있어서)</li>
+      <li>측정: 알림으로 들어오면 Firebase에 <code>reminder_opened</code>, 그 세션에서 기록하면 기존 <code>expense_recorded</code>에 <code>source=reminder</code></li>
+    </ul>
+  </div>
+  <div class="box" style="grid-column:1 / -1">
+    <h4>정해야 할 것</h4>
+    <ul>
+      <li><b>정말 안 쓴 날.</b> 「오늘은 안 썼어요」 버튼이 아직 없어서, 하루 종일 돈을 안 쓴 사람도 알림을 받아요. 알림에 세 번째 버튼으로 넣을 수도 있지만, 그러려면 그 기능이 먼저 있어야 해요. 일단 두 버튼으로 내고 나중에 더하는 쪽을 추천해요.</li>
+      <li><b>기존 사용자.</b> 업데이트 받은 사람은 첫 기록이 이미 끝났어요. 다음 기록을 저장할 때 1번 시트를 한 번 띄우는 걸 제안해요.</li>
+      <li><b>버전.</b> 알릴 만한 변경이라 새 버전 이름(1.0.14)으로 내고 업데이트 소식에 넣어요.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+</div></body></html>

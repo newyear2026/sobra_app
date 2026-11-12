@@ -1,0 +1,18 @@
+Use case: ui-mockup, precise overlay edit.
+Create a production-quality Korean mobile POPUP mockup on the attached ACTUAL Sobrita home screenshot. This is the "existing savings goal" state. Match the reference canvas aspect ratio 780 x 1688 px (390 x 844 logical). Output only app content, no phone bezel, OS status bar, browser chrome, external captions or watermark.
+Input image role: edit target and exact background. Preserve all home geometry and artwork beneath the modal. The existing large SQUARE room, kitten, teal curtains, city window, rug and floor must remain at their original size/position. Keep Sobrita logo, balance area, forecast, compact goal card beneath room and all FIVE nav slots. Do NOT redraw a different app or shrink the room to make space.
+Apply a uniform translucent navy scrim (about 32% opacity) over the whole existing home, so the original room and kitten remain recognizable.
+Place one crisp CREAM modal dialog above it, horizontally centered, approximately 342 logical px wide, 345 logical px high, about y=205 logical px. Modal should cover the middle area of the room/window, but leave the kitten near the lower room visible below it. Square navy 2px border, modest offset navy shadow, minimal corners matching Sobrita. Preserve the full screen behind the overlay, without reflow.
+Palette: cream #FFFDF7, navy #202848, muted #545E7E, teal #0E7A72 and soft teal #D8EDEA. Use the existing PixelifySans / SobraHangul-like readable pixel typography. Body 14-16 logical px, prominent heading 20-22. Generous text spacing, no tiny cramped text. This is a compact modal, not a full screen.
+Current date anchor: 2026-11-09. The popup relates to the previous completed weekly budget cycle; keep original home dates unchanged. Do not add visible dates.
+Exact popup content, from top to bottom:
+- small eyebrow "이번 주 마감", with a clear small close X at top-right
+- prominent heading "20,000원이 남았어요!" with 20,000원 in teal
+- supporting line "‘1억 모으기’에 모아볼까요?"
+- two clean aligned amount rows on the cream surface, no nested cards:
+  "현재 모은 금액"    "10,000,000원"
+  "반영 후 금액"      "10,020,000원" (emphasize teal)
+- one wide teal button, white text: "20,000원 전부 모으기"
+- a secondary action row: "금액 바꾸기"     "나중에"
+- small but legible footer in two lines: "목표에 기록되며," / "실제 돈이 이체되지는 않아요."
+No progress chart in popup, no bank logos, no confetti. The goal total is unchanged in the dimmed background because the user has not confirmed yet. Only the popup previews 10,020,000원. Render every Korean label and amount correctly.

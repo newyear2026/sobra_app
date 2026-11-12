@@ -105,7 +105,10 @@ void main() {
     useSpanishDevice(tester);
     final store = await _openBudgetTab(tester);
 
-    // The first edit icon is the cycle total; the next one is Comida.
+    // The first edit icon is the cycle total; the next one is Comida, which
+    // sits below the fixed-expense section and has to be scrolled to.
+    await tester.ensureVisible(find.byIcon(Icons.edit).at(1));
+    await frames(tester);
     await tester.tap(find.byIcon(Icons.edit).at(1));
     await frames(tester);
     expect(

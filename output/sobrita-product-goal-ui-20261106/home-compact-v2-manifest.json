@@ -1,0 +1,9 @@
+{
+  "method": "built-in image_gen",
+  "type": "revision",
+  "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-2032205b-3027-4ff8-8f1d-e4b504915fe1.png",
+  "output": "/Users/jaewook/dev_app/sobra_app/output/sobrita-product-goal-ui-20261106/02-home-goal-compact-v2.png",
+  "width": 853,
+  "height": 1844,
+  "prompt": "home-compact-v2-prompt.txt"
+}

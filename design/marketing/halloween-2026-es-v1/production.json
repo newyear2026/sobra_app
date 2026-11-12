@@ -1,0 +1,19 @@
+{
+  "mode": "built-in image_gen",
+  "useCase": "text-localization",
+  "output": "sobrita-halloween-gift-es-4x5.png",
+  "language": "es-MX",
+  "width": 1122,
+  "height": 1402,
+  "bytes": 2295198,
+  "sha256": "6d0a7ac58460a93ca643635c8584a6745f117912f368dd2bb66402db9b8ac8fb",
+  "prompt": "generation-prompt.json",
+  "source": "../halloween-2026-ko-v1/sobrita-halloween-gift-ko-4x5.png",
+  "review": {
+    "text": "All Spanish text visually verified; no Korean remaining",
+    "deadline": "2026-11-03",
+    "costumeCount": 12,
+    "artwork": "Original character identities and poster composition preserved",
+    "publication": "Local asset only"
+  }
+}

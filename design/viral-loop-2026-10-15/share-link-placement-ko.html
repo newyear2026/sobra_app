@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Sobrita share link placement</title>
+<style>
+@font-face { font-family: Pixel; src: url(../../assets/fonts/PixelifySans.ttf); }
+@font-face { font-family: Hangul; src: url(../../assets/fonts/SobraHangul.ttf); }
+@font-face { font-family: HangulB; src: url(../../assets/fonts/SobraHangul-Bold.ttf); }
+:root {
+  --paper:#F6EFE0; --paperLight:#FBF5E9; --surface:#FFFDF7; --beige:#EFE7D6; --line:#E7DDC8;
+  --ink:#202848; --inkSoft:#4E5878; --muted:#545E7E;
+  --teal:#0E7A72; --tealSoft:#D8EDEA; --tealInk:#0B6660;
+  --cash:#C0873A; --cashSoft:#F7E9CE; --cashInk:#845A1E;
+  --blue:#39558E; --blueSoft:#DCE4F2; --violet:#6E4A8C; --violetSoft:#E7DCF0; --rose:#B74769;
+  --new:#E0572F;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:#E9E2D2; font-family:Pixel, Hangul, sans-serif; color:var(--ink); width:1880px; padding:40px; }
+b, h1, h2, h3, .bold { font-family:Pixel, HangulB, Hangul; font-weight:normal; }
+h1 { font-size:34px; }
+.sub { font-size:17px; color:var(--inkSoft); margin:6px 0 28px; }
+.row { display:flex; gap:30px; align-items:flex-start; }
+.col { width:370px; }
+.badge { display:inline-flex; align-items:center; gap:8px; font-size:15px; margin-bottom:12px; }
+.badge .p { background:var(--new); color:#fff; padding:3px 9px; font-size:13px; }
+.badge .p.two { background:var(--blue); }
+.badge .p.out { background:var(--ink); }
+.phone { width:370px; height:780px; background:var(--surface); border:4px solid var(--ink); border-radius:26px; overflow:hidden; position:relative; box-shadow:6px 6px 0 rgba(32,40,72,.2); }
+.status { height:30px; font-size:12px; display:flex; justify-content:space-between; padding:9px 20px 0; color:var(--inkSoft); }
+.scr { padding:6px 20px 0; }
+.cap { font-size:15px; line-height:1.55; margin-top:16px; }
+.cap ul { margin:6px 0 0 18px; color:var(--inkSoft); }
+.cap code { font-family:Menlo, monospace; font-size:12px; background:var(--beige); padding:1px 4px; }
+
+/* settings */
+.bigtitle { font-size:26px; margin:6px 0 10px; }
+.sec { font-size:13px; color:var(--muted); margin:16px 0 8px; }
+.srow { display:flex; align-items:center; gap:12px; border:3px solid var(--ink); background:var(--surface); height:56px; padding:0 12px; margin-bottom:9px; }
+.ic { width:34px; height:34px; border:2px solid var(--ink); display:flex; align-items:center; justify-content:center; font-size:16px; flex:none; }
+.srow .lbl { flex:1; font-size:15px; }
+.srow .val { font-size:13px; color:var(--muted); }
+.chev { font-size:18px; color:var(--ink); }
+.srow.new { border-color:var(--new); box-shadow:0 0 0 4px rgba(224,87,47,.18), 3px 3px 0 var(--new); background:#FFF6F0; }
+.pin { position:absolute; background:var(--new); color:#fff; font-size:12px; padding:3px 8px; }
+.tabbar { position:absolute; left:0; right:0; bottom:0; height:62px; border-top:3px solid var(--ink); display:flex; background:var(--surface); }
+.tabbar div { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:11px; gap:3px; }
+.tabbar .plus { background:var(--teal); color:#fff; font-size:26px; margin:6px 10px 10px; border:3px solid var(--ink); flex:0.8; }
+.tabbar .on { background:var(--teal); color:#fff; }
+
+/* settlement */
+.topbar { display:flex; align-items:center; gap:10px; height:44px; font-size:17px; }
+.topbar .t { flex:1; text-align:center; margin-right:28px; }
+.hero { background:var(--tealSoft); border:3px solid var(--tealInk); box-shadow:5px 5px 0 var(--tealInk); padding:16px; margin-top:10px; }
+.amt { display:flex; justify-content:space-between; font-size:15px; margin-top:8px; }
+.amt.em { font-size:19px; color:var(--tealInk); }
+.card { display:flex; align-items:center; gap:12px; background:var(--paperLight); border:3px solid var(--ink); box-shadow:3px 3px 0 var(--ink); padding:12px; margin-top:14px; }
+.card .tx { flex:1; font-size:15px; }
+.card .tx small { display:block; font-family:Pixel, Hangul; font-size:12px; color:var(--muted); margin-top:2px; }
+.share { position:relative; display:flex; align-items:center; gap:10px; border:3px solid var(--new); background:#FFF6F0; box-shadow:0 0 0 4px rgba(224,87,47,.16), 3px 3px 0 var(--new); padding:10px 12px; margin-top:16px; }
+.share .tx { flex:1; font-size:15px; }
+.share .tx small { display:block; font-family:Pixel, Hangul; font-size:12px; color:var(--inkSoft); margin-top:3px; }
+.share .go { background:var(--teal); color:#fff; font-size:14px; padding:8px 12px; border:2px solid var(--ink); }
+.btn { display:block; text-align:center; border:3px solid var(--ink); padding:13px; font-size:16px; margin-top:16px; background:var(--teal); color:#fff; box-shadow:3px 3px 0 var(--ink); }
+.sprite { image-rendering:pixelated; background-repeat:no-repeat; background-image:url(../../assets/cats/cat-celebrate-8.png); }
+
+/* share sheet */
+.dim { position:absolute; inset:0; background:rgba(20,24,40,.5); }
+.sheet { position:absolute; left:0; right:0; bottom:0; background:#F8F6F2; border-radius:22px 22px 0 0; padding:12px 18px 22px; font-family:Roboto, Helvetica, Arial, sans-serif; }
+.grab { width:40px; height:4px; background:#C9C5BD; border-radius:2px; margin:0 auto 14px; }
+.prev { display:flex; gap:12px; background:#fff; border-radius:14px; padding:12px; margin-bottom:16px; box-shadow:0 1px 2px rgba(0,0,0,.08); }
+.prev .icon { width:48px; height:48px; border-radius:12px; background:var(--tealSoft); border:2px solid var(--ink); flex:none; overflow:hidden; position:relative; }
+.prev .t { font-size:14px; color:#222; line-height:1.4; }
+.prev .u { font-size:12px; color:#777; margin-top:4px; word-break:break-all; }
+.apps { display:grid; grid-template-columns:repeat(4,1fr); gap:14px 6px; }
+.app { text-align:center; font-size:12px; color:#333; }
+.app i { display:flex; width:52px; height:52px; border-radius:50%; margin:0 auto 6px; align-items:center; justify-content:center; color:#fff; font-style:normal; font-size:20px; font-weight:bold; }
+.behind { position:absolute; inset:0; }
+
+/* principles */
+.side { width:360px; background:var(--surface); border:3px solid var(--ink); box-shadow:5px 5px 0 rgba(32,40,72,.2); padding:20px; }
+.side h2 { font-size:20px; margin-bottom:12px; }
+.pr { display:flex; gap:10px; border:2px solid var(--line); padding:10px; margin-bottom:9px; font-size:14px; line-height:1.45; }
+.pr .k { flex:none; width:26px; height:26px; background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; }
+.pr small { display:block; color:var(--muted); font-size:13px; }
+.no { border-color:#E8C9C0; background:#FFF6F3; }
+.no .k { background:var(--rose); }
+.msgbox { background:var(--beige); border:2px dashed var(--muted); padding:10px 12px; font-size:13px; line-height:1.5; color:var(--inkSoft); margin-top:4px; }
+</style>
+</head>
+<body>
+<h1>Sobrita · 공유 링크 버튼 위치</h1>
+<div class="sub">기분 좋은 순간(결산)에 한 번, 언제든 찾을 수 있는 곳(내 정보)에 한 번. 홈 화면에는 넣지 않아요. (한글 시안 · 실제 문구는 스페인어 · 데이터는 예시)</div>
+
+<div class="row">
+
+<!-- A: settlement -->
+<div class="col">
+  <div class="badge"><span class="p">1순위</span>이번 주기 결산 화면</div>
+  <div class="phone">
+    <div class="status"><span>9:41</span><span>▮▮▮</span></div>
+    <div class="scr">
+      <div class="topbar"><span style="font-size:22px">←</span><span class="t bold">이번 주기 결산</span></div>
+      <div class="hero">
+        <div class="bold" style="font-size:18px">주기 완료! 잘했어요</div>
+        <div style="font-size:13px;color:var(--inkSoft);margin-top:4px">10월 1일 – 10월 15일</div>
+        <div class="amt" style="margin-top:14px"><span>지출</span><span>$4,760</span></div>
+        <div class="amt em bold"><span>남음</span><span>$1,240</span></div>
+        <div class="amt"><span>일평균</span><span>$317</span></div>
+        <div class="bold" style="color:var(--tealInk);margin-top:12px;font-size:16px">+120 XP</div>
+      </div>
+      <div class="card">
+        <div class="ic" style="background:var(--violet);color:#fff">✦</div>
+        <div class="tx bold">특별 꾸미기 받으러 가기<small>라탄 의자</small></div>
+        <span style="font-size:13px;color:var(--muted)">컬렉션 보기</span><span class="chev">›</span>
+      </div>
+      <div class="share">
+        <span class="pin" style="top:-14px;right:10px">NEW</span>
+        <div class="sprite" style="width:52px;height:64px;background-size:416px 64px;background-position:-260px 0;flex:none"></div>
+        <div class="tx bold">친구에게 자랑하기<small>링크로 Sobrita를 알려줘요</small></div>
+        <span class="go">공유</span>
+      </div>
+      <span class="btn">확인</span>
+    </div>
+  </div>
+  <div class="cap"><b>남은 돈이 있을 때만</b> 보여요. 초과한 주기에는 숨겨요.
+    <ul><li>팝업이 아니라 카드 한 줄이라 거슬리지 않아요</li><li>Play 리뷰 시트(좋은 결산 후 1회)와 같은 화면이라, 리뷰 시트가 뜨는 날은 이 카드를 아래로 내려요</li><li>링크: <code>utm_medium=settlement</code></li></ul></div>
+</div>
+
+<!-- B: settings -->
+<div class="col">
+  <div class="badge"><span class="p two">2순위</span>내 정보 › 정보</div>
+  <div class="phone">
+    <div class="status"><span>9:41</span><span>▮▮▮</span></div>
+    <div class="scr">
+      <div class="bigtitle bold">내 정보</div>
+      <div class="sec">데이터</div>
+      <div class="srow"><div class="ic" style="background:var(--tealSoft);color:var(--teal)">⇪</div><span class="lbl bold">데이터 백업</span><span class="val">복사</span><span class="chev">›</span></div>
+      <div class="sec">개인정보</div>
+      <div class="srow"><div class="ic" style="background:var(--blueSoft);color:var(--blue)">◎</div><span class="lbl bold">광고 개인정보 설정</span><span class="chev">›</span></div>
+      <div class="sec">정보</div>
+      <div class="srow new" style="position:relative">
+        <span class="pin" style="top:-14px;right:10px">NEW</span>
+        <div class="ic" style="background:var(--cashSoft);color:var(--cashInk)">♥</div><span class="lbl bold">친구에게 Sobrita 알려주기</span><span class="val">공유</span><span class="chev">›</span></div>
+      <div class="srow"><div class="ic" style="background:var(--cashSoft);color:var(--cashInk)">★</div><span class="lbl bold">앱 평가하기</span><span class="chev">›</span></div>
+      <div class="srow"><div class="ic" style="background:var(--violetSoft);color:var(--violet)">▦</div><span class="lbl bold">추천 앱</span><span class="chev">›</span></div>
+      <div class="srow"><div class="ic" style="background:var(--tealSoft);color:var(--teal)">✉</div><span class="lbl bold">새로운 소식</span><span class="val">1.0.13</span><span class="chev">›</span></div>
+      <div class="srow"><div class="ic" style="background:var(--beige);color:var(--ink)">i</div><span class="lbl bold">버전</span><span class="val">1.0.13</span></div>
+    </div>
+    <div class="tabbar"><div>⌂<span>홈</span></div><div>☰<span>내역</span></div><div class="plus">+</div><div>▥<span>예산</span></div><div class="on">⚙<span>내 정보</span></div></div>
+  </div>
+  <div class="cap"><b>"앱 평가하기" 바로 위</b>, 정보 섹션 맨 앞.
+    <ul><li>언제든 찾을 수 있는 고정 자리예요</li><li>누르면 바로 공유 시트가 열려요 (화면 이동 없음)</li><li>링크: <code>utm_medium=settings</code></li></ul></div>
+</div>
+
+<!-- C: share sheet -->
+<div class="col">
+  <div class="badge"><span class="p out">결과</span>누르면 열리는 Android 공유 시트</div>
+  <div class="phone">
+    <div class="behind">
+      <div class="status"><span>9:42</span><span>▮▮▮</span></div>
+      <div class="scr">
+        <div class="topbar"><span style="font-size:22px">←</span><span class="t bold">이번 주기 결산</span></div>
+        <div class="hero" style="height:230px"></div>
+      </div>
+    </div>
+    <div class="dim"></div>
+    <div class="sheet">
+      <div class="grab"></div>
+      <div class="prev">
+        <div class="icon"><div class="sprite" style="position:absolute;left:4px;top:4px;width:40px;height:49px;background-size:320px 49px;background-position:0 0"></div></div>
+        <div>
+          <div class="t">이번 주기 돈 남겼어요 🐱 고양이랑 같이 쓰는 가계부 Sobrita, 무료야!</div>
+          <div class="u">play.google.com/store/apps/details?id=com.sobra.app.sobra_app&amp;referrer=utm_source%3Dsobrita_share%26utm_medium%3Dsettlement</div>
+        </div>
+      </div>
+      <div class="apps">
+        <div class="app"><i style="background:#25D366">W</i>WhatsApp</div>
+        <div class="app"><i style="background:#D6297B">I</i>Instagram</div>
+        <div class="app"><i style="background:#1877F2">f</i>Facebook</div>
+        <div class="app"><i style="background:#2F6FDE">✉</i>메시지</div>
+        <div class="app"><i style="background:#6A6A6A">⧉</i>링크 복사</div>
+        <div class="app"><i style="background:#000">T</i>TikTok</div>
+        <div class="app"><i style="background:#0088CC">✈</i>Telegram</div>
+        <div class="app"><i style="background:#999">…</i>더보기</div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">앱이 <b>문구 + Play 링크</b>를 미리 채워서 넘겨요.
+    <ul><li><b>금액은 넣지 않아요</b> (기본값). 돈 얘기는 본인이 덧붙이게</li><li>친구가 이 링크로 설치하면 Firebase에 <code>sobrita_share</code> 출처로 잡혀요</li><li>공유 버튼을 누른 순간 <code>share</code> 이벤트 기록</li></ul></div>
+</div>
+
+<!-- principles -->
+<div class="side">
+  <h2 class="bold">위치 원칙</h2>
+  <div class="pr"><span class="k">1</span><div>기분 좋은 순간에만<small>남은 돈이 있는 결산 직후</small></div></div>
+  <div class="pr"><span class="k">2</span><div>언제든 찾을 수 있게<small>내 정보 › 정보, 고정 1줄</small></div></div>
+  <div class="pr"><span class="k">3</span><div>위치별로 따로 측정<small>utm_medium = settlement / settings</small></div></div>
+  <div class="pr"><span class="k">4</span><div>버튼 한 번 = 공유 시트<small>중간 화면·보상·서버 없음</small></div></div>
+  <div class="pr no"><span class="k">✕</span><div>홈 화면<small>매일 보는 화면이라 금방 거슬려요</small></div></div>
+  <div class="pr no"><span class="k">✕</span><div>자동 팝업<small>리뷰 시트와 겹치고 피로해요</small></div></div>
+  <div class="pr no"><span class="k">✕</span><div>초과한 결산<small>자랑할 기분이 아닐 때</small></div></div>
+  <h2 class="bold" style="margin-top:18px">공유 문구 (es-MX)</h2>
+  <div class="msgbox"><b>결산</b><br>Este ciclo me sobró lana 🐱 Llevo mis gastos con un gatito en Sobrita, es gratis:<br><br><b>내 정보</b><br>Mira esta app para anotar tus gastos con un gatito 🐱 Es gratis:</div>
+  <div style="font-size:13px;color:var(--muted);margin-top:12px;line-height:1.5">필요한 것: <code style="font-family:Menlo;font-size:12px">share_plus</code> 패키지 1개, 공유 이벤트 1개, 문구 7개 언어.</div>
+</div>
+
+</div>
+</body>
+</html>

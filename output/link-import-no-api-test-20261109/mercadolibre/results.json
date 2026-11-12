@@ -1,0 +1,54 @@
+{
+  "method": "Direct public HTTPS GET; transparent test User-Agent; no API, credentials, cookies, proxies or JavaScript execution.",
+  "samples": [
+    {
+      "sample": "adidas_sneaker",
+      "url": "https://articulo.mercadolibre.com.mx/MLM-3990889244-tenis-adidas-correr-hombre-negro-jq8645-_JM?searchVariation=190036940257",
+      "tested_at_utc": "2026-11-09T20:04:23.236247+00:00",
+      "curl_exit": 0,
+      "http_status": 200,
+      "final_url": "https://www.mercadolibre.com.mx/gz/account-verification?go=https%3A%2F%2Farticulo.mercadolibre.com.mx%2FMLM-3990889244-tenis-adidas-correr-hombre-negro-jq8645-_JM%3FsearchVariation%3D190036940257&tid=129ecfc2-a276-4435-b470-78f8623dcdac",
+      "content_type": "text/html; charset=utf-8",
+      "network_error": null,
+      "body_bytes": 23442,
+      "body_sha256": "a74cbaaee4c7fb9613e767e1c311cf452548517c4036940c5d27b87cc20217b6",
+      "page_title": "Mercado Libre",
+      "metadata": [],
+      "product_jsonld": [],
+      "visible_excerpt": "Mercado Libre ¡Hola! Para continuar, ingresa a tu cuenta Soy nuevo Ya tengo cuenta trace-id: 129ecfc2-a276-4435-b470-78f8623dcdac Usamos cookies para mejorar tu experiencia en Mercado Libre. Consultar más en nuestro Centro de Privacidad. Aceptar cookies Configurar cookies ¡Listo! Guardamos tus preferencias. Cerrar Algo salió mal. Por favor, vuelve a intentarlo. Cerrar",
+      "image_elements": [
+        {
+          "src": "https://http2.mlstatic.com/frontend-assets/ui-navigation/5.21.22/mercadolibre/logo__small@2x.png",
+          "alt": "Mercado Libre"
+        }
+      ],
+      "product_image_extracted": false,
+      "product_price_extracted": false
+    },
+    {
+      "sample": "iphone_catalog",
+      "url": "https://www.mercadolibre.com.mx/apple-iphone-15-128-gb-azul-distribuidor-autorizado/p/MLM1027172667",
+      "tested_at_utc": "2026-11-09T20:04:23.236587+00:00",
+      "curl_exit": 0,
+      "http_status": 200,
+      "final_url": "https://www.mercadolibre.com.mx/gz/account-verification?go=https%3A%2F%2Fwww.mercadolibre.com.mx%2Fapple-iphone-15-128-gb-azul-distribuidor-autorizado%2Fp%2FMLM1027172667&tid=7b6bfdbf-60c1-4d71-9b9b-4502c80f57c2",
+      "content_type": "text/html; charset=utf-8",
+      "network_error": null,
+      "body_bytes": 23367,
+      "body_sha256": "1f28289503c22892dd5f7f824faf4e478244de33bc3779a8b1249c6f9b8d826f",
+      "page_title": "Mercado Libre",
+      "metadata": [],
+      "product_jsonld": [],
+      "visible_excerpt": "Mercado Libre ¡Hola! Para continuar, ingresa a tu cuenta Soy nuevo Ya tengo cuenta trace-id: 7b6bfdbf-60c1-4d71-9b9b-4502c80f57c2 Usamos cookies para mejorar tu experiencia en Mercado Libre. Consultar más en nuestro Centro de Privacidad. Aceptar cookies Configurar cookies ¡Listo! Guardamos tus preferencias. Cerrar Algo salió mal. Por favor, vuelve a intentarlo. Cerrar",
+      "image_elements": [
+        {
+          "src": "https://http2.mlstatic.com/frontend-assets/ui-navigation/5.21.22/mercadolibre/logo__small@2x.png",
+          "alt": "Mercado Libre"
+        }
+      ],
+      "product_image_extracted": false,
+      "product_price_extracted": false
+    }
+  ],
+  "limits": "Two samples, one network location, one run. Search snippets are not extraction results. Error-page images do not count as product images."
+}

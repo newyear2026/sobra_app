@@ -1,0 +1,21 @@
+{
+  "sha256": {
+    "AndroidManifest.xml": "e026ba67053cd1e95f0bda3b761e2e724e6bcc08817a035ac0a1d8ebc621f5fb",
+    "assets/extract.js": "41a6d7f2c012edfe5be167c30d8dfa7828893bd3f16073844937071a910c7675",
+    "src/com/sobrita/shopprobe/ProbeActivity.java": "c6b99bd1f776397b0ad389f88701617461c6b301018d0c1937d151d479072521",
+    "collect_result.py": "681ff0e4c35a313acc06d6215b6f2bbe11232fe41a42b878f085342172b8aaf0",
+    "build_report.py": "1726f35fb475cf24dd577dd5c899172059b0b08703cb23f157aa7a24ffc31c38",
+    "sobrita-shop-probe-debug.apk": "98ad75a691f5a4b7b15750de63d8dade2b009c167217722f8cef1d5dc09aebcc",
+    "sobrita-shop-probe-diagnostic.apk": "bbff1168aa719973c8798d784302dcd34661e86c36d3ded79514923360595fca",
+    "summary.json": "9aeeeaec05533e7fd29fc4e8a72f99fa54c6e236a4f1ef11b1418c6e1947aeec",
+    "README.md": "fdc8b224e1700cda641d5748808bb6e98be02b263d8fdecab411a68e74c17f19",
+    "report.html": "0cced42cb9b672c198b12775318f8aa0accf9f5d47dbd8d5b608691109078c36",
+    "results/amazon1_v4_capture_retry2.json": "f914791950b3577a12db21295eca414578f23aa7375f5b7214b454903638046c",
+    "results/amazon1_v4_capture_retry2.png": "2f045d85f8f79406e12c0f2841c76c5532334d05b9ad406b8c1c0aaf9f337af0",
+    "results/amazon2_v4.json": "3a984c5830746ba83369ae695bb5508fa6d7f7088b98082ec5f45f28d1e034eb",
+    "results/amazon2_v4.png": "11e84747c5bbe4ba456640ec82092ff4deb0e61898d40e755c6edd4178977774",
+    "results/walmart_diagnostic.json": "e384ba1875b3ffcc1a62cc5b7d7156eaa383a2931decf138e4352bf0c3d7d4f7",
+    "results/walmart_diagnostic.png": "ecf84740384e815b6b8cc07f47e3dde9674a81033b40eaccab9336bda35f473d"
+  },
+  "validation": "Report builder validated complete PNG chunks, CRC and IEND; evidence and local links checked."
+}

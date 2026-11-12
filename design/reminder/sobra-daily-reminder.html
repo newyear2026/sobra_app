@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<title>Sobra · 매일 리마인더 시안</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+@font-face{
+  font-family:PixelifyLocal;
+  src:url("../../assets/fonts/PixelifySans.ttf") format("truetype");
+  font-weight:100 900;
+}
+:root{
+  --paper:#F6EFE0; --paperLight:#FBF5E9; --surface:#FFFDF7; --beige:#EFE7D6; --line:#E7DDC8;
+  --ink:#202848; --inkSoft:#4E5878; --muted:#5F6885;
+  --teal:#0E7A72; --tealSoft:#D8EDEA; --tealInk:#0B6660;
+  --danger:#D4553F; --dangerSoft:#FBE1DA; --dangerInk:#A63A25;
+  --cash:#C0873A; --cashSoft:#F7E9CE; --cashInk:#845A1E;
+  --blue:#39558E; --green:#4F7B52; --rose:#B74769; --violet:#6E4A8C;
+  --bg:#E4DFD2; --panel:#F1EBDE; --rule:#CFC6B2; --text:#22252E; --dim:#5B6070;
+  --shade:#E6E3EC; --shadeInk:#44464F; --shadeDim:#77787F;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:22px 24px 30px;
+  background:var(--bg); color:var(--text);
+  font-family:"IBM Plex Sans","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+}
+.wrap{max-width:1180px; margin:0 auto; display:flex; flex-direction:column; gap:24px}
+.mast{display:flex; flex-direction:column; gap:6px; border-bottom:1px solid var(--rule); padding-bottom:14px}
+.eyebrow{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--teal);
+}
+h1{margin:0; font-size:24px; font-weight:600; letter-spacing:-.02em}
+.lede{margin:0; max-width:74ch; color:var(--dim); font-size:13.5px; line-height:1.55}
+.lede b{color:var(--text); font-weight:600}
+
+.sec{display:flex; flex-direction:column; gap:14px}
+.sech{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+.sech .no{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px; letter-spacing:.1em;
+  color:var(--teal); border:1px solid var(--teal); padding:2px 6px;
+}
+.sech h2{margin:0; font-size:17px; font-weight:600; letter-spacing:-.01em}
+.sech .hint{font-size:12.5px; color:var(--dim)}
+
+.row{display:flex; flex-wrap:wrap; gap:18px; align-items:flex-start}
+.plate{display:flex; flex-direction:column; gap:10px; width:330px}
+.cap .state{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--teal);
+}
+.cap .state.now{color:var(--dangerInk)}
+.cap .state.cash{color:var(--cashInk)}
+.cap .name{font-size:15px; font-weight:600; margin-top:2px}
+.cap .note{font-size:12.5px; color:var(--dim); line-height:1.55; margin-top:3px}
+.cap .note b{color:var(--text); font-weight:600}
+.es{
+  margin-top:7px; font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:11px; color:var(--inkSoft); line-height:1.55; border-left:2px solid var(--rule); padding-left:8px;
+}
+.es span{color:var(--dim)}
+
+/* ── Android notification shade ─────────────────────────── */
+.shade{background:var(--shade); border-radius:20px; padding:12px 12px 14px}
+.shade .app{
+  display:flex; align-items:center; gap:9px; padding:2px 4px 10px;
+  font-size:12.5px; color:var(--shadeInk);
+}
+.shade .app .avatar{
+  width:21px; height:21px; border-radius:50%; background:var(--teal); flex:0 0 auto;
+  display:flex; align-items:center; justify-content:center;
+}
+.shade .app .avatar i{display:block; width:11px; height:7px; background:var(--paperLight)}
+.shade .app .when{color:var(--shadeDim)}
+.shade .app .chev{
+  margin-left:auto; width:24px; height:24px; border-radius:50%; background:#D5D2DC;
+  display:flex; align-items:center; justify-content:center; color:var(--shadeInk); font-size:11px;
+}
+
+/* ── Sobra pixel notification card ──────────────────────── */
+.notif{
+  position:relative; background:var(--paperLight); border:3px solid var(--ink);
+  font-family:PixelifyLocal,"Pixelify Sans","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  color:var(--ink); -webkit-font-smoothing:none;
+}
+.notif .nub{position:absolute; width:6px; height:6px; background:var(--teal)}
+.notif .nub.tl{top:2px; left:2px} .notif .nub.tr{top:2px; right:2px}
+.notif .nub.bl{bottom:2px; left:2px} .notif .nub.br{bottom:2px; right:2px}
+.notif .top{display:flex; gap:11px; align-items:flex-start; padding:11px 13px 11px}
+.notif .ic{
+  width:46px; height:46px; flex:0 0 auto; border:2.5px solid var(--tealInk);
+  image-rendering:pixelated; background:var(--tealSoft);
+}
+.notif .ttl{font-size:15.5px; font-weight:700; line-height:1.3}
+.notif .sub{font-size:12.5px; font-weight:400; color:var(--muted); line-height:1.45; margin-top:4px}
+.notif .sub b{color:var(--tealInk); font-weight:700}
+.notif .acts{display:flex; border-top:1.5px solid #D9D0BA}
+.notif .act{
+  flex:1; text-align:center; padding:11px 0; font-size:14.5px; font-weight:700; letter-spacing:.01em;
+}
+.notif .act + .act{border-left:1.5px solid #D9D0BA}
+.notif .act .p{color:var(--teal); margin-right:6px; font-weight:700}
+.notif .badge{
+  position:absolute; top:-9px; right:12px; background:var(--teal); color:var(--paperLight);
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10px; letter-spacing:.06em;
+  padding:2px 6px; border:2px solid var(--ink);
+}
+
+/* ── Lock screen ────────────────────────────────────────── */
+.lock{
+  position:relative; width:318px; height:600px; overflow:hidden;
+  border:4px solid var(--ink); border-radius:20px; background:#0B1526;
+  box-shadow:6px 6px 0 rgba(32,40,72,.14);
+  font-family:PixelifyLocal,"Pixelify Sans","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+}
+.lock .planet{
+  position:absolute; width:430px; height:430px; right:-155px; bottom:-185px; border-radius:50%;
+  background:radial-gradient(circle at 32% 30%, #37837A 0%, #1F5B58 42%, #123B40 72%, #0E2B33 100%);
+}
+.lock .planet.small{
+  width:74px; height:74px; right:34px; bottom:352px;
+  background:radial-gradient(circle at 34% 32%, #2E6F69 0%, #15464A 60%, #0E2B33 100%); opacity:.85;
+}
+.lock .dither{
+  position:absolute; inset:0;
+  background-image:repeating-linear-gradient(0deg, rgba(4,10,20,.30) 0 2px, transparent 2px 4px),
+                   repeating-linear-gradient(90deg, rgba(4,10,20,.22) 0 2px, transparent 2px 4px);
+}
+.lock .sky{position:absolute; inset:0}
+.lock .st{position:absolute; width:3px; height:3px; background:#CFE7E2}
+.lock .st.g{background:#E8C170}
+.lock .bar{
+  position:absolute; top:0; left:0; right:0; display:flex; justify-content:flex-end; gap:6px;
+  padding:9px 13px; color:#EFEAE0; font-size:10.5px; font-weight:700;
+}
+.lock .clock{
+  position:absolute; top:60px; left:0; right:0; text-align:center; color:#F4F0E6;
+}
+.lock .clock .hm{font-size:58px; font-weight:700; line-height:1; letter-spacing:.01em}
+.lock .clock .day{font-size:13px; margin-top:10px; color:#D9D5CB}
+.lock .slot{position:absolute; top:206px; left:12px; right:12px}
+.lock .foot{
+  position:absolute; bottom:16px; left:0; right:0; text-align:center;
+  color:#CFCBC2; font-size:11.5px;
+}
+
+/* ── Panels ─────────────────────────────────────────────── */
+.panel{background:var(--surface); border:1px solid var(--rule); padding:14px 16px 16px}
+.panel h3{margin:0 0 3px; font-size:14.5px; font-weight:600}
+.panel p{margin:0 0 12px; color:var(--dim); font-size:12.5px; line-height:1.55}
+.panel p b{color:var(--text); font-weight:600}
+.panel p:last-child{margin-bottom:0}
+
+.week{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
+.week .day{border:2.5px solid var(--ink); background:var(--paperLight); padding:8px 6px; text-align:center}
+.week .day .d{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px; color:var(--muted);
+}
+.week .day .mark{
+  margin:7px auto 6px; width:22px; height:22px; border:2.5px solid currentColor;
+  display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;
+}
+.week .day .res{font-size:10.5px; font-weight:700; line-height:1.3}
+.week .day.skip{color:var(--tealInk); background:var(--tealSoft); border-color:var(--tealInk)}
+.week .day.fire{color:var(--cashInk); background:var(--cashSoft); border-color:var(--cashInk)}
+.week .day.todo{color:var(--muted); background:var(--beige); border-style:dashed}
+.legend{display:flex; gap:16px; flex-wrap:wrap; margin-top:11px; font-size:12px; color:var(--dim)}
+.legend i{display:inline-block; width:11px; height:11px; border:2.5px solid currentColor; margin-right:6px; vertical-align:-1px}
+.legend .s{color:var(--tealInk)} .legend .f{color:var(--cashInk)}
+
+/* ── In-app settings rows ───────────────────────────────── */
+.appcard{
+  width:330px; background:var(--paper); border:4px solid var(--ink); border-radius:16px; padding:14px 12px;
+  font-family:PixelifyLocal,"Pixelify Sans","Apple SD Gothic Neo","Noto Sans KR",sans-serif; color:var(--ink);
+  box-shadow:6px 6px 0 rgba(32,40,72,.14);
+}
+.appcard .grp{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); margin:0 2px 8px;
+}
+.srow{
+  display:flex; align-items:center; gap:11px; background:var(--surface);
+  border:2.5px solid var(--ink); padding:11px 12px; margin-bottom:10px;
+}
+.srow:last-child{margin-bottom:0}
+.srow .tile{
+  width:34px; height:34px; flex:0 0 auto; border:2.5px solid var(--ink); background:var(--tealSoft);
+  display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--tealInk);
+}
+.srow .tile.cash{background:var(--cashSoft); color:var(--cashInk)}
+.srow .txt{flex:1; min-width:0}
+.srow .t{font-size:14px; font-weight:700; line-height:1.25}
+.srow .s{font-size:11.5px; font-weight:400; color:var(--muted); margin-top:3px; line-height:1.35}
+.srow .val{font-size:13px; font-weight:700; color:var(--tealInk); white-space:nowrap}
+.srow .chev{font-size:13px; font-weight:700; color:var(--ink)}
+.sw{width:44px; height:24px; border:2.5px solid var(--ink); background:var(--surface); display:flex; padding:2px}
+.sw i{display:block; width:17px; height:100%; background:var(--beige); border:2px solid var(--ink)}
+.sw.on{background:var(--teal); justify-content:flex-end}
+.sw.on i{background:var(--surface)}
+
+.stack{display:flex; flex-direction:column; gap:14px; flex:1; min-width:420px}
+.wide{flex:1; min-width:430px}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="eyebrow">Sobra · Daily reminder · 시안 v1</div>
+    <h1>하루 한 번, 안 적은 날 저녁에만</h1>
+    <p class="lede">
+      매일 <b>21:00</b> 리마인더 시안입니다. 오늘 이미 기록했으면 <b>보내지 않습니다</b> —
+      발송 시점에 상태를 보는 게 아니라, 기록이 저장될 때 오늘 예약을 취소하는 방식이라 서버 없이 됩니다.
+      기존 퀵엔트리 알림과 <b>채널을 분리</b>하고, 스와이프로 지울 수 있는 일반 알림입니다.
+      톤 비교(①③④⑤)는 한국어, 실제 렌더(②)는 기준 로케일인 스페인어입니다.
+    </p>
+  </header>
+
+  <!-- ① 문구 톤 ------------------------------------------------ -->
+  <section class="sec">
+    <div class="sech">
+      <span class="no">01</span>
+      <h2>문구 톤 3안</h2>
+      <span class="hint">셋 다 같은 카드 구조 · 제목 1줄 + 보조 1줄 + 액션 2개</span>
+    </div>
+    <div class="row">
+
+      <div class="plate">
+        <div class="cap">
+          <div class="state">A · 미션 · XP</div>
+          <div class="name">이미 있는 게임 루프에 얹기</div>
+          <div class="note">하루 3개 미션이 <b>이미 구현돼 있으니</b> 알림이 새 개념을 안 만듭니다. 대신 XP에 관심 없는 사용자에겐 안 걸립니다.</div>
+          <div class="es">ES <span>Hoy te faltan 3 misiones</span><br>· <span>+20 XP · te toma un minuto</span></div>
+        </div>
+        <div class="shade">
+          <div class="app"><span class="avatar"><i></i></span><span>Sobra</span><span class="when">· 지금</span><span class="chev">⌃</span></div>
+          <div class="notif">
+            <span class="nub tl"></span><span class="nub tr"></span><span class="nub bl"></span><span class="nub br"></span>
+            <div class="top">
+              <img class="ic" src="../icon/sobra-app-icon-512.png" alt="">
+              <div>
+                <div class="ttl">오늘 미션 3개가 남아 있어요</div>
+                <div class="sub"><b>+20 XP</b> · 1분이면 끝나요</div>
+              </div>
+            </div>
+            <div class="acts">
+              <div class="act"><span class="p">+</span>수입</div>
+              <div class="act"><span class="p">+</span>지출</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="plate">
+        <div class="cap">
+          <div class="state">B · 미치 대사</div>
+          <div class="name">잔소리를 캐릭터가 대신하기</div>
+          <div class="note">가계부 알림이 꺼지는 이유가 대개 <b>훈계 톤</b>입니다. 미치가 말하면 같은 요청도 부담이 덜합니다. 대신 용건이 한 박자 늦습니다.</div>
+          <div class="es">ES <span>Michi tiene el cuaderno abierto</span><br>· <span>Cuéntale un gasto de hoy</span></div>
+        </div>
+        <div class="shade">
+          <div class="app"><span class="avatar"><i></i></span><span>Sobra</span><span class="when">· 지금</span><span class="chev">⌃</span></div>
+          <div class="notif">
+            <span class="nub tl"></span><span class="nub tr"></span><span class="nub bl"></span><span class="nub br"></span>
+            <div class="top">
+              <img class="ic" src="../icon/sobra-app-icon-512.png" alt="">
+              <div>
+                <div class="ttl">미치가 장부를 펴고 기다려요</div>
+                <div class="sub">오늘 쓴 거 하나만 알려 주세요</div>
+              </div>
+            </div>
+            <div class="acts">
+              <div class="act"><span class="p">+</span>수입</div>
+              <div class="act"><span class="p">+</span>지출</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="plate">
+        <div class="cap">
+          <div class="state">C · 회상 질문</div>
+          <div class="name">기억을 먼저 꺼내게 하기</div>
+          <div class="note">알림을 보는 순간 <b>머릿속에서 지출이 떠오릅니다</b>. 그 상태로 액션을 누르니 전환이 제일 셉니다. 매일 같은 질문이라 빨리 닳는 게 약점.</div>
+          <div class="es">ES <span>¿Recuerdas qué gastaste hoy?</span><br>· <span>Anótalo ahora, aún cuenta como hoy</span></div>
+        </div>
+        <div class="shade">
+          <div class="app"><span class="avatar"><i></i></span><span>Sobra</span><span class="when">· 지금</span><span class="chev">⌃</span></div>
+          <div class="notif">
+            <span class="nub tl"></span><span class="nub tr"></span><span class="nub bl"></span><span class="nub br"></span>
+            <div class="top">
+              <img class="ic" src="../icon/sobra-app-icon-512.png" alt="">
+              <div>
+                <div class="ttl">오늘 뭐 썼는지 기억나요?</div>
+                <div class="sub">지금 적으면 아직 <b>당일 기록</b>이에요</div>
+              </div>
+            </div>
+            <div class="acts">
+              <div class="act"><span class="p">+</span>수입</div>
+              <div class="act"><span class="p">+</span>지출</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ② 잠금화면 + 규칙 ---------------------------------------- -->
+  <section class="sec">
+    <div class="sech">
+      <span class="no">02</span>
+      <h2>21:00 잠금화면, 그리고 보낼지 말지</h2>
+      <span class="hint">C안 적용 · 기준 로케일</span>
+    </div>
+    <div class="row">
+
+      <div class="plate" style="width:auto">
+        <div class="cap">
+          <div class="state">실제 렌더 · es-MX</div>
+          <div class="name">21:00, 잠긴 화면</div>
+          <div class="note">퀵엔트리와 같은 카드지만 <b>상시가 아니라 한 번</b> 뜨고, 스와이프로 사라집니다.</div>
+        </div>
+        <div class="lock">
+          <div class="planet"></div>
+          <div class="planet small"></div>
+          <div class="sky">
+            <span class="st" style="top:38px;left:40px"></span>
+            <span class="st g" style="top:74px;left:212px"></span>
+            <span class="st" style="top:112px;left:76px"></span>
+            <span class="st" style="top:150px;left:268px"></span>
+            <span class="st g" style="top:186px;left:28px"></span>
+            <span class="st" style="top:196px;left:160px"></span>
+            <span class="st" style="top:330px;left:44px"></span>
+            <span class="st g" style="top:362px;left:120px"></span>
+            <span class="st" style="top:392px;left:250px"></span>
+            <span class="st" style="top:430px;left:70px"></span>
+            <span class="st g" style="top:466px;left:196px"></span>
+            <span class="st" style="top:500px;left:34px"></span>
+            <span class="st" style="top:536px;left:140px"></span>
+            <span class="st g" style="top:560px;left:280px"></span>
+          </div>
+          <div class="dither"></div>
+          <div class="bar"><span>▮▮▮</span><span>93</span></div>
+          <div class="clock">
+            <div class="hm">21:00</div>
+            <div class="day">lunes, 14 de septiembre</div>
+          </div>
+          <div class="slot">
+            <div class="notif">
+              <span class="nub tl"></span><span class="nub tr"></span><span class="nub bl"></span><span class="nub br"></span>
+              <div class="top">
+                <img class="ic" src="../icon/sobra-app-icon-512.png" alt="">
+                <div>
+                  <div class="ttl">¿Recuerdas qué gastaste hoy?</div>
+                  <div class="sub">Anótalo ahora, aún cuenta como hoy</div>
+                </div>
+              </div>
+              <div class="acts">
+                <div class="act"><span class="p">+</span>Ingreso</div>
+                <div class="act"><span class="p">+</span>Gasto</div>
+              </div>
+            </div>
+          </div>
+          <div class="foot">Desliza para desbloquear</div>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="panel">
+          <h3>보내는 날은 생각보다 적습니다</h3>
+          <p>지난 한 주를 이 규칙으로 돌려보면 <b>실제 발송은 2번</b>입니다. 꾸준히 적는 사용자는 알림을 거의 안 받고, 놓친 날에만 받습니다. 알림을 끄게 만드는 건 빈도가 아니라 <b>이미 한 일을 또 시키는 것</b>이라서요.</p>
+          <div class="week">
+            <div class="day skip"><div class="d">9/08 화</div><div class="mark">✓</div><div class="res">스킵</div></div>
+            <div class="day fire"><div class="d">9/09 수</div><div class="mark">—</div><div class="res">발송</div></div>
+            <div class="day skip"><div class="d">9/10 목</div><div class="mark">✓</div><div class="res">스킵</div></div>
+            <div class="day fire"><div class="d">9/11 금</div><div class="mark">—</div><div class="res">발송</div></div>
+            <div class="day skip"><div class="d">9/12 토</div><div class="mark">✓</div><div class="res">스킵</div></div>
+            <div class="day skip"><div class="d">9/13 일</div><div class="mark">✓</div><div class="res">스킵</div></div>
+            <div class="day todo"><div class="d">9/14 월</div><div class="mark">?</div><div class="res">21:00 판단</div></div>
+          </div>
+          <div class="legend">
+            <span class="s"><i></i>오늘 기록 있음 → 예약 취소</span>
+            <span class="f"><i></i>21:00까지 비어 있음 → 발송</span>
+          </div>
+          <p style="margin-top:12px">예약은 <b>7일치를 미리</b> 잡아 두고, 앱이 켜지거나 기록이 저장될 때마다 다시 계산합니다. 일주일 안 열어도 안전망이 남고, iOS의 64개 제한도 안 건드립니다.</p>
+        </div>
+
+        <div class="row" style="gap:14px">
+          <div class="appcard">
+            <div class="grp">화면</div>
+            <div class="srow">
+              <span class="tile">🔔</span>
+              <span class="txt">
+                <span class="t">빠른 기록</span>
+                <span class="s">잠금화면에 수입·지출을 띄웁니다.</span>
+              </span>
+              <span class="sw on"><i></i></span>
+            </div>
+            <div class="srow">
+              <span class="tile cash">🌙</span>
+              <span class="txt">
+                <span class="t">저녁 알림</span>
+                <span class="s">안 적은 날에만 한 번 알려 줍니다.</span>
+              </span>
+              <span class="sw on"><i></i></span>
+            </div>
+            <div class="srow">
+              <span class="tile cash">⏰</span>
+              <span class="txt"><span class="t">알림 시간</span></span>
+              <span class="val">21:00</span>
+              <span class="chev">›</span>
+            </div>
+          </div>
+          <div class="cap" style="flex:1; min-width:210px">
+            <div class="state cash">설정 · 화면</div>
+            <div class="name">기존 스위치 바로 아래</div>
+            <div class="note">
+              <b>빠른 기록</b> 옆에 붙습니다. 권한은 지금과 똑같이 <b>스위치를 켤 때</b> 물어봅니다 — 첫 실행에 묻지 않습니다.
+              시간은 고를 수 있게 하되 기본값 21:00. 지출이 끝난 뒤라 회상이 쉽고, 출근 알림처럼 밀려나지 않습니다.
+            </div>
+            <div class="es">ES <span>Recordatorio nocturno</span> / <span>Hora del recordatorio</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ③ 퀵엔트리와 겹침 ---------------------------------------- -->
+  <section class="sec">
+    <div class="sech">
+      <span class="no">03</span>
+      <h2>퀵엔트리를 켜 둔 사람은 어떻게 되나</h2>
+      <span class="hint">이게 이번 시안에서 제일 걸리는 지점</span>
+    </div>
+    <div class="row">
+
+      <div class="plate">
+        <div class="cap">
+          <div class="state now">문제</div>
+          <div class="name">같은 말이 두 장</div>
+          <div class="note">퀵엔트리는 <b>이미 상시로 떠 있는</b> 카드입니다. 그 위에 리마인더를 한 장 더 쌓으면, 같은 자리에서 같은 걸 두 번 시킵니다. 알림을 아예 끄게 만드는 전형적인 모양이에요.</div>
+        </div>
+        <div class="shade">
+          <div class="app"><span class="avatar"><i></i></span><span>Sobra</span><span class="when">· 지금</span><span class="chev">⌃</span></div>
+          <div class="notif" style="margin-bottom:10px">
+            <span class="nub tl"></span><span class="nub tr"></span><span class="nub bl"></span><span class="nub br"></span>
+            <div class="top">
+              <img class="ic" src="../icon/sobra-app-icon-512.png" alt="">
+              <div><div class="ttl">오늘 뭐 썼는지 기억나요?</div>
+              <div class="sub">지금 적으면 아직 <b>당일 기록</b>이에요</div></div>
+            </div>
+            <div class="acts"><div class="act"><span class="p">+</span>수입</div><div class="act"><span class="p">+</span>지출</div></div>
+          </div>
+          <div class="app" style="padding-top:2px"><span class="avatar"><i></i></span><span>Sobra</span><span class="when">· 상시</span><span class="chev">⌃</span></div>
+          <div class="notif">
+            <span class="nub tl"></span><span class="nub tr"></span><span class="nub bl"></span><span class="nub br"></span>
+            <div class="top">
+              <img class="ic" src="../icon/sobra-app-icon-512.png" alt="">
+              <div><div class="ttl">무엇을 기록할까요?</div></div>
+            </div>
+            <div class="acts"><div class="act"><span class="p">+</span>수입</div><div class="act"><span class="p">+</span>지출</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="plate">
+        <div class="cap">
+          <div class="state">제안</div>
+          <div class="name">새 카드 대신, 있던 카드를 깨우기</div>
+          <div class="note">퀵엔트리가 켜져 있으면 <b>같은 알림 ID로 다시 notify</b>해서 문구만 저녁 버전으로 바꾸고 소리를 한 번 냅니다. 카드는 계속 한 장이고, 21:00에 위로 올라옵니다.</div>
+          <div class="es">ES <span>Aún no hay nada de hoy</span></div>
+        </div>
+        <div class="shade">
+          <div class="app"><span class="avatar"><i></i></span><span>Sobra</span><span class="when">· 상시 · 방금 갱신</span><span class="chev">⌃</span></div>
+          <div class="notif">
+            <span class="badge">21:00</span>
+            <span class="nub tl"></span><span class="nub tr"></span><span class="nub bl"></span><span class="nub br"></span>
+            <div class="top">
+              <img class="ic" src="../icon/sobra-app-icon-512.png" alt="">
+              <div>
+                <div class="ttl">오늘은 아직 비어 있어요</div>
+                <div class="sub">하나만 적으면 오늘이 채워져요</div>
+              </div>
+            </div>
+            <div class="acts"><div class="act"><span class="p">+</span>수입</div><div class="act"><span class="p">+</span>지출</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel wide">
+        <h3>그래서 경우가 둘로 갈립니다</h3>
+        <p><b>퀵엔트리 ON</b> — 새 알림을 만들지 않습니다. 있던 상시 카드의 문구를 저녁 버전으로 갈아 끼우고 소리 한 번. 다음 날 아침이나 기록이 들어오면 원래 문구로 되돌립니다. 안드로이드 전용이고, 이미 있는 <code>SobraQuickEntryNotification</code>에 얹으면 됩니다.</p>
+        <p><b>퀵엔트리 OFF, 그리고 iOS 전부</b> — ①의 카드를 일반 알림으로 하루 한 번 보냅니다. iOS엔 상시 알림 대안이 없어서 리마인더가 사실상 <b>유일한 복귀 경로</b>입니다. 그래서 이 기능은 iOS에 더 필요합니다.</p>
+        <p style="color:var(--dangerInk)"><b>미리 정해야 할 것 하나</b> — 예약된 알림은 <b>예약 당시 문구가 박제</b>됩니다. 언어를 바꾸면 스페인어 알림이 며칠 더 오게 돼요. 언어 변경 시 전체 취소 후 재예약이 필요합니다.</p>
+        <p>측정은 못 합니다. 계정도 서버도 없으니 열림률을 볼 수 없어요. 알림으로 들어온 횟수만 로컬에 세어 두면 나중에 문구를 바꿀 근거는 남습니다.</p>
+      </div>
+
+    </div>
+  </section>
+</div>
+</html>

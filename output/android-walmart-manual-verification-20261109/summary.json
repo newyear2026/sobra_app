@@ -1,0 +1,49 @@
+{
+  "result": "image_and_displayed_price_verified",
+  "scenario": "product_opened_without_manual_security_verification",
+  "manualSecurityVerificationPerformed": false,
+  "userStatement": "아니요, 보안 확인은 하지 않았어요",
+  "postManualVerificationPathTested": false,
+  "localObservedAt": "2026-11-09 18:40 America/Mexico_City",
+  "environment": {
+    "android": "16",
+    "webView": "156.0.8078.47",
+    "device": "emulator-5554 Pixel_3"
+  },
+  "url": "https://www.walmart.com.mx/ip/audifonos-inalambricos-apple-airpods-4-blancos/00019594968846",
+  "productTitle": "Audífonos inalámbricos Apple AirPods 4 Blancos",
+  "price": {
+    "agreement": {
+      "sameProductStructuredOffers": 1,
+      "uniqueMainDisplayedPrice": true
+    },
+    "currency": "MXN",
+    "displayed": "$1,499.00",
+    "excluded": "Reference, strikethrough, installments and unrelated variant prices are excluded from the exact main price selector.",
+    "source": "[data-testid=\"price-wrap\"] [data-seo-id=\"hero-price\"][itemprop=\"price\"]",
+    "value": 1499
+  },
+  "image": {
+    "src": "https://i5-mx.walmartimages.com/asr/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF",
+    "naturalWidth": 612,
+    "naturalHeight": 612,
+    "loaded": true,
+    "visible": true
+  },
+  "availability": {
+    "outOfStock": true,
+    "source": "same-product JSON-LD Offer.availability",
+    "values": [
+      "https://schema.org/OutOfStock"
+    ]
+  },
+  "matchingObservations": 2,
+  "officialApiUsed": false,
+  "productionAppChanged": false,
+  "previousTest": "Android16/WebView134 on another emulator reached a security verification page. Cause of the different outcomes has not been isolated.",
+  "limits": [
+    "One product and this environment only.",
+    "Manual security-confirmation path was not exercised in this run.",
+    "Real devices, other links, option/region changes, shipping/coupons and checkout totals unverified."
+  ]
+}

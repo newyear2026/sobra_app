@@ -1,0 +1,19 @@
+{
+  "missions": {
+    "insertAt": 383.0,
+    "gapBefore": 14,
+    "nav": 0
+  },
+  "collection": {
+    "insertAt": 154.0,
+    "nav": 0
+  },
+  "budget": {
+    "insertAt": 1720.0,
+    "nav": 72.0
+  },
+  "settlement": {
+    "insertAt": 527.0,
+    "nav": 0
+  }
+}

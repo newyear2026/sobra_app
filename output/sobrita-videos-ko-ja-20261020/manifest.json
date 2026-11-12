@@ -1,0 +1,37 @@
+{
+  "created": "2026-10-20",
+  "source_file": "design/marketing/video-v1/sobrita-promo-es-1080x1920.mp4",
+  "source_sha256": "8aee8ef406363cd060105b8aa69f6717fd0453ce42d3c8ce2b3ee461a275219d",
+  "original_aac_audio_sha256": "79c656081c8184820abf44581fbe451a79fec28308e9b1c9967796ec5be55b5a",
+  "render_source": "tool/render_promo_video_localized_test.dart",
+  "notes": [
+    "20-second source structure and music preserved.",
+    "Real current app widgets rendered in Korean/Japanese, including KRW/JPY demo data.",
+    "No voiceover in the source or localized versions.",
+    "Paid-character and demo-data notices translated."
+  ],
+  "videos": [
+    {
+      "language": "ko",
+      "file": "sobrita-promo-ko-1080x1920.mp4",
+      "bytes": 2555395,
+      "sha256": "7a6f8125b3a2e6fc0d18bacfd2a1f1385c17bcb107048c8afd2f3dd934addb4f",
+      "original_audio_preserved": true,
+      "duration_seconds": 20.0,
+      "resolution": "1080x1920",
+      "fps": 30,
+      "frames": 600
+    },
+    {
+      "language": "ja",
+      "file": "sobrita-promo-ja-1080x1920.mp4",
+      "bytes": 2652669,
+      "sha256": "e19b9ff1f8451fc8efc91782e70684bcdf1339b357863180e612abf4641f5848",
+      "original_audio_preserved": true,
+      "duration_seconds": 20.0,
+      "resolution": "1080x1920",
+      "fps": 30,
+      "frames": 600
+    }
+  ]
+}

@@ -48,13 +48,18 @@
                     android:gravity="bottom"
                     android:orientation="horizontal">
 
+                    <!-- Autosize needs a fixed height; see the 2×1 widget. -->
                     <TextView
                         android:id="@+id/today_amount"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="32dp"
                         android:layout_weight="1"
-                        android:ellipsize="end"
+                        android:autoSizeMaxTextSize="26sp"
+                        android:autoSizeMinTextSize="12sp"
+                        android:autoSizeStepGranularity="1sp"
+                        android:autoSizeTextType="uniform"
                         android:fontFamily="@font/pixelify_sans"
+                        android:gravity="center_vertical"
                         android:includeFontPadding="false"
                         android:maxLines="1"
                         android:text="−$2,000"
@@ -66,6 +71,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="3dp"
+                        android:id="@+id/currency_code"
                         android:layout_marginBottom="3dp"
                         android:fontFamily="@font/pixelify_sans"
                         android:includeFontPadding="false"
@@ -88,11 +94,11 @@
                     android:autoStart="true"
                     android:flipInterval="600">
 
-                    <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_high" />
-                    <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_mid" />
-                    <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_drop" />
-                    <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_done" />
-                    <ImageView style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_done" />
+                    <ImageView android:id="@+id/character_frame_1" style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_high" />
+                    <ImageView android:id="@+id/character_frame_2" style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_mid" />
+                    <ImageView android:id="@+id/character_frame_3" style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_drop" />
+                    <ImageView android:id="@+id/character_frame_4" style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_done" />
+                    <ImageView android:id="@+id/character_frame_5" style="@style/SobraWidgetCatFrame" android:src="@drawable/cat_saving_original_done" />
                 </ViewFlipper>
 
                 <ImageView
@@ -113,9 +119,11 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/cycle_progress_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:ellipsize="end"
                 android:fontFamily="@font/pixelify_sans"
                 android:includeFontPadding="false"
                 android:maxLines="1"
@@ -132,7 +140,7 @@
                 android:fontFamily="@font/pixelify_sans"
                 android:includeFontPadding="false"
                 android:maxLines="1"
-                android:text="8 días"
+                android:text="@string/widget_preview_days"
                 android:textColor="#FF0E7A72"
                 android:textSize="8sp"
                 android:textStyle="bold" />
@@ -170,7 +178,7 @@
             android:gravity="center"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:text="+  Registrar gasto"
+            android:text="@string/widget_preview_register"
             android:textColor="#FFFFFFFF"
             android:textSize="12sp"
             android:textStyle="bold" />

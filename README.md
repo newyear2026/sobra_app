@@ -1,6 +1,6 @@
-# Sobra
+# Sobrita
 
-Sobra is an offline-first, pixel-art budget companion for Mexico. The v1 app
+Sobrita is an offline-first, pixel-art budget companion for Mexico. The v1 app
 uses MXN, a quincena budget cycle, manual expense entry, category limits, cash
 reconciliation, and five original eight-frame cat animations.
 
@@ -21,3 +21,66 @@ flutter build web
 
 All personal budget data is stored locally with `shared_preferences`. The
 settings screen can copy a JSON backup to the clipboard.
+
+## Firebase (Android)
+
+The Android app uses the shared Firebase project `cs-project-nuszgcho`
+(`central-logging-monitoring`) alongside RandomFocus and LOOPET. Analytics and
+Crashlytics are enabled in release builds; debug/profile builds default to no
+collection. Web and iOS previews skip Firebase initialization.
+
+Analytics records app/session information, the welcome/onboarding/recovery
+screens, the five main tabs, the collection and the screen it was opened from,
+completed onboarding (`tutorial_complete`), and
+successful new entries from the register form (`expense_recorded`,
+`income_recorded`), rewarded-ad SDK stages and failure reasons
+(`rewarded_ad_lifecycle`), rewarded-ad results (`rewarded_ad_result`) and the unlocks
+they complete (`item_unlocked`), opened checkouts (`purchase_started`), fixed
+expenses (`fixed_expense_added`, `fixed_payment_recorded`), closed cycles
+(`cycle_settled`), and opens from a widget, quick entry or reminder
+(`shortcut_opened`). Parameters are enum names only. Custom events carry no financial amounts, notes, receipt
+contents or user identifiers. Dart error reports contain the exception type and
+stack, not the exception message. Flutter framework errors are non-fatal;
+unhandled asynchronous errors are fatal. Native crashes are captured by the SDK.
+
+For an emulator verification build, opt in explicitly:
+
+```sh
+adb shell setprop debug.firebase.analytics.app com.sobra.app.sobra_app
+flutter run --dart-define=TELEMETRY_ENABLED=true
+# After checking Analytics DebugView:
+adb shell setprop debug.firebase.analytics.app .none.
+```
+
+Use the Firebase Crashlytics test-exception procedure to verify delivery on a
+test device. Restart the app after a crash and allow several minutes for the
+report to appear. Do not ship a forced-crash button. If Android releases later
+use `--split-debug-info`/`--obfuscate`, upload those Flutter symbols to this
+project's Android app as described in the Firebase guide.
+
+Console: https://console.firebase.google.com/project/cs-project-nuszgcho/overview
+
+Select **Sobrita Android** in Crashlytics. Analytics shares one property across
+the apps, so filter reports by Sobrita's app/data stream when reviewing its
+users, events and retention.
+
+## Meta App Events (Android)
+
+Release builds include Meta's `facebook-core` SDK so Meta app-install
+campaigns can see the installs and opens they caused. The SDK starts itself
+from `AndroidManifest.xml`; no Dart code calls it. Only release builds turn on
+its automatic events and advertising-ID collection (`metaAppEventsEnabled` in
+`android/app/build.gradle.kts`), so debug and profile runs send nothing.
+
+The app ID and client token are in `android/app/src/main/res/values/strings.xml`
+(Meta app `2109763983239758`, App settings > Advanced). To verify delivery,
+install a release build on a test device, open it, and watch Events Manager >
+Sobrita > Test events for the app activation event.
+
+Before publishing the next release, publish the updated privacy policy and
+update Play Console's Data safety answers for Analytics, Crashlytics and Meta
+App Events (device or other IDs and app interactions, shared for advertising
+and analytics). The
+policy sources in `docs/` remain drafts with the existing identity placeholders.
+Firebase's SDK disclosure reference:
+https://firebase.google.com/docs/android/play-data-disclosure

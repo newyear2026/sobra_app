@@ -1,0 +1,7 @@
+Starting: Intent { cmp=com.sobra.app.sobra_app/.MainActivity }
+Status: ok
+LaunchState: WARM
+Activity: com.sobra.app.sobra_app/.MainActivity
+TotalTime: 2776
+WaitTime: 2785
+Complete

@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-26",
+  "reportedImages": "two rejected intermediate candidates, not the bundled final assets",
+  "correctedFinalArtUnchangedThisReview": true,
+  "manualReview": {
+    "rabbit/activity": "all 12 final poses: two attached arms/hands, one broom, two legs; empty free paw",
+    "rabbit/processing": "all 12 final poses: two hands only, one holds calculator and the other taps/thinks; no broom"
+  },
+  "bundleAndDebugApkHashesVerified": true,
+  "productionRendererPreview": {
+    "path": "final-rabbit-walk-and-calculator.gif",
+    "frames": 48,
+    "durationMs": 4800
+  },
+  "renderTest": "passed",
+  "assets": [
+    {
+      "id": "rabbit",
+      "role": "activity",
+      "selectedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-18ef48f0-04a6-4c4f-9bb3-11789f8c9ef0.png",
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/activity-12.png",
+      "asset": "assets/costumes/autumn_2026/motion_v2/rabbit/activity-12.webp",
+      "pngSha256": "27616a23ccbf167d0dbce71715592178aa9c70e8453b3556247f420a64d9400b",
+      "bundledSha256": "9f31daa50278cab0bc6b50d8be255108fcf41da1d731aa64bc8605288c57c4c0"
+    },
+    {
+      "id": "rabbit",
+      "role": "processing",
+      "selectedSource": "/Users/jaewook/.codex/generated_images/01a16af2-835d-7ec2-891d-4c649b8d7f4a/exec-98d5c3c2-ac9e-4b9a-95f7-cd29b3ecada0.png",
+      "pngSource": "design/seasonal/2026-halloween-dia-de-muertos/motion-v2/raw/rabbit/processing-12.png",
+      "asset": "assets/costumes/autumn_2026/motion_v2/rabbit/processing-12.webp",
+      "pngSha256": "be99c9eae6c8f1316aaad761e5383f1825a422909d5307d129adf72f88433067",
+      "bundledSha256": "c5b2060af80fa545174eb41a97a842cd20bad25bbd4dff6c9f7eca7c92a09882"
+    }
+  ]
+}

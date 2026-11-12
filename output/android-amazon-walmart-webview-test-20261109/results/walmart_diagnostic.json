@@ -1,0 +1,67 @@
+{
+  "runId": "walmart_diagnostic",
+  "requestedUrl": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+  "startedAtUtc": "2026-11-09T21:49:35.464Z",
+  "androidSdk": 36,
+  "androidRelease": "16",
+  "deviceModel": "sdk_gphone64_arm64",
+  "userAgent": "Mozilla\/5.0 (Linux; Android 16; sdk_gphone64_arm64 Build\/BE4B.251210.005; wv) AppleWebKit\/537.36 (KHTML, like Gecko) Version\/4.0 Chrome\/134.0.6998.135 Mobile Safari\/537.36",
+  "targetSdk": 36,
+  "extractorVersion": "0.1-amazon-walmart-diagnostic-only",
+  "webViewPackage": "com.google.android.webview",
+  "webViewVersion": "134.0.6998.135",
+  "javascriptEnabled": true,
+  "domStorageEnabled": true,
+  "uaOverride": false,
+  "officialApiUsed": false,
+  "manualLoginUsed": false,
+  "cookiesImported": false,
+  "cookiePolicy": "Default WebView behavior; site may set ordinary cookies. No cookie values inspected or exported.",
+  "observations": [
+    {
+      "accountVerification": false,
+      "bodyTextExcerpt": "Verifica tu identidad\n\nMantén presionado el botón para confirmar que no eres un robot.\n\n\n",
+      "challenge": true,
+      "extractionConfirmed": false,
+      "headings": [
+        "Verifica tu identidad"
+      ],
+      "interpretation": "Candidate evidence only. No primary product price or image is automatically asserted; review rendered price\/image and screenshot.",
+      "invalidJsonLd": 0,
+      "largeImageCandidates": [],
+      "metadata": {},
+      "pageTitle": "Verifica tu identidad",
+      "pageUrl": "https:\/\/www.walmart.com.mx\/blocked",
+      "priceCandidates": [],
+      "readyState": "complete",
+      "structuredProducts": [],
+      "observedAtUtc": "2026-11-09T21:49:41.833Z",
+      "trigger": "page_finished"
+    }
+  ],
+  "mainFrameErrors": [],
+  "finishedAtUtc": "2026-11-09T21:49:41.833Z",
+  "completionReason": "account_or_challenge_screen",
+  "diagnosticComplete": true,
+  "extractionConfirmed": false,
+  "finalObservation": {
+    "accountVerification": false,
+    "bodyTextExcerpt": "Verifica tu identidad\n\nMantén presionado el botón para confirmar que no eres un robot.\n\n\n",
+    "challenge": true,
+    "extractionConfirmed": false,
+    "headings": [
+      "Verifica tu identidad"
+    ],
+    "interpretation": "Candidate evidence only. No primary product price or image is automatically asserted; review rendered price\/image and screenshot.",
+    "invalidJsonLd": 0,
+    "largeImageCandidates": [],
+    "metadata": {},
+    "pageTitle": "Verifica tu identidad",
+    "pageUrl": "https:\/\/www.walmart.com.mx\/blocked",
+    "priceCandidates": [],
+    "readyState": "complete",
+    "structuredProducts": [],
+    "observedAtUtc": "2026-11-09T21:49:41.833Z",
+    "trigger": "page_finished"
+  }
+}

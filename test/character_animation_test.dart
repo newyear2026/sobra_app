@@ -6,7 +6,7 @@ import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
-import 'package:sobra_app/widgets/character_room.dart';
+import 'package:sobra_app/widgets/room_scene.dart';
 import 'support/localizations.dart';
 
 /// The character is the one thing on Inicio that has to keep moving, and
@@ -46,6 +46,9 @@ void main() {
       schedule: const PaySchedule.semiMonthly(),
     );
     await store.completeOnboarding();
+    // Both starters, as on an install from before they were split: Inicio
+    // then has no waiting row, which is not what this test is about.
+    await store.grantCatalogEntries({'michi', 'poodle'});
 
     tester.view.physicalSize = const Size(430, 1400);
     tester.view.devicePixelRatio = 1;
@@ -53,10 +56,8 @@ void main() {
 
     await tester.pumpWidget(SobraApp(store: store));
     await tester.pump();
-    await tester.drag(find.byType(CustomScrollView), const Offset(0, -400));
-    await tester.pump();
 
-    expect(find.byType(CharacterRoom), findsOneWidget);
+    expect(find.byType(RoomScene), findsOneWidget);
     final sprite = tester.widget<CharacterSprite>(find.byType(CharacterSprite));
 
     final state = tester.state<State>(find.byType(CharacterSprite));

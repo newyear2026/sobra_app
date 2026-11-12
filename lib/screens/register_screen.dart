@@ -5,18 +5,31 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../l10n/labels.dart';
 import '../models/expense_entry.dart';
+import '../services/app_telemetry.dart';
+import '../services/sobra_quick_entry.dart';
 import '../models/income_entry.dart';
 import '../models/pay_schedule.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cat_sprite.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/receipt_field.dart';
 
-enum _RegisterMode { expense, income }
+enum RegisterMode { expense, income }
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key, required this.onSaved});
+  const RegisterScreen({
+    super.key,
+    required this.onSaved,
+    this.initialMode = RegisterMode.expense,
+    this.initialIncomeAllocation = IncomeAllocation.cycle,
+    this.focusAmountOnOpen = false,
+  });
+
   final VoidCallback onSaved;
+  final RegisterMode initialMode;
+  final IncomeAllocation initialIncomeAllocation;
+  final bool focusAmountOnOpen;
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -26,18 +39,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
   final _noteController = TextEditingController();
-  _RegisterMode _mode = _RegisterMode.expense;
+  final _amountFocusNode = FocusNode();
+  late RegisterMode _mode;
   ExpenseCategory _category = ExpenseCategory.food;
   PaymentMethod _paymentMethod = PaymentMethod.cash;
   IncomeKind _incomeKind = IncomeKind.salary;
   IncomeAllocation _incomeAllocation = IncomeAllocation.cycle;
   DateTime? _date;
+  String? _receiptFileName;
   bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _mode = widget.initialMode;
+    _incomeAllocation = widget.initialIncomeAllocation;
+    if (widget.focusAmountOnOpen) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _amountFocusNode.requestFocus();
+      });
+    }
+  }
 
   @override
   void dispose() {
     _amountController.dispose();
     _noteController.dispose();
+    _amountFocusNode.dispose();
     super.dispose();
   }
 
@@ -47,7 +75,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       initialDate: _date ?? store.today,
       firstDate: DateTime(store.today.year - 1),
       lastDate: store.today,
-      locale: const Locale('es', 'MX'),
     );
     if (selected != null && mounted) setState(() => _date = selected);
   }
@@ -63,7 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     int amountCentavos,
   ) async {
     final pending = store.latestPendingCashExpense;
-    if (_mode != _RegisterMode.expense ||
+    if (_mode != RegisterMode.expense ||
         _paymentMethod != PaymentMethod.cash ||
         pending == null ||
         pending.amountCentavos != amountCentavos) {
@@ -99,9 +126,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _save() async {
     if (_saving || !_formKey.currentState!.validate()) return;
-    final amount = parseAmount(_amountController.text);
-    if (amount == null) return;
     final store = SobraScope.of(context);
+    final amount = parseAmount(store.currency, _amountController.text);
+    if (amount == null) return;
     final messenger = ScaffoldMessenger.of(context);
     final l10n = AppLocalizations.of(context);
     final reducedMotion = reducedMotionOf(context);
@@ -120,13 +147,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
             note: _noteController.text,
           );
         }
-        if (_mode == _RegisterMode.expense) {
+        if (_mode == RegisterMode.expense) {
           return store.addExpense(
             amountCentavos: amount,
             category: _category,
             note: _noteController.text,
             occurredAt: _occurredAt(store),
             paymentMethod: _paymentMethod,
+            receiptFileName: _receiptFileName,
           );
         }
         return store.addIncome(
@@ -143,7 +171,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
     // Nothing was written, and guardStoreWrite has already said so. Celebrating
     // and clearing the form here would throw the entry away twice over.
-    if (!saved || !mounted) return;
+    if (!saved) return;
+    if (!usePending) {
+      unawaited(
+        AppTelemetry.instance.event(
+          _mode == RegisterMode.expense
+              ? TelemetryEvent.expenseRecorded
+              : TelemetryEvent.incomeRecorded,
+        ),
+      );
+    }
+    if (!mounted) return;
     // The dialog closes itself on a timer. Awaiting a dialog that something
     // else has to pop deadlocks: the await only finishes once the route is
     // gone, so the line that pops it never runs.
@@ -151,12 +189,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) => _SavedDialog(
-        motion: _mode == _RegisterMode.expense
+        motion: _mode == RegisterMode.expense
             ? CatMotion.walk
             : CatMotion.celebrate,
         message: usePending
             ? l10n.registerDifferenceReconciled
-            : _mode == _RegisterMode.expense
+            : _mode == RegisterMode.expense
             ? l10n.registerExpenseSaved
             : l10n.registerIncomeSaved,
         animate: !reducedMotion,
@@ -171,8 +209,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() {
       _category = ExpenseCategory.food;
       _date = null;
+      // The photo belongs to the expense that just saved, not to the next one.
+      _receiptFileName = null;
     });
     widget.onSaved();
+    unawaited(SobraQuickEntry.offerAfterRecord());
   }
 
   @override
@@ -191,15 +232,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               PixelTopBar(title: l10n.registerTitle),
               const SizedBox(height: 14),
-              PixelSegmented<_RegisterMode>(
+              PixelSegmented<RegisterMode>(
                 segments: [
                   PixelSegment(
-                    value: _RegisterMode.expense,
+                    value: RegisterMode.expense,
                     label: l10n.registerExpense,
                     icon: Icons.remove_circle_outline,
                   ),
                   PixelSegment(
-                    value: _RegisterMode.income,
+                    value: RegisterMode.income,
                     label: l10n.registerIncome,
                     icon: Icons.add_circle_outline,
                   ),
@@ -212,9 +253,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 8),
               TextFormField(
                 controller: _amountController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
+                focusNode: _amountFocusNode,
+                keyboardType: amountKeyboardType(store.currency),
+                inputFormatters: amountInputFormattersFor(store.currency),
                 style: pixelText(size: 34, bold: true),
                 decoration: InputDecoration(
                   hintText: '${store.currency.symbol}0',
@@ -227,12 +268,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   suffixText: store.currency.code,
                 ),
-                validator: (value) => parseAmount(value ?? '') == null
+                validator: (value) =>
+                    parseAmount(store.currency, value ?? '') == null
                     ? l10n.registerAmountAboveZero
                     : null,
               ),
               const SizedBox(height: 22),
-              if (_mode == _RegisterMode.expense)
+              if (_mode == RegisterMode.expense)
                 _ExpenseFields(
                   category: _category,
                   paymentMethod: _paymentMethod,
@@ -258,11 +300,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
               TextFormField(
                 controller: _noteController,
                 decoration: InputDecoration(
-                  hintText: _mode == _RegisterMode.expense
+                  hintText: _mode == RegisterMode.expense
                       ? l10n.registerNoteExpenseExample
                       : l10n.registerNoteIncomeExample,
                 ),
               ),
+              // Expenses only. An income has no ticket to photograph, and a
+              // camera button on that tab would just be noise.
+              if (_mode == RegisterMode.expense) ...[
+                const SizedBox(height: 18),
+                ReceiptField(
+                  fileName: _receiptFileName,
+                  onChanged: (value) =>
+                      setState(() => _receiptFileName = value),
+                ),
+              ],
               const SizedBox(height: 18),
               Text(
                 l10n.registerDate,
@@ -580,11 +632,15 @@ class _SavedDialogState extends State<_SavedDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CatSprite(
-              motion: widget.motion,
-              width: 142,
-              loop: false,
-              animate: widget.animate,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: CatSprite(
+                motion: widget.motion,
+                width: 142,
+                loop: false,
+                animate: widget.animate,
+                reserveMotionSpace: true,
+              ),
             ),
             const SizedBox(height: 12),
             Text(widget.message, style: pixelText(size: 18, bold: true)),

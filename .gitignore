@@ -31,6 +31,8 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+/android/build/
+/android/.kotlin/
 /coverage/
 
 # Symbolication related
@@ -46,3 +48,34 @@ app.*.map.json
 
 # Golden-test failure output. Regenerated on every failing run.
 test/failures/
+
+# Python bytecode from the design scripts.
+__pycache__/
+
+# Store listing output. The scripts beside it redraw all of this, and the
+# reference renders run to 130MB — too much to carry in every clone.
+design/store/reference-style/
+design/store/screenshots/
+design/store/shots/
+design/store/fonts/
+design/store/feature-graphic-benchmark.png
+design/store/icon-vs-mascot.png
+
+# Firebase client config: the repo is public and the project is shared with
+# RandomFocus and LOOPET. Regenerate with `flutterfire configure`.
+/android/app/google-services.json
+/lib/firebase_options.dart
+
+# Large marketing renders and the renderer that writes them.
+/design/marketing/choose-buddy-en/
+/design/marketing/four-styles-en/
+/design/marketing/social-v2/
+/design/marketing/social-v2-en/
+/tool/render_promo_video_en_test.dart
+
+# Other git worktrees that Claude Code sessions check out (release
+# branches and the like). They are separate checkouts with their own builds.
+/.claude/worktrees/
+
+# APKs built to check a change on a device. Rebuild them from the source.
+*.apk

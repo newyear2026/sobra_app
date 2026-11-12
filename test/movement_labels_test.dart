@@ -237,7 +237,7 @@ void main() {
 
     // The home widget is the one surface that cannot look up its own words.
     // This is the seam that carries them to it, end to end.
-    testWidgets('the running app hands the sync its labeller', (tester) async {
+    testWidgets('the running app hands the sync its words', (tester) async {
       useSpanishDevice(tester);
       final store = await seeded();
       await store.addExpense(
@@ -273,6 +273,8 @@ void main() {
       await tester.pump();
 
       expect(updates.last['movement1Title'], 'Comida');
+      expect(updates.last['todayLeftText'], 'Hoy te queda');
+      expect(updates.last['registerExpenseText'], 'Registrar gasto');
     });
   });
 }

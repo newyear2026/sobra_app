@@ -1,0 +1,65 @@
+[
+  {
+    "site": "liverpool",
+    "url": "https://www.liverpool.com.mx/tienda/pdp/tenis-de-gamuza-grand-court-para-hombre/1175694731",
+    "tested_at_utc": "2026-11-09T21:30:26.621671+00:00",
+    "method": "anonymous HTML GET",
+    "api_used": false,
+    "login_used": false,
+    "cookies_sent": false,
+    "javascript_executed": false,
+    "android_test": false,
+    "headers": {
+      "User-Agent": "Sobrita-LinkPreview-Test/1.0",
+      "Accept": "text/html",
+      "Accept-Language": "es-MX,es;q=0.9"
+    },
+    "status": 403,
+    "final_url": "https://www.liverpool.com.mx/tienda/pdp/tenis-de-gamuza-grand-court-para-hombre/1175694731",
+    "content_type": "text/html",
+    "bytes_read": 475,
+    "sha256": "d4f893a0c36aa5d7f5a19fb0ccc70cfd15027fbaa0a7cc4350bde075aebdd431",
+    "extraction": {
+      "success": false,
+      "reason": "HTTP 403 Access Denied; did not attempt bypass"
+    }
+  },
+  {
+    "site": "walmart",
+    "url": "https://www.walmart.com.mx/ip/audifonos-inalambricos-apple-airpods-4-blancos/00019594968846",
+    "tested_at_utc": "2026-11-09T21:30:26.624215+00:00",
+    "method": "anonymous HTML GET",
+    "api_used": false,
+    "login_used": false,
+    "cookies_sent": false,
+    "javascript_executed": false,
+    "android_test": false,
+    "headers": {
+      "User-Agent": "Sobrita-LinkPreview-Test/1.0",
+      "Accept": "text/html",
+      "Accept-Language": "es-MX,es;q=0.9"
+    },
+    "status": 200,
+    "final_url": "https://www.walmart.com.mx/ip/audifonos-inalambricos-apple-airpods-4-blancos/00019594968846",
+    "content_type": "text/html; charset=utf-8",
+    "bytes_read": 364073,
+    "sha256": "7bf7efa36f8bd91822472e997e618219c045b6dd58d4c06b49e0173b886e217b",
+    "extraction": {
+      "success": true,
+      "name": "Audífonos inalámbricos Apple AirPods 4 Blancos",
+      "image_url": "https://i5-mx.walmartimages.com/asr/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+      "price": 1499,
+      "currency": "MXN",
+      "source": "HTML-embedded JSON-LD Product and __NEXT_DATA__ product.priceInfo.currentPrice",
+      "image_check": {
+        "url": "https://i5-mx.walmartimages.com/asr/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+        "status": 206,
+        "content_type": "image/jpeg",
+        "bytes_read": 128,
+        "magic_hex": "ffd8ffe000104a464946000101000001",
+        "method": "anonymous Range bytes=0-127"
+      },
+      "excluded_reference_price": 2999
+    }
+  }
+]

@@ -5,9 +5,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/expense_entry.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/models/room_design.dart';
+import 'package:sobra_app/models/room_time_of_day.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
-import 'package:sobra_app/widgets/character_room.dart';
+import 'package:sobra_app/widgets/room_scene.dart';
 
 import 'support/localizations.dart';
 
@@ -38,6 +40,9 @@ void main() {
       schedule: const PaySchedule.semiMonthly(),
     );
     await store.completeOnboarding();
+    // Both starters, as on an install from before they were split: Inicio
+    // then has no waiting row, which is not what this test is about.
+    await store.grantCatalogEntries({'michi', 'poodle'});
     await store.addExpense(
       amountCentavos: 800000,
       category: ExpenseCategory.transport,
@@ -51,11 +56,10 @@ void main() {
     await tester.pump();
     await tester.runAsync(
       () => Future.wait([
+        // Inicio lights the room for the hour: at 10:00 that is day.
         precacheImage(
-          CharacterRoom.backgroundProvider(
-            tester.element(find.byType(CharacterRoom)),
-          ),
-          tester.element(find.byType(CharacterRoom)),
+          AssetImage(RoomThemes.casaClara.sceneAssetFor(RoomTimeOfDay.day)),
+          tester.element(find.byType(RoomScene)),
         ),
         precacheImage(
           AssetImage(CatMotion.concern.asset),

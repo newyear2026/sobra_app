@@ -1,0 +1,55 @@
+[
+  {
+    "content-desc": "앱을 종료할까요?",
+    "bounds": "[120,538][450,614]"
+  },
+  {
+    "content-desc": "다음에 또 만나요.",
+    "bounds": "[120,635][323,688]"
+  },
+  {
+    "resource-id": "com.sobra.app.sobra_app:id/native_ad_view",
+    "bounds": "[120,740][960,1659]"
+  },
+  {
+    "text": "Test Ad : ",
+    "resource-id": "com.sobra.app.sobra_app:id/primary",
+    "bounds": "[159,1296][325,1375]"
+  },
+  {
+    "text": "Ad",
+    "resource-id": "com.sobra.app.sobra_app:id/ad_notification_view",
+    "bounds": "[159,1375][225,1428]"
+  },
+  {
+    "text": "youtu.be",
+    "resource-id": "com.sobra.app.sobra_app:id/secondary",
+    "bounds": "[251,1375][369,1454]"
+  },
+  {
+    "text": "Guitar drum vocal progressive",
+    "resource-id": "com.sobra.app.sobra_app:id/body",
+    "bounds": "[133,1470][947,1539]"
+  },
+  {
+    "text": "Learn more",
+    "resource-id": "com.sobra.app.sobra_app:id/cta",
+    "bounds": "[146,1554][934,1646]"
+  },
+  {
+    "content-desc": "Ad Choices Icon",
+    "bounds": "[921,740][960,779]"
+  },
+  {
+    "content-desc": "취소",
+    "bounds": "[120,1790][524,1927]"
+  },
+  {
+    "content-desc": "종료",
+    "bounds": "[556,1790][960,1927]"
+  },
+  {
+    "content-desc": "닫기",
+    "bounds": "[0,0][1080,2400]"
+  }
+]

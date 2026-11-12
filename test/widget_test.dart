@@ -8,26 +8,71 @@ import 'package:sobra_app/state/sobra_store.dart';
 import 'support/localizations.dart';
 
 void main() {
-  testWidgets('shows onboarding for a new user', (tester) async {
-    useSpanishDevice(tester);
+  testWidgets('the welcome continues into onboarding', (tester) async {
+    tester.platformDispatcher
+      ..localeTestValue = const Locale('ko')
+      ..localesTestValue = const <Locale>[Locale('ko')];
+    addTearDown(tester.platformDispatcher.clearLocaleTestValue);
+    addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
     SharedPreferences.setMockInitialValues({});
     final store = await SobraStore.load();
+    await store.setReducedMotion(true);
+
+    // A fresh store has not passed the welcome, which is what puts it first.
+    // The app takes no flag for it: the stored answer is the only thing that
+    // decides.
+    await tester.pumpWidget(SobraApp(store: store));
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text('오늘 얼마나 쓸 수 있는지 알려드려요.'), findsOneWidget);
+    expect(find.text('계정이 필요 없어요. 기록은 내 휴대폰에 남아요.'), findsOneWidget);
+
+    await tester.tap(find.text('시작하기'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(find.text('Sobrita'), findsOneWidget);
+    expect(find.text('나가 본다'), findsOneWidget);
+  });
+
+  testWidgets('shows onboarding for a new user', (tester) async {
+    useSpanishDevice(tester);
+    // A phone rather than the 800x600 default: the prologue carries art and
+    // prose, and the 600 the harness assumes is shorter than any handset.
+    tester.view.physicalSize = const Size(400, 860);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load();
+    // The sprites loop, so nothing would ever settle otherwise.
+    await store.setReducedMotion(true);
+    // Past the welcome, which opens the app. The test above covers that
+    // screen; this one is about what follows it.
+    await store.answerLoginOffer();
 
     await tester.pumpWidget(SobraApp(store: store));
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Tu dinero, sin presión.'), findsOneWidget);
-    expect(find.text('Empezar'), findsOneWidget);
+    expect(find.text('La lluvia no daba señales de parar.'), findsOneWidget);
+    expect(find.text('Ir a ver'), findsOneWidget);
 
-    await tester.tap(find.text('Empezar'));
+    await tester.tap(find.text('Ir a ver'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 350));
 
-    expect(find.text('1 de 4'), findsOneWidget);
-    expect(find.text('¿Cómo recibes tus ingresos?'), findsOneWidget);
+    // The prologue, not the first question: the questions start once the
+    // companion has been chosen.
+    expect(find.text('…habló.'), findsOneWidget);
+    expect(find.text('¿Acabas de hablar?'), findsOneWidget);
   });
 
-  testWidgets('shows the five v1 destinations', (tester) async {
+  testWidgets('settings offers the collection destination', (tester) async {
     useSpanishDevice(tester);
     SharedPreferences.setMockInitialValues({});
     final store = await SobraStore.load();
@@ -37,17 +82,133 @@ void main() {
       cashCentavos: 124000,
     );
     await store.completeOnboarding();
+    // The launch gift dialog would otherwise cover the screen under test.
+    await store.takeLaunchGiftNotice();
 
     await tester.pumpWidget(SobraApp(store: store));
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.text('Sobra'), findsOneWidget);
+    expect(find.text('Sobrita'), findsOneWidget);
     expect(find.text('Inicio'), findsOneWidget);
     expect(find.text('Movim.'), findsOneWidget);
     expect(find.text('Presup.'), findsOneWidget);
-    expect(find.text('Mi Sobra'), findsOneWidget);
+    expect(find.text('Mi Sobrita'), findsOneWidget);
     // The centre tile carries the add glyph instead of a text label.
     expect(find.byIcon(Icons.add), findsOneWidget);
+
+    await tester.tap(find.text('Mi Sobrita'));
+    // The room cat now animates above the fold, so the home tree never fully
+    // settles. A bounded pump is enough for the tab switch.
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text('Colección'), findsOneWidget);
+    expect(find.text('Ver'), findsOneWidget);
+  });
+
+  testWidgets('opens the interactive collection preview', (tester) async {
+    useSpanishDevice(tester);
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load();
+    await store.configureOnboarding(
+      budgetCentavos: 600000,
+      schedule: const PaySchedule.semiMonthly(),
+      cashCentavos: 124000,
+    );
+    await store.completeOnboarding();
+    // The launch gift dialog would otherwise cover the screen under test.
+    await store.takeLaunchGiftNotice();
+
+    await tester.pumpWidget(SobraApp(store: store));
+    await tester.tap(find.text('Mi Sobrita'));
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.ensureVisible(find.text('Colección'));
+    await tester.pump();
+    await tester.tap(find.text('Colección'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.text('Colección'), findsOneWidget);
+    expect(find.text('PERSONAJES'), findsOneWidget);
+    // Only the starter picked in onboarding ships owned; Miru waits at the
+    // door, and the other pets need rewarded ads.
+    expect(find.text('OBTENIDO'), findsOneWidget);
+    // Seasonal gift notices can move the next row below the viewport.
+    await tester.scrollUntilVisible(
+      find.text('Cookie'),
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Yoshi'), findsOneWidget);
+    expect(find.text('Cookie'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Quokka'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Quokka'), findsOneWidget);
+
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, 1500));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('OBJETOS'));
+    await tester.pump();
+    expect(find.text('Estantería estrecha'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('NIVEL 2'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('NIVEL 2'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('NIVEL 4'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('NIVEL 4'), findsOneWidget);
+
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, 1500));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Estantería estrecha'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Estantería estrecha'));
+    await tester.pump();
+    expect(find.text('CÓMO OBTENERLO'), findsOneWidget);
+    expect(find.text('Ya forma parte de tu colección.'), findsOneWidget);
+    // Placing it is the decorate screen's work, so the dialog offers nothing.
+    expect(find.text('EQUIPAR'), findsNothing);
+  });
+
+  testWidgets('collection fits a compact phone width', (tester) async {
+    useSpanishDevice(tester);
+    await tester.binding.setSurfaceSize(const Size(360, 720));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load();
+    await store.configureOnboarding(
+      budgetCentavos: 600000,
+      schedule: const PaySchedule.semiMonthly(),
+      cashCentavos: 124000,
+    );
+    await store.completeOnboarding();
+    // The launch gift dialog would otherwise cover the screen under test.
+    await store.takeLaunchGiftNotice();
+
+    await tester.pumpWidget(SobraApp(store: store));
+    await tester.tap(find.text('Mi Sobrita'));
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.ensureVisible(find.text('Colección'));
+    await tester.pump();
+    await tester.tap(find.text('Colección'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.text('Colección'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Quokka'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Quokka'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('opens the expense form from bottom navigation', (tester) async {

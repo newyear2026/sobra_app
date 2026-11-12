@@ -1,0 +1,349 @@
+{
+  "scope": "two costumes, six roles each, 128 generated frames",
+  "manualAnatomyReview": {
+    "raccoon/success": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "manualReview": "all source frames at enlarged production-renderer scale",
+      "checks": [
+        "two connected arms and two legs",
+        "upright weight-bearing posture in resting frames",
+        "separate visible hands",
+        "no duplicated paws or props",
+        "clear gutters and complete silhouettes"
+      ],
+      "exactAlphaVerified": true,
+      "bundledSha256": "c3e4e9c2d5856bee7dfbb97e546c58f26874224b505db0f8ca55d6583a68fd9f"
+    },
+    "rabbit/positive": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "manualReview": "all source frames at enlarged production-renderer scale",
+      "checks": [
+        "two connected arms and two legs",
+        "upright weight-bearing posture in resting frames",
+        "separate visible hands",
+        "no duplicated paws or props",
+        "clear gutters and complete silhouettes"
+      ],
+      "exactAlphaVerified": true,
+      "bundledSha256": "0f3271d67098a09d89aaff60ae2d18a972b1575de6d3e308ae4b39470322ee8f"
+    },
+    "raccoon/idle": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "manualReview": "all source frames at enlarged production-renderer scale",
+      "checks": [
+        "two connected arms and two legs",
+        "upright weight-bearing posture in resting frames",
+        "separate visible hands",
+        "no duplicated paws or props",
+        "clear gutters and complete silhouettes"
+      ],
+      "exactAlphaVerified": true,
+      "bundledSha256": "a2af3971f979adaa65b1647e97595ddf0f159b01519a047e4755b4721e9545fb"
+    },
+    "raccoon/activity": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "manualReview": "all source frames at enlarged production-renderer scale",
+      "checks": [
+        "two connected arms and two legs",
+        "upright weight-bearing posture in resting frames",
+        "separate visible hands",
+        "no duplicated paws or props",
+        "clear gutters and complete silhouettes"
+      ],
+      "exactAlphaVerified": true,
+      "bundledSha256": "6a609f44c1eb4e610ad1ec3b7f0ffd21e727909096170201f38e29b8dbbfe74b"
+    },
+    "raccoon/processing": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "manualReview": "all source frames at enlarged production-renderer scale",
+      "checks": [
+        "two connected arms and two legs",
+        "upright weight-bearing posture in resting frames",
+        "separate visible hands",
+        "no duplicated paws or props",
+        "clear gutters and complete silhouettes"
+      ],
+      "exactAlphaVerified": true,
+      "bundledSha256": "2ce5c9f6c886269fcd4e3fb5bc1ed00559f2bcbe1f2526d88284659bfe2cf333"
+    },
+    "raccoon/positive": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "manualReview": "all source frames at enlarged production-renderer scale",
+      "checks": [
+        "two connected arms and two legs",
+        "upright weight-bearing posture in resting frames",
+        "separate visible hands",
+        "no duplicated paws or props",
+        "clear gutters and complete silhouettes"
+      ],
+      "exactAlphaVerified": true,
+      "bundledSha256": "01fd9dc726d5400af0ac30aa6296ebddda9047dda669e7140ef55b4e1c384d24"
+    },
+    "raccoon/warning": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "manualReview": "all source frames at enlarged production-renderer scale",
+      "checks": [
+        "two connected arms and two legs",
+        "upright weight-bearing posture in resting frames",
+        "separate visible hands",
+        "no duplicated paws or props",
+        "clear gutters and complete silhouettes"
+      ],
+      "exactAlphaVerified": true,
+      "bundledSha256": "a92fae9ed625489e80d0f301c41e421a4706a7a16de9ac26865d73bb7c8a99d9"
+    },
+    "rabbit/idle": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "manualReview": "all source frames at enlarged production-renderer scale",
+      "checks": [
+        "two connected arms and two legs",
+        "upright weight-bearing posture in resting frames",
+        "separate visible hands",
+        "no duplicated paws or props",
+        "clear gutters and complete silhouettes"
+      ],
+      "exactAlphaVerified": true,
+      "bundledSha256": "e4115668d92570d00c094e6c0e6aabbf1903fb37b30b1374168e3759c6d430b4"
+    },
+    "rabbit/activity": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "manualReview": "all source frames at enlarged production-renderer scale",
+      "checks": [
+        "two connected arms and two legs",
+        "upright weight-bearing posture in resting frames",
+        "separate visible hands",
+        "no duplicated paws or props",
+        "clear gutters and complete silhouettes"
+      ],
+      "exactAlphaVerified": true,
+      "bundledSha256": "9f31daa50278cab0bc6b50d8be255108fcf41da1d731aa64bc8605288c57c4c0"
+    },
+    "rabbit/processing": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "manualReview": "all source frames at enlarged production-renderer scale",
+      "checks": [
+        "two connected arms and two legs",
+        "upright weight-bearing posture in resting frames",
+        "separate visible hands",
+        "no duplicated paws or props",
+        "clear gutters and complete silhouettes"
+      ],
+      "exactAlphaVerified": true,
+      "bundledSha256": "c5b2060af80fa545174eb41a97a842cd20bad25bbd4dff6c9f7eca7c92a09882"
+    },
+    "rabbit/success": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "manualReview": "all source frames at enlarged production-renderer scale",
+      "checks": [
+        "two connected arms and two legs",
+        "upright weight-bearing posture in resting frames",
+        "separate visible hands",
+        "no duplicated paws or props",
+        "clear gutters and complete silhouettes"
+      ],
+      "exactAlphaVerified": true,
+      "bundledSha256": "89e3c954a2b484e82f11c0827bef7b5ba16630ab747ae7dfb678455a25a08ad7"
+    },
+    "rabbit/warning": {
+      "reviewedFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "manualReview": "all source frames at enlarged production-renderer scale",
+      "checks": [
+        "two connected arms and two legs",
+        "upright weight-bearing posture in resting frames",
+        "separate visible hands",
+        "no duplicated paws or props",
+        "clear gutters and complete silhouettes"
+      ],
+      "exactAlphaVerified": true,
+      "bundledSha256": "8345fced4de40ce385923e209ebf07402d3877f0674d71e93580ccab7b7f6ba6"
+    }
+  },
+  "rawSheetsChanged": [
+    "rabbit/activity-12.png",
+    "rabbit/idle-8.png",
+    "rabbit/positive-12.png",
+    "rabbit/processing-12.png",
+    "rabbit/success-12.png",
+    "rabbit/warning-8.png",
+    "raccoon/activity-12.png",
+    "raccoon/idle-8.png",
+    "raccoon/positive-12.png",
+    "raccoon/processing-12.png",
+    "raccoon/success-12.png",
+    "raccoon/warning-8.png"
+  ],
+  "appSheetsChanged": [
+    "rabbit/activity-12.webp",
+    "rabbit/idle-8.webp",
+    "rabbit/positive-12.webp",
+    "rabbit/processing-12.webp",
+    "rabbit/success-12.webp",
+    "rabbit/warning-8.webp",
+    "raccoon/activity-12.webp",
+    "raccoon/idle-8.webp",
+    "raccoon/positive-12.webp",
+    "raccoon/processing-12.webp",
+    "raccoon/success-12.webp",
+    "raccoon/warning-8.webp"
+  ],
+  "otherRawSheetsPreserved": 60,
+  "otherAppSheetsPreserved": 60,
+  "validation": {
+    "motionAssetBudgetAndRenderingTestsPassed": 10,
+    "staticAnalysis": "passed",
+    "gifFrames": 48,
+    "gifDurationMs": 4800,
+    "fullTests": "passed",
+    "androidDebugApk": "passed",
+    "fullTestsPassed": 920,
+    "skippedTests": 3,
+    "apkTextureHashesMatchReviewedAssets": true,
+    "apkCostumeTextureCount": 72,
+    "logs": [
+      "/private/tmp/sobra-standing-review-tests.log",
+      "/private/tmp/sobra-standing-all-tests.log",
+      "/private/tmp/sobra-standing-analyze.log",
+      "/private/tmp/sobra-standing-build.log"
+    ]
+  }
+}

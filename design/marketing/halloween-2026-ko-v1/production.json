@@ -1,0 +1,21 @@
+{
+  "mode": "built-in image_gen",
+  "output": "sobrita-halloween-gift-ko-4x5.png",
+  "language": "ko",
+  "width": 1122,
+  "height": 1402,
+  "bytes": 2365745,
+  "sha256": "83dd46add86681cd36e7db73d27f7f3821151d7b9075cb0be4216db10d6a993c",
+  "prompt": "generation-prompt.json",
+  "review": {
+    "text": "Korean headline, date, CTA and footnote visually verified",
+    "deadline": "2026-11-03",
+    "costumeCount": 12,
+    "characterReferences": [
+      "michi-dracula",
+      "guinea-pig-pumpkin",
+      "maltese-little-ghost"
+    ],
+    "publication": "Local asset only"
+  }
+}

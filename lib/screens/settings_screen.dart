@@ -1,26 +1,211 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../data/catalog_preview_data.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/language.dart';
 import '../models/currency.dart';
+import '../models/pay_schedule.dart';
 import '../l10n/labels.dart';
+import '../services/app_review_service.dart';
+import '../services/app_share.dart';
+import '../services/app_update_service.dart';
+import '../services/app_version_service.dart';
+import '../services/release_announcement_service.dart';
+import '../services/admob_consent_service.dart';
+import '../services/purchase_service.dart';
+import '../services/sobra_quick_entry.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
+import '../services/ledger_export.dart';
 import '../widgets/cat_sprite.dart';
+import '../widgets/pack_offer_dialog.dart';
+import '../widgets/ledger_export_button.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/store_refresh_button.dart';
+import '../widgets/update_prompt.dart';
+import 'collection_screen.dart';
+import 'backup_import_screen.dart';
 import 'cycle_settings_screen.dart';
+import 'our_apps_screen.dart';
 import 'gamification_preview_screen.dart';
+import 'release_notes_screen.dart';
 import 'xp_history_screen.dart';
 
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key, this.versionLoader = loadAppVersion});
+
+  /// Injected so a test can say what the platform reports without standing up
+  /// the plugin channel.
+  final AppVersionLoader versionLoader;
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  /// Null until the platform answers, and null for good if it will not. The
+  /// rows read as a dash in the meantime rather than flickering a wrong
+  /// number, and this screen rebuilds on every store change — so the read
+  /// happens here once instead of inside a FutureBuilder that would re-fire.
+  AppVersion? _version;
+  bool _quickEntrySaving = false;
+  bool _checkingUpdate = false;
+
+  /// Guards the restore row while the store is being asked.
+  ///
+  /// A restore takes as long as the network does and reports only once it is
+  /// finished, so without this the row invites a second tap that would race
+  /// the first and answer twice.
+  bool _restoring = false;
+
+  /// Watched rather than polled, same reason the collection listens: [buy]
+  /// returns when the sheet opens, and a rejection arrives later on the
+  /// stream.
+  SobraPurchases? _purchases;
+
+  /// True only after this screen started a shop checkout.
+  ///
+  /// Ajustes stays mounted inside the shell's IndexedStack. Without this
+  /// gate it would consume [SobraPurchases.takeFailure] for a collection
+  /// purchase the user cannot see from here.
+  bool _awaitingShopPurchase = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVersion();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final purchases = PurchaseScope.maybeOf(context);
+    if (identical(purchases, _purchases)) return;
+    _purchases?.removeListener(_onPurchasesChanged);
+    _purchases = purchases;
+    _purchases?.addListener(_onPurchasesChanged);
+  }
+
+  @override
+  void dispose() {
+    _purchases?.removeListener(_onPurchasesChanged);
+    super.dispose();
+  }
+
+  void _onPurchasesChanged() {
+    if (!mounted || !_awaitingShopPurchase) return;
+    if (_purchases?.isBusy == true) return;
+    _awaitingShopPurchase = false;
+    final failure = _purchases?.takeFailure();
+    if (failure == null) return;
+    final messenger = ScaffoldMessenger.of(context);
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            describePurchaseFailure(AppLocalizations.of(context), failure),
+          ),
+        ),
+      );
+  }
+
+  void _buyShopProduct(SobraPurchases purchases, String productId) {
+    _awaitingShopPurchase = true;
+    unawaited(purchases.buyProduct(productId));
+  }
+
+  /// Shows the pack first, and starts its checkout only if the user asks.
+  Future<void> _offerPack(SobraPurchases purchases) async {
+    if (!await showPackOfferDialog(context) || !mounted) return;
+    _buyShopProduct(purchases, CatalogPreviewData.packProductId);
+  }
+
+  Future<void> _loadVersion() async {
+    final version = await widget.versionLoader();
+    if (!mounted) return;
+    setState(() => _version = version);
+  }
+
+  /// The manual check, for somebody who closed the banner and came looking.
+  ///
+  /// Forced, so it ignores both the once-a-day budget and an earlier
+  /// "Ahora no": tapping this row is a clearer statement of intent than either
+  /// of the rules those enforce. An answer is always given — the dialog when
+  /// there is something to install, and a line saying so when there is not,
+  /// because a row that does nothing visible reads as a row that failed.
+  Future<void> _checkForUpdate(AppUpdates updates) async {
+    if (_checkingUpdate) return;
+    setState(() => _checkingUpdate = true);
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context);
+    final found = await updates.refresh(force: true);
+    if (!mounted) return;
+    setState(() => _checkingUpdate = false);
+    if (found == null) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text(l10n.settingsCheckUpdateUpToDate)),
+        );
+      return;
+    }
+    // The shell is listening to the same service and schedules its own prompt
+    // for the next frame. Showing it here first is what makes that one a
+    // no-op: [showUpdatePrompt] spends the interruption before it awaits.
+    await showUpdatePrompt(
+      context,
+      updates: updates,
+      currentVersion: _version?.version,
+    );
+  }
+
+  /// The store page, not Play's review sheet: Play may decline to show the
+  /// sheet without saying so, and a row somebody tapped has to open something.
+  Future<void> _rateApp(AppReviews reviews) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context);
+    if (await reviews.openStore() || !mounted) return;
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(l10n.updateStoreFailed)));
+  }
+
+  Future<void> _restorePurchases(SobraPurchases purchases) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _restoring = true);
+    final failure = await purchases.restore();
+    if (!mounted) return;
+    setState(() => _restoring = false);
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            failure == null
+                ? l10n.purchaseRestored
+                : describePurchaseFailure(l10n, failure),
+          ),
+        ),
+      );
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final store = SobraScope.of(context);
+    // Null in a test or the design gallery, where there is no store to ask.
+    // The row is then absent rather than present and dead.
+    final purchases = PurchaseScope.maybeOf(context);
+    final adConsent = AdMobConsentScope.maybeOf(context);
+    final updates = AppUpdateScope.maybeOf(context);
+    final reviews = AppReviewScope.maybeOf(context);
+    final announcements = ReleaseAnnouncementScope.maybeOf(context);
 
     return SafeArea(
       bottom: false,
@@ -31,6 +216,53 @@ class SettingsScreen extends StatelessWidget {
           PixelTopBar(title: l10n.settingsTitle),
           const SizedBox(height: 20),
           _ProfileCard(store: store),
+          const SizedBox(height: 14),
+          _SettingsRow(
+            icon: Icons.pets,
+            iconColor: AppColors.teal,
+            label: l10n.collectionTitle,
+            value: l10n.collectionSettingsValue,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) =>
+                    const CollectionScreen(origin: CollectionOrigin.settings),
+              ),
+            ),
+          ),
+          if (purchases != null) ...[
+            const SizedBox(height: 24),
+            _SectionHeader(l10n.settingsSectionShop),
+            const StoreRefreshButton(),
+            _ShopProductRow(
+              icon: Icons.favorite,
+              iconColor: AppColors.cash,
+              label: l10n.settingsPackName,
+              hint: l10n.settingsPackHint,
+              owned: store.ownsPack,
+              price: purchases.localizedPriceFor(
+                CatalogPreviewData.packProductId,
+              ),
+              buying: purchases.isBuying(CatalogPreviewData.packProductId),
+              pendingPrice: l10n.collectionStorePricePending,
+              ownedLabel: l10n.settingsOwned,
+              buyingLabel: l10n.collectionPurchasing,
+              onBuy: () => _offerPack(purchases),
+            ),
+            _SettingsRow(
+              icon: Icons.restore,
+              iconColor: AppColors.teal,
+              label: l10n.settingsRestorePurchases,
+              value: l10n.settingsRestore,
+              onTap: _restoring ? null : () => _restorePurchases(purchases),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+              child: Text(
+                l10n.settingsShopRestoreNote,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ],
           const SizedBox(height: 24),
           _SectionHeader(l10n.settingsSectionBudget),
           _SettingsRow(
@@ -69,6 +301,49 @@ class SettingsScreen extends StatelessWidget {
             value: SobraLanguage.fromCode(store.languageCode).label(l10n),
             onTap: () => _pickLanguage(context, store),
           ),
+          if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
+            ValueListenableBuilder<bool>(
+              valueListenable: SobraQuickEntry.enabled,
+              builder: (context, enabled, _) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: PixelCard(
+                  elevation: PixelElevation.none,
+                  child: Row(
+                    children: [
+                      const _IconTile(
+                        icon: Icons.notifications_active_outlined,
+                        color: AppColors.teal,
+                      ),
+                      const SizedBox(width: 13),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l10n.settingsQuickEntry,
+                              style: pixelText(size: 15, bold: true),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              l10n.settingsQuickEntryHint,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      PixelSwitch(
+                        value: enabled,
+                        onChanged: _quickEntrySaving
+                            ? null
+                            : (value) => _setQuickEntry(value),
+                        semanticLabel: l10n.settingsQuickEntry,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: PixelCard(
@@ -112,18 +387,177 @@ class SettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           _SectionHeader(l10n.settingsSectionData),
+          // First in the section: what people look for under "Datos" is a
+          // way to take their records elsewhere, and the backup pair below
+          // only moves them between copies of Sobrita.
+          ListenableBuilder(
+            listenable: LedgerExport.instance,
+            builder: (context, _) {
+              final busy = LedgerExport.instance.isSharing;
+              return Semantics(
+                enabled: !busy,
+                liveRegion: busy,
+                child: _SettingsRow(
+                  icon: busy ? Icons.hourglass_top : Icons.ios_share,
+                  iconColor: busy ? AppColors.muted : AppColors.teal,
+                  label: l10n.settingsCsvExport,
+                  value: busy
+                      ? l10n.csvExportPreparing
+                      : l10n.settingsCsvExportValue,
+                  onTap: busy
+                      ? null
+                      : () =>
+                            exportLedger(context, LedgerExportOrigin.settings),
+                ),
+              );
+            },
+          ),
           _SettingsRow(
             icon: Icons.cloud_upload,
             iconColor: AppColors.teal,
             label: l10n.settingsBackup,
             value: l10n.settingsCopy,
             onTap: () async {
-              await Clipboard.setData(ClipboardData(text: store.exportJson()));
+              // Android throws for a clip it will not carry, and a tap that
+              // silently does nothing reads like a backup that worked.
+              var copied = true;
+              try {
+                await Clipboard.setData(
+                  ClipboardData(text: store.exportJson()),
+                );
+              } on Object {
+                copied = false;
+              }
               if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.settingsBackupCopied)),
+                SnackBar(
+                  content: Text(
+                    copied
+                        ? l10n.settingsBackupCopied
+                        : l10n.settingsBackupCopyFailed,
+                  ),
+                ),
               );
             },
+          ),
+          _SettingsRow(
+            icon: Icons.file_download_outlined,
+            iconColor: AppColors.teal,
+            label: l10n.backupImportTitle,
+            value: l10n.settingsRestore,
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<bool>(
+                builder: (_) => const BackupImportScreen(),
+              ),
+            ),
+          ),
+          // The backup is a JSON string on the clipboard, so receipt photos —
+          // which live as files outside it — cannot travel with it. Saying so
+          // here is cheaper than a user discovering it on a new phone. The CSV
+          // leaves them out too, so the one line covers all three rows.
+          Padding(
+            // Tighter above than below, so the line reads as a footnote to the
+            // backup row rather than a preamble to the next section header.
+            padding: const EdgeInsets.fromLTRB(4, 6, 4, 8),
+            child: Text(
+              l10n.receiptBackupNote,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+          if (adConsent?.privacyOptionsRequired == true) ...[
+            const SizedBox(height: 10),
+            _SectionHeader(l10n.settingsSectionPrivacy),
+            _SettingsRow(
+              icon: Icons.privacy_tip_outlined,
+              iconColor: AppColors.teal,
+              label: l10n.settingsAdPrivacy,
+              value: l10n.settingsAdPrivacyValue,
+              onTap: () async {
+                final succeeded = await adConsent!.showPrivacyOptions();
+                if (!context.mounted || succeeded) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l10n.settingsAdPrivacyFailed)),
+                );
+              },
+            ),
+          ],
+          const SizedBox(height: 10),
+          _SectionHeader(l10n.settingsSectionAbout),
+          // First in the section so it is found without hunting. Same gate as
+          // the rate row: the link it sends is a Play listing.
+          if (reviews != null)
+            _SettingsRow(
+              icon: Icons.share_outlined,
+              iconColor: AppColors.cash,
+              label: l10n.settingsShareApp,
+              // No value, like the rate row: the label is long enough to wrap
+              // beside one in Spanish.
+              value: '',
+              onTap: () => unawaited(
+                AppShare.instance.share(l10n, ShareOrigin.settings),
+              ),
+            ),
+          // Absent where there is no store to ask — iOS, web, and any harness
+          // that pumps this screen without the service.
+          if (updates != null)
+            _SettingsRow(
+              icon: Icons.refresh,
+              iconColor: AppColors.teal,
+              label: l10n.settingsCheckUpdate,
+              value: _checkingUpdate ? l10n.settingsCheckUpdateBusy : '',
+              onTap: _checkingUpdate ? null : () => _checkForUpdate(updates),
+            ),
+          _SettingsRow(
+            // A document, not the sparkle the debug gallery row already uses.
+            icon: Icons.article_outlined,
+            iconColor: AppColors.teal,
+            label: l10n.settingsReleaseNotes,
+            value: _version == null
+                ? l10n.settingsVersionUnknown
+                : 'v${_version!.version}',
+            // Survives dismissing the card that announced this release, so
+            // somebody who waved it away still has somewhere to go back to.
+            unread: announcements?.hasUnreadNotes ?? false,
+            onTap: () {
+              unawaited(announcements?.markRead() ?? Future<void>.value());
+              unawaited(
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) =>
+                        ReleaseNotesScreen(currentVersion: _version),
+                  ),
+                ),
+              );
+            },
+          ),
+          if (reviews != null)
+            _SettingsRow(
+              icon: Icons.star_outline,
+              iconColor: AppColors.cash,
+              label: l10n.settingsRateApp,
+              value: '',
+              onTap: () => _rateApp(reviews),
+            ),
+          // One doorway for all of them rather than a row per app, so no app
+          // gets billed above the others and a new one adds a card, not a
+          // row. Same gate as the rate row: every button behind it opens Play.
+          if (reviews != null)
+            _SettingsRow(
+              icon: Icons.grid_view,
+              iconColor: AppColors.indigo,
+              label: l10n.settingsOurApps,
+              value: '',
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(builder: (_) => const OurAppsScreen()),
+              ),
+            ),
+          // No destination, so no chevron: this row is the answer, not a way
+          // to one. It exists so a support question has a number to quote.
+          _SettingsRow(
+            icon: Icons.info_outline,
+            iconColor: AppColors.slate,
+            label: l10n.settingsVersion,
+            value: _version?.displayLabel ?? l10n.settingsVersionUnknown,
           ),
           // Its own section: a design gallery is not data, and sitting beside
           // the backup row made it look like one.
@@ -141,6 +575,25 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
             ),
+            // Not translated: a debug build is the only place it exists.
+            _SettingsRow(
+              icon: Icons.lock_open,
+              iconColor: AppColors.violet,
+              label: 'Paid characters (test)',
+              value: store.debugPaidCharactersUnlocked ? 'ON' : 'OFF',
+              onTap: () => store.setDebugPaidCharactersUnlocked(
+                !store.debugPaidCharactersUnlocked,
+              ),
+            ),
+            _SettingsRow(
+              icon: Icons.trending_up,
+              iconColor: AppColors.violet,
+              label: 'Next level (test)',
+              value: store.xpProgress.isMaxLevel
+                  ? 'MAX'
+                  : 'Lv ${store.xpProgress.level} → ${store.xpProgress.level + 1}',
+              onTap: store.debugAdvanceLevel,
+            ),
           ],
           const SizedBox(height: 18),
           Text(
@@ -150,6 +603,18 @@ class SettingsScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _setQuickEntry(bool value) async {
+    setState(() => _quickEntrySaving = true);
+    final applied = await SobraQuickEntry.setEnabled(value);
+    if (!mounted) return;
+    setState(() => _quickEntrySaving = false);
+    if (!applied && value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).quickEntryDenied)),
+      );
+    }
   }
 
   /// Relabels money in another currency, after saying that is all it does.
@@ -162,6 +627,10 @@ class SettingsScreen extends StatelessWidget {
   Future<void> _pickCurrency(BuildContext context, SobraStore store) async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
+    // A formatting sample, not a figure of the user's. Without a budget the
+    // stored default is nothing they chose, so showing it here would invent
+    // an amount for them.
+    final sample = store.hasBudget ? store.totalBudgetCentavos : 123456;
     final chosen = await showDialog<Currency>(
       context: context,
       builder: (dialogContext) => RadioGroup<Currency>(
@@ -170,22 +639,34 @@ class SettingsScreen extends StatelessWidget {
         child: SimpleDialog(
           title: Text(l10n.settingsCurrency),
           children: [
-            for (final currency in Currency.values)
-              RadioListTile<Currency>(
-                value: currency,
-                title: Text(currency.code),
-                subtitle: Text(
-                  formatMoney(currency, store.totalBudgetCentavos),
-                ),
+            // Grouped rather than listed: a column of thirteen codes is a
+            // scroll to the end and back, and the one a user wants is the one
+            // they already know the continent of.
+            for (final region in CurrencyRegion.values) ...[
+              Padding(
+                // Two less on the left than the rows, because _SectionHeader
+                // carries the other two and the heading has to start where
+                // the codes under it do.
+                padding: const EdgeInsets.fromLTRB(14, 14, 16, 0),
+                child: _SectionHeader(region.label(l10n)),
               ),
+              for (final currency in Currency.values.where(
+                (currency) => currency.region == region,
+              ))
+                RadioListTile<Currency>(
+                  value: currency,
+                  title: Text(currency.code),
+                  subtitle: Text(formatMoney(currency, sample)),
+                ),
+            ],
           ],
         ),
       ),
     );
     if (chosen == null || chosen == store.currency || !context.mounted) return;
 
-    final example = formatMoney(store.currency, store.totalBudgetCentavos);
-    final relabelled = formatMoney(chosen, store.totalBudgetCentavos);
+    final example = formatMoney(store.currency, sample);
+    final relabelled = formatMoney(chosen, sample);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -288,8 +769,7 @@ class _ProfileCard extends StatelessWidget {
   int _daysWithSobra() {
     final started = store.xpTrackingStartedAt;
     if (started == null) return 1;
-    final startDay = DateTime(started.year, started.month, started.day);
-    return store.today.difference(startDay).inDays + 1;
+    return daysBetween(started, store.today) + 1;
   }
 
   @override
@@ -351,7 +831,13 @@ class _ProfileCard extends StatelessWidget {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            xpLevelTitle(l10n, xp.level),
+                            xpLevelTitle(
+                              l10n,
+                              xp.level,
+                              CharacterCatalog.resolve(
+                                store.characterId,
+                              ).displayName,
+                            ),
                             style: pixelText(size: 17, bold: true),
                           ),
                         ),
@@ -420,20 +906,99 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
+/// A store product that can already be owned, so the row must stop looking
+/// like a button once it is.
+class _ShopProductRow extends StatelessWidget {
+  const _ShopProductRow({
+    required this.icon,
+    required this.iconColor,
+    required this.label,
+    required this.hint,
+    required this.owned,
+    required this.price,
+    required this.buying,
+    required this.pendingPrice,
+    required this.ownedLabel,
+    required this.buyingLabel,
+    required this.onBuy,
+  });
+
+  final IconData icon;
+  final Color iconColor;
+  final String label;
+  final String hint;
+  final bool owned;
+  final String? price;
+  final bool buying;
+  final String pendingPrice;
+  final String ownedLabel;
+  final String buyingLabel;
+  final VoidCallback onBuy;
+
+  @override
+  Widget build(BuildContext context) {
+    final value = owned
+        ? ownedLabel
+        : buying
+        ? buyingLabel
+        : (price ?? pendingPrice);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: PixelCard(
+        elevation: PixelElevation.none,
+        onTap: owned || buying ? null : onBuy,
+        child: Row(
+          children: [
+            _IconTile(icon: icon, color: iconColor),
+            const SizedBox(width: 13),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: pixelText(size: 15, bold: true)),
+                  const SizedBox(height: 2),
+                  Text(hint, style: Theme.of(context).textTheme.bodySmall),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              value,
+              style: pixelText(size: 14, bold: true, color: AppColors.muted),
+            ),
+            if (!owned && !buying) ...[
+              const SizedBox(width: 4),
+              const Icon(Icons.chevron_right, color: AppColors.ink),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _SettingsRow extends StatelessWidget {
   const _SettingsRow({
     required this.icon,
     required this.iconColor,
     required this.label,
     required this.value,
-    required this.onTap,
+    this.onTap,
+    this.unread = false,
   });
 
   final IconData icon;
   final Color iconColor;
   final String label;
   final String value;
-  final VoidCallback onTap;
+
+  /// Marks the row as carrying something the user has not opened yet.
+  final bool unread;
+
+  /// Null for a row that only reports something. It then loses its chevron
+  /// and its press-down, because a surface that moves under a finger and
+  /// leads nowhere reads as a broken button.
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -449,12 +1014,15 @@ class _SettingsRow extends StatelessWidget {
             Expanded(
               child: Text(label, style: pixelText(size: 15, bold: true)),
             ),
+            if (unread) ...[const _UnreadDot(), const SizedBox(width: 9)],
             Text(
               value,
               style: pixelText(size: 14, bold: true, color: AppColors.muted),
             ),
-            const SizedBox(width: 4),
-            const Icon(Icons.chevron_right, color: AppColors.ink),
+            if (onTap != null) ...[
+              const SizedBox(width: 4),
+              const Icon(Icons.chevron_right, color: AppColors.ink),
+            ],
           ],
         ),
       ),
@@ -478,6 +1046,27 @@ class _IconTile extends StatelessWidget {
         border: Border.all(color: AppColors.ink, width: 2.5),
       ),
       child: Icon(icon, color: color),
+    );
+  }
+}
+
+/// A square, not a circle: nothing else on these screens is round, and a
+/// circle at this size reads as a Material affordance that wandered in.
+class _UnreadDot extends StatelessWidget {
+  const _UnreadDot();
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: AppLocalizations.of(context).settingsReleaseNotesUnread,
+      child: Container(
+        width: 11,
+        height: 11,
+        decoration: BoxDecoration(
+          color: AppColors.danger,
+          border: Border.all(color: AppColors.ink, width: 2),
+        ),
+      ),
     );
   }
 }

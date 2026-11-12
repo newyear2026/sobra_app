@@ -6,6 +6,7 @@ import '../models/cycle_record.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/pixel_ui.dart';
+import '../widgets/savings_goal_dialog.dart';
 
 /// Every cycle that has closed, newest first.
 ///
@@ -111,12 +112,18 @@ class _CycleRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final currency = SobraScope.of(context).currency;
+    final store = SobraScope.of(context);
+    final currency = store.currency;
+    final canAllocate = store.availableGoalAllocationForCycle(record.start) > 0;
+    final allocated = store.goalAllocationForCycle(record.start);
     final good = record.successful;
     final ink = good ? AppColors.tealInk : AppColors.dangerInk;
 
     return PixelCard(
       elevation: PixelElevation.none,
+      onTap: canAllocate
+          ? () => showCycleGoalAllocation(context, cycleStart: record.start)
+          : null,
       child: Row(
         children: [
           Container(
@@ -158,6 +165,30 @@ class _CycleRow extends StatelessWidget {
                   ),
                   style: pixelText(size: 12, color: AppColors.muted),
                 ),
+                const SizedBox(height: 2),
+                Text(switch (record.averageSpentPerDayCentavos) {
+                  final average? => l10n.cycleHistoryAverage(
+                    formatMoney(currency, average, showCode: false),
+                  ),
+                  // A cycle shorter than the minimum. Rare, but a pay
+                  // schedule that moves can cut one.
+                  null => l10n.cycleHistoryAveragePending,
+                }, style: pixelText(size: 12, color: AppColors.muted)),
+                if (canAllocate) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    allocated > 0
+                        ? l10n.goalCycleAllocated(
+                            formatMoney(currency, allocated, showCode: false),
+                          )
+                        : l10n.goalAllocateFromCycle,
+                    style: pixelText(
+                      size: 12,
+                      bold: true,
+                      color: AppColors.tealInk,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

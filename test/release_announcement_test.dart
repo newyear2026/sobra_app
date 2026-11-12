@@ -1,0 +1,685 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sobra_app/data/release_notes.dart';
+import 'package:sobra_app/l10n/generated/app_localizations.dart';
+import 'package:sobra_app/main.dart';
+import 'package:sobra_app/models/expense_entry.dart';
+import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/screens/release_notes_screen.dart';
+import 'package:sobra_app/services/app_version_service.dart';
+import 'package:sobra_app/services/release_announcement_service.dart';
+import 'package:sobra_app/state/sobra_store.dart';
+import 'package:sobra_app/theme/app_theme.dart';
+import 'package:sobra_app/widgets/release_announcement.dart';
+
+import 'support/localizations.dart';
+
+/// Notes of its own rather than the shipped list, so these tests keep saying
+/// what they mean after a release is added and the oldest one drops off. The
+/// line is a literal for the same reason: an ARB key leaves with its release.
+final _notes = <ReleaseNote>[
+  ReleaseNote(
+    version: '1.1.0',
+    releasedOn: DateTime(2026, 10, 2),
+    lines: [(_) => 'Primera versión de Sobrita.'],
+  ),
+  ReleaseNote(
+    version: '1.0.0',
+    releasedOn: DateTime(2026, 9, 11),
+    lines: [(_) => 'Primera versión de Sobrita.'],
+  ),
+];
+
+AppVersionLoader _reports(String? version, {String build = '1'}) =>
+    () async => version == null
+    ? null
+    : AppVersion(version: version, buildNumber: build);
+
+Future<SharedPreferences> _preferences([
+  Map<String, Object> initial = const {},
+]) async {
+  SharedPreferences.setMockInitialValues(Map<String, Object>.from(initial));
+  return SharedPreferences.getInstance();
+}
+
+Future<ReleaseAnnouncements> _started({
+  required SharedPreferences preferences,
+  String? version = '1.0.0',
+  String build = '1',
+}) async {
+  final announcements = ReleaseAnnouncements(
+    preferences: preferences,
+    versionLoader: _reports(version, build: build),
+    notes: _notes,
+  );
+  await announcements.start();
+  return announcements;
+}
+
+Future<void> _loadFonts() async {
+  final pixelify = FontLoader('PixelifySans')
+    ..addFont(rootBundle.load('assets/fonts/PixelifySans.ttf'));
+  final icons = FontLoader('MaterialIcons')
+    ..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'));
+  await Future.wait([pixelify.load(), icons.load()]);
+}
+
+Widget _harness(
+  Widget child, {
+  Locale locale = const Locale('es'),
+  double textScale = 1,
+}) => MaterialApp(
+  locale: locale,
+  theme: buildSobraTheme(),
+  localizationsDelegates: sobraLocalizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
+  builder: (context, child) => MediaQuery(
+    data: MediaQuery.of(
+      context,
+    ).copyWith(textScaler: TextScaler.linear(textScale)),
+    child: child!,
+  ),
+  home: Scaffold(body: child),
+);
+
+void main() {
+  group('the first launch', () {
+    test('announces nothing, because nothing changed for this user', () async {
+      final announcements = await _started(preferences: await _preferences());
+
+      expect(announcements.shouldAnnounce, isFalse);
+      expect(
+        announcements.hasUnreadNotes,
+        isFalse,
+        reason: 'a brand-new install has no backlog to catch up on',
+      );
+    });
+
+    test('records where it started, so the next release is a change', () async {
+      final preferences = await _preferences();
+      await _started(preferences: preferences);
+
+      final afterUpdate = await _started(
+        preferences: preferences,
+        version: '1.1.0',
+      );
+      expect(afterUpdate.shouldAnnounce, isTrue);
+    });
+  });
+
+  group('after an update', () {
+    test('the card comes up once and then stops', () async {
+      final preferences = await _preferences({
+        'sobra_notes_announced_version': '1.0.0',
+        'sobra_notes_read_version': '1.0.0',
+      });
+
+      final first = await _started(preferences: preferences, version: '1.1.0');
+      expect(first.shouldAnnounce, isTrue);
+      await first.markAnnounced();
+      expect(first.shouldAnnounce, isFalse);
+
+      final relaunch = await _started(
+        preferences: preferences,
+        version: '1.1.0',
+      );
+      expect(relaunch.shouldAnnounce, isFalse);
+    });
+
+    test('a new build of the same version is not a new release', () async {
+      final preferences = await _preferences({
+        'sobra_notes_announced_version': '1.1.0',
+        'sobra_notes_read_version': '1.1.0',
+      });
+
+      // The build number is what a support question needs and what a release
+      // note has to ignore, or every hotfix would interrupt.
+      final announcements = await _started(
+        preferences: preferences,
+        version: '1.1.0',
+        build: '9',
+      );
+      expect(announcements.shouldAnnounce, isFalse);
+    });
+
+    test('a version that shipped without a note says nothing', () async {
+      final announcements = await _started(
+        preferences: await _preferences({
+          'sobra_notes_announced_version': '1.0.0',
+          'sobra_notes_read_version': '1.0.0',
+        }),
+        version: '1.2.0',
+      );
+
+      expect(announcements.currentNote, isNull);
+      expect(announcements.shouldAnnounce, isFalse);
+      expect(announcements.hasUnreadNotes, isFalse);
+    });
+
+    test('a platform that will not name the build says nothing', () async {
+      final announcements = await _started(
+        preferences: await _preferences({
+          'sobra_notes_announced_version': '1.0.0',
+          'sobra_notes_read_version': '1.0.0',
+        }),
+        version: null,
+      );
+
+      expect(announcements.shouldAnnounce, isFalse);
+      expect(announcements.hasUnreadNotes, isFalse);
+    });
+  });
+
+  group('the dot on the Ajustes row', () {
+    test('outlives the card, and clears only on reading', () async {
+      final preferences = await _preferences({
+        'sobra_notes_announced_version': '1.0.0',
+        'sobra_notes_read_version': '1.0.0',
+      });
+      final announcements = await _started(
+        preferences: preferences,
+        version: '1.1.0',
+      );
+
+      await announcements.markAnnounced();
+      expect(
+        announcements.hasUnreadNotes,
+        isTrue,
+        reason: 'being told is not the same as having read it',
+      );
+
+      await announcements.markRead();
+      expect(announcements.hasUnreadNotes, isFalse);
+
+      final relaunch = await _started(
+        preferences: preferences,
+        version: '1.1.0',
+      );
+      expect(relaunch.hasUnreadNotes, isFalse);
+    });
+
+    test('reading covers being told, for somebody who went looking', () async {
+      final preferences = await _preferences({
+        'sobra_notes_announced_version': '1.0.0',
+        'sobra_notes_read_version': '1.0.0',
+      });
+      final announcements = await _started(
+        preferences: preferences,
+        version: '1.1.0',
+      );
+
+      // Opened Ajustes before the card had its turn: the card has nothing
+      // left to say.
+      await announcements.markRead();
+      expect(announcements.shouldAnnounce, isFalse);
+    });
+  });
+
+  group('the card', () {
+    setUpAll(_loadFonts);
+
+    testWidgets('carries the note itself', (tester) async {
+      final announcements = await _started(
+        preferences: await _preferences({
+          'sobra_notes_announced_version': '1.0.0',
+          'sobra_notes_read_version': '1.0.0',
+        }),
+        version: '1.1.0',
+      );
+
+      await tester.pumpWidget(_harness(const SizedBox.shrink()));
+      final context = tester.element(find.byType(SizedBox));
+      unawaited(showReleaseAnnouncement(context, announcements: announcements));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Novedades'), findsOneWidget);
+      expect(find.text('v1.1.0'), findsOneWidget);
+      expect(find.text('Primera versión de Sobrita.'), findsOneWidget);
+
+      await tester.tap(find.text('Listo'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ReleaseNotesScreen), findsNothing);
+      expect(announcements.hasUnreadNotes, isTrue);
+    });
+
+    testWidgets('Ver todo opens the full list and marks it read', (
+      tester,
+    ) async {
+      final announcements = await _started(
+        preferences: await _preferences({
+          'sobra_notes_announced_version': '1.0.0',
+          'sobra_notes_read_version': '1.0.0',
+        }),
+        version: '1.1.0',
+      );
+
+      await tester.pumpWidget(_harness(const SizedBox.shrink()));
+      final context = tester.element(find.byType(SizedBox));
+      unawaited(showReleaseAnnouncement(context, announcements: announcements));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Ver todo'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ReleaseNotesScreen), findsOneWidget);
+      expect(announcements.hasUnreadNotes, isFalse);
+    });
+
+    group('for the seasonal gift release', () {
+      final giftNotes = <ReleaseNote>[
+        ReleaseNote(
+          version: '1.1.0',
+          releasedOn: DateTime(2026, 10, 28),
+          seasonalGift: true,
+          lines: [(_) => 'Llegaron disfraces.'],
+        ),
+      ];
+
+      Future<SobraStore> store({required bool claimed}) async {
+        final store = await SobraStore.load(
+          now: () => DateTime(2026, 10, 28, 9),
+        );
+        await store.configureOnboarding(
+          budgetCentavos: 600000,
+          schedule: const PaySchedule.semiMonthly(),
+        );
+        await store.completeOnboarding();
+        if (claimed) await store.claimSeasonalCostumes();
+        return store;
+      }
+
+      Future<void> showCard(WidgetTester tester, SobraStore store) async {
+        final preferences = await _preferences({
+          'sobra_notes_announced_version': '1.0.0',
+          'sobra_notes_read_version': '1.0.0',
+        });
+        final announcements = ReleaseAnnouncements(
+          preferences: preferences,
+          versionLoader: _reports('1.1.0'),
+          notes: giftNotes,
+        );
+        await announcements.start();
+        await tester.pumpWidget(
+          SobraScope(store: store, child: _harness(const SizedBox.shrink())),
+        );
+        final context = tester.element(find.byType(SizedBox));
+        unawaited(
+          showReleaseAnnouncement(context, announcements: announcements),
+        );
+        await tester.pumpAndSettle();
+      }
+
+      testWidgets('Ver regalo opens the gift while it can be claimed', (
+        tester,
+      ) async {
+        await showCard(tester, await store(claimed: false));
+
+        expect(find.text('Ver todo'), findsNothing);
+        await tester.tap(find.text('Ver regalo'));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.byKey(const ValueKey('claim-seasonal-costumes')),
+          findsOneWidget,
+        );
+        expect(find.byType(ReleaseNotesScreen), findsNothing);
+      });
+
+      testWidgets('a claimed gift leaves the ordinary card', (tester) async {
+        await showCard(tester, await store(claimed: true));
+
+        expect(find.text('Ver regalo'), findsNothing);
+        expect(find.text('Ver todo'), findsOneWidget);
+      });
+
+      Future<void> showNotes(WidgetTester tester, SobraStore store) async {
+        await tester.pumpWidget(
+          SobraScope(
+            store: store,
+            child: _harness(
+              ReleaseNotesScreen(
+                currentVersion: AppVersion(
+                  version: releaseNotes.first.version,
+                  buildNumber: '1',
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+      }
+
+      final giftNote = releaseNotes.firstWhere((note) => note.seasonalGift);
+      final notesGift = find.byKey(
+        ValueKey('release-notes-gift-${giftNote.version}'),
+      );
+
+      testWidgets('its note opens the gift after the card is gone', (
+        tester,
+      ) async {
+        await showNotes(tester, await store(claimed: false));
+
+        // The gift note sits below newer releases, so scroll the list to it
+        // rather than relying on the button already being on screen.
+        await tester.scrollUntilVisible(
+          notesGift.hitTestable(),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.tap(notesGift);
+        await tester.pumpAndSettle();
+
+        expect(
+          find.byKey(const ValueKey('claim-seasonal-costumes')),
+          findsOneWidget,
+        );
+      });
+
+      testWidgets('its note drops the button once claimed', (tester) async {
+        await showNotes(tester, await store(claimed: true));
+
+        expect(notesGift, findsNothing);
+      });
+    });
+
+    // Every language, not just the template: German and Portuguese run
+    // longest, and a note that fits in Spanish can still overflow there.
+    for (final locale in AppLocalizations.supportedLocales) {
+      testWidgets('gift card remains usable at large text in $locale', (
+        tester,
+      ) async {
+        SharedPreferences.setMockInitialValues({});
+        tester.view.physicalSize = const Size(320, 568);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        final store = await SobraStore.load(
+          now: () => DateTime(2026, 10, 28, 9),
+        );
+        await store.configureOnboarding(
+          budgetCentavos: 600000,
+          schedule: const PaySchedule.semiMonthly(),
+        );
+        await store.completeOnboarding();
+        final announcements = ReleaseAnnouncements(
+          preferences: await _preferences({
+            'sobra_notes_announced_version': '1.0.15',
+            'sobra_notes_read_version': '1.0.15',
+          }),
+          // The note that brought the gift, not the newest: a later release
+          // with no gift of its own would leave this card without the button.
+          versionLoader: _reports(
+            releaseNotes.firstWhere((note) => note.seasonalGift).version,
+          ),
+        );
+        await announcements.start();
+        await tester.pumpWidget(
+          SobraScope(
+            store: store,
+            child: _harness(
+              const SizedBox.shrink(),
+              locale: locale,
+              textScale: 1.6,
+            ),
+          ),
+        );
+        final context = tester.element(find.byType(SizedBox));
+        unawaited(
+          showReleaseAnnouncement(context, announcements: announcements),
+        );
+        await tester.pumpAndSettle();
+        final gift = find.byKey(const ValueKey('release-announcement-gift'));
+        final l10n = AppLocalizations.of(tester.element(gift));
+        final done = find.text(l10n.releaseAnnouncementDone);
+        await tester.ensureVisible(done);
+        expect(done.hitTestable(), findsOneWidget);
+        await tester.ensureVisible(gift);
+        await tester.tap(gift);
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const ValueKey('claim-seasonal-costumes')),
+          findsOneWidget,
+        );
+      });
+
+      testWidgets('the shipped note fits a small phone in $locale', (
+        tester,
+      ) async {
+        tester.view.physicalSize = const Size(360, 640);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        final announcements = ReleaseAnnouncements(
+          preferences: await _preferences({
+            'sobra_notes_announced_version': '1.0.1',
+            'sobra_notes_read_version': '1.0.1',
+          }),
+          versionLoader: _reports(releaseNotes.first.version),
+        );
+        await announcements.start();
+
+        await tester.pumpWidget(
+          _harness(const SizedBox.shrink(), locale: locale),
+        );
+        final context = tester.element(find.byType(SizedBox));
+        unawaited(
+          showReleaseAnnouncement(context, announcements: announcements),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('v${releaseNotes.first.version}'), findsOneWidget);
+      });
+    }
+  });
+
+  group('the seasonal gift card', () {
+    final giftNotes = <ReleaseNote>[
+      ReleaseNote(
+        version: '1.1.0',
+        releasedOn: DateTime(2026, 10, 28),
+        seasonalGift: true,
+        lines: [(_) => 'Llegaron disfraces.'],
+      ),
+    ];
+    final today = DateTime(2026, 10, 28, 9);
+    final tomorrow = DateTime(2026, 10, 29, 8);
+
+    Future<ReleaseAnnouncements> giftStarted(
+      SharedPreferences preferences,
+    ) async {
+      final announcements = ReleaseAnnouncements(
+        preferences: preferences,
+        versionLoader: _reports('1.1.0'),
+        notes: giftNotes,
+      );
+      await announcements.start();
+      return announcements;
+    }
+
+    Future<SobraStore> onboarded({DateTime? now}) async {
+      final store = await SobraStore.load(now: () => now ?? today);
+      await store.configureOnboarding(
+        budgetCentavos: 600000,
+        schedule: const PaySchedule.semiMonthly(),
+      );
+      await store.completeOnboarding();
+      return store;
+    }
+
+    test('is owed to a new install, which gets no version card', () async {
+      final announcements = await giftStarted(await _preferences());
+
+      expect(announcements.shouldAnnounce, isFalse);
+      expect(announcements.giftCardDue(canClaim: true, now: today), isTrue);
+    });
+
+    test('comes once a day, and again the next day', () async {
+      final preferences = await _preferences();
+      final announcements = await giftStarted(preferences);
+
+      await announcements.markGiftCardShown(today);
+      expect(
+        announcements.giftCardDue(
+          canClaim: true,
+          now: today.add(const Duration(hours: 10)),
+        ),
+        isFalse,
+      );
+
+      final relaunch = await giftStarted(preferences);
+      expect(relaunch.giftCardDue(canClaim: true, now: today), isFalse);
+      expect(relaunch.giftCardDue(canClaim: true, now: tomorrow), isTrue);
+    });
+
+    test('stops for good once muted', () async {
+      final preferences = await _preferences();
+      final announcements = await giftStarted(preferences);
+
+      await announcements.muteGiftCard();
+      expect(announcements.giftCardDue(canClaim: true, now: tomorrow), isFalse);
+
+      final relaunch = await giftStarted(preferences);
+      expect(relaunch.giftCardDue(canClaim: true, now: tomorrow), isFalse);
+    });
+
+    test('is not owed once the gift cannot be claimed', () async {
+      final announcements = await giftStarted(await _preferences());
+
+      expect(announcements.giftCardDue(canClaim: false, now: today), isFalse);
+    });
+
+    group('on screen', () {
+      setUpAll(_loadFonts);
+
+      final mute = find.byKey(const ValueKey('release-announcement-mute'));
+
+      Future<ReleaseAnnouncements> showGiftCard(
+        WidgetTester tester,
+        SobraStore store, {
+        Map<String, Object> preferences = const {
+          'sobra_notes_announced_version': '1.1.0',
+          'sobra_notes_read_version': '1.1.0',
+        },
+      }) async {
+        final announcements = await giftStarted(
+          await _preferences(preferences),
+        );
+        await tester.pumpWidget(
+          SobraScope(store: store, child: _harness(const SizedBox.shrink())),
+        );
+        final context = tester.element(find.byType(SizedBox));
+        unawaited(
+          showReleaseAnnouncement(context, announcements: announcements),
+        );
+        await tester.pumpAndSettle();
+        return announcements;
+      }
+
+      testWidgets('closed with the box ticked, it does not come back', (
+        tester,
+      ) async {
+        final announcements = await showGiftCard(tester, await onboarded());
+
+        expect(find.text('Llegaron disfraces.'), findsOneWidget);
+        await tester.tap(mute);
+        await tester.pump();
+        await tester.tap(find.text('Listo'));
+        await tester.pumpAndSettle();
+
+        expect(
+          announcements.giftCardDue(canClaim: true, now: tomorrow),
+          isFalse,
+        );
+      });
+
+      testWidgets('closed without the box, it comes back tomorrow', (
+        tester,
+      ) async {
+        final announcements = await showGiftCard(tester, await onboarded());
+
+        await tester.tap(find.text('Listo'));
+        await tester.pumpAndSettle();
+
+        expect(announcements.giftCardDue(canClaim: true, now: today), isFalse);
+        expect(
+          announcements.giftCardDue(canClaim: true, now: tomorrow),
+          isTrue,
+        );
+      });
+
+      testWidgets('the version card carries the box too', (tester) async {
+        final announcements = await showGiftCard(
+          tester,
+          await onboarded(),
+          preferences: const {
+            'sobra_notes_announced_version': '1.0.0',
+            'sobra_notes_read_version': '1.0.0',
+          },
+        );
+
+        expect(announcements.shouldAnnounce, isFalse);
+        expect(mute, findsOneWidget);
+        expect(
+          announcements.giftCardDue(canClaim: true, now: today),
+          isFalse,
+          reason: 'the version card was today\'s card',
+        );
+      });
+
+      testWidgets('a card that would not come back has no box', (tester) async {
+        final store = await onboarded();
+        await store.claimSeasonalCostumes();
+        await showGiftCard(
+          tester,
+          store,
+          preferences: const {
+            'sobra_notes_announced_version': '1.0.0',
+            'sobra_notes_read_version': '1.0.0',
+          },
+        );
+
+        expect(find.text('Ver todo'), findsOneWidget);
+        expect(mute, findsNothing);
+      });
+
+      testWidgets('the app brings it up on a launch that owes it', (
+        tester,
+      ) async {
+        SharedPreferences.setMockInitialValues({});
+        final store = await onboarded();
+        await store.takeLaunchGiftNotice();
+        await store.addExpense(
+          amountCentavos: 8500,
+          category: ExpenseCategory.values.first,
+          note: '',
+          occurredAt: today.subtract(const Duration(hours: 1)),
+          paymentMethod: PaymentMethod.values.first,
+        );
+        store.takePendingXpNotice();
+        await store.takeFirstExpenseGuide();
+        // Left for the shell to start, as the app does.
+        final announcements = ReleaseAnnouncements(
+          preferences: await SharedPreferences.getInstance(),
+          versionLoader: _reports('1.1.0'),
+          notes: giftNotes,
+        );
+
+        await tester.pumpWidget(
+          SobraApp(store: store, announcements: announcements),
+        );
+        for (var i = 0; i < 20; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+
+        expect(mute, findsOneWidget);
+        expect(announcements.giftCardDue(canClaim: true, now: today), isFalse);
+      });
+    });
+  });
+}

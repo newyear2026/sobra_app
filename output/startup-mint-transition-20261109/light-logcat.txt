@@ -1,0 +1,185 @@
+--------- beginning of main
+I/Zygote  (27813): Process 27813 created for com.sobra.app.sobra_app
+I/a.app.sobra_app(27813): Late-enabling -Xcheck:jni
+I/a.app.sobra_app(27813): Using CollectorTypeCMC GC.
+D/nativeloader(27813): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+D/ApplicationLoaders(27813): Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+D/ApplicationLoaders(27813): Returning zygote-cached class loader: /system_ext/framework/androidx.window.sidecar.jar
+D/nativeloader(27813): Configuring clns-9 for other apk /data/app/~~ncEkWyUTMZHh1r_9zESj_Q==/com.sobra.app.sobra_app-FGBNxvViy-gzKF2ho6rJwQ==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~ncEkWyUTMZHh1r_9zESj_Q==/com.sobra.app.sobra_app-FGBNxvViy-gzKF2ho6rJwQ==/lib/arm64:/data/app/~~ncEkWyUTMZHh1r_9zESj_Q==/com.sobra.app.sobra_app-FGBNxvViy-gzKF2ho6rJwQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.sobra.app.sobra_app
+V/GraphicsEnvironment(27813): Currently set values for:
+V/GraphicsEnvironment(27813):   angle_gl_driver_selection_pkgs=[]
+V/GraphicsEnvironment(27813):   angle_gl_driver_selection_values=[]
+V/GraphicsEnvironment(27813): com.sobra.app.sobra_app is not listed in per-application setting
+V/GraphicsEnvironment(27813): ANGLE allowlist from config: com.dreamgames.royalmatch com.dts.freefiremax com.dxx.firenow com.gramgames.mergedragons com.ludo.king com.mojang.minecraftpe com.my.defense com.nintendo.zaka com.os.airforce com.playrix.fishdomdd.gplay io.teslatech.callbreak jp.konami.prospia net.peakgames.toonblast
+V/GraphicsEnvironment(27813): No special selections for ANGLE, returning default driver choice
+V/GraphicsEnvironment(27813): Neither updatable production driver nor prerelease driver is supported.
+D/FirebaseSessions(27813): Dependency to CRASHLYTICS added.
+I/FirebaseApp(27813): Device unlocked: initializing all Firebase APIs for app [DEFAULT]
+I/FirebaseCrashlytics(27813): Initializing Firebase Crashlytics 20.1.1 for com.sobra.app.sobra_app
+D/FirebaseSessions(27813): Subscriber CRASHLYTICS registered.
+E/ashmem  (27813): Pinning is deprecated since Android Q. Please use trim or other methods.
+W/a.app.sobra_app(27813): ClassLoaderContext classpath size mismatch. expected=1, found=0 (DLC[];PCL[base.apk*2587602534]{PCL[/system/framework/org.apache.http.legacy.jar*3808638674]#PCL[/system/framework/com.android.location.provider.jar*1880069816]#PCL[/system/framework/com.android.media.remotedisplay.jar*1838754544]#PCL[/system_ext/framework/com.android.extensions.appfunctions.jar*1527718805]#PCL[/system_ext/framework/androidx.window.extensions.jar*27366443]#PCL[/system_ext/framework/androidx.window.sidecar.jar*3917221785]} | DLC[];PCL[])
+I/DynamiteModule(27813): Considering local module com.google.android.gms.measurement.dynamite:185 and remote module com.google.android.gms.measurement.dynamite:218
+I/DynamiteModule(27813): Selected remote version of com.google.android.gms.measurement.dynamite, version >= 218
+V/DynamiteModule(27813): Dynamite loader version >= 2, using loadModule2NoCrashUtils
+D/nativeloader(27813): Load /data/app/~~ncEkWyUTMZHh1r_9zESj_Q==/com.sobra.app.sobra_app-FGBNxvViy-gzKF2ho6rJwQ==/base.apk!/lib/arm64-v8a/libdatastore_shared_counter.so using class loader ns clns-9 (caller=/data/app/~~ncEkWyUTMZHh1r_9zESj_Q==/com.sobra.app.sobra_app-FGBNxvViy-gzKF2ho6rJwQ==/base.apk!classes20.dex): ok
+W/System  (27813): ClassLoader referenced unknown path: 
+D/nativeloader(27813): Configuring clns-10 for other apk . target_sdk_version=37, uses_libraries=, library_path=/data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/lib/arm64:/data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+I/FirebaseCrashlytics(27813): Saved version control info
+W/a.app.sobra_app(27813): ClassLoaderContext classpath element checksum mismatch. expected=2587602534, found=494651729 (DLC[];PCL[base.apk*2587602534]{PCL[/system/framework/org.apache.http.legacy.jar*3808638674]#PCL[/system/framework/com.android.location.provider.jar*1880069816]#PCL[/system/framework/com.android.media.remotedisplay.jar*1838754544]#PCL[/system_ext/framework/com.android.extensions.appfunctions.jar*1527718805]#PCL[/system_ext/framework/androidx.window.extensions.jar*27366443]#PCL[/system_ext/framework/androidx.window.sidecar.jar*3917221785]} | DLC[];PCL[/data/app/~~ncEkWyUTMZHh1r_9zESj_Q==/com.sobra.app.sobra_app-FGBNxvViy-gzKF2ho6rJwQ==/base.apk*494651729]{PCL[/system_ext/framework/androidx.window.extensions.jar*27366443]#PCL[/system_ext/framework/androidx.window.sidecar.jar*3917221785]})
+D/DesktopExperienceFlags(27813): Toggle override initialized to: false
+D/FirebaseSessions(27813): Initializing Firebase Sessions 3.0.8.
+I/FirebaseInitProvider(27813): FirebaseApp initialization successful
+D/FirebaseSessions(27813): No Sessions subscribers. Not listening to lifecycle events.
+W/com.facebook.UserSettingsManager(27813): The value for AdvertiserIDCollectionEnabled is currently set to FALSE so you're sending app events without collecting Advertiser ID. This can affect the quality of your advertising and analytics results.
+I/a.app.sobra_app(27813): hiddenapi: Accessing hidden method Ldalvik/system/VMStack;->getStackClass2()Ljava/lang/Class; (runtime_flags=0, domain=core-platform, api=unsupported) from Lm7/ang; (domain=app, TargetSdkVersion=36) using reflection: allowed
+I/PhClient(27813): Shared storage file not found for com.google.android.gms.measurement#com.sobra.app.sobra_app
+D/FirebaseSessions(27813): Notified CRASHLYTICS of new session 45579b3e88084245866bf30a3d76d01b
+W/com.facebook.internal.NativeProtocol(27813): Apps that target Android API 30+ (Android 11+) cannot call Facebook native apps unless the package visibility needs are declared. Please follow https://developers.facebook.com/docs/android/troubleshooting/#faq_267321845055988 to make the declaration.
+I/FA      (27813): App measurement disabled by setAnalyticsCollectionEnabled(false)
+E/a.app.sobra_app(27813): No package ID 6b found for resource ID 0x6b0b0013.
+I/FA      (27813): App measurement initialized, version: 194006
+I/FA      (27813): To enable debug logging run: adb shell setprop log.tag.FA VERBOSE
+I/FA      (27813): To enable faster debug mode event logging run:
+I/FA      (27813):   adb shell setprop debug.firebase.analytics.app com.sobra.app.sobra_app
+D/CompatChangeReporter(27813): Compat change id reported: 288912692; UID 10229; state: ENABLED
+D/WM-WrkMgrInitializer(27813): Initializing WorkManager with default configuration.
+--------- beginning of system
+I/DisplayManager(27813): Choreographer implicitly registered for the refresh rate.
+D/FlutterJNI(27813): Beginning load of flutter...
+I/ResourceExtractor(27813): Found extracted resources res_timestamp-29-1794258033463
+I/ResourceExtractor(27813): Resource version mismatch res_timestamp-29-1794258735560
+D/nativeloader(27813): Load /data/app/~~ncEkWyUTMZHh1r_9zESj_Q==/com.sobra.app.sobra_app-FGBNxvViy-gzKF2ho6rJwQ==/base.apk!/lib/arm64-v8a/libflutter.so using class loader ns clns-9 (caller=/data/app/~~ncEkWyUTMZHh1r_9zESj_Q==/com.sobra.app.sobra_app-FGBNxvViy-gzKF2ho6rJwQ==/base.apk): ok
+D/FlutterJNI(27813): flutter (null) was loaded normally!
+I/GFXSTREAM(27813): [eglDisplay.cpp(297)] Opening libGLESv1_CM_emulation.so
+I/GFXSTREAM(27813): [eglDisplay.cpp(297)] Opening libGLESv2_emulation.so
+W/HWUI    (27813): Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+W/HWUI    (27813): Failed to initialize 101010-2 format, error = EGL_SUCCESS
+I/ResourceExtractor(27813): Extracted baseline resource assets/flutter_assets/kernel_blob.bin
+I/ResourceExtractor(27813): Extracted baseline resource assets/flutter_assets/vm_snapshot_data
+I/ResourceExtractor(27813): Extracted baseline resource assets/flutter_assets/isolate_snapshot_data
+W/a.app.sobra_app(27813): type=1400 audit(0.0:322): avc:  denied  { read } for  name="max_map_count" dev="proc" ino=24233 scontext=u:r:untrusted_app:s0:c229,c256,c512,c768 tcontext=u:object_r:proc_max_map_count:s0 tclass=file permissive=0 app=com.sobra.app.sobra_app
+D/DesktopModeFlags(27813): Toggle override initialized to: OVERRIDE_UNSET
+I/flutter (27813): [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
+I/flutter (27813): The Dart VM service is listening on http://127.0.0.1:45243/XMFWAWctw8Q=/
+D/nativeloader(27813): Load /data/app/~~ncEkWyUTMZHh1r_9zESj_Q==/com.sobra.app.sobra_app-FGBNxvViy-gzKF2ho6rJwQ==/base.apk!/lib/arm64-v8a/libdartjni.so using class loader ns clns-9 (caller=/data/app/~~ncEkWyUTMZHh1r_9zESj_Q==/com.sobra.app.sobra_app-FGBNxvViy-gzKF2ho6rJwQ==/base.apk!classes10.dex): ok
+I/a.app.sobra_app(27813): hiddenapi: Accessing hidden method Landroid/view/accessibility/AccessibilityNodeInfo;->getSourceNodeId()J (runtime_flags=0, domain=platform, api=unsupported,test-api) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+I/a.app.sobra_app(27813): hiddenapi: Accessing hidden method Landroid/view/accessibility/AccessibilityRecord;->getSourceNodeId()J (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+I/a.app.sobra_app(27813): hiddenapi: Accessing hidden field Landroid/view/accessibility/AccessibilityNodeInfo;->mChildNodeIds:Landroid/util/LongArray; (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+I/a.app.sobra_app(27813): hiddenapi: Accessing hidden method Landroid/util/LongArray;->get(I)J (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+D/FlutterRenderer(27813): Width is zero. 0,0
+D/CompatChangeReporter(27813): Compat change id reported: 377864165; UID 10229; state: ENABLED
+D/FirebaseSessions(27813): App foregrounded on com.sobra.app.sobra_app
+D/FirebaseSessions(27813): Session 45579b3e88084245866bf30a3d76d01b has not backgrounded yet
+D/FirebaseSessions(27813): Process com.sobra.app.sobra_app is stale
+D/FirebaseSessions(27813): Session 45579b3e88084245866bf30a3d76d01b has not backgrounded yet
+D/FirebaseSessions(27813): Cold app start detected
+D/FirebaseSessions(27813): Process com.sobra.app.sobra_app is stale
+D/FirebaseSessions(27813): Sessions SDK disabled through data collection. Events will not be sent.
+W/HWUI    (27813): Unknown dataspace 0
+D/FirebaseSessions(27813): Notified CRASHLYTICS of new session fa6883f6ed2e4d6e85f9b777f63bd8f9
+I/Choreographer(27813): Skipped 113 frames!  The application may be doing too much work on its main thread.
+D/WindowOnBackDispatcher(27813): setTopOnBackInvokedCallback (unwrapped): android.app.Activity$$ExternalSyntheticLambda0@527ca8e
+I/WindowExtensionsImpl(27813): Initializing Window Extensions, vendor API level=9, activity embedding enabled=true
+D/VRI[MainActivity](27813): WindowInsets changed: 1080x2400 statusBars:[0,63,0,0] navigationBars:[0,0,0,63] mandatorySystemGestures:[0,63,0,84] 
+D/FlutterRenderer(27813): Width is zero. 0,0
+I/a.app.sobra_app(27813): Compiler allocated 5155KB to compile void android.view.ViewRootImpl.performTraversals()
+D/FlutterRenderer(27813): Width is zero. 0,0
+D/FlutterJNI(27813): Sending viewport metrics to the engine.
+I/Choreographer(27813): Skipped 89 frames!  The application may be doing too much work on its main thread.
+D/ProfileInstaller(27813): Installing profile for com.sobra.app.sobra_app
+D/WindowLayoutComponentImpl(27813): Register WindowLayoutInfoListener on Context=com.sobra.app.sobra_app.MainActivity@6b73361, of which baseContext=android.app.ContextImpl@1fc266f
+D/FlutterJNI(27813): Sending viewport metrics to the engine.
+W/a.app.sobra_app(27813): userfaultfd: MOVE ioctl seems unsupported: Connection timed out
+D/InsetsController(27813): hide(ime())
+I/ImeTracker(27813): com.sobra.app.sobra_app:29c00403: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+I/UserMessagingPlatform(27813): Use new ConsentDebugSettings.Builder().addTestDeviceHashedId("B3EEABB8EE11C2BE770B684D95219ECB") to set this as a debug device.
+D/UserMessagingPlatform(27813): Stored info not exists: IABTCF_TCString
+D/UserMessagingPlatform(27813): Stored info not exists: IABGPP_HDR_GppString
+D/UserMessagingPlatform(27813): Stored info not exists: IABGPP_GppSID
+D/UserMessagingPlatform(27813): Stored info not exists: IABUSPrivacy_String
+I/WebViewFactory(27813): Loading com.google.android.webview version 134.0.6998.135 (code 699813532)
+W/ResourcesManager(27813): Found a null ResourcesImpl, skipped.
+W/ResourcesManager(27813): Found a null ResourcesImpl, skipped.
+W/ResourcesManager(27813): Found a null ResourcesImpl, skipped.
+W/ResourcesManager(27813): Found a null ResourcesImpl, skipped.
+V/ResourcesManager(27813): The following library key has been added: ResourcesKey{ mHash=6f9c7c3f mResDir=null mSplitDirs=[] mOverlayDirs=[] mLibDirs=[/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk,/data/app/~~2_KdbZSHdC3B_CdOium6gA==/com.google.android.trichromelibrary_699813532-5BlfZixpeb0kv0TuoVY7xg==/TrichromeLibrary.apk,/system_ext/framework/androidx.window.extensions.jar] mDisplayId=0 mOverrideConfig=v36 mCompatInfo={420dpi always-compat} mLoaders=[]}
+W/a.app.sobra_app(27813): Failed to find entry 'classes.dex': Entry not found
+D/nativeloader(27813): Configuring clns-11 for other apk /data/app/~~2_KdbZSHdC3B_CdOium6gA==/com.google.android.trichromelibrary_699813532-5BlfZixpeb0kv0TuoVY7xg==/TrichromeLibrary.apk. target_sdk_version=35, uses_libraries=ALL, library_path=/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/lib/arm64:/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk!/lib/arm64-v8a:/data/app/~~2_KdbZSHdC3B_CdOium6gA==/com.google.android.trichromelibrary_699813532-5BlfZixpeb0kv0TuoVY7xg==/TrichromeLibrary.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand
+D/ApplicationLoaders(27813): Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+D/nativeloader(27813): Configuring clns-12 for other apk /data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/lib/arm64:/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk!/lib/arm64-v8a:/data/app/~~2_KdbZSHdC3B_CdOium6gA==/com.google.android.trichromelibrary_699813532-5BlfZixpeb0kv0TuoVY7xg==/TrichromeLibrary.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand
+W/BillingClient(27813): In-app billing API version 3 is not supported on this device.
+I/cr_WVCFactoryProvider(27813): version=134.0.6998.135 (699813532) minSdkVersion=29 isBundle=false multiprocess=true packageId=2
+D/nativeloader(27813): Load /data/app/~~2_KdbZSHdC3B_CdOium6gA==/com.google.android.trichromelibrary_699813532-5BlfZixpeb0kv0TuoVY7xg==/TrichromeLibrary.apk!/lib/arm64-v8a/libmonochrome_64.so using class loader ns clns-12 (caller=/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk): ok
+D/nativeloader(27813): Load /system/lib64/libwebviewchromium_plat_support.so using class loader ns clns-12 (caller=/data/app/~~y5KuT6y-xMVNOehN-VXJVA==/com.google.android.webview-tAe1UEi6B68Gc3i42ZHKjw==/WebViewGoogle.apk): ok
+I/chromium(27813): [1109/151236.556067:INFO:variations_seed_loader.cc(67)] Failed to open file for reading.: No such file or directory (2)
+I/cr_LibraryLoader(27813): Successfully loaded native library
+I/cr_CachingUmaRecorder(27813): Flushed 6 samples from 6 histograms, 0 samples were dropped.
+I/cr_CombinedPProvider(27813): #registerProvider() provider:WV.I8@23e1ea5 isPolicyCacheEnabled:false policyProvidersSize:0
+I/cr_PolicyProvider(27813): #setManagerAndSource() 0
+I/cr_CombinedPProvider(27813): #linkNativeInternal() 1
+I/cr_AppResProvider(27813): #getApplicationRestrictionsFromUserManager() Bundle[EMPTY_PARCEL]
+I/cr_PolicyProvider(27813): #notifySettingsAvailable() 0
+I/cr_CombinedPProvider(27813): #onSettingsAvailable() 0
+I/cr_CombinedPProvider(27813): #flushPolicies()
+E/adservices(27813): Failed to bind to measurement service: com.android.adservices.shared.common.exception.ServiceUnavailableException: Service is not available.
+I/CameraManagerGlobal(27813): Connecting to camera service
+W/UserMessagingPlatform(27813): Metrics reporting URL is not set yet.
+W/UserMessagingPlatform(27813): Error making request.
+I/flutter (27813): AdMob consent update unavailable: Error making request.
+I/DynamiteModule(27813): Considering local module com.google.android.gms.ads.dynamite:0 and remote module com.google.android.gms.ads.dynamite:263500502
+I/DynamiteModule(27813): Selected remote version of com.google.android.gms.ads.dynamite, version >= 263500502
+V/DynamiteModule(27813): Dynamite loader version >= 2, using loadModule2NoCrashUtils
+W/a.app.sobra_app(27813): ClassLoaderContext classpath element checksum mismatch. expected=2587602534, found=494651729 (DLC[];PCL[base.apk*2587602534]{PCL[/system/framework/org.apache.http.legacy.jar*3808638674]#PCL[/system/framework/com.android.location.provider.jar*1880069816]#PCL[/system/framework/com.android.media.remotedisplay.jar*1838754544]#PCL[/system_ext/framework/com.android.extensions.appfunctions.jar*1527718805]#PCL[/system_ext/framework/androidx.window.extensions.jar*27366443]#PCL[/system_ext/framework/androidx.window.sidecar.jar*3917221785]} | DLC[];PCL[/data/app/~~ncEkWyUTMZHh1r_9zESj_Q==/com.sobra.app.sobra_app-FGBNxvViy-gzKF2ho6rJwQ==/base.apk*494651729]{PCL[/system_ext/framework/androidx.window.extensions.jar*27366443]#PCL[/system_ext/framework/androidx.window.sidecar.jar*3917221785]})
+D/ApplicationLoaders(27813): Returning zygote-cached class loader: /system/framework/org.apache.http.legacy.jar
+D/ApplicationLoaders(27813): Returning zygote-cached class loader: /system/framework/com.android.location.provider.jar
+D/ApplicationLoaders(27813): Returning zygote-cached class loader: /system/framework/com.android.media.remotedisplay.jar
+D/nativeloader(27813): Configuring clns-13 for other apk /system_ext/framework/com.android.extensions.appfunctions.jar. target_sdk_version=37, uses_libraries=ALL, library_path=/data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/lib/arm64:/data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+D/ApplicationLoaders(27813): Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+D/ApplicationLoaders(27813): Returning zygote-cached class loader: /system_ext/framework/androidx.window.sidecar.jar
+W/a.app.sobra_app(27813): Loading /data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/oat/arm64/base.odex non-executable as it requires an image which we failed to load
+D/nativeloader(27813): Configuring clns-14 for other apk /data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/base.apk. target_sdk_version=37, uses_libraries=, library_path=/data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/lib/arm64:/data/app/~~bkXWTk1ja2svI3TZvNCM2Q==/com.google.android.gms-yHPvRGGxFnu0LWUJ3WIJRQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+W/a.app.sobra_app(27813): Suspending all threads took: 6.271ms
+I/DynamiteModule(27813): Considering local module com.google.android.gms.ads.dynamite:0 and remote module com.google.android.gms.ads.dynamite:263500502
+I/DynamiteModule(27813): Selected remote version of com.google.android.gms.ads.dynamite, version >= 263500502
+V/DynamiteModule(27813): Dynamite loader version >= 2, using loadModule2NoCrashUtils
+I/a.app.sobra_app(27813): Background young concurrent mark compact GC freed 2763KB AllocSpace bytes, 22(772KB) LOS objects, 34% free, 5995KB/9180KB, paused 6.879ms,4.436ms total 102.524ms
+I/flutter (27813): Rewarded ad loadRequested
+I/DynamiteModule(27813): Considering local module com.google.android.gms.ads.dynamite:0 and remote module com.google.android.gms.ads.dynamite:263500502
+I/DynamiteModule(27813): Selected remote version of com.google.android.gms.ads.dynamite, version >= 263500502
+V/DynamiteModule(27813): Dynamite loader version >= 2, using loadModule2NoCrashUtils
+I/Ads     (27813): This request is sent from a test device.
+W/cr_media(27813): BLUETOOTH_CONNECT permission is missing.
+W/cr_media(27813): getBluetoothAdapter() requires BLUETOOTH permission
+W/cr_media(27813): registerBluetoothIntentsIfNeeded: Requires BLUETOOTH permission
+W/libc    (27813): Access denied finding property "vendor.mesa.log"
+W/libc    (27813): Access denied finding property "vendor.mesa.log.file"
+E/MESA    (27813): Failed to open rendernode: No such file or directory
+E/MESA    (27813): Failed to open rendernode: No such file or directory
+D/vulkan  (27813): searching for layers in '/data/app/~~ncEkWyUTMZHh1r_9zESj_Q==/com.sobra.app.sobra_app-FGBNxvViy-gzKF2ho6rJwQ==/lib/arm64'
+D/vulkan  (27813): searching for layers in '/data/app/~~ncEkWyUTMZHh1r_9zESj_Q==/com.sobra.app.sobra_app-FGBNxvViy-gzKF2ho6rJwQ==/base.apk!/lib/arm64-v8a'
+D/vulkan  (27813): added global layer 'VK_LAYER_KHRONOS_validation' from library '/data/app/~~ncEkWyUTMZHh1r_9zESj_Q==/com.sobra.app.sobra_app-FGBNxvViy-gzKF2ho6rJwQ==/base.apk!/lib/arm64-v8a/libVkLayer_khronos_validation.so'
+E/MESA    (27813): Failed to open rendernode: No such file or directory
+E/MESA    (27813): Failed to open rendernode: No such file or directory
+E/MESA    (27813): Failed to open rendernode: No such file or directory
+E/MESA    (27813): Failed to open rendernode: No such file or directory
+E/MESA    (27813): Failed to open rendernode: No such file or directory
+E/MESA    (27813): Failed to open rendernode: No such file or directory
+W/libc    (27813): Access denied finding property "vendor.mesa.vk.trace.per.submit"
+W/libc    (27813): Access denied finding property "vendor.mesa.gallium.print.optio"
+W/libc    (27813): Access denied finding property "vendor.mesa.vk.trace.frame"
+E/MESA    (27813): Failed to open rendernode: No such file or directory
+W/libc    (27813): Access denied finding property "vendor.mesa.vk.wsi.headless.swa"
+E/MESA    (27813): Failed to open rendernode: No such file or directory
+E/MESA    (27813): Failed to open rendernode: No such file or directory
+D/nativeloader(27813): Configuring clns-15 for other apk . target_sdk_version=36, uses_libraries=ALL, library_path=, permitted_path=/data:/mnt/expand
+D/nativeloader(27813): Load /data/user/0/com.sobra.app.sobra_app/app_pccache/5/7F4D878FDE1BC005BD654BCE73F77A6D6143E514/pcam.jar!/libdEF8FF1422D86.so using isolated ns clns-15 (caller=/data/user/0/com.sobra.app.sobra_app/app_pccache/5/7F4D878FDE1BC005BD654BCE73F77A6D6143E514/pcam.jar): ok
+W/AdWorker(Defaul(27813): type=1400 audit(0.0:323): avc:  granted  { execute } for  path="/data/data/com.sobra.app.sobra_app/app_pccache/5/7F4D878FDE1BC005BD654BCE73F77A6D6143E514/pcam.jar" dev="dm-54" ino=362517 scontext=u:r:untrusted_app:s0:c229,c256,c512,c768 tcontext=u:object_r:app_data_file:s0:c229,c256,c512,c768 tclass=file app=com.sobra.app.sobra_app
+W/chromium(27813): [WARNING:viz_main_impl.cc(85)] VizNullHypothesis is disabled (not a warning)
+W/ServiceBindIntentUtils(27813): Dynamic lookup for intent failed for action: com.google.android.gms.ads.service.CACHE
+E/a.app.sobra_app(27813): No package ID 6b found for resource ID 0x6b0b0013.
+W/Ads     (27813): Not retrying to fetch app settings
+W/ServiceBindIntentUtils(27813): Dynamic lookup for intent failed for action: com.google.android.gms.ads.service.START
+I/a.app.sobra_app(27813): Background concurrent mark compact GC freed 3417KB AllocSpace bytes, 19(744KB) LOS objects, 49% free, 7853KB/15MB, paused 2.018ms,2.237ms total 580.477ms
+I/Ads     (27813): JS: The jsLoaded GMSG has been sent (https://googleads.g.doubleclick.net/mads/static/sdk/native/sdk-core-v40.html:1108)
+I/chromium(27813): [INFO:CONSOLE(1108)] "The jsLoaded GMSG has been sent", source: https://googleads.g.doubleclick.net/mads/static/sdk/native/sdk-core-v40.html (1108)

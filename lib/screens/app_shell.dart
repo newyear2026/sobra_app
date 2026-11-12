@@ -2,16 +2,38 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../data/catalog_preview_data.dart';
+import '../l10n/catalog_labels.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../models/room_design.dart';
+import '../models/room_time_of_day.dart';
+import '../models/xp_event.dart';
+import '../services/app_review_service.dart';
+import '../services/app_telemetry.dart';
+import '../services/app_update_service.dart';
+import '../services/app_version_service.dart';
+import '../services/native_ad_service.dart';
+import '../services/exit_native_ad_service.dart';
+import '../services/release_announcement_service.dart';
+import '../services/sobra_quick_entry.dart';
 import '../services/sobra_widget_sync.dart';
 import '../state/sobra_store.dart';
 import '../theme/app_theme.dart';
-import '../widgets/character_room.dart';
 import '../widgets/gamification_ui.dart';
+import '../widgets/launch_gift_dialog.dart';
+import '../widgets/starter_friend.dart';
+import '../widgets/pixel_ui.dart';
+import '../widgets/savings_goal_dialog.dart';
+import '../widgets/app_exit_guard.dart';
+import '../widgets/release_announcement.dart';
+import '../widgets/update_prompt.dart';
 import 'budget_screen.dart';
+import 'first_expense_screen.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
+import 'room_decorate_screen.dart';
 import 'settings_screen.dart';
+import 'settlement_screen.dart';
 import 'transactions_screen.dart';
 
 enum AppTab {
@@ -62,7 +84,9 @@ class AppShellScope extends InheritedWidget {
 }
 
 class AppShell extends StatefulWidget {
-  const AppShell({super.key});
+  const AppShell({super.key, this.exitAds});
+
+  final ExitNativeAds? exitAds;
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -71,13 +95,44 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   AppTab _selected = AppTab.home;
   SobraStore? _store;
+  AppUpdates? _updates;
+  ReleaseAnnouncements? _announcements;
   bool _xpNoticeScheduled = false;
+  bool _xpNoticePresenting = false;
+  bool _goalNoticeScheduled = false;
+  bool _goalNoticePresenting = false;
+  bool _firstExpenseScheduled = false;
+  bool _firstExpensePresenting = false;
+  bool _launchGiftScheduled = false;
+  bool _launchGiftPresenting = false;
+  bool _starterArrivalScheduled = false;
+  bool _starterArrivalPresenting = false;
+  bool _updatePromptScheduled = false;
+  bool _announcementScheduled = false;
+  bool _announcementPresenting = false;
+  bool _reviewScheduled = false;
+  String? _runningVersion;
+  Future<void>? _versionReady;
+  RegisterMode _registerMode = RegisterMode.expense;
+  int _registerSession = 0;
 
   @override
   void initState() {
     super.initState();
+    unawaited(AppTelemetry.instance.screen(TelemetryScreen.home));
     SobraWidgetSync.destination.addListener(_onWidgetDestination);
     WidgetsBinding.instance.addPostFrameCallback((_) => _onWidgetDestination());
+    _versionReady = _loadRunningVersion();
+    // The shell is past onboarding, for a new install and an old one alike.
+    unawaited(SobraQuickEntry.applyDefaultOnce());
+  }
+
+  /// Only for the dialog's "your version" row, so a failure to read it is a
+  /// row that does not appear rather than a prompt that does not.
+  Future<void> _loadRunningVersion() async {
+    final version = await loadAppVersion();
+    if (!mounted || version == null) return;
+    setState(() => _runningVersion = version.version);
   }
 
   @override
@@ -88,96 +143,674 @@ class _AppShellState extends State<AppShell> {
       _store?.removeListener(_onStoreChanged);
       _store = nextStore..addListener(_onStoreChanged);
     }
-    // Inicio builds its list lazily, so the room is only created once the
-    // user scrolls down to it — decoding there would show an empty card for
-    // a frame. Warm it here instead, where nothing is waiting on it.
+    final nextUpdates = AppUpdateScope.maybeOf(context);
+    if (!identical(_updates, nextUpdates)) {
+      _updates?.removeListener(_onUpdatesChanged);
+      _updates = nextUpdates?..addListener(_onUpdatesChanged);
+      // Here rather than in [initState]: the scope is only reachable once
+      // dependencies resolve, and asking twice costs nothing — the service
+      // drops a second check on the same day.
+      unawaited(nextUpdates?.refresh() ?? Future<void>.value());
+    }
+    final nextAnnouncements = ReleaseAnnouncementScope.maybeOf(context);
+    if (!identical(_announcements, nextAnnouncements)) {
+      _announcements?.removeListener(_onAnnouncementsChanged);
+      _announcements = nextAnnouncements?..addListener(_onAnnouncementsChanged);
+      unawaited(nextAnnouncements?.start() ?? Future<void>.value());
+    }
+    // The room is now above the fold, so its fixed layer and included decor
+    // are warmed before Inicio asks for them. Inicio lights it for the hour,
+    // so the background it shows is the one for now, not the plain art.
+    final room = RoomThemes.byId(nextStore.equippedRoomId);
     unawaited(
-      precacheImage(CharacterRoom.backgroundProvider(context), context),
+      Future.wait([
+        precacheImage(
+          AssetImage(
+            room.sceneAssetFor(
+              RoomTimeOfDay.fromLocal(nextStore.currentMoment),
+            ),
+          ),
+          context,
+        ),
+        precacheImage(AssetImage(room.portraitAsset), context),
+        precacheImage(const AssetImage(RoomDecorAssets.rug), context),
+        precacheImage(const AssetImage(RoomDecorAssets.tablePlant), context),
+      ]),
     );
+    _scheduleFirstExpenseGuide();
     _scheduleXpNotice();
+    _scheduleSavingsGoalNotice();
+    _scheduleLaunchGiftNotice();
+    _scheduleStarterArrival();
+    _scheduleReviewRequest();
   }
 
   @override
   void dispose() {
     SobraWidgetSync.destination.removeListener(_onWidgetDestination);
     _store?.removeListener(_onStoreChanged);
+    _updates?.removeListener(_onUpdatesChanged);
+    _announcements?.removeListener(_onAnnouncementsChanged);
     super.dispose();
   }
 
   void _onWidgetDestination() {
     final destination = SobraWidgetSync.destination.value;
     if (!mounted || destination == null) return;
-    final tab = switch (destination) {
-      SobraWidgetDestination.home => AppTab.home,
-      SobraWidgetDestination.register => AppTab.register,
-    };
-    if (_selected != tab) setState(() => _selected = tab);
+    switch (destination) {
+      case SobraWidgetDestination.home:
+        _changeSelection(AppTab.home);
+      case SobraWidgetDestination.budget:
+        _changeSelection(AppTab.budget);
+      case SobraWidgetDestination.register:
+      case SobraWidgetDestination.registerExpense:
+        _noteTabTransition(AppTab.register);
+        setState(() {
+          _selected = AppTab.register;
+          _registerMode = RegisterMode.expense;
+          _registerSession++;
+        });
+      case SobraWidgetDestination.registerIncome:
+        _noteTabTransition(AppTab.register);
+        setState(() {
+          _selected = AppTab.register;
+          _registerMode = RegisterMode.income;
+          _registerSession++;
+        });
+    }
     SobraWidgetSync.consumeDestination(destination);
   }
 
-  void _onStoreChanged() => _scheduleXpNotice();
+  void _onStoreChanged() {
+    _scheduleFirstExpenseGuide();
+    _scheduleXpNotice();
+    _scheduleSavingsGoalNotice();
+    _scheduleLaunchGiftNotice();
+    _scheduleStarterArrival();
+    _scheduleReviewRequest();
+  }
 
-  void _scheduleXpNotice() {
-    if (_xpNoticeScheduled || _store?.pendingXpNotice == null) return;
-    _xpNoticeScheduled = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _xpNoticeScheduled = false;
-      if (!mounted) return;
-      final notice = _store?.takePendingXpNotice();
-      if (notice == null) return;
-      final newLevel = notice.newLevel;
-      if (newLevel != null) {
-        // A level-up is rare enough to interrupt for; everyday XP is not.
-        unawaited(showLevelUpCelebration(context, newLevel));
+  void _onUpdatesChanged() {
+    setState(() {});
+    _scheduleUpdatePrompt();
+    _scheduleReviewRequest();
+  }
+
+  void _onAnnouncementsChanged() {
+    if (!mounted) return;
+    setState(() {});
+    _scheduleAnnouncement();
+    _scheduleLaunchGiftNotice();
+    _scheduleStarterArrival();
+    _scheduleReviewRequest();
+  }
+
+  /// Says what the update they already installed changed.
+  ///
+  /// Ahead of the update prompt in the queue below, because it is about the
+  /// build in their hand rather than one that can wait for tomorrow.
+  void _scheduleAnnouncement() {
+    final announcements = _announcements;
+    if (_announcementScheduled ||
+        _announcementPresenting ||
+        _goalNoticesAhead ||
+        _xpNoticePresenting ||
+        announcements == null ||
+        !_announcementDue ||
+        _firstExpenseAhead ||
+        (_store?.launchGiftNoticePending ?? false) ||
+        _store?.starterArrivalId != null ||
+        _store?.pendingXpNotice != null) {
+      return;
+    }
+    _announcementScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _announcementScheduled = false;
+      if (!mounted ||
+          !_announcementDue ||
+          _goalNoticesAhead ||
+          _xpNoticePresenting ||
+          !(ModalRoute.of(context)?.isCurrent ?? true)) {
         return;
       }
-      final messenger = ScaffoldMessenger.of(context);
-      messenger
-        ..hideCurrentSnackBar()
-        ..showSnackBar(xpSnackBar(notice));
+      _announcementPresenting = true;
+      try {
+        await showReleaseAnnouncement(context, announcements: announcements);
+      } finally {
+        _announcementPresenting = false;
+      }
+      if (mounted) {
+        _scheduleUpdatePrompt();
+        _scheduleReviewRequest();
+      }
     });
   }
 
+  /// The version card, or the gift's daily card while the gift waits.
+  bool get _announcementDue {
+    final announcements = _announcements;
+    final store = _store;
+    if (announcements == null) return false;
+    if (announcements.shouldAnnounce) return true;
+    return store != null &&
+        announcements.giftCardDue(
+          canClaim: store.canClaimSeasonalCostumes,
+          now: store.currentMoment,
+        );
+  }
+
+  /// Offers the update once the frame is done and nothing louder is queued.
+  ///
+  /// Last in the queue of things that may interrupt a launch, behind a
+  /// level-up and behind the release card. Both of those are about something
+  /// that already happened; the update will still be there tomorrow, and
+  /// stacking dialogs buries whichever goes first.
+  void _scheduleUpdatePrompt() {
+    final updates = _updates;
+    if (_updatePromptScheduled ||
+        _goalNoticesAhead ||
+        _xpNoticePresenting ||
+        updates == null ||
+        !updates.shouldPrompt ||
+        _firstExpenseAhead ||
+        _store?.pendingXpNotice != null ||
+        (_store?.launchGiftNoticePending ?? false) ||
+        _store?.starterArrivalId != null ||
+        _announcementDue) {
+      return;
+    }
+    _updatePromptScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _updatePromptScheduled = false;
+      // The version row is worth a moment's wait. Play's round trip is far
+      // slower than reading the package info, so this normally costs nothing
+      // — but without it the row appears or not depending on which future
+      // won, and a dialog that is one line taller on some launches than on
+      // others looks like a bug to the person reading it.
+      await _versionReady;
+      if (!mounted ||
+          !updates.shouldPrompt ||
+          _goalNoticesAhead ||
+          _xpNoticePresenting ||
+          !(ModalRoute.of(context)?.isCurrent ?? true)) {
+        return;
+      }
+      await showUpdatePrompt(
+        context,
+        updates: updates,
+        currentVersion: _runningVersion,
+      );
+      if (mounted) _scheduleReviewRequest();
+    });
+  }
+
+  /// How long Inicio has to stay quiet before Play is asked for its sheet.
+  ///
+  /// The update and release checks answer asynchronously, and either may
+  /// still want the screen; this lets them claim it first.
+  static const reviewDelay = Duration(seconds: 2);
+
+  /// Asks Play for a rating once the user has a day of use behind them.
+  ///
+  /// Last of everything, on Inicio, and only with nothing of Sobra's queued
+  /// or on screen: Play's sheet stacked on a dialog would bury one of them.
+  void _scheduleReviewRequest() {
+    final reviews = AppReviewScope.maybeOf(context);
+    final store = _store;
+    if (_reviewScheduled ||
+        reviews == null ||
+        store == null ||
+        !_quietOnHome ||
+        !reviews.wouldAsk(
+          firstOpenedOn: store.firstStartedAt,
+          recordedDays: store.recordedDayCount,
+        )) {
+      return;
+    }
+    _reviewScheduled = true;
+    Timer(reviewDelay, () {
+      _reviewScheduled = false;
+      if (!mounted || !_quietOnHome) return;
+      unawaited(
+        reviews.askAfterFirstDay(
+          firstOpenedOn: store.firstStartedAt,
+          recordedDays: store.recordedDayCount,
+        ),
+      );
+    });
+  }
+
+  bool get _quietOnHome {
+    final store = _store;
+    return store != null &&
+        _selected == AppTab.home &&
+        (ModalRoute.of(context)?.isCurrent ?? true) &&
+        !_firstExpenseAhead &&
+        store.pendingXpNotice == null &&
+        !_xpNoticePresenting &&
+        !_goalNoticesAhead &&
+        !store.launchGiftNoticePending &&
+        store.starterArrivalId == null &&
+        !_launchGiftPresenting &&
+        !_starterArrivalPresenting &&
+        !_announcementDue &&
+        !(_updates?.shouldPrompt ?? false);
+  }
+
+  Future<void> _openStoreFromBanner() async {
+    final updates = _updates;
+    if (updates == null) return;
+    final messenger = ScaffoldMessenger.of(context);
+    if (await updates.openStore()) return;
+    if (!mounted) return;
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).updateStoreFailed)),
+      );
+  }
+
+  /// Whether the guided first expense is on screen or still owed.
+  ///
+  /// It is the rest of onboarding, so everything else that may interrupt a
+  /// launch waits behind it — including the XP from the very expense it
+  /// records, which then lands on Inicio where the user can see it move.
+  bool get _firstExpenseAhead =>
+      _firstExpensePresenting || (_store?.firstExpenseGuidePending ?? false);
+
+  void _scheduleFirstExpenseGuide() {
+    if (_firstExpenseScheduled ||
+        _firstExpensePresenting ||
+        !(_store?.firstExpenseGuidePending ?? false)) {
+      return;
+    }
+    _firstExpenseScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _firstExpenseScheduled = false;
+      if (mounted) unawaited(_presentFirstExpenseGuide());
+    });
+  }
+
+  Future<void> _presentFirstExpenseGuide() async {
+    final store = _store;
+    if (_firstExpensePresenting ||
+        store == null ||
+        !store.firstExpenseGuidePending) {
+      return;
+    }
+    _firstExpensePresenting = true;
+    try {
+      await store.takeFirstExpenseGuide();
+      if (!mounted) return;
+      await showFirstExpenseGuide(
+        context,
+        origin: FirstExpenseOrigin.onboarding,
+      );
+    } on Object {
+      // A failed save leaves the guide owed, and it is offered again.
+    } finally {
+      _firstExpensePresenting = false;
+      if (mounted) {
+        _scheduleXpNotice();
+        _scheduleSavingsGoalNotice();
+        _scheduleLaunchGiftNotice();
+        _scheduleStarterArrival();
+        _scheduleAnnouncement();
+        _scheduleUpdatePrompt();
+        _scheduleReviewRequest();
+      }
+    }
+  }
+
+  void _scheduleXpNotice() {
+    if (_xpNoticeScheduled ||
+        _xpNoticePresenting ||
+        _goalNoticePresenting ||
+        _firstExpenseAhead ||
+        _store?.pendingXpNotice == null) {
+      return;
+    }
+    _xpNoticeScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _xpNoticeScheduled = false;
+      if (!mounted ||
+          _goalNoticePresenting ||
+          !(ModalRoute.of(context)?.isCurrent ?? true)) {
+        return;
+      }
+      unawaited(
+        _presentXpNotice().whenComplete(() {
+          if (!mounted) return;
+          _scheduleSavingsGoalNotice();
+          _scheduleLaunchGiftNotice();
+          _scheduleStarterArrival();
+          if (mounted) _scheduleReviewRequest();
+        }),
+      );
+    });
+  }
+
+  void _scheduleLaunchGiftNotice() {
+    if (_launchGiftScheduled ||
+        _goalNoticesAhead ||
+        _xpNoticePresenting ||
+        _launchGiftPresenting ||
+        _firstExpenseAhead ||
+        !(_store?.launchGiftNoticePending ?? false) ||
+        _store?.pendingXpNotice != null) {
+      return;
+    }
+    _launchGiftScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _launchGiftScheduled = false;
+      if (mounted) unawaited(_presentLaunchGift());
+    });
+  }
+
+  Future<void> _presentLaunchGift() async {
+    final store = _store;
+    if (_launchGiftPresenting ||
+        store == null ||
+        !mounted ||
+        _goalNoticesAhead ||
+        _xpNoticePresenting) {
+      return;
+    }
+    _launchGiftPresenting = true;
+    try {
+      if (!store.launchGiftNoticePending) return;
+      final placeNow = await showLaunchGiftDialog(context);
+      if (!mounted) return;
+      await store.takeLaunchGiftNotice();
+      if (!mounted) return;
+      if (placeNow) {
+        await Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => const RoomDecorateScreen()),
+        );
+      }
+    } on Object {
+      // If saving the seen state fails, it remains pending for the next open.
+    } finally {
+      _launchGiftPresenting = false;
+      if (mounted) {
+        _scheduleSavingsGoalNotice();
+        _scheduleStarterArrival();
+        _scheduleAnnouncement();
+        _scheduleUpdatePrompt();
+        _scheduleReviewRequest();
+      }
+    }
+  }
+
+  /// Shows the starter that came over by recorded days, once, after anything
+  /// already queued: the XP notice from the very record that brought it, and
+  /// the launch gift.
+  void _scheduleStarterArrival() {
+    final store = _store;
+    if (_starterArrivalScheduled ||
+        _goalNoticesAhead ||
+        _xpNoticePresenting ||
+        _starterArrivalPresenting ||
+        _launchGiftPresenting ||
+        _firstExpenseAhead ||
+        store == null ||
+        store.starterArrivalId == null ||
+        store.pendingXpNotice != null ||
+        store.launchGiftNoticePending) {
+      return;
+    }
+    _starterArrivalScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _starterArrivalScheduled = false;
+      if (mounted) unawaited(_presentStarterArrival());
+    });
+  }
+
+  Future<void> _presentStarterArrival() async {
+    final store = _store;
+    final arrived = store?.starterArrivalId;
+    if (_starterArrivalPresenting ||
+        store == null ||
+        arrived == null ||
+        _goalNoticesAhead ||
+        _xpNoticePresenting) {
+      return;
+    }
+    _starterArrivalPresenting = true;
+    try {
+      final switchTo = await showStarterArrivalDialog(
+        context,
+        arrivedId: arrived,
+        currentId: store.characterId,
+      );
+      if (!mounted) return;
+      await store.takeStarterArrival();
+      if (switchTo) await store.chooseCharacter(arrived);
+    } on Object {
+      // A failed save leaves the arrival pending, and it shows again.
+    } finally {
+      _starterArrivalPresenting = false;
+      if (mounted) {
+        _scheduleSavingsGoalNotice();
+        _scheduleAnnouncement();
+        _scheduleUpdatePrompt();
+        _scheduleReviewRequest();
+      }
+    }
+  }
+
+  bool get _goalNoticesAhead =>
+      _goalNoticeScheduled ||
+      _goalNoticePresenting ||
+      _store?.pendingSavingsGoalCycle != null ||
+      _store?.pendingSavingsGoalCompletionId != null;
+
+  void _scheduleSavingsGoalNotice() {
+    if (!mounted ||
+        _goalNoticeScheduled ||
+        _goalNoticePresenting ||
+        _xpNoticePresenting ||
+        _firstExpenseAhead ||
+        _store?.pendingXpNotice != null ||
+        _launchGiftPresenting ||
+        _starterArrivalPresenting ||
+        _announcementPresenting ||
+        _selected != AppTab.home ||
+        !_goalNoticesAhead) {
+      return;
+    }
+    _goalNoticeScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _goalNoticeScheduled = false;
+      if (!mounted ||
+          _goalNoticePresenting ||
+          _xpNoticePresenting ||
+          _firstExpenseAhead ||
+          _launchGiftPresenting ||
+          _starterArrivalPresenting ||
+          _announcementPresenting ||
+          _store?.pendingXpNotice != null ||
+          _selected != AppTab.home ||
+          !(ModalRoute.of(context)?.isCurrent ?? true)) {
+        return;
+      }
+      final store = _store;
+      if (store == null) return;
+      _goalNoticePresenting = true;
+      final completion = store.pendingSavingsGoalCompletionId;
+      final cycle = store.pendingSavingsGoalCycle;
+      try {
+        if (completion != null) {
+          await showSavingsGoalCompletion(context);
+        } else if (cycle != null) {
+          await showCycleGoalAllocation(context, cycleStart: cycle.start);
+        }
+      } finally {
+        _goalNoticePresenting = false;
+        if (mounted) {
+          // Retry a different queued notice, never loop on a failed save.
+          if (completion != store.pendingSavingsGoalCompletionId ||
+              cycle?.start != store.pendingSavingsGoalCycle?.start) {
+            _scheduleSavingsGoalNotice();
+          }
+          _scheduleXpNotice();
+          _scheduleLaunchGiftNotice();
+          _scheduleStarterArrival();
+          _scheduleAnnouncement();
+          _scheduleUpdatePrompt();
+          _scheduleReviewRequest();
+        }
+      }
+    });
+  }
+
+  Future<void> _presentXpNotice() async {
+    if (_xpNoticePresenting) return;
+    _xpNoticePresenting = true;
+    try {
+      await _presentXpNoticeContent();
+    } finally {
+      _xpNoticePresenting = false;
+    }
+  }
+
+  Future<void> _presentXpNoticeContent() async {
+    final notice = _store?.takePendingXpNotice();
+    if (notice == null || !mounted) return;
+    final newLevel = notice.newLevel;
+    if (newLevel != null) {
+      // A level-up is rare enough to interrupt for; everyday XP is not.
+      final previousLevel = notice.previousLevel ?? newLevel - 1;
+      final l10n = AppLocalizations.of(context);
+      final unlockedItemNames =
+          CatalogPreviewData.levelItemsUnlockedBetween(
+                previousLevel: previousLevel,
+                currentLevel: newLevel,
+              )
+              .map((entry) => catalogEntryDisplayName(l10n, entry))
+              .toList(growable: false);
+      await showLevelUpCelebration(
+        context,
+        newLevel,
+        newlyUnlockedItemNames: unlockedItemNames,
+      );
+      if (!mounted) return;
+    }
+    if (notice.kind == XpNoticeKind.cyclesClosed) {
+      final record = _store?.cycleRecords.firstOrNull;
+      // A leftover that can still go to a goal gets the goal popup, which
+      // also carries the cycle's XP and a link to the full summary.
+      if (record != null &&
+          record.resultCentavos > 0 &&
+          _store?.pendingSavingsGoalCycle?.start == record.start) {
+        _changeSelection(AppTab.home);
+        await showCycleGoalAllocation(
+          context,
+          cycleStart: record.start,
+          settlement: notice,
+        );
+        return;
+      }
+      // Anything else (an overrun, or a leftover with nothing left to
+      // assign) gets the settlement screen, so a closed cycle is never silent.
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => SettlementScreen(notice: notice, record: record),
+        ),
+      );
+      return;
+    }
+    if (newLevel != null) return;
+    final messenger = ScaffoldMessenger.of(context);
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(xpSnackBar(context, notice));
+  }
+
   void _select(AppTab tab) {
-    setState(() => _selected = tab);
+    // Re-tapping the selected tab is not another visit. This distinction is
+    // what makes "one native impression per transactions visit" deterministic.
+    if (tab == _selected) return;
+    _changeSelection(tab);
     if (tab == AppTab.budget) {
       unawaited(_store?.noteBudgetReviewed() ?? Future<void>.value());
     }
   }
 
+  void _changeSelection(AppTab tab) {
+    if (tab == _selected) return;
+    unawaited(
+      AppTelemetry.instance.screen(TelemetryScreen.values.byName(tab.name)),
+    );
+    _noteTabTransition(tab);
+    setState(() => _selected = tab);
+    if (tab == AppTab.home) {
+      _scheduleSavingsGoalNotice();
+      _scheduleReviewRequest();
+    }
+  }
+
+  void _noteTabTransition(AppTab next) {
+    _noteVisit(NativeAdScope.maybeOf(context), AppTab.movements, next);
+    _noteVisit(BudgetNativeAdScope.maybeOf(context), AppTab.budget, next);
+  }
+
+  /// A visit is a real move into [tab]; tapping it again is not a new one.
+  void _noteVisit(NativeAds? ads, AppTab tab, AppTab next) {
+    if (_selected == tab && next != tab) ads?.endVisit();
+    if (_selected != tab && next == tab) ads?.startVisit();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screens = [
-      const HomeScreen(),
+      HomeScreen(active: _selected == AppTab.home),
       const TransactionsScreen(),
-      RegisterScreen(onSaved: () => _select(AppTab.home)),
-      const BudgetScreen(),
+      RegisterScreen(
+        key: ValueKey('register-$_registerSession'),
+        onSaved: () => _select(AppTab.home),
+        initialMode: _registerMode,
+        focusAmountOnOpen: _registerSession > 0,
+      ),
+      BudgetScreen(active: _selected == AppTab.budget),
       const SettingsScreen(),
     ];
 
     return AppShellScope(
       select: _select,
       current: _selected,
-      child: Scaffold(
-        backgroundColor: AppColors.paper,
-        body: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 520),
-            child: DecoratedBox(
-              decoration: const BoxDecoration(color: AppColors.surface),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: IndexedStack(
-                      index: _selected.index,
-                      children: screens,
+      child: AppExitGuard(
+        ads: widget.exitAds,
+        child: Scaffold(
+          backgroundColor: AppColors.paper,
+          body: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 520),
+              child: DecoratedBox(
+                decoration: const BoxDecoration(color: AppColors.surface),
+                child: Column(
+                  children: [
+                    // Inicio only. The line is a small interruption on the
+                    // screen the app opens on, and would be a running one if it
+                    // sat above every tab.
+                    if (_selected == AppTab.home &&
+                        (_updates?.showBanner ?? false))
+                      UpdateBanner(
+                        onUpdate: () => unawaited(_openStoreFromBanner()),
+                        onDismiss: () => _updates?.hideBanner(),
+                      ),
+                    Expanded(
+                      child: IndexedStack(
+                        index: _selected.index,
+                        children: screens,
+                      ),
                     ),
-                  ),
-                  PixelBottomNavigation(
-                    selected: _selected,
-                    onSelected: _select,
-                  ),
-                ],
+                    PixelBottomNavigation(
+                      selected: _selected,
+                      onSelected: _select,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -202,7 +835,7 @@ class PixelBottomNavigation extends StatelessWidget {
     return SafeArea(
       top: false,
       child: Container(
-        height: 72,
+        height: kPixelBottomBarHeight,
         decoration: const BoxDecoration(
           color: AppColors.surface,
           border: Border(top: BorderSide(color: AppColors.ink, width: 3)),

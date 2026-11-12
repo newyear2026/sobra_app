@@ -1,0 +1,27 @@
+{
+  "generator": "built-in image_gen",
+  "sourceReference": "/Users/jaewook/.codex/generated_images/01a1b2d6-1c6c-7e70-87b2-826a28b904e5/exec-9d5e50aa-e648-4c13-a60f-68e521a6e8c4.png",
+  "rawSpriteSource": "/Users/jaewook/.codex/generated_images/01a1b2d6-1c6c-7e70-87b2-826a28b904e5/exec-6e7a84e1-7b61-414c-b44d-5086955222b2.png",
+  "prompt": "Create an animation SPRITE SHEET from the attached approved Sobrita splash-screen reference. This is one image containing exactly TWELVE consecutive animation keyframes arranged in a strict 4 COLUMNS by 3 ROWS uniform grid, read left-to-right then top-to-bottom. Target overall 2048x1536 pixels, each cell 512x512. Transparent RGBA background throughout all empty space; no drawn checkerboard. No grid lines, borders, labels, captions, numbers, lettering or UI. ONLY the Michi cat, glass coin jar, one moving gold coin and tiny gold impact sparkles.\nUse the attached image as exact visual source for the cat+jar grouping. Extract their identities conceptually, ignore all screenshot text and progress UI. Preserve detailed fine PIXEL ART style, navy cat with folded right ear, cream forehead stripes and muzzle, amber eyes, teal collar with square gold charm; squat aqua glass jar on left with paw-print paper label and visible stack of gold coins; cat stands at right, holds coin over jar with both forepaws. The relative grouping and proportions must match the reference, not a generic new cat.\nCRITICAL REGISTRATION: All 12 cells are identically sized. Each cell has at least 25px transparent padding on every side. Jar occupies x=45..245 and y=240..455 in EACH 512x512 cell and stays IDENTICAL in position, shape, label, outline, size and perspective across frames. Cat feet remain on the exact same y=455 baseline in each cell; cat torso remains x=250..430, ears near y=75. Entire group including tail stays in x=25..485, y=35..465. Fixed camera, no zoom, no rescaling from frame to frame. Only forepaws, coin, facial expression, small head nod and slight tail movement change. Every cell is a COMPLETE drawing of both cat and jar, never blank and never overlapping neighbor cells. Every foot, ear, tail and jar visible within its cell.\nMOTION: ONE coin deposit followed by a pleased little nod; a one-shot animation that ends on a proud empty-handed hold. Do not return the coin to the paws at the end. Coin falls behind the front glass rim and inside the jar, and then joins the pile. No teleporting props. No popping extra limbs, no empty jar, no deformed paws.\n12 exact beats:\nFrame A (row1 col1): initial approved pose, eyes open, holding one coin just above jar opening.\nFrame B (row1 col2): lift coin and both paws very slightly, anticipation, eyes follow coin.\nFrame C (row1 col3): coin raised a little higher and angled vertically for release, shoulders lift subtly.\nFrame D (row1 col4): forepaws part; one free coin falls immediately over the jar mouth; cat follows with gaze.\nFrame E (row2 col1): coin passes down into jar neck behind the rim; empty paws still just above opening.\nFrame F (row2 col2): coin visibly descending inside glass jar above pile; empty paws begin pulling toward chest.\nFrame G (row2 col3): coin lands on pile, one tiny golden pixel sparkle at jar mouth; paws pulled away from jar, tail lifts gently.\nFrame H (row2 col4): empty paws near chest, cat turns attention to viewer, eyelids soften, pleased small smile.\nFrame I (row3 col1): both eyes gently CLOSED in happy crescent shapes, proud smile, head tips down slightly in one nod, tiny chest lift.\nFrame J (row3 col2): deepest gentle nod, closed eyes, smile, tail sways slightly, no new coin in hands.\nFrame K (row3 col3): head returns upright, eyes still peacefully closed, empty paws relax near belly.\nFrame L (row3 col4): stable pleasant final pose with soft open eyes and proud smile, empty paws near belly; feet grounded, coin remains in jar.\nRich coherent pixel clusters, no photorealism, no smooth vector or 3D. Draw all twelve unique consecutive poses faithfully, maintain absolutely constant art scale and jar registration. Transparent background required.",
+  "columns": 4,
+  "rows": 3,
+  "frameDurationsMs": [
+    240,
+    160,
+    160,
+    120,
+    100,
+    120,
+    120,
+    180,
+    200,
+    200,
+    260,
+    640
+  ],
+  "durationMs": 2500,
+  "behavior": "Play once, then hold the pleased pose. Preview may be replayed. App integration not performed.",
+  "backgroundSource": "/Users/jaewook/.codex/generated_images/01a1b2d6-1c6c-7e70-87b2-826a28b904e5/exec-f1131627-9331-417e-b0e3-1c920ce7b0ac.png",
+  "previewHoldMs": 1000,
+  "previewDurationMs": 3500
+}

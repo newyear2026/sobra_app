@@ -1,0 +1,48 @@
+{
+  "date": "2026-11-09",
+  "method": "built-in image_gen",
+  "operation": "Korean localization",
+  "currency": "MXN unchanged",
+  "files": [
+    {
+      "file": "01-product-confirm-ko.png",
+      "reference": "/Users/jaewook/dev_app/sobra_app/output/sobrita-goal-detailed-flow-20261109/01-product-confirm.png",
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-67fe8c0c-7d6a-4f72-b732-cfd54161ef79.png",
+      "width": 852,
+      "height": 1846,
+      "bytes": 1462297
+    },
+    {
+      "file": "02-saving-plan-ko.png",
+      "reference": "/Users/jaewook/dev_app/sobra_app/output/sobrita-goal-detailed-flow-20261109/02-saving-plan.png",
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-e7d8d949-79a1-47d6-9a74-62d133397e1f.png",
+      "width": 852,
+      "height": 1846,
+      "bytes": 1568335
+    },
+    {
+      "file": "03-home-compact-ko.png",
+      "reference": "/Users/jaewook/dev_app/sobra_app/output/sobrita-goal-detailed-flow-20261109/03-home-compact.png",
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-01ea0afb-a7f2-4a79-adb0-46fb67cca521.png",
+      "width": 853,
+      "height": 1844,
+      "bytes": 1532334
+    },
+    {
+      "file": "04-allocate-preview-ko.png",
+      "reference": "/Users/jaewook/dev_app/sobra_app/output/sobrita-goal-detailed-flow-20261109/04-allocate-preview.png",
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-59594959-9160-42bc-8c7d-e2456cb40a16.png",
+      "width": 852,
+      "height": 1846,
+      "bytes": 1578904
+    },
+    {
+      "file": "05-goal-detail-ko.png",
+      "reference": "/Users/jaewook/dev_app/sobra_app/output/sobrita-goal-detailed-flow-20261109/05-goal-detail.png",
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-1f826d82-067c-4ba0-94b6-e70fdc511451.png",
+      "width": 852,
+      "height": 1846,
+      "bytes": 1596801
+    }
+  ]
+}

@@ -43,16 +43,17 @@ class TransactionRow extends StatelessWidget {
                     style: pixelText(size: 14, bold: true),
                   ),
                   const SizedBox(height: 2),
-                  Text(
+                  _SubtitleLine(
                     // Same rule as a movement row: a headline that already
                     // says the category leaves the second line to the clock.
-                    entry.note.trim().isEmpty
+                    text: entry.note.trim().isEmpty
                         ? shortTime(entry.occurredAt)
                         : l10n.movementSubtitle(
                             entry.category.label(l10n),
                             shortTime(entry.occurredAt),
                           ),
                     style: Theme.of(context).textTheme.bodySmall,
+                    hasReceipt: entry.hasReceipt,
                   ),
                 ],
               ),
@@ -151,8 +152,8 @@ class MovementRow extends StatelessWidget {
                     style: pixelText(size: 14, bold: true),
                   ),
                   const SizedBox(height: 2),
-                  Text(
-                    movementSubtitle(l10n, movement),
+                  _SubtitleLine(
+                    text: movementSubtitle(l10n, movement),
                     style: pixelText(
                       size: 12,
                       bold: movement.isPending,
@@ -160,6 +161,7 @@ class MovementRow extends StatelessWidget {
                           ? AppColors.cashInk
                           : AppColors.muted,
                     ),
+                    hasReceipt: expense?.hasReceipt ?? false,
                   ),
                 ],
               ),
@@ -181,6 +183,54 @@ class MovementRow extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The row's second line, with a quiet marker when a photo is attached.
+///
+/// A glyph rather than the photo itself. At the size a list row can spare, a
+/// receipt crop is unreadable — it only ever said "there is a photo" — while
+/// costing the visual weight of the one photographic element in a pixel-art
+/// list. The marker says the same thing in the row's own language, and adds no
+/// width to a row that already runs tight on a 360 px phone. The photo opens
+/// full size from the row's edit sheet.
+class _SubtitleLine extends StatelessWidget {
+  const _SubtitleLine({
+    required this.text,
+    required this.style,
+    required this.hasReceipt,
+  });
+
+  final String text;
+  final TextStyle? style;
+  final bool hasReceipt;
+
+  @override
+  Widget build(BuildContext context) {
+    final line = Text(
+      text,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: style,
+    );
+    if (!hasReceipt) return line;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Flexible, not Expanded: the line should keep its natural width so
+        // the glyph sits against the text rather than across the row.
+        Flexible(child: line),
+        const SizedBox(width: 5),
+        Semantics(
+          label: AppLocalizations.of(context).receiptAttached,
+          child: Icon(
+            Icons.receipt_long,
+            size: 14,
+            color: style?.color ?? AppColors.muted,
+          ),
+        ),
+      ],
     );
   }
 }

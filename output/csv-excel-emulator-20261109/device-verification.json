@@ -1,0 +1,48 @@
+{
+  "device": "emulator-5554 / Pixel_3",
+  "language": "ko",
+  "currency": "USD",
+  "expenses": 6,
+  "incomes": 2,
+  "preserved_fields": [
+    "transactions",
+    "incomes",
+    "cashReconciliations",
+    "currencyCode",
+    "languageCode",
+    "baseBudgetCentavos",
+    "totalBudgetCentavos",
+    "paySchedule",
+    "roomPlacementsByRoom",
+    "ownedCatalogIds",
+    "characterId"
+  ],
+  "share_sheets": [
+    {
+      "origin": "movements",
+      "format": "csv",
+      "file_name": "sobrita_2026-11-09.csv",
+      "native_share_sheet": true
+    },
+    {
+      "origin": "movements",
+      "format": "xlsx",
+      "file_name": "sobrita_2026-11-09.xlsx",
+      "native_share_sheet": true
+    },
+    {
+      "origin": "settings",
+      "format": "csv",
+      "file_name": "sobrita_2026-11-09.csv",
+      "native_share_sheet": true
+    },
+    {
+      "origin": "settings",
+      "format": "xlsx",
+      "file_name": "sobrita_2026-11-09.xlsx",
+      "native_share_sheet": true
+    }
+  ],
+  "returned_to_settings_ready": true,
+  "initial_restart_anr": "Observed before export tests at 19:15. Reinstalled latest APK with adb install -r preserving data. All four export cases passed after cold start."
+}

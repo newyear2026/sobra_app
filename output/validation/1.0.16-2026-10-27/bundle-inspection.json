@@ -1,0 +1,13 @@
+{
+  "package": "com.sobra.app.sobra_app",
+  "versionName": "1.0.16",
+  "versionCode": 26,
+  "bundleFile": "/Users/jaewook/dev_app/sobra_app/build/app/outputs/bundle/release/app-release.aab",
+  "bundleBytes": 112892139,
+  "sha256": "104a225e58d6dd3b94c1348523138c950635da754ff75e72ef03507b97703a88",
+  "costumeTextureCount": 72,
+  "allCostumeTexturesMatchWorkspace": true,
+  "layoutMatchesWorkspace": true,
+  "appArtBytes": 54295907,
+  "artBudgetBytes": 70000000
+}

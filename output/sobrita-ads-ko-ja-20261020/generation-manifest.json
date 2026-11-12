@@ -1,0 +1,291 @@
+{
+  "tool": "built-in image_gen",
+  "artifacts": [
+    {
+      "id": "ja-01",
+      "lang": "ja",
+      "n": 1,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-3d3e0e87-61f6-49d5-b58d-122b7c25021c.png",
+      "file": "ja/IMG01.png"
+    },
+    {
+      "id": "ja-02",
+      "lang": "ja",
+      "n": 2,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-44a0ad11-ef99-452e-ac00-4b0c926c1c4e.png",
+      "file": "ja/IMG02.png"
+    },
+    {
+      "id": "ja-03",
+      "lang": "ja",
+      "n": 3,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-66b2cd41-881e-4b78-b262-55d2b756ab9b.png",
+      "file": "ja/IMG03.png"
+    },
+    {
+      "id": "ja-04",
+      "lang": "ja",
+      "n": 4,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-b37b9d81-f5f8-45ae-b883-4a36f24177ec.png",
+      "file": "ja/IMG04.png"
+    },
+    {
+      "id": "ja-05",
+      "lang": "ja",
+      "n": 5,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-9125c9de-a8d9-4de0-9563-a7148b8cec3d.png",
+      "file": "ja/IMG05.png"
+    },
+    {
+      "id": "ja-06",
+      "lang": "ja",
+      "n": 6,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-74e1fb0f-74be-4011-be50-550ab614c759.png",
+      "file": "ja/IMG06.png"
+    },
+    {
+      "id": "ja-07",
+      "lang": "ja",
+      "n": 7,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-8253fa8b-0bcd-428e-89f7-d7ad10a29b1f.png",
+      "file": "ja/IMG07.png"
+    },
+    {
+      "id": "ja-08",
+      "lang": "ja",
+      "n": 8,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-ae9cd540-ea36-4145-9e5d-fa548baa871a.png",
+      "file": "ja/IMG08.png"
+    },
+    {
+      "id": "ja-09",
+      "lang": "ja",
+      "n": 9,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-ae2d8ccd-a6e1-450e-85b5-0149d4a3d1e8.png",
+      "file": "ja/IMG09.png"
+    },
+    {
+      "id": "ja-10",
+      "lang": "ja",
+      "n": 10,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-5ea3db5b-d002-4c8c-9e3c-bcc859c0d452.png",
+      "file": "ja/IMG10.png"
+    },
+    {
+      "id": "ko-01",
+      "lang": "ko",
+      "n": 1,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-34dc6bce-99d7-4c9e-b3f2-6b88d1bf6d39.png",
+      "file": "ko/IMG01.png"
+    },
+    {
+      "id": "ko-02",
+      "lang": "ko",
+      "n": 2,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-c0e530f5-18be-49ce-bfef-fd649a0ddc19.png",
+      "file": "ko/IMG02.png"
+    },
+    {
+      "id": "ko-03",
+      "lang": "ko",
+      "n": 3,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-7fb76ae8-b118-4014-a144-e9678e534cc8.png",
+      "file": "ko/IMG03.png"
+    },
+    {
+      "id": "ko-04",
+      "lang": "ko",
+      "n": 4,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-7defe0e0-6bfe-4f1c-8def-92d34169edc1.png",
+      "file": "ko/IMG04.png"
+    },
+    {
+      "id": "ko-05",
+      "lang": "ko",
+      "n": 5,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-d575ba14-137a-4b85-9519-5c34b975ba28.png",
+      "file": "ko/IMG05.png"
+    },
+    {
+      "id": "ko-06",
+      "lang": "ko",
+      "n": 6,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-2abaf894-aaa1-4af4-b0fe-537aea6f0c21.png",
+      "file": "ko/IMG06.png"
+    },
+    {
+      "id": "ko-07",
+      "lang": "ko",
+      "n": 7,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-ba07ab98-e5c9-44b7-8f3b-c34c45331059.png",
+      "file": "ko/IMG07.png"
+    },
+    {
+      "id": "ko-08",
+      "lang": "ko",
+      "n": 8,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-c7db3e29-59a1-4af9-aae7-45a1bf1a7450.png",
+      "file": "ko/IMG08.png"
+    },
+    {
+      "id": "ko-09",
+      "lang": "ko",
+      "n": 9,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-fb517d34-029a-4520-a368-163ec574eb28.png",
+      "file": "ko/IMG09.png"
+    },
+    {
+      "id": "ko-10",
+      "lang": "ko",
+      "n": 10,
+      "generated": "/Users/jaewook/.codex/generated_images/01a15643-2c58-7343-8402-40c241774ddc/exec-a4581328-0ee9-4f16-8fe0-787c94daa9d4.png",
+      "file": "ko/IMG10.png"
+    }
+  ],
+  "validation": {
+    "png_count": 20,
+    "all_original_aspect_ratios_preserved_within": 0.003,
+    "files": [
+      {
+        "file": "ko/IMG01.png",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 1654529,
+        "sha256": "adf35f2ccf733d4b2b9ba9d005e71ad4fb53923abbfe6e4fd43d01a276530112"
+      },
+      {
+        "file": "ko/IMG02.png",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 1905424,
+        "sha256": "162ca4f6c4772febd996f4cc491ac531469da40d792c4970b1d48c4ce3e01b36"
+      },
+      {
+        "file": "ko/IMG03.png",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 1718506,
+        "sha256": "acab94aaf0105b229d87aee944ff0a4dd55aa8ff851a480c3982e6224f46c2b4"
+      },
+      {
+        "file": "ko/IMG04.png",
+        "width": 1734,
+        "height": 907,
+        "bytes": 1869754,
+        "sha256": "2513bc3f1e6243c1a5f84ca43dee48ef4b3c5a00f1f5c8f79d98b58c910d5157"
+      },
+      {
+        "file": "ko/IMG05.png",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 2020401,
+        "sha256": "8b78a6e7c0ec76151f4759365cf367c66b64901c67ffea4e1d48772333f94c8e"
+      },
+      {
+        "file": "ko/IMG06.png",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 1537970,
+        "sha256": "3c4b0eff5c5a1536d9b39b4a1dbf050b043c00d041e355d4baaf037cd38a3c53"
+      },
+      {
+        "file": "ko/IMG07.png",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 1645112,
+        "sha256": "ada896d4c2571c9e96e743a3a0c63862e4de2af534574e54b141a849ee930deb"
+      },
+      {
+        "file": "ko/IMG08.png",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 1638938,
+        "sha256": "bab16817e8aff4c2c054fb8084a791e81d0d45240e88fdbe5833c241e8ac0b0a"
+      },
+      {
+        "file": "ko/IMG09.png",
+        "width": 1734,
+        "height": 907,
+        "bytes": 1570892,
+        "sha256": "4f1362478cb004685497c15bd368d34cfaf74c269a00999e5dde390ac8b548f5"
+      },
+      {
+        "file": "ko/IMG10.png",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 1538569,
+        "sha256": "354f752bed371eb12f77e114bf6dd90f4ea97548aaffa9dd2611d2dee7698242"
+      },
+      {
+        "file": "ja/IMG01.png",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 1700139,
+        "sha256": "2e19faaa127a0a5a831681af40cde6469abbc67c2ec4dfcdd23c7db74d3c4685"
+      },
+      {
+        "file": "ja/IMG02.png",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 1905885,
+        "sha256": "8df2ccc5bdd7d5941ec5877ff158f217ce038e41aeeff5f83eeb3a0a87dbea59"
+      },
+      {
+        "file": "ja/IMG03.png",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 1746307,
+        "sha256": "ca6a538d6999da9eb3c0c1d3f52a221c6045195757d8b4e1c5f143ef95ed02c7"
+      },
+      {
+        "file": "ja/IMG04.png",
+        "width": 1734,
+        "height": 907,
+        "bytes": 1900179,
+        "sha256": "bd73dec06ca0644acbed3d7904150cd4d12ce6fa2b28f55993a5ec548a0f6af3"
+      },
+      {
+        "file": "ja/IMG05.png",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 2041223,
+        "sha256": "b0c93434c3d351b6d2ba8c12945a70976a71ddf8f76772d5f77b556e26033c6c"
+      },
+      {
+        "file": "ja/IMG06.png",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 1593204,
+        "sha256": "f2630afafca77d26c4f82d8c0af31bebade99f4f4ac14c77a6e14122faf85166"
+      },
+      {
+        "file": "ja/IMG07.png",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 1664280,
+        "sha256": "58d5269578ba6a4144f280e182e3c57a10fc4d72203a91db8926487329538f88"
+      },
+      {
+        "file": "ja/IMG08.png",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 1674457,
+        "sha256": "5278e746618cd66eaec12524e1d0a94570fa9476ad6522c455d337df7adcaa0d"
+      },
+      {
+        "file": "ja/IMG09.png",
+        "width": 1734,
+        "height": 907,
+        "bytes": 1586358,
+        "sha256": "5093262b7e553c1cb51e08641706a1304537ffb551cc9169f0504fc150d0a5a8"
+      },
+      {
+        "file": "ja/IMG10.png",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 1622437,
+        "sha256": "70a1561bf87fe5238639873a485896ed95f5cde26d1e13056ce658ef82c52a3b"
+      }
+    ]
+  }
+}

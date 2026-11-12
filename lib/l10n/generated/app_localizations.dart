@@ -5,9 +5,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
+import 'app_localizations_fr.dart';
+import 'app_localizations_ja.dart';
 import 'app_localizations_ko.dart';
+import 'app_localizations_pt.dart';
 
 // ignore_for_file: type=lint
 
@@ -95,10 +99,50 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
+    Locale('de'),
     Locale('en'),
     Locale('es'),
+    Locale('fr'),
+    Locale('ja'),
     Locale('ko'),
+    Locale('pt'),
   ];
+
+  /// No description provided for @exitAppTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cerrar la app?'**
+  String get exitAppTitle;
+
+  /// No description provided for @exitAppBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Nos vemos pronto.'**
+  String get exitAppBody;
+
+  /// No description provided for @exitAppAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Salir'**
+  String get exitAppAction;
+
+  /// No description provided for @startupTagline.
+  ///
+  /// In es, this message translates to:
+  /// **'Pequeños registros,\ngrandes pasos.'**
+  String get startupTagline;
+
+  /// No description provided for @startupLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando…'**
+  String get startupLoading;
+
+  /// No description provided for @startupFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos abrir Sobrita.\nInténtalo de nuevo.'**
+  String get startupFailed;
 
   /// No description provided for @categoryFood.
   ///
@@ -346,35 +390,65 @@ abstract class AppLocalizations {
   /// **'Bono de una sola vez'**
   String get xpFirstSuccessfulCycleDetail;
 
-  /// No description provided for @xpLevelTitle1.
+  /// The title of level 1, worn by the chosen companion.
   ///
   /// In es, this message translates to:
-  /// **'Michi curioso'**
-  String get xpLevelTitle1;
+  /// **'{name} curioso'**
+  String xpLevelTitle1(String name);
 
-  /// No description provided for @xpLevelTitle2.
+  /// The title of level 2; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi ahorrador'**
-  String get xpLevelTitle2;
+  /// **'{name} ahorrador'**
+  String xpLevelTitle2(String name);
 
-  /// No description provided for @xpLevelTitle3.
+  /// The title of level 3; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi contador'**
-  String get xpLevelTitle3;
+  /// **'{name} contador'**
+  String xpLevelTitle3(String name);
 
-  /// No description provided for @xpLevelTitle4.
+  /// The title of level 4; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi guardián'**
-  String get xpLevelTitle4;
+  /// **'{name} guardián'**
+  String xpLevelTitle4(String name);
 
-  /// No description provided for @xpLevelTitle5.
+  /// The title of level 5; see xpLevelTitle1.
   ///
   /// In es, this message translates to:
-  /// **'Michi maestro'**
-  String get xpLevelTitle5;
+  /// **'{name} maestro'**
+  String xpLevelTitle5(String name);
+
+  /// The title of level 6; see xpLevelTitle1.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} experto'**
+  String xpLevelTitle6(String name);
+
+  /// The title of level 7; see xpLevelTitle1.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} estratega'**
+  String xpLevelTitle7(String name);
+
+  /// The title of level 8; see xpLevelTitle1.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} próspero'**
+  String xpLevelTitle8(String name);
+
+  /// The title of level 9; see xpLevelTitle1.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} sabio'**
+  String xpLevelTitle9(String name);
+
+  /// The title of level 10; see xpLevelTitle1.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} leyenda'**
+  String xpLevelTitle10(String name);
 
   /// Shown after settling closed cycles, when at least one of them earned XP.
   ///
@@ -412,6 +486,12 @@ abstract class AppLocalizations {
   /// **'Seguir'**
   String get xpLevelUpContinue;
 
+  /// Shown inside the level-up card when that level grants collection items.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{¡Nuevo objeto desbloqueado!} other{¡{count} objetos nuevos desbloqueados!}}'**
+  String xpLevelUpItemsUnlocked(int count);
+
   /// No description provided for @dailyMissionTitle.
   ///
   /// In es, this message translates to:
@@ -421,7 +501,7 @@ abstract class AppLocalizations {
   /// No description provided for @dailyMissionResetHint.
   ///
   /// In es, this message translates to:
-  /// **'Se renuevan a medianoche. No se acumulan.'**
+  /// **'Cambian cada medianoche. No se acumulan.'**
   String get dailyMissionResetHint;
 
   /// No description provided for @dailyMissionProgress.
@@ -472,6 +552,42 @@ abstract class AppLocalizations {
   /// **'Abre la pestaña Presupuesto'**
   String get dailyMissionBudgetHint;
 
+  /// No description provided for @dailyMissionNoteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrega una nota'**
+  String get dailyMissionNoteTitle;
+
+  /// No description provided for @dailyMissionNoteHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Un movimiento con nota'**
+  String get dailyMissionNoteHint;
+
+  /// No description provided for @dailyMissionReceiptTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Guarda un recibo'**
+  String get dailyMissionReceiptTitle;
+
+  /// No description provided for @dailyMissionReceiptHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Adjunta la foto a un gasto'**
+  String get dailyMissionReceiptHint;
+
+  /// No description provided for @dailyMissionThreeTodayTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Registra tres hoy'**
+  String get dailyMissionThreeTodayTitle;
+
+  /// No description provided for @dailyMissionThreeTodayHint.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} movimientos con fecha de hoy'**
+  String dailyMissionThreeTodayHint(int count);
+
   /// No description provided for @dailyMissionDone.
   ///
   /// In es, this message translates to:
@@ -504,7 +620,7 @@ abstract class AppLocalizations {
   /// No description provided for @dailyMissionXpDetail.
   ///
   /// In es, this message translates to:
-  /// **'Misión de hoy'**
+  /// **'Misión completada'**
   String get dailyMissionXpDetail;
 
   /// No description provided for @xpRuleDailyMission.
@@ -639,6 +755,18 @@ abstract class AppLocalizations {
   /// **'dic'**
   String get monthAbbr12;
 
+  /// A day and a month, as Sobra writes a date. {month} is one of the monthAbbr strings; the order is the locale's.
+  ///
+  /// In es, this message translates to:
+  /// **'{day} {month}'**
+  String dateShort(String day, String month);
+
+  /// No description provided for @dateFull.
+  ///
+  /// In es, this message translates to:
+  /// **'{day} {month} {year}'**
+  String dateFull(String day, String month, String year);
+
   /// No description provided for @back.
   ///
   /// In es, this message translates to:
@@ -768,8 +896,722 @@ abstract class AppLocalizations {
   /// No description provided for @tabSettings.
   ///
   /// In es, this message translates to:
-  /// **'Mi Sobra'**
+  /// **'Mi Sobrita'**
   String get tabSettings;
+
+  /// No description provided for @collectionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Colección'**
+  String get collectionTitle;
+
+  /// No description provided for @collectionSettingsValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver'**
+  String get collectionSettingsValue;
+
+  /// No description provided for @collectionCharacters.
+  ///
+  /// In es, this message translates to:
+  /// **'Personajes'**
+  String get collectionCharacters;
+
+  /// No description provided for @collectionItems.
+  ///
+  /// In es, this message translates to:
+  /// **'Objetos'**
+  String get collectionItems;
+
+  /// No description provided for @collectionLevel.
+  ///
+  /// In es, this message translates to:
+  /// **'NIVEL {level}'**
+  String collectionLevel(int level);
+
+  /// No description provided for @collectionOwnedCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{owned} de {total}'**
+  String collectionOwnedCount(int owned, int total);
+
+  /// No description provided for @collectionCharactersHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Reúne a quien te acompaña'**
+  String get collectionCharactersHint;
+
+  /// No description provided for @collectionItemsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Reúne lo que va en tu espacio'**
+  String get collectionItemsHint;
+
+  /// No description provided for @collectionRooms.
+  ///
+  /// In es, this message translates to:
+  /// **'Casas'**
+  String get collectionRooms;
+
+  /// No description provided for @collectionRoomsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige dónde vive tu compañero'**
+  String get collectionRoomsHint;
+
+  /// No description provided for @collectionCharacterPlaceholder.
+  ///
+  /// In es, this message translates to:
+  /// **'Personaje {number}'**
+  String collectionCharacterPlaceholder(int number);
+
+  /// No description provided for @collectionItemPlaceholder.
+  ///
+  /// In es, this message translates to:
+  /// **'Objeto {number}'**
+  String collectionItemPlaceholder(int number);
+
+  /// No description provided for @collectionEquipped.
+  ///
+  /// In es, this message translates to:
+  /// **'EQUIPADO'**
+  String get collectionEquipped;
+
+  /// No description provided for @collectionOwned.
+  ///
+  /// In es, this message translates to:
+  /// **'OBTENIDO'**
+  String get collectionOwned;
+
+  /// No description provided for @collectionPlaceIt.
+  ///
+  /// In es, this message translates to:
+  /// **'Colocarlo'**
+  String get collectionPlaceIt;
+
+  /// No description provided for @collectionBuy.
+  ///
+  /// In es, this message translates to:
+  /// **'COMPRAR'**
+  String get collectionBuy;
+
+  /// No description provided for @collectionPricePending.
+  ///
+  /// In es, this message translates to:
+  /// **'CONSULTANDO PRECIO'**
+  String get collectionPricePending;
+
+  /// No description provided for @collectionWatchAd.
+  ///
+  /// In es, this message translates to:
+  /// **'VER ANUNCIO'**
+  String get collectionWatchAd;
+
+  /// No description provided for @collectionAdLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'PREPARANDO'**
+  String get collectionAdLoading;
+
+  /// No description provided for @collectionAdProgressLine.
+  ///
+  /// In es, this message translates to:
+  /// **'{progress}/{target}'**
+  String collectionAdProgressLine(int progress, int target);
+
+  /// No description provided for @collectionAdUnlockDaily.
+  ///
+  /// In es, this message translates to:
+  /// **'Mira anuncios de recompensa · {progress}/{target} · uno por día'**
+  String collectionAdUnlockDaily(int progress, int target);
+
+  /// No description provided for @collectionAdUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'SIN ANUNCIOS'**
+  String get collectionAdUnavailable;
+
+  /// No description provided for @collectionAdRetry.
+  ///
+  /// In es, this message translates to:
+  /// **'REINTENTAR'**
+  String get collectionAdRetry;
+
+  /// No description provided for @collectionAdDailyCap.
+  ///
+  /// In es, this message translates to:
+  /// **'LÍMITE DE HOY'**
+  String get collectionAdDailyCap;
+
+  /// No description provided for @collectionAdTomorrow.
+  ///
+  /// In es, this message translates to:
+  /// **'SIGUE MAÑANA'**
+  String get collectionAdTomorrow;
+
+  /// No description provided for @collectionUnlockedNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'¡{name} es tuyo!'**
+  String collectionUnlockedNotice(String name);
+
+  /// No description provided for @collectionRoomUnlockedNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Ya puedes mudarte a {name}!'**
+  String collectionRoomUnlockedNotice(String name);
+
+  /// No description provided for @collectionAdDismissedNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'Mira el anuncio completo para que cuente.'**
+  String get collectionAdDismissedNotice;
+
+  /// No description provided for @collectionPackOnly.
+  ///
+  /// In es, this message translates to:
+  /// **'PAQUETE'**
+  String get collectionPackOnly;
+
+  /// No description provided for @collectionPackUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'Viene en el paquete Los amigos de Michi. No se vende por separado.'**
+  String get collectionPackUnlock;
+
+  /// No description provided for @collectionSeePack.
+  ///
+  /// In es, this message translates to:
+  /// **'VER PAQUETE'**
+  String get collectionSeePack;
+
+  /// No description provided for @packFriendNames.
+  ///
+  /// In es, this message translates to:
+  /// **'Tranqui, Lana y Bandi'**
+  String get packFriendNames;
+
+  /// No description provided for @packIncludes.
+  ///
+  /// In es, this message translates to:
+  /// **'INCLUYE'**
+  String get packIncludes;
+
+  /// No description provided for @packFriendsLine.
+  ///
+  /// In es, this message translates to:
+  /// **'3 amigos para tu cuarto'**
+  String get packFriendsLine;
+
+  /// No description provided for @packNoAdsLine.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin anuncios generales'**
+  String get packNoAdsLine;
+
+  /// No description provided for @packOnceLine.
+  ///
+  /// In es, this message translates to:
+  /// **'Pago único, para siempre'**
+  String get packOnceLine;
+
+  /// No description provided for @packBuy.
+  ///
+  /// In es, this message translates to:
+  /// **'COMPRAR · {price}'**
+  String packBuy(String price);
+
+  /// No description provided for @collectionAlsoInPack.
+  ///
+  /// In es, this message translates to:
+  /// **'También viene en Los amigos de Michi'**
+  String get collectionAlsoInPack;
+
+  /// No description provided for @packAlreadyOwned.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tienes a {names}. El paquete cuesta lo mismo.'**
+  String packAlreadyOwned(String names);
+
+  /// No description provided for @collectionGiftOnly.
+  ///
+  /// In es, this message translates to:
+  /// **'REGALO'**
+  String get collectionGiftOnly;
+
+  /// No description provided for @collectionGiftUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'Un regalo especial. No se vende.'**
+  String get collectionGiftUnlock;
+
+  /// No description provided for @collectionAdProgress.
+  ///
+  /// In es, this message translates to:
+  /// **'ANUNCIO {progress}/{target}'**
+  String collectionAdProgress(int progress, int target);
+
+  /// No description provided for @collectionHowToGet.
+  ///
+  /// In es, this message translates to:
+  /// **'CÓMO OBTENERLO'**
+  String get collectionHowToGet;
+
+  /// No description provided for @collectionAlreadyOwned.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya forma parte de tu colección.'**
+  String get collectionAlreadyOwned;
+
+  /// No description provided for @collectionIncludedUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'Incluido desde el inicio.'**
+  String get collectionIncludedUnlock;
+
+  /// No description provided for @collectionPurchaseUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'Compra única · {price}'**
+  String collectionPurchaseUnlock(String price);
+
+  /// No description provided for @collectionAdUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'Mira anuncios de recompensa · {progress}/{target}'**
+  String collectionAdUnlock(int progress, int target);
+
+  /// No description provided for @collectionLevelUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'Se desbloquea en el nivel {level}.'**
+  String collectionLevelUnlock(int level);
+
+  /// No description provided for @collectionStorePricePending.
+  ///
+  /// In es, this message translates to:
+  /// **'precio de la tienda'**
+  String get collectionStorePricePending;
+
+  /// No description provided for @collectionPreviewActionNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'La compra y los anuncios se conectarán en una etapa posterior.'**
+  String get collectionPreviewActionNotice;
+
+  /// No description provided for @roomTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi casa'**
+  String get roomTitle;
+
+  /// No description provided for @roomOpen.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir mi casa'**
+  String get roomOpen;
+
+  /// No description provided for @roomDecorate.
+  ///
+  /// In es, this message translates to:
+  /// **'Decorar'**
+  String get roomDecorate;
+
+  /// No description provided for @roomDecorateTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Decorar'**
+  String get roomDecorateTitle;
+
+  /// No description provided for @roomDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get roomDone;
+
+  /// No description provided for @roomThemeCasaClara.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa clara'**
+  String get roomThemeCasaClara;
+
+  /// No description provided for @roomThemeCasaJardin.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa jardín'**
+  String get roomThemeCasaJardin;
+
+  /// No description provided for @roomThemeCasaDePlaya.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa de playa'**
+  String get roomThemeCasaDePlaya;
+
+  /// No description provided for @roomThemeCasaTorre.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa torre'**
+  String get roomThemeCasaTorre;
+
+  /// No description provided for @roomThemeCasaMontana.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa montaña'**
+  String get roomThemeCasaMontana;
+
+  /// No description provided for @roomThemeCasaInvernadero.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa invernadero'**
+  String get roomThemeCasaInvernadero;
+
+  /// No description provided for @roomChooseTheme.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige el ambiente de tu casa.'**
+  String get roomChooseTheme;
+
+  /// No description provided for @roomCatReaction.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Hoy lo hiciste muy bien!'**
+  String get roomCatReaction;
+
+  /// No description provided for @roomInstruction.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige un objeto y toca el lugar donde va.'**
+  String get roomInstruction;
+
+  /// No description provided for @roomCategoryRooms.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa'**
+  String get roomCategoryRooms;
+
+  /// No description provided for @roomCategoryFurniture.
+  ///
+  /// In es, this message translates to:
+  /// **'Muebles'**
+  String get roomCategoryFurniture;
+
+  /// No description provided for @roomCategoryWallFloor.
+  ///
+  /// In es, this message translates to:
+  /// **'Pared y piso'**
+  String get roomCategoryWallFloor;
+
+  /// No description provided for @roomCategoryProps.
+  ///
+  /// In es, this message translates to:
+  /// **'Adornos'**
+  String get roomCategoryProps;
+
+  /// No description provided for @roomCategoryCharacters.
+  ///
+  /// In es, this message translates to:
+  /// **'Personajes'**
+  String get roomCategoryCharacters;
+
+  /// No description provided for @roomCharacterInstruction.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige quién te acompaña.'**
+  String get roomCharacterInstruction;
+
+  /// No description provided for @roomMoreInCollection.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver más en la colección'**
+  String get roomMoreInCollection;
+
+  /// No description provided for @roomDefaultRug.
+  ///
+  /// In es, this message translates to:
+  /// **'Tapete lavanda'**
+  String get roomDefaultRug;
+
+  /// No description provided for @roomFloorLamp.
+  ///
+  /// In es, this message translates to:
+  /// **'Lámpara verde'**
+  String get roomFloorLamp;
+
+  /// No description provided for @roomTablePlant.
+  ///
+  /// In es, this message translates to:
+  /// **'Planta de mesa'**
+  String get roomTablePlant;
+
+  /// No description provided for @roomWallFrame.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuadro'**
+  String get roomWallFrame;
+
+  /// No description provided for @roomRattanChair.
+  ///
+  /// In es, this message translates to:
+  /// **'Sillón de ratán'**
+  String get roomRattanChair;
+
+  /// No description provided for @roomStandingLamp.
+  ///
+  /// In es, this message translates to:
+  /// **'Lámpara de pie'**
+  String get roomStandingLamp;
+
+  /// No description provided for @roomWallClock.
+  ///
+  /// In es, this message translates to:
+  /// **'Reloj de pared'**
+  String get roomWallClock;
+
+  /// No description provided for @roomLowCabinet.
+  ///
+  /// In es, this message translates to:
+  /// **'Aparador bajo'**
+  String get roomLowCabinet;
+
+  /// No description provided for @roomSlimBookcase.
+  ///
+  /// In es, this message translates to:
+  /// **'Estantería estrecha'**
+  String get roomSlimBookcase;
+
+  /// No description provided for @roomRoundSideTable.
+  ///
+  /// In es, this message translates to:
+  /// **'Mesa auxiliar redonda'**
+  String get roomRoundSideTable;
+
+  /// No description provided for @roomPetBed.
+  ///
+  /// In es, this message translates to:
+  /// **'Cama para mascota'**
+  String get roomPetBed;
+
+  /// No description provided for @roomSavingsJar.
+  ///
+  /// In es, this message translates to:
+  /// **'Frasco de ahorros'**
+  String get roomSavingsJar;
+
+  /// No description provided for @roomWallShelf.
+  ///
+  /// In es, this message translates to:
+  /// **'Repisa de pared'**
+  String get roomWallShelf;
+
+  /// No description provided for @roomShelfBooks.
+  ///
+  /// In es, this message translates to:
+  /// **'Libros'**
+  String get roomShelfBooks;
+
+  /// No description provided for @roomTrailingPlant.
+  ///
+  /// In es, this message translates to:
+  /// **'Planta colgante'**
+  String get roomTrailingPlant;
+
+  /// No description provided for @roomTerracottaPouf.
+  ///
+  /// In es, this message translates to:
+  /// **'Puf terracota'**
+  String get roomTerracottaPouf;
+
+  /// No description provided for @roomBlueCreamRug.
+  ///
+  /// In es, this message translates to:
+  /// **'Tapete azul y crema'**
+  String get roomBlueCreamRug;
+
+  /// No description provided for @roomLaunchSofa.
+  ///
+  /// In es, this message translates to:
+  /// **'Sofá de terciopelo'**
+  String get roomLaunchSofa;
+
+  /// No description provided for @roomLaunchTv.
+  ///
+  /// In es, this message translates to:
+  /// **'Tele de historias'**
+  String get roomLaunchTv;
+
+  /// No description provided for @roomIvorySofa.
+  ///
+  /// In es, this message translates to:
+  /// **'Sofá marfil'**
+  String get roomIvorySofa;
+
+  /// No description provided for @roomBronzeLanternLamp.
+  ///
+  /// In es, this message translates to:
+  /// **'Lámpara de bronce'**
+  String get roomBronzeLanternLamp;
+
+  /// No description provided for @launchGiftTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Llegó tu regalo de lanzamiento!'**
+  String get launchGiftTitle;
+
+  /// No description provided for @launchGiftBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Empezaste Sobrita a tiempo. El sofá y la tele ya son tuyos.'**
+  String get launchGiftBody;
+
+  /// No description provided for @launchGiftGoToRoom.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponerlos en mi casa'**
+  String get launchGiftGoToRoom;
+
+  /// No description provided for @launchGiftLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Después'**
+  String get launchGiftLater;
+
+  /// No description provided for @roomSuggestCabinet.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponlo junto a la pared izquierda. Toca el lugar marcado.'**
+  String get roomSuggestCabinet;
+
+  /// No description provided for @roomSuggestPetBed.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponla a la izquierda de tu compañero. Toca el lugar marcado.'**
+  String get roomSuggestPetBed;
+
+  /// No description provided for @roomSuggestSavingsJar.
+  ///
+  /// In es, this message translates to:
+  /// **'Pon el frasco en un aparador, una mesa auxiliar o una repisa de pared. Añade uno primero si hace falta.'**
+  String get roomSuggestSavingsJar;
+
+  /// No description provided for @roomSuggestTablePlant.
+  ///
+  /// In es, this message translates to:
+  /// **'Pon la planta en un aparador, una mesa auxiliar o una repisa de pared. Añade uno primero si hace falta.'**
+  String get roomSuggestTablePlant;
+
+  /// No description provided for @roomSuggestShelfProps.
+  ///
+  /// In es, this message translates to:
+  /// **'Pon primero un aparador, una estantería o una repisa de pared y luego coloca el adorno encima.'**
+  String get roomSuggestShelfProps;
+
+  /// No description provided for @roomSuggestDeskLamp.
+  ///
+  /// In es, this message translates to:
+  /// **'Pon la lámpara en un aparador, una mesa auxiliar o una repisa de pared. Añade uno primero si hace falta.'**
+  String get roomSuggestDeskLamp;
+
+  /// No description provided for @roomSuggestWallShelf.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuélgala en una pared libre. Toca un lugar marcado.'**
+  String get roomSuggestWallShelf;
+
+  /// No description provided for @roomSuggestPouf.
+  ///
+  /// In es, this message translates to:
+  /// **'Equilibra la sala a la derecha. Toca el lugar marcado.'**
+  String get roomSuggestPouf;
+
+  /// No description provided for @roomSuggestBlueRug.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponlo debajo de tu compañero. Toca el lugar marcado.'**
+  String get roomSuggestBlueRug;
+
+  /// No description provided for @roomSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu casa quedó guardada.'**
+  String get roomSaved;
+
+  /// No description provided for @roomPlaced.
+  ///
+  /// In es, this message translates to:
+  /// **'Colocado'**
+  String get roomPlaced;
+
+  /// No description provided for @roomSurfaceWall.
+  ///
+  /// In es, this message translates to:
+  /// **'Pared'**
+  String get roomSurfaceWall;
+
+  /// No description provided for @roomSurfaceFloor.
+  ///
+  /// In es, this message translates to:
+  /// **'Piso'**
+  String get roomSurfaceFloor;
+
+  /// No description provided for @roomSurfaceTabletop.
+  ///
+  /// In es, this message translates to:
+  /// **'Mesa'**
+  String get roomSurfaceTabletop;
+
+  /// No description provided for @roomSurfaceRug.
+  ///
+  /// In es, this message translates to:
+  /// **'Tapete'**
+  String get roomSurfaceRug;
+
+  /// Screen-reader name of one place in the room while an item is being placed. The surface is one of roomSurfaceWall, roomSurfaceFloor, roomSurfaceTabletop or roomSurfaceRug.
+  ///
+  /// In es, this message translates to:
+  /// **'{surface}, lugar {number}'**
+  String roomSlotLabel(String surface, int number);
+
+  /// Hint while an item that hangs on the wall is chosen; only the matching places are lit.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Hay un lugar en la pared. Tócalo para colgarlo.} other{Hay {count} lugares en la pared. Toca dónde va.}}'**
+  String roomPickWall(int count);
+
+  /// No description provided for @roomPickFloor.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Hay un lugar en el piso. Tócalo para ponerlo.} other{Hay {count} lugares en el piso. Toca dónde va.}}'**
+  String roomPickFloor(int count);
+
+  /// No description provided for @roomPickTabletop.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Hay un lugar en la mesa. Tócalo para ponerlo.} other{Hay {count} lugares en la mesa. Toca dónde va.}}'**
+  String roomPickTabletop(int count);
+
+  /// No description provided for @roomPickRug.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Hay un lugar para el tapete. Tócalo para ponerlo.} other{Hay {count} lugares para el tapete. Toca dónde va.}}'**
+  String roomPickRug(int count);
+
+  /// Hint while an item that fits more than one surface is chosen, such as a small plant that goes on a table or the floor.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Hay un lugar donde puede ir. Tócalo para ponerlo.} other{Hay {count} lugares donde puede ir. Toca dónde va.}}'**
+  String roomPickAny(int count);
+
+  /// No description provided for @roomMoveOrRemove.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca otro lugar para moverlo, o el suyo para quitarlo.'**
+  String get roomMoveOrRemove;
+
+  /// No description provided for @roomTapToRemove.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca su lugar otra vez para quitarlo.'**
+  String get roomTapToRemove;
 
   /// No description provided for @xpHistoryTitle.
   ///
@@ -966,7 +1808,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsTitle.
   ///
   /// In es, this message translates to:
-  /// **'Mi Sobra'**
+  /// **'Mi Sobrita'**
   String get settingsTitle;
 
   /// No description provided for @settingsLanguage.
@@ -993,6 +1835,24 @@ abstract class AppLocalizations {
   /// **'Cambiar etiqueta'**
   String get currencyChangeConfirm;
 
+  /// No description provided for @currencyRegionAmericas.
+  ///
+  /// In es, this message translates to:
+  /// **'América'**
+  String get currencyRegionAmericas;
+
+  /// No description provided for @currencyRegionEurope.
+  ///
+  /// In es, this message translates to:
+  /// **'Europa'**
+  String get currencyRegionEurope;
+
+  /// No description provided for @currencyRegionAsiaPacific.
+  ///
+  /// In es, this message translates to:
+  /// **'Asia y Oceanía'**
+  String get currencyRegionAsiaPacific;
+
   /// No description provided for @settingsCurrency.
   ///
   /// In es, this message translates to:
@@ -1017,6 +1877,54 @@ abstract class AppLocalizations {
   /// **'Se activa solo si tu teléfono ya lo pide.'**
   String get settingsReduceMotionHint;
 
+  /// No description provided for @settingsQuickEntry.
+  ///
+  /// In es, this message translates to:
+  /// **'Acceso rápido'**
+  String get settingsQuickEntry;
+
+  /// No description provided for @settingsQuickEntryHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Muestra Ingreso y Gasto en la pantalla bloqueada.'**
+  String get settingsQuickEntryHint;
+
+  /// No description provided for @quickEntryQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué quieres registrar?'**
+  String get quickEntryQuestion;
+
+  /// No description provided for @quickEntryDenied.
+  ///
+  /// In es, this message translates to:
+  /// **'Permite las notificaciones de Sobrita para activar el acceso rápido.'**
+  String get quickEntryDenied;
+
+  /// No description provided for @widgetTodayLeft.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy te queda'**
+  String get widgetTodayLeft;
+
+  /// No description provided for @widgetCycleBalance.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldo'**
+  String get widgetCycleBalance;
+
+  /// No description provided for @widgetOpenApp.
+  ///
+  /// In es, this message translates to:
+  /// **'Abre Sobrita'**
+  String get widgetOpenApp;
+
+  /// No description provided for @widgetRegisterExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrar gasto'**
+  String get widgetRegisterExpense;
+
   /// No description provided for @settingsBackup.
   ///
   /// In es, this message translates to:
@@ -1035,6 +1943,72 @@ abstract class AppLocalizations {
   /// **'Respaldo copiado al portapapeles.'**
   String get settingsBackupCopied;
 
+  /// No description provided for @settingsBackupCopyFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo copiar el respaldo. Vuelve a intentarlo.'**
+  String get settingsBackupCopyFailed;
+
+  /// No description provided for @settingsRestorePurchases.
+  ///
+  /// In es, this message translates to:
+  /// **'Restaurar compras'**
+  String get settingsRestorePurchases;
+
+  /// No description provided for @settingsAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuenta de Google'**
+  String get settingsAccount;
+
+  /// No description provided for @settingsAccountConnect.
+  ///
+  /// In es, this message translates to:
+  /// **'Conectar'**
+  String get settingsAccountConnect;
+
+  /// No description provided for @settingsRestore.
+  ///
+  /// In es, this message translates to:
+  /// **'Restaurar'**
+  String get settingsRestore;
+
+  /// No description provided for @purchaseRestored.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo. Tus compras volvieron.'**
+  String get purchaseRestored;
+
+  /// No description provided for @purchaseFailureStoreUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'La tienda no está disponible ahora. Inténtalo más tarde.'**
+  String get purchaseFailureStoreUnavailable;
+
+  /// No description provided for @purchaseFailureRejected.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo completar la compra. No se te cobró nada.'**
+  String get purchaseFailureRejected;
+
+  /// No description provided for @purchaseFailureDeliveryNotSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu compra llegó, pero no se pudo guardar. Se aplicará la próxima vez que abras Sobrita.'**
+  String get purchaseFailureDeliveryNotSaved;
+
+  /// No description provided for @purchaseFailureNothingToRestore.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos compras en esta cuenta.'**
+  String get purchaseFailureNothingToRestore;
+
+  /// No description provided for @collectionPurchasing.
+  ///
+  /// In es, this message translates to:
+  /// **'COMPRANDO…'**
+  String get collectionPurchasing;
+
   /// No description provided for @settingsXpPreview.
   ///
   /// In es, this message translates to:
@@ -1050,8 +2024,86 @@ abstract class AppLocalizations {
   /// No description provided for @settingsStorageNote.
   ///
   /// In es, this message translates to:
-  /// **'Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobra.'**
+  /// **'Tus datos se guardan en este dispositivo. No se necesita una cuenta para usar Sobrita.'**
   String get settingsStorageNote;
+
+  /// No description provided for @settingsSectionShop.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienda'**
+  String get settingsSectionShop;
+
+  /// No description provided for @settingsPackName.
+  ///
+  /// In es, this message translates to:
+  /// **'Los amigos de Michi'**
+  String get settingsPackName;
+
+  /// No description provided for @settingsPackHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Tranqui, Lana y Bandi. También quita los anuncios generales.'**
+  String get settingsPackHint;
+
+  /// No description provided for @settingsOwned.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya lo tienes'**
+  String get settingsOwned;
+
+  /// No description provided for @settingsShopRestoreNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Las compras se guardan en tu cuenta de la tienda. Puedes recuperarlas al reinstalar.'**
+  String get settingsShopRestoreNote;
+
+  /// No description provided for @settlementTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cierre de este ciclo'**
+  String get settlementTitle;
+
+  /// No description provided for @settlementSpent.
+  ///
+  /// In es, this message translates to:
+  /// **'Gastado'**
+  String get settlementSpent;
+
+  /// No description provided for @settlementLeft.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobrante'**
+  String get settlementLeft;
+
+  /// No description provided for @settlementOver.
+  ///
+  /// In es, this message translates to:
+  /// **'Pasaste'**
+  String get settlementOver;
+
+  /// No description provided for @settlementAverage.
+  ///
+  /// In es, this message translates to:
+  /// **'Promedio diario'**
+  String get settlementAverage;
+
+  /// No description provided for @settlementContinue.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get settlementContinue;
+
+  /// No description provided for @settlementCtaTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir por un adorno especial'**
+  String get settlementCtaTitle;
+
+  /// No description provided for @settlementCtaAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver colección'**
+  String get settlementCtaAction;
 
   /// No description provided for @settingsSectionBudget.
   ///
@@ -1071,6 +2123,30 @@ abstract class AppLocalizations {
   /// **'Datos'**
   String get settingsSectionData;
 
+  /// No description provided for @settingsSectionPrivacy.
+  ///
+  /// In es, this message translates to:
+  /// **'Privacidad'**
+  String get settingsSectionPrivacy;
+
+  /// No description provided for @settingsAdPrivacy.
+  ///
+  /// In es, this message translates to:
+  /// **'Privacidad de anuncios'**
+  String get settingsAdPrivacy;
+
+  /// No description provided for @settingsAdPrivacyValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Administrar'**
+  String get settingsAdPrivacyValue;
+
+  /// No description provided for @settingsAdPrivacyFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron abrir las opciones de privacidad. Inténtalo de nuevo.'**
+  String get settingsAdPrivacyFailed;
+
   /// Groups the debug design gallery, which is not data and does not belong beside the backup row.
   ///
   /// In es, this message translates to:
@@ -1080,7 +2156,7 @@ abstract class AppLocalizations {
   /// The light history line under the profile card's name: how much the ledger has accumulated, without repeating the money figures the home screen already carries.
   ///
   /// In es, this message translates to:
-  /// **'{movements, plural, =1{1 movimiento} other{{movements} movimientos}} · {days, plural, =1{1 día con Sobra} other{{days} días con Sobra}}'**
+  /// **'{movements, plural, =1{1 movimiento} other{{movements} movimientos}} · {days, plural, =1{1 día con Sobrita} other{{days} días con Sobrita}}'**
   String settingsProfileStats(int movements, int days);
 
   /// The language setting that follows the phone. The names of the languages themselves are not translated — a reader looks for their own language written in it.
@@ -1113,6 +2189,24 @@ abstract class AppLocalizations {
   /// **'Límite de {amount} al día'**
   String dailySpendLimit(String amount);
 
+  /// The caption under the spending chart when no budget has been set, so there is no daily limit line to name.
+  ///
+  /// In es, this message translates to:
+  /// **'Este ciclo {amount}'**
+  String dailySpendCycleTotal(String amount);
+
+  /// No description provided for @dailyIncomeTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingreso por día'**
+  String get dailyIncomeTitle;
+
+  /// The caption under the income chart: what came in during this cycle. Income has no daily limit line.
+  ///
+  /// In es, this message translates to:
+  /// **'Este ciclo {amount}'**
+  String dailyIncomeCycleTotal(String amount);
+
   /// No description provided for @transactionsEmptyTitle.
   ///
   /// In es, this message translates to:
@@ -1124,6 +2218,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Registra tu primer gasto y aquí verás el resumen del ciclo.'**
   String get transactionsEmptyMessage;
+
+  /// No description provided for @transactionsEmptyExpensesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay gastos'**
+  String get transactionsEmptyExpensesTitle;
+
+  /// No description provided for @transactionsEmptyExpensesMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Registra un gasto y aquí verás el día a día.'**
+  String get transactionsEmptyExpensesMessage;
+
+  /// No description provided for @transactionsEmptyIncomesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay ingresos'**
+  String get transactionsEmptyIncomesTitle;
+
+  /// No description provided for @transactionsEmptyIncomesMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Registra un ingreso y aquí verás el día a día.'**
+  String get transactionsEmptyIncomesMessage;
 
   /// No description provided for @transactionsExpensePinned.
   ///
@@ -1178,6 +2296,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Editar movimiento'**
   String get editMovement;
+
+  /// No description provided for @editIncome.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar ingreso'**
+  String get editIncome;
+
+  /// No description provided for @editPaidDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Día en que lo pagaste'**
+  String get editPaidDate;
+
+  /// A fixed-expense payment whose paid date can move. {date} is the due date it settles, written short.
+  ///
+  /// In es, this message translates to:
+  /// **'Sigue contando como el pago del {date}.'**
+  String editFixedOccurrence(String date);
 
   /// No description provided for @amount.
   ///
@@ -1248,7 +2384,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In es, this message translates to:
-  /// **'Sobra'**
+  /// **'Sobrita'**
   String get appName;
 
   /// No description provided for @homeCycleBalance.
@@ -1274,6 +2410,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Límite de hoy {limit} · Quedan {remaining} en el ciclo'**
   String homeDailyLimit(String limit, String remaining);
+
+  /// No description provided for @homeFirstQuestLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Primera misión'**
+  String get homeFirstQuestLabel;
+
+  /// No description provided for @homeBudgetQuestBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponle un presupuesto y te digo cuánto puedes gastar cada día.'**
+  String get homeBudgetQuestBody;
 
   /// No description provided for @homeCycleProgress.
   ///
@@ -1353,6 +2501,24 @@ abstract class AppLocalizations {
   /// **'Presupuesto total'**
   String get budgetTotal;
 
+  /// No description provided for @budgetNotSetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay presupuesto'**
+  String get budgetNotSetTitle;
+
+  /// No description provided for @budgetNotSetBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Defínelo y calculamos cuánto puedes gastar cada día.'**
+  String get budgetNotSetBody;
+
+  /// No description provided for @budgetSetAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Definir presupuesto'**
+  String get budgetSetAction;
+
   /// No description provided for @budgetTooLow.
   ///
   /// In es, this message translates to:
@@ -1407,6 +2573,18 @@ abstract class AppLocalizations {
   /// **'Aún no se ha cerrado ningún ciclo.'**
   String get cycleHistoryEmpty;
 
+  /// No description provided for @cycleHistoryAverage.
+  ///
+  /// In es, this message translates to:
+  /// **'Promedio diario {amount}'**
+  String cycleHistoryAverage(String amount);
+
+  /// No description provided for @cycleHistoryAveragePending.
+  ///
+  /// In es, this message translates to:
+  /// **'Promedio diario · reuniendo datos'**
+  String get cycleHistoryAveragePending;
+
   /// No description provided for @budgetChangedTitle.
   ///
   /// In es, this message translates to:
@@ -1460,6 +2638,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Estimado que te quedará'**
   String get budgetEstimatedLeft;
+
+  /// Why the projection reads what it does. {amount} is the cycle's average spend per day.
+  ///
+  /// In es, this message translates to:
+  /// **'Si sigues gastando {amount} al día, como hasta ahora, te queda esto.'**
+  String budgetProjectionBasis(String amount);
+
+  /// No description provided for @budgetSavedThisCycle.
+  ///
+  /// In es, this message translates to:
+  /// **'Apartado como ahorro este ciclo'**
+  String get budgetSavedThisCycle;
+
+  /// No description provided for @budgetClosedCyclesResult.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que te sobró en ciclos anteriores'**
+  String get budgetClosedCyclesResult;
+
+  /// First line of the projection on Inicio. {date} is the cycle's last day, written short.
+  ///
+  /// In es, this message translates to:
+  /// **'A este ritmo, al cierre del {date}'**
+  String homeProjectionLead(String date);
+
+  /// Second line of the projection on Inicio when money is left. {amount} is formatted money.
+  ///
+  /// In es, this message translates to:
+  /// **'te sobran {amount}'**
+  String homeProjectionLeft(String amount);
+
+  /// Second line of the projection on Inicio when the cycle runs over. {amount} is formatted money.
+  ///
+  /// In es, this message translates to:
+  /// **'te faltan {amount}'**
+  String homeProjectionShort(String amount);
 
   /// No description provided for @continueLabel.
   ///
@@ -1610,6 +2824,240 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ej. Propina del viernes'**
   String get registerNoteIncomeExample;
+
+  /// No description provided for @receiptTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ticket'**
+  String get receiptTitle;
+
+  /// No description provided for @receiptAdd.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar ticket'**
+  String get receiptAdd;
+
+  /// No description provided for @receiptCamera.
+  ///
+  /// In es, this message translates to:
+  /// **'Cámara'**
+  String get receiptCamera;
+
+  /// No description provided for @receiptGallery.
+  ///
+  /// In es, this message translates to:
+  /// **'Galería'**
+  String get receiptGallery;
+
+  /// No description provided for @receiptChange.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar'**
+  String get receiptChange;
+
+  /// No description provided for @receiptRemove.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar'**
+  String get receiptRemove;
+
+  /// No description provided for @receiptHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Una foto para recordar qué fue este gasto.'**
+  String get receiptHint;
+
+  /// No description provided for @receiptAttached.
+  ///
+  /// In es, this message translates to:
+  /// **'Ticket adjunto'**
+  String get receiptAttached;
+
+  /// No description provided for @receiptView.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver ticket'**
+  String get receiptView;
+
+  /// No description provided for @receiptClose.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get receiptClose;
+
+  /// No description provided for @receiptMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'La foto ya no está en este dispositivo.'**
+  String get receiptMissing;
+
+  /// No description provided for @receiptFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo guardar la foto.'**
+  String get receiptFailed;
+
+  /// No description provided for @receiptBackupNote.
+  ///
+  /// In es, this message translates to:
+  /// **'La copia y las exportaciones no incluyen las fotos de tickets.'**
+  String get receiptBackupNote;
+
+  /// No description provided for @csvExportTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar movimientos'**
+  String get csvExportTooltip;
+
+  /// No description provided for @exportFormatTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir formato'**
+  String get exportFormatTitle;
+
+  /// No description provided for @exportAllHistory.
+  ///
+  /// In es, this message translates to:
+  /// **'Se exporta todo el historial.'**
+  String get exportAllHistory;
+
+  /// No description provided for @exportCsvTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'CSV (.csv)'**
+  String get exportCsvTitle;
+
+  /// No description provided for @exportCsvDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Para importar a otras apps. Los números dependen de la configuración regional.'**
+  String get exportCsvDescription;
+
+  /// No description provided for @exportExcelTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Excel (.xlsx)'**
+  String get exportExcelTitle;
+
+  /// No description provided for @exportExcelDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo para calcular en Excel y Google Sheets.'**
+  String get exportExcelDescription;
+
+  /// No description provided for @csvExportPreparing.
+  ///
+  /// In es, this message translates to:
+  /// **'Preparando…'**
+  String get csvExportPreparing;
+
+  /// No description provided for @releaseNote1018Export.
+  ///
+  /// In es, this message translates to:
+  /// **'Exporta tus movimientos a CSV o Excel desde Movimientos o Mi Sobrita.'**
+  String get releaseNote1018Export;
+
+  /// No description provided for @releaseNote1019Goal.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo: Mi meta. Pega el enlace de algo que quieras comprar y junta ahí lo que te sobra de cada ciclo.'**
+  String get releaseNote1019Goal;
+
+  /// No description provided for @releaseNote1019Bought.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando lo compres, usa «Lo compré con mi meta»: tu dinero de hoy y tu presupuesto no cambian.'**
+  String get releaseNote1019Bought;
+
+  /// No description provided for @settingsCsvExport.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar movimientos'**
+  String get settingsCsvExport;
+
+  /// No description provided for @settingsCsvExportValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir'**
+  String get settingsCsvExportValue;
+
+  /// No description provided for @csvExportEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay movimientos para exportar.'**
+  String get csvExportEmpty;
+
+  /// No description provided for @csvExportFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abrir el menú para compartir. Vuelve a intentarlo.'**
+  String get csvExportFailed;
+
+  /// No description provided for @csvHeaderDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha'**
+  String get csvHeaderDate;
+
+  /// No description provided for @csvHeaderTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Hora'**
+  String get csvHeaderTime;
+
+  /// No description provided for @csvHeaderType.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo'**
+  String get csvHeaderType;
+
+  /// No description provided for @csvHeaderCategory.
+  ///
+  /// In es, this message translates to:
+  /// **'Categoría'**
+  String get csvHeaderCategory;
+
+  /// No description provided for @csvHeaderNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Nota'**
+  String get csvHeaderNote;
+
+  /// No description provided for @csvHeaderPayment.
+  ///
+  /// In es, this message translates to:
+  /// **'Pago'**
+  String get csvHeaderPayment;
+
+  /// No description provided for @csvHeaderAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto'**
+  String get csvHeaderAmount;
+
+  /// No description provided for @csvHeaderCurrency.
+  ///
+  /// In es, this message translates to:
+  /// **'Moneda'**
+  String get csvHeaderCurrency;
+
+  /// No description provided for @csvTypeExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto'**
+  String get csvTypeExpense;
+
+  /// No description provided for @csvTypeFixedExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto fijo'**
+  String get csvTypeFixedExpense;
+
+  /// No description provided for @csvTypeIncome.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingreso'**
+  String get csvTypeIncome;
 
   /// No description provided for @registerPayment.
   ///
@@ -1911,6 +3359,36 @@ abstract class AppLocalizations {
   /// **'Guardar cambio'**
   String get cycleSaveChange;
 
+  /// No description provided for @cycleShortFirst.
+  ///
+  /// In es, this message translates to:
+  /// **'El primer ciclo dura {days, plural, =1{solo 1 día} other{solo {days} días}}, así que recibe la parte del presupuesto que le corresponde.'**
+  String cycleShortFirst(int days);
+
+  /// No description provided for @cycleBudgetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu presupuesto es por ciclo'**
+  String get cycleBudgetTitle;
+
+  /// No description provided for @cycleBudgetBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora son {current} por ciclo. Con la nueva frecuencia, unos {suggested} por ciclo mantienen el mismo ritmo de gasto. El cambio empieza con el próximo ciclo.'**
+  String cycleBudgetBody(String current, String suggested);
+
+  /// No description provided for @cycleBudgetUse.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar {amount}'**
+  String cycleBudgetUse(String amount);
+
+  /// No description provided for @cycleBudgetKeep.
+  ///
+  /// In es, this message translates to:
+  /// **'Mantener {amount}'**
+  String cycleBudgetKeep(String amount);
+
   /// No description provided for @onboardingBudgetAboveZero.
   ///
   /// In es, this message translates to:
@@ -1922,6 +3400,221 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ingresa el efectivo o elige “Ahora no”.'**
   String get onboardingCashOrSkip;
+
+  /// No description provided for @prologueRainNoEnd.
+  ///
+  /// In es, this message translates to:
+  /// **'La lluvia no daba señales de parar.'**
+  String get prologueRainNoEnd;
+
+  /// No description provided for @prologueRentPaid.
+  ///
+  /// In es, this message translates to:
+  /// **'La renta estaba pagada, y en la cuenta quedaba lo justo hasta el próximo pago.'**
+  String get prologueRentPaid;
+
+  /// No description provided for @prologueSoundAtDoor.
+  ///
+  /// In es, this message translates to:
+  /// **'Algo se movió junto a la puerta.'**
+  String get prologueSoundAtDoor;
+
+  /// No description provided for @prologueGoLook.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir a ver'**
+  String get prologueGoLook;
+
+  /// No description provided for @prologueWetTracks.
+  ///
+  /// In es, this message translates to:
+  /// **'Dos hileras de huellas mojadas cruzaron el piso.'**
+  String get prologueWetTracks;
+
+  /// No description provided for @prologueShelter.
+  ///
+  /// In es, this message translates to:
+  /// **'Déjanos esperar a que pase.'**
+  String get prologueShelter;
+
+  /// No description provided for @prologueItSpoke.
+  ///
+  /// In es, this message translates to:
+  /// **'…habló.'**
+  String get prologueItSpoke;
+
+  /// No description provided for @prologueReplySurprised.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Acabas de hablar?'**
+  String get prologueReplySurprised;
+
+  /// No description provided for @prologueReplyTowel.
+  ///
+  /// In es, this message translates to:
+  /// **'(traes una toalla sin decir nada)'**
+  String get prologueReplyTowel;
+
+  /// No description provided for @prologueEarnKeep.
+  ///
+  /// In es, this message translates to:
+  /// **'Algo tengo que aportar. Yo llevo los números.'**
+  String get prologueEarnKeep;
+
+  /// No description provided for @prologueAskSchedule.
+  ///
+  /// In es, this message translates to:
+  /// **'Primero: ¿cuándo entra el dinero?'**
+  String get prologueAskSchedule;
+
+  /// No description provided for @prologueAskPayday.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué día te pagan? Con el primero me basta; el resto lo cuento yo.'**
+  String get prologueAskPayday;
+
+  /// No description provided for @prologueAskBudget.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltan {days} días para el próximo pago. ¿Cuánto piensas gastar?'**
+  String prologueAskBudget(int days);
+
+  /// No description provided for @prologueSkipIsFine.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes saltarlo. Te lo recuerdo en casa.'**
+  String get prologueSkipIsFine;
+
+  /// No description provided for @prologueSkip.
+  ///
+  /// In es, this message translates to:
+  /// **'Saltar'**
+  String get prologueSkip;
+
+  /// No description provided for @prologueDriedOff.
+  ///
+  /// In es, this message translates to:
+  /// **'Secos, los dos se calmaron. Afuera seguía lloviendo.'**
+  String get prologueDriedOff;
+
+  /// No description provided for @prologueWhoSits.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quién se sienta contigo?'**
+  String get prologueWhoSits;
+
+  /// No description provided for @prologueMichiTrait.
+  ///
+  /// In es, this message translates to:
+  /// **'Callado.\nBueno con los números.'**
+  String get prologueMichiTrait;
+
+  /// No description provided for @prologuePoodleTrait.
+  ///
+  /// In es, this message translates to:
+  /// **'Puro ánimo.\nMuy atento.'**
+  String get prologuePoodleTrait;
+
+  /// No description provided for @prologueSchnauzerTrait.
+  ///
+  /// In es, this message translates to:
+  /// **'Observador.\nSiempre atento.'**
+  String get prologueSchnauzerTrait;
+
+  /// No description provided for @prologueLockedName.
+  ///
+  /// In es, this message translates to:
+  /// **'???'**
+  String get prologueLockedName;
+
+  /// No description provided for @prologueLockedTrait.
+  ///
+  /// In es, this message translates to:
+  /// **'Puro ánimo.\nMuy atento.'**
+  String get prologueLockedTrait;
+
+  /// No description provided for @prologueLockedSoon.
+  ///
+  /// In es, this message translates to:
+  /// **'Arte en camino'**
+  String get prologueLockedSoon;
+
+  /// No description provided for @prologueLiveTogether.
+  ///
+  /// In es, this message translates to:
+  /// **'Que se queden'**
+  String get prologueLiveTogether;
+
+  /// No description provided for @prologueOtherWaits.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} se quedó en la puerta, con timidez. Llega tras 3 días con registros, o al momento con 2 anuncios.'**
+  String prologueOtherWaits(String name);
+
+  /// No description provided for @homeStarterWaiting.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} espera en la puerta'**
+  String homeStarterWaiting(String name);
+
+  /// No description provided for @homeStarterDays.
+  ///
+  /// In es, this message translates to:
+  /// **'Llega con {target} días con registros'**
+  String homeStarterDays(int target);
+
+  /// No description provided for @homeStarterCallNow.
+  ///
+  /// In es, this message translates to:
+  /// **'Llamar ya con {target} anuncios · {progress}/{target}'**
+  String homeStarterCallNow(int target, int progress);
+
+  /// No description provided for @starterArrivalKicker.
+  ///
+  /// In es, this message translates to:
+  /// **'{days} días con registros'**
+  String starterArrivalKicker(int days);
+
+  /// No description provided for @starterArrivalTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¡{name} se acercó!'**
+  String starterArrivalTitle(String name);
+
+  /// No description provided for @starterArrivalLine.
+  ///
+  /// In es, this message translates to:
+  /// **'«Te vi anotar cada día. Yo también quiero ayudar.»'**
+  String get starterArrivalLine;
+
+  /// No description provided for @starterArrivalKeep.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguir con {name}'**
+  String starterArrivalKeep(String name);
+
+  /// No description provided for @starterArrivalSwitch.
+  ///
+  /// In es, this message translates to:
+  /// **'Vivir con {name}'**
+  String starterArrivalSwitch(String name);
+
+  /// No description provided for @collectionStarterUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'{days}/{daysTarget} días con registros, o {ads}/{adsTarget} anuncios. Lo que llegue primero.'**
+  String collectionStarterUnlock(
+    int days,
+    int daysTarget,
+    int ads,
+    int adsTarget,
+  );
+
+  /// The chosen character introducing itself, right after it is picked.
+  ///
+  /// In es, this message translates to:
+  /// **'Me llamo {name}. Gracias por abrir.'**
+  String prologueGreeting(String name);
 
   /// No description provided for @onboardingStart.
   ///
@@ -1941,7 +3634,7 @@ abstract class AppLocalizations {
   /// **'Te decimos cuánto puedes gastar hoy.'**
   String get onboardingPromise;
 
-  /// No description provided for @onboardingNoAccount.
+  /// Welcome screen, beside a lock icon. Sobrita has no account and no server. Do not say the data stays only on the phone: Android may back it up to the user's own Google account.
   ///
   /// In es, this message translates to:
   /// **'Sin cuenta. Tus datos se quedan contigo.'**
@@ -2031,6 +3724,12 @@ abstract class AppLocalizations {
   /// **'¿Cuánto quieres gastar\nen este ciclo?'**
   String get onboardingBudgetQuestion;
 
+  /// No description provided for @onboardingBudgetLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes ponerlo después desde Inicio.'**
+  String get onboardingBudgetLater;
+
   /// No description provided for @onboardingNotNow.
   ///
   /// In es, this message translates to:
@@ -2054,6 +3753,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Este será tu primer conteo, no un ingreso.'**
   String get onboardingCashIsBaseline;
+
+  /// The last prologue line, once the character has moved in.
+  ///
+  /// In es, this message translates to:
+  /// **'Dejó de llover. {name} se acomodó a tu lado.'**
+  String onboardingSettledIn(String name);
+
+  /// No description provided for @onboardingFirstQuests.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus primeras misiones'**
+  String get onboardingFirstQuests;
+
+  /// No description provided for @onboardingWaitingAtHome.
+  ///
+  /// In es, this message translates to:
+  /// **'Te espera en casa'**
+  String get onboardingWaitingAtHome;
 
   /// No description provided for @onboardingGoHome.
   ///
@@ -2138,6 +3855,1698 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{first} · {second}'**
   String movementSubtitle(String first, String second);
+
+  /// No description provided for @settingsSectionAbout.
+  ///
+  /// In es, this message translates to:
+  /// **'Acerca de'**
+  String get settingsSectionAbout;
+
+  /// No description provided for @settingsReleaseNotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Novedades'**
+  String get settingsReleaseNotes;
+
+  /// No description provided for @settingsVersion.
+  ///
+  /// In es, this message translates to:
+  /// **'Versión'**
+  String get settingsVersion;
+
+  /// Stands in the version column when the platform will not report the running build, such as in a test harness. A dash rather than a number, because a wrong version is worse here than none.
+  ///
+  /// In es, this message translates to:
+  /// **'—'**
+  String get settingsVersionUnknown;
+
+  /// No description provided for @releaseNotesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Novedades'**
+  String get releaseNotesTitle;
+
+  /// Tag on the card for the version the phone is running.
+  ///
+  /// In es, this message translates to:
+  /// **'Actual'**
+  String get releaseNotesCurrent;
+
+  /// Footnote under the list, saying why older versions are not there.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardamos las últimas {count} versiones.'**
+  String releaseNotesRetention(int count);
+
+  /// No description provided for @releaseNote1015Penguin.
+  ///
+  /// In es, this message translates to:
+  /// **'Penguin ya está en la colección. Una compra única y se queda contigo.'**
+  String get releaseNote1015Penguin;
+
+  /// No description provided for @releaseNote1015Ads.
+  ///
+  /// In es, this message translates to:
+  /// **'Mejoramos la carga y la estabilidad de los anuncios con recompensa.'**
+  String get releaseNote1015Ads;
+
+  /// No description provided for @releaseNote1016Costumes.
+  ///
+  /// In es, this message translates to:
+  /// **'Llegaron 12 disfraces de temporada para tus amigos. Son gratis hasta el 3 de noviembre.'**
+  String get releaseNote1016Costumes;
+
+  /// No description provided for @releaseNote1016Keeps.
+  ///
+  /// In es, this message translates to:
+  /// **'Una vez recibidos, son tuyos para siempre.'**
+  String get releaseNote1016Keeps;
+
+  /// No description provided for @releaseNote1017Delete.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora puedes eliminar un gasto desde la pantalla donde lo editas.'**
+  String get releaseNote1017Delete;
+
+  /// No description provided for @releaseNote1017Dates.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes cambiar la fecha de un gasto o un ingreso, y ahora los ingresos también se editan.'**
+  String get releaseNote1017Dates;
+
+  /// No description provided for @releaseNote1017Projection.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio te dice cuánto te sobrará al cierre del ciclo si sigues a este ritmo.'**
+  String get releaseNote1017Projection;
+
+  /// Heading of the dialog shown on launch when Google Play has a newer build waiting.
+  ///
+  /// In es, this message translates to:
+  /// **'Hay una versión nueva'**
+  String get updateAvailableTitle;
+
+  /// No description provided for @updateAvailableBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualiza para tener lo último de Sobrita.'**
+  String get updateAvailableBody;
+
+  /// Names the build in hand inside the update dialog. Only the running version is shown: Play reports the waiting build as a version code, which means nothing to a reader.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu versión: v{version}'**
+  String updateCurrentVersion(String version);
+
+  /// Opens the Sobrita listing on Google Play. It does not install anything itself.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get updateAction;
+
+  /// No description provided for @updateLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora no'**
+  String get updateLater;
+
+  /// No description provided for @updateBannerMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Versión nueva disponible'**
+  String get updateBannerMessage;
+
+  /// Screen-reader label for the banner's close button.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar el aviso'**
+  String get updateBannerDismiss;
+
+  /// No description provided for @updateStoreFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abrir Google Play.'**
+  String get updateStoreFailed;
+
+  /// No description provided for @settingsCheckUpdate.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar actualización'**
+  String get settingsCheckUpdate;
+
+  /// No description provided for @settingsCheckUpdateBusy.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando…'**
+  String get settingsCheckUpdateBusy;
+
+  /// No description provided for @settingsCheckUpdateUpToDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya estás al día.'**
+  String get settingsCheckUpdateUpToDate;
+
+  /// Ajustes row that opens the app's Google Play listing so the user can leave a rating.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificar Sobrita'**
+  String get settingsRateApp;
+
+  /// Ajustes row, under Acerca de, that opens the list of the team's other apps. Also the title of that screen. Kept neutral on purpose: the screen's intro line says who made them.
+  ///
+  /// In es, this message translates to:
+  /// **'Apps recomendadas'**
+  String get settingsOurApps;
+
+  /// One line under the title of the other-apps screen, saying who made them.
+  ///
+  /// In es, this message translates to:
+  /// **'Hechas por el equipo de Sobrita.'**
+  String get ourAppsIntro;
+
+  /// Button on each card of the other-apps screen; opens that app's Google Play listing.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver en Google Play'**
+  String get ourAppsOpen;
+
+  /// One word under the name MultiCal: what the app is for. Shown in capitals.
+  ///
+  /// In es, this message translates to:
+  /// **'Calculadora'**
+  String get ourAppsMultiCalKind;
+
+  /// Two-line description of MultiCal, a calculator app (tip, age, unit converter) that also splits a bill from a photo of the receipt. Adapted from its Play short description.
+  ///
+  /// In es, this message translates to:
+  /// **'Calculadora, propina, edad y unidades. Divide la cuenta con una foto del recibo.'**
+  String get ourAppsMultiCalBlurb;
+
+  /// Category under the name LOOPET: a daily routine planner. Shown in capitals.
+  ///
+  /// In es, this message translates to:
+  /// **'Rutinas'**
+  String get ourAppsLoopetKind;
+
+  /// Short description of LOOPET, a routine planner with a 24-hour circular timetable showing the current and next routine.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo tu día en un círculo. Mira qué rutina toca ahora y cuál viene después.'**
+  String get ourAppsLoopetBlurb;
+
+  /// Opens the full Novedades screen from the card shown after an update.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver todo'**
+  String get releaseAnnouncementViewAll;
+
+  /// No description provided for @releaseAnnouncementDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get releaseAnnouncementDone;
+
+  /// No description provided for @releaseAnnouncementDontShowAgain.
+  ///
+  /// In es, this message translates to:
+  /// **'No volver a mostrar'**
+  String get releaseAnnouncementDontShowAgain;
+
+  /// Screen-reader label for the dot on the Novedades row. The dot is the only thing that carries this meaning visually.
+  ///
+  /// In es, this message translates to:
+  /// **'Novedades sin leer'**
+  String get settingsReleaseNotesUnread;
+
+  /// Budget tab heading for rent, phone plans, bills paid on a schedule.
+  ///
+  /// In es, this message translates to:
+  /// **'Gastos fijos'**
+  String get fixedSectionTitle;
+
+  /// Under the heading: which month the list covers, and that it does not touch the daily amount.
+  ///
+  /// In es, this message translates to:
+  /// **'{month} · aparte de tu gasto diario'**
+  String fixedSectionMonth(String month);
+
+  /// No description provided for @fixedPaidOfTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'Pagado {paid} de {total}'**
+  String fixedPaidOfTotal(String paid, String total);
+
+  /// No description provided for @fixedAdd.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar gasto fijo'**
+  String get fixedAdd;
+
+  /// No description provided for @fixedEmptyBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Renta, celular, luz: anótalos una vez y te recuerdo cuándo toca pagar. No cambian tu gasto diario.'**
+  String get fixedEmptyBody;
+
+  /// No description provided for @fixedFrequencyWeekly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada semana'**
+  String get fixedFrequencyWeekly;
+
+  /// On the 15th and the last day of the month. Korean matches the existing pay-cycle label.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada quincena'**
+  String get fixedFrequencySemiMonthly;
+
+  /// No description provided for @fixedFrequencyMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada mes'**
+  String get fixedFrequencyMonthly;
+
+  /// CFE electricity and water are billed every two months in most of Mexico.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada 2 meses'**
+  String get fixedFrequencyBimonthly;
+
+  /// No description provided for @fixedStatusPaid.
+  ///
+  /// In es, this message translates to:
+  /// **'Pagado'**
+  String get fixedStatusPaid;
+
+  /// No description provided for @fixedStatusTomorrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Mañana'**
+  String get fixedStatusTomorrow;
+
+  /// Unpaid and past its date. Deliberately soft: no 'vencido' or '연체' — Sobra reminds, it does not scold.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha pasada'**
+  String get fixedStatusOverdue;
+
+  /// An estimate for a bill whose amount changes each time.
+  ///
+  /// In es, this message translates to:
+  /// **'aprox. {amount}'**
+  String fixedApprox(String amount);
+
+  /// No description provided for @fixedFormNewTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo gasto fijo'**
+  String get fixedFormNewTitle;
+
+  /// No description provided for @fixedFormEditTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar gasto fijo'**
+  String get fixedFormEditTitle;
+
+  /// No description provided for @fixedName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get fixedName;
+
+  /// No description provided for @fixedNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Renta, celular, luz…'**
+  String get fixedNameHint;
+
+  /// No description provided for @fixedNameRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponle un nombre'**
+  String get fixedNameRequired;
+
+  /// No description provided for @fixedHowOften.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cada cuánto?'**
+  String get fixedHowOften;
+
+  /// No description provided for @fixedNextDue.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximo pago'**
+  String get fixedNextDue;
+
+  /// The next few due dates, so a wrong month shows up before saving.
+  ///
+  /// In es, this message translates to:
+  /// **'Después: {dates}…'**
+  String fixedThenDates(String dates);
+
+  /// No description provided for @fixedVariable.
+  ///
+  /// In es, this message translates to:
+  /// **'El monto cambia cada vez'**
+  String get fixedVariable;
+
+  /// No description provided for @fixedVariableHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Uso lo último que pagaste como estimado.'**
+  String get fixedVariableHint;
+
+  /// No description provided for @fixedFormNote.
+  ///
+  /// In es, this message translates to:
+  /// **'No cambia tu gasto diario: tu presupuesto es lo que te queda después de los fijos.'**
+  String get fixedFormNote;
+
+  /// No description provided for @fixedSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar gasto fijo'**
+  String get fixedSave;
+
+  /// No description provided for @fixedDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar gasto fijo'**
+  String get fixedDelete;
+
+  /// No description provided for @fixedDeleteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar {name}?'**
+  String fixedDeleteTitle(String name);
+
+  /// No description provided for @fixedDeleteBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Los pagos que ya registraste se quedan en tus movimientos.'**
+  String get fixedDeleteBody;
+
+  /// No description provided for @fixedDueToday.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence hoy'**
+  String get fixedDueToday;
+
+  /// No description provided for @fixedDueTomorrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence mañana'**
+  String get fixedDueTomorrow;
+
+  /// No description provided for @fixedDueOn.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence el {date}'**
+  String fixedDueOn(String date);
+
+  /// No description provided for @fixedWasDue.
+  ///
+  /// In es, this message translates to:
+  /// **'Tocaba el {date}'**
+  String fixedWasDue(String date);
+
+  /// No description provided for @fixedHowMuch.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuánto pagaste?'**
+  String get fixedHowMuch;
+
+  /// No description provided for @fixedLastTime.
+  ///
+  /// In es, this message translates to:
+  /// **'La vez pasada: {amount}'**
+  String fixedLastTime(String amount);
+
+  /// No description provided for @fixedTodayUnchanged.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu gasto de hoy sigue en {amount}.'**
+  String fixedTodayUnchanged(String amount);
+
+  /// A cash payment does leave the wallet, so the cash estimate moves even though the budget does not.
+  ///
+  /// In es, this message translates to:
+  /// **'Efectivo estimado: de {from} a {to}'**
+  String fixedCashChange(String from, String to);
+
+  /// No description provided for @fixedPaidWith.
+  ///
+  /// In es, this message translates to:
+  /// **'Pago con {method}'**
+  String fixedPaidWith(String method);
+
+  /// No description provided for @fixedChange.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar'**
+  String get fixedChange;
+
+  /// No description provided for @fixedMarkPaid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya lo pagué'**
+  String get fixedMarkPaid;
+
+  /// No description provided for @fixedNotYet.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no'**
+  String get fixedNotYet;
+
+  /// Updates the expected amount without recording a payment.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo llegó el recibo'**
+  String get fixedBillOnly;
+
+  /// No description provided for @fixedBillSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo, espero {amount}.'**
+  String fixedBillSaved(String amount);
+
+  /// No description provided for @fixedPaymentSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} registrado.'**
+  String fixedPaymentSaved(String name);
+
+  /// No description provided for @fixedHomeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto fijo'**
+  String get fixedHomeLabel;
+
+  /// No description provided for @fixedHomeMany.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 pago fijo por revisar} other{{count} pagos fijos por revisar}}'**
+  String fixedHomeMany(int count);
+
+  /// No description provided for @fixedHomeSee.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver'**
+  String get fixedHomeSee;
+
+  /// No description provided for @fixedIntroTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu presupuesto es para gastar, sin fijos'**
+  String get fixedIntroTitle;
+
+  /// No description provided for @fixedIntroBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Los gastos fijos no bajan tu gasto diario. Si tus {budget} ya contaban «{name}», conviene bajar el presupuesto.'**
+  String fixedIntroBody(String budget, String name);
+
+  /// No description provided for @fixedIntroKeep.
+  ///
+  /// In es, this message translates to:
+  /// **'Está bien así'**
+  String get fixedIntroKeep;
+
+  /// No description provided for @fixedIntroAdjust.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustar presupuesto'**
+  String get fixedIntroAdjust;
+
+  /// Marks a fixed-expense payment in the movements list.
+  ///
+  /// In es, this message translates to:
+  /// **'Fijo'**
+  String get fixedBadge;
+
+  /// No description provided for @fixedNothingThisMonth.
+  ///
+  /// In es, this message translates to:
+  /// **'Nada vence este mes.'**
+  String get fixedNothingThisMonth;
+
+  /// No description provided for @fixedReminderLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorio'**
+  String get fixedReminderLabel;
+
+  /// No description provided for @fixedReminderNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin aviso'**
+  String get fixedReminderNone;
+
+  /// No description provided for @fixedReminderSameDay.
+  ///
+  /// In es, this message translates to:
+  /// **'El mismo día'**
+  String get fixedReminderSameDay;
+
+  /// No description provided for @fixedReminderDayBefore.
+  ///
+  /// In es, this message translates to:
+  /// **'1 día antes'**
+  String get fixedReminderDayBefore;
+
+  /// No description provided for @fixedReminderThreeDaysBefore.
+  ///
+  /// In es, this message translates to:
+  /// **'3 días antes'**
+  String get fixedReminderThreeDaysBefore;
+
+  /// No description provided for @fixedReminderHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Te aviso a las 9:00 de la mañana.'**
+  String get fixedReminderHint;
+
+  /// Shown after saving a fixed expense with a reminder when Android refused notification permission.
+  ///
+  /// In es, this message translates to:
+  /// **'Las notificaciones de Sobrita están apagadas, así que no podré avisarte.'**
+  String get fixedReminderBlocked;
+
+  /// Notification title on the due date. {name} is what the user called the fixed expense.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy toca pagar {name}'**
+  String fixedReminderTitleToday(String name);
+
+  /// No description provided for @fixedReminderTitleTomorrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Mañana toca pagar {name}'**
+  String fixedReminderTitleTomorrow(String name);
+
+  /// No description provided for @fixedReminderTitleInDays.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} vence en {days} días'**
+  String fixedReminderTitleInDays(String name, int days);
+
+  /// Notification body. The payment is never recorded automatically.
+  ///
+  /// In es, this message translates to:
+  /// **'{amount} · {method}. Cuando pagues, anótalo en Sobrita.'**
+  String fixedReminderBody(String amount, String method);
+
+  /// No description provided for @backupImportTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar respaldo'**
+  String get backupImportTitle;
+
+  /// No description provided for @backupImportHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Pega aquí el respaldo JSON que copiaste desde Sobrita.'**
+  String get backupImportHint;
+
+  /// No description provided for @backupPaste.
+  ///
+  /// In es, this message translates to:
+  /// **'Pegar respaldo'**
+  String get backupPaste;
+
+  /// No description provided for @backupPreview.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisar respaldo'**
+  String get backupPreview;
+
+  /// No description provided for @backupReplaceWarning.
+  ///
+  /// In es, this message translates to:
+  /// **'Este respaldo reemplazará tus registros y ajustes actuales. Guardaremos una copia de los datos actuales antes de continuar.'**
+  String get backupReplaceWarning;
+
+  /// No description provided for @backupSummary.
+  ///
+  /// In es, this message translates to:
+  /// **'{expenses} gastos · {incomes} ingresos · {fixed} gastos fijos'**
+  String backupSummary(int expenses, int incomes, int fixed);
+
+  /// No description provided for @backupRestore.
+  ///
+  /// In es, this message translates to:
+  /// **'Restaurar este respaldo'**
+  String get backupRestore;
+
+  /// No description provided for @backupImportSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Respaldo restaurado.'**
+  String get backupImportSuccess;
+
+  /// No description provided for @backupInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'No es un respaldo válido de Sobrita. Revisa que hayas copiado todo el texto.'**
+  String get backupInvalid;
+
+  /// No description provided for @backupNewer.
+  ///
+  /// In es, this message translates to:
+  /// **'Este respaldo necesita una versión más reciente de Sobrita. Actualiza la app primero.'**
+  String get backupNewer;
+
+  /// No description provided for @backupPurchaseNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Las compras se recuperan con Restaurar compras usando la misma cuenta de la tienda.'**
+  String get backupPurchaseNote;
+
+  /// No description provided for @shopRetry.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a cargar precios'**
+  String get shopRetry;
+
+  /// No description provided for @shopLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando precios…'**
+  String get shopLoading;
+
+  /// No description provided for @shopRefreshed.
+  ///
+  /// In es, this message translates to:
+  /// **'Precios actualizados.'**
+  String get shopRefreshed;
+
+  /// No description provided for @shopRetryFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar los precios. Revisa tu conexión y vuelve a intentarlo.'**
+  String get shopRetryFailed;
+
+  /// No description provided for @backupPrevious.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisar datos anteriores a la importación'**
+  String get backupPrevious;
+
+  /// Ajustes › About row that opens the system share sheet with Sobra's Play link.
+  ///
+  /// In es, this message translates to:
+  /// **'Recomendar Sobrita a un amigo'**
+  String get settingsShareApp;
+
+  /// Short action word at the end of the settlement share card.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir'**
+  String get shareAction;
+
+  /// Settlement card shown only when money was left over; opens the share sheet.
+  ///
+  /// In es, this message translates to:
+  /// **'Presúmele a un amigo'**
+  String get settlementShareTitle;
+
+  /// Second line under settlementShareTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Comparte Sobrita con un enlace'**
+  String get settlementShareHint;
+
+  /// Text placed in the share sheet from the settlement screen. The Play link follows on its own line. Never includes the amount.
+  ///
+  /// In es, this message translates to:
+  /// **'Este ciclo me sobró lana. Llevo mis gastos con un gatito en Sobrita y es gratis:'**
+  String get shareMessageSettlement;
+
+  /// Text placed in the share sheet from the Ajustes row. The Play link follows on its own line.
+  ///
+  /// In es, this message translates to:
+  /// **'Mira esta app para anotar tus gastos con un gatito. Es gratis:'**
+  String get shareMessageSettings;
+
+  /// No description provided for @firstExpenseStepOf.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu primer gasto · {step} de {total}'**
+  String firstExpenseStepOf(int step, int total);
+
+  /// No description provided for @firstExpenseDoneStep.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu primer gasto'**
+  String get firstExpenseDoneStep;
+
+  /// No description provided for @firstExpenseAmountQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuánto gastaste?'**
+  String get firstExpenseAmountQuestion;
+
+  /// No description provided for @firstExpenseAmountHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Piensa en algo que hayas pagado hoy.'**
+  String get firstExpenseAmountHint;
+
+  /// No description provided for @firstExpenseAmountLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes cambiarlo después.'**
+  String get firstExpenseAmountLater;
+
+  /// No description provided for @firstExpenseNotYet.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no he gastado'**
+  String get firstExpenseNotYet;
+
+  /// No description provided for @firstExpenseWhatQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'¿En qué lo gastaste?'**
+  String get firstExpenseWhatQuestion;
+
+  /// No description provided for @firstExpensePaymentQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo pagaste?'**
+  String get firstExpensePaymentQuestion;
+
+  /// No description provided for @firstExpenseSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar mi gasto'**
+  String get firstExpenseSave;
+
+  /// No description provided for @firstExpenseDoneTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Listo!'**
+  String get firstExpenseDoneTitle;
+
+  /// No description provided for @firstExpenseDoneBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya lo tenemos anotado.'**
+  String get firstExpenseDoneBody;
+
+  /// No description provided for @firstExpenseRecordTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu primer registro'**
+  String get firstExpenseRecordTitle;
+
+  /// No description provided for @firstExpenseStarterNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy ya cuenta. Cada día que anotes, {name} se acerca.'**
+  String firstExpenseStarterNote(String name);
+
+  /// No description provided for @homeFirstExpenseTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Un gasto, y empezamos.'**
+  String get homeFirstExpenseTitle;
+
+  /// No description provided for @homeFirstExpenseBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Anota algo que hayas pagado hoy.'**
+  String get homeFirstExpenseBody;
+
+  /// No description provided for @homeFirstExpenseAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrar un gasto'**
+  String get homeFirstExpenseAction;
+
+  /// No description provided for @homeFirstExpenseLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora no'**
+  String get homeFirstExpenseLater;
+
+  /// No description provided for @costumeChange.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar disfraz'**
+  String get costumeChange;
+
+  /// No description provided for @costumeCurrent.
+  ///
+  /// In es, this message translates to:
+  /// **'Disfraz actual: {name}'**
+  String costumeCurrent(String name);
+
+  /// No description provided for @costumeSheetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Disfraces de {character}'**
+  String costumeSheetTitle(String character);
+
+  /// No description provided for @costumeDefault.
+  ///
+  /// In es, this message translates to:
+  /// **'Original'**
+  String get costumeDefault;
+
+  /// No description provided for @costumePermanent.
+  ///
+  /// In es, this message translates to:
+  /// **'Para siempre'**
+  String get costumePermanent;
+
+  /// No description provided for @costumeApply.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar este disfraz'**
+  String get costumeApply;
+
+  /// No description provided for @costumeCanReturn.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes volver al original cuando quieras.'**
+  String get costumeCanReturn;
+
+  /// No description provided for @costumeNoExpiry.
+  ///
+  /// In es, this message translates to:
+  /// **'Los disfraces recibidos se quedan contigo.'**
+  String get costumeNoExpiry;
+
+  /// No description provided for @costumeOwnedCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} disponibles'**
+  String costumeOwnedCount(int count);
+
+  /// No description provided for @costumeDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'{character}, {costume}'**
+  String costumeDescription(String character, String costume);
+
+  /// No description provided for @seasonalGiftTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Un regalo de temporada'**
+  String get seasonalGiftTitle;
+
+  /// No description provided for @seasonalGiftBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Primero te mostramos a los amigos que ya tienes.'**
+  String get seasonalGiftBody;
+
+  /// No description provided for @seasonalGiftView.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver regalo'**
+  String get seasonalGiftView;
+
+  /// No description provided for @seasonalGiftClaim.
+  ///
+  /// In es, this message translates to:
+  /// **'Recibir disfraces para mis amigos'**
+  String get seasonalGiftClaim;
+
+  /// No description provided for @seasonalGiftDeadline.
+  ///
+  /// In es, this message translates to:
+  /// **'Gratis hasta el {date}'**
+  String seasonalGiftDeadline(String date);
+
+  /// No description provided for @seasonalGiftKeeps.
+  ///
+  /// In es, this message translates to:
+  /// **'Una vez recibidos, son tuyos para siempre.'**
+  String get seasonalGiftKeeps;
+
+  /// No description provided for @seasonalGiftLockedCharacters.
+  ///
+  /// In es, this message translates to:
+  /// **'Los disfraces de amigos que consigas después también quedan guardados.'**
+  String get seasonalGiftLockedCharacters;
+
+  /// No description provided for @seasonalGiftReceived.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Ya tienes los disfraces!'**
+  String get seasonalGiftReceived;
+
+  /// No description provided for @seasonalGiftWardrobe.
+  ///
+  /// In es, this message translates to:
+  /// **'Probar en Decorar'**
+  String get seasonalGiftWardrobe;
+
+  /// No description provided for @seasonalGiftClosed.
+  ///
+  /// In es, this message translates to:
+  /// **'El plazo para recibir este regalo terminó.'**
+  String get seasonalGiftClosed;
+
+  /// No description provided for @seasonalGiftPreview.
+  ///
+  /// In es, this message translates to:
+  /// **'Disfraces para tus amigos'**
+  String get seasonalGiftPreview;
+
+  /// No description provided for @seasonalGiftReady.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya puedes usarlo'**
+  String get seasonalGiftReady;
+
+  /// No description provided for @seasonalGiftStorageTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Los {count} disfraces son tuyos para siempre'**
+  String seasonalGiftStorageTitle(int count);
+
+  /// No description provided for @seasonalGiftLastDayTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy es el último día del regalo'**
+  String get seasonalGiftLastDayTitle;
+
+  /// No description provided for @seasonalGiftLastDayBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Recibe los {count} disfraces gratis antes de medianoche. Una vez recibidos, son tuyos para siempre.'**
+  String seasonalGiftLastDayBody(int count);
+
+  /// No description provided for @costumeDracula.
+  ///
+  /// In es, this message translates to:
+  /// **'Drácula'**
+  String get costumeDracula;
+
+  /// No description provided for @costumeFrankenstein.
+  ///
+  /// In es, this message translates to:
+  /// **'Frankenstein'**
+  String get costumeFrankenstein;
+
+  /// No description provided for @costumeWerewolf.
+  ///
+  /// In es, this message translates to:
+  /// **'Hombre lobo'**
+  String get costumeWerewolf;
+
+  /// No description provided for @costumePumpkin.
+  ///
+  /// In es, this message translates to:
+  /// **'Duende calabaza'**
+  String get costumePumpkin;
+
+  /// No description provided for @costumeMummy.
+  ///
+  /// In es, this message translates to:
+  /// **'Momia'**
+  String get costumeMummy;
+
+  /// No description provided for @costumeCatrina.
+  ///
+  /// In es, this message translates to:
+  /// **'Catrina'**
+  String get costumeCatrina;
+
+  /// No description provided for @costumeGhostPirate.
+  ///
+  /// In es, this message translates to:
+  /// **'Pirata fantasma'**
+  String get costumeGhostPirate;
+
+  /// No description provided for @costumeSwampMonster.
+  ///
+  /// In es, this message translates to:
+  /// **'Monstruo del pantano'**
+  String get costumeSwampMonster;
+
+  /// No description provided for @costumeMoonWitch.
+  ///
+  /// In es, this message translates to:
+  /// **'Bruja lunar'**
+  String get costumeMoonWitch;
+
+  /// No description provided for @costumeCalaveraMusician.
+  ///
+  /// In es, this message translates to:
+  /// **'Músico calavera'**
+  String get costumeCalaveraMusician;
+
+  /// No description provided for @costumeScarecrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Espantapájaros'**
+  String get costumeScarecrow;
+
+  /// No description provided for @costumeLittleGhost.
+  ///
+  /// In es, this message translates to:
+  /// **'Fantasmita'**
+  String get costumeLittleGhost;
+
+  /// No description provided for @goalTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi meta'**
+  String get goalTitle;
+
+  /// No description provided for @goalEmptyPrompt.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Para qué te gustaría ahorrar?'**
+  String get goalEmptyPrompt;
+
+  /// No description provided for @goalCreate.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear meta'**
+  String get goalCreate;
+
+  /// No description provided for @goalEdit.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar meta'**
+  String get goalEdit;
+
+  /// No description provided for @goalNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre de la meta'**
+  String get goalNameLabel;
+
+  /// No description provided for @goalNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Unos tenis nuevos'**
+  String get goalNameHint;
+
+  /// No description provided for @goalNameRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un nombre de hasta 60 caracteres.'**
+  String get goalNameRequired;
+
+  /// No description provided for @goalTargetAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto de la meta'**
+  String get goalTargetAmount;
+
+  /// No description provided for @goalTargetAmountInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un monto mayor que cero.'**
+  String get goalTargetAmountInvalid;
+
+  /// No description provided for @goalStartingAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que ya tienes ahorrado'**
+  String get goalStartingAmount;
+
+  /// No description provided for @goalStartingHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Incluye solo dinero que ya apartaste de tus gastos diarios.'**
+  String get goalStartingHint;
+
+  /// No description provided for @goalStartingAmountInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe cero o un monto positivo.'**
+  String get goalStartingAmountInvalid;
+
+  /// No description provided for @goalOptionalPlan.
+  ///
+  /// In es, this message translates to:
+  /// **'Plan de ahorro (opcional)'**
+  String get goalOptionalPlan;
+
+  /// No description provided for @goalTargetDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de la meta'**
+  String get goalTargetDate;
+
+  /// No description provided for @goalDateUnset.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir después'**
+  String get goalDateUnset;
+
+  /// No description provided for @goalDateClear.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar fecha'**
+  String get goalDateClear;
+
+  /// No description provided for @goalProductLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Enlace del producto'**
+  String get goalProductLink;
+
+  /// No description provided for @goalProductLinkHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Pega el enlace de un producto'**
+  String get goalProductLinkHint;
+
+  /// No description provided for @goalPasteLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Pegar enlace'**
+  String get goalPasteLink;
+
+  /// No description provided for @goalOpenProduct.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver producto'**
+  String get goalOpenProduct;
+
+  /// No description provided for @goalImportFromLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Traer datos del enlace'**
+  String get goalImportFromLink;
+
+  /// No description provided for @goalManualEntry.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribir a mano'**
+  String get goalManualEntry;
+
+  /// No description provided for @goalPhotoRemove.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar foto'**
+  String get goalPhotoRemove;
+
+  /// No description provided for @goalPriceReview.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa la foto y el monto que trajimos. Puedes incluir el envío y ajustar el monto. El precio no se actualiza automáticamente.'**
+  String get goalPriceReview;
+
+  /// No description provided for @goalCurrencyMismatch.
+  ///
+  /// In es, this message translates to:
+  /// **'El precio del producto está en {currency}. Escribe el monto de tu meta en la moneda de la app.'**
+  String goalCurrencyMismatch(String currency);
+
+  /// No description provided for @goalSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Meta guardada'**
+  String get goalSaved;
+
+  /// No description provided for @goalSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar meta'**
+  String get goalSave;
+
+  /// No description provided for @goalDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar meta'**
+  String get goalDelete;
+
+  /// No description provided for @goalDeleteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar esta meta?'**
+  String get goalDeleteTitle;
+
+  /// No description provided for @goalDeleteBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo se elimina la meta. Tus registros de ingresos y gastos se conservan.'**
+  String get goalDeleteBody;
+
+  /// No description provided for @goalRemaining.
+  ///
+  /// In es, this message translates to:
+  /// **'Te faltan {amount}'**
+  String goalRemaining(String amount);
+
+  /// No description provided for @goalReached.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Meta alcanzada!'**
+  String get goalReached;
+
+  /// No description provided for @goalRecordSavings.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrar ahorro'**
+  String get goalRecordSavings;
+
+  /// No description provided for @goalProgressExplanation.
+  ///
+  /// In es, this message translates to:
+  /// **'Se suman el monto inicial, los ingresos registrados como ahorro después de crear la meta y los montos que confirmes al cerrar un ciclo. No se transfiere dinero.'**
+  String get goalProgressExplanation;
+
+  /// No description provided for @goalBrowserTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisar producto'**
+  String get goalBrowserTitle;
+
+  /// No description provided for @goalBrowserInstructions.
+  ///
+  /// In es, this message translates to:
+  /// **'Abre el producto y toca el botón de abajo. Si la tienda pide una verificación, complétala tú.'**
+  String get goalBrowserInstructions;
+
+  /// No description provided for @goalBrowserRead.
+  ///
+  /// In es, this message translates to:
+  /// **'Leer datos del producto'**
+  String get goalBrowserRead;
+
+  /// No description provided for @goalBrowserManual.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar a mano'**
+  String get goalBrowserManual;
+
+  /// No description provided for @goalBrowserLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando la tienda…'**
+  String get goalBrowserLoading;
+
+  /// No description provided for @goalBrowserLoadFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos abrir la página. Puedes volver a intentar o escribir los datos a mano.'**
+  String get goalBrowserLoadFailed;
+
+  /// No description provided for @goalBrowserRetry.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a intentar'**
+  String get goalBrowserRetry;
+
+  /// No description provided for @goalBrowserVerification.
+  ///
+  /// In es, this message translates to:
+  /// **'La tienda pide una verificación. Complétala tú y vuelve a leer los datos cuando aparezca el producto.'**
+  String get goalBrowserVerification;
+
+  /// No description provided for @goalBrowserNoProduct.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos datos claros del producto. Puedes volver a intentar desde su página o escribirlos a mano.'**
+  String get goalBrowserNoProduct;
+
+  /// No description provided for @goalBrowserUnsupported.
+  ///
+  /// In es, this message translates to:
+  /// **'Este dispositivo no permite abrir la tienda dentro de la app. Puedes escribir los datos a mano.'**
+  String get goalBrowserUnsupported;
+
+  /// No description provided for @goalInvalidLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Pega un enlace válido de un producto que empiece con https://.'**
+  String get goalInvalidLink;
+
+  /// No description provided for @goalChooseType.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué meta quieres crear?'**
+  String get goalChooseType;
+
+  /// No description provided for @goalAmountType.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahorrar una cantidad'**
+  String get goalAmountType;
+
+  /// No description provided for @goalAmountTypeDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Junta dinero para emergencias, un viaje o lo que tú elijas.'**
+  String get goalAmountTypeDescription;
+
+  /// No description provided for @goalProductType.
+  ///
+  /// In es, this message translates to:
+  /// **'Algo que quiero comprar'**
+  String get goalProductType;
+
+  /// No description provided for @goalProductTypeDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Trae la foto y el precio desde el enlace del producto.'**
+  String get goalProductTypeDescription;
+
+  /// No description provided for @goalChangeType.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar tipo de meta'**
+  String get goalChangeType;
+
+  /// No description provided for @goalAmountNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Fondo de emergencia, ahorro para un viaje'**
+  String get goalAmountNameHint;
+
+  /// No description provided for @goalAmountIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo escribe un nombre y el monto de tu meta, sin foto ni enlace.'**
+  String get goalAmountIntro;
+
+  /// No description provided for @goalCyclePopupTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cierre de este ciclo'**
+  String get goalCyclePopupTitle;
+
+  /// No description provided for @goalCycleLeftover.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Te sobraron {amount}!'**
+  String goalCycleLeftover(String amount);
+
+  /// No description provided for @goalCycleApplyTo.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Los guardamos para «{name}»?'**
+  String goalCycleApplyTo(String name);
+
+  /// No description provided for @goalCurrentAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Llevas ahorrado'**
+  String get goalCurrentAmount;
+
+  /// No description provided for @goalAfterAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Después de guardar'**
+  String get goalAfterAmount;
+
+  /// No description provided for @goalAllocateAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar todo: {amount}'**
+  String goalAllocateAll(String amount);
+
+  /// No description provided for @goalAllocateAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Sumar {amount} a mi meta'**
+  String goalAllocateAmount(String amount);
+
+  /// No description provided for @goalChangeAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar monto'**
+  String get goalChangeAmount;
+
+  /// No description provided for @goalLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Más tarde'**
+  String get goalLater;
+
+  /// No description provided for @goalAllocationNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'Se registra en tu meta. No se transfiere dinero.'**
+  String get goalAllocationNotice;
+
+  /// No description provided for @goalNoGoalInvitation.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Empezamos tu primera meta con este dinero?'**
+  String get goalNoGoalInvitation;
+
+  /// No description provided for @goalNoGoalExamples.
+  ///
+  /// In es, this message translates to:
+  /// **'Emergencias · Viajes · Algo que quieres comprar'**
+  String get goalNoGoalExamples;
+
+  /// No description provided for @goalCreateAndAllocate.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear meta y ahorrar'**
+  String get goalCreateAndAllocate;
+
+  /// No description provided for @goalCreateThenConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Después de crear la meta, confirma cuánto quieres guardar.'**
+  String get goalCreateThenConfirm;
+
+  /// No description provided for @goalAllocationAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto que quieres guardar'**
+  String get goalAllocationAmount;
+
+  /// No description provided for @goalAllocationMaximum.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes registrar hasta {amount}'**
+  String goalAllocationMaximum(String amount);
+
+  /// No description provided for @goalAllocationInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa un monto mayor que cero y no mayor que {amount}.'**
+  String goalAllocationInvalid(String amount);
+
+  /// No description provided for @goalAllocationSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Sumaste {amount} a tu meta'**
+  String goalAllocationSaved(String amount);
+
+  /// No description provided for @goalAllocateFromCycle.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar para mi meta'**
+  String get goalAllocateFromCycle;
+
+  /// No description provided for @goalCycleAllocated.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrado en tu meta: {amount}'**
+  String goalCycleAllocated(String amount);
+
+  /// No description provided for @goalCompleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Completada'**
+  String get goalCompleted;
+
+  /// No description provided for @goalCompletionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Meta cumplida'**
+  String get goalCompletionTitle;
+
+  /// No description provided for @goalCompletionHeadline.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Cumpliste tu meta «{name}»!'**
+  String goalCompletionHeadline(String name);
+
+  /// No description provided for @goalCompletionBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo lograste, ahorro a ahorro.'**
+  String get goalCompletionBody;
+
+  /// No description provided for @goalNewGoal.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear nueva meta'**
+  String get goalNewGoal;
+
+  /// No description provided for @goalCompletionKept.
+  ///
+  /// In es, this message translates to:
+  /// **'La meta cumplida queda en tu historial.'**
+  String get goalCompletionKept;
+
+  /// No description provided for @goalCompletedHistory.
+  ///
+  /// In es, this message translates to:
+  /// **'Metas cumplidas'**
+  String get goalCompletedHistory;
+
+  /// No description provided for @goalCompletedOn.
+  ///
+  /// In es, this message translates to:
+  /// **'Cumplida el {date}'**
+  String goalCompletedOn(String date);
+
+  /// No description provided for @goalNoCompletedHistory.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no has cumplido ninguna meta.'**
+  String get goalNoCompletedHistory;
+
+  /// No description provided for @goalCycleUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'No queda dinero de este ciclo para guardar.'**
+  String get goalCycleUnavailable;
+
+  /// No description provided for @goalNextGoalInvitation.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Empezamos tu próxima meta con lo que sobró?'**
+  String get goalNextGoalInvitation;
+
+  /// Chip on the Inicio goal card: whole days until the goal date. 0 is the goal date itself.
+  ///
+  /// In es, this message translates to:
+  /// **'{days, plural, =0{Hoy} =1{1 día} other{{days} días}}'**
+  String goalCardDaysLeft(int days);
+
+  /// Line on the Inicio goal card when the goal has a date that has not passed. {date} is written short; {amount} is formatted money still missing.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta el {date}: faltan {amount}'**
+  String goalCardUntil(String date, String amount);
+
+  /// Line on the Inicio goal card when the goal date has passed and the goal is not reached yet.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya pasó el {date} · faltan {amount}'**
+  String goalCardDatePassed(String date, String amount);
+
+  /// Line on the Inicio goal card when the goal date is more than a month away. {date} may include the year; {amount} is the missing money split over the pay cycles left, rounded up to a whole unit.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta el {date}: {amount} por ciclo'**
+  String goalCardPerCycle(String date, String amount);
+
+  /// Button on the goal screen: record buying the thing with the goal's money.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya lo compré'**
+  String get goalPurchaseAction;
+
+  /// Title of the goal purchase screen.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo compré con mi meta'**
+  String get goalPurchaseTitle;
+
+  /// Label of the amount paid.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que pagaste'**
+  String get goalPurchaseAmount;
+
+  /// Helper under the amount: the most that can be paid from the goal.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta {amount}, lo que juntaste'**
+  String goalPurchaseAmountHelper(String amount);
+
+  /// Button: read the current price from the saved product link (prices change, e.g. Buen Fin).
+  ///
+  /// In es, this message translates to:
+  /// **'Leer el precio de hoy en el enlace'**
+  String get goalPurchaseRefreshPrice;
+
+  /// Shown after reading the price from the link.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio de hoy: {amount}'**
+  String goalPurchasePriceRead(String amount);
+
+  /// The product page had no readable price.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos el precio. Escríbelo tú.'**
+  String get goalPurchasePriceMissing;
+
+  /// Summary row: the goal's progress.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que juntaste'**
+  String get goalPurchaseSaved;
+
+  /// Summary row: progress minus the price.
+  ///
+  /// In es, this message translates to:
+  /// **'Te sobra'**
+  String get goalPurchaseLeft;
+
+  /// Explains that the purchase does not touch today's money or the cycle budget.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo pagas con lo que juntaste: lo que te queda hoy y el presupuesto del ciclo no cambian.'**
+  String get goalPurchaseOutsideBudget;
+
+  /// Error when the price is above what the goal saved.
+  ///
+  /// In es, this message translates to:
+  /// **'Juntaste {amount}. Lo que pase de eso regístralo como un gasto normal.'**
+  String goalPurchaseTooMuch(String amount);
+
+  /// Primary button: record the expense and move the goal to history.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrar y cerrar la meta'**
+  String get goalPurchaseConfirm;
+
+  /// Secondary button when money is left over: record, then open a new goal starting with the rest.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrar y empezar otra meta con lo que sobra'**
+  String get goalPurchaseConfirmNext;
+
+  /// Snack bar after recording. {name} is the goal name.
+  ///
+  /// In es, this message translates to:
+  /// **'Compra registrada: {name}'**
+  String goalPurchaseRecorded(String name);
+
+  /// Marks a goal purchase in the movements list, like the fixed-expense badge.
+  ///
+  /// In es, this message translates to:
+  /// **'Meta'**
+  String get goalPurchaseBadge;
+
+  /// Type column of the ledger export for a goal purchase.
+  ///
+  /// In es, this message translates to:
+  /// **'Compra con meta'**
+  String get csvTypeGoalPurchase;
+
+  /// Goal history row of a goal that ended in a purchase.
+  ///
+  /// In es, this message translates to:
+  /// **'Comprado por {amount}'**
+  String goalCompletedPurchased(String amount);
+
+  /// Link in the cycle-close goal popup that opens the full settlement screen (XP breakdown, collection, share).
+  ///
+  /// In es, this message translates to:
+  /// **'Ver el cierre completo'**
+  String get goalCycleDetails;
 }
 
 class _AppLocalizationsDelegate
@@ -2150,8 +5559,15 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'es', 'ko'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[
+    'de',
+    'en',
+    'es',
+    'fr',
+    'ja',
+    'ko',
+    'pt',
+  ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -2160,12 +5576,20 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'de':
+      return AppLocalizationsDe();
     case 'en':
       return AppLocalizationsEn();
     case 'es':
       return AppLocalizationsEs();
+    case 'fr':
+      return AppLocalizationsFr();
+    case 'ja':
+      return AppLocalizationsJa();
     case 'ko':
       return AppLocalizationsKo();
+    case 'pt':
+      return AppLocalizationsPt();
   }
 
   throw FlutterError(

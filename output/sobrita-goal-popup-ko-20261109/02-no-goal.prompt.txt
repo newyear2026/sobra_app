@@ -1,0 +1,23 @@
+Use case: ui-mockup, precise overlay edit.
+Create a production-quality Korean mobile POPUP mockup for Sobrita in the "NO SAVINGS GOAL YET" state. This is the companion conditional state of the previously designed existing-goal popup, not a new design direction.
+Target 780 x 1688 px (390 x 844 logical). App content only, no device bezel, OS status bar, browser chrome, watermark, or outside labels.
+Input image 1 is the ACTUAL goal-empty Sobrita home and is the exact edit target/background. Input image 2 is the existing-goal POPUP design for matching the modal's styling and overlay treatment only. Do not copy the active goal card from image 2.
+Preserve image 1's full home layout beneath the dialog: logo, settings, amounts, forecast, full original SQUARE room with same window, curtain, floor, rug, dark kitten and speech bubble. Keep the compact EMPTY goal card below the room with "무엇을 위해 모으고 싶나요?" and "목표 만들기". Keep five nav slots "홈 / 내역 / + / 예산 / 내 정보". Do not shrink the room, replace art or reflow the page.
+Add the same translucent navy scrim (about 32%) across the entire home as the existing-goal popup. The home must still be recognizable.
+Place one cream modal in the same position and approximately same dimensions as reference image 2, centered horizontally, about 342 logical px wide and 345 px tall at y=205 logical px. Keep the kitten in the lower room visible below the modal. Square 2px navy outline, restrained offset navy shadow. No rounded generic banking UI.
+Palette: #FFFDF7 cream, #202848 navy, #545E7E muted text, #0E7A72 teal, #D8EDEA soft teal. Readable pixel-style Korean typography matching Sobrita. Body 14-16 logical px, heading 20-22 px. Spacious, legible, simple hierarchy.
+Current date anchor 2026-11-09; previous cycle has ended. Keep source home dates and money unchanged. No new visible dates.
+Exact modal text:
+Small eyebrow "이번 주 마감", close X at top-right.
+Main heading "20,000원이 남았어요!" with amount emphasized in teal.
+Body, two lines:
+"이 돈으로 첫 목표를"
+"시작해볼까요?"
+Secondary example text: "비상금 · 여행 · 사고 싶은 물건"
+A simple small outlined flag icon may accompany the body, not a large decorative illustration.
+Main full-width teal button: "목표 만들고 모으기"
+Secondary action centered below: "나중에"
+Calm small footer in two lines:
+"목표를 만든 뒤,"
+"모을 금액을 확인하고 반영해요."
+No already-created goal, no "1억 모으기", no fake 0% progress, no preview total before a goal is chosen. This popup invites setup and will return to an amount-confirmation popup after goal creation; it does not automatically create a goal or silently allocate money. Keep all text readable and unclipped, no extra features.

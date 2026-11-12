@@ -1,9 +1,16 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../data/catalog_preview_data.dart';
+import '../data/launch_gift_campaign.dart';
+import '../models/backup_summary.dart';
 import '../models/cash_reconciliation.dart';
+import '../models/catalog_entry.dart';
+import '../models/character_costume.dart';
 import '../models/currency.dart';
 import '../models/cycle_record.dart';
 import '../models/daily_mission.dart';
@@ -11,14 +18,50 @@ import '../models/expense_entry.dart';
 import '../models/language.dart';
 import '../models/income_entry.dart';
 import '../models/money_movement.dart';
+import '../models/native_ad_slot.dart';
 import '../models/pay_schedule.dart';
+import '../models/recurring_expense.dart';
+import '../models/room_design.dart';
+import '../models/savings_goal.dart';
 import '../models/store_failure.dart';
 import '../models/xp_event.dart';
+import '../services/app_telemetry.dart';
 
 typedef NowProvider = DateTime Function();
 
+/// Why a rewarded-ad entry cannot take another view right now.
+enum RewardedAdAvailability {
+  /// A view would count, if the network has an ad to show.
+  available,
+
+  /// Nothing left to earn.
+  alreadyOwned,
+
+  /// A once-per-day entry already took its view today.
+  alreadyEarnedToday,
+
+  /// The daily limit across every entry is used up.
+  ///
+  /// Unreachable while [SobraStore.rewardedAdsPerDay] is null, which is how
+  /// this build ships. Kept so that setting a number is all it takes to bring
+  /// the limit back.
+  dailyCapReached,
+}
+
+/// The local calendar date of [value], as `YYYY-MM-DD`.
+///
+/// Local rather than UTC, and deliberately not corrected for a device whose
+/// clock or time zone moves. Daily limits reset on the day the user is living
+/// in, and defending against a changed clock would cost more than it saves:
+/// moving it forward does not reduce the ads actually watched, and what the
+/// ads unlock has no cash value.
+String dayKey(DateTime value) =>
+    '${value.year.toString().padLeft(4, '0')}'
+    '-${value.month.toString().padLeft(2, '0')}'
+    '-${value.day.toString().padLeft(2, '0')}';
+
 class SobraStore extends ChangeNotifier {
-  SobraStore._(this._preferences, this._now);
+  SobraStore._(this._preferences, this._now, this.rewardedAdsPerDay);
 
   /// The schedule every path falls back to: paid on the 15th and on the last
   /// day of the month, the ordinary Mexican quincena.
@@ -30,20 +73,293 @@ class SobraStore extends ChangeNotifier {
   static const _defaultPaySchedule = PaySchedule.semiMonthly();
 
   static const _storageKey = 'sobra_state_v2';
+
+  /// Kept apart from [_storageKey] so the switch never enters a backup, an
+  /// export, or the owned set the store's revocation reads.
+  static const _debugPaidCharactersKey = 'sobra_debug_paid_characters';
   static const _backupKey = 'sobra_state_backup_v2';
+  static const _beforeImportKey = 'sobra_before_import_v2';
+
+  /// [_ledgerFingerprint] of the records the last import wrote, so the next
+  /// import can tell an untouched import from the user's own ledger.
+  static const _importedLedgerKey = 'sobra_imported_ledger_v2';
   static const _corruptArchiveKey = 'sobra_state_corrupt_v2';
 
   final SharedPreferences _preferences;
   final NowProvider _now;
+  // SharedPreferences can retain a failed write in its cache. Keep the last
+  // confirmed disk value independently, including when cache reload fails.
+  String? _persistedJson;
+  final Object _writeZoneKey = Object();
+  Future<void>? _writeTail;
+  Object? _writeToken;
+
+  /// Serializes whole mutations, including their guards, so a retry cannot see
+  /// a failed purchase or fixed payment as already saved. Nested operations
+  /// share one commit; listeners only see a successfully persisted change.
+  Future<T> _write<T>(
+    Future<T> Function() action, {
+    bool allowRecovery = false,
+  }) {
+    final current = Zone.current[_writeZoneKey];
+    if (current is _StoreMutation && current.active) return action();
+    final previous = _writeTail;
+    final token = Object();
+    _writeToken = token;
+    Future<T> execute() async {
+      // Yield in the caller's zone. Do not retain a completed tail from a
+      // different async context (for example startup versus a widget test).
+      await Future<void>.value();
+      try {
+        if (hasStorageError && !allowRecovery) {
+          throw const SobraStoreException(StoreFailure.recoveryRequired);
+        }
+        final before = SobraStore._(_preferences, _now, rewardedAdsPerDay)
+          .._copyFrom(this);
+        final hadStorageError = hasStorageError;
+        final original = corruptedStorage;
+        final observedDate = _lastObservedDate;
+        final debugPaid = _debugPaidCharacters;
+        final mutation = _StoreMutation();
+        late T value;
+        try {
+          value = await runZoned(() async {
+            final value = await action();
+            if (mutation.dirty) await _persist();
+            return value;
+          }, zoneValues: {_writeZoneKey: mutation});
+        } on Object {
+          _copyFrom(before);
+          hasStorageError = hadStorageError;
+          corruptedStorage = original;
+          _lastObservedDate = observedDate;
+          _debugPaidCharacters = debugPaid;
+          // SharedPreferences updates its cache before the platform confirms
+          // the write. A retry must back up disk data, never that failed cache.
+          try {
+            await _preferences.reload();
+          } on Object {
+            // Retain the original failure; the in-memory rollback still holds.
+          }
+          rethrow;
+        } finally {
+          mutation.active = false;
+        }
+        if (mutation.notify) super.notifyListeners();
+        return value;
+      } finally {
+        if (identical(_writeToken, token)) _writeTail = null;
+      }
+    }
+
+    final result = previous == null
+        ? execute()
+        : previous.then((_) => execute());
+    _writeTail = result.then<void>(
+      (_) {},
+      onError: (Object _, StackTrace _) {},
+    );
+    return result;
+  }
+
+  @override
+  void notifyListeners() {
+    final mutation = Zone.current[_writeZoneKey];
+    if (mutation is _StoreMutation && mutation.active) {
+      mutation.notify = true;
+    } else {
+      super.notifyListeners();
+    }
+  }
+
   final List<ExpenseEntry> _transactions = [];
   final List<IncomeEntry> _incomes = [];
   final List<CashReconciliationEntry> _cashReconciliations = [];
   final List<XpEvent> _xpEvents = [];
   final Map<String, int> _cycleBudgetExtras = {};
   final List<CycleRecord> _cycleRecords = [];
+  final List<RecurringExpense> _recurringExpenses = [];
+  SavingsGoal? _activeSavingsGoal;
+  final List<SavingsGoalCycleAllocation> _goalCycleAllocations = [];
+  final List<CompletedSavingsGoal> _completedSavingsGoals = [];
+  final Set<String> _goalPromptedCycleKeys = {};
+  final Map<String, DateTime> _goalCompletionDates = {};
+  final Map<DateTime, Map<String, int>> _goalCycleIncomeBaselines = {};
+  bool _goalIncomeBaselinesNeedSave = false;
+
+  /// Catalog entries the user actually acquired — a real-money purchase, or a
+  /// rewarded-ad run they finished.
+  ///
+  /// Level rewards are deliberately absent. [CatalogPreviewData.isUnlockedAtLevel]
+  /// derives those from XP every time it is asked, and writing them here too
+  /// would create a second answer that can disagree with the first: an entry
+  /// whose required level later moves would stay owned at the old threshold.
+  /// The one exception is [CatalogPreviewData.formerlyFreeItemIds], written
+  /// here for installs that had them before they became rewards.
+  final Set<String> _ownedCatalogIds = {};
+
+  /// Rewarded ads watched so far toward each entry, for runs still in progress.
+  ///
+  /// An entry drops out of this map the moment it is granted. Progress only
+  /// means anything while it is short of the target, and keeping a finished
+  /// count would grow the saved state for something nothing reads.
+  final Map<String, int> _rewardedAdProgress = {};
+
+  /// The local day [_rewardedAdsWatchedOnDay] counts for, as `YYYY-MM-DD`.
+  ///
+  /// Stored rather than derived so the count survives a restart, and compared
+  /// against today on every read so a day that rolled over while the app was
+  /// closed resets the count without anything having to run at midnight.
+  String? _rewardedAdDay;
+  int _rewardedAdsWatchedOnDay = 0;
+
+  /// The local day each once-per-day entry last took a view.
+  ///
+  /// Only entries with [CatalogEntry.rewardedAdOncePerDay] are ever written
+  /// here; for everything else the daily cap is the only limit and a date
+  /// would be state nothing reads.
+  final Map<String, String> _rewardedAdLastEarnedDate = {};
+
+  /// The local day native-ad eligibility began. The current policy has no
+  /// waiting period, but the date stays persisted so a future configured
+  /// grace period can be introduced without another state migration.
+  String? _nativeAdInstallDay;
+
+  /// When Google last reported a native impression in each slot. A slot that
+  /// is absent has never had one.
+  ///
+  /// A moment rather than a per-day count: the limit is a gap between ads,
+  /// not a number of them, so somebody who opens the ledger again in the
+  /// evening sees one while somebody flipping tabs does not. Kept per slot so
+  /// an ad in Movimientos does not leave Presupuesto and the exit dialog
+  /// empty for the next [nativeAdGap].
+  final Map<NativeAdSlot, DateTime> _nativeAdImpressionsAt = {};
+
+  /// The local day the user answered "Todavía no" on Inicio's fixed-expense
+  /// card, which keeps the card away for the rest of that day only.
+  String? _fixedHomeSnoozedDay;
+
+  /// The local day the user answered "Ahora no" on Inicio's first-expense
+  /// card. Like the fixed-expense card, it only keeps away until tomorrow.
+  String? _firstExpenseCardSnoozedDay;
   int _idSequence = 0;
 
   int _baseBudgetCentavos = 600000;
+
+  /// Whether the user has actually chosen a budget.
+  ///
+  /// [_baseBudgetCentavos] always holds a number, so it cannot say "not
+  /// answered" on its own: zero would read as a budget of nothing that the
+  /// first expense instantly overruns, which is the opposite of what an
+  /// unanswered question means. This is the budget's [hasCashBaseline].
+  bool _hasBudget = true;
+
+  /// Which character pack the app draws.
+  ///
+  /// Stored as a plain id rather than validated here: this layer has no
+  /// opinion about what art exists, and a pack that a later build no longer
+  /// ships must not stop the file from opening. The sprite resolves it.
+  String characterId = 'michi';
+
+  final Set<String> _ownedCostumeIds = {};
+  final Set<String> _claimedCostumeCampaignIds = {};
+  final Map<String, String> _costumeSelections = {};
+
+  Set<String> get ownedCostumeIds => Set.unmodifiable(_ownedCostumeIds);
+  Map<String, String> get costumeSelections =>
+      Map.unmodifiable(_costumeSelections);
+  bool get hasClaimedSeasonalCostumes =>
+      _claimedCostumeCampaignIds.contains(CharacterCostumes.campaignId);
+  bool get canClaimSeasonalCostumes =>
+      hasCompletedOnboarding &&
+      !hasClaimedSeasonalCostumes &&
+      CharacterCostumes.canClaimOn(currentMoment);
+
+  bool ownsCharacter(String id) {
+    final entry = CatalogPreviewData.characters
+        .where((entry) => entry.id == id)
+        .firstOrNull;
+    return entry != null && ownsCatalogEntry(entry);
+  }
+
+  /// Unknown/withdrawn appearances stay in storage for future versions, but
+  /// cannot render on a different or currently unowned base character.
+  String? equippedCostumeFor(String id) {
+    final selected = _costumeSelections[id];
+    final costume = CharacterCostumes.byId(selected);
+    return ownsCharacter(id) &&
+            costume?.characterId == id &&
+            _ownedCostumeIds.contains(selected)
+        ? selected
+        : null;
+  }
+
+  Iterable<CharacterCostume> ownedCostumesFor(String id) =>
+      CharacterCostumes.forCharacter(
+        id,
+      ).where((costume) => _ownedCostumeIds.contains(costume.id));
+
+  Future<bool> claimSeasonalCostumes() => _write(() async {
+    // Rechecked inside the serialized write, including the date boundary.
+    if (!canClaimSeasonalCostumes) return false;
+    _ownedCostumeIds.addAll(CharacterCostumes.all.map((costume) => costume.id));
+    _claimedCostumeCampaignIds.add(CharacterCostumes.campaignId);
+    await _save();
+    notifyListeners();
+    return true;
+  });
+
+  void _validateCostumeSelection(String id, String? costumeId) {
+    if (!ownsCharacter(id)) {
+      throw ArgumentError.value(id, 'characterId', 'character not owned');
+    }
+    if (costumeId == null) return;
+    final costume = CharacterCostumes.byId(costumeId);
+    if (costume?.characterId != id || !_ownedCostumeIds.contains(costumeId)) {
+      throw ArgumentError.value(costumeId, 'costumeId', 'costume not owned');
+    }
+  }
+
+  void _applyCostumeSelection(String id, String? costumeId) {
+    if (costumeId == null) {
+      _costumeSelections.remove(id);
+    } else {
+      _costumeSelections[id] = costumeId;
+    }
+  }
+
+  Future<void> equipCharacterCostume(String id, String? costumeId) =>
+      _write(() async {
+        _validateCostumeSelection(id, costumeId);
+        if (_costumeSelections[id] == costumeId) return;
+        _applyCostumeSelection(id, costumeId);
+        await _save();
+        notifyListeners();
+      });
+
+  /// The room item the user is showing, or null while the room is bare.
+  ///
+  /// Characters already had [characterId]; items had nowhere to live, so the
+  /// collection screen held the choice in its own State and lost it on every
+  /// rebuild of the route.
+  String? equippedItemId;
+
+  /// The visible room theme and the replaceable layers stored for each room.
+  ///
+  /// Placements are keyed by room so changing themes never destroys a room
+  /// the user already arranged. A missing slot falls back to that theme's
+  /// included decoration (the rug, in every room today); one
+  /// the user emptied holds [RoomDecorAssets.clearedId] instead.
+  String equippedRoomId = RoomThemes.casaClaraId;
+  final Map<String, Map<RoomSlot, String>> _roomPlacementsByRoom = {};
+
+  /// Whether this install had every room before rooms were locked.
+  ///
+  /// A flag rather than ids in [_ownedCatalogIds]: Casa torre is sold, and
+  /// the launch revocation takes back any sold id Play does not report as
+  /// paid — which a room that came free never will be.
+  bool _keepsEveryRoom = false;
+
   int countedCashCentavos = 0;
   int expectedCashCentavos = 0;
   bool reducedMotion = false;
@@ -58,6 +374,10 @@ class SobraStore extends ChangeNotifier {
   /// What Sobra labels money in. Changing it relabels; it never converts.
   Currency currency = Currency.mxn;
 
+  /// The phone's country as [load] was told it. Only [_initializeNewUser]
+  /// reads it, to start a new ledger in that country's money.
+  String? _deviceCountry;
+
   /// The language the user picked, or null to follow the phone.
   ///
   /// Stored as a bare language code rather than a full locale: Sobra's Spanish
@@ -65,14 +385,68 @@ class SobraStore extends ChangeNotifier {
   /// it, and the region only decides formatting the app does not delegate.
   String? languageCode;
   bool hasCompletedOnboarding = false;
+
+  /// Whether the user has passed the welcome screen.
+  ///
+  /// The name is older than the screen: the first launch used to offer a
+  /// Google account, and this recorded the answer. The offer is gone — it
+  /// promised a sign-in that never existed — but the key is in every saved
+  /// ledger, so it keeps its name and now means "has pressed Empezar".
+  ///
+  /// It used to live in a widget's State, so passing it lasted until the
+  /// process died and every cold start asked again. That is why it is here.
+  ///
+  /// Not the same as being signed in. Nothing here says an account exists.
+  bool hasAnsweredLoginOffer = false;
   bool categoryLimitsCustomized = false;
   int successfulCycles = 0;
   DateTime? lastCashCountAt;
   PaySchedule paySchedule = _defaultPaySchedule;
   PaySchedule? pendingPaySchedule;
   DateTime? pendingPayScheduleEffectiveAt;
+
+  /// The budget [pendingPaySchedule] starts with, when the user took the
+  /// figure converted for a cycle of a different length. Null keeps the
+  /// current budget. Applied with the schedule, so the cycle in progress
+  /// keeps the budget it started with.
+  int? pendingBaseBudgetCentavos;
   DateTime? payScheduleEffectiveFloor;
   DateTime? xpTrackingStartedAt;
+
+  /// Budget rewards only measure time after an actual budget was chosen.
+  DateTime? budgetTrackingStartedAt;
+  DateTime? firstStartedAt;
+  bool launchGiftNoticePending = false;
+
+  /// Whether the guided first expense is owed, from the moment the onboarding
+  /// screen is finished until the shell has shown it.
+  ///
+  /// Raised only by finishing onboarding on screen, never by loading a state
+  /// that is already past it: an install that finished onboarding before this
+  /// existed is not thrown a screen mid-use.
+  bool firstExpenseGuidePending = false;
+
+  /// Whether the guided first expense has been shown, saved or not.
+  ///
+  /// Inicio's card is for whoever was shown it and left without recording, so
+  /// it never appears to somebody who was not asked in the first place.
+  bool firstExpenseGuideOffered = false;
+
+  /// The starter picked at onboarding, or null before onboarding ends.
+  ///
+  /// What the app falls back to when the shown character stops being owned —
+  /// not always Michi any more, since somebody who picked Miru has no Michi
+  /// until the second starter comes over.
+  String? starterCharacterId;
+
+  /// The starter that just came over by recorded days, until its arrival has
+  /// been shown. Null the rest of the time, and after an ad unlock, which the
+  /// collection announces itself.
+  String? starterArrivalId;
+
+  /// Local days (`yyyy-mm-dd`) on which the user recorded something dated
+  /// that same day. Only what counts toward the waiting starter reads it.
+  final Set<String> _recordedDayKeys = {};
   DateTime? lastSettledCycleEnd;
   bool hasStorageError = false;
   String? corruptedStorage;
@@ -81,10 +455,23 @@ class SobraStore extends ChangeNotifier {
 
   Map<ExpenseCategory, int> categoryLimits = _categoryLimitsForBudget(600000);
 
-  static Future<SobraStore> load({NowProvider? now}) async {
+  /// [deviceCountry] picks the currency a brand-new ledger starts in, via
+  /// [Currency.forCountry]. It is read once and never again: a saved ledger
+  /// keeps the currency it has. Omitted, a new ledger starts in pesos, which
+  /// is what every test that does not care gets.
+  static Future<SobraStore> load({
+    NowProvider? now,
+    int? rewardedAdsPerDay,
+    String? deviceCountry,
+  }) async {
     final preferences = await SharedPreferences.getInstance();
-    final store = SobraStore._(preferences, now ?? DateTime.now);
+    final store = SobraStore._(
+      preferences,
+      now ?? DateTime.now,
+      rewardedAdsPerDay,
+    ).._deviceCountry = deviceCountry;
     final saved = preferences.getString(_storageKey);
+    store._persistedJson = saved;
     if (saved == null) {
       store._initializeNewUser();
       await store._save();
@@ -94,7 +481,51 @@ class SobraStore extends ChangeNotifier {
         ..hasStorageError = true
         ..corruptedStorage = saved;
     }
+    // An unreadable ledger stays byte-for-byte intact until explicit recovery.
+    // No migrations, settlement, gifts or other background writes may run.
+    if (store.hasStorageError) return store;
+    if (store._goalIncomeBaselinesNeedSave) {
+      // Persist the legacy baseline before any subsequent income edit can
+      // become a new baseline on the next launch. A full disk must not block
+      // opening a readable ledger: every later mutation serializes this same
+      // baseline atomically, and a failed mutation restores the old income.
+      try {
+        await store._save();
+        store._goalIncomeBaselinesNeedSave = false;
+      } on Object catch (error) {
+        debugPrint('Sobra: goal income baseline migration deferred: $error');
+      }
+    }
+    // One-time migration for states written before native ads existed. Saving
+    // now matters: if the missing value were only filled in memory, every
+    // restart would begin a fresh configured grace period forever.
+    store._debugPaidCharacters =
+        kDebugMode && (preferences.getBool(_debugPaidCharactersKey) ?? false);
+    await store._ensureFirstStartedAt();
+    await store._ensureNativeAdInstallDay();
+    // A character that was previously bundled for free can become a paid
+    // entry. Keep the saved choice only when its entitlement is still owned.
+    // A starter picked mid-onboarding owns nothing yet and is left alone:
+    // resetting it would undo the choice before it is handed over.
+    final selectedEntry = CatalogPreviewData.characters
+        .where((entry) => entry.id == store.characterId)
+        .firstOrNull;
+    final pickingStarter =
+        !store.hasCompletedOnboarding &&
+        CatalogPreviewData.isStarter(store.characterId);
+    if (selectedEntry != null &&
+        !pickingStarter &&
+        !store.ownsCatalogEntry(selectedEntry)) {
+      store.characterId = store._fallbackCharacterId;
+      await store._save();
+    }
+    // The same for a room that was refunded, or is locked in this build.
+    if (!store.ownsRoom(store.equippedRoomId)) {
+      store.equippedRoomId = RoomThemes.casaClaraId;
+      await store._save();
+    }
     await store.settleCycles();
+    await store.maybeGrantLaunchGift();
     store._lastObservedDate = store.today;
     return store;
   }
@@ -112,11 +543,38 @@ class SobraStore extends ChangeNotifier {
   CycleBounds boundsFor(DateTime date) {
     final day = dateOnly(date);
     final bounds = paySchedule.boundsFor(day);
-    final floor = payScheduleEffectiveFloor;
+    final saved = payScheduleEffectiveFloor;
+    final floor = saved == null ? null : dateOnly(saved);
     if (floor != null && !day.isBefore(floor) && bounds.start.isBefore(floor)) {
       return CycleBounds(start: floor, end: bounds.end);
     }
     return bounds;
+  }
+
+  /// How much of a full cycle [bounds] is, as (its days, the full cycle's), or
+  /// null when it is a full cycle.
+  ///
+  /// Only the first cycle after a schedule change is ever short: it starts on
+  /// the day the change took effect rather than on a payday of the new
+  /// schedule. Switching from a quincena to Friday paydays can leave a single
+  /// Thursday between the two, and that day is not a week.
+  (int, int)? _shortCycleShare(CycleBounds bounds) {
+    final saved = payScheduleEffectiveFloor;
+    if (saved == null) return null;
+    final floor = dateOnly(saved);
+    if (dateOnly(bounds.start) != floor) return null;
+    final full = paySchedule.boundsFor(floor);
+    if (!full.start.isBefore(floor)) return null;
+    return (bounds.lengthInDays, full.lengthInDays);
+  }
+
+  /// The budget [bounds] plans with before extra income: the cycle budget, or
+  /// for a short first cycle its share by days. Otherwise a one-day cycle got
+  /// a whole cycle's money to spend on that one day.
+  int _baseBudgetFor(CycleBounds bounds) {
+    final share = _shortCycleShare(bounds);
+    if (share == null) return _baseBudgetCentavos;
+    return (_baseBudgetCentavos * share.$1 / share.$2).round();
   }
 
   CycleBounds get cycleBounds => boundsFor(today);
@@ -124,22 +582,36 @@ class SobraStore extends ChangeNotifier {
   DateTime get cycleStart => cycleBounds.start;
   DateTime get cycleEnd => cycleBounds.end;
   bool get hasCashBaseline => lastCashCountAt != null;
+
+  /// Whether a budget has been set, and so whether the figures derived from
+  /// it mean anything.
+  ///
+  /// Every budget-derived getter reads zero while this is false. Zero is a
+  /// placeholder there, not a measurement: ask this before presenting any of
+  /// them, the way the cash figures are gated on [hasCashBaseline].
+  bool get hasBudget => _hasBudget;
+
+  /// The budget for a full cycle, as the user set it.
   int get baseBudgetCentavos => _baseBudgetCentavos;
+
+  /// What the current cycle plans with before extra income — the
+  /// [baseBudgetCentavos], or its share by days in a short first cycle.
+  int get cycleBaseBudgetCentavos => _baseBudgetFor(cycleBounds);
   int get cycleBudgetExtrasCentavos =>
       _cycleBudgetExtras[_cycleKey(cycleStart)] ?? 0;
   int get totalBudgetCentavos =>
-      _baseBudgetCentavos + cycleBudgetExtrasCentavos;
+      cycleBaseBudgetCentavos + cycleBudgetExtrasCentavos;
 
   int get daysRemaining {
     if (today.isAfter(cycleEnd)) return 0;
     if (today.isBefore(cycleStart)) return cycleBounds.lengthInDays;
-    return cycleEnd.difference(today).inDays + 1;
+    return daysBetween(today, cycleEnd) + 1;
   }
 
   int get elapsedDays {
     if (today.isBefore(cycleStart)) return 0;
     if (today.isAfter(cycleEnd)) return cycleBounds.lengthInDays;
-    return today.difference(cycleStart).inDays + 1;
+    return daysBetween(cycleStart, today) + 1;
   }
 
   List<ExpenseEntry> get transactions {
@@ -175,7 +647,7 @@ class SobraStore extends ChangeNotifier {
     final dateKey = _cycleKey(today);
     return DailyMissionBoard(
       missions: [
-        for (final kind in DailyMissionKind.values)
+        for (final kind in DailyMissionKind.forDay(today))
           DailyMission(
             kind: kind,
             completedAt: _xpEventForSource(kind.sourceKey(dateKey))?.occurredAt,
@@ -223,11 +695,48 @@ class SobraStore extends ChangeNotifier {
     return List.unmodifiable(result);
   }
 
-  /// Closed cycles, most recent first.
+  /// Closed cycles keep their original budget and boundaries. Spending follows
+  /// the ledger, including late entries, edits, deletions and undo operations.
+  /// XP already awarded at settlement is not granted or taken back by an edit.
   List<CycleRecord> get cycleRecords =>
-      List.unmodifiable(_cycleRecords.reversed);
+      List.unmodifiable(_cycleRecords.reversed.map(_recordWithCurrentSpending));
 
-  List<ExpenseEntry> get cycleTransactions => _transactions
+  CycleRecord _recordWithCurrentSpending(CycleRecord record) {
+    final bounds = CycleBounds(start: record.start, end: record.end);
+    var spent = 0;
+    var fixedPaid = 0;
+    for (final entry in _transactions) {
+      if (!bounds.contains(entry.occurredAt)) continue;
+      // Saved money, not this cycle's: see [ExpenseEntry.isGoalPurchase].
+      if (entry.isGoalPurchase) continue;
+      if (entry.isFixedPayment) {
+        fixedPaid += entry.amountCentavos;
+      } else {
+        spent += entry.amountCentavos;
+      }
+    }
+    return CycleRecord(
+      start: record.start,
+      end: record.end,
+      budgetCentavos: record.budgetCentavos,
+      cycleType: record.cycleType,
+      spentCentavos: spent,
+      fixedPaidCentavos: fixedPaid,
+    );
+  }
+
+  /// Everyday spending: every expense except fixed-expense payments and
+  /// purchases made with a savings goal's money.
+  ///
+  /// Every figure the budget is measured with folds over this and never over
+  /// [_transactions] directly. Paying rent must not move "Hoy te queda", a
+  /// category limit or whether a cycle closes green — the budget is what is
+  /// left to spend once the fixed expenses are paid.
+  Iterable<ExpenseEntry> get _spending =>
+      _transactions.where((entry) => !entry.isOutsideBudget);
+
+  /// The current cycle's everyday spending — see [_spending].
+  List<ExpenseEntry> get cycleSpending => _spending
       .where((entry) => cycleBounds.contains(entry.occurredAt))
       .toList();
   List<IncomeEntry> get cycleIncomes => _incomes
@@ -242,14 +751,28 @@ class SobraStore extends ChangeNotifier {
   }
 
   int get totalSpentCentavos =>
-      cycleTransactions.fold(0, (total, entry) => total + entry.amountCentavos);
-  int get spentTodayCentavos => cycleTransactions
+      cycleSpending.fold(0, (total, entry) => total + entry.amountCentavos);
+
+  /// Days of the current cycle lived so far, today included.
+  ///
+  /// Counts from the cycle's start rather than from the first thing recorded,
+  /// so a quiet opening week lowers the average instead of vanishing from it.
+  int get cycleElapsedDays => daysBetween(cycleStart, today) + 1;
+
+  /// What the current cycle is spending per day, or null while it is too early
+  /// for that to mean anything.
+  int? get cycleAveragePerDayCentavos =>
+      averagePerDayCentavos(totalSpentCentavos, cycleElapsedDays);
+
+  int get spentTodayCentavos => cycleSpending
       .where((entry) => _isSameDay(entry.occurredAt, today))
       .fold(0, (total, entry) => total + entry.amountCentavos);
   int get spentBeforeTodayCentavos => totalSpentCentavos - spentTodayCentavos;
-  int get remainingBudgetCentavos => totalBudgetCentavos - totalSpentCentavos;
+  int get remainingBudgetCentavos =>
+      _hasBudget ? totalBudgetCentavos - totalSpentCentavos : 0;
 
   int get dailyAllowanceCentavos {
+    if (!_hasBudget) return 0;
     final availableAtStartOfDay =
         totalBudgetCentavos - spentBeforeTodayCentavos;
     return daysRemaining <= 0 ? 0 : availableAtStartOfDay ~/ daysRemaining;
@@ -266,31 +789,432 @@ class SobraStore extends ChangeNotifier {
   /// reports its own deficit instead — a quantity that only moves when money
   /// actually moves.
   int get todayRemainingCentavos {
+    if (!_hasBudget) return 0;
     if (remainingBudgetCentavos < 0) return remainingBudgetCentavos;
     final remaining = dailyAllowanceCentavos - spentTodayCentavos;
     return remaining < 0 ? 0 : remaining;
   }
 
-  double get budgetProgress =>
-      totalBudgetCentavos == 0 ? 0 : totalSpentCentavos / totalBudgetCentavos;
+  double get budgetProgress => !_hasBudget || totalBudgetCentavos == 0
+      ? 0
+      : totalSpentCentavos / totalBudgetCentavos;
 
+  /// What the cycle should leave at this pace, in whole units.
+  ///
+  /// Rounded like the daily average it comes from: an estimate printed to
+  /// the centavo claims a precision it does not have.
   int get projectedRemainderCentavos {
+    if (!_hasBudget) return 0;
     if (elapsedDays <= 0) return remainingBudgetCentavos;
     final average = totalSpentCentavos / elapsedDays;
     final futureDays = daysRemaining > 0 ? daysRemaining - 1 : 0;
-    return remainingBudgetCentavos - (average * futureDays).round();
+    final projected = remainingBudgetCentavos - average * futureDays;
+    return (projected / 100).round() * 100;
   }
 
-  int spentFor(ExpenseCategory category) => cycleTransactions
+  /// Income set aside as savings during the current cycle.
+  ///
+  /// It never reaches the budget, so nothing else on screen counts it; this
+  /// is the one place the money the user put away shows up as a figure.
+  int get savedThisCycleCentavos => _incomes
+      .where(
+        (entry) =>
+            entry.allocation == IncomeAllocation.savings &&
+            cycleBounds.contains(entry.occurredAt),
+      )
+      .fold(0, (total, entry) => total + entry.amountCentavos);
+
+  SavingsGoal? get activeSavingsGoal => _activeSavingsGoal;
+
+  /// Pay cycles from the current one through the one holding [date], both
+  /// counted, on today's schedule. Capped so a date centuries away cannot
+  /// walk thousands of cycles on every rebuild of Inicio.
+  int payCyclesThrough(DateTime date, {int cap = 600}) {
+    final last = dateOnly(date);
+    var bounds = boundsFor(today);
+    var count = 1;
+    while (count < cap && bounds.end.isBefore(last)) {
+      final next = boundsFor(addDays(bounds.end, 1));
+      if (!next.end.isAfter(bounds.end)) break;
+      bounds = next;
+      count++;
+    }
+    return count;
+  }
+
+  /// Progress follows actual savings records across cycles. Old income is
+  /// excluded by ID, and backdated records before creation do not newly fill
+  /// a goal. Updating or deleting an eligible record changes this sum too.
+  int get savingsGoalProgressCentavos {
+    final goal = _activeSavingsGoal;
+    if (goal == null) return 0;
+    final start = dateOnly(goal.createdAt);
+    return _incomes
+        .where(
+          (entry) =>
+              entry.allocation == IncomeAllocation.savings &&
+              !goal.excludedIncomeIds.contains(entry.id) &&
+              !dateOnly(entry.occurredAt).isBefore(start),
+        )
+        .fold(
+          goal.startingCentavos +
+              _goalCycleAllocations
+                  .where((entry) => entry.goalId == goal.id)
+                  .fold(
+                    0,
+                    (total, entry) =>
+                        total + goalAllocationForCycle(entry.cycleStart),
+                  ),
+          (total, entry) => total + entry.amountCentavos,
+        );
+  }
+
+  bool get isSavingsGoalComplete =>
+      _activeSavingsGoal != null &&
+      savingsGoalProgressCentavos >= _activeSavingsGoal!.targetCentavos;
+
+  List<CompletedSavingsGoal> get completedSavingsGoals =>
+      List.unmodifiable(_completedSavingsGoals.reversed);
+
+  /// Only the newest closed cycle can interrupt automatically. Dismissing it
+  /// never produces a backlog of older prompts on the next home visit.
+  CycleRecord? get pendingSavingsGoalCycle {
+    CycleRecord? latest;
+    for (final record in cycleRecords) {
+      if (latest == null || record.start.isAfter(latest.start)) latest = record;
+    }
+    if (latest == null ||
+        !latest.end.isBefore(today) ||
+        availableGoalAllocationForCycle(latest.start) <= 0 ||
+        _goalPromptedCycleKeys.contains(_cycleKey(latest.start)) ||
+        _goalCycleAllocations.any(
+          (entry) => entry.cycleStart == latest!.start,
+        )) {
+      return null;
+    }
+    return latest;
+  }
+
+  CycleRecord? _goalCycle(DateTime start) {
+    final key = dateOnly(start);
+    for (final record in _cycleRecords) {
+      if (record.start == key) return _recordWithCurrentSpending(record);
+    }
+    return null;
+  }
+
+  Future<void> acknowledgeSavingsGoalCyclePrompt(DateTime cycleStart) =>
+      _write(() async {
+        final record = _goalCycle(cycleStart);
+        if (record == null || !record.end.isBefore(today)) {
+          throw StateError('The closed cycle no longer exists');
+        }
+        if (!_goalPromptedCycleKeys.add(_cycleKey(record.start))) return;
+        await _save();
+        notifyListeners();
+      });
+
+  /// Existing amounts assigned to other goals stay reserved, including after
+  /// deletion. Editing an old expense can reduce this maximum; it cannot
+  /// manufacture extra savings or count the same money for two goals.
+  int availableGoalAllocationForCycle(DateTime cycleStart) {
+    final record = _goalCycle(cycleStart);
+    if (record == null || !record.end.isBefore(today)) return 0;
+    final reserved = _goalCycleAllocations
+        .where(
+          (entry) =>
+              entry.cycleStart == record.start &&
+              entry.goalId != _activeSavingsGoal?.id,
+        )
+        .fold(0, (total, entry) => total + entry.amountCentavos);
+    final available =
+        record.resultCentavos - _removedGoalCycleIncome(record) - reserved;
+    return available > 0 ? available : 0;
+  }
+
+  Map<String, int> _goalIncomeBaseline(CycleBounds bounds) => Map.unmodifiable({
+    for (final income in _incomes)
+      if (income.allocation == IncomeAllocation.cycle &&
+          bounds.contains(income.occurredAt))
+        income.id: income.amountCentavos,
+  });
+
+  /// Older ledgers did not retain which incomes funded a closed cycle. Seed
+  /// them once from the records still present; edits predating this migration
+  /// cannot be reconstructed. New cycles always capture at settlement time.
+  bool _ensureGoalCycleIncomeBaselines() {
+    var changed = false;
+    for (final record in _cycleRecords) {
+      if (_goalCycleIncomeBaselines.containsKey(record.start)) continue;
+      _goalCycleIncomeBaselines[record.start] = _goalIncomeBaseline(
+        CycleBounds(start: record.start, end: record.end),
+      );
+      changed = true;
+    }
+    return changed;
+  }
+
+  /// History keeps its original budget. Only the amount that may fund goals
+  /// follows corrections to the incomes that actually funded that budget.
+  /// New/backdated income and later increases never inflate an old surplus.
+  int _removedGoalCycleIncome(CycleRecord record) {
+    final baseline = _goalCycleIncomeBaselines[record.start];
+    if (baseline == null || baseline.isEmpty) return 0;
+    final bounds = CycleBounds(start: record.start, end: record.end);
+    final current = {
+      for (final income in _incomes)
+        if (income.allocation == IncomeAllocation.cycle &&
+            bounds.contains(income.occurredAt))
+          income.id: income.amountCentavos,
+    };
+    return baseline.entries.fold(0, (removed, entry) {
+      final retained = (current[entry.key] ?? 0).clamp(0, entry.value);
+      return removed + entry.value - retained;
+    });
+  }
+
+  /// Effective recorded amount for the current goal. The original earmark is
+  /// retained, while progress follows corrections to the cycle's ledger.
+  int goalAllocationForCycle(DateTime cycleStart) {
+    final start = dateOnly(cycleStart);
+    for (final entry in _goalCycleAllocations) {
+      if (entry.cycleStart == start && entry.goalId == _activeSavingsGoal?.id) {
+        return entry.amountCentavos.clamp(
+          0,
+          availableGoalAllocationForCycle(start),
+        );
+      }
+    }
+    return 0;
+  }
+
+  Future<void> allocateCycleToSavingsGoal({
+    required DateTime cycleStart,
+    required String goalId,
+    required int amountCentavos,
+  }) => _write(() async {
+    if (_activeSavingsGoal?.id != goalId) {
+      throw StateError('The active savings goal changed');
+    }
+    final record = _goalCycle(cycleStart);
+    if (record == null || !record.end.isBefore(today)) {
+      throw StateError('The closed cycle no longer exists');
+    }
+    final available = availableGoalAllocationForCycle(record.start);
+    if (amountCentavos <= 0 ||
+        amountCentavos > available ||
+        amountCentavos > SavingsGoal.maxAmountCentavos) {
+      throw ArgumentError.value(amountCentavos, 'amountCentavos');
+    }
+    final index = _goalCycleAllocations.indexWhere(
+      (entry) => entry.cycleStart == record.start && entry.goalId == goalId,
+    );
+    final previous = index < 0 ? null : _goalCycleAllocations[index];
+    if (previous?.amountCentavos == amountCentavos) return;
+    final entry = SavingsGoalCycleAllocation(
+      cycleStart: record.start,
+      goalId: goalId,
+      amountCentavos: amountCentavos,
+      createdAt: previous?.createdAt ?? currentMoment,
+    );
+    if (index < 0) {
+      _goalCycleAllocations.add(entry);
+    } else {
+      _goalCycleAllocations[index] = entry;
+    }
+    _goalPromptedCycleKeys.add(_cycleKey(record.start));
+    await _save();
+    notifyListeners();
+  });
+
+  String? get pendingSavingsGoalCompletionId =>
+      isSavingsGoalComplete &&
+          !_goalCompletionDates.containsKey(_activeSavingsGoal!.id)
+      ? _activeSavingsGoal!.id
+      : null;
+
+  Future<void> acknowledgeSavingsGoalCompletion(String goalId) =>
+      _write(() async {
+        if (_activeSavingsGoal?.id != goalId || !isSavingsGoalComplete) {
+          throw StateError('The completed savings goal changed');
+        }
+        if (_goalCompletionDates.containsKey(goalId)) return;
+        _goalCompletionDates[goalId] = currentMoment;
+        await _save();
+        notifyListeners();
+      });
+
+  /// Saving a goal labels recorded money; it does not create income or move
+  /// today's allowance, the cycle budget, cash, or character progress.
+  Future<SavingsGoal> saveSavingsGoal({
+    String? id,
+    String? replacingCompletedGoalId,
+    SavingsGoalKind? kind,
+    required String name,
+    required int targetCentavos,
+    required int startingCentavos,
+    DateTime? targetDate,
+    String? productUrl,
+    String? imageUrl,
+    String? merchantName,
+  }) => _write(() async {
+    var previous = _activeSavingsGoal;
+    if (replacingCompletedGoalId != null) {
+      if (id != null ||
+          previous?.id != replacingCompletedGoalId ||
+          !isSavingsGoalComplete) {
+        throw StateError('The completed savings goal changed');
+      }
+      _completedSavingsGoals.add(
+        CompletedSavingsGoal(
+          goal: previous!,
+          progressCentavos: savingsGoalProgressCentavos,
+          completedAt: _goalCompletionDates[previous.id] ?? currentMoment,
+        ),
+      );
+      previous = null;
+    } else if ((id == null && previous != null) ||
+        (id != null && previous?.id != id)) {
+      throw StateError('The active savings goal changed');
+    }
+    final selectedKind =
+        kind ??
+        previous?.kind ??
+        SavingsGoal.inferKind(
+          productUrl: productUrl,
+          imageUrl: imageUrl,
+          merchantName: merchantName,
+        );
+    final isProduct = selectedKind == SavingsGoalKind.product;
+    final goal = SavingsGoal(
+      id: previous?.id ?? _newId('goal'),
+      kind: selectedKind,
+      name: name,
+      targetCentavos: targetCentavos,
+      startingCentavos: startingCentavos,
+      createdAt: previous?.createdAt ?? currentMoment,
+      targetDate: targetDate == null ? null : dateOnly(targetDate),
+      productUrl: isProduct ? productUrl : null,
+      imageUrl: isProduct ? imageUrl : null,
+      merchantName: isProduct ? merchantName : null,
+      excludedIncomeIds:
+          previous?.excludedIncomeIds ??
+          _incomes.map((entry) => entry.id).toSet(),
+    );
+    _activeSavingsGoal = goal;
+    await _save();
+    notifyListeners();
+    return goal;
+  });
+
+  /// Records buying the thing the active goal saved for, and closes the goal.
+  ///
+  /// The money was set aside over past cycles, so the expense stays out of
+  /// today's allowance and this cycle's budget (see
+  /// [ExpenseEntry.isGoalPurchase]). It is real money leaving, so it lands in
+  /// the ledger and, when paid in cash, comes out of the expected cash. The
+  /// goal moves to the history with what it had saved and what was spent.
+  ///
+  /// Only saved money can be spent this way: anything above the progress is
+  /// everyday spending and the user records it as such.
+  Future<ExpenseEntry> recordSavingsGoalPurchase({
+    required String goalId,
+    required int amountCentavos,
+    required PaymentMethod paymentMethod,
+  }) => _write(() async {
+    final goal = _activeSavingsGoal;
+    if (goal == null || goal.id != goalId) {
+      throw StateError('The active savings goal changed');
+    }
+    final progress = savingsGoalProgressCentavos;
+    if (amountCentavos <= 0 || amountCentavos > progress) {
+      throw ArgumentError.value(amountCentavos, 'amountCentavos');
+    }
+    final moment = currentMoment;
+    _validateMovement(amountCentavos, moment);
+    final entry = ExpenseEntry(
+      id: _newId('expense'),
+      amountCentavos: amountCentavos,
+      category: ExpenseCategory.shopping,
+      note: goal.name,
+      occurredAt: moment,
+      paymentMethod: paymentMethod,
+      savingsGoalId: goal.id,
+    );
+    _transactions.add(entry);
+    if (_affectsCurrentCash(entry)) expectedCashCentavos -= amountCentavos;
+    _completedSavingsGoals.add(
+      CompletedSavingsGoal(
+        goal: goal,
+        progressCentavos: progress,
+        completedAt: moment,
+        purchaseCentavos: amountCentavos,
+        purchaseExpenseId: entry.id,
+      ),
+    );
+    _activeSavingsGoal = null;
+    _noteRecordedDay(moment);
+    await _save();
+    notifyListeners();
+    return entry;
+  });
+
+  /// Keeps a finished goal's purchase in step with an edit of its expense.
+  /// The new price still has to fit in what the goal had saved.
+  void _repriceGoalPurchase(String expenseId, int amountCentavos) {
+    final index = _completedSavingsGoals.indexWhere(
+      (entry) => entry.purchaseExpenseId == expenseId,
+    );
+    if (index < 0) return;
+    final record = _completedSavingsGoals[index];
+    if (amountCentavos > record.progressCentavos) {
+      throw ArgumentError.value(amountCentavos, 'amountCentavos');
+    }
+    _completedSavingsGoals[index] = CompletedSavingsGoal(
+      goal: record.goal,
+      progressCentavos: record.progressCentavos,
+      completedAt: record.completedAt,
+      purchaseCentavos: amountCentavos,
+      purchaseExpenseId: expenseId,
+    );
+  }
+
+  Future<void> removeSavingsGoal(String id) => _write(() async {
+    if (_activeSavingsGoal?.id != id) {
+      throw StateError('The active savings goal changed');
+    }
+    _activeSavingsGoal = null;
+    await _save();
+    notifyListeners();
+  });
+
+  /// What the closed cycles left over, net of the ones that ran past budget.
+  ///
+  /// The overruns count against it: a total that only added the good cycles
+  /// would promise savings the user never actually kept.
+  int get closedCyclesResultCentavos => cycleRecords
+      .where((record) => record.budgetCentavos > 0)
+      .fold(0, (total, record) => total + record.resultCentavos);
+
+  int spentFor(ExpenseCategory category) => cycleSpending
       .where((entry) => entry.category == category)
       .fold(0, (total, entry) => total + entry.amountCentavos);
 
   Future<void> refreshForCurrentDate() async {
-    await settleCycles();
-    final currentDate = today;
-    if (_lastObservedDate == currentDate) return;
-    _lastObservedDate = currentDate;
-    notifyListeners();
+    if (hasStorageError) return;
+    try {
+      await _write(() async {
+        await settleCycles();
+        final currentDate = today;
+        if (_lastObservedDate == currentDate) return;
+        _lastObservedDate = currentDate;
+        notifyListeners();
+      });
+    } on Object catch (error) {
+      // Lifecycle/timer callers have no save form to report from. The rollback
+      // keeps this date eligible for retry on the next resume or midnight.
+      debugPrint('Sobra: date refresh was not saved: $error');
+    }
   }
 
   /// Closes every elapsed budget cycle exactly once.
@@ -298,7 +1222,7 @@ class SobraStore extends ChangeNotifier {
   /// A pending pay-schedule change splits the run in two: old cycles are
   /// settled up to its effective date, then the new schedule is applied and
   /// any later cycles are evaluated with the new boundaries.
-  Future<void> settleCycles() async {
+  Future<void> settleCycles() => _write(() async {
     final trackingStarted = _startXpTrackingIfNeeded();
     final levelBefore = xpProgress.level;
     var run = const _SettlementRun();
@@ -314,6 +1238,9 @@ class SobraStore extends ChangeNotifier {
     if (run.closedCycles > 0 || trackingStarted) {
       await _save();
     }
+    for (var i = 0; i < run.closedCycles; i++) {
+      unawaited(AppTelemetry.instance.event(TelemetryEvent.cycleSettled));
+    }
     if (run.closedCycles > 0) {
       if (run.awardedXp > 0) {
         final levelNow = xpProgress.level;
@@ -322,31 +1249,46 @@ class SobraStore extends ChangeNotifier {
           xp: run.awardedXp,
           closedCycles: run.closedCycles,
           newLevel: levelNow > levelBefore ? levelNow : null,
+          previousLevel: levelNow > levelBefore ? levelBefore : null,
         );
       }
     }
     if (run.closedCycles > 0 || scheduleChanged || trackingStarted) {
       notifyListeners();
     }
-  }
+  });
 
   bool _startXpTrackingIfNeeded() {
-    if (!hasCompletedOnboarding || xpTrackingStartedAt != null) return false;
+    if (!hasCompletedOnboarding) return false;
     // Existing installs begin with the day this schema first sees them. A
     // partial cycle can earn daily XP, but not the full-cycle reward.
-    xpTrackingStartedAt = today;
-    return true;
+    var changed = false;
+    if (xpTrackingStartedAt == null) {
+      xpTrackingStartedAt = today;
+      if (_hasBudget) budgetTrackingStartedAt = today;
+      changed = true;
+    }
+    if (_hasBudget && budgetTrackingStartedAt == null) {
+      budgetTrackingStartedAt = today;
+      changed = true;
+    }
+    return changed;
   }
 
   _SettlementRun _settleClosedCycles({required DateTime untilExclusive}) {
-    final trackingStart = xpTrackingStartedAt;
-    if (!hasCompletedOnboarding || trackingStart == null) {
+    final trackingStart = budgetTrackingStartedAt;
+    if (!_hasBudget || !hasCompletedOnboarding || trackingStart == null) {
       return const _SettlementRun();
     }
 
     var cursor =
-        lastSettledCycleEnd?.add(const Duration(days: 1)) ??
+        (lastSettledCycleEnd == null
+            ? null
+            : addDays(lastSettledCycleEnd!, 1)) ??
         dateOnly(trackingStart);
+    if (cursor.isBefore(dateOnly(trackingStart))) {
+      cursor = dateOnly(trackingStart);
+    }
     var closedCycles = 0;
     var awardedXp = 0;
 
@@ -358,16 +1300,21 @@ class SobraStore extends ChangeNotifier {
       awardedXp += _settleCycle(bounds, trackingStart);
       lastSettledCycleEnd = bounds.end;
       closedCycles++;
-      cursor = bounds.end.add(const Duration(days: 1));
+      cursor = addDays(bounds.end, 1);
     }
     return _SettlementRun(closedCycles: closedCycles, awardedXp: awardedXp);
   }
 
   int _settleCycle(CycleBounds bounds, DateTime trackingStart) {
     final cycleKey = _cycleKey(bounds.start);
-    final budget = _baseBudgetCentavos + (_cycleBudgetExtras[cycleKey] ?? 0);
-    final spent = _transactions
+    final budget = _baseBudgetFor(bounds) + (_cycleBudgetExtras[cycleKey] ?? 0);
+    final spent = _spending
         .where((entry) => bounds.contains(entry.occurredAt))
+        .fold(0, (sum, entry) => sum + entry.amountCentavos);
+    final fixedPaid = _transactions
+        .where(
+          (entry) => entry.isFixedPayment && bounds.contains(entry.occurredAt),
+        )
         .fold(0, (sum, entry) => sum + entry.amountCentavos);
     final fullCycleTracked = !dateOnly(trackingStart).isAfter(bounds.start);
     final successful = budget > 0 && spent <= budget;
@@ -375,6 +1322,7 @@ class SobraStore extends ChangeNotifier {
       bounds,
       budget: budget,
       spent: spent,
+      fixedPaid: fixedPaid,
       tracked: fullCycleTracked,
     );
     final occurredAt = DateTime(
@@ -440,7 +1388,7 @@ class SobraStore extends ChangeNotifier {
   }) {
     if (budgetCentavos <= 0) return 0;
     final spentByDay = <String, int>{};
-    for (final entry in _transactions) {
+    for (final entry in _spending) {
       if (!bounds.contains(entry.occurredAt)) continue;
       final key = _cycleKey(entry.occurredAt);
       spentByDay[key] = (spentByDay[key] ?? 0) + entry.amountCentavos;
@@ -450,7 +1398,7 @@ class SobraStore extends ChangeNotifier {
     var successfulDays = 0;
     final firstTrackedDay = dateOnly(trackingStart);
     for (var offset = 0; offset < bounds.lengthInDays; offset++) {
-      final day = bounds.start.add(Duration(days: offset));
+      final day = addDays(bounds.start, offset);
       final remainingDays = bounds.lengthInDays - offset;
       final allowance = (budgetCentavos - spentBeforeDay) ~/ remainingDays;
       final spentToday = spentByDay[_cycleKey(day)] ?? 0;
@@ -506,6 +1454,7 @@ class SobraStore extends ChangeNotifier {
     CycleBounds bounds, {
     required int budget,
     required int spent,
+    required int fixedPaid,
     required bool tracked,
   }) {
     if (!tracked) return;
@@ -517,8 +1466,10 @@ class SobraStore extends ChangeNotifier {
         budgetCentavos: budget,
         spentCentavos: spent,
         cycleType: paySchedule.type,
+        fixedPaidCentavos: fixedPaid,
       ),
     );
+    _goalCycleIncomeBaselines[bounds.start] = _goalIncomeBaseline(bounds);
   }
 
   int _normalizedCycleXp(int days) {
@@ -535,7 +1486,8 @@ class SobraStore extends ChangeNotifier {
       return;
     }
     final day = dateOnly(moment);
-    final weekStart = day.subtract(Duration(days: cashCountWeekOffset(day)));
+    final weekStart = addDays(day, -cashCountWeekOffset(day));
+    if (_hasCashCountXpInWeek(weekStart)) return;
     final levelBefore = xpProgress.level;
     final awarded = _awardXp(
       kind: XpEventKind.cashCount,
@@ -549,8 +1501,24 @@ class SobraStore extends ChangeNotifier {
         kind: XpNoticeKind.cashCountSaved,
         xp: 25,
         newLevel: levelNow > levelBefore ? levelNow : null,
+        previousLevel: levelNow > levelBefore ? levelBefore : null,
       );
     }
+  }
+
+  /// Whether a cash-count award already landed in [weekStart, weekStart + 7).
+  ///
+  /// The source key is the week start under the *current* weekday setting.
+  /// Changing that setting re-cuts the week, so a second count of the same
+  /// habit would mint a new key. Looking at the dates themselves — not the
+  /// keys — is what keeps one real week from paying twice.
+  bool _hasCashCountXpInWeek(DateTime weekStart) {
+    final weekEnd = addDays(weekStart, 7);
+    return _xpEvents.any((event) {
+      if (event.kind != XpEventKind.cashCount) return false;
+      final at = dateOnly(event.occurredAt);
+      return !at.isBefore(weekStart) && at.isBefore(weekEnd);
+    });
   }
 
   XpEvent? _xpEventForSource(String sourceKey) {
@@ -564,10 +1532,15 @@ class SobraStore extends ChangeNotifier {
     DailyMissionKind.recordMovement => XpEventKind.dailyMissionRecord,
     DailyMissionKind.sameDay => XpEventKind.dailyMissionSameDay,
     DailyMissionKind.reviewBudget => XpEventKind.dailyMissionBudget,
+    DailyMissionKind.addNote => XpEventKind.dailyMissionNote,
+    DailyMissionKind.attachReceipt => XpEventKind.dailyMissionReceipt,
+    DailyMissionKind.threeToday => XpEventKind.dailyMissionThreeToday,
   };
 
+  /// Awards [kind] for today, if today's board asks for it.
   int _awardDailyMission(DailyMissionKind kind, DateTime moment) {
     if (!hasCompletedOnboarding) return 0;
+    if (!DailyMissionKind.forDay(today).contains(kind)) return 0;
     return _awardXp(
       kind: _xpKindFor(kind),
       xp: kind.xp,
@@ -588,33 +1561,40 @@ class SobraStore extends ChangeNotifier {
       xp: awarded,
       missionCount: missionCount,
       newLevel: levelNow > levelBefore ? levelNow : null,
+      previousLevel: levelNow > levelBefore ? levelBefore : null,
     );
   }
 
-  /// Completes the record / same-day missions for a user-typed movement.
+  /// Completes whichever of today's missions a user-typed movement meets.
   ///
-  /// Cash-count rows skip this on purpose: that path already has its own
-  /// weekly XP, and stuffing a count through the ledger should not also
-  /// clear today's recording habit.
-  void _awardDailyMissionsForMovement(DateTime occurredAt) {
+  /// Call it after the movement is in the ledger, so the count of today's
+  /// records includes it. Cash-count rows skip this on purpose: that path
+  /// already has its own weekly XP, and stuffing a count through the ledger
+  /// should not also clear today's recording habit.
+  void _awardDailyMissionsForMovement(
+    DateTime occurredAt, {
+    required String note,
+    String? receiptFileName,
+  }) {
     final moment = currentMoment;
     final levelBefore = xpProgress.level;
     var awarded = 0;
     var completed = 0;
-    final recordXp = _awardDailyMission(
-      DailyMissionKind.recordMovement,
-      moment,
-    );
-    if (recordXp > 0) {
-      awarded += recordXp;
+    void award(DailyMissionKind kind) {
+      final xp = _awardDailyMission(kind, moment);
+      if (xp <= 0) return;
+      awarded += xp;
       completed++;
     }
+
+    award(DailyMissionKind.recordMovement);
     if (_isSameDay(dateOnly(occurredAt), today)) {
-      final sameDayXp = _awardDailyMission(DailyMissionKind.sameDay, moment);
-      if (sameDayXp > 0) {
-        awarded += sameDayXp;
-        completed++;
-      }
+      award(DailyMissionKind.sameDay);
+    }
+    if (note.trim().isNotEmpty) award(DailyMissionKind.addNote);
+    if (receiptFileName != null) award(DailyMissionKind.attachReceipt);
+    if (_userMovementsDatedToday >= DailyMissionKind.threeTodayTarget) {
+      award(DailyMissionKind.threeToday);
     }
     _postMissionNotice(
       awarded: awarded,
@@ -623,11 +1603,47 @@ class SobraStore extends ChangeNotifier {
     );
   }
 
-  /// Marks the budget tab as seen for today.
+  /// Expenses and incomes the user typed that are dated today.
   ///
-  /// Called when the user selects the tab, not when IndexedStack first
-  /// builds it offstage.
-  Future<void> noteBudgetReviewed() async {
+  /// Cash-count rows are measured, not typed, so they do not count toward
+  /// [DailyMissionKind.threeToday]. Nor do fixed-expense payments: they sit
+  /// outside the budget, and the missions are about the budget habit.
+  int get _userMovementsDatedToday =>
+      _spending
+          .where(
+            (entry) =>
+                !entry.isLinkedToCashCount &&
+                _isSameDay(dateOnly(entry.occurredAt), today),
+          )
+          .length +
+      _incomes
+          .where((entry) => _isSameDay(dateOnly(entry.occurredAt), today))
+          .length;
+
+  /// Every receipt photo the ledger or the pre-import recovery copy needs.
+  ///
+  /// The input to `ReceiptStore.sweepOrphans`; anything on disk and not in
+  /// here belongs to no expense.
+  Iterable<String> get referencedReceipts sync* {
+    yield* _transactions
+        .map((entry) => entry.receiptFileName)
+        .whereType<String>();
+    final previous = backupBeforeImportJson;
+    if (previous == null) return;
+    try {
+      final json = jsonDecode(previous) as Map<String, dynamic>;
+      for (final entry in json['transactions'] as List<dynamic>) {
+        final name = (entry as Map<String, dynamic>)['receiptFileName'];
+        if (name is String) yield name;
+      }
+    } on Object {
+      // An unreadable recovery copy cannot provide receipt references.
+    }
+  }
+
+  /// Marks the budget tab as seen when the user selects it.
+  Future<void> noteBudgetReviewed() => _write(() async {
+    if (!_hasBudget) return;
     final moment = currentMoment;
     final levelBefore = xpProgress.level;
     final awarded = _awardDailyMission(DailyMissionKind.reviewBudget, moment);
@@ -639,7 +1655,7 @@ class SobraStore extends ChangeNotifier {
     );
     await _save();
     notifyListeners();
-  }
+  });
 
   Future<ExpenseEntry> addExpense({
     required int amountCentavos,
@@ -647,7 +1663,8 @@ class SobraStore extends ChangeNotifier {
     required String note,
     required DateTime occurredAt,
     required PaymentMethod paymentMethod,
-  }) async {
+    String? receiptFileName,
+  }) => _write(() async {
     _validateMovement(amountCentavos, occurredAt);
     final entry = ExpenseEntry(
       id: _newId('expense'),
@@ -656,14 +1673,20 @@ class SobraStore extends ChangeNotifier {
       note: note.trim(),
       occurredAt: occurredAt,
       paymentMethod: paymentMethod,
+      receiptFileName: receiptFileName,
     );
     _transactions.add(entry);
     if (_affectsCurrentCash(entry)) expectedCashCentavos -= amountCentavos;
-    _awardDailyMissionsForMovement(occurredAt);
+    _awardDailyMissionsForMovement(
+      occurredAt,
+      note: entry.note,
+      receiptFileName: receiptFileName,
+    );
+    _noteRecordedDay(occurredAt);
     await _save();
     notifyListeners();
     return entry;
-  }
+  });
 
   Future<IncomeEntry> addIncome({
     required int amountCentavos,
@@ -672,8 +1695,9 @@ class SobraStore extends ChangeNotifier {
     required DateTime occurredAt,
     required PaymentMethod destination,
     required IncomeAllocation allocation,
-  }) async {
+  }) => _write(() async {
     _validateMovement(amountCentavos, occurredAt);
+    _ensureGoalCycleIncomeBaselines();
     final entry = IncomeEntry(
       id: _newId('income'),
       amountCentavos: amountCentavos,
@@ -685,24 +1709,38 @@ class SobraStore extends ChangeNotifier {
     );
     _incomes.add(entry);
     _applyIncome(entry, 1);
-    _awardDailyMissionsForMovement(occurredAt);
+    _awardDailyMissionsForMovement(occurredAt, note: entry.note);
+    _noteRecordedDay(occurredAt);
     await _save();
     notifyListeners();
     return entry;
-  }
+  });
 
-  Future<void> updateExpense(ExpenseEntry updated) async {
+  Future<void> updateExpense(ExpenseEntry updated) => _write(() async {
     _validateMovement(updated.amountCentavos, updated.occurredAt);
     final index = _transactions.indexWhere((entry) => entry.id == updated.id);
     if (index == -1) return;
     final previous = _transactions[index];
+    if (updated.savingsGoalId != previous.savingsGoalId) {
+      throw ArgumentError('A goal purchase stays linked to its goal');
+    }
+    if (previous.isGoalPurchase) {
+      _repriceGoalPurchase(previous.id, updated.amountCentavos);
+    }
 
     // An expense that came out of a cash count carries a measured amount and
     // date. Only what the user actually knows — the category and the note —
     // can be rewritten; keeping the rest pinned to the count is what stops the
     // budget and the wallet from drifting apart.
     final next = previous.isLinkedToCashCount
-        ? previous.copyWith(category: updated.category, note: updated.note)
+        ? previous.copyWith(
+            category: updated.category,
+            note: updated.note,
+            // A photo is user knowledge, the same kind the category and note
+            // carry, so it crosses the pin that holds the measured amount.
+            receiptFileName: updated.receiptFileName,
+            clearReceipt: updated.receiptFileName == null,
+          )
         : updated;
 
     if (_affectsCurrentCash(previous)) {
@@ -710,15 +1748,27 @@ class SobraStore extends ChangeNotifier {
     }
     if (_affectsCurrentCash(next)) expectedCashCentavos -= next.amountCentavos;
     _transactions[index] = next;
+    // Dated today: the same habits a new save would complete. Cash-count
+    // rows keep their own weekly XP and must not also fill today's missions.
+    if (!next.isLinkedToCashCount &&
+        !next.isOutsideBudget &&
+        _isSameDay(dateOnly(next.occurredAt), today)) {
+      _awardDailyMissionsForMovement(
+        next.occurredAt,
+        note: next.note,
+        receiptFileName: next.receiptFileName,
+      );
+    }
     await _save();
     notifyListeners();
-  }
+  });
 
   Future<void> classifyPendingCashExpense({
     required String expenseId,
     required ExpenseCategory category,
     required String note,
-  }) async {
+    String? receiptFileName,
+  }) => _write(() async {
     final index = _transactions.indexWhere((entry) => entry.id == expenseId);
     if (index == -1 || !_transactions[index].isPendingCashAdjustment) return;
     final previous = _transactions[index];
@@ -726,10 +1776,14 @@ class SobraStore extends ChangeNotifier {
       category: category,
       note: note.trim(),
       isPendingCashAdjustment: false,
+      // Putting a face on an unexplained gap is exactly what a photo is for,
+      // so a ticket travels with the answer.
+      receiptFileName: receiptFileName,
+      clearReceipt: receiptFileName == null,
     );
     await _save();
     notifyListeners();
-  }
+  });
 
   /// Removes an expense, reporting whether it was allowed to go.
   ///
@@ -737,7 +1791,7 @@ class SobraStore extends ChangeNotifier {
   /// from the wallet, so deleting the row would hand the budget back cash the
   /// user does not have, and the count that recorded it would be left pointing
   /// at nothing. Recounting the cash is the way to correct one of these.
-  Future<bool> deleteExpense(String id) async {
+  Future<bool> deleteExpense(String id) => _write(() async {
     final index = _transactions.indexWhere((entry) => entry.id == id);
     if (index == -1) return false;
     if (_transactions[index].isLinkedToCashCount) return false;
@@ -748,9 +1802,9 @@ class SobraStore extends ChangeNotifier {
     await _save();
     notifyListeners();
     return true;
-  }
+  });
 
-  Future<void> restoreExpense(ExpenseEntry entry) async {
+  Future<void> restoreExpense(ExpenseEntry entry) => _write(() async {
     if (_transactions.any((existing) => existing.id == entry.id)) return;
     _transactions.add(entry);
     if (_affectsCurrentCash(entry)) {
@@ -758,6 +1812,279 @@ class SobraStore extends ChangeNotifier {
     }
     await _save();
     notifyListeners();
+  });
+
+  /// Fixed expenses in the order they were added.
+  List<RecurringExpense> get recurringExpenses =>
+      List.unmodifiable(_recurringExpenses);
+
+  RecurringExpense? recurringExpenseById(String id) =>
+      _recurringExpenses.where((entry) => entry.id == id).firstOrNull;
+
+  Future<RecurringExpense> addRecurringExpense({
+    required String name,
+    required int amountCentavos,
+    required ExpenseCategory category,
+    required PaymentMethod paymentMethod,
+    required FixedFrequency frequency,
+    required DateTime firstDueDate,
+    bool isVariable = false,
+    FixedReminder? reminder,
+  }) => _write(() async {
+    if (amountCentavos <= 0) {
+      throw ArgumentError.value(amountCentavos, 'amountCentavos');
+    }
+    final expense = RecurringExpense(
+      id: _newId('fixed'),
+      name: name.trim(),
+      amountCentavos: amountCentavos,
+      category: category,
+      paymentMethod: paymentMethod,
+      unit: frequency.unit,
+      interval: frequency.interval,
+      anchorDate: dateOnly(firstDueDate),
+      isVariable: isVariable,
+      reminder: reminder ?? frequency.defaultReminder,
+    );
+    _recurringExpenses.add(expense);
+    await _save();
+    notifyListeners();
+    return expense;
+  });
+
+  /// Replaces a fixed expense with [updated], matched by id.
+  ///
+  /// Payments already filed keep the due date they settled. Moving the
+  /// schedule can leave one of them pointing at a date the new schedule does
+  /// not have; it stays a fixed payment all the same, and the new date simply
+  /// reads as unpaid until the user files it.
+  Future<void> updateRecurringExpense(RecurringExpense updated) =>
+      _write(() async {
+        if (updated.amountCentavos <= 0) {
+          throw ArgumentError.value(updated.amountCentavos, 'amountCentavos');
+        }
+        final index = _recurringExpenses.indexWhere(
+          (entry) => entry.id == updated.id,
+        );
+        if (index == -1) return;
+        _recurringExpenses[index] = updated;
+        await _save();
+        notifyListeners();
+      });
+
+  /// Stops tracking a fixed expense.
+  ///
+  /// Its past payments stay exactly as they are — still in the ledger, still
+  /// out of the budget. Only the future dates and their reminders go.
+  Future<void> deleteRecurringExpense(String id) => _write(() async {
+    final before = _recurringExpenses.length;
+    _recurringExpenses.removeWhere((entry) => entry.id == id);
+    if (_recurringExpenses.length == before) return;
+    await _save();
+    notifyListeners();
+  });
+
+  /// Every due date from [from] to [to] across all fixed expenses, earliest
+  /// first, each with its payment if one has been filed.
+  List<FixedOccurrence> fixedOccurrencesBetween(DateTime from, DateTime to) {
+    final payments = _fixedPaymentsByOccurrence();
+    final result =
+        [
+          for (final expense in _recurringExpenses)
+            for (final date in expense.occurrencesBetween(from, to))
+              _fixedOccurrence(expense, date, payments),
+        ]..sort((a, b) {
+          final byDate = a.date.compareTo(b.date);
+          return byDate != 0
+              ? byDate
+              : a.expense.name.compareTo(b.expense.name);
+        });
+    return List.unmodifiable(result);
+  }
+
+  /// The due dates that fall in [month]'s calendar month.
+  ///
+  /// By month rather than by pay cycle: rent and bills are thought of per
+  /// month, and a fixed expense has nothing to do with the budget's cycle.
+  List<FixedOccurrence> fixedOccurrencesInMonth(DateTime month) =>
+      fixedOccurrencesBetween(
+        DateTime(month.year, month.month, 1),
+        DateTime(month.year, month.month + 1, 0),
+      );
+
+  /// How many days past its due date an unpaid occurrence still asks on Inicio.
+  ///
+  /// After that it stays marked in the budget tab and stops following the
+  /// user around. Reminding is the job; nagging is not.
+  static const fixedOverdueDaysOnHome = 2;
+
+  /// Whether the user has recorded any everyday spending of their own.
+  ///
+  /// Fixed payments and cash-count differences are left out: neither is the
+  /// habit the first-expense prompts are there to start.
+  bool get hasRecordedEverydayExpense => _transactions.any(
+    (entry) =>
+        !entry.isOutsideBudget &&
+        !entry.isLinkedToCashCount &&
+        !entry.isPendingCashAdjustment,
+  );
+
+  /// Whether Inicio should carry the first-expense card.
+  ///
+  /// For whoever was shown the guided first expense and left it without
+  /// recording anything, unless the card was put off for today.
+  bool get showsFirstExpenseCard =>
+      hasCompletedOnboarding &&
+      firstExpenseGuideOffered &&
+      !firstExpenseGuidePending &&
+      !hasRecordedEverydayExpense &&
+      _firstExpenseCardSnoozedDay != todayKey;
+
+  /// Clears the owed guided first expense, as the shell starts showing it.
+  ///
+  /// Cleared on the way in rather than on the way out, so a screen closed by
+  /// the system or a crash is not shown twice; the card on Inicio picks the
+  /// user up from there.
+  Future<void> takeFirstExpenseGuide() => _write(() async {
+    if (!firstExpenseGuidePending) return;
+    firstExpenseGuidePending = false;
+    firstExpenseGuideOffered = true;
+    await _save();
+    notifyListeners();
+  });
+
+  /// Hides Inicio's first-expense card until tomorrow.
+  Future<void> snoozeFirstExpenseCard() => _write(() async {
+    _firstExpenseCardSnoozedDay = todayKey;
+    await _save();
+    notifyListeners();
+  });
+
+  /// Whether Inicio's fixed-expense card was put off for today.
+  bool get isFixedHomeCardSnoozed => _fixedHomeSnoozedDay == todayKey;
+
+  /// Hides Inicio's fixed-expense card until tomorrow.
+  Future<void> snoozeFixedHomeCard() => _write(() async {
+    _fixedHomeSnoozedDay = todayKey;
+    await _save();
+    notifyListeners();
+  });
+
+  /// Unpaid occurrences Inicio should ask about: due today or a little late.
+  List<FixedOccurrence> get fixedDueOnHome {
+    final from = DateTime(
+      today.year,
+      today.month,
+      today.day - fixedOverdueDaysOnHome,
+    );
+    return fixedOccurrencesBetween(
+      from,
+      today,
+    ).where((occurrence) => !occurrence.isPaid).toList();
+  }
+
+  /// The due date a payment of [expense] made today should settle.
+  ///
+  /// The most recent date that has arrived, if it is still unpaid; otherwise
+  /// the first unpaid one after today, so paying early settles the next bill.
+  /// Anything older than the most recent date is taken as dealt with outside
+  /// Sobra — asking about last year's rent would help nobody.
+  FixedOccurrence? nextUnpaidOccurrence(RecurringExpense expense) {
+    final payments = _fixedPaymentsByOccurrence();
+    final latest = expense.lastOccurrenceOnOrBefore(today);
+    if (latest != null &&
+        !payments.containsKey(_occurrenceKey(expense.id, latest))) {
+      return _fixedOccurrence(expense, latest, payments);
+    }
+    final tomorrow = DateTime(today.year, today.month, today.day + 1);
+    final horizon = DateTime(today.year + 2, today.month, today.day);
+    for (final date in expense.occurrencesBetween(tomorrow, horizon)) {
+      if (!payments.containsKey(_occurrenceKey(expense.id, date))) {
+        return _fixedOccurrence(expense, date, payments);
+      }
+    }
+    return null;
+  }
+
+  /// Files the payment of one due date of a fixed expense.
+  ///
+  /// The payment lands in the ledger and, when it was cash, comes out of the
+  /// expected cash — the money did leave the wallet. It stays out of every
+  /// budget figure; see [ExpenseEntry.isFixedPayment].
+  ///
+  /// A date that already has a payment returns that payment instead of filing
+  /// a second one, so a double tap cannot pay the rent twice. A variable bill
+  /// takes the amount paid as its next estimate.
+  Future<ExpenseEntry> recordFixedPayment({
+    required String recurringId,
+    required DateTime occurrenceDate,
+    required int amountCentavos,
+    PaymentMethod? paymentMethod,
+    DateTime? paidAt,
+  }) => _write(() async {
+    final expense = recurringExpenseById(recurringId);
+    if (expense == null) {
+      throw ArgumentError.value(recurringId, 'recurringId');
+    }
+    final dueDate = dateOnly(occurrenceDate);
+    if (!expense.isOccurrence(dueDate)) {
+      throw ArgumentError.value(occurrenceDate, 'occurrenceDate');
+    }
+    final existing =
+        _fixedPaymentsByOccurrence()[_occurrenceKey(recurringId, dueDate)];
+    if (existing != null) return existing;
+
+    final moment = paidAt ?? currentMoment;
+    _validateMovement(amountCentavos, moment);
+    final entry = ExpenseEntry(
+      id: _newId('expense'),
+      amountCentavos: amountCentavos,
+      category: expense.category,
+      note: expense.name,
+      occurredAt: moment,
+      paymentMethod: paymentMethod ?? expense.paymentMethod,
+      recurringId: recurringId,
+      occurrenceDate: dueDate,
+    );
+    _transactions.add(entry);
+    if (_affectsCurrentCash(entry)) expectedCashCentavos -= amountCentavos;
+    if (expense.isVariable && expense.amountCentavos != amountCentavos) {
+      final index = _recurringExpenses.indexOf(expense);
+      _recurringExpenses[index] = expense.copyWith(
+        amountCentavos: amountCentavos,
+      );
+    }
+    _noteRecordedDay(moment);
+    await _save();
+    notifyListeners();
+    return entry;
+  });
+
+  Map<String, ExpenseEntry> _fixedPaymentsByOccurrence() => {
+    for (final entry in _transactions)
+      if (entry.recurringId != null && entry.occurrenceDate != null)
+        _occurrenceKey(entry.recurringId!, entry.occurrenceDate!): entry,
+  };
+
+  String _occurrenceKey(String recurringId, DateTime date) =>
+      '$recurringId|${_cycleKey(date)}';
+
+  FixedOccurrence _fixedOccurrence(
+    RecurringExpense expense,
+    DateTime date,
+    Map<String, ExpenseEntry> payments,
+  ) {
+    final payment = payments[_occurrenceKey(expense.id, date)];
+    return FixedOccurrence(
+      expense: expense,
+      date: date,
+      payment: payment,
+      status: FixedOccurrence.statusFor(
+        date: date,
+        today: today,
+        paid: payment != null,
+      ),
+    );
   }
 
   /// Removes an income, reporting whether it was allowed to go.
@@ -767,38 +2094,70 @@ class SobraStore extends ChangeNotifier {
   /// wallet and the count that recorded it hides its own row in favour of
   /// this one, so deleting it would erase the count from the ledger while
   /// the counted cash figure kept the money. Recounting is the way out.
-  Future<bool> deleteIncome(String id) async {
+  Future<bool> deleteIncome(String id) => _write(() async {
     final index = _incomes.indexWhere((entry) => entry.id == id);
     if (index == -1) return false;
     if (_incomes[index].isLinkedToCashCount) return false;
+    _ensureGoalCycleIncomeBaselines();
     final removed = _incomes.removeAt(index);
     _applyIncome(removed, -1);
     await _save();
     notifyListeners();
     return true;
-  }
+  });
 
-  Future<void> restoreIncome(IncomeEntry entry) async {
+  /// Rewrites an income, reporting whether it was allowed to change.
+  ///
+  /// Refuses an income created by a cash count, for the reason
+  /// [deleteIncome] does. Anything else is taken back out of the wallet and
+  /// the cycle it was in, then applied again as it now reads, so a new date
+  /// or a switch to savings moves the money with it.
+  Future<bool> updateIncome(IncomeEntry updated) => _write(() async {
+    _validateMovement(updated.amountCentavos, updated.occurredAt);
+    final index = _incomes.indexWhere((entry) => entry.id == updated.id);
+    if (index == -1) return false;
+    final previous = _incomes[index];
+    if (previous.isLinkedToCashCount) return false;
+    _ensureGoalCycleIncomeBaselines();
+    _applyIncome(previous, -1);
+    _incomes[index] = updated;
+    _applyIncome(updated, 1);
+    await _save();
+    notifyListeners();
+    return true;
+  });
+
+  Future<void> restoreIncome(IncomeEntry entry) => _write(() async {
     if (_incomes.any((existing) => existing.id == entry.id)) return;
+    _ensureGoalCycleIncomeBaselines();
     _incomes.add(entry);
     _applyIncome(entry, 1);
     await _save();
     notifyListeners();
-  }
+  });
 
   Future<void> setTotalBudget(
     int centavos, {
     bool adjustCategoryLimits = false,
-  }) async {
+  }) => _write(() async {
     if (centavos <= 0) throw ArgumentError.value(centavos, 'centavos');
     // The budget screen edits the total the user can see. Income allocated to
     // this cycle is already included in that figure, so keeping it in the base
     // as well would add the same money twice on the next read.
-    final nextBaseBudget = centavos - cycleBudgetExtrasCentavos;
-    if (nextBaseBudget <= 0) {
+    final planned = centavos - cycleBudgetExtrasCentavos;
+    if (planned <= 0) {
       throw const SobraStoreException(StoreFailure.budgetBelowCycleIncome);
     }
-    _baseBudgetCentavos = nextBaseBudget;
+    // In a short first cycle the total on screen is that cycle's share, so the
+    // figure typed is too; the full-cycle budget is what it is a share of.
+    final share = _shortCycleShare(cycleBounds);
+    _baseBudgetCentavos = share == null
+        ? planned
+        : (planned * share.$2 / share.$1).round();
+    if (!_hasBudget) {
+      budgetTrackingStartedAt = today;
+    }
+    _hasBudget = true;
     if (adjustCategoryLimits) {
       // Scale what is there rather than reinstating the stock split: somebody
       // who moved Comida to half their budget asked for that, and "adjust
@@ -808,7 +2167,7 @@ class SobraStore extends ChangeNotifier {
     }
     await _save();
     notifyListeners();
-  }
+  });
 
   /// The current limits restretched to add up to [budget], keeping each
   /// category's share of the plan.
@@ -841,13 +2200,14 @@ class SobraStore extends ChangeNotifier {
     return scaled;
   }
 
-  Future<void> setCategoryLimit(ExpenseCategory category, int centavos) async {
-    if (centavos < 0) throw ArgumentError.value(centavos, 'centavos');
-    categoryLimits = {...categoryLimits, category: centavos};
-    categoryLimitsCustomized = true;
-    await _save();
-    notifyListeners();
-  }
+  Future<void> setCategoryLimit(ExpenseCategory category, int centavos) =>
+      _write(() async {
+        if (centavos < 0) throw ArgumentError.value(centavos, 'centavos');
+        categoryLimits = {...categoryLimits, category: centavos};
+        categoryLimitsCustomized = true;
+        await _save();
+        notifyListeners();
+      });
 
   Future<CashReconciliationEntry?> reconcileCashCount({
     required int actualCentavos,
@@ -855,7 +2215,7 @@ class SobraStore extends ChangeNotifier {
     ExpenseCategory? category,
     String note = '',
     IncomeAllocation incomeAllocation = IncomeAllocation.savings,
-  }) async {
+  }) => _write(() async {
     if (actualCentavos < 0) {
       throw ArgumentError.value(actualCentavos, 'actualCentavos');
     }
@@ -954,34 +2314,64 @@ class SobraStore extends ChangeNotifier {
     await _save();
     notifyListeners();
     return reconciliation;
+  });
+
+  /// The budget that keeps today's pace of spending under [next], or null when
+  /// the current one already does.
+  ///
+  /// The budget is per cycle, so moving from quincenas to weeks without
+  /// changing it would double what there is to spend each day. Within a tenth
+  /// either way is left alone: a quincena and a fortnight are both "about two
+  /// weeks", and offering 6,920 for 7,000 would be noise.
+  int? suggestedBudgetFor(PaySchedule next) {
+    if (!_hasBudget) return null;
+    final ratio = next.typicalLengthInDays / paySchedule.typicalLengthInDays;
+    if (ratio > 0.9 && ratio < 1.1) return null;
+    final exact = _baseBudgetCentavos * ratio;
+    // Whole tens of the currency once there are thousands of it, whole units
+    // below that: a figure the user would have typed themselves.
+    final step = exact >= 1000 * Currency.minorUnitsPerUnit
+        ? 10 * Currency.minorUnitsPerUnit
+        : Currency.minorUnitsPerUnit;
+    final rounded = (exact / step).round() * step;
+    return rounded > 0 ? rounded : step;
   }
 
-  Future<void> queuePayScheduleChange(PaySchedule schedule) async {
-    final effectiveAt = cycleEnd.add(const Duration(days: 1));
+  /// Switches to [schedule] once the current cycle ends, starting it with
+  /// [baseBudgetCentavos] when given — see [suggestedBudgetFor].
+  Future<void> queuePayScheduleChange(
+    PaySchedule schedule, {
+    int? baseBudgetCentavos,
+  }) => _write(() async {
+    if (baseBudgetCentavos != null && baseBudgetCentavos <= 0) {
+      throw ArgumentError.value(baseBudgetCentavos, 'baseBudgetCentavos');
+    }
+    final effectiveAt = addDays(cycleEnd, 1);
     pendingPaySchedule = schedule.type == PayCycleType.irregular
         ? schedule.copyWith(irregularCycleStart: effectiveAt)
         : schedule;
     pendingPayScheduleEffectiveAt = effectiveAt;
+    pendingBaseBudgetCentavos = baseBudgetCentavos;
     await _save();
     notifyListeners();
-  }
+  });
 
-  Future<void> setReducedMotion(bool value) async {
+  Future<void> setReducedMotion(bool value) => _write(() async {
     reducedMotion = value;
     await _save();
     notifyListeners();
-  }
+  });
 
   /// Moves the day a cash-count week turns over.
   ///
   /// Weeks already awarded keep their XP: the award is keyed on the week it
   /// fell in, and changing the boundary cannot reach back and un-earn one.
-  Future<void> setCashCountWeekday(int weekday) async {
+  Future<void> setCashCountWeekday(int weekday) => _write(() async {
     if (cashCountWeekday == weekday) return;
     cashCountWeekday = weekday;
     await _save();
     notifyListeners();
-  }
+  });
 
   /// How many days [day] sits past the start of its cash-count week.
   @visibleForTesting
@@ -993,30 +2383,403 @@ class SobraStore extends ChangeNotifier {
   /// Nothing is converted: 20000 stays 20000 minor units and only the code
   /// beside it changes. That is the honest behaviour for a ledger of what the
   /// user actually counted, and the screen says so before calling this.
-  Future<void> setCurrency(Currency value) async {
+  Future<void> setCurrency(Currency value) => _write(() async {
     if (currency == value) return;
     currency = value;
     await _save();
     notifyListeners();
-  }
+  });
 
   /// Picks the language, or passes null to go back to following the phone.
-  Future<void> setLanguageCode(String? value) async {
+  Future<void> setLanguageCode(String? value) => _write(() async {
     if (languageCode == value) return;
     languageCode = value;
     await _save();
     notifyListeners();
+  });
+
+  /// Compact rather than indented: the backup travels through the clipboard,
+  /// and Android refuses a clip past roughly half a megabyte. Indentation
+  /// nearly doubled the size and brought a daily user there within months.
+  String exportJson() => jsonEncode(_toJson());
+  String? get exportCorruptedJson => corruptedStorage;
+  String? get backupBeforeImportJson =>
+      _preferences.getString(_beforeImportKey);
+
+  BackupSummary inspectBackup(String raw) {
+    final candidate = _readBackup(raw);
+    return BackupSummary(
+      expenses: candidate._transactions.length,
+      incomes: candidate._incomes.length,
+      fixedExpenses: candidate._recurringExpenses.length,
+      currency: candidate.currency,
+      budgetCentavos: candidate.hasBudget ? candidate.baseBudgetCentavos : null,
+    );
   }
 
-  String exportJson() => const JsonEncoder.withIndent('  ').convert(_toJson());
-  String? get exportCorruptedJson => corruptedStorage;
+  /// Parses into a separate store so even a partly invalid file changes nothing.
+  SobraStore _readBackup(String raw) {
+    if (raw.length > 10 * 1024 * 1024) {
+      throw const FormatException('Backup is too large');
+    }
+    final Object? decoded;
+    try {
+      decoded = jsonDecode(raw);
+    } on Object {
+      throw const FormatException('Invalid backup');
+    }
+    if (decoded is! Map<String, dynamic>) {
+      throw const FormatException('Invalid backup');
+    }
+    final version = decoded['schemaVersion'];
+    if (version != null && (version is! int || version < 1)) {
+      throw const FormatException('Invalid backup version');
+    }
+    if (version is int && version > 12) {
+      throw UnsupportedError('Backup requires a newer app');
+    }
+    try {
+      _validateBackupJson(decoded);
+      final candidate = SobraStore._(_preferences, _now, rewardedAdsPerDay);
+      candidate._restore(decoded);
+      candidate._validateBackup();
+      return candidate;
+    } on Object {
+      throw const FormatException('Invalid backup');
+    }
+  }
 
+  void _validateBackupJson(Object? value, [String key = '']) {
+    // Exported numeric fields are integers. Reject fractions and values that
+    // would lose precision rather than silently truncating them in fromJson.
+    if (value is num && (value is! int || value.abs() > 9007199254740991)) {
+      throw const FormatException('Invalid backup number');
+    }
+    const dateKeys = {
+      'occurredAt',
+      'occurrenceDate',
+      'anchorDate',
+      'start',
+      'end',
+      'lastCashCountAt',
+      'firstStartedAt',
+      'xpTrackingStartedAt',
+      'budgetTrackingStartedAt',
+      'lastSettledCycleEnd',
+      'pendingPayScheduleEffectiveAt',
+      'payScheduleEffectiveFloor',
+      'irregularCycleStart',
+      'biweeklyAnchor',
+      'nativeAdInstallDay',
+      'lastNativeAdImpressionAt',
+      'rewardedAdDay',
+      'fixedHomeSnoozedDay',
+      'firstExpenseCardSnoozedDay',
+      'createdAt',
+      'completedAt',
+      'cycleStart',
+      'goalPromptedCycleStarts',
+      'targetDate',
+      'recordedDays',
+    };
+    if (value is String && dateKeys.contains(key)) {
+      final parts = RegExp(
+        r'^(\d{4})-(\d{2})-(\d{2})(?:$|T)',
+      ).firstMatch(value);
+      if (parts == null || DateTime.tryParse(value) == null) {
+        throw const FormatException('Invalid backup date');
+      }
+      final year = int.parse(parts[1]!);
+      final month = int.parse(parts[2]!);
+      final day = int.parse(parts[3]!);
+      final date = DateTime.utc(year, month, day);
+      if (year < 1900 ||
+          date.year != year ||
+          date.month != month ||
+          date.day != day) {
+        throw const FormatException('Invalid backup date');
+      }
+    }
+    if (value is Map<String, dynamic>) {
+      for (final entry in value.entries) {
+        _validateBackupJson(entry.value, entry.key);
+      }
+    } else if (value is List) {
+      for (final item in value) {
+        _validateBackupJson(item, key);
+      }
+    }
+  }
+
+  void _validateBackup() {
+    void require(bool valid) {
+      if (!valid) throw const FormatException('Invalid backup value');
+    }
+
+    void schedule(PaySchedule value) {
+      require(value.firstPayDay >= 0 && value.firstPayDay <= 31);
+      require(value.secondPayDay >= 0 && value.secondPayDay <= 31);
+      require(value.monthlyPayDay >= 0 && value.monthlyPayDay <= 31);
+      require(value.weeklyPayDay >= 1 && value.weeklyPayDay <= 7);
+      require(
+        value.planningHorizonDays >= 1 && value.planningHorizonDays <= 365,
+      );
+      require(
+        value.type != PayCycleType.biweekly || value.biweeklyAnchor != null,
+      );
+      require(
+        value.type != PayCycleType.irregular ||
+            value.irregularCycleStart != null,
+      );
+    }
+
+    require(_baseBudgetCentavos >= 0 && countedCashCentavos >= 0);
+    require(cashCountWeekday >= 1 && cashCountWeekday <= 7);
+    require(successfulCycles >= 0);
+    require(categoryLimits.values.every((amount) => amount >= 0));
+    require(_rewardedAdProgress.values.every((count) => count >= 0));
+    require(_rewardedAdsWatchedOnDay >= 0);
+    schedule(paySchedule);
+    if (pendingPaySchedule != null) schedule(pendingPaySchedule!);
+    require(
+      (pendingPaySchedule == null) == (pendingPayScheduleEffectiveAt == null),
+    );
+    require(
+      pendingBaseBudgetCentavos == null ||
+          (pendingPaySchedule != null && pendingBaseBudgetCentavos! > 0),
+    );
+    final ids = <String>{};
+    void id(String value) => require(value.isNotEmpty && ids.add(value));
+    if (_activeSavingsGoal != null) id(_activeSavingsGoal!.id);
+    for (final completed in _completedSavingsGoals) {
+      id(completed.goal.id);
+    }
+    for (final entry in _transactions) {
+      id(entry.id);
+      require(entry.amountCentavos > 0);
+      require((entry.recurringId == null) == (entry.occurrenceDate == null));
+      final goalId = entry.savingsGoalId;
+      require(
+        goalId == null ||
+            (goalId.isNotEmpty &&
+                goalId.length <= 256 &&
+                entry.recurringId == null),
+      );
+      final photo = entry.receiptFileName;
+      require(
+        photo == null ||
+            (photo.isNotEmpty &&
+                photo != '.' &&
+                photo != '..' &&
+                !photo.contains('/') &&
+                !photo.contains('\\')),
+      );
+    }
+    for (final entry in _incomes) {
+      id(entry.id);
+      require(entry.amountCentavos > 0);
+    }
+    for (final entry in _cashReconciliations) {
+      id(entry.id);
+      require(entry.actualCentavos >= 0);
+    }
+    for (final entry in _xpEvents) {
+      id(entry.id);
+      require(entry.xp >= 0);
+    }
+    for (final bill in _recurringExpenses) {
+      id(bill.id);
+      require(bill.name.trim().isNotEmpty && bill.amountCentavos > 0);
+      require(bill.interval >= 1 && bill.interval <= 120);
+    }
+    final cycleStarts = <DateTime>{};
+    for (final record in _cycleRecords) {
+      require(!record.end.isBefore(record.start));
+      require(cycleStarts.add(record.start));
+      require(
+        record.budgetCentavos >= 0 &&
+            record.spentCentavos >= 0 &&
+            record.fixedPaidCentavos >= 0,
+      );
+    }
+    _validateSavingsGoalState();
+    require(
+      starterCharacterId == null ||
+          CatalogPreviewData.isStarter(starterCharacterId!),
+    );
+  }
+
+  /// Validate the additive goal records on local restore as well as import.
+  /// Legacy ledger validation stays unchanged for installs predating goals.
+  void _validateSavingsGoalState() {
+    void require(bool valid) {
+      if (!valid) throw const FormatException('Invalid savings goal state');
+    }
+
+    final ids = <String>{};
+    void id(String value) => require(value.isNotEmpty && ids.add(value));
+    if (_activeSavingsGoal != null) id(_activeSavingsGoal!.id);
+    for (final entry in _completedSavingsGoals) {
+      id(entry.goal.id);
+    }
+    final ledgerIds = {
+      ..._transactions.map((entry) => entry.id),
+      ..._incomes.map((entry) => entry.id),
+      ..._cashReconciliations.map((entry) => entry.id),
+      ..._xpEvents.map((entry) => entry.id),
+      ..._recurringExpenses.map((entry) => entry.id),
+    };
+    require(!ids.any(ledgerIds.contains));
+    ids.addAll(ledgerIds);
+    final cycleStarts = _cycleRecords.map((entry) => entry.start).toSet();
+    require(_goalCycleIncomeBaselines.length == cycleStarts.length);
+    final incomeIds = _incomes.map((entry) => entry.id).toSet();
+    for (final baseline in _goalCycleIncomeBaselines.entries) {
+      require(cycleStarts.contains(baseline.key));
+      for (final entry in baseline.value.entries) {
+        require(entry.key.isNotEmpty && entry.key.length <= 256);
+        require(entry.value > 0 && entry.value <= 9007199254740991);
+        require(incomeIds.contains(entry.key) || !ids.contains(entry.key));
+      }
+    }
+    final allocationKeys = <String>{};
+    final allocatedPerCycle = <DateTime, int>{};
+    final knownGoalIds = {
+      if (_activeSavingsGoal != null) _activeSavingsGoal!.id,
+      for (final completed in _completedSavingsGoals) completed.goal.id,
+    };
+    for (final entry in _goalCycleAllocations) {
+      require(cycleStarts.contains(entry.cycleStart));
+      require(
+        allocationKeys.add('${_cycleKey(entry.cycleStart)}:${entry.goalId}'),
+      );
+      // An orphan goal ID is an intentional reservation after deletion, but
+      // must not collide with the ID of an unrelated ledger entry.
+      require(
+        knownGoalIds.contains(entry.goalId) || !ids.contains(entry.goalId),
+      );
+      allocatedPerCycle.update(
+        entry.cycleStart,
+        (total) => total + entry.amountCentavos,
+        ifAbsent: () => entry.amountCentavos,
+      );
+    }
+    for (final record in _cycleRecords) {
+      require((allocatedPerCycle[record.start] ?? 0) <= record.budgetCentavos);
+    }
+    require(
+      _goalPromptedCycleKeys.every(
+        (key) => cycleStarts.any((start) => _cycleKey(start) == key),
+      ),
+    );
+    for (final entry in _goalCompletionDates.entries) {
+      require(entry.key.isNotEmpty && entry.key.length <= 256);
+      require(knownGoalIds.contains(entry.key) || !ids.contains(entry.key));
+      require(entry.value.year >= 1900 && entry.value.year <= 9999);
+      final goal = _activeSavingsGoal?.id == entry.key
+          ? _activeSavingsGoal
+          : _completedSavingsGoals
+                .where((item) => item.goal.id == entry.key)
+                .map((item) => item.goal)
+                .firstOrNull;
+      require(goal == null || !entry.value.isBefore(goal.createdAt));
+    }
+  }
+
+  /// Imports only after validation and durable storage. A failed write keeps
+  /// the current in-memory ledger, and the previous disk state becomes backup.
+  /// Paid entitlements come from this install's store, never from pasted JSON.
+  Future<void> importBackup(String raw) => _write(() async {
+    final candidate = _readBackup(raw);
+    final portableIds = {
+      for (final entry in CatalogPreviewData.all)
+        if (entry.unlockMethod != CatalogUnlockMethod.purchase &&
+            entry.unlockMethod != CatalogUnlockMethod.bundle)
+          entry.id,
+    };
+    candidate._ownedCatalogIds
+      ..retainAll(portableIds)
+      ..addAll(_ownedCatalogIds);
+    // Importing an older ledger must not take back a permanently received
+    // event gift. Free costume ownership is portable independently of Play.
+    candidate._ownedCostumeIds.addAll(_ownedCostumeIds);
+    candidate._claimedCostumeCampaignIds.addAll(_claimedCostumeCampaignIds);
+    // The all-rooms flag covers Casa torre, which is sold, so it follows this
+    // install rather than the file. What the file had free that can also be
+    // earned comes along as ordinary ids.
+    if (candidate._keepsEveryRoom && !_keepsEveryRoom) {
+      candidate._ownedCatalogIds.addAll({
+        for (final room in CatalogPreviewData.rooms)
+          if (portableIds.contains(room.id)) room.id,
+      });
+    }
+    candidate._keepsEveryRoom = _keepsEveryRoom;
+    final selected = CatalogPreviewData.characters
+        .where((entry) => entry.id == candidate.characterId)
+        .firstOrNull;
+    if (selected != null && !candidate.ownsCatalogEntry(selected)) {
+      candidate.characterId = candidate._fallbackCharacterId;
+    }
+    if (!candidate.ownsRoom(candidate.equippedRoomId)) {
+      candidate.equippedRoomId = RoomThemes.casaClaraId;
+    }
+    for (final placements in candidate._roomPlacementsByRoom.values) {
+      placements.removeWhere((_, id) {
+        final entry = CatalogPreviewData.all
+            .where((item) => item.id == id)
+            .firstOrNull;
+        return entry != null && !candidate.ownsCatalogEntry(entry);
+      });
+    }
+    candidate._nativeAdInstallDay ??= _nativeAdInstallDay ?? todayKey;
+    candidate.firstStartedAt ??= firstStartedAt ?? today;
+    candidate._updateEquippedItem(
+      candidate.roomDecorationsFor(candidate.equippedRoomId),
+    );
+    // Unlike the rotating save backup, this copy survives later edits. A
+    // ledger that is still exactly what the last import wrote is not the
+    // user's own, though: replacing the copy with it would leave a second
+    // import in a row with no way back to the ledger from before the first.
+    final untouchedImport =
+        _preferences.getString(_beforeImportKey) != null &&
+        !hasStorageError &&
+        _preferences.getString(_importedLedgerKey) == _ledgerFingerprint();
+    if (!untouchedImport) {
+      final beforeImport = _persistedJson ?? exportJson();
+      if (!await _preferences.setString(_beforeImportKey, beforeImport)) {
+        throw const SobraStoreException(StoreFailure.backupNotSaved);
+      }
+    }
+    await _archiveCorruptedOriginal();
+    _copyFrom(candidate);
+    hasStorageError = false;
+    corruptedStorage = null;
+    // Best-effort: without it the next import only falls back to replacing
+    // the copy, which is what every import did before this key existed.
+    await _preferences.setString(_importedLedgerKey, _ledgerFingerprint());
+    await _save();
+    // As after any other restore: cycles that ended since the backup was
+    // taken close now, not on the next resume.
+    await settleCycles();
+    _pendingXpNotice = null;
+    _lastObservedDate = today;
+    notifyListeners();
+  }, allowRecovery: true);
+
+  /// Writes the answers onboarding collected.
+  ///
+  /// A null [budgetCentavos] is "not answered yet", not a budget of nothing —
+  /// see [hasBudget]. The stored figure keeps its default anyway so the
+  /// category split has something to be a share of; nothing reads it until a
+  /// budget is actually set.
   Future<void> configureOnboarding({
-    required int budgetCentavos,
+    required int? budgetCentavos,
     required PaySchedule schedule,
     int? cashCentavos,
-  }) async {
-    _baseBudgetCentavos = budgetCentavos;
+  }) => _write(() async {
+    _baseBudgetCentavos = budgetCentavos ?? 600000;
+    _hasBudget = budgetCentavos != null;
+    budgetTrackingStartedAt = _hasBudget ? today : null;
     paySchedule =
         schedule.type == PayCycleType.irregular &&
             schedule.irregularCycleStart == null
@@ -1024,63 +2787,775 @@ class SobraStore extends ChangeNotifier {
         : schedule;
     pendingPaySchedule = null;
     pendingPayScheduleEffectiveAt = null;
+    pendingBaseBudgetCentavos = null;
     payScheduleEffectiveFloor = null;
     countedCashCentavos = cashCentavos ?? 0;
     expectedCashCentavos = cashCentavos ?? 0;
     lastCashCountAt = cashCentavos == null ? null : currentMoment;
-    categoryLimits = _categoryLimitsForBudget(budgetCentavos);
+    categoryLimits = _categoryLimitsForBudget(_baseBudgetCentavos);
     categoryLimitsCustomized = false;
     await _save();
     notifyListeners();
-  }
+  });
 
-  Future<void> completeOnboarding() async {
-    hasCompletedOnboarding = true;
-    xpTrackingStartedAt ??= today;
+  Future<void> chooseCharacter(String id) => _write(() async {
+    if (id.isEmpty) return;
+    final entry = CatalogPreviewData.characters
+        .where((candidate) => candidate.id == id)
+        .firstOrNull;
+    // Onboarding picks a starter before owning it; [completeOnboarding] is
+    // what hands it over.
+    final pickingStarter =
+        !hasCompletedOnboarding && CatalogPreviewData.isStarter(id);
+    if (entry != null && !pickingStarter && !ownsCatalogEntry(entry)) {
+      throw ArgumentError.value(id, 'id', 'character not owned');
+    }
+    if (id == characterId) return;
+    characterId = id;
     await _save();
     notifyListeners();
+  });
+
+  /// Whether [entry] is available to the user right now.
+  ///
+  /// The only place that answers this. Three unlock routes resolve three
+  /// different ways — included entries always, level rewards from XP, and the
+  /// rest from what was acquired — and a caller that checks only the stored
+  /// set would report a level reward as locked.
+  /// Matched on both ids on purpose. A store restore knows products, not
+  /// catalog entries, and an id it could not map to this build's lineup is
+  /// kept verbatim — so the same entitlement can be sitting in the set under
+  /// either name, and asking for only one of them silently revokes a purchase.
+  bool ownsCatalogEntry(CatalogEntry entry) {
+    final productId = entry.storeProductId;
+    return entry.unlockMethod == CatalogUnlockMethod.included ||
+        CatalogPreviewData.isUnlockedAtLevel(entry, xpProgress.level) ||
+        _ownedCatalogIds.contains(entry.id) ||
+        (productId != null && _ownedCatalogIds.contains(productId)) ||
+        (_keepsEveryRoom && entry.kind == CatalogKind.room) ||
+        (_debugPaidCharacters &&
+            entry.kind == CatalogKind.character &&
+            (entry.unlockMethod == CatalogUnlockMethod.purchase ||
+                entry.unlockMethod == CatalogUnlockMethod.bundle));
   }
+
+  /// Debug builds only: paid and pack characters read as owned, unpaid.
+  ///
+  /// Answered in [ownsCatalogEntry] rather than written into the owned set.
+  /// A grant there would be taken back by the launch revocation the moment
+  /// Play reports the test account owns nothing, and turning the switch off
+  /// would have to guess which ids were real purchases.
+  bool _debugPaidCharacters = false;
+
+  bool get debugPaidCharactersUnlocked => _debugPaidCharacters;
+
+  Future<void> setDebugPaidCharactersUnlocked(bool unlocked) =>
+      _write(() async {
+        if (!kDebugMode || unlocked == _debugPaidCharacters) return;
+        _debugPaidCharacters = unlocked;
+        await _preferences.setBool(_debugPaidCharactersKey, unlocked);
+        final selected = CatalogPreviewData.characters
+            .where((entry) => entry.id == characterId)
+            .firstOrNull;
+        if (selected != null && !ownsCatalogEntry(selected)) {
+          characterId = _fallbackCharacterId;
+          await _save();
+        }
+        notifyListeners();
+      });
+
+  /// Debug builds only: awards exactly the XP the next level still needs.
+  ///
+  /// Level rewards take weeks of real use to reach, so trying the unlock
+  /// lineup on a device needs a shortcut. The award is an ordinary XP event,
+  /// so the level-up card and everything derived from the level behave as
+  /// they would for a real one.
+  Future<void> debugAdvanceLevel() => _write(() async {
+    final before = xpProgress;
+    if (!kDebugMode || before.isMaxLevel) return;
+    final moment = _now();
+    final xp = _awardXp(
+      kind: XpEventKind.cashCount,
+      xp: before.remainingXp,
+      occurredAt: moment,
+      sourceKey: 'debug-level:${moment.microsecondsSinceEpoch}',
+    );
+    _pendingXpNotice = XpNotice(
+      kind: XpNoticeKind.cashCountSaved,
+      xp: xp,
+      newLevel: xpProgress.level,
+      previousLevel: before.level,
+    );
+    await _save();
+    notifyListeners();
+  });
+
+  /// Whether general (native) ads should stay off.
+  ///
+  /// Granted by the pack or by the standalone remove-ads product. Rewarded
+  /// ads are not covered: those stay a choice in the collection.
+  bool get ownsNoAds =>
+      _ownedCatalogIds.contains(CatalogPreviewData.noAdsEntitlement);
+
+  /// Whether Los amigos de Michi has been delivered.
+  ///
+  /// Needs ad removal as well as the three friends. The friends are also
+  /// sold one by one, so somebody who bought all three still lacks what only
+  /// the pack gives, and the pack must stay on offer to them.
+  bool get ownsPack =>
+      _ownedCatalogIds.contains(CatalogPreviewData.noAdsEntitlement) &&
+      CatalogPreviewData.packCharacterIds.every(_ownedCatalogIds.contains);
+
+  /// The rewarded-ad entry a settlement card should open, or null when the
+  /// card must be hidden.
+  ///
+  /// Hidden when the daily cap is spent or nothing unlockable remains. Order:
+  /// an entry already in progress, then the fewest remaining views, then
+  /// catalog order.
+  CatalogEntry? get recommendedRewardedAdEntry {
+    if ((rewardedAdsLeftToday ?? 1) <= 0) return null;
+    final catalog = CatalogPreviewData.all;
+    final candidates = [
+      for (final entry in catalog)
+        if (entry.unlockMethod == CatalogUnlockMethod.rewardedAd &&
+            !entry.isPlaceholder &&
+            rewardedAdAvailabilityFor(entry) ==
+                RewardedAdAvailability.available)
+          entry,
+    ];
+    if (candidates.isEmpty) return null;
+    candidates.sort((a, b) {
+      final progressA = rewardedAdProgressFor(a.id);
+      final progressB = rewardedAdProgressFor(b.id);
+      final startedA = progressA > 0;
+      final startedB = progressB > 0;
+      if (startedA != startedB) return startedA ? -1 : 1;
+      final remainingA = (a.rewardedAdTarget ?? 1) - progressA;
+      final remainingB = (b.rewardedAdTarget ?? 1) - progressB;
+      final byRemaining = remainingA.compareTo(remainingB);
+      if (byRemaining != 0) return byRemaining;
+      return catalog.indexOf(a).compareTo(catalog.indexOf(b));
+    });
+    return candidates.first;
+  }
+
+  /// Ids acquired by purchase or by finishing a rewarded-ad run.
+  ///
+  /// Level rewards are not in here by design — read [ownsCatalogEntry] rather
+  /// than this to ask whether something is available.
+  Set<String> get ownedCatalogIds => Set.unmodifiable(_ownedCatalogIds);
+
+  /// Rewarded ads watched toward [id], or zero once it has been granted.
+  int rewardedAdProgressFor(String id) => _rewardedAdProgress[id] ?? 0;
+
+  /// Rewarded ads a user may watch in one local day, across every entry, or
+  /// null for no limit.
+  ///
+  /// Null is what the app ships. A rewarded ad is started by the user, every
+  /// time, and a cap is the one place Sobra would tell somebody who wants to
+  /// watch one that they may not — the opposite of what the rest of this
+  /// design promises. It also bought very little: the whole rewarded lineup is
+  /// ten views, the special tier already forces its three onto three separate
+  /// days, and a cap of three only stretched a three-day run into a four-day
+  /// one. The finite lineup is the real limit.
+  ///
+  /// Settable rather than deleted, because the reason it might come back is
+  /// real: a lineup that grows through updates would want pacing again. Kept
+  /// injectable rather than as a constant so the limit's own behaviour stays
+  /// covered by tests while the app runs without one — a path nothing can
+  /// reach is a path that stops working quietly.
+  final int? rewardedAdsPerDay;
+
+  /// Today, as the key the daily limits are stored against.
+  String get todayKey => dayKey(_now());
+
+  /// Rewarded ads watched today.
+  ///
+  /// Answers zero for a stored count that belongs to an earlier day, so a
+  /// limit would reset by itself rather than needing something to run at
+  /// midnight.
+  ///
+  /// Kept counted while [rewardedAdsPerDay] is null. The day it carries is the
+  /// same one the once-per-day tier already needs, so counting costs nothing,
+  /// and a cap introduced later starts from a real number instead of from a
+  /// gap in everybody's history.
+  int get rewardedAdsWatchedToday =>
+      _rewardedAdDay == todayKey ? _rewardedAdsWatchedOnDay : 0;
+
+  /// Rewarded ads still allowed today, or null where there is no limit.
+  int? get rewardedAdsLeftToday {
+    final perDay = rewardedAdsPerDay;
+    if (perDay == null) return null;
+    return (perDay - rewardedAdsWatchedToday).clamp(0, perDay);
+  }
+
+  /// The local day [id] last took a view, or null for an entry that never has.
+  String? rewardedAdLastEarnedDateFor(String id) =>
+      _rewardedAdLastEarnedDate[id];
+
+  /// When [slot] last reported a native impression, or null for never.
+  DateTime? lastNativeAdImpressionAt(NativeAdSlot slot) =>
+      _nativeAdImpressionsAt[slot];
+
+  /// Whether at least [interval] has passed since [slot]'s last impression.
+  /// The other slots' impressions do not count.
+  ///
+  /// Asked from inside a build, like [nativeAdGraceComplete], so it answers
+  /// rather than throws. A stored moment later than now means the clock was
+  /// set back; it reads as elapsed, because holding ads until the clock
+  /// catches up would hide them for as long as the clock was wrong.
+  bool nativeAdIntervalElapsed(NativeAdSlot slot, Duration interval) {
+    final last = _nativeAdImpressionsAt[slot];
+    if (last == null) return true;
+    final now = _now();
+    return last.isAfter(now) || now.difference(last) >= interval;
+  }
+
+  /// Whether the install/update grace period has elapsed.
+  ///
+  /// Asked from inside a build — [NativeAds.canOffer] runs while the ledger
+  /// lays itself out — so this must not be able to throw. A stored day that
+  /// will not parse is treated as no day at all: the grace holds, and
+  /// [_ensureNativeAdInstallDay] writes a usable one on the next launch.
+  /// Every other corrupt-state path in this store degrades the same way
+  /// rather than taking a screen down with it.
+  bool nativeAdGraceComplete(int days) {
+    if (days <= 0) return true;
+    final installed = _nativeAdInstallDay;
+    if (installed == null) return false;
+    final start = DateTime.tryParse(installed);
+    if (start == null) return false;
+    return daysBetween(start, today) >= days;
+  }
+
+  /// Records a native ad in [slot] only after the SDK reports a real
+  /// impression.
+  ///
+  /// Always moves the moment forward. An impression Google has counted
+  /// starts the gap whether or not the previous one had ended, so two
+  /// callbacks racing one another settle on the later of them.
+  Future<void> recordNativeAdImpression(NativeAdSlot slot) => _write(() async {
+    _nativeAdImpressionsAt[slot] = _now();
+    await _save();
+    notifyListeners();
+  });
+
+  /// Whether a rewarded view would count toward [entry] right now.
+  ///
+  /// Says nothing about whether the network has an ad — that is the ad
+  /// surface's question. This is only about the rules Sobra imposes on itself.
+  ///
+  /// Most specific reason first: an owned entry is reported as owned even on a
+  /// day whose cap is spent, because that is the reason its card will never
+  /// offer an ad again.
+  RewardedAdAvailability rewardedAdAvailabilityFor(CatalogEntry entry) {
+    if (ownsCatalogEntry(entry)) return RewardedAdAvailability.alreadyOwned;
+    if (entry.rewardedAdOncePerDay &&
+        _rewardedAdLastEarnedDate[entry.id] == todayKey) {
+      return RewardedAdAvailability.alreadyEarnedToday;
+    }
+    if ((rewardedAdsLeftToday ?? 1) <= 0) {
+      return RewardedAdAvailability.dailyCapReached;
+    }
+    return RewardedAdAvailability.available;
+  }
+
+  /// The entry the user is showing for [kind], or null for none.
+  String? equippedIdFor(CatalogKind kind) => switch (kind) {
+    CatalogKind.character => characterId,
+    CatalogKind.item => equippedItemId,
+    CatalogKind.room => equippedRoomId,
+  };
+
+  /// Whether the room [roomId] is the user's to choose.
+  ///
+  /// A room missing from the catalog counts as owned, the way room defaults
+  /// do for items: nothing sells it, so nothing can lock it.
+  bool ownsRoom(String roomId) {
+    final entry = CatalogPreviewData.rooms
+        .where((candidate) => candidate.id == roomId)
+        .firstOrNull;
+    return entry == null || ownsCatalogEntry(entry);
+  }
+
+  /// What the room shows: its defaults, overlaid by what the user placed.
+  ///
+  /// A slot the user emptied is absent here, even where the room has a
+  /// default for it.
+  ///
+  /// A placed item the user no longer owns is left out, and the room's default
+  /// takes its slot back. That happens when a reward moves to another unlock
+  /// path. The saved placement is kept, so the item returns where it was once
+  /// it is owned again.
+  Map<RoomSlot, String> roomDecorationsFor([String? roomId]) {
+    final defaults = RoomThemes.defaultPlacementsFor(roomId ?? equippedRoomId);
+    final merged = {
+      ...defaults,
+      ...?_roomPlacementsByRoom[roomId ?? equippedRoomId],
+    }..removeWhere((_, itemId) => itemId == RoomDecorAssets.clearedId);
+    final locked = [
+      for (final MapEntry(key: slot, value: itemId) in merged.entries)
+        if (!_ownsRoomItem(itemId)) slot,
+    ];
+    for (final slot in locked) {
+      merged.remove(slot);
+      final fallback = defaults[slot];
+      if (fallback != null && !merged.containsValue(fallback)) {
+        merged[slot] = fallback;
+      }
+    }
+    return Map.unmodifiable(merged);
+  }
+
+  /// Room defaults are no catalog entry and always count as owned, apart
+  /// from what [RoomDecorAssets.withheldIds] holds back.
+  bool _ownsRoomItem(String itemId) {
+    if (RoomDecorAssets.withheldIds.contains(itemId)) return false;
+    final entry = CatalogPreviewData.items
+        .where((candidate) => candidate.id == itemId)
+        .firstOrNull;
+    return entry == null || ownsCatalogEntry(entry);
+  }
+
+  /// Saves [placements] as the whole arrangement of the equipped room.
+  ///
+  /// Takes what the room should show, the same shape [roomDecorationsFor]
+  /// returns. A default slot left out of it was emptied on purpose, so it is
+  /// written down as cleared rather than let the default come back.
+  Future<void> saveRoomDecorations(Map<RoomSlot, String> placements) =>
+      _write(() async {
+        final room = RoomThemes.byId(equippedRoomId);
+        _validateRoomDecorations(room, placements);
+        _roomPlacementsByRoom[equippedRoomId] = _storedRoomDecorations(
+          room,
+          placements,
+        );
+        _updateEquippedItem(placements);
+        await _save();
+        notifyListeners();
+      });
+
+  /// Commits a staged room switch and any rooms edited in the same session.
+  /// Each room keeps its own arrangement when the user switches themes.
+  Future<void> saveRoomSelection({
+    required String roomId,
+    required Map<String, Map<RoomSlot, String>> placementsByRoom,
+    String? selectedCharacterId,
+    Map<String, String?> costumeChanges = const {},
+  }) => _write(() async {
+    if (selectedCharacterId != null &&
+        selectedCharacterId != characterId &&
+        !ownsCharacter(selectedCharacterId)) {
+      throw ArgumentError.value(
+        selectedCharacterId,
+        'selectedCharacterId',
+        'character not owned',
+      );
+    }
+    for (final choice in costumeChanges.entries) {
+      _validateCostumeSelection(choice.key, choice.value);
+    }
+    if (!RoomThemes.contains(roomId)) {
+      throw ArgumentError.value(roomId, 'roomId', 'unknown room');
+    }
+    if (!ownsRoom(roomId)) {
+      throw ArgumentError.value(roomId, 'roomId', 'room not owned');
+    }
+    for (final entry in placementsByRoom.entries) {
+      if (!RoomThemes.contains(entry.key)) {
+        throw ArgumentError.value(
+          entry.key,
+          'placementsByRoom',
+          'unknown room',
+        );
+      }
+      _validateRoomDecorations(RoomThemes.byId(entry.key), entry.value);
+    }
+    for (final entry in placementsByRoom.entries) {
+      _roomPlacementsByRoom[entry.key] = _storedRoomDecorations(
+        RoomThemes.byId(entry.key),
+        entry.value,
+      );
+    }
+    equippedRoomId = roomId;
+    if (selectedCharacterId != null) characterId = selectedCharacterId;
+    for (final choice in costumeChanges.entries) {
+      _applyCostumeSelection(choice.key, choice.value);
+    }
+    _updateEquippedItem(roomDecorationsFor(roomId));
+    await _save();
+    notifyListeners();
+  });
+
+  Map<RoomSlot, String> _storedRoomDecorations(
+    RoomTheme room,
+    Map<RoomSlot, String> placements,
+  ) => {
+    for (final slot in room.defaultPlacements.keys)
+      if (!placements.containsKey(slot)) slot: RoomDecorAssets.clearedId,
+    ...placements,
+  };
+
+  void _updateEquippedItem(Map<RoomSlot, String> placements) {
+    final catalogItems = placements.values.where(
+      (id) => CatalogPreviewData.items.any((entry) => entry.id == id),
+    );
+    equippedItemId = catalogItems.isEmpty ? null : catalogItems.last;
+  }
+
+  void _validateRoomDecorations(
+    RoomTheme room,
+    Map<RoomSlot, String> placements,
+  ) {
+    final seen = <String>{};
+    for (final MapEntry(key: slot, value: itemId) in placements.entries) {
+      if (RoomDecorAssets.assetFor(itemId) == null) {
+        throw ArgumentError.value(itemId, 'placements', 'unknown room item');
+      }
+      final entry = CatalogPreviewData.items
+          .where((candidate) => candidate.id == itemId)
+          .firstOrNull;
+      if ((entry != null && !ownsCatalogEntry(entry)) ||
+          RoomDecorAssets.withheldIds.contains(itemId)) {
+        throw ArgumentError.value(itemId, 'placements', 'item not owned');
+      }
+      if (!room.slotsForItem(itemId, placements: placements).contains(slot)) {
+        throw ArgumentError.value(itemId, 'placements', 'wrong place: $slot');
+      }
+      if (!seen.add(itemId)) {
+        throw ArgumentError.value(itemId, 'placements', 'placed twice');
+      }
+    }
+  }
+
+  /// Records that [entry] was acquired.
+  ///
+  /// Takes a bare id rather than a [CatalogEntry] because the caller that
+  /// matters most cannot supply one: a store restore hands back product ids
+  /// for entries this build may no longer ship, and dropping those would
+  /// silently revoke something the user paid for.
+  Future<void> grantCatalogEntry(String id) => grantCatalogEntries({id});
+
+  /// Delivers both launch decorations in one write. Someone who started in
+  /// time still receives them when first opening a later update.
+  Future<bool> maybeGrantLaunchGift() => _write(() async {
+    final started = firstStartedAt;
+    if (!hasCompletedOnboarding ||
+        started == null ||
+        !LaunchGiftCampaign.active(today) ||
+        !LaunchGiftCampaign.eligible(started)) {
+      return false;
+    }
+    final added = LaunchGiftCampaign.itemIds.difference(_ownedCatalogIds);
+    if (added.isEmpty) return false;
+    _ownedCatalogIds.addAll(added);
+    launchGiftNoticePending = true;
+    try {
+      await _save();
+    } on Object {
+      _ownedCatalogIds.removeAll(added);
+      launchGiftNoticePending = false;
+      rethrow;
+    }
+    notifyListeners();
+    return true;
+  });
+
+  Future<bool> takeLaunchGiftNotice() => _write(() async {
+    if (!launchGiftNoticePending) return false;
+    launchGiftNoticePending = false;
+    try {
+      await _save();
+    } on Object {
+      launchGiftNoticePending = true;
+      rethrow;
+    }
+    notifyListeners();
+    return true;
+  });
+
+  /// Records that every id in [ids] was acquired, in one write.
+  ///
+  /// What a bundle needs: granting its contents one at a time would save once
+  /// per id, and a failure partway through would leave somebody who paid for
+  /// three characters owning one of them. Here the whole delivery either lands
+  /// or is replayed by the store on the next launch.
+  ///
+  /// Ids already owned are skipped rather than refused, so a bundle that
+  /// overlaps something the user bought separately still delivers the rest.
+  /// Nothing is refunded for the overlap; the purchase sheet says so before
+  /// the user pays.
+  Future<void> grantCatalogEntries(Set<String> ids) => _write(() async {
+    final added = ids.where((id) => id.isNotEmpty).toSet()
+      ..removeAll(_ownedCatalogIds);
+    if (added.isEmpty) return;
+    _ownedCatalogIds.addAll(added);
+    _rewardedAdProgress.removeWhere((id, _) => added.contains(id));
+    await _save();
+    notifyListeners();
+  });
+
+  /// Takes back every id in [ids] the user holds, in one write.
+  ///
+  /// The reverse of [grantCatalogEntries], for a purchase the store no longer
+  /// holds as paid: refunded, charged back, or a cash payment that never
+  /// cleared. Whatever was showing a revoked entry falls back to what the user
+  /// still has — the character to Michi, a room slot to its default
+  /// decoration — rather than drawing on what was just taken away.
+  ///
+  /// Checked against [ownsCatalogEntry] afterwards rather than against [ids],
+  /// so an entry that is still owned some other way stays where it was.
+  Future<void> revokeCatalogEntries(Set<String> ids) => _write(() async {
+    final removed = ids.intersection(_ownedCatalogIds);
+    if (removed.isEmpty) return;
+    _ownedCatalogIds.removeAll(removed);
+    bool stillOwned(String id) {
+      final entry = CatalogPreviewData.all
+          .where((candidate) => candidate.id == id)
+          .firstOrNull;
+      return entry == null || ownsCatalogEntry(entry);
+    }
+
+    if (!stillOwned(characterId)) characterId = _fallbackCharacterId;
+    if (!ownsRoom(equippedRoomId)) equippedRoomId = RoomThemes.casaClaraId;
+    for (final placements in _roomPlacementsByRoom.values) {
+      placements.removeWhere((_, itemId) => !stillOwned(itemId));
+    }
+    if (equippedItemId != null && !stillOwned(equippedItemId!)) {
+      equippedItemId = null;
+    }
+    await _save();
+    notifyListeners();
+  });
+
+  /// Counts one watched ad toward [entry], granting it once the run completes.
+  ///
+  /// Called by the ad surface only after the network confirms a completed
+  /// view, so that a dismissed ad or one that never loaded cannot advance the
+  /// count. Answers whether the view counted: anything [rewardedAdAvailabilityFor]
+  /// rules out is refused here too rather than trusted to have been checked,
+  /// which is what keeps a second confirmation for the same ad from being
+  /// counted twice.
+  ///
+  /// The progress, the daily count and the per-entry date are one write. A
+  /// view that advanced the run but left the daily count behind would hand
+  /// back a free ad on every restart.
+  Future<bool> recordRewardedAdView(CatalogEntry entry) => _write(() async {
+    final target = entry.rewardedAdTarget;
+    if (target == null) {
+      throw ArgumentError.value(entry.id, 'entry', 'not a rewarded-ad entry');
+    }
+    if (entry.isPlaceholder ||
+        rewardedAdAvailabilityFor(entry) != RewardedAdAvailability.available) {
+      return false;
+    }
+    final today = todayKey;
+    // Read before the day is written: reading it afterwards would find a count
+    // from an earlier day sitting under today's key and carry it over.
+    final watchedToday = rewardedAdsWatchedToday;
+    _rewardedAdDay = today;
+    _rewardedAdsWatchedOnDay = watchedToday + 1;
+    if (entry.rewardedAdOncePerDay) {
+      _rewardedAdLastEarnedDate[entry.id] = today;
+    }
+    final next = rewardedAdProgressFor(entry.id) + 1;
+    if (next >= target) {
+      _rewardedAdProgress.remove(entry.id);
+      _ownedCatalogIds.add(entry.id);
+    } else {
+      _rewardedAdProgress[entry.id] = next;
+    }
+    await _save();
+    notifyListeners();
+    return true;
+  });
+
+  /// Shows [entry] in the room.
+  ///
+  /// Refuses an entry the user does not own rather than storing it and letting
+  /// the room fall back to placeholder art, which would read as a bug the user
+  /// cannot undo.
+  /// Shows [entry]'s character wherever the app draws one.
+  ///
+  /// Characters only. Items came through here too once, writing a room
+  /// placement on the user's behalf from a screen that could not show them
+  /// where it landed — and, for an item belonging to no slot, setting a mark
+  /// nothing ever read back. Placing is the decorate screen's work now.
+  ///
+  /// The ownership check is why this exists rather than a bare
+  /// [chooseCharacter]: the chosen character is drawn on the register screen
+  /// and in every celebration, so an unowned one here would give away what
+  /// the catalog is still selling.
+  Future<void> equipCharacter(CatalogEntry entry) => _write(() async {
+    if (entry.kind != CatalogKind.character) {
+      throw ArgumentError.value(entry.id, 'entry', 'not a character');
+    }
+    if (!ownsCatalogEntry(entry)) {
+      throw ArgumentError.value(entry.id, 'entry', 'not owned');
+    }
+    await chooseCharacter(entry.id);
+  });
+
+  /// Records that the welcome screen has been passed.
+  Future<void> answerLoginOffer() => _write(() async {
+    if (hasAnsweredLoginOffer) return;
+    hasAnsweredLoginOffer = true;
+    await _save();
+    notifyListeners();
+  });
+
+  /// Marks onboarding finished.
+  ///
+  /// [offerFirstExpense] is for the onboarding screen itself, whose last
+  /// button leads into the guided first expense. Everything else that
+  /// completes onboarding — a restore, a test setting up a ledger — does not
+  /// owe anybody that screen.
+  Future<void> completeOnboarding({bool offerFirstExpense = false}) => _write(
+    () async {
+      hasCompletedOnboarding = true;
+      // Onboarding sits behind the welcome, so reaching the end of it is proof
+      // the welcome was passed. Recording that here keeps the two from ever
+      // disagreeing — an install that finished onboarding can never be sent
+      // back to the doorstep.
+      hasAnsweredLoginOffer = true;
+      xpTrackingStartedAt ??= today;
+      if (_hasBudget) budgetTrackingStartedAt ??= today;
+      firstStartedAt ??= today;
+      final starter =
+          starterCharacterId ??
+          (CatalogPreviewData.isStarter(characterId)
+              ? characterId
+              : CatalogPreviewData.starterIds.first);
+      starterCharacterId = starter;
+      _ownedCatalogIds.add(starter);
+      characterId = starter;
+      // A restored ledger can already hold spending; asking such somebody for
+      // their first expense would be asking for something they did long ago.
+      if (offerFirstExpense && !hasRecordedEverydayExpense) {
+        firstExpenseGuidePending = true;
+      }
+      await _save();
+      notifyListeners();
+      await maybeGrantLaunchGift();
+    },
+  );
+
+  /// The starter still waiting at the door, or null when there is none.
+  ///
+  /// None before onboarding ends, and none once it has come over — by
+  /// recorded days, by ads, or because the install predates starters.
+  CatalogEntry? get waitingStarter {
+    final chosen = starterCharacterId;
+    if (!hasCompletedOnboarding || chosen == null) return null;
+    for (final entry in CatalogPreviewData.characters) {
+      if (CatalogPreviewData.isStarter(entry.id) &&
+          entry.id != chosen &&
+          !ownsCatalogEntry(entry)) {
+        return entry;
+      }
+    }
+    return null;
+  }
+
+  /// Days with a record dated that day, toward [waitingStarter].
+  int get recordedDayCount => _recordedDayKeys.length;
+
+  /// Whether today already counts toward [waitingStarter].
+  bool get recordedToday => _recordedDayKeys.contains(todayKey);
+
+  /// Counts today if [occurredAt] is today, and brings the waiting starter
+  /// over on the day that reaches the target. The caller saves.
+  ///
+  /// Dated today, not merely entered today: three backdated expenses typed on
+  /// one evening are one day of the habit, not three.
+  void _noteRecordedDay(DateTime occurredAt) {
+    if (!_isSameDay(dateOnly(occurredAt), today)) return;
+    if (!_recordedDayKeys.add(todayKey)) return;
+    final waiting = waitingStarter;
+    if (waiting == null ||
+        _recordedDayKeys.length <
+            CatalogPreviewData.starterRecordedDaysTarget) {
+      return;
+    }
+    _ownedCatalogIds.add(waiting.id);
+    _rewardedAdProgress.remove(waiting.id);
+    starterArrivalId = waiting.id;
+  }
+
+  /// Clears the arrival once it has been shown, answering which starter it
+  /// was.
+  Future<String?> takeStarterArrival() => _write(() async {
+    final arrived = starterArrivalId;
+    if (arrived == null) return null;
+    starterArrivalId = null;
+    try {
+      await _save();
+    } on Object {
+      starterArrivalId = arrived;
+      rethrow;
+    }
+    notifyListeners();
+    return arrived;
+  });
+
+  /// Where the shown character goes back to when it stops being owned.
+  String get _fallbackCharacterId =>
+      starterCharacterId ?? CatalogPreviewData.starterIds.first;
 
   bool get hasRecoverableBackup {
     final raw = _preferences.getString(_backupKey);
     return raw != null && _isPlausibleState(raw);
   }
 
-  Future<bool> retryRestore() async {
+  Future<bool> retryRestore() => _write(() async {
+    await _preferences.reload();
     final raw = _preferences.getString(_storageKey);
-    if (raw == null || !_tryRestore(raw)) return false;
+    if (raw == null) return false;
+    final candidate = SobraStore._(_preferences, _now, rewardedAdsPerDay);
+    if (!candidate._tryRestore(raw)) return false;
+    _persistedJson = raw;
+    await _archiveCorruptedOriginal();
+    _copyFrom(candidate);
     hasStorageError = false;
     corruptedStorage = null;
+    await _ensureFirstStartedAt();
+    await _ensureNativeAdInstallDay();
     await settleCycles();
     notifyListeners();
     return true;
-  }
+  }, allowRecovery: true);
 
-  Future<bool> restoreBackup() async {
+  Future<bool> restoreBackup() => _write(() async {
     final raw = _preferences.getString(_backupKey);
-    if (raw == null || !_tryRestore(raw)) return false;
+    if (raw == null) return false;
+    final candidate = SobraStore._(_preferences, _now, rewardedAdsPerDay);
+    if (!candidate._tryRestore(raw)) return false;
+    await _archiveCorruptedOriginal();
+    _copyFrom(candidate);
     hasStorageError = false;
     corruptedStorage = null;
-    final saved = await _preferences.setString(_storageKey, raw);
-    if (!saved) throw const SobraStoreException(StoreFailure.restoreFailed);
+    await _save();
+    await _ensureFirstStartedAt();
+    await _ensureNativeAdInstallDay();
     await settleCycles();
     notifyListeners();
     return true;
-  }
+  }, allowRecovery: true);
 
-  Future<void> startFreshAfterCorruption() async {
-    final raw = corruptedStorage;
-    if (raw != null) {
-      final archived = await _preferences.setString(_corruptArchiveKey, raw);
-      if (!archived) {
-        throw const SobraStoreException(StoreFailure.originalNotKept);
-      }
-    }
+  Future<void> startFreshAfterCorruption() => _write(() async {
+    await _archiveCorruptedOriginal();
     _initializeNewUser();
     hasStorageError = false;
     corruptedStorage = null;
     await _save();
     notifyListeners();
+  }, allowRecovery: true);
+
+  Future<void> _archiveCorruptedOriginal() async {
+    final raw = corruptedStorage;
+    if (raw != null && !await _preferences.setString(_corruptArchiveKey, raw)) {
+      throw const SobraStoreException(StoreFailure.originalNotKept);
+    }
   }
 
   void _validateMovement(int amountCentavos, DateTime occurredAt) {
@@ -1125,38 +3600,113 @@ class SobraStore extends ChangeNotifier {
     pendingPaySchedule = null;
     pendingPayScheduleEffectiveAt = null;
     payScheduleEffectiveFloor = effectiveAt;
+    final budget = pendingBaseBudgetCentavos;
+    pendingBaseBudgetCentavos = null;
+    if (budget != null) {
+      // The limits are per cycle too, and keep the shape the user gave them.
+      categoryLimits = _scaledCategoryLimits(budget);
+      _baseBudgetCentavos = budget;
+    }
     await _save();
     return true;
   }
 
   void _initializeNewUser() {
+    currency = Currency.forCountry(_deviceCountry);
     _transactions.clear();
     _incomes.clear();
     _cashReconciliations.clear();
     _xpEvents.clear();
     _cycleRecords.clear();
+    _recurringExpenses.clear();
+    _activeSavingsGoal = null;
+    _goalCycleAllocations.clear();
+    _completedSavingsGoals.clear();
+    _goalPromptedCycleKeys.clear();
+    _goalCompletionDates.clear();
+    _goalCycleIncomeBaselines.clear();
+    _goalIncomeBaselinesNeedSave = false;
     _cycleBudgetExtras.clear();
     _baseBudgetCentavos = 600000;
+    _hasBudget = true;
+    characterId = 'michi';
+    _ownedCostumeIds.clear();
+    _claimedCostumeCampaignIds.clear();
+    _costumeSelections.clear();
+    equippedItemId = null;
+    equippedRoomId = RoomThemes.casaClaraId;
+    _roomPlacementsByRoom.clear();
+    _keepsEveryRoom = false;
+    _ownedCatalogIds.clear();
+    _rewardedAdProgress.clear();
+    _rewardedAdDay = null;
+    _rewardedAdsWatchedOnDay = 0;
+    _rewardedAdLastEarnedDate.clear();
+    _nativeAdInstallDay = todayKey;
+    _nativeAdImpressionsAt.clear();
+    _fixedHomeSnoozedDay = null;
+    _firstExpenseCardSnoozedDay = null;
     countedCashCentavos = 0;
     expectedCashCentavos = 0;
     reducedMotion = false;
     hasCompletedOnboarding = false;
+    hasAnsweredLoginOffer = false;
     categoryLimitsCustomized = false;
     successfulCycles = 0;
     lastCashCountAt = null;
     paySchedule = _defaultPaySchedule;
     pendingPaySchedule = null;
     pendingPayScheduleEffectiveAt = null;
+    pendingBaseBudgetCentavos = null;
     payScheduleEffectiveFloor = null;
     xpTrackingStartedAt = null;
+    budgetTrackingStartedAt = null;
+    firstStartedAt = today;
+    launchGiftNoticePending = false;
+    firstExpenseGuidePending = false;
+    firstExpenseGuideOffered = false;
+    starterCharacterId = null;
+    starterArrivalId = null;
+    _recordedDayKeys.clear();
     lastSettledCycleEnd = null;
     _pendingXpNotice = null;
     categoryLimits = _categoryLimitsForBudget(_baseBudgetCentavos);
   }
 
+  Future<void> _ensureFirstStartedAt() async {
+    if (firstStartedAt != null) return;
+    // Existing testers did not have this field. Use the earliest start date
+    // already in their saved state before falling back to this update day.
+    final candidates = <DateTime>[
+      ?xpTrackingStartedAt,
+      if (_nativeAdInstallDay != null)
+        DateTime.tryParse(_nativeAdInstallDay!) ?? today,
+    ];
+    firstStartedAt = candidates.isEmpty
+        ? today
+        : candidates.reduce((a, b) => a.isBefore(b) ? a : b);
+    await _save();
+  }
+
+  Future<void> _ensureNativeAdInstallDay() async {
+    if (_nativeAdInstallDay != null) return;
+    _nativeAdInstallDay = todayKey;
+    try {
+      await _save();
+    } on Object catch (error) {
+      // Awaited from [load], so an escaping throw is an app that does not
+      // start — and this runs for every existing install on its first launch
+      // after ads shipped, which is the worst possible population to lock out
+      // over a failed write. The day stays set for this session and the next
+      // launch writes it; a disk that keeps refusing only restarts the grace
+      // period, which delays ads rather than breaking the ledger.
+      debugPrint('Sobra: could not save the native ad install day: $error');
+    }
+  }
+
   bool _tryRestore(String raw) {
     try {
-      final candidate = SobraStore._(_preferences, _now);
+      final candidate = SobraStore._(_preferences, _now, rewardedAdsPerDay);
       candidate._restore(jsonDecode(raw) as Map<String, dynamic>);
       _copyFrom(candidate);
       return true;
@@ -1181,10 +3731,67 @@ class SobraStore extends ChangeNotifier {
     _cycleRecords
       ..clear()
       ..addAll(other._cycleRecords);
+    _recurringExpenses
+      ..clear()
+      ..addAll(other._recurringExpenses);
+    _activeSavingsGoal = other._activeSavingsGoal;
+    _goalCycleAllocations
+      ..clear()
+      ..addAll(other._goalCycleAllocations);
+    _completedSavingsGoals
+      ..clear()
+      ..addAll(other._completedSavingsGoals);
+    _goalPromptedCycleKeys
+      ..clear()
+      ..addAll(other._goalPromptedCycleKeys);
+    _goalCompletionDates
+      ..clear()
+      ..addAll(other._goalCompletionDates);
+    _goalCycleIncomeBaselines
+      ..clear()
+      ..addAll(other._goalCycleIncomeBaselines);
+    _goalIncomeBaselinesNeedSave = other._goalIncomeBaselinesNeedSave;
     _cycleBudgetExtras
       ..clear()
       ..addAll(other._cycleBudgetExtras);
+    _ownedCatalogIds
+      ..clear()
+      ..addAll(other._ownedCatalogIds);
+    _rewardedAdProgress
+      ..clear()
+      ..addAll(other._rewardedAdProgress);
+    _rewardedAdDay = other._rewardedAdDay;
+    _rewardedAdsWatchedOnDay = other._rewardedAdsWatchedOnDay;
+    _rewardedAdLastEarnedDate
+      ..clear()
+      ..addAll(other._rewardedAdLastEarnedDate);
+    _nativeAdInstallDay = other._nativeAdInstallDay;
+    _nativeAdImpressionsAt
+      ..clear()
+      ..addAll(other._nativeAdImpressionsAt);
+    _fixedHomeSnoozedDay = other._fixedHomeSnoozedDay;
+    _firstExpenseCardSnoozedDay = other._firstExpenseCardSnoozedDay;
     _baseBudgetCentavos = other._baseBudgetCentavos;
+    _hasBudget = other._hasBudget;
+    characterId = other.characterId;
+    _ownedCostumeIds
+      ..clear()
+      ..addAll(other._ownedCostumeIds);
+    _claimedCostumeCampaignIds
+      ..clear()
+      ..addAll(other._claimedCostumeCampaignIds);
+    _costumeSelections
+      ..clear()
+      ..addAll(other._costumeSelections);
+    equippedItemId = other.equippedItemId;
+    equippedRoomId = other.equippedRoomId;
+    _keepsEveryRoom = other._keepsEveryRoom;
+    _roomPlacementsByRoom
+      ..clear()
+      ..addAll({
+        for (final entry in other._roomPlacementsByRoom.entries)
+          entry.key: Map.of(entry.value),
+      });
     countedCashCentavos = other.countedCashCentavos;
     expectedCashCentavos = other.expectedCashCentavos;
     reducedMotion = other.reducedMotion;
@@ -1192,20 +3799,72 @@ class SobraStore extends ChangeNotifier {
     currency = other.currency;
     cashCountWeekday = other.cashCountWeekday;
     hasCompletedOnboarding = other.hasCompletedOnboarding;
+    hasAnsweredLoginOffer = other.hasAnsweredLoginOffer;
     categoryLimitsCustomized = other.categoryLimitsCustomized;
     successfulCycles = other.successfulCycles;
     lastCashCountAt = other.lastCashCountAt;
     paySchedule = other.paySchedule;
     pendingPaySchedule = other.pendingPaySchedule;
     pendingPayScheduleEffectiveAt = other.pendingPayScheduleEffectiveAt;
+    pendingBaseBudgetCentavos = other.pendingBaseBudgetCentavos;
     payScheduleEffectiveFloor = other.payScheduleEffectiveFloor;
     xpTrackingStartedAt = other.xpTrackingStartedAt;
+    budgetTrackingStartedAt = other.budgetTrackingStartedAt;
+    firstStartedAt = other.firstStartedAt;
+    launchGiftNoticePending = other.launchGiftNoticePending;
+    firstExpenseGuidePending = other.firstExpenseGuidePending;
+    firstExpenseGuideOffered = other.firstExpenseGuideOffered;
+    starterCharacterId = other.starterCharacterId;
+    starterArrivalId = other.starterArrivalId;
+    _recordedDayKeys
+      ..clear()
+      ..addAll(other._recordedDayKeys);
     lastSettledCycleEnd = other.lastSettledCycleEnd;
     _pendingXpNotice = other._pendingXpNotice;
     categoryLimits = Map.of(other.categoryLimits);
   }
 
   void _restore(Map<String, dynamic> json) {
+    final goal = json['activeSavingsGoal'];
+    _activeSavingsGoal = goal == null
+        ? null
+        : SavingsGoal.fromJson(goal as Map<String, dynamic>);
+    _goalCycleAllocations
+      ..clear()
+      ..addAll(
+        (json['goalCycleAllocations'] as List<dynamic>? ?? const []).map(
+          (item) =>
+              SavingsGoalCycleAllocation.fromJson(item as Map<String, dynamic>),
+        ),
+      );
+    _completedSavingsGoals
+      ..clear()
+      ..addAll(
+        (json['completedSavingsGoals'] as List<dynamic>? ?? const []).map(
+          (item) => CompletedSavingsGoal.fromJson(item as Map<String, dynamic>),
+        ),
+      );
+    final prompted =
+        (json['goalPromptedCycleStarts'] as List<dynamic>? ?? const [])
+            .cast<String>();
+    if (prompted.toSet().length != prompted.length) {
+      throw const FormatException('Duplicate goal cycle prompt');
+    }
+    _goalPromptedCycleKeys
+      ..clear()
+      ..addAll(prompted);
+    _goalCompletionDates.clear();
+    for (final item
+        in (json['goalCompletionAcknowledgements'] as List<dynamic>? ??
+            const [])) {
+      final entry = item as Map<String, dynamic>;
+      final id = entry['goalId'] as String;
+      if (_goalCompletionDates.containsKey(id)) {
+        throw const FormatException('Duplicate goal completion');
+      }
+      _validateBackupJson(entry['completedAt'], 'completedAt');
+      _goalCompletionDates[id] = DateTime.parse(entry['completedAt'] as String);
+    }
     _transactions
       ..clear()
       ..addAll(
@@ -1242,10 +3901,139 @@ class SobraStore extends ChangeNotifier {
           (entry) => CycleRecord.fromJson(entry as Map<String, dynamic>),
         ),
       );
+    // Absent from every state written before fixed expenses existed.
+    _recurringExpenses
+      ..clear()
+      ..addAll(
+        (json['recurringExpenses'] as List<dynamic>? ?? const []).map(
+          (entry) => RecurringExpense.fromJson(entry as Map<String, dynamic>),
+        ),
+      );
     _baseBudgetCentavos =
         (json['baseBudgetCentavos'] as num? ??
                 json['totalBudgetCentavos'] as num)
             .toInt();
+    // Absent from every state written before the budget could be left
+    // unanswered. Those users answered it during onboarding, so their saved
+    // figure is a real one and the flag reads true.
+    _hasBudget = json['hasBudget'] as bool? ?? true;
+    characterId = json['characterId'] as String? ?? 'michi';
+    _ownedCostumeIds
+      ..clear()
+      ..addAll(
+        (json['ownedCostumeIds'] as List<dynamic>? ?? const []).cast<String>(),
+      );
+    _claimedCostumeCampaignIds
+      ..clear()
+      ..addAll(
+        (json['claimedCostumeCampaignIds'] as List<dynamic>? ?? const [])
+            .cast<String>(),
+      );
+    _costumeSelections
+      ..clear()
+      ..addAll(
+        (json['costumeSelections'] as Map<String, dynamic>? ?? const {})
+            .cast<String, String>(),
+      );
+    equippedItemId = json['equippedItemId'] as String?;
+    equippedRoomId =
+        json['equippedRoomId'] as String? ?? RoomThemes.casaClaraId;
+    final savedRoomPlacements =
+        json['roomPlacementsByRoom'] as Map<String, dynamic>? ?? {};
+    _roomPlacementsByRoom
+      ..clear()
+      ..addAll({
+        for (final room in savedRoomPlacements.entries)
+          room.key: fitPlacementsToRoom(RoomThemes.byId(room.key), {
+            for (final placement
+                in (room.value as Map<String, dynamic>).entries)
+              if (RoomSlot.values.any((slot) => slot.name == placement.key))
+                RoomSlot.values.firstWhere(
+                  (slot) => slot.name == placement.key,
+                ): placement.value as String,
+          }),
+      });
+    if (_roomPlacementsByRoom[equippedRoomId] == null &&
+        equippedItemId != null) {
+      // Asked against what the room actually holds, so a prop that needs a
+      // cabinet or side table is left out rather than parked on a support
+      // that is not there, where it would be invisible and fail every save.
+      final room = RoomThemes.byId(equippedRoomId);
+      final legacySlots = room.slotsForItem(
+        equippedItemId!,
+        placements: room.defaultPlacements,
+      );
+      if (legacySlots.isNotEmpty) {
+        _roomPlacementsByRoom[equippedRoomId] = {
+          legacySlots.first: equippedItemId!,
+        };
+      }
+    }
+    // Absent from every state written before the collection was persisted.
+    // Those users owned nothing beyond what their level already grants, and
+    // that part is derived rather than read from here.
+    _ownedCatalogIds
+      ..clear()
+      ..addAll(
+        (json['ownedCatalogIds'] as List<dynamic>? ?? const []).cast<String>(),
+      );
+    final adProgress =
+        json['rewardedAdProgress'] as Map<String, dynamic>? ?? {};
+    _rewardedAdProgress
+      ..clear()
+      ..addAll({
+        for (final entry in adProgress.entries)
+          entry.key: (entry.value as num).toInt(),
+      });
+    // Absent from every state written before the daily limit existed. A
+    // missing day reads as "no ads watched yet", which is what those users
+    // had.
+    _rewardedAdDay = json['rewardedAdDay'] as String?;
+    _rewardedAdsWatchedOnDay =
+        (json['rewardedAdsWatchedOnDay'] as num?)?.toInt() ?? 0;
+    final lastEarned =
+        json['rewardedAdLastEarnedDate'] as Map<String, dynamic>? ?? {};
+    _rewardedAdLastEarnedDate
+      ..clear()
+      ..addAll({
+        for (final entry in lastEarned.entries)
+          entry.key: entry.value as String,
+      });
+    // Dropped rather than carried when it will not parse, so the field holds
+    // either a usable day or nothing. _ensureNativeAdInstallDay then fills it
+    // the way it fills a state written before native ads existed.
+    final installDay = json['nativeAdInstallDay'] as String?;
+    _nativeAdInstallDay =
+        installDay != null && DateTime.tryParse(installDay) != null
+        ? installDay
+        : null;
+    // States from the daily-cap builds carry nativeAdDay and a count instead.
+    // Neither says when the last ad was, so they are left behind and the
+    // first visit after the update may show one.
+    _nativeAdImpressionsAt.clear();
+    final bySlot = json['nativeAdImpressionsAt'];
+    if (bySlot is Map<String, dynamic>) {
+      // A slot name this build does not know, or a moment that will not
+      // parse, is dropped: that slot simply has no gap running.
+      for (final slot in NativeAdSlot.values) {
+        final raw = bySlot[slot.name];
+        final at = raw is String ? DateTime.tryParse(raw) : null;
+        if (at != null) _nativeAdImpressionsAt[slot] = at;
+      }
+    } else {
+      // States from before the per-slot gap kept one moment for every slot.
+      // It is copied to all of them, so no slot serves inside the gap of an
+      // ad the old build had just shown.
+      final legacy = json['lastNativeAdImpressionAt'];
+      final at = legacy is String ? DateTime.tryParse(legacy) : null;
+      if (at != null) {
+        for (final slot in NativeAdSlot.values) {
+          _nativeAdImpressionsAt[slot] = at;
+        }
+      }
+    }
+    _fixedHomeSnoozedDay = json['fixedHomeSnoozedDay'] as String?;
+    _firstExpenseCardSnoozedDay = json['firstExpenseCardSnoozedDay'] as String?;
     countedCashCentavos = (json['countedCashCentavos'] as num).toInt();
     expectedCashCentavos = (json['expectedCashCentavos'] as num).toInt();
     reducedMotion = json['reducedMotion'] as bool? ?? false;
@@ -1257,6 +4045,12 @@ class SobraStore extends ChangeNotifier {
     cashCountWeekday =
         (json['cashCountWeekday'] as num?)?.toInt() ?? DateTime.sunday;
     hasCompletedOnboarding = json['hasCompletedOnboarding'] as bool? ?? false;
+    // Absent from every state written before the offer existed. Those users
+    // have been using Sobra without an account all along, so reading a missing
+    // flag as "not answered" would interrupt them to ask a question they have
+    // effectively already answered.
+    hasAnsweredLoginOffer =
+        json['hasAnsweredLoginOffer'] as bool? ?? hasCompletedOnboarding;
     categoryLimitsCustomized =
         json['categoryLimitsCustomized'] as bool? ?? false;
     successfulCycles = (json['successfulCycles'] as num?)?.toInt() ?? 0;
@@ -1270,6 +4064,10 @@ class SobraStore extends ChangeNotifier {
     pendingPaySchedule = pendingJson == null
         ? null
         : PaySchedule.fromJson(pendingJson);
+    // Absent from every state written before the budget could follow a
+    // schedule change, which kept the budget as it was.
+    pendingBaseBudgetCentavos = (json['pendingBaseBudgetCentavos'] as num?)
+        ?.toInt();
     final effective = json['pendingPayScheduleEffectiveAt'] as String?;
     pendingPayScheduleEffectiveAt = effective == null
         ? null
@@ -1280,6 +4078,43 @@ class SobraStore extends ChangeNotifier {
     xpTrackingStartedAt = trackingStarted == null
         ? null
         : DateTime.parse(trackingStarted);
+    final budgetStarted = json['budgetTrackingStartedAt'] as String?;
+    budgetTrackingStartedAt = !_hasBudget
+        ? null
+        : budgetStarted == null
+        ? xpTrackingStartedAt
+        : DateTime.parse(budgetStarted);
+    final firstStarted = json['firstStartedAt'] as String?;
+    firstStartedAt = firstStarted == null ? null : DateTime.parse(firstStarted);
+    launchGiftNoticePending = json['launchGiftNoticePending'] as bool? ?? false;
+    firstExpenseGuidePending =
+        json['firstExpenseGuidePending'] as bool? ?? false;
+    firstExpenseGuideOffered =
+        json['firstExpenseGuideOffered'] as bool? ?? false;
+    starterCharacterId = json['starterCharacterId'] as String?;
+    starterArrivalId = json['starterArrivalId'] as String?;
+    _recordedDayKeys
+      ..clear()
+      ..addAll(
+        (json['recordedDays'] as List<dynamic>? ?? const []).cast<String>(),
+      );
+    if (hasCompletedOnboarding && starterCharacterId == null) {
+      // Finished onboarding before starters existed, when both came free.
+      // Nothing already given is taken back. Held in memory and written with
+      // the next save; until then every load reaches the same answer.
+      _ownedCatalogIds.addAll(CatalogPreviewData.starterIds);
+      starterCharacterId = CatalogPreviewData.isStarter(characterId)
+          ? characterId
+          : CatalogPreviewData.starterIds.first;
+    }
+    _keepsEveryRoom = json['keepsEveryRoom'] as bool? ?? false;
+    if (hasCompletedOnboarding && json['decorRewards'] == null) {
+      // Finished onboarding while every drawn decoration and every room was
+      // free. They stay owned rather than turning into rewards somebody
+      // already placed. Written with the next save, like the starters above.
+      _ownedCatalogIds.addAll(CatalogPreviewData.formerlyFreeItemIds);
+      _keepsEveryRoom = true;
+    }
     final settledEnd = json['lastSettledCycleEnd'] as String?;
     lastSettledCycleEnd = settledEnd == null
         ? null
@@ -1296,19 +4131,104 @@ class SobraStore extends ChangeNotifier {
       for (final category in ExpenseCategory.values)
         category: (limits[category.name] as num?)?.toInt() ?? 0,
     };
+    _goalCycleIncomeBaselines.clear();
+    final baselineJson = json['goalCycleIncomeBaselines'];
+    _goalIncomeBaselinesNeedSave =
+        baselineJson == null && _cycleRecords.isNotEmpty;
+    if (baselineJson == null) {
+      _ensureGoalCycleIncomeBaselines();
+    } else {
+      for (final raw in baselineJson as List<dynamic>) {
+        final entry = raw as Map<String, dynamic>;
+        _validateBackupJson(entry['cycleStart'], 'cycleStart');
+        final start = DateTime.parse(entry['cycleStart'] as String);
+        if (start != dateOnly(start) ||
+            _goalCycleIncomeBaselines.containsKey(start)) {
+          throw const FormatException('Invalid goal income baseline cycle');
+        }
+        final amounts = entry['incomes'] as Map<String, dynamic>;
+        _goalCycleIncomeBaselines[start] = Map.unmodifiable({
+          for (final income in amounts.entries) income.key: income.value as int,
+        });
+      }
+    }
+    _validateSavingsGoalState();
   }
 
   Map<String, Object?> _toJson() => {
-    'schemaVersion': 4,
+    'schemaVersion': 12,
+    'activeSavingsGoal': _activeSavingsGoal?.toJson(),
+    'goalCycleIncomeBaselines': [
+      for (final start in (_goalCycleIncomeBaselines.keys.toList()..sort()))
+        {
+          'cycleStart': start.toIso8601String(),
+          'incomes': _goalCycleIncomeBaselines[start],
+        },
+    ],
+    'goalCycleAllocations': _goalCycleAllocations
+        .map((entry) => entry.toJson())
+        .toList(),
+    'completedSavingsGoals': _completedSavingsGoals
+        .map((entry) => entry.toJson())
+        .toList(),
+    'goalPromptedCycleStarts': _goalPromptedCycleKeys.toList()..sort(),
+    'goalCompletionAcknowledgements': [
+      for (final id in (_goalCompletionDates.keys.toList()..sort()))
+        {
+          'goalId': id,
+          'completedAt': _goalCompletionDates[id]!.toIso8601String(),
+        },
+    ],
     'transactions': _transactions.map((entry) => entry.toJson()).toList(),
     'incomes': _incomes.map((entry) => entry.toJson()).toList(),
     'cashReconciliations': _cashReconciliations
         .map((entry) => entry.toJson())
         .toList(),
     'xpEvents': _xpEvents.map((entry) => entry.toJson()).toList(),
-    'cycleRecords': _cycleRecords.map((entry) => entry.toJson()).toList(),
+    'cycleRecords': _cycleRecords
+        .map((entry) => _recordWithCurrentSpending(entry).toJson())
+        .toList(),
+    'recurringExpenses': _recurringExpenses
+        .map((entry) => entry.toJson())
+        .toList(),
     'baseBudgetCentavos': _baseBudgetCentavos,
     'totalBudgetCentavos': _baseBudgetCentavos,
+    'hasBudget': _hasBudget,
+    'characterId': characterId,
+    'ownedCostumeIds': _ownedCostumeIds.toList()..sort(),
+    'claimedCostumeCampaignIds': _claimedCostumeCampaignIds.toList()..sort(),
+    'costumeSelections': {
+      for (final id in (_costumeSelections.keys.toList()..sort()))
+        id: _costumeSelections[id],
+    },
+    'equippedItemId': equippedItemId,
+    'equippedRoomId': equippedRoomId,
+    'roomPlacementsByRoom': {
+      for (final room in _roomPlacementsByRoom.entries)
+        room.key: {
+          for (final placement in room.value.entries)
+            placement.key.name: placement.value,
+        },
+    },
+    // Sorted so that the same ownership serialises to the same string. [_save]
+    // compares against what is stored to decide whether to take a backup, and
+    // set iteration order alone would make an unchanged state look changed.
+    'ownedCatalogIds': _ownedCatalogIds.toList()..sort(),
+    // Marks a state written once decorations became rewards. Its absence is
+    // what tells [_restore] the install predates them.
+    'decorRewards': 1,
+    'keepsEveryRoom': _keepsEveryRoom,
+    'rewardedAdProgress': _rewardedAdProgress,
+    'rewardedAdDay': _rewardedAdDay,
+    'rewardedAdsWatchedOnDay': _rewardedAdsWatchedOnDay,
+    'rewardedAdLastEarnedDate': _rewardedAdLastEarnedDate,
+    'nativeAdInstallDay': _nativeAdInstallDay,
+    'nativeAdImpressionsAt': {
+      for (final entry in _nativeAdImpressionsAt.entries)
+        entry.key.name: entry.value.toIso8601String(),
+    },
+    'fixedHomeSnoozedDay': _fixedHomeSnoozedDay,
+    'firstExpenseCardSnoozedDay': _firstExpenseCardSnoozedDay,
     'cycleBudgetExtras': _cycleBudgetExtras,
     'countedCashCentavos': countedCashCentavos,
     'expectedCashCentavos': expectedCashCentavos,
@@ -1317,6 +4237,7 @@ class SobraStore extends ChangeNotifier {
     'currencyCode': currency.code,
     'cashCountWeekday': cashCountWeekday,
     'hasCompletedOnboarding': hasCompletedOnboarding,
+    'hasAnsweredLoginOffer': hasAnsweredLoginOffer,
     'categoryLimitsCustomized': categoryLimitsCustomized,
     'successfulCycles': successfulCycles,
     'lastCashCountAt': lastCashCountAt?.toIso8601String(),
@@ -1324,8 +4245,17 @@ class SobraStore extends ChangeNotifier {
     'pendingPaySchedule': pendingPaySchedule?.toJson(),
     'pendingPayScheduleEffectiveAt': pendingPayScheduleEffectiveAt
         ?.toIso8601String(),
+    'pendingBaseBudgetCentavos': pendingBaseBudgetCentavos,
     'payScheduleEffectiveFloor': payScheduleEffectiveFloor?.toIso8601String(),
     'xpTrackingStartedAt': xpTrackingStartedAt?.toIso8601String(),
+    'budgetTrackingStartedAt': budgetTrackingStartedAt?.toIso8601String(),
+    'firstStartedAt': firstStartedAt?.toIso8601String(),
+    'launchGiftNoticePending': launchGiftNoticePending,
+    'firstExpenseGuidePending': firstExpenseGuidePending,
+    'firstExpenseGuideOffered': firstExpenseGuideOffered,
+    'starterCharacterId': starterCharacterId,
+    'starterArrivalId': starterArrivalId,
+    'recordedDays': _recordedDayKeys.toList()..sort(),
     'lastSettledCycleEnd': lastSettledCycleEnd?.toIso8601String(),
     'categoryLimits': {
       for (final entry in categoryLimits.entries) entry.key.name: entry.value,
@@ -1333,8 +4263,20 @@ class SobraStore extends ChangeNotifier {
   };
 
   Future<void> _save() async {
+    final mutation = Zone.current[_writeZoneKey];
+    if (mutation is _StoreMutation && mutation.active) {
+      mutation.dirty = true;
+      return;
+    }
+    await _persist();
+  }
+
+  Future<void> _persist() async {
+    if (hasStorageError) {
+      throw const SobraStoreException(StoreFailure.recoveryRequired);
+    }
     final next = jsonEncode(_toJson());
-    final current = _preferences.getString(_storageKey);
+    final current = _persistedJson;
     if (current != null && current != next && _isPlausibleState(current)) {
       final backupSaved = await _preferences.setString(_backupKey, current);
       if (!backupSaved) {
@@ -1343,6 +4285,40 @@ class SobraStore extends ChangeNotifier {
     }
     final saved = await _preferences.setString(_storageKey, next);
     if (!saved) throw const SobraStoreException(StoreFailure.saveFailed);
+    _persistedJson = next;
+  }
+
+  /// Identifies the records the user entered, leaving out what settlement and
+  /// loading rewrite on their own. A hash rather than the records themselves,
+  /// so remembering it does not store the ledger a fourth time.
+  String _ledgerFingerprint() {
+    final text = jsonEncode([
+      for (final entry in _transactions) entry.toJson(),
+      for (final entry in _incomes) entry.toJson(),
+      for (final entry in _recurringExpenses) entry.toJson(),
+      for (final entry in _cashReconciliations) entry.toJson(),
+      if (_activeSavingsGoal != null) _activeSavingsGoal!.toJson(),
+      for (final entry in _goalCycleAllocations) entry.toJson(),
+      for (final entry in _completedSavingsGoals) entry.toJson(),
+      // Only user-assigned cycles belong to the ledger fingerprint. Merely
+      // settling another cycle must not disable undoing a backup import.
+      for (final start
+          in (_goalCycleAllocations
+              .map((entry) => entry.cycleStart)
+              .toSet()
+              .toList()
+            ..sort()))
+        {
+          'cycleStart': start.toIso8601String(),
+          'incomes': _goalCycleIncomeBaselines[start],
+        },
+    ]);
+    // FNV-1a, 32-bit.
+    var hash = 0x811c9dc5;
+    for (final unit in text.codeUnits) {
+      hash = ((hash ^ unit) * 0x01000193) & 0xffffffff;
+    }
+    return '${text.length}:$hash';
   }
 
   bool _isPlausibleState(String raw) {
@@ -1351,7 +4327,8 @@ class SobraStore extends ChangeNotifier {
       if (json is! Map<String, dynamic>) return false;
       return json['transactions'] is List &&
           (json['baseBudgetCentavos'] is num ||
-              json['totalBudgetCentavos'] is num);
+              json['totalBudgetCentavos'] is num) &&
+          SobraStore._(_preferences, _now, rewardedAdsPerDay)._tryRestore(raw);
     } on Object {
       return false;
     }
@@ -1371,10 +4348,18 @@ class SobraStore extends ChangeNotifier {
   }
 
   bool _isIdTaken(String id) =>
+      _activeSavingsGoal?.id == id ||
+      _completedSavingsGoals.any((entry) => entry.goal.id == id) ||
+      _goalCycleAllocations.any((entry) => entry.goalId == id) ||
+      _goalCompletionDates.containsKey(id) ||
+      _goalCycleIncomeBaselines.values.any(
+        (incomes) => incomes.containsKey(id),
+      ) ||
       _transactions.any((entry) => entry.id == id) ||
       _incomes.any((entry) => entry.id == id) ||
       _cashReconciliations.any((entry) => entry.id == id) ||
-      _xpEvents.any((entry) => entry.id == id);
+      _xpEvents.any((entry) => entry.id == id) ||
+      _recurringExpenses.any((entry) => entry.id == id);
   String _cycleKey(DateTime date) => dateOnly(date).toIso8601String();
   bool _isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
@@ -1393,6 +4378,12 @@ class SobraStore extends ChangeNotifier {
   };
 }
 
+class _StoreMutation {
+  bool active = true;
+  bool dirty = false;
+  bool notify = false;
+}
+
 class _SettlementRun {
   const _SettlementRun({this.closedCycles = 0, this.awardedXp = 0});
 
@@ -1408,6 +4399,14 @@ class _SettlementRun {
 class SobraScope extends InheritedNotifier<SobraStore> {
   const SobraScope({super.key, required SobraStore store, required super.child})
     : super(notifier: store);
+
+  /// The store above [context], or null where there is none.
+  ///
+  /// For widgets that can still draw something sensible without app state —
+  /// a sprite in a preview or a test. Anything that needs the store uses
+  /// [of], which says so.
+  static SobraStore? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<SobraScope>()?.notifier;
 
   static SobraStore of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<SobraScope>();

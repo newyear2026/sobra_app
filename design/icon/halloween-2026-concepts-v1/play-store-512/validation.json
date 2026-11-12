@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-27",
+  "purpose": "Google Play store listing icon uploads",
+  "sourceSize": [
+    1254,
+    1254
+  ],
+  "conversion": "Native macOS AppKit export, high-quality resize only; original artwork retained",
+  "requirements": {
+    "size": [
+      512,
+      512
+    ],
+    "format": "32-bit PNG",
+    "colorSpace": "sRGB",
+    "maxBytes": 1000000,
+    "squareWithoutPremaskedCorners": true
+  },
+  "files": [
+    {
+      "file": "01-dracula-play-512.png",
+      "width": 512,
+      "height": 512,
+      "bytes": 325932,
+      "kilobytesDecimal": 325.9,
+      "format": "PNG",
+      "bitsPerPixel": 32,
+      "colorSpace": "sRGB (standard sRGB PNG chunk)",
+      "opaque": true,
+      "sha256": "479e0bbb496ec0630601cd6f0651f1ab5c676def556b3ebfc5145525205df7ab"
+    },
+    {
+      "file": "02-moon-witch-play-512.png",
+      "width": 512,
+      "height": 512,
+      "bytes": 343923,
+      "kilobytesDecimal": 343.9,
+      "format": "PNG",
+      "bitsPerPixel": 32,
+      "colorSpace": "sRGB (standard sRGB PNG chunk)",
+      "opaque": true,
+      "sha256": "fb64ff426e5ea098f88731dd6aaae864125321fae92bb6b903c464e78945dfa1"
+    },
+    {
+      "file": "03-pumpkin-play-512.png",
+      "width": 512,
+      "height": 512,
+      "bytes": 322544,
+      "kilobytesDecimal": 322.5,
+      "format": "PNG",
+      "bitsPerPixel": 32,
+      "colorSpace": "sRGB (standard sRGB PNG chunk)",
+      "opaque": true,
+      "sha256": "f041310fc5052dd81823b27028493fbda73f5e654fe04c44a40221695950c05c"
+    }
+  ],
+  "sources": [
+    "https://developer.android.com/google-play/resources/icon-design-specifications",
+    "https://support.google.com/googleplay/android-developer/answer/9898842"
+  ],
+  "visualReview": "All three exported files inspected. Existing calico cat and ledger with seasonal costumes. No ranking, discount, free, or notification badges. Dollar symbol is a finance motif, not a price offer."
+}

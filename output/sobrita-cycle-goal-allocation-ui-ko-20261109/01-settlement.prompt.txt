@@ -1,0 +1,24 @@
+Use case: ui-mockup.
+Create a realistic production-quality Korean mobile screen for Sobrita. This is the first screen of one sequential workflow, not an alternative design. App content only, 780 x 1688 pixels (390 x 844 logical); no phone bezel, OS status bar, browser, external captions, or watermark.
+Reference image 1 is the ACTUAL existing settlement screen and must anchor its square outlines, spacing, restrained pixel typography, teal card and cream surface. Reference image 2 is the actual Korean home, for Korean font styling and palette only; do not add its room on this settlement page.
+Current date anchor: 2026-11-09. The completed weekly cycle is November 2 through November 8, 2026.
+Palette: surface #FFFDF7, paper #F6EFE0, navy #202848, teal #0E7A72, teal-soft #D8EDEA, gold #C0873A. Existing PixelifySans style and readable Korean SobraHangul-like type, 14-16 logical px body; square outlined cards/buttons and subtle offset navy shadows. Crisp readable Korean lettering. Avoid a generic rounded finance app.
+Page composition: back arrow plus title at top, 20 logical px side margins. Main teal summary card underneath. One goal action section below. Small secondary skip action. Preserve the existing settlement design language; focus on the new action, leave generous space. No tab navigation on this subpage, no hero character. No charts, ads, confetti, or invented dashboard widgets.
+Exact Korean text and data:
+Header: "이번 주 마감"
+Summary title: "이번 주도 수고했어요"
+Date: "11월 2일–11월 8일"
+Rows:
+"생활비 예산" "₩100,000"
+"사용한 생활비" "₩80,000"
+Thin separator then emphasized:
+"남은 생활비" "₩20,000"
+Small supporting caption: "남은 금액 중 일부를 목표에 모아보세요."
+Below summary, a spacious goal section on the cream page (not a stack of nested cards):
+Heading "남은 돈, 목표에 모아볼까요?"
+A small simple outlined teal flag icon beside "1억 모으기".
+Secondary line: "현재 ₩10,000,000 / 목표 ₩100,000,000"
+Primary full-width teal button: "목표에 모을 금액 정하기"
+Secondary text action: "이번에는 건너뛰기"
+Below at a comfortable distance, preserve a small existing-style share row with share icon, text "이번 주 성과 공유하기" and right chevron. Keep this subordinate, not another primary button.
+Render all numbers exactly. This is a proposal showing leftover BUDGET, not a verified bank balance. Do not call money transferred or invent automatic saving.

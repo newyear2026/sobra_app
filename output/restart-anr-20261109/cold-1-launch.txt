@@ -1,0 +1,6 @@
+Starting: Intent { cmp=com.sobra.app.sobra_app/.MainActivity }
+Status: timeout
+LaunchState: UNKNOWN (-1)
+Activity: com.sobra.app.sobra_app/.MainActivity
+WaitTime: 19453
+Complete

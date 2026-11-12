@@ -1,0 +1,10 @@
+{
+  "url": "https://www.shein.com.mx/Women-Long-Dresses-p-568117802.html",
+  "method": "anonymous public HTML request",
+  "api_used": false,
+  "login_used": false,
+  "status": 200,
+  "final_url": "https://www.shein.com.mx/risk/challenge?captcha_type=903&redirection=https%3A%2F%2Fwww.shein.com.mx%2FWomen-Long-Dresses-p-568117802.html&risk-id=E4949597909033102979",
+  "bytes_read": 87599,
+  "content_type": "text/html; charset=utf-8"
+}

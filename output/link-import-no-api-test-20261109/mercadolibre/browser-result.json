@@ -1,0 +1,30 @@
+{
+  "tested_on": "2026-11-09",
+  "method": "Ordinary navigation in the desktop in-app browser, followed by reading the rendered accessibility tree and the displayed product image DOM attributes.",
+  "url": "https://articulo.mercadolibre.com.mx/MLM-3990889244-tenis-adidas-correr-hombre-negro-jq8645-_JM?searchVariation=190036940257",
+  "official_product_api_integration_used": false,
+  "manual_login_performed": false,
+  "visible_account_state": "Header showed Crea tu cuenta and Ingresa, with no signed-in account name.",
+  "product_title": "Tenis adidas Correr Hombre Negro Jq8645",
+  "displayed_price": "1699 pesos",
+  "displayed_price_screenshot": "$1,699",
+  "excluded_installment_amount": "24 meses de $102.67",
+  "size_selection": "Talla: Elige — no size selected",
+  "main_image": {
+    "alt": "Tenis adidas Correr Hombre Negro Jq8645",
+    "src": "https://http2.mlstatic.com/D_NQ_NP_777778-MLM94008622651_102025-O-tenis-adidas-correr-hombre-negro-jq8645.webp",
+    "currentSrc": "https://http2.mlstatic.com/D_NQ_NP_2X_777778-MLM94008622651_102025-F-tenis-adidas-correr-hombre-negro-jq8645.webp",
+    "naturalWidth": 600,
+    "naturalHeight": 600,
+    "visually_verified": true
+  },
+  "result": "Displayed product image URL and price were readable through this browser session.",
+  "limits": [
+    "This is a browser-assisted observation, not success of the prior anonymous raw-HTTP probe.",
+    "The cause of the difference between browser and raw-HTTP responses was not isolated.",
+    "No guarantee of a cookie-free browser session; cookies were not inspected or exported.",
+    "No Android WebView, Chrome Custom Tab, mobile device, short-link, or second browser sample was tested.",
+    "No guarantee of unattended or repeatable production import.",
+    "The displayed price was observed before selecting a shoe size."
+  ]
+}

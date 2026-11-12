@@ -1,0 +1,11 @@
+{
+  "buildMode": "release",
+  "entrypoint": "tool/preview_exit_popup.dart",
+  "unitId": "ca-app-pub-2706404530136726/3965250332",
+  "unitOverrideUsed": false,
+  "apkSha256": "6ea3f797062b349977ba8363cf28d3836525257818f47bb863f7887bd36ac4d2",
+  "buildNumber": 2019,
+  "sdkData": "real test-device responses; seeded in-memory app data",
+  "serial": "emulator-5592",
+  "androidVersion": "16"
+}

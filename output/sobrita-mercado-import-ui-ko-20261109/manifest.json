@@ -1,0 +1,27 @@
+{
+  "date": "2026-11-09",
+  "method": "built-in image_gen",
+  "language": "ko",
+  "currency": "MXN",
+  "kind": "three sequential mobile mockups; not implemented app screens",
+  "files": [
+    {
+      "file": "01-link-entry-ko.png",
+      "width": 852,
+      "height": 1846,
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-c9a3c01b-58ab-4f2d-b2ce-0e501430532f.png"
+    },
+    {
+      "file": "02-product-browser-ko.png",
+      "width": 852,
+      "height": 1846,
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-4fb66623-300f-40f8-bc1d-9bbbbdd9475d.png"
+    },
+    {
+      "file": "03-goal-confirm-ko.png",
+      "width": 852,
+      "height": 1846,
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-8760a124-f555-483a-8536-78d07a0d1a64.png"
+    }
+  ]
+}

@@ -24,7 +24,52 @@ Future<(SobraStore, void Function(DateTime))> _storeAt(DateTime start) async {
   return (store, (DateTime next) => now = next);
 }
 
+bool _isDone(SobraStore store, DailyMissionKind kind) => store
+    .dailyMissions
+    .missions
+    .singleWhere((mission) => mission.kind == kind)
+    .isDone;
+
 void main() {
+  group('rotation', () {
+    test('each board is the anchor, one light and one effort mission', () {
+      for (var day = 1; day <= 30; day++) {
+        final board = DailyMissionKind.forDay(DateTime(2026, 9, day));
+        expect(board.map((kind) => kind.slot), [
+          DailyMissionSlot.anchor,
+          DailyMissionSlot.light,
+          DailyMissionSlot.effort,
+        ]);
+        final xp = board.fold(0, (sum, kind) => sum + kind.xp);
+        expect(xp, inInclusiveRange(25, 30));
+      }
+    });
+
+    test('both rotating slots change every day, across a month edge', () {
+      for (var day = 0; day < 40; day++) {
+        final today = DailyMissionKind.forDay(DateTime(2026, 9, 20 + day));
+        final tomorrow = DailyMissionKind.forDay(DateTime(2026, 9, 21 + day));
+        expect(today[1], isNot(tomorrow[1]));
+        expect(today[2], isNot(tomorrow[2]));
+      }
+    });
+
+    test('every pairing comes round within six days', () {
+      final pairs = {
+        for (var day = 0; day < 6; day++)
+          DailyMissionKind.forDay(DateTime(2026, 9, 20 + day)).skip(1).join(),
+      };
+      expect(pairs, hasLength(6));
+    });
+
+    test('the board does not move within a day', () {
+      expect(
+        DailyMissionKind.forDay(DateTime(2026, 9, 8, 0, 1)),
+        DailyMissionKind.forDay(DateTime(2026, 9, 8, 23, 59)),
+      );
+    });
+  });
+
   test('recording today completes record and same-day missions once', () async {
     final start = DateTime(2026, 9, 8, 14, 20);
     final (store, _) = await _storeAt(start);
@@ -78,7 +123,9 @@ void main() {
     final board = store.dailyMissions;
     expect(
       board.missions
-          .singleWhere((mission) => mission.kind == DailyMissionKind.recordMovement)
+          .singleWhere(
+            (mission) => mission.kind == DailyMissionKind.recordMovement,
+          )
           .isDone,
       isTrue,
     );
@@ -89,6 +136,24 @@ void main() {
       isFalse,
     );
     expect(store.takePendingXpNotice()?.xp, 10);
+  });
+
+  test('editing a past expense to today completes both missions', () async {
+    final start = DateTime(2026, 9, 8, 10);
+    final (store, _) = await _storeAt(start);
+    final entry = await store.addExpense(
+      amountCentavos: 4500,
+      category: ExpenseCategory.food,
+      note: '',
+      occurredAt: DateTime(2026, 9, 6, 9),
+      paymentMethod: PaymentMethod.cash,
+    );
+    expect(store.dailyMissions.completedCount, 1);
+    store.takePendingXpNotice();
+
+    await store.updateExpense(entry.copyWith(occurredAt: start));
+    expect(store.dailyMissions.completedCount, 2);
+    expect(store.takePendingXpNotice()?.xp, 5);
   });
 
   test('missions reset with the calendar day', () async {
@@ -108,12 +173,93 @@ void main() {
     expect(store.dailyMissions.earnedXp, 0);
   });
 
-  test('reviewing the budget awards its mission once', () async {
+  test('a mission off today\'s board earns nothing', () async {
+    // 9/8 draws the same-day and receipt missions, not the budget.
     final (store, _) = await _storeAt(DateTime(2026, 9, 8, 10));
+    await store.noteBudgetReviewed();
+    expect(store.totalXp, 0);
+    expect(store.pendingXpNotice, isNull);
+  });
+
+  test('a receipt photo completes the receipt mission', () async {
+    final start = DateTime(2026, 9, 8, 10);
+    final (store, _) = await _storeAt(start);
+
+    await store.addExpense(
+      amountCentavos: 4500,
+      category: ExpenseCategory.food,
+      note: '',
+      occurredAt: start,
+      paymentMethod: PaymentMethod.cash,
+      receiptFileName: 'receipt.jpg',
+    );
+
+    expect(store.dailyMissions.allDone, isTrue);
+    expect(store.takePendingXpNotice()?.xp, 30);
+  });
+
+  test('a note completes the note mission', () async {
+    // 9/10 draws the same-day and note missions.
+    final start = DateTime(2026, 9, 10, 10);
+    final (store, _) = await _storeAt(start);
+
+    final entry = await store.addExpense(
+      amountCentavos: 4500,
+      category: ExpenseCategory.food,
+      note: '   ',
+      occurredAt: start,
+      paymentMethod: PaymentMethod.cash,
+    );
+    expect(_isDone(store, DailyMissionKind.addNote), isFalse);
+    store.takePendingXpNotice();
+
+    await store.updateExpense(entry.copyWith(note: 'Tacos'));
+    expect(_isDone(store, DailyMissionKind.addNote), isTrue);
+    expect(store.takePendingXpNotice()?.xp, 10);
+  });
+
+  test(
+    'three movements dated today complete the three-today mission',
+    () async {
+      // 9/9 draws the budget and three-today missions.
+      final start = DateTime(2026, 9, 9, 10);
+      final (store, _) = await _storeAt(start);
+
+      Future<void> record(DateTime occurredAt) => store.addExpense(
+        amountCentavos: 1000,
+        category: ExpenseCategory.food,
+        note: '',
+        occurredAt: occurredAt,
+        paymentMethod: PaymentMethod.card,
+      );
+
+      await record(start);
+      await record(DateTime(2026, 9, 7, 9));
+      await store.addIncome(
+        amountCentavos: 10000,
+        kind: IncomeKind.extra,
+        note: '',
+        occurredAt: start,
+        destination: PaymentMethod.cash,
+        allocation: IncomeAllocation.savings,
+      );
+      expect(_isDone(store, DailyMissionKind.threeToday), isFalse);
+      store.takePendingXpNotice();
+
+      await record(start);
+      expect(_isDone(store, DailyMissionKind.threeToday), isTrue);
+      expect(store.takePendingXpNotice()?.xp, 15);
+    },
+  );
+
+  test('reviewing the budget awards its mission once', () async {
+    final (store, _) = await _storeAt(DateTime(2026, 9, 9, 10));
     await store.noteBudgetReviewed();
     expect(
       store.dailyMissions.missions
-          .singleWhere((mission) => mission.kind == DailyMissionKind.reviewBudget)
+          .singleWhere(
+            (mission) => mission.kind == DailyMissionKind.reviewBudget,
+          )
           .isDone,
       isTrue,
     );
@@ -152,7 +298,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Registra un movimiento hoy'), findsWidgets);
     expect(find.text('Anótalo el mismo día'), findsOneWidget);
-    expect(find.text('Revisa tu presupuesto'), findsOneWidget);
+    expect(find.text('Guarda un recibo'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -165,7 +311,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    final (store, _) = await _storeAt(DateTime(2026, 9, 8, 10));
+    final (store, _) = await _storeAt(DateTime(2026, 9, 9, 10));
     await store.setReducedMotion(true);
 
     await tester.pumpWidget(SobraApp(store: store));
@@ -176,7 +322,9 @@ void main() {
 
     expect(
       store.dailyMissions.missions
-          .singleWhere((mission) => mission.kind == DailyMissionKind.reviewBudget)
+          .singleWhere(
+            (mission) => mission.kind == DailyMissionKind.reviewBudget,
+          )
           .isDone,
       isTrue,
     );

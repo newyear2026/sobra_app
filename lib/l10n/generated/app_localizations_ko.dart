@@ -9,6 +9,24 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
+  String get exitAppTitle => '앱을 종료할까요?';
+
+  @override
+  String get exitAppBody => '다음에 또 만나요.';
+
+  @override
+  String get exitAppAction => '종료';
+
+  @override
+  String get startupTagline => '작은 기록이\n차곡차곡 쌓여요';
+
+  @override
+  String get startupLoading => '불러오는 중…';
+
+  @override
+  String get startupFailed => '앱을 시작하지 못했어요.\n다시 시도해 주세요.';
+
+  @override
   String get categoryFood => '식비';
 
   @override
@@ -139,19 +157,54 @@ class AppLocalizationsKo extends AppLocalizations {
   String get xpFirstSuccessfulCycleDetail => '한 번만 주는 보너스';
 
   @override
-  String get xpLevelTitle1 => '호기심 많은 미치';
+  String xpLevelTitle1(String name) {
+    return '호기심 많은 $name';
+  }
 
   @override
-  String get xpLevelTitle2 => '알뜰한 미치';
+  String xpLevelTitle2(String name) {
+    return '알뜰한 $name';
+  }
 
   @override
-  String get xpLevelTitle3 => '계산하는 미치';
+  String xpLevelTitle3(String name) {
+    return '계산하는 $name';
+  }
 
   @override
-  String get xpLevelTitle4 => '지키는 미치';
+  String xpLevelTitle4(String name) {
+    return '지키는 $name';
+  }
 
   @override
-  String get xpLevelTitle5 => '마스터 미치';
+  String xpLevelTitle5(String name) {
+    return '마스터 $name';
+  }
+
+  @override
+  String xpLevelTitle6(String name) {
+    return '전문가 $name';
+  }
+
+  @override
+  String xpLevelTitle7(String name) {
+    return '전략가 $name';
+  }
+
+  @override
+  String xpLevelTitle8(String name) {
+    return '성장하는 $name';
+  }
+
+  @override
+  String xpLevelTitle9(String name) {
+    return '현명한 $name';
+  }
+
+  @override
+  String xpLevelTitle10(String name) {
+    return '전설의 $name';
+  }
 
   @override
   String xpNoticeCyclesClosedTitle(int count) {
@@ -181,10 +234,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get xpLevelUpContinue => '계속하기';
 
   @override
+  String xpLevelUpItemsUnlocked(int count) {
+    return '새 아이템 $count개가 해금됐어요!';
+  }
+
+  @override
   String get dailyMissionTitle => '오늘의 미션';
 
   @override
-  String get dailyMissionResetHint => '자정에 새로 시작되고, 밀린 미션은 쌓이지 않아요.';
+  String get dailyMissionResetHint => '매일 자정에 새 미션으로 바뀌고, 밀린 미션은 쌓이지 않아요.';
 
   @override
   String dailyMissionProgress(int done, int total) {
@@ -213,6 +271,26 @@ class AppLocalizationsKo extends AppLocalizations {
   String get dailyMissionBudgetHint => '예산 탭을 한 번 열기';
 
   @override
+  String get dailyMissionNoteTitle => '메모 남기기';
+
+  @override
+  String get dailyMissionNoteHint => '메모를 적은 기록 한 건';
+
+  @override
+  String get dailyMissionReceiptTitle => '영수증 남기기';
+
+  @override
+  String get dailyMissionReceiptHint => '지출에 영수증 사진 붙이기';
+
+  @override
+  String get dailyMissionThreeTodayTitle => '오늘 세 건 기록하기';
+
+  @override
+  String dailyMissionThreeTodayHint(int count) {
+    return '오늘 날짜의 기록 $count건';
+  }
+
+  @override
   String get dailyMissionDone => '완료';
 
   @override
@@ -234,7 +312,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get dailyMissionXpDetail => '오늘의 미션';
+  String get dailyMissionXpDetail => '완료한 미션';
 
   @override
   String get xpRuleDailyMission => '하루에 한 번, 자정에 다시 시작';
@@ -311,6 +389,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get monthAbbr12 => '12월';
 
   @override
+  String dateShort(String day, String month) {
+    return '$month $day일';
+  }
+
+  @override
+  String dateFull(String day, String month, String year) {
+    return '$year년 $month $day일';
+  }
+
+  @override
   String get back => '뒤로';
 
   @override
@@ -375,6 +463,436 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get tabSettings => '내 정보';
+
+  @override
+  String get collectionTitle => '컬렉션';
+
+  @override
+  String get collectionSettingsValue => '보기';
+
+  @override
+  String get collectionCharacters => '캐릭터';
+
+  @override
+  String get collectionItems => '아이템';
+
+  @override
+  String collectionLevel(int level) {
+    return '레벨 $level';
+  }
+
+  @override
+  String collectionOwnedCount(int owned, int total) {
+    return '$owned / $total';
+  }
+
+  @override
+  String get collectionCharactersHint => '함께할 캐릭터를 모아요';
+
+  @override
+  String get collectionItemsHint => '내 공간에 둘 물건을 모아요';
+
+  @override
+  String get collectionRooms => '방';
+
+  @override
+  String get collectionRoomsHint => '함께 지낼 방을 골라요';
+
+  @override
+  String collectionCharacterPlaceholder(int number) {
+    return '캐릭터 $number';
+  }
+
+  @override
+  String collectionItemPlaceholder(int number) {
+    return '아이템 $number';
+  }
+
+  @override
+  String get collectionEquipped => '선택됨';
+
+  @override
+  String get collectionOwned => '보유 중';
+
+  @override
+  String get collectionPlaceIt => '꾸미기에서 놓기';
+
+  @override
+  String get collectionBuy => '구매하기';
+
+  @override
+  String get collectionPricePending => '가격 확인 중';
+
+  @override
+  String get collectionWatchAd => '광고 보기';
+
+  @override
+  String get collectionAdLoading => '광고 준비 중';
+
+  @override
+  String collectionAdProgressLine(int progress, int target) {
+    return '$progress/$target';
+  }
+
+  @override
+  String collectionAdUnlockDaily(int progress, int target) {
+    return '보상형 광고 보기 · $progress/$target · 하루 1편씩';
+  }
+
+  @override
+  String get collectionAdUnavailable => '현재 광고 없음';
+
+  @override
+  String get collectionAdRetry => '다시 시도';
+
+  @override
+  String get collectionAdDailyCap => '오늘 한도 도달';
+
+  @override
+  String get collectionAdTomorrow => '내일 이어서';
+
+  @override
+  String collectionUnlockedNotice(String name) {
+    return '$name을(를) 해금했어요!';
+  }
+
+  @override
+  String collectionRoomUnlockedNotice(String name) {
+    return '이제 $name에서 지낼 수 있어요!';
+  }
+
+  @override
+  String get collectionAdDismissedNotice => '광고를 끝까지 봐야 진행돼요.';
+
+  @override
+  String get collectionPackOnly => '팩 전용';
+
+  @override
+  String get collectionPackUnlock => '미치네 친구들 팩에 들어 있어요. 따로 판매하지 않아요.';
+
+  @override
+  String get collectionSeePack => '팩 보기';
+
+  @override
+  String get packFriendNames => 'Tranqui, Lana, Bandi';
+
+  @override
+  String get packIncludes => '포함된 것';
+
+  @override
+  String get packFriendsLine => '방에 함께할 친구 3명';
+
+  @override
+  String get packNoAdsLine => '일반 광고 제거';
+
+  @override
+  String get packOnceLine => '한 번 결제로 계속';
+
+  @override
+  String packBuy(String price) {
+    return '구매 · $price';
+  }
+
+  @override
+  String get collectionAlsoInPack => '미치네 친구들 팩에도 들어 있어요';
+
+  @override
+  String packAlreadyOwned(String names) {
+    return '이미 가진 친구: $names. 팩 가격은 그대로예요.';
+  }
+
+  @override
+  String get collectionGiftOnly => '선물';
+
+  @override
+  String get collectionGiftUnlock => '특별한 선물이에요. 판매하지 않아요.';
+
+  @override
+  String collectionAdProgress(int progress, int target) {
+    return '광고 $progress/$target';
+  }
+
+  @override
+  String get collectionHowToGet => '획득 방법';
+
+  @override
+  String get collectionAlreadyOwned => '이미 컬렉션에 포함되어 있어요.';
+
+  @override
+  String get collectionIncludedUnlock => '처음부터 포함되어 있어요.';
+
+  @override
+  String collectionPurchaseUnlock(String price) {
+    return '1회 구매 · $price';
+  }
+
+  @override
+  String collectionAdUnlock(int progress, int target) {
+    return '보상형 광고 보기 · $progress/$target';
+  }
+
+  @override
+  String collectionLevelUnlock(int level) {
+    return '레벨 $level에서 해금돼요.';
+  }
+
+  @override
+  String get collectionStorePricePending => '스토어 가격';
+
+  @override
+  String get collectionPreviewActionNotice => '구매와 광고는 다음 단계에서 연결할 예정이에요.';
+
+  @override
+  String get roomTitle => '내 방';
+
+  @override
+  String get roomOpen => '내 방 열기';
+
+  @override
+  String get roomDecorate => '꾸미기';
+
+  @override
+  String get roomDecorateTitle => '꾸미기';
+
+  @override
+  String get roomDone => '완료';
+
+  @override
+  String get roomThemeCasaClara => 'Casa clara';
+
+  @override
+  String get roomThemeCasaJardin => '정원 방';
+
+  @override
+  String get roomThemeCasaDePlaya => '해변 방';
+
+  @override
+  String get roomThemeCasaTorre => '타워팰리스 방';
+
+  @override
+  String get roomThemeCasaMontana => '산속 별장';
+
+  @override
+  String get roomThemeCasaInvernadero => '온실 방';
+
+  @override
+  String get roomChooseTheme => '방 테마를 골라주세요.';
+
+  @override
+  String get roomCatReaction => '오늘도 잘했어!';
+
+  @override
+  String get roomInstruction => '아이템을 고르고 놓을 자리를 눌러주세요.';
+
+  @override
+  String get roomCategoryRooms => '방';
+
+  @override
+  String get roomCategoryFurniture => '가구';
+
+  @override
+  String get roomCategoryWallFloor => '벽·바닥';
+
+  @override
+  String get roomCategoryProps => '소품';
+
+  @override
+  String get roomCategoryCharacters => '캐릭터';
+
+  @override
+  String get roomCharacterInstruction => '함께 지낼 캐릭터를 골라요.';
+
+  @override
+  String get roomMoreInCollection => '컬렉션에서 더 보기';
+
+  @override
+  String get roomDefaultRug => '라벤더 러그';
+
+  @override
+  String get roomFloorLamp => '초록 조명';
+
+  @override
+  String get roomTablePlant => '테이블 화분';
+
+  @override
+  String get roomWallFrame => '벽 액자';
+
+  @override
+  String get roomRattanChair => '라탄 의자';
+
+  @override
+  String get roomStandingLamp => '스탠드 조명';
+
+  @override
+  String get roomWallClock => '벽시계';
+
+  @override
+  String get roomLowCabinet => '낮은 수납장';
+
+  @override
+  String get roomSlimBookcase => '슬림 책장';
+
+  @override
+  String get roomRoundSideTable => '원형 협탁';
+
+  @override
+  String get roomPetBed => '반려동물 침대';
+
+  @override
+  String get roomSavingsJar => '저금통';
+
+  @override
+  String get roomWallShelf => '벽 선반';
+
+  @override
+  String get roomShelfBooks => '책';
+
+  @override
+  String get roomTrailingPlant => '늘어지는 화분';
+
+  @override
+  String get roomTerracottaPouf => '테라코타 푸프';
+
+  @override
+  String get roomBlueCreamRug => '블루 크림 러그';
+
+  @override
+  String get roomLaunchSofa => '벨벳 소파';
+
+  @override
+  String get roomLaunchTv => '이야기 TV';
+
+  @override
+  String get roomIvorySofa => '아이보리 소파';
+
+  @override
+  String get roomBronzeLanternLamp => '브론즈 랜턴 램프';
+
+  @override
+  String get launchGiftTitle => '출시 기념 선물이 도착했어요!';
+
+  @override
+  String get launchGiftBody => '기간 안에 Sobrita를 시작하셨어요. 소파와 TV를 받았습니다.';
+
+  @override
+  String get launchGiftGoToRoom => '우리 집에 놓기';
+
+  @override
+  String get launchGiftLater => '나중에';
+
+  @override
+  String get roomSuggestCabinet => '벽 가까운 왼쪽 바닥에 두면 안정적이에요. 표시된 자리를 눌러요.';
+
+  @override
+  String get roomSuggestPetBed => '캐릭터 왼쪽의 낮은 바닥 자리에 두세요. 표시된 자리를 눌러요.';
+
+  @override
+  String get roomSuggestSavingsJar =>
+      '저금통은 수납장, 협탁 또는 벽선반 위에 두세요. 받침이 없다면 먼저 놓아 주세요.';
+
+  @override
+  String get roomSuggestTablePlant =>
+      '화분은 수납장, 협탁 또는 벽선반 위에 두세요. 받침이 없다면 먼저 놓아 주세요.';
+
+  @override
+  String get roomSuggestShelfProps => '수납장, 책장 또는 벽선반을 먼저 놓고 그 위에 소품을 올려 주세요.';
+
+  @override
+  String get roomSuggestDeskLamp =>
+      '조명은 수납장, 협탁 또는 벽선반 위에 두세요. 받침이 없다면 먼저 놓아 주세요.';
+
+  @override
+  String get roomSuggestWallShelf => '빈 벽에 걸어주세요. 표시된 자리를 눌러요.';
+
+  @override
+  String get roomSuggestPouf => '오른쪽 바닥에 두면 균형이 좋아요. 표시된 자리를 눌러요.';
+
+  @override
+  String get roomSuggestBlueRug => '캐릭터 아래에 깔아주세요. 표시된 자리를 눌러요.';
+
+  @override
+  String get roomSaved => '꾸미기를 저장했어요.';
+
+  @override
+  String get roomPlaced => '배치됨';
+
+  @override
+  String get roomSurfaceWall => '벽';
+
+  @override
+  String get roomSurfaceFloor => '바닥';
+
+  @override
+  String get roomSurfaceTabletop => '탁자 위';
+
+  @override
+  String get roomSurfaceRug => '러그';
+
+  @override
+  String roomSlotLabel(String surface, int number) {
+    return '$surface 자리 $number';
+  }
+
+  @override
+  String roomPickWall(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '벽 자리 $count곳 · 걸 곳을 눌러주세요.',
+      one: '벽 자리 1곳 · 누르면 걸려요.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickFloor(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '바닥 자리 $count곳 · 놓을 곳을 눌러주세요.',
+      one: '바닥 자리 1곳 · 누르면 놓여요.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickTabletop(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '탁자 위 $count곳 · 놓을 곳을 눌러주세요.',
+      one: '탁자 위 1곳 · 누르면 놓여요.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickRug(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '러그 자리 $count곳 · 깔 곳을 눌러주세요.',
+      one: '러그 자리 1곳 · 누르면 깔려요.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickAny(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '놓을 수 있는 자리 $count곳 · 놓을 곳을 눌러주세요.',
+      one: '놓을 수 있는 자리 1곳 · 누르면 놓여요.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get roomMoveOrRemove => '다른 자리를 누르면 옮기고, 지금 자리를 누르면 빼요.';
+
+  @override
+  String get roomTapToRemove => '놓인 자리를 다시 누르면 빼요.';
 
   @override
   String get xpHistoryTitle => '내 진행 상황';
@@ -512,6 +1030,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get currencyChangeConfirm => '표기 바꾸기';
 
   @override
+  String get currencyRegionAmericas => '아메리카';
+
+  @override
+  String get currencyRegionEurope => '유럽';
+
+  @override
+  String get currencyRegionAsiaPacific => '아시아·오세아니아';
+
+  @override
   String get settingsCurrency => '통화';
 
   @override
@@ -524,6 +1051,30 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsReduceMotionHint => '휴대폰에서 이미 설정했다면 자동으로 켜져요.';
 
   @override
+  String get settingsQuickEntry => '빠른 기록';
+
+  @override
+  String get settingsQuickEntryHint => '잠금화면에 수입과 지출 버튼을 표시해요.';
+
+  @override
+  String get quickEntryQuestion => '무엇을 기록할까요?';
+
+  @override
+  String get quickEntryDenied => '빠른 기록을 사용하려면 Sobrita 알림을 허용해 주세요.';
+
+  @override
+  String get widgetTodayLeft => '오늘 남은 돈';
+
+  @override
+  String get widgetCycleBalance => '잔액';
+
+  @override
+  String get widgetOpenApp => 'Sobrita 열기';
+
+  @override
+  String get widgetRegisterExpense => '지출 기록';
+
+  @override
   String get settingsBackup => '데이터 백업';
 
   @override
@@ -533,13 +1084,88 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsBackupCopied => '백업을 클립보드에 복사했어요.';
 
   @override
+  String get settingsBackupCopyFailed => '백업을 복사하지 못했어요. 다시 시도해 주세요.';
+
+  @override
+  String get settingsRestorePurchases => '구매 복원';
+
+  @override
+  String get settingsAccount => '구글 계정';
+
+  @override
+  String get settingsAccountConnect => '연결';
+
+  @override
+  String get settingsRestore => '복원';
+
+  @override
+  String get purchaseRestored => '완료했어요. 구매 항목이 돌아왔어요.';
+
+  @override
+  String get purchaseFailureStoreUnavailable =>
+      '지금은 스토어에 연결할 수 없어요. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get purchaseFailureRejected => '구매를 완료하지 못했어요. 결제된 금액은 없어요.';
+
+  @override
+  String get purchaseFailureDeliveryNotSaved =>
+      '구매는 도착했지만 저장하지 못했어요. 다음에 앱을 열 때 적용돼요.';
+
+  @override
+  String get purchaseFailureNothingToRestore => '이 계정에서 구매 내역을 찾지 못했어요.';
+
+  @override
+  String get collectionPurchasing => '구매 중…';
+
+  @override
   String get settingsXpPreview => 'XP 미리보기';
 
   @override
   String get settingsDesign => '디자인';
 
   @override
-  String get settingsStorageNote => '데이터는 이 기기에만 저장돼요. Sobra를 쓰는 데 계정은 필요 없어요.';
+  String get settingsStorageNote =>
+      '데이터는 이 기기에만 저장돼요. Sobrita를 쓰는 데 계정은 필요 없어요.';
+
+  @override
+  String get settingsSectionShop => '상점';
+
+  @override
+  String get settingsPackName => '미치네 친구들';
+
+  @override
+  String get settingsPackHint => 'Tranqui, Lana, Bandi. 일반 광고도 함께 제거돼요.';
+
+  @override
+  String get settingsOwned => '보유 중';
+
+  @override
+  String get settingsShopRestoreNote => '구매 항목은 스토어 계정으로 언제든 복원할 수 있어요.';
+
+  @override
+  String get settlementTitle => '이번 주기 결산';
+
+  @override
+  String get settlementSpent => '지출';
+
+  @override
+  String get settlementLeft => '남음';
+
+  @override
+  String get settlementOver => '초과';
+
+  @override
+  String get settlementAverage => '일평균';
+
+  @override
+  String get settlementContinue => '확인';
+
+  @override
+  String get settlementCtaTitle => '특별 꾸미기 받으러 가기';
+
+  @override
+  String get settlementCtaAction => '컬렉션 보기';
 
   @override
   String get settingsSectionBudget => '예산';
@@ -549,6 +1175,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsSectionData => '데이터';
+
+  @override
+  String get settingsSectionPrivacy => '개인정보';
+
+  @override
+  String get settingsAdPrivacy => '광고 개인정보 설정';
+
+  @override
+  String get settingsAdPrivacyValue => '관리';
+
+  @override
+  String get settingsAdPrivacyFailed => '광고 개인정보 설정을 열지 못했어요. 다시 시도해 주세요.';
 
   @override
   String get settingsSectionDesign => '디자인';
@@ -563,7 +1201,7 @@ class AppLocalizationsKo extends AppLocalizations {
     String _temp1 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: 'Sobra와 함께한 $days일',
+      other: 'Sobrita와 함께한 $days일',
     );
     return '$_temp0 · $_temp1';
   }
@@ -586,10 +1224,35 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String dailySpendCycleTotal(String amount) {
+    return '이번 주기 $amount';
+  }
+
+  @override
+  String get dailyIncomeTitle => '일별 수입';
+
+  @override
+  String dailyIncomeCycleTotal(String amount) {
+    return '이번 주기 $amount';
+  }
+
+  @override
   String get transactionsEmptyTitle => '아직 내역이 없어요';
 
   @override
   String get transactionsEmptyMessage => '첫 지출을 기록하면 이번 주기 요약이 여기에 나와요.';
+
+  @override
+  String get transactionsEmptyExpensesTitle => '아직 지출이 없어요';
+
+  @override
+  String get transactionsEmptyExpensesMessage => '지출을 기록하면 날짜별로 여기에 나와요.';
+
+  @override
+  String get transactionsEmptyIncomesTitle => '아직 수입이 없어요';
+
+  @override
+  String get transactionsEmptyIncomesMessage => '수입을 기록하면 날짜별로 여기에 나와요.';
 
   @override
   String get transactionsExpensePinned =>
@@ -619,6 +1282,17 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get editMovement => '내역 수정';
+
+  @override
+  String get editIncome => '수입 수정';
+
+  @override
+  String get editPaidDate => '낸 날';
+
+  @override
+  String editFixedOccurrence(String date) {
+    return '$date 납부분으로 남아요.';
+  }
 
   @override
   String get amount => '금액';
@@ -654,7 +1328,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get spent => '지출';
 
   @override
-  String get appName => 'Sobra';
+  String get appName => 'Sobrita';
 
   @override
   String get homeCycleBalance => '주기 잔액';
@@ -671,6 +1345,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String homeDailyLimit(String limit, String remaining) {
     return '오늘 한도 $limit · 주기에 $remaining 남음';
   }
+
+  @override
+  String get homeFirstQuestLabel => '첫 퀘스트';
+
+  @override
+  String get homeBudgetQuestBody => '예산을 정해줘. 그래야 하루에 쓸 수 있는 돈을 계산해 줄게.';
 
   @override
   String get homeCycleProgress => '주기 진행';
@@ -721,6 +1401,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get budgetTotal => '총예산';
 
   @override
+  String get budgetNotSetTitle => '아직 예산이 없어요';
+
+  @override
+  String get budgetNotSetBody => '예산을 정하면 하루에 얼마 쓸 수 있는지 알려드려요.';
+
+  @override
+  String get budgetSetAction => '예산 정하기';
+
+  @override
   String budgetTooLow(String allocated) {
     return '총액은 이번 주기에 배정한 수입($allocated)보다 커야 해요.';
   }
@@ -767,6 +1456,14 @@ class AppLocalizationsKo extends AppLocalizations {
   String get cycleHistoryEmpty => '아직 마감된 주기가 없어요.';
 
   @override
+  String cycleHistoryAverage(String amount) {
+    return '일평균 $amount';
+  }
+
+  @override
+  String get cycleHistoryAveragePending => '일평균 · 데이터를 모으는 중이에요';
+
+  @override
   String get budgetChangedTitle => '예산이 바뀌었어요';
 
   @override
@@ -797,6 +1494,32 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get budgetEstimatedLeft => '남을 것으로 보이는 금액';
+
+  @override
+  String budgetProjectionBasis(String amount) {
+    return '지금처럼 하루 평균 $amount씩 쓰면 이만큼 남아요.';
+  }
+
+  @override
+  String get budgetSavedThisCycle => '이번 주기에 저축으로 넣은 돈';
+
+  @override
+  String get budgetClosedCyclesResult => '지난 주기들에 남긴 돈';
+
+  @override
+  String homeProjectionLead(String date) {
+    return '이 속도면 $date 마감에';
+  }
+
+  @override
+  String homeProjectionLeft(String amount) {
+    return '$amount 남아요';
+  }
+
+  @override
+  String homeProjectionShort(String amount) {
+    return '$amount 모자라요';
+  }
 
   @override
   String get continueLabel => '계속';
@@ -874,6 +1597,126 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get registerNoteIncomeExample => '예: 금요일 팁';
+
+  @override
+  String get receiptTitle => '영수증';
+
+  @override
+  String get receiptAdd => '영수증 추가';
+
+  @override
+  String get receiptCamera => '카메라';
+
+  @override
+  String get receiptGallery => '사진첩';
+
+  @override
+  String get receiptChange => '변경';
+
+  @override
+  String get receiptRemove => '삭제';
+
+  @override
+  String get receiptHint => '이 지출이 뭐였는지 기억나게 해 줄 사진 한 장.';
+
+  @override
+  String get receiptAttached => '영수증 첨부됨';
+
+  @override
+  String get receiptView => '영수증 보기';
+
+  @override
+  String get receiptClose => '닫기';
+
+  @override
+  String get receiptMissing => '사진이 이 기기에 더 이상 없어요.';
+
+  @override
+  String get receiptFailed => '사진을 저장하지 못했어요.';
+
+  @override
+  String get receiptBackupNote => '내보내기 파일과 백업에는 영수증 사진이 포함되지 않아요.';
+
+  @override
+  String get csvExportTooltip => '내역 내보내기';
+
+  @override
+  String get exportFormatTitle => '내보내기 형식';
+
+  @override
+  String get exportAllHistory => '전체 내역을 내보내요.';
+
+  @override
+  String get exportCsvTitle => 'CSV (.csv)';
+
+  @override
+  String get exportCsvDescription => '다른 앱에 가져올 때 · 숫자 인식은 지역 설정에 따라 달라요.';
+
+  @override
+  String get exportExcelTitle => 'Excel (.xlsx)';
+
+  @override
+  String get exportExcelDescription => 'Excel·Google Sheets에서 바로 계산할 수 있어요.';
+
+  @override
+  String get csvExportPreparing => '준비 중…';
+
+  @override
+  String get releaseNote1018Export =>
+      '내역을 CSV나 엑셀 파일로 내보낼 수 있어요. 내역 화면이나 내 정보에서 할 수 있어요.';
+
+  @override
+  String get releaseNote1019Goal =>
+      '새 기능 \'내 목표\'. 사고 싶은 물건 링크를 붙여넣고, 주기마다 남은 돈을 모아 보세요.';
+
+  @override
+  String get releaseNote1019Bought =>
+      '샀다면 \'목표로 샀어요\'로 기록하세요. 오늘 남은 돈과 예산은 그대로예요.';
+
+  @override
+  String get settingsCsvExport => '내역 내보내기';
+
+  @override
+  String get settingsCsvExportValue => '공유';
+
+  @override
+  String get csvExportEmpty => '아직 내보낼 기록이 없어요.';
+
+  @override
+  String get csvExportFailed => '공유 화면을 열지 못했어요. 다시 시도해 주세요.';
+
+  @override
+  String get csvHeaderDate => '날짜';
+
+  @override
+  String get csvHeaderTime => '시간';
+
+  @override
+  String get csvHeaderType => '유형';
+
+  @override
+  String get csvHeaderCategory => '분류';
+
+  @override
+  String get csvHeaderNote => '메모';
+
+  @override
+  String get csvHeaderPayment => '결제';
+
+  @override
+  String get csvHeaderAmount => '금액';
+
+  @override
+  String get csvHeaderCurrency => '통화';
+
+  @override
+  String get csvTypeExpense => '지출';
+
+  @override
+  String get csvTypeFixedExpense => '고정 지출';
+
+  @override
+  String get csvTypeIncome => '수입';
 
   @override
   String get registerPayment => '결제';
@@ -1034,10 +1877,170 @@ class AppLocalizationsKo extends AppLocalizations {
   String get cycleSaveChange => '변경 저장';
 
   @override
+  String cycleShortFirst(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days일',
+    );
+    return '첫 주기는 $_temp0뿐이라서 그 기간만큼의 예산을 받아요.';
+  }
+
+  @override
+  String get cycleBudgetTitle => '예산은 주기마다 정해져요';
+
+  @override
+  String cycleBudgetBody(String current, String suggested) {
+    return '지금은 주기마다 $current예요. 새 주기에서는 주기마다 약 $suggested로 하면 같은 속도로 쓸 수 있어요. 변경은 다음 주기부터 적용돼요.';
+  }
+
+  @override
+  String cycleBudgetUse(String amount) {
+    return '$amount로 바꾸기';
+  }
+
+  @override
+  String cycleBudgetKeep(String amount) {
+    return '$amount 유지';
+  }
+
+  @override
   String get onboardingBudgetAboveZero => '0보다 큰 예산을 입력해 주세요.';
 
   @override
   String get onboardingCashOrSkip => '현금을 입력하거나 “나중에”를 선택해 주세요.';
+
+  @override
+  String get prologueRainNoEnd => '비가 그칠 기미가 없다.';
+
+  @override
+  String get prologueRentPaid => '월세는 냈고, 통장에는 다음 급여일까지 쓸 돈이 남아 있었다.';
+
+  @override
+  String get prologueSoundAtDoor => '현관 쪽에서 소리가 났다.';
+
+  @override
+  String get prologueGoLook => '나가 본다';
+
+  @override
+  String get prologueWetTracks => '젖은 발자국 두 줄이 마루를 가로질렀다.';
+
+  @override
+  String get prologueShelter => '비 좀 피하자.';
+
+  @override
+  String get prologueItSpoke => '…말을 했다.';
+
+  @override
+  String get prologueReplySurprised => '지금 말했어?';
+
+  @override
+  String get prologueReplyTowel => '(조용히 수건을 가져온다)';
+
+  @override
+  String get prologueEarnKeep => '재워준 값은 해야지. 숫자 세는 건 내가 맡을게.';
+
+  @override
+  String get prologueAskSchedule => '그럼 먼저 — 돈이 언제 들어와?';
+
+  @override
+  String get prologueAskPayday => '며칠에 받아? 앞 날짜만 알려주면 나머지는 내가 셀게.';
+
+  @override
+  String prologueAskBudget(int days) {
+    return '다음 급여일까지 $days일 남았어. 이 기간에 얼마나 쓸 생각이야?';
+  }
+
+  @override
+  String get prologueSkipIsFine => '건너뛰어도 괜찮아. 대신 집에 가서 잊지 말라고 한 번 물어볼게.';
+
+  @override
+  String get prologueSkip => '건너뛰기';
+
+  @override
+  String get prologueDriedOff => '수건으로 닦아주자 둘 다 얌전해졌다. 비는 아직 그치지 않았다.';
+
+  @override
+  String get prologueWhoSits => '누가 옆에 앉을까?';
+
+  @override
+  String get prologueMichiTrait => '조용하다.\n셈이 빠르다.';
+
+  @override
+  String get prologuePoodleTrait => '기운이 넘친다.\n잘 챙긴다.';
+
+  @override
+  String get prologueSchnauzerTrait => '차분하다.\n꼼꼼히 살핀다.';
+
+  @override
+  String get prologueLockedName => '???';
+
+  @override
+  String get prologueLockedTrait => '기운이 넘친다.\n잘 챙긴다.';
+
+  @override
+  String get prologueLockedSoon => '아트 준비 중';
+
+  @override
+  String get prologueLiveTogether => '같이 지내자';
+
+  @override
+  String prologueOtherWaits(String name) {
+    return '$name는 수줍어서 문가에 남았어요. 기록한 날 3일이면 다가오고, 광고 2번이면 바로 불러올 수 있어요.';
+  }
+
+  @override
+  String homeStarterWaiting(String name) {
+    return '$name가 문가에서 기다려요';
+  }
+
+  @override
+  String homeStarterDays(int target) {
+    return '기록한 날 $target일이면 다가와요';
+  }
+
+  @override
+  String homeStarterCallNow(int target, int progress) {
+    return '광고 $target번 보고 바로 부르기 · $progress/$target';
+  }
+
+  @override
+  String starterArrivalKicker(int days) {
+    return '기록한 날 $days일';
+  }
+
+  @override
+  String starterArrivalTitle(String name) {
+    return '$name가 다가왔어요!';
+  }
+
+  @override
+  String get starterArrivalLine => '\"매일 적는 거 봤어. 나도 같이 챙길래!\"';
+
+  @override
+  String starterArrivalKeep(String name) {
+    return '지금은 $name와 계속';
+  }
+
+  @override
+  String starterArrivalSwitch(String name) {
+    return '$name랑 지내기';
+  }
+
+  @override
+  String collectionStarterUnlock(
+    int days,
+    int daysTarget,
+    int ads,
+    int adsTarget,
+  ) {
+    return '기록한 날 $days/$daysTarget일, 또는 광고 $ads/$adsTarget번. 먼저 되는 쪽으로 와요.';
+  }
+
+  @override
+  String prologueGreeting(String name) {
+    return '나는 $name. 문 열어줘서 고마워.';
+  }
 
   @override
   String get onboardingStart => '시작하기';
@@ -1049,7 +2052,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboardingPromise => '오늘 얼마나 쓸 수 있는지 알려드려요.';
 
   @override
-  String get onboardingNoAccount => '계정이 필요 없어요. 데이터는 기기에만 남아요.';
+  String get onboardingNoAccount => '계정이 필요 없어요. 기록은 내 휴대폰에 남아요.';
 
   @override
   String get onboardingHowPaid => '수입을 어떻게 받나요?';
@@ -1096,6 +2099,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboardingBudgetQuestion => '이번 주기에\n얼마를 쓸까요?';
 
   @override
+  String get onboardingBudgetLater => '예산은 나중에 홈에서 정할 수 있어요.';
+
+  @override
   String get onboardingNotNow => '나중에';
 
   @override
@@ -1106,6 +2112,17 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onboardingCashIsBaseline => '이건 첫 집계예요. 수입이 아니에요.';
+
+  @override
+  String onboardingSettledIn(String name) {
+    return '비가 그쳤다. $name가 네 옆에 자리를 잡았다.';
+  }
+
+  @override
+  String get onboardingFirstQuests => '오늘의 퀘스트';
+
+  @override
+  String get onboardingWaitingAtHome => '집에서 기다리는 것';
 
   @override
   String get onboardingGoHome => '홈으로';
@@ -1158,4 +2175,977 @@ class AppLocalizationsKo extends AppLocalizations {
   String movementSubtitle(String first, String second) {
     return '$first · $second';
   }
+
+  @override
+  String get settingsSectionAbout => '정보';
+
+  @override
+  String get settingsReleaseNotes => '새로운 소식';
+
+  @override
+  String get settingsVersion => '버전';
+
+  @override
+  String get settingsVersionUnknown => '—';
+
+  @override
+  String get releaseNotesTitle => '새로운 소식';
+
+  @override
+  String get releaseNotesCurrent => '현재';
+
+  @override
+  String releaseNotesRetention(int count) {
+    return '최근 $count개 버전까지 보관해요.';
+  }
+
+  @override
+  String get releaseNote1015Penguin => 'Penguin이 컬렉션에 들어왔어요. 한 번 구매하면 함께 지내요.';
+
+  @override
+  String get releaseNote1015Ads => '보상형 광고를 더 안정적으로 불러오도록 개선했어요.';
+
+  @override
+  String get releaseNote1016Costumes =>
+      '친구들을 위한 시즌 코스튬 12종이 도착했어요. 11월 3일까지 무료로 받을 수 있어요.';
+
+  @override
+  String get releaseNote1016Keeps => '한 번 받으면 이벤트가 끝나도 영구 소장해요.';
+
+  @override
+  String get releaseNote1017Delete => '지출을 수정하는 화면에서도 바로 삭제할 수 있어요.';
+
+  @override
+  String get releaseNote1017Dates => '지출과 수입의 날짜를 바꿀 수 있고, 이제 수입도 수정할 수 있어요.';
+
+  @override
+  String get releaseNote1017Projection => '홈에서 지금 속도라면 주기 마감 때 얼마가 남을지 바로 보여요.';
+
+  @override
+  String get updateAvailableTitle => '새 버전이 있어요';
+
+  @override
+  String get updateAvailableBody => '업데이트하면 최신 Sobrita를 쓸 수 있어요.';
+
+  @override
+  String updateCurrentVersion(String version) {
+    return '현재 버전: v$version';
+  }
+
+  @override
+  String get updateAction => '업데이트하기';
+
+  @override
+  String get updateLater => '나중에하기';
+
+  @override
+  String get updateBannerMessage => '새 버전이 나왔어요';
+
+  @override
+  String get updateBannerDismiss => '알림 닫기';
+
+  @override
+  String get updateStoreFailed => '구글 플레이를 열 수 없어요.';
+
+  @override
+  String get settingsCheckUpdate => '업데이트 확인';
+
+  @override
+  String get settingsCheckUpdateBusy => '확인 중…';
+
+  @override
+  String get settingsCheckUpdateUpToDate => '최신 버전이에요.';
+
+  @override
+  String get settingsRateApp => '앱 평가하기';
+
+  @override
+  String get settingsOurApps => '추천 앱';
+
+  @override
+  String get ourAppsIntro => 'Sobrita 팀이 만든 앱이에요.';
+
+  @override
+  String get ourAppsOpen => 'Google Play에서 보기';
+
+  @override
+  String get ourAppsMultiCalKind => '계산기';
+
+  @override
+  String get ourAppsMultiCalBlurb =>
+      '계산기, 팁, 나이, 단위 변환까지. 영수증을 찍으면 내 몫이 바로 나와요.';
+
+  @override
+  String get ourAppsLoopetKind => '루틴 관리';
+
+  @override
+  String get ourAppsLoopetBlurb => '하루 24시간을 원 하나로. 지금 할 루틴과 다음 루틴이 한눈에 보여요.';
+
+  @override
+  String get releaseAnnouncementViewAll => '전체 보기';
+
+  @override
+  String get releaseAnnouncementDone => '확인';
+
+  @override
+  String get releaseAnnouncementDontShowAgain => '다시 보지 않기';
+
+  @override
+  String get settingsReleaseNotesUnread => '읽지 않은 새로운 소식';
+
+  @override
+  String get fixedSectionTitle => '고정지출';
+
+  @override
+  String fixedSectionMonth(String month) {
+    return '$month · 하루 금액과 별개';
+  }
+
+  @override
+  String fixedPaidOfTotal(String paid, String total) {
+    return '$total 중 $paid 납부';
+  }
+
+  @override
+  String get fixedAdd => '고정지출 추가';
+
+  @override
+  String get fixedEmptyBody =>
+      '월세, 휴대폰, 전기: 한 번 등록하면 낼 때를 알려 드려요. 하루 금액은 바뀌지 않아요.';
+
+  @override
+  String get fixedFrequencyWeekly => '매주';
+
+  @override
+  String get fixedFrequencySemiMonthly => '월 2회';
+
+  @override
+  String get fixedFrequencyMonthly => '매월';
+
+  @override
+  String get fixedFrequencyBimonthly => '2개월마다';
+
+  @override
+  String get fixedStatusPaid => '납부';
+
+  @override
+  String get fixedStatusTomorrow => '내일';
+
+  @override
+  String get fixedStatusOverdue => '기한 지남';
+
+  @override
+  String fixedApprox(String amount) {
+    return '약 $amount';
+  }
+
+  @override
+  String get fixedFormNewTitle => '새 고정지출';
+
+  @override
+  String get fixedFormEditTitle => '고정지출 수정';
+
+  @override
+  String get fixedName => '이름';
+
+  @override
+  String get fixedNameHint => '월세, 휴대폰, 전기…';
+
+  @override
+  String get fixedNameRequired => '이름을 적어 주세요';
+
+  @override
+  String get fixedHowOften => '얼마나 자주?';
+
+  @override
+  String get fixedNextDue => '다음 납부일';
+
+  @override
+  String fixedThenDates(String dates) {
+    return '그다음: $dates…';
+  }
+
+  @override
+  String get fixedVariable => '매번 금액이 달라요';
+
+  @override
+  String get fixedVariableHint => '마지막으로 낸 금액을 예상액으로 써요.';
+
+  @override
+  String get fixedFormNote => '하루 금액은 그대로예요. 예산은 고정지출을 낸 뒤 남는 돈이에요.';
+
+  @override
+  String get fixedSave => '고정지출 저장';
+
+  @override
+  String get fixedDelete => '고정지출 삭제';
+
+  @override
+  String fixedDeleteTitle(String name) {
+    return '\'$name\'을(를) 삭제할까요?';
+  }
+
+  @override
+  String get fixedDeleteBody => '이미 기록한 납부는 내역에 그대로 남아요.';
+
+  @override
+  String get fixedDueToday => '오늘 납부일';
+
+  @override
+  String get fixedDueTomorrow => '내일 납부일';
+
+  @override
+  String fixedDueOn(String date) {
+    return '$date 납부일';
+  }
+
+  @override
+  String fixedWasDue(String date) {
+    return '$date 기한 지남';
+  }
+
+  @override
+  String get fixedHowMuch => '얼마 냈나요?';
+
+  @override
+  String fixedLastTime(String amount) {
+    return '지난번: $amount';
+  }
+
+  @override
+  String fixedTodayUnchanged(String amount) {
+    return '오늘 남은 돈은 $amount 그대로예요.';
+  }
+
+  @override
+  String fixedCashChange(String from, String to) {
+    return '예상 현금: $from에서 $to로';
+  }
+
+  @override
+  String fixedPaidWith(String method) {
+    return '결제: $method';
+  }
+
+  @override
+  String get fixedChange => '변경';
+
+  @override
+  String get fixedMarkPaid => '냈어요';
+
+  @override
+  String get fixedNotYet => '아직이요';
+
+  @override
+  String get fixedBillOnly => '고지서만 받았어요';
+
+  @override
+  String fixedBillSaved(String amount) {
+    return '$amount로 예상할게요.';
+  }
+
+  @override
+  String fixedPaymentSaved(String name) {
+    return '\'$name\' 기록했어요.';
+  }
+
+  @override
+  String get fixedHomeLabel => '고정지출';
+
+  @override
+  String fixedHomeMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '확인할 고정지출 $count건',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fixedHomeSee => '보기';
+
+  @override
+  String get fixedIntroTitle => '예산은 고정지출을 뺀 쓸 돈이에요';
+
+  @override
+  String fixedIntroBody(String budget, String name) {
+    return '고정지출은 하루 금액을 줄이지 않아요. $budget 예산에 이미 \'$name\' 몫이 들어 있었다면 예산을 줄이는 게 좋아요.';
+  }
+
+  @override
+  String get fixedIntroKeep => '이대로 좋아요';
+
+  @override
+  String get fixedIntroAdjust => '예산 조정하기';
+
+  @override
+  String get fixedBadge => '고정';
+
+  @override
+  String get fixedNothingThisMonth => '이번 달엔 낼 게 없어요.';
+
+  @override
+  String get fixedReminderLabel => '알림';
+
+  @override
+  String get fixedReminderNone => '알림 없음';
+
+  @override
+  String get fixedReminderSameDay => '당일';
+
+  @override
+  String get fixedReminderDayBefore => '하루 전';
+
+  @override
+  String get fixedReminderThreeDaysBefore => '3일 전';
+
+  @override
+  String get fixedReminderHint => '오전 9시에 알려 드려요.';
+
+  @override
+  String get fixedReminderBlocked => 'Sobrita 알림이 꺼져 있어서 알려 드릴 수 없어요.';
+
+  @override
+  String fixedReminderTitleToday(String name) {
+    return '오늘은 $name 내는 날이에요';
+  }
+
+  @override
+  String fixedReminderTitleTomorrow(String name) {
+    return '내일은 $name 내는 날이에요';
+  }
+
+  @override
+  String fixedReminderTitleInDays(String name, int days) {
+    return '$days일 뒤 $name 내는 날이에요';
+  }
+
+  @override
+  String fixedReminderBody(String amount, String method) {
+    return '$amount · $method. 낸 뒤에 Sobrita에 기록해 주세요.';
+  }
+
+  @override
+  String get backupImportTitle => '백업 가져오기';
+
+  @override
+  String get backupImportHint => 'Sobrita에서 복사한 JSON 백업을 여기에 붙여넣으세요.';
+
+  @override
+  String get backupPaste => '백업 붙여넣기';
+
+  @override
+  String get backupPreview => '백업 내용 확인';
+
+  @override
+  String get backupReplaceWarning =>
+      '이 백업으로 현재 기록과 설정을 교체합니다. 진행하기 전에 현재 데이터를 백업해 둡니다.';
+
+  @override
+  String backupSummary(int expenses, int incomes, int fixed) {
+    return '지출 $expenses건 · 수입 $incomes건 · 고정 지출 $fixed건';
+  }
+
+  @override
+  String get backupRestore => '이 백업으로 복원';
+
+  @override
+  String get backupImportSuccess => '백업을 복원했어요.';
+
+  @override
+  String get backupInvalid => '유효한 Sobrita 백업이 아닙니다. 전체 내용을 복사했는지 확인해 주세요.';
+
+  @override
+  String get backupNewer => '더 최신 버전의 Sobrita가 필요한 백업입니다. 앱을 먼저 업데이트해 주세요.';
+
+  @override
+  String get backupPurchaseNote => '구매한 상품은 같은 스토어 계정으로 구매 복원에서 복구할 수 있어요.';
+
+  @override
+  String get shopRetry => '상점 가격 다시 불러오기';
+
+  @override
+  String get shopLoading => '가격을 불러오는 중…';
+
+  @override
+  String get shopRefreshed => '가격을 새로 불러왔어요.';
+
+  @override
+  String get shopRetryFailed => '가격을 불러오지 못했어요. 연결을 확인하고 다시 시도해 주세요.';
+
+  @override
+  String get backupPrevious => '가져오기 전 데이터 확인';
+
+  @override
+  String get settingsShareApp => '친구에게 Sobrita 알려주기';
+
+  @override
+  String get shareAction => '공유';
+
+  @override
+  String get settlementShareTitle => '친구에게 자랑하기';
+
+  @override
+  String get settlementShareHint => '링크로 Sobrita를 알려줘요';
+
+  @override
+  String get shareMessageSettlement =>
+      '이번 주기 돈 남겼어요. 고양이랑 같이 쓰는 가계부 Sobrita, 무료야:';
+
+  @override
+  String get shareMessageSettings => '고양이랑 같이 쓰는 가계부 앱이야. 무료야:';
+
+  @override
+  String firstExpenseStepOf(int step, int total) {
+    return '첫 지출 · $total단계 중 $step';
+  }
+
+  @override
+  String get firstExpenseDoneStep => '첫 지출';
+
+  @override
+  String get firstExpenseAmountQuestion => '얼마 썼어요?';
+
+  @override
+  String get firstExpenseAmountHint => '오늘 결제한 걸 하나 떠올려 보세요.';
+
+  @override
+  String get firstExpenseAmountLater => '나중에 바꿀 수 있어요.';
+
+  @override
+  String get firstExpenseNotYet => '아직 쓴 게 없어요';
+
+  @override
+  String get firstExpenseWhatQuestion => '어디에 썼어요?';
+
+  @override
+  String get firstExpensePaymentQuestion => '어떻게 냈어요?';
+
+  @override
+  String get firstExpenseSave => '지출 저장하기';
+
+  @override
+  String get firstExpenseDoneTitle => '됐어요!';
+
+  @override
+  String get firstExpenseDoneBody => '잘 적어 뒀어요.';
+
+  @override
+  String get firstExpenseRecordTitle => '첫 기록';
+
+  @override
+  String firstExpenseStarterNote(String name) {
+    return '오늘이 채워졌어요. 기록하는 날마다 $name가 가까워져요.';
+  }
+
+  @override
+  String get homeFirstExpenseTitle => '지출 하나로 시작해요.';
+
+  @override
+  String get homeFirstExpenseBody => '오늘 결제한 걸 하나 적어 보세요.';
+
+  @override
+  String get homeFirstExpenseAction => '지출 기록하기';
+
+  @override
+  String get homeFirstExpenseLater => '나중에';
+
+  @override
+  String get costumeChange => '의상 바꾸기';
+
+  @override
+  String costumeCurrent(String name) {
+    return '현재 의상: $name';
+  }
+
+  @override
+  String costumeSheetTitle(String character) {
+    return '$character의 의상';
+  }
+
+  @override
+  String get costumeDefault => '기본';
+
+  @override
+  String get costumePermanent => '영구 소장';
+
+  @override
+  String get costumeApply => '이 의상 입히기';
+
+  @override
+  String get costumeCanReturn => '기본 모습도 언제든 선택할 수 있어요.';
+
+  @override
+  String get costumeNoExpiry => '받은 의상은 이벤트가 끝나도 남아요.';
+
+  @override
+  String costumeOwnedCount(int count) {
+    return '$count벌 보유';
+  }
+
+  @override
+  String costumeDescription(String character, String costume) {
+    return '$costume 의상의 $character';
+  }
+
+  @override
+  String get seasonalGiftTitle => '할로윈 축제 선물';
+
+  @override
+  String get seasonalGiftBody => '보유한 친구의 의상을 먼저 보여드려요.';
+
+  @override
+  String get seasonalGiftView => '선물 보기';
+
+  @override
+  String get seasonalGiftClaim => '내 캐릭터의 할로윈 의상 받기';
+
+  @override
+  String seasonalGiftDeadline(String date) {
+    return '$date까지 무료로 받을 수 있어요';
+  }
+
+  @override
+  String get seasonalGiftKeeps => '한 번 받으면 이벤트가 끝나도 영구 소장해요.';
+
+  @override
+  String get seasonalGiftLockedCharacters => '나중에 얻는 캐릭터의 의상도 함께 보관돼요.';
+
+  @override
+  String get seasonalGiftReceived => '코스튬을 받았어요!';
+
+  @override
+  String get seasonalGiftWardrobe => '꾸미기에서 입어보기';
+
+  @override
+  String get seasonalGiftClosed => '이 선물을 받을 수 있는 기간이 끝났어요.';
+
+  @override
+  String get seasonalGiftPreview => '내 친구에게 도착한 의상';
+
+  @override
+  String get seasonalGiftReady => '지금 입힐 수 있어요';
+
+  @override
+  String seasonalGiftStorageTitle(int count) {
+    return '$count종 의상 모두 영구 보관';
+  }
+
+  @override
+  String get seasonalGiftLastDayTitle => '오늘이 선물을 받을 수 있는 마지막 날이에요';
+
+  @override
+  String seasonalGiftLastDayBody(int count) {
+    return '자정 전에 코스튬 $count종을 무료로 받아 가세요. 한 번 받으면 영구 소장해요.';
+  }
+
+  @override
+  String get costumeDracula => '드라큘라';
+
+  @override
+  String get costumeFrankenstein => '프랑켄슈타인';
+
+  @override
+  String get costumeWerewolf => '늑대인간';
+
+  @override
+  String get costumePumpkin => '호박 요정';
+
+  @override
+  String get costumeMummy => '미라';
+
+  @override
+  String get costumeCatrina => '카트리나';
+
+  @override
+  String get costumeGhostPirate => '유령 해적';
+
+  @override
+  String get costumeSwampMonster => '늪 괴물';
+
+  @override
+  String get costumeMoonWitch => '달빛 마녀';
+
+  @override
+  String get costumeCalaveraMusician => '칼라베라 악단';
+
+  @override
+  String get costumeScarecrow => '허수아비';
+
+  @override
+  String get costumeLittleGhost => '꼬마 유령';
+
+  @override
+  String get goalTitle => '내 목표';
+
+  @override
+  String get goalEmptyPrompt => '무엇을 위해 모으고 싶나요?';
+
+  @override
+  String get goalCreate => '목표 만들기';
+
+  @override
+  String get goalEdit => '목표 수정';
+
+  @override
+  String get goalNameLabel => '목표 이름';
+
+  @override
+  String get goalNameHint => '예: 새 운동화';
+
+  @override
+  String get goalNameRequired => '목표 이름을 60자 이내로 입력해 주세요.';
+
+  @override
+  String get goalTargetAmount => '목표 금액';
+
+  @override
+  String get goalTargetAmountInvalid => '0보다 큰 금액을 입력해 주세요.';
+
+  @override
+  String get goalStartingAmount => '이미 모은 금액';
+
+  @override
+  String get goalStartingHint => '생활비와 따로 모아 둔 돈만 입력해 주세요.';
+
+  @override
+  String get goalStartingAmountInvalid => '0 이상의 금액을 입력해 주세요.';
+
+  @override
+  String get goalOptionalPlan => '저축 계획 (선택)';
+
+  @override
+  String get goalTargetDate => '목표 날짜';
+
+  @override
+  String get goalDateUnset => '나중에 설정';
+
+  @override
+  String get goalDateClear => '날짜 지우기';
+
+  @override
+  String get goalProductLink => '상품 링크';
+
+  @override
+  String get goalProductLinkHint => '상품 링크를 붙여넣어 주세요';
+
+  @override
+  String get goalPasteLink => '링크 붙여넣기';
+
+  @override
+  String get goalOpenProduct => '상품 페이지 보기';
+
+  @override
+  String get goalImportFromLink => '링크에서 정보 가져오기';
+
+  @override
+  String get goalManualEntry => '직접 입력하기';
+
+  @override
+  String get goalPhotoRemove => '사진 삭제';
+
+  @override
+  String get goalPriceReview =>
+      '가져온 사진과 금액을 확인해 주세요. 배송비 등을 포함해 수정할 수 있어요. 가격은 자동 갱신되지 않아요.';
+
+  @override
+  String goalCurrencyMismatch(String currency) {
+    return '상품 가격은 $currency 기준이에요. 앱 통화의 목표 금액을 직접 입력해 주세요.';
+  }
+
+  @override
+  String get goalSaved => '목표를 저장했어요';
+
+  @override
+  String get goalSave => '목표 저장하기';
+
+  @override
+  String get goalDelete => '목표 삭제';
+
+  @override
+  String get goalDeleteTitle => '이 목표를 삭제할까요?';
+
+  @override
+  String get goalDeleteBody => '목표만 삭제하며 수입·지출 기록은 그대로 유지해요.';
+
+  @override
+  String goalRemaining(String amount) {
+    return '$amount 더 모으면 돼요';
+  }
+
+  @override
+  String get goalReached => '목표를 달성했어요!';
+
+  @override
+  String get goalRecordSavings => '저축 기록하기';
+
+  @override
+  String get goalProgressExplanation =>
+      '시작 금액과 목표를 만든 뒤 기록한 저축 수입, 주기 마감에서 확인해 반영한 금액이 합산돼요. 실제 돈이 이체되지는 않아요.';
+
+  @override
+  String get goalBrowserTitle => '상품 확인';
+
+  @override
+  String get goalBrowserInstructions =>
+      '상품 화면을 연 뒤 아래 버튼을 눌러 주세요. 쇼핑몰에서 보안 확인을 요청하면 직접 완료해 주세요.';
+
+  @override
+  String get goalBrowserRead => '상품 정보 읽기';
+
+  @override
+  String get goalBrowserManual => '직접 입력으로 계속';
+
+  @override
+  String get goalBrowserLoading => '쇼핑몰을 여는 중…';
+
+  @override
+  String get goalBrowserLoadFailed => '페이지를 열지 못했어요. 다시 시도하거나 정보를 직접 입력해 주세요.';
+
+  @override
+  String get goalBrowserRetry => '다시 시도';
+
+  @override
+  String get goalBrowserVerification =>
+      '쇼핑몰에서 보안 확인을 요청했어요. 직접 완료하고 상품 화면이 보이면 정보를 다시 읽어 주세요.';
+
+  @override
+  String get goalBrowserNoProduct =>
+      '상품 정보를 명확하게 확인하지 못했어요. 상품 페이지에서 다시 시도하거나 직접 입력해 주세요.';
+
+  @override
+  String get goalBrowserUnsupported =>
+      '이 기기에서는 앱 안에서 쇼핑몰을 열 수 없어요. 상품 정보를 직접 입력할 수 있어요.';
+
+  @override
+  String get goalInvalidLink => 'https://로 시작하는 올바른 상품 링크를 붙여넣어 주세요.';
+
+  @override
+  String get goalChooseType => '어떤 목표를 만들까요?';
+
+  @override
+  String get goalAmountType => '금액 목표';
+
+  @override
+  String get goalAmountTypeDescription => '비상금, 여행 자금처럼 원하는 금액을 모아요.';
+
+  @override
+  String get goalProductType => '사고 싶은 물건';
+
+  @override
+  String get goalProductTypeDescription => '상품 링크로 사진과 가격을 가져올 수 있어요.';
+
+  @override
+  String get goalChangeType => '목표 종류 변경';
+
+  @override
+  String get goalAmountNameHint => '예: 1억 모으기, 비상금, 여행 자금';
+
+  @override
+  String get goalAmountIntro => '사진이나 링크 없이 이름과 목표 금액만 입력하세요.';
+
+  @override
+  String get goalCyclePopupTitle => '이번 주기 마감';
+
+  @override
+  String goalCycleLeftover(String amount) {
+    return '$amount 남았어요!';
+  }
+
+  @override
+  String goalCycleApplyTo(String name) {
+    return '‘$name’에 모아볼까요?';
+  }
+
+  @override
+  String get goalCurrentAmount => '현재 모은 금액';
+
+  @override
+  String get goalAfterAmount => '반영 후 금액';
+
+  @override
+  String goalAllocateAll(String amount) {
+    return '$amount 전부 모으기';
+  }
+
+  @override
+  String goalAllocateAmount(String amount) {
+    return '$amount 목표에 반영';
+  }
+
+  @override
+  String get goalChangeAmount => '금액 바꾸기';
+
+  @override
+  String get goalLater => '나중에';
+
+  @override
+  String get goalAllocationNotice => '목표에 기록되며, 실제 돈이 이체되지는 않아요.';
+
+  @override
+  String get goalNoGoalInvitation => '이 돈으로 첫 목표를 시작해볼까요?';
+
+  @override
+  String get goalNoGoalExamples => '비상금 · 여행 · 사고 싶은 물건';
+
+  @override
+  String get goalCreateAndAllocate => '목표 만들고 모으기';
+
+  @override
+  String get goalCreateThenConfirm => '목표를 만든 뒤, 모을 금액을 확인하고 반영해요.';
+
+  @override
+  String get goalAllocationAmount => '이번에 모을 금액';
+
+  @override
+  String goalAllocationMaximum(String amount) {
+    return '최대 $amount까지 기록할 수 있어요';
+  }
+
+  @override
+  String goalAllocationInvalid(String amount) {
+    return '0보다 크고 $amount 이하인 금액을 입력해 주세요.';
+  }
+
+  @override
+  String goalAllocationSaved(String amount) {
+    return '목표에 $amount 반영했어요';
+  }
+
+  @override
+  String get goalAllocateFromCycle => '목표에 모으기';
+
+  @override
+  String goalCycleAllocated(String amount) {
+    return '목표에 기록한 금액 $amount';
+  }
+
+  @override
+  String get goalCompleted => '달성 완료';
+
+  @override
+  String get goalCompletionTitle => '목표 달성';
+
+  @override
+  String goalCompletionHeadline(String name) {
+    return '‘$name’ 목표를 달성했어요!';
+  }
+
+  @override
+  String get goalCompletionBody => '차곡차곡 모은 기록으로 해냈어요.';
+
+  @override
+  String get goalNewGoal => '새 목표 만들기';
+
+  @override
+  String get goalCompletionKept => '달성한 목표는 기록에 남아요.';
+
+  @override
+  String get goalCompletedHistory => '달성한 목표';
+
+  @override
+  String goalCompletedOn(String date) {
+    return '$date 달성';
+  }
+
+  @override
+  String get goalNoCompletedHistory => '아직 달성한 목표가 없어요.';
+
+  @override
+  String get goalCycleUnavailable => '이 주기에 모을 수 있는 금액이 없어요.';
+
+  @override
+  String get goalNextGoalInvitation => '남은 돈으로 다음 목표를 시작해볼까요?';
+
+  @override
+  String goalCardDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'D-$days',
+      zero: 'D-DAY',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String goalCardUntil(String date, String amount) {
+    return '$date까지 $amount 더';
+  }
+
+  @override
+  String goalCardDatePassed(String date, String amount) {
+    return '$date 지났어요 · $amount 더';
+  }
+
+  @override
+  String goalCardPerCycle(String date, String amount) {
+    return '$date까지 주기마다 $amount';
+  }
+
+  @override
+  String get goalPurchaseAction => '목표로 샀어요';
+
+  @override
+  String get goalPurchaseTitle => '목표로 샀어요';
+
+  @override
+  String get goalPurchaseAmount => '산 금액';
+
+  @override
+  String goalPurchaseAmountHelper(String amount) {
+    return '모은 돈 $amount까지';
+  }
+
+  @override
+  String get goalPurchaseRefreshPrice => '링크에서 지금 가격 다시 읽기';
+
+  @override
+  String goalPurchasePriceRead(String amount) {
+    return '오늘 가격 $amount';
+  }
+
+  @override
+  String get goalPurchasePriceMissing => '가격을 찾지 못했어요. 직접 입력해 주세요.';
+
+  @override
+  String get goalPurchaseSaved => '목표에 모은 돈';
+
+  @override
+  String get goalPurchaseLeft => '남는 돈';
+
+  @override
+  String get goalPurchaseOutsideBudget =>
+      '모아 둔 돈으로 산 거라 오늘 남은 돈과 이번 주기 예산은 그대로예요.';
+
+  @override
+  String goalPurchaseTooMuch(String amount) {
+    return '모은 돈은 $amount까지예요. 넘는 금액은 일반 지출로 기록해 주세요.';
+  }
+
+  @override
+  String get goalPurchaseConfirm => '기록하고 목표 마무리';
+
+  @override
+  String get goalPurchaseConfirmNext => '기록하고 남는 돈으로 다음 목표';
+
+  @override
+  String goalPurchaseRecorded(String name) {
+    return '구매를 기록했어요: $name';
+  }
+
+  @override
+  String get goalPurchaseBadge => '목표';
+
+  @override
+  String get csvTypeGoalPurchase => '목표 구매';
+
+  @override
+  String goalCompletedPurchased(String amount) {
+    return '$amount에 샀어요';
+  }
+
+  @override
+  String get goalCycleDetails => '마감 결과 자세히 보기';
 }

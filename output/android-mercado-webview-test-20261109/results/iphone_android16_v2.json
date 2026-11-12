@@ -1,0 +1,602 @@
+{
+  "runId": "iphone_android16_v2",
+  "requestedUrl": "https:\/\/www.mercadolibre.com.mx\/apple-iphone-15-128-gb-azul-distribuidor-autorizado\/p\/MLM1027172667",
+  "startedAtUtc": "2026-11-09T20:33:51.284Z",
+  "androidSdk": 36,
+  "androidRelease": "16",
+  "deviceModel": "sdk_gphone64_arm64",
+  "userAgent": "Mozilla\/5.0 (Linux; Android 16; sdk_gphone64_arm64 Build\/BE4B.251210.005; wv) AppleWebKit\/537.36 (KHTML, like Gecko) Version\/4.0 Chrome\/134.0.6998.135 Mobile Safari\/537.36",
+  "targetSdk": 36,
+  "extractorVersion": "0.2-strict-primary-price",
+  "webViewPackage": "com.google.android.webview",
+  "webViewVersion": "134.0.6998.135",
+  "javascriptEnabled": true,
+  "domStorageEnabled": true,
+  "uaOverride": false,
+  "officialApiUsed": false,
+  "manualLoginUsed": false,
+  "cookiesImported": false,
+  "cookiePolicy": "Default WebView behavior; site may set ordinary cookies. No cookie values inspected or exported.",
+  "observations": [
+    {
+      "accountVerification": false,
+      "challenge": false,
+      "errorPage": false,
+      "imageCandidates": [],
+      "mainImage": null,
+      "pageTitle": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+      "pageUrl": "https:\/\/www.mercadolibre.com.mx\/apple-iphone-15-128-gb-azul-distribuidor-autorizado\/p\/MLM1027172667",
+      "photoAndPriceReadable": false,
+      "priceCandidates": [],
+      "primaryPrice": null,
+      "productTitle": null,
+      "productTitleSource": "h1.micro-landing-title",
+      "readyState": "complete",
+      "variantText": [],
+      "observedAtUtc": "2026-11-09T20:33:57.091Z",
+      "trigger": "page_finished"
+    },
+    {
+      "accountVerification": false,
+      "challenge": false,
+      "errorPage": false,
+      "imageCandidates": [],
+      "mainImage": null,
+      "pageTitle": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+      "pageUrl": "https:\/\/www.mercadolibre.com.mx\/apple-iphone-15-128-gb-azul-distribuidor-autorizado\/p\/MLM1027172667",
+      "photoAndPriceReadable": false,
+      "priceCandidates": [],
+      "primaryPrice": null,
+      "productTitle": null,
+      "productTitleSource": "h1.micro-landing-title",
+      "readyState": "complete",
+      "variantText": [],
+      "observedAtUtc": "2026-11-09T20:33:59.314Z",
+      "trigger": "timer"
+    },
+    {
+      "accountVerification": false,
+      "challenge": false,
+      "errorPage": false,
+      "imageCandidates": [
+        {
+          "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+          "naturalHeight": 342,
+          "naturalWidth": 342,
+          "source": "rendered product gallery img",
+          "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_952616-MLA95935522561_102025-F.webp"
+        },
+        {
+          "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+          "naturalHeight": 411,
+          "naturalWidth": 411,
+          "source": "rendered product gallery img",
+          "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_901925-MLA95496349442_102025-F.webp"
+        }
+      ],
+      "mainImage": {
+        "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+        "naturalHeight": 342,
+        "naturalWidth": 342,
+        "source": "rendered product gallery img",
+        "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_952616-MLA95935522561_102025-F.webp"
+      },
+      "pageTitle": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado | Meses sin interés",
+      "pageUrl": "https:\/\/www.mercadolibre.com.mx\/apple-iphone-15-128-gb-azul-distribuidor-autorizado\/p\/MLM1027172667",
+      "photoAndPriceReadable": false,
+      "priceCandidates": [
+        {
+          "ariaLabel": "16201 pesos",
+          "cents": "",
+          "context": "$ 16,201",
+          "display": "$ 16,201",
+          "fraction": "16,201",
+          "inPrimaryPriceRow": true,
+          "numeric": "16201",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount"
+        },
+        {
+          "ariaLabel": "16999 pesos",
+          "cents": "",
+          "context": "$ 16,999",
+          "display": "$ 16,999",
+          "fraction": "16,999",
+          "inPrimaryPriceRow": true,
+          "numeric": "16999",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount"
+        },
+        {
+          "ariaLabel": "16201 pesos con 41 centavos",
+          "cents": "41",
+          "context": "$ 16,201 , 41",
+          "display": "$ 16,201 , 41",
+          "fraction": "16,201",
+          "inPrimaryPriceRow": true,
+          "numeric": "16201.41",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount"
+        },
+        {
+          "ariaLabel": "1080 pesos con 09 centavos",
+          "cents": "09",
+          "context": "$ 1,080 . 09",
+          "display": "$ 1,080 . 09",
+          "fraction": "1,080",
+          "inPrimaryPriceRow": false,
+          "numeric": "1080.09",
+          "rejected": true,
+          "rejectedReason": "outside_primary_price_row",
+          "selector": ".ui-pdp-price .andes-money-amount"
+        }
+      ],
+      "primaryPrice": null,
+      "productTitle": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+      "productTitleSource": "h1.ui-pdp-title",
+      "readyState": "complete",
+      "variantText": [
+        "Color:Azul Azul $ 16,201 Disponible Negro $ 16,999 Disponible Memoria RAM:6 GB"
+      ],
+      "observedAtUtc": "2026-11-09T20:34:07.006Z",
+      "trigger": "page_finished"
+    },
+    {
+      "accountVerification": false,
+      "challenge": false,
+      "errorPage": false,
+      "imageCandidates": [
+        {
+          "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+          "naturalHeight": 342,
+          "naturalWidth": 342,
+          "source": "rendered product gallery img",
+          "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_952616-MLA95935522561_102025-F.webp"
+        },
+        {
+          "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+          "naturalHeight": 411,
+          "naturalWidth": 411,
+          "source": "rendered product gallery img",
+          "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_901925-MLA95496349442_102025-F.webp"
+        }
+      ],
+      "mainImage": {
+        "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+        "naturalHeight": 342,
+        "naturalWidth": 342,
+        "source": "rendered product gallery img",
+        "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_952616-MLA95935522561_102025-F.webp"
+      },
+      "pageTitle": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado | Meses sin interés",
+      "pageUrl": "https:\/\/www.mercadolibre.com.mx\/apple-iphone-15-128-gb-azul-distribuidor-autorizado\/p\/MLM1027172667",
+      "photoAndPriceReadable": false,
+      "priceCandidates": [
+        {
+          "ariaLabel": "16201 pesos",
+          "cents": "",
+          "context": "$ 16,201",
+          "display": "$ 16,201",
+          "fraction": "16,201",
+          "inPrimaryPriceRow": true,
+          "numeric": "16201",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount"
+        },
+        {
+          "ariaLabel": "16999 pesos",
+          "cents": "",
+          "context": "$ 16,999",
+          "display": "$ 16,999",
+          "fraction": "16,999",
+          "inPrimaryPriceRow": true,
+          "numeric": "16999",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount"
+        },
+        {
+          "ariaLabel": "16201 pesos con 41 centavos",
+          "cents": "41",
+          "context": "$ 16,201 , 41",
+          "display": "$ 16,201 , 41",
+          "fraction": "16,201",
+          "inPrimaryPriceRow": true,
+          "numeric": "16201.41",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount"
+        },
+        {
+          "ariaLabel": "1080 pesos con 09 centavos",
+          "cents": "09",
+          "context": "$ 1,080 . 09",
+          "display": "$ 1,080 . 09",
+          "fraction": "1,080",
+          "inPrimaryPriceRow": false,
+          "numeric": "1080.09",
+          "rejected": true,
+          "rejectedReason": "outside_primary_price_row",
+          "selector": ".ui-pdp-price .andes-money-amount"
+        }
+      ],
+      "primaryPrice": null,
+      "productTitle": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+      "productTitleSource": "h1.ui-pdp-title",
+      "readyState": "complete",
+      "variantText": [
+        "Color:Azul Azul $ 16,201 Disponible Negro $ 16,999 Disponible Memoria RAM:6 GB"
+      ],
+      "observedAtUtc": "2026-11-09T20:34:07.310Z",
+      "trigger": "timer"
+    },
+    {
+      "accountVerification": false,
+      "challenge": false,
+      "errorPage": false,
+      "imageCandidates": [
+        {
+          "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+          "naturalHeight": 342,
+          "naturalWidth": 342,
+          "source": "rendered product gallery img",
+          "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_952616-MLA95935522561_102025-F.webp"
+        },
+        {
+          "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+          "naturalHeight": 411,
+          "naturalWidth": 411,
+          "source": "rendered product gallery img",
+          "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_901925-MLA95496349442_102025-F.webp"
+        }
+      ],
+      "mainImage": {
+        "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+        "naturalHeight": 342,
+        "naturalWidth": 342,
+        "source": "rendered product gallery img",
+        "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_952616-MLA95935522561_102025-F.webp"
+      },
+      "pageTitle": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado | Meses sin interés",
+      "pageUrl": "https:\/\/www.mercadolibre.com.mx\/apple-iphone-15-128-gb-azul-distribuidor-autorizado\/p\/MLM1027172667",
+      "photoAndPriceReadable": false,
+      "priceCandidates": [
+        {
+          "ariaLabel": "16201 pesos",
+          "cents": "",
+          "context": "$ 16,201",
+          "display": "$ 16,201",
+          "fraction": "16,201",
+          "inPrimaryPriceRow": true,
+          "numeric": "16201",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount"
+        },
+        {
+          "ariaLabel": "16999 pesos",
+          "cents": "",
+          "context": "$ 16,999",
+          "display": "$ 16,999",
+          "fraction": "16,999",
+          "inPrimaryPriceRow": true,
+          "numeric": "16999",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount"
+        },
+        {
+          "ariaLabel": "16201 pesos con 41 centavos",
+          "cents": "41",
+          "context": "$ 16,201 , 41",
+          "display": "$ 16,201 , 41",
+          "fraction": "16,201",
+          "inPrimaryPriceRow": true,
+          "numeric": "16201.41",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount"
+        },
+        {
+          "ariaLabel": "1080 pesos con 09 centavos",
+          "cents": "09",
+          "context": "$ 1,080 . 09",
+          "display": "$ 1,080 . 09",
+          "fraction": "1,080",
+          "inPrimaryPriceRow": false,
+          "numeric": "1080.09",
+          "rejected": true,
+          "rejectedReason": "outside_primary_price_row",
+          "selector": ".ui-pdp-price .andes-money-amount"
+        }
+      ],
+      "primaryPrice": null,
+      "productTitle": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+      "productTitleSource": "h1.ui-pdp-title",
+      "readyState": "complete",
+      "variantText": [
+        "Color:Azul Azul $ 16,201 Disponible Negro $ 16,999 Disponible Memoria RAM:6 GB"
+      ],
+      "observedAtUtc": "2026-11-09T20:34:17.315Z",
+      "trigger": "timer"
+    },
+    {
+      "accountVerification": false,
+      "challenge": false,
+      "errorPage": false,
+      "imageCandidates": [
+        {
+          "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+          "naturalHeight": 342,
+          "naturalWidth": 342,
+          "source": "rendered product gallery img",
+          "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_952616-MLA95935522561_102025-F.webp"
+        },
+        {
+          "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+          "naturalHeight": 411,
+          "naturalWidth": 411,
+          "source": "rendered product gallery img",
+          "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_901925-MLA95496349442_102025-F.webp"
+        }
+      ],
+      "mainImage": {
+        "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+        "naturalHeight": 342,
+        "naturalWidth": 342,
+        "source": "rendered product gallery img",
+        "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_952616-MLA95935522561_102025-F.webp"
+      },
+      "pageTitle": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado | Meses sin interés",
+      "pageUrl": "https:\/\/www.mercadolibre.com.mx\/apple-iphone-15-128-gb-azul-distribuidor-autorizado\/p\/MLM1027172667",
+      "photoAndPriceReadable": false,
+      "priceCandidates": [
+        {
+          "ariaLabel": "16201 pesos",
+          "cents": "",
+          "context": "$ 16,201",
+          "display": "$ 16,201",
+          "fraction": "16,201",
+          "inPrimaryPriceRow": true,
+          "numeric": "16201",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount"
+        },
+        {
+          "ariaLabel": "16999 pesos",
+          "cents": "",
+          "context": "$ 16,999",
+          "display": "$ 16,999",
+          "fraction": "16,999",
+          "inPrimaryPriceRow": true,
+          "numeric": "16999",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount"
+        },
+        {
+          "ariaLabel": "16201 pesos con 41 centavos",
+          "cents": "41",
+          "context": "$ 16,201 , 41",
+          "display": "$ 16,201 , 41",
+          "fraction": "16,201",
+          "inPrimaryPriceRow": true,
+          "numeric": "16201.41",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount"
+        },
+        {
+          "ariaLabel": "1080 pesos con 09 centavos",
+          "cents": "09",
+          "context": "$ 1,080 . 09",
+          "display": "$ 1,080 . 09",
+          "fraction": "1,080",
+          "inPrimaryPriceRow": false,
+          "numeric": "1080.09",
+          "rejected": true,
+          "rejectedReason": "outside_primary_price_row",
+          "selector": ".ui-pdp-price .andes-money-amount"
+        }
+      ],
+      "primaryPrice": null,
+      "productTitle": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+      "productTitleSource": "h1.ui-pdp-title",
+      "readyState": "complete",
+      "variantText": [
+        "Color:Azul Azul $ 16,201 Disponible Negro $ 16,999 Disponible Memoria RAM:6 GB"
+      ],
+      "observedAtUtc": "2026-11-09T20:34:29.309Z",
+      "trigger": "timer"
+    },
+    {
+      "accountVerification": false,
+      "challenge": false,
+      "errorPage": false,
+      "imageCandidates": [
+        {
+          "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+          "naturalHeight": 342,
+          "naturalWidth": 342,
+          "source": "rendered product gallery img",
+          "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_952616-MLA95935522561_102025-F.webp"
+        },
+        {
+          "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+          "naturalHeight": 411,
+          "naturalWidth": 411,
+          "source": "rendered product gallery img",
+          "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_901925-MLA95496349442_102025-F.webp"
+        }
+      ],
+      "mainImage": {
+        "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+        "naturalHeight": 342,
+        "naturalWidth": 342,
+        "source": "rendered product gallery img",
+        "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_952616-MLA95935522561_102025-F.webp"
+      },
+      "pageTitle": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado | Meses sin interés",
+      "pageUrl": "https:\/\/www.mercadolibre.com.mx\/apple-iphone-15-128-gb-azul-distribuidor-autorizado\/p\/MLM1027172667",
+      "photoAndPriceReadable": false,
+      "priceCandidates": [
+        {
+          "ariaLabel": "16201 pesos",
+          "cents": "",
+          "context": "$ 16,201",
+          "display": "$ 16,201",
+          "fraction": "16,201",
+          "inPrimaryPriceRow": true,
+          "numeric": "16201",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount"
+        },
+        {
+          "ariaLabel": "16999 pesos",
+          "cents": "",
+          "context": "$ 16,999",
+          "display": "$ 16,999",
+          "fraction": "16,999",
+          "inPrimaryPriceRow": true,
+          "numeric": "16999",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount"
+        },
+        {
+          "ariaLabel": "16201 pesos con 41 centavos",
+          "cents": "41",
+          "context": "$ 16,201 , 41",
+          "display": "$ 16,201 , 41",
+          "fraction": "16,201",
+          "inPrimaryPriceRow": true,
+          "numeric": "16201.41",
+          "rejected": false,
+          "rejectedReason": null,
+          "selector": ".ui-pdp-price__second-line .andes-money-amount"
+        },
+        {
+          "ariaLabel": "1080 pesos con 09 centavos",
+          "cents": "09",
+          "context": "$ 1,080 . 09",
+          "display": "$ 1,080 . 09",
+          "fraction": "1,080",
+          "inPrimaryPriceRow": false,
+          "numeric": "1080.09",
+          "rejected": true,
+          "rejectedReason": "outside_primary_price_row",
+          "selector": ".ui-pdp-price .andes-money-amount"
+        }
+      ],
+      "primaryPrice": null,
+      "productTitle": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+      "productTitleSource": "h1.ui-pdp-title",
+      "readyState": "complete",
+      "variantText": [
+        "Color:Azul Azul $ 16,201 Disponible Negro $ 16,999 Disponible Memoria RAM:6 GB"
+      ],
+      "observedAtUtc": "2026-11-09T20:34:46.311Z",
+      "trigger": "timer"
+    }
+  ],
+  "mainFrameErrors": [],
+  "finishedAtUtc": "2026-11-09T20:34:51.306Z",
+  "completionReason": "deadline",
+  "success": false,
+  "finalObservation": {
+    "accountVerification": false,
+    "challenge": false,
+    "errorPage": false,
+    "imageCandidates": [
+      {
+        "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+        "naturalHeight": 342,
+        "naturalWidth": 342,
+        "source": "rendered product gallery img",
+        "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_952616-MLA95935522561_102025-F.webp"
+      },
+      {
+        "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+        "naturalHeight": 411,
+        "naturalWidth": 411,
+        "source": "rendered product gallery img",
+        "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_901925-MLA95496349442_102025-F.webp"
+      }
+    ],
+    "mainImage": {
+      "alt": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+      "naturalHeight": 342,
+      "naturalWidth": 342,
+      "source": "rendered product gallery img",
+      "src": "https:\/\/http2.mlstatic.com\/D_Q_NP_952616-MLA95935522561_102025-F.webp"
+    },
+    "pageTitle": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado | Meses sin interés",
+    "pageUrl": "https:\/\/www.mercadolibre.com.mx\/apple-iphone-15-128-gb-azul-distribuidor-autorizado\/p\/MLM1027172667",
+    "photoAndPriceReadable": false,
+    "priceCandidates": [
+      {
+        "ariaLabel": "16201 pesos",
+        "cents": "",
+        "context": "$ 16,201",
+        "display": "$ 16,201",
+        "fraction": "16,201",
+        "inPrimaryPriceRow": true,
+        "numeric": "16201",
+        "rejected": false,
+        "rejectedReason": null,
+        "selector": ".ui-pdp-price__second-line .andes-money-amount"
+      },
+      {
+        "ariaLabel": "16999 pesos",
+        "cents": "",
+        "context": "$ 16,999",
+        "display": "$ 16,999",
+        "fraction": "16,999",
+        "inPrimaryPriceRow": true,
+        "numeric": "16999",
+        "rejected": false,
+        "rejectedReason": null,
+        "selector": ".ui-pdp-price__second-line .andes-money-amount"
+      },
+      {
+        "ariaLabel": "16201 pesos con 41 centavos",
+        "cents": "41",
+        "context": "$ 16,201 , 41",
+        "display": "$ 16,201 , 41",
+        "fraction": "16,201",
+        "inPrimaryPriceRow": true,
+        "numeric": "16201.41",
+        "rejected": false,
+        "rejectedReason": null,
+        "selector": ".ui-pdp-price__second-line .andes-money-amount"
+      },
+      {
+        "ariaLabel": "1080 pesos con 09 centavos",
+        "cents": "09",
+        "context": "$ 1,080 . 09",
+        "display": "$ 1,080 . 09",
+        "fraction": "1,080",
+        "inPrimaryPriceRow": false,
+        "numeric": "1080.09",
+        "rejected": true,
+        "rejectedReason": "outside_primary_price_row",
+        "selector": ".ui-pdp-price .andes-money-amount"
+      }
+    ],
+    "primaryPrice": null,
+    "productTitle": "Apple iPhone 15 (128 GB) - Azul - Distribuidor Autorizado",
+    "productTitleSource": "h1.ui-pdp-title",
+    "readyState": "complete",
+    "variantText": [
+      "Color:Azul Azul $ 16,201 Disponible Negro $ 16,999 Disponible Memoria RAM:6 GB"
+    ],
+    "observedAtUtc": "2026-11-09T20:34:46.311Z",
+    "trigger": "timer"
+  }
+}

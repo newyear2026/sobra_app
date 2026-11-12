@@ -1,0 +1,9 @@
+{
+  "method": "built-in image_gen",
+  "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-a2f7e8e2-2dba-4112-b506-d624e7b462d9.png",
+  "file": "/Users/jaewook/dev_app/sobra_app/output/sobrita-product-goal-ui-20261106/01-create-goal-link-v3.png",
+  "width": 853,
+  "height": 1844,
+  "prompt": "create-link-v3-prompt.txt",
+  "notes": "link-import-v3-notes.md"
+}

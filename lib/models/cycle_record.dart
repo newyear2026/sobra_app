@@ -1,13 +1,37 @@
 import 'pay_schedule.dart';
 
-/// What one closed cycle came to, written down when it closed.
+/// Elapsed days a cycle needs before a daily average says anything.
+///
+/// On day one the divisor is one, so the "average" is simply today's
+/// spending — a figure that reads on screen as a forecast the user never
+/// made. Two days is barely better. Three is where it starts describing a
+/// habit rather than a morning.
+const minimumDaysForAverage = 3;
+
+/// [spentCentavos] spread over [days], rounded to whole units of currency.
+///
+/// Null under [minimumDaysForAverage], which callers show as "still gathering"
+/// rather than as a number nobody should act on.
+///
+/// Rounded here rather than in `formatMoney`: the formatter prints centavos
+/// whenever an amount has them, and every real transaction should keep them.
+/// Only derived figures are rounded, so a daily average reads $394 while a
+/// $45.50 coffee still reads $45.50.
+int? averagePerDayCentavos(int spentCentavos, int days) {
+  if (days < minimumDaysForAverage) return null;
+  final perDay = spentCentavos / days;
+  return (perDay / 100).round() * 100;
+}
+
+/// A closed cycle's original budget and boundaries, with its ledger totals.
 ///
 /// This exists because the past cannot be recomputed. Cycle boundaries come
 /// from the current pay schedule and the budget from the current total, so
 /// asking today "what were September's cycles?" re-cuts September with rules
 /// that may have been adopted in October — producing windows the user never
 /// lived and figures they never saw. Settling is the one moment all four
-/// numbers are true at once, so that is where they get kept.
+/// numbers are true at once, so that is where its budget and dates get kept.
+/// Spending is refreshed within those saved dates when a past entry changes.
 ///
 /// Amounts stay a plain count of minor units with no currency attached.
 /// Switching currency relabels the whole ledger rather than converting it, and
@@ -20,6 +44,7 @@ class CycleRecord {
     required this.budgetCentavos,
     required this.spentCentavos,
     required this.cycleType,
+    this.fixedPaidCentavos = 0,
   });
 
   final DateTime start;
@@ -33,7 +58,19 @@ class CycleRecord {
   /// schedule cannot alter after the fact.
   final PayCycleType cycleType;
 
-  int get lengthInDays => end.difference(start).inDays + 1;
+  /// Fixed-expense payments made during the cycle, kept beside [spentCentavos]
+  /// rather than inside it: they never count toward [successful].
+  final int fixedPaidCentavos;
+
+  int get lengthInDays => daysBetween(start, end) + 1;
+
+  /// What this cycle spent per day, over every day it covered.
+  ///
+  /// Days with nothing recorded count. A cycle is a stretch of time the user
+  /// lived through, and dividing by only the days they happened to file
+  /// something would report a habit nobody has.
+  int? get averageSpentPerDayCentavos =>
+      averagePerDayCentavos(spentCentavos, lengthInDays);
 
   /// What was left over, or how far past the budget the cycle went.
   int get resultCentavos => budgetCentavos - spentCentavos;
@@ -46,6 +83,7 @@ class CycleRecord {
     'budgetCentavos': budgetCentavos,
     'spentCentavos': spentCentavos,
     'cycleType': cycleType.name,
+    'fixedPaidCentavos': fixedPaidCentavos,
   };
 
   factory CycleRecord.fromJson(Map<String, dynamic> json) => CycleRecord(
@@ -54,5 +92,6 @@ class CycleRecord {
     budgetCentavos: (json['budgetCentavos'] as num).toInt(),
     spentCentavos: (json['spentCentavos'] as num).toInt(),
     cycleType: PayCycleType.values.byName(json['cycleType'] as String),
+    fixedPaidCentavos: (json['fixedPaidCentavos'] as num?)?.toInt() ?? 0,
   );
 }

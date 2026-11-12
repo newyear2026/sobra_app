@@ -1,0 +1,37 @@
+{
+  "method": "built-in image_gen",
+  "files": [
+    {
+      "id": "01-before-shopping",
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-041cd8cc-9571-492d-8f07-f9e7f5bec7f0.png",
+      "file": "01-before-shopping.png",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 1812729
+    },
+    {
+      "id": "02-during-shopping",
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-d5fa3121-c598-4599-9c57-12385287adf5.png",
+      "file": "02-during-shopping.png",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 1841284
+    },
+    {
+      "id": "03-after-shopping",
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-8ecc7fc5-fba9-46c3-b463-621754d550f0.png",
+      "file": "03-after-shopping.png",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 1906821
+    },
+    {
+      "id": "04-three-day-challenge",
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-8f337c12-d617-4042-b419-73a0bf3c43ce.png",
+      "file": "04-three-day-challenge.png",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 1858233
+    }
+  ]
+}

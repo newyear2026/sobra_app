@@ -1,0 +1,32 @@
+{
+  "method": "built-in image_gen",
+  "files": [
+    {
+      "key": "goalCreateImage",
+      "file": "01-create-goal.png",
+      "title": "목표 만들기",
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-c8c7a8fc-94b6-45de-8ab3-d3b53cd98d8c.png",
+      "width": 853,
+      "height": 1844,
+      "bytes": 1480109
+    },
+    {
+      "key": "goalHomeImage",
+      "file": "02-home-goal.png",
+      "title": "홈에서 목표 확인",
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-44d7be46-5027-4269-9d7a-f06ddf7b4b10.png",
+      "width": 853,
+      "height": 1844,
+      "bytes": 1528749
+    },
+    {
+      "key": "goalAllocateImage",
+      "file": "03-allocate-savings.png",
+      "title": "남은 돈을 목표에 배정",
+      "source": "/Users/jaewook/.codex/generated_images/01a1af1a-5707-7bf3-8845-1de11f888ac0/exec-641ac947-ce84-43f5-96a0-e0d4048044fa.png",
+      "width": 852,
+      "height": 1846,
+      "bytes": 1409164
+    }
+  ]
+}

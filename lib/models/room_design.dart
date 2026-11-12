@@ -1,0 +1,586 @@
+import 'dart:ui' show Size;
+
+import 'catalog_entry.dart';
+import 'room_time_of_day.dart';
+
+/// What a decoration stands on, hangs from or lies across.
+///
+/// An item names the surfaces it can go on and nothing more; the room decides
+/// how many places of each surface it has and where they are. That is what
+/// lets one frame hang on either wall, and a later room offer three walls
+/// without the frame knowing.
+enum RoomSurface { wall, floor, tabletop, rug }
+
+/// Named places a room can offer, each on one [RoomSurface].
+///
+/// Saved placements are keyed by these names, so a name never changes once
+/// shipped: `rug`, `floorRight`, `wallCenter` and `tabletop` predate the
+/// surfaces and are already in people's saved rooms. A room lists the ones it
+/// has in [RoomTheme.slots]; where each one sits is the scene's business.
+enum RoomSlot {
+  rug(RoomSurface.rug),
+  wallLeft(RoomSurface.wall),
+  wallCenter(RoomSurface.wall),
+  tabletop(RoomSurface.tabletop),
+  floorLeft(RoomSurface.floor),
+  floorRight(RoomSurface.floor),
+  // Added after the original slots so old saved slot names remain stable.
+  floorCenter(RoomSurface.floor),
+  floorAccent(RoomSurface.floor),
+  floorCabinet(RoomSurface.floor),
+  // Added at the end so names of existing saved placements stay unchanged.
+  floorSofa(RoomSurface.floor),
+  cabinetTop(RoomSurface.tabletop),
+  cabinetTopRight(RoomSurface.tabletop),
+  sideTableTop(RoomSurface.tabletop),
+  wallShelfTopLeft(RoomSurface.tabletop),
+  wallShelfTopRight(RoomSurface.tabletop);
+
+  const RoomSlot(this.surface);
+
+  final RoomSurface surface;
+}
+
+/// The shelves the decorate drawer is divided into.
+///
+/// These name what a thing *is*, never what species it is. A per-animal
+/// shelf would add a tab for every character pack and leave most of them
+/// holding one entry.
+enum RoomDecorCategory { rooms, furniture, wallAndFloor, props, characters }
+
+/// A background and the places it offers for decorations.
+class RoomTheme {
+  const RoomTheme({
+    required this.id,
+    required this.previewAsset,
+    required this.previewSize,
+    required this.portraitAsset,
+    required this.portraitSize,
+    required this.slots,
+    this.defaultPlacements = const {},
+  });
+
+  final String id;
+  final String previewAsset;
+  final String portraitAsset;
+
+  /// Each background's size in pixels, which the scene needs before the image
+  /// loads to cover-fit it. The scene layout aligns decor to the landmarks in
+  /// each illustration.
+  final Size previewSize;
+  final Size portraitSize;
+
+  /// Every place this room has, in the order the decorator counts them.
+  final List<RoomSlot> slots;
+
+  /// The background drawn for [phase]; the plain art when there is none.
+  ///
+  /// Public so the app can warm the picture Inicio is about to ask for.
+  String sceneAssetFor(RoomTimeOfDay? phase) {
+    final directory = portraitAsset.substring(
+      0,
+      portraitAsset.lastIndexOf('/'),
+    );
+    return switch (phase) {
+      RoomTimeOfDay.dawn || RoomTimeOfDay.sunset =>
+        '$directory/background_portrait_sunset_unlit.webp',
+      RoomTimeOfDay.night => '$directory/background_portrait_night_unlit.webp',
+      RoomTimeOfDay.day => '$directory/background_portrait_unlit.webp',
+      null => portraitAsset,
+    };
+  }
+
+  /// What fills a slot the user has never touched.
+  final Map<RoomSlot, String> defaultPlacements;
+
+  /// The places in this room that take [surface].
+  List<RoomSlot> slotsFor(RoomSurface surface) => [
+    for (final slot in slots)
+      if (slot.surface == surface) slot,
+  ];
+
+  /// Every place [itemId] can go, its preferred surface first.
+  List<RoomSlot> slotsForItem(
+    String itemId, {
+    Map<RoomSlot, String>? placements,
+  }) {
+    bool available(RoomSlot slot) {
+      if (!slots.contains(slot)) return false;
+      final onCabinetOrBookcase =
+          placements == null ||
+          placements[RoomSlot.floorCabinet] == RoomDecorAssets.lowCabinetId ||
+          placements[RoomSlot.floorCabinet] == RoomDecorAssets.slimBookcaseId;
+      final onSideTable =
+          placements == null ||
+          placements[RoomSlot.floorRight] == RoomDecorAssets.roundSideTableId;
+      final onWallShelf =
+          placements == null ||
+          placements[RoomSlot.wallLeft] == RoomDecorAssets.wallShelfId ||
+          placements[RoomSlot.wallCenter] == RoomDecorAssets.wallShelfId;
+      return switch (slot) {
+        RoomSlot.cabinetTop =>
+          (itemId == RoomDecorAssets.savingsJarId ||
+                  itemId == 'item-01' ||
+                  itemId == RoomDecorAssets.shelfBooksId ||
+                  itemId == RoomDecorAssets.trailingPlantId) &&
+              onCabinetOrBookcase,
+        RoomSlot.cabinetTopRight =>
+          (itemId == RoomDecorAssets.defaultTablePlantId ||
+                  itemId == 'item-01' ||
+                  itemId == RoomDecorAssets.shelfBooksId ||
+                  itemId == RoomDecorAssets.trailingPlantId) &&
+              onCabinetOrBookcase,
+        RoomSlot.sideTableTop =>
+          (itemId == RoomDecorAssets.savingsJarId ||
+                  itemId == RoomDecorAssets.defaultTablePlantId ||
+                  itemId == 'item-01') &&
+              onSideTable,
+        RoomSlot.wallShelfTopLeft || RoomSlot.wallShelfTopRight =>
+          (itemId == RoomDecorAssets.shelfBooksId ||
+                  itemId == RoomDecorAssets.trailingPlantId ||
+                  itemId == RoomDecorAssets.defaultTablePlantId ||
+                  itemId == 'item-01' ||
+                  itemId == RoomDecorAssets.savingsJarId) &&
+              onWallShelf,
+        RoomSlot.tabletop => false,
+        _ => true,
+      };
+    }
+
+    final suggested = RoomDecorAssets.suggestedSlotsFor(itemId);
+    if (suggested != null) {
+      return [
+        for (final slot in suggested)
+          if (available(slot)) slot,
+      ];
+    }
+    return [
+      for (final surface in RoomDecorAssets.surfacesFor(itemId))
+        for (final slot in slotsFor(surface))
+          if (available(slot)) slot,
+    ];
+  }
+}
+
+abstract final class RoomThemes {
+  static const casaClaraId = 'casa-clara';
+  static const casaJardinId = 'casa-jardin';
+  static const casaDePlayaId = 'casa-de-playa';
+  static const casaTorreId = 'casa-torre';
+  static const casaMontanaId = 'casa-montana';
+  static const casaInvernaderoId = 'casa-invernadero';
+  static const casaClaraPreviewAsset =
+      'assets/rooms/casa_clara/background_preview_empty.webp';
+  static const casaClaraPortraitAsset =
+      'assets/rooms/casa_clara/background_portrait_empty.webp';
+  static const emptyRoomSlots = <RoomSlot>[
+    RoomSlot.rug,
+    RoomSlot.wallLeft,
+    RoomSlot.wallCenter,
+    RoomSlot.floorLeft,
+    RoomSlot.floorRight,
+    RoomSlot.floorCenter,
+    RoomSlot.floorAccent,
+    RoomSlot.floorCabinet,
+    RoomSlot.floorSofa,
+    RoomSlot.cabinetTop,
+    RoomSlot.cabinetTopRight,
+    RoomSlot.sideTableTop,
+    RoomSlot.wallShelfTopLeft,
+    RoomSlot.wallShelfTopRight,
+  ];
+  // Broad windows and glass walls leave no clear wall for hanging decorations.
+  // Cabinets and side tables still bring their own places for small props.
+  static const panoramicRoomSlots = <RoomSlot>[
+    RoomSlot.rug,
+    RoomSlot.floorLeft,
+    RoomSlot.floorRight,
+    RoomSlot.floorCenter,
+    RoomSlot.floorAccent,
+    RoomSlot.floorCabinet,
+    RoomSlot.floorSofa,
+    RoomSlot.cabinetTop,
+    RoomSlot.cabinetTopRight,
+    RoomSlot.sideTableTop,
+  ];
+
+  static const casaClara = RoomTheme(
+    id: casaClaraId,
+    previewAsset: casaClaraPreviewAsset,
+    previewSize: Size(1536, 1024),
+    portraitAsset: casaClaraPortraitAsset,
+    portraitSize: Size(1024, 1536),
+    slots: RoomSlot.values,
+    defaultPlacements: RoomDecorAssets.defaultPlacements,
+  );
+
+  static const casaJardin = RoomTheme(
+    id: casaJardinId,
+    previewAsset: 'assets/rooms/casa_jardin/background_preview_aligned.webp',
+    previewSize: Size(1536, 1024),
+    portraitAsset: 'assets/rooms/casa_jardin/background_portrait.webp',
+    portraitSize: Size(1024, 1536),
+    slots: emptyRoomSlots,
+    defaultPlacements: RoomDecorAssets.defaultPlacements,
+  );
+
+  static const casaDePlaya = RoomTheme(
+    id: casaDePlayaId,
+    previewAsset: 'assets/rooms/casa_de_playa/background_preview_aligned.webp',
+    previewSize: Size(1536, 1024),
+    portraitAsset: 'assets/rooms/casa_de_playa/background_portrait.webp',
+    portraitSize: Size(1024, 1536),
+    slots: emptyRoomSlots,
+    defaultPlacements: RoomDecorAssets.defaultPlacements,
+  );
+
+  static const casaTorre = RoomTheme(
+    id: casaTorreId,
+    previewAsset: 'assets/rooms/casa_torre/background_preview.webp',
+    previewSize: Size(1536, 1024),
+    portraitAsset: 'assets/rooms/casa_torre/background_portrait_unlit.webp',
+    portraitSize: Size(1024, 1536),
+    slots: panoramicRoomSlots,
+    defaultPlacements: RoomDecorAssets.defaultPlacements,
+  );
+
+  static const casaMontana = RoomTheme(
+    id: casaMontanaId,
+    previewAsset: 'assets/rooms/casa_montana/background_preview.webp',
+    previewSize: Size(1536, 1024),
+    portraitAsset: 'assets/rooms/casa_montana/background_portrait_unlit.webp',
+    portraitSize: Size(1024, 1536),
+    slots: panoramicRoomSlots,
+    defaultPlacements: RoomDecorAssets.defaultPlacements,
+  );
+
+  static const casaInvernadero = RoomTheme(
+    id: casaInvernaderoId,
+    previewAsset: 'assets/rooms/casa_invernadero/background_preview.webp',
+    previewSize: Size(1536, 1024),
+    portraitAsset:
+        'assets/rooms/casa_invernadero/background_portrait_unlit.webp',
+    portraitSize: Size(1024, 1536),
+    slots: panoramicRoomSlots,
+    defaultPlacements: RoomDecorAssets.defaultPlacements,
+  );
+
+  static const all = <RoomTheme>[
+    casaClara,
+    casaJardin,
+    casaDePlaya,
+    casaTorre,
+    casaMontana,
+    casaInvernadero,
+  ];
+  static const _all = {
+    casaClaraId: casaClara,
+    casaJardinId: casaJardin,
+    casaDePlayaId: casaDePlaya,
+    casaTorreId: casaTorre,
+    casaMontanaId: casaMontana,
+    casaInvernaderoId: casaInvernadero,
+  };
+
+  static bool contains(String roomId) => _all.containsKey(roomId);
+
+  /// The room saved as [roomId], or Casa clara for an id this build lacks.
+  static RoomTheme byId(String roomId) => _all[roomId] ?? casaClara;
+
+  static Map<RoomSlot, String> defaultPlacementsFor(String roomId) =>
+      _all[roomId]?.defaultPlacements ?? const <RoomSlot, String>{};
+}
+
+abstract final class RoomDecorAssets {
+  static const defaultRugId = 'casa-clara-default-rug';
+  static const defaultTablePlantId = 'casa-clara-default-table-plant';
+  static const rattanChairId = 'starter-rattan-chair';
+  static const floorLampId = 'starter-floor-lamp';
+  static const wallClockId = 'starter-wall-clock';
+  static const lowCabinetId = 'decor-low-cabinet';
+  static const slimBookcaseId = 'decor-slim-bookcase';
+  static const roundSideTableId = 'decor-round-side-table';
+  static const petBedId = 'decor-pet-bed';
+  static const savingsJarId = 'decor-savings-jar';
+  static const wallShelfId = 'decor-wall-shelf';
+  static const shelfBooksId = 'decor-shelf-books';
+  static const trailingPlantId = 'decor-trailing-plant';
+  static const terracottaPoufId = 'decor-terracotta-pouf';
+  static const blueCreamRugId = 'decor-blue-cream-rug';
+  static const launchSofaId = 'launch-sofa';
+  static const launchTvId = 'launch-tv';
+  static const ivorySofaId = 'decor-ivory-sofa';
+  static const bronzeLanternLampId = 'decor-bronze-lantern-lamp';
+
+  /// Saved in place of an item for a slot the user emptied.
+  ///
+  /// Only needed where the room has a default: a slot missing from the saved
+  /// map falls back to that default, so "nothing here" has to be written
+  /// down. Never shown and never owned.
+  static const clearedId = '';
+
+  static const rug = 'assets/rooms/casa_clara/items/rug.webp';
+  static const lamp = 'assets/rooms/casa_clara/items/lamp.webp';
+  static const tablePlant = 'assets/rooms/casa_clara/items/table_plant.webp';
+  static const wallFrame = 'assets/rooms/casa_clara/items/wall_frame.webp';
+  static const rattanChair = 'assets/rooms/shared_items/rattan_chair.webp';
+  static const floorLamp = 'assets/rooms/shared_items/floor_lamp.webp';
+  static const wallClock = 'assets/rooms/shared_items/wall_clock.webp';
+  static const lowCabinet = 'assets/rooms/shared_items/low_cabinet_empty.webp';
+  static const slimBookcase = 'assets/rooms/shared_items/slim_bookcase.webp';
+  static const roundSideTable =
+      'assets/rooms/shared_items/round_side_table.webp';
+  static const petBed = 'assets/rooms/shared_items/pet_bed.webp';
+  static const savingsJar = 'assets/rooms/shared_items/savings_jar.webp';
+  static const wallShelf = 'assets/rooms/shared_items/wall_shelf_empty.webp';
+  static const shelfBooks = 'assets/rooms/shared_items/shelf_books.webp';
+  static const trailingPlant = 'assets/rooms/shared_items/trailing_plant.webp';
+  static const terracottaPouf =
+      'assets/rooms/shared_items/terracotta_pouf.webp';
+  static const blueCreamRug = 'assets/rooms/shared_items/blue_cream_rug.webp';
+  static const launchSofa = 'assets/rooms/shared_items/launch_sofa.webp';
+  static const ivorySofa = 'assets/rooms/shared_items/ivory_sofa.webp';
+  static const bronzeLanternLamp =
+      'assets/rooms/shared_items/bronze_lantern_lamp.webp';
+  static const launchTvBase = 'assets/rooms/shared_items/launch_tv_base.webp';
+  static const launchTv = 'assets/rooms/shared_items/launch_tv_telenovela.webp';
+  static const launchTvBlink =
+      'assets/rooms/shared_items/launch_tv_telenovela_blink.webp';
+  static const launchTvSoccer =
+      'assets/rooms/shared_items/launch_tv_soccer.webp';
+  static const launchTvSoccerAlt =
+      'assets/rooms/shared_items/launch_tv_soccer_alt.webp';
+
+  /// What every room starts with: the rug, and nothing on any sill or table.
+  ///
+  /// Casa clara also used to put the table plant on its windowsill. It read
+  /// as part of the background rather than something the user placed, so the
+  /// plant is now given unplaced and goes on a side table or a shelf.
+  static const defaultPlacements = <RoomSlot, String>{
+    RoomSlot.rug: defaultRugId,
+  };
+
+  /// Drawn and placeable, but given to nobody for now.
+  ///
+  /// Empty today. The table plant sat here for a while before it was given
+  /// to everyone again; something held back later goes here rather than
+  /// being deleted, so it can return as a reward. Until then it is not
+  /// offered, cannot be saved, and a room that still holds one shows the
+  /// slot empty.
+  static const withheldIds = <String>{};
+
+  static String? assetFor(String id) => switch (id) {
+    defaultRugId => rug,
+    defaultTablePlantId => tablePlant,
+    rattanChairId => rattanChair,
+    floorLampId => floorLamp,
+    wallClockId => wallClock,
+    lowCabinetId => lowCabinet,
+    slimBookcaseId => slimBookcase,
+    roundSideTableId => roundSideTable,
+    petBedId => petBed,
+    savingsJarId => savingsJar,
+    wallShelfId => wallShelf,
+    shelfBooksId => shelfBooks,
+    trailingPlantId => trailingPlant,
+    terracottaPoufId => terracottaPouf,
+    blueCreamRugId => blueCreamRug,
+    launchSofaId => launchSofa,
+    launchTvId => launchTv,
+    ivorySofaId => ivorySofa,
+    bronzeLanternLampId => bronzeLanternLamp,
+    'item-01' => lamp,
+    'item-05' => wallFrame,
+    _ => null,
+  };
+
+  /// Where [id] can go, preferred first; empty for anything that is not a
+  /// room decoration.
+  ///
+  /// Small tabletop props need a supporting surface. A room without one can
+  /// still show them in the drawer until the user adds furniture or a shelf.
+  /// The lamp also stays off the floor, where it read as dropped on the boards.
+  static List<RoomSurface> surfacesFor(String id) => switch (id) {
+    defaultRugId => const [RoomSurface.rug],
+    defaultTablePlantId => const [RoomSurface.tabletop],
+    rattanChairId || floorLampId => const [RoomSurface.floor],
+    wallClockId => const [RoomSurface.wall],
+    lowCabinetId ||
+    slimBookcaseId ||
+    roundSideTableId ||
+    petBedId ||
+    terracottaPoufId => const [RoomSurface.floor],
+    launchSofaId ||
+    launchTvId ||
+    ivorySofaId ||
+    bronzeLanternLampId => const [RoomSurface.floor],
+    savingsJarId ||
+    shelfBooksId ||
+    trailingPlantId => const [RoomSurface.tabletop],
+    wallShelfId => const [RoomSurface.wall],
+    blueCreamRugId => const [RoomSurface.rug],
+    'item-01' => const [RoomSurface.tabletop],
+    'item-05' => const [RoomSurface.wall],
+    _ => const [],
+  };
+
+  static List<RoomSurface> surfacesForCatalogEntry(CatalogEntry entry) =>
+      surfacesFor(entry.id);
+
+  /// Each decoration lights only the places where its proportions make sense.
+  /// Small props need a placed cabinet, side table or wall shelf; the window
+  /// stays clear.
+  static List<RoomSlot>? suggestedSlotsFor(String id) => switch (id) {
+    rattanChairId ||
+    floorLampId ||
+    bronzeLanternLampId => const [RoomSlot.floorLeft, RoomSlot.floorRight],
+    // Furniture only. On Casa clara's windowsill — its `tabletop` — the plant
+    // read as part of the painted background rather than something placed.
+    defaultTablePlantId => const [
+      RoomSlot.cabinetTopRight,
+      RoomSlot.sideTableTop,
+      RoomSlot.wallShelfTopRight,
+      RoomSlot.wallShelfTopLeft,
+    ],
+    'item-01' => const [
+      RoomSlot.sideTableTop,
+      RoomSlot.cabinetTopRight,
+      RoomSlot.cabinetTop,
+      RoomSlot.wallShelfTopLeft,
+      RoomSlot.wallShelfTopRight,
+    ],
+    lowCabinetId => const [RoomSlot.floorCabinet],
+    slimBookcaseId => const [RoomSlot.floorCabinet],
+    roundSideTableId => const [RoomSlot.floorRight],
+    launchSofaId || ivorySofaId => const [RoomSlot.floorSofa],
+    launchTvId => const [RoomSlot.floorCabinet],
+    petBedId => const [RoomSlot.floorCenter],
+    savingsJarId => const [
+      RoomSlot.cabinetTop,
+      RoomSlot.sideTableTop,
+      RoomSlot.wallShelfTopLeft,
+      RoomSlot.wallShelfTopRight,
+    ],
+    shelfBooksId => const [
+      RoomSlot.cabinetTop,
+      RoomSlot.cabinetTopRight,
+      RoomSlot.wallShelfTopLeft,
+      RoomSlot.wallShelfTopRight,
+    ],
+    trailingPlantId => const [
+      RoomSlot.cabinetTopRight,
+      RoomSlot.cabinetTop,
+      RoomSlot.wallShelfTopRight,
+      RoomSlot.wallShelfTopLeft,
+    ],
+    wallShelfId => const [RoomSlot.wallLeft, RoomSlot.wallCenter],
+    terracottaPoufId => const [RoomSlot.floorRight],
+    blueCreamRugId => const [RoomSlot.rug],
+    _ => null,
+  };
+
+  /// How tall [id] is drawn, in background pixels, including the image's
+  /// transparent margin; null for a rug, which fills its slot instead.
+  ///
+  /// An item keeps this size on every surface. Stretching it to the slot
+  /// made the size depend on where it stood: a small plant on a floor slot
+  /// meant for a chair came out as tall as the chair.
+  ///
+  /// The stage is about 300 px to the metre at the wall: Casa clara's
+  /// painted armchair, some 85 cm, is 250 px. The shared items are cropped
+  /// to the object, so their figure is the height you see — a chair of about
+  /// 85 cm, a floor lamp of about 1.45 m, a clock about 33 cm across. They
+  /// first came in at half that and read as doll's-house furniture. The
+  /// Casa clara items still carry their margin and were sized with it.
+  static double? stageHeightFor(String id) => switch (id) {
+    defaultTablePlantId => 103,
+    'item-01' => 145,
+    'item-05' => 128,
+    rattanChairId => 255,
+    floorLampId => 430,
+    wallClockId => 100,
+    lowCabinetId => 240,
+    slimBookcaseId => 430,
+    roundSideTableId => 215,
+    petBedId => 170,
+    savingsJarId => 105,
+    shelfBooksId => 120,
+    trailingPlantId => 135,
+    wallShelfId => 175,
+    terracottaPoufId => 170,
+    launchSofaId => 285,
+    launchTvId => 285,
+    ivorySofaId => 240,
+    bronzeLanternLampId => 480,
+    _ => null,
+  };
+
+  static RoomDecorCategory categoryForItemId(String id) => switch (id) {
+    'item-01' => RoomDecorCategory.props,
+    defaultRugId || 'item-05' => RoomDecorCategory.wallAndFloor,
+    defaultTablePlantId => RoomDecorCategory.props,
+    rattanChairId || floorLampId => RoomDecorCategory.furniture,
+    wallClockId => RoomDecorCategory.wallAndFloor,
+    lowCabinetId ||
+    slimBookcaseId ||
+    roundSideTableId ||
+    petBedId ||
+    terracottaPoufId => RoomDecorCategory.furniture,
+    launchSofaId ||
+    launchTvId ||
+    ivorySofaId ||
+    bronzeLanternLampId => RoomDecorCategory.furniture,
+    savingsJarId || shelfBooksId || trailingPlantId => RoomDecorCategory.props,
+    wallShelfId || blueCreamRugId => RoomDecorCategory.wallAndFloor,
+    _ => RoomDecorCategory.props,
+  };
+
+  static bool isSofa(String? id) => id == launchSofaId || id == ivorySofaId;
+
+  static bool isFloorLamp(String? id) =>
+      id == floorLampId || id == bronzeLanternLampId;
+}
+
+/// Puts every item in [placements] somewhere [room] lets it stand.
+///
+/// Saved rooms predate surfaces, and an item may have changed surface since
+/// it was placed — the lamp was saved on the floor and now belongs on the
+/// table. Anything in a slot it cannot take moves to a free slot it can,
+/// preferred surface first, taking the first such slot when none is free,
+/// since the user chose it and the default it displaces did not. Unknown items, slots the room
+/// does not have and repeats of an item already placed are dropped. Cleared
+/// markers stay where they are.
+Map<RoomSlot, String> fitPlacementsToRoom(
+  RoomTheme room,
+  Map<RoomSlot, String> placements,
+) {
+  final fitted = <RoomSlot, String>{};
+  final misplaced = <String>[];
+  for (final slot in room.slots) {
+    final itemId = placements[slot];
+    if (itemId == null) continue;
+    if (itemId == RoomDecorAssets.clearedId) {
+      fitted[slot] = itemId;
+      continue;
+    }
+    if (fitted.containsValue(itemId) || misplaced.contains(itemId)) continue;
+    final allowedSlots = room.slotsForItem(itemId, placements: placements);
+    if (allowedSlots.isEmpty) continue;
+    if (allowedSlots.contains(slot)) {
+      fitted[slot] = itemId;
+    } else {
+      misplaced.add(itemId);
+    }
+  }
+  for (final itemId in misplaced) {
+    if (fitted.containsValue(itemId)) continue;
+    final candidates = room.slotsForItem(itemId, placements: fitted);
+    if (candidates.isEmpty) continue;
+    final free = candidates.where((slot) {
+      final current = fitted[slot];
+      return current == null || current == RoomDecorAssets.clearedId;
+    });
+    fitted[free.isEmpty ? candidates.first : free.first] = itemId;
+  }
+  return fitted;
+}

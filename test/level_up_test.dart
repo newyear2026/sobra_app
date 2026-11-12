@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/cash_reconciliation.dart';
 import 'package:sobra_app/models/pay_schedule.dart';
+import 'package:sobra_app/screens/settlement_screen.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 
 import 'support/localizations.dart';
@@ -47,6 +48,7 @@ void main() {
     final notice = store.takePendingXpNotice();
     expect(notice?.xp, 25);
     expect(notice?.newLevel, 2);
+    expect(notice?.previousLevel, 1);
     expect(store.xpProgress.level, 2);
   });
 
@@ -97,6 +99,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('¡NIVEL $level!'), findsOneWidget);
+    expect(find.textContaining('objetos nuevos desbloqueados'), findsOneWidget);
+    expect(find.textContaining('Repisa de pared'), findsOneWidget);
     expect(find.text('Seguir'), findsOneWidget);
     // The notice is consumed: the card is a one-time moment.
     expect(store.pendingXpNotice, isNull);
@@ -104,10 +108,23 @@ void main() {
     await tester.tap(find.text('Seguir'));
     await tester.pumpAndSettle();
     expect(find.text('¡NIVEL $level!'), findsNothing);
+    // A fully tracked positive cycle now offers the home goal popup after
+    // the level celebration. Its dismissal is durable and does not expose
+    // a backlog of older completed cycles.
+    expect(find.byType(SettlementScreen), findsNothing);
+    expect(find.byKey(const ValueKey('goal-allocation-dialog')), findsOneWidget);
+    expect(find.byKey(const ValueKey('goal-allocation-create')), findsOneWidget);
+    expect(store.pendingSavingsGoalCycle, isNull);
+    await tester.tap(find.byKey(const ValueKey('goal-allocation-later')));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byKey(const ValueKey('goal-allocation-dialog')), findsNothing);
+    expect(find.text('¡NIVEL $level!'), findsNothing);
+    expect(store.pendingSavingsGoalCycle, isNull);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('ordinary XP still arrives as the quiet snackbar', (
+  testWidgets('a closed cycle opens the settlement screen, not a snackbar', (
     tester,
   ) async {
     useSpanishDevice(tester);
@@ -128,8 +145,49 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    expect(find.byType(SnackBar), findsOneWidget);
+    expect(find.byType(SettlementScreen), findsOneWidget);
+    expect(find.text('Cierre de este ciclo'), findsOneWidget);
+    expect(find.byType(SnackBar), findsNothing);
     expect(find.text('Seguir'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a cash count that levels up celebrates on Inicio', (
+    tester,
+  ) async {
+    useSpanishDevice(tester);
+    tester.view.physicalSize = const Size(520, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    var day = DateTime(2026, 9, 2, 10);
+    final (store, setNow) = await _storeAt(day);
+    for (var week = 0; week < 5; week++) {
+      await store.reconcileCashCount(
+        actualCentavos: 200000,
+        resolution: CashResolution.correction,
+      );
+      store.takePendingXpNotice();
+      day = day.add(const Duration(days: 7));
+      setNow(day);
+    }
+    await store.setReducedMotion(true);
+    expect(store.totalXp, 125);
+
+    await tester.pumpWidget(SobraApp(store: store));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Efectivo estimado'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).first, '2000');
+    await tester.pump();
+    await tester.tap(find.text('Guardar conteo'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('¡NIVEL 2!'), findsOneWidget);
+    expect(find.text('¡Nuevo objeto desbloqueado!'), findsOneWidget);
+    expect(find.textContaining('Repisa de pared'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-09",
+  "android": "16",
+  "apiLevel": 36,
+  "webViewVersion": "134.0.6998.135",
+  "targetSdk": 36,
+  "finalSamples": [
+    {
+      "label": "운동화",
+      "run": "shoe_android16_v3",
+      "success": true,
+      "price": "MX$1699",
+      "image": "411×411",
+      "url": "https://articulo.mercadolibre.com.mx/MLM-3990889244-tenis-adidas-correr-hombre-negro-jq8645-_JM?searchVariation=190036940257"
+    },
+    {
+      "label": "iPhone 15",
+      "run": "iphone_android16_v3_retry",
+      "success": true,
+      "price": "MX$16201.41",
+      "image": "342×342",
+      "url": "https://www.mercadolibre.com.mx/apple-iphone-15-128-gb-azul-distribuidor-autorizado/p/MLM1027172667"
+    }
+  ],
+  "setup": "Separate native Android WebView test app. Its data was cleared before each final run. No official product API integration, API key, manual login, cookie import, UA override, proxy, or challenge bypass.",
+  "limits": [
+    "One Android 16 emulator and one installed WebView version; no physical-device matrix.",
+    "Two full product URLs, not short sharing links or all product layouts.",
+    "Product image URLs and loaded dimensions verified; purchase/checkout not tested.",
+    "Native WebView feasibility test, not integrated with the production Flutter app.",
+    "The retailer's app-opening promotion overlays the page; no website overlay was modified.",
+    "The first v0.3 iPhone attempt timed out (net::ERR_TIMED_OUT); one unchanged retry succeeded. This is not a 100% reliability result."
+  ],
+  "additionalImageCheck": {
+    "context": "Host-side anonymous public CDN request for the sneaker image URL extracted on Android",
+    "httpStatus": 206,
+    "contentType": "image/webp",
+    "bytesRead": 128
+  }
+}

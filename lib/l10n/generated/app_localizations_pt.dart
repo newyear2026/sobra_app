@@ -1,0 +1,3286 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Portuguese (`pt`).
+class AppLocalizationsPt extends AppLocalizations {
+  AppLocalizationsPt([String locale = 'pt']) : super(locale);
+
+  @override
+  String get exitAppTitle => 'Fechar o app?';
+
+  @override
+  String get exitAppBody => 'Até a próxima.';
+
+  @override
+  String get exitAppAction => 'Sair';
+
+  @override
+  String get startupTagline => 'Pequenos registros,\ngrandes passos.';
+
+  @override
+  String get startupLoading => 'Carregando…';
+
+  @override
+  String get startupFailed =>
+      'Não foi possível abrir o Sobrita.\nTente novamente.';
+
+  @override
+  String get categoryFood => 'Comida';
+
+  @override
+  String get categoryTransport => 'Transporte';
+
+  @override
+  String get categoryShopping => 'Compras';
+
+  @override
+  String get categoryHome => 'Casa';
+
+  @override
+  String get categoryServices => 'Contas';
+
+  @override
+  String get categoryHealth => 'Saúde';
+
+  @override
+  String get categoryEducation => 'Educação';
+
+  @override
+  String get categoryEntertainment => 'Lazer';
+
+  @override
+  String get categoryPets => 'Pets';
+
+  @override
+  String get categoryOther => 'Outros';
+
+  @override
+  String get incomeKindSalary => 'Meu pagamento de sempre';
+
+  @override
+  String get incomeKindExtra => 'Renda extra';
+
+  @override
+  String get incomeKindCash => 'Entrada em dinheiro';
+
+  @override
+  String get incomeKindRefund => 'Reembolso';
+
+  @override
+  String get incomeAllocationCycle => 'Este ciclo';
+
+  @override
+  String get incomeAllocationSavings => 'Poupança';
+
+  @override
+  String get payCycleSemiMonthly => 'Quinzenal';
+
+  @override
+  String get payCycleBiweekly => 'A cada 14 dias';
+
+  @override
+  String get payCycleMonthly => 'Mensal';
+
+  @override
+  String get payCycleWeekly => 'Semanal';
+
+  @override
+  String get payCycleIrregular => 'Sem data fixa';
+
+  @override
+  String get cashResolutionExpense => 'Gasto identificado';
+
+  @override
+  String get cashResolutionIncome => 'Entrada em dinheiro';
+
+  @override
+  String get cashResolutionTransfer => 'Movido entre contas';
+
+  @override
+  String get cashResolutionCorrection => 'Correção da contagem';
+
+  @override
+  String get cashResolutionPending => 'Diferença a identificar';
+
+  @override
+  String get paymentMethodCash => 'Dinheiro';
+
+  @override
+  String get paymentMethodCard => 'Cartão';
+
+  @override
+  String get movementPending => 'Pendente';
+
+  @override
+  String get movementCashCount => 'Contagem do dinheiro';
+
+  @override
+  String get xpCashCountTitle => 'Contagem do dinheiro';
+
+  @override
+  String get xpCashCountDetail => 'Primeira contagem com XP da semana';
+
+  @override
+  String get xpCycleInGreenSemiMonthly => 'Você fechou a quinzena no azul';
+
+  @override
+  String get xpCycleInGreenMonthly => 'Você fechou o mês no azul';
+
+  @override
+  String get xpCycleInGreenWeekly => 'Você fechou a semana no azul';
+
+  @override
+  String get xpCycleInGreenGeneric => 'Você fechou o ciclo no azul';
+
+  @override
+  String get xpCycleInGreenDetail => 'Resultado do orçamento no fechamento';
+
+  @override
+  String xpDaysUnderDailyLimitTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dias abaixo do seu limite',
+      one: '$count dia abaixo do seu limite',
+      zero: '$count dias abaixo do seu limite',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get xpDaysUnderDailyLimitDetail =>
+      'Calculado uma só vez, no fechamento';
+
+  @override
+  String get xpFirstSuccessfulCycleTitle => 'Primeiro ciclo no azul';
+
+  @override
+  String get xpFirstSuccessfulCycleDetail => 'Bônus único';
+
+  @override
+  String xpLevelTitle1(String name) {
+    return '$name curioso';
+  }
+
+  @override
+  String xpLevelTitle2(String name) {
+    return '$name poupador';
+  }
+
+  @override
+  String xpLevelTitle3(String name) {
+    return '$name contador';
+  }
+
+  @override
+  String xpLevelTitle4(String name) {
+    return '$name guardião';
+  }
+
+  @override
+  String xpLevelTitle5(String name) {
+    return '$name mestre';
+  }
+
+  @override
+  String xpLevelTitle6(String name) {
+    return '$name especialista';
+  }
+
+  @override
+  String xpLevelTitle7(String name) {
+    return '$name estrategista';
+  }
+
+  @override
+  String xpLevelTitle8(String name) {
+    return '$name próspero';
+  }
+
+  @override
+  String xpLevelTitle9(String name) {
+    return '$name sábio';
+  }
+
+  @override
+  String xpLevelTitle10(String name) {
+    return '$name lendário';
+  }
+
+  @override
+  String xpNoticeCyclesClosedTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ciclos fechados',
+      one: 'Ciclo fechado',
+      zero: '$count ciclos fechados',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get xpNoticeCyclesClosedDetail => 'XP creditado automaticamente.';
+
+  @override
+  String get xpNoticeCashCountTitle => 'Contagem salva';
+
+  @override
+  String get xpNoticeCashCountDetail => 'Primeira contagem com XP da semana.';
+
+  @override
+  String xpLevelUpTitle(int level) {
+    return 'NÍVEL $level!';
+  }
+
+  @override
+  String get xpLevelUpContinue => 'Continuar';
+
+  @override
+  String xpLevelUpItemsUnlocked(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count itens novos desbloqueados!',
+      one: 'Novo item desbloqueado!',
+      zero: '$count itens novos desbloqueados!',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dailyMissionTitle => 'Missão de hoje';
+
+  @override
+  String get dailyMissionResetHint => 'Mudam à meia-noite. Não se acumulam.';
+
+  @override
+  String dailyMissionProgress(int done, int total) {
+    return '$done de $total feitas';
+  }
+
+  @override
+  String get dailyMissionAllDone => 'Tudo feito!';
+
+  @override
+  String get dailyMissionRecordTitle => 'Registre algo hoje';
+
+  @override
+  String get dailyMissionRecordHint => 'Um gasto ou uma entrada';
+
+  @override
+  String get dailyMissionSameDayTitle => 'Anote no mesmo dia';
+
+  @override
+  String get dailyMissionSameDayHint => 'O gasto e o registro, hoje';
+
+  @override
+  String get dailyMissionBudgetTitle => 'Confira seu orçamento';
+
+  @override
+  String get dailyMissionBudgetHint => 'Abra a aba Orçamento';
+
+  @override
+  String get dailyMissionNoteTitle => 'Adicione uma nota';
+
+  @override
+  String get dailyMissionNoteHint => 'Um registro com nota';
+
+  @override
+  String get dailyMissionReceiptTitle => 'Guarde um comprovante';
+
+  @override
+  String get dailyMissionReceiptHint => 'Anexe a foto a um gasto';
+
+  @override
+  String get dailyMissionThreeTodayTitle => 'Registre três hoje';
+
+  @override
+  String dailyMissionThreeTodayHint(int count) {
+    return '$count registros com a data de hoje';
+  }
+
+  @override
+  String get dailyMissionDone => 'Feita';
+
+  @override
+  String get dailyMissionPending => 'A fazer';
+
+  @override
+  String dailyMissionReadyAt(String time) {
+    return 'Feita · $time';
+  }
+
+  @override
+  String dailyMissionBoardSummary(
+    int done,
+    int total,
+    int earned,
+    int possible,
+  ) {
+    return '$done de $total feitas · +$earned XP de +$possible XP hoje';
+  }
+
+  @override
+  String get dailyMissionXpDetail => 'Missão concluída';
+
+  @override
+  String get xpRuleDailyMission => 'Uma vez por dia; à meia-noite recomeça';
+
+  @override
+  String xpNoticeMissionTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count missões feitas',
+      one: 'Missão feita',
+      zero: '$count missões feitas',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get xpNoticeMissionDetail => 'XP pelo hábito de hoje.';
+
+  @override
+  String get storeFailureGeneric =>
+      'Não conseguimos salvar a alteração. Tente de novo.';
+
+  @override
+  String get storeFailureBudgetBelowCycleIncome =>
+      'O total precisa ser maior que as entradas já reservadas para este ciclo.';
+
+  @override
+  String get storeFailureFutureMovement =>
+      'Não dá para registrar algo com data futura.';
+
+  @override
+  String get storeFailureRestoreFailed => 'Não conseguimos restaurar o backup.';
+
+  @override
+  String get storeFailureOriginalNotKept =>
+      'Não conseguimos manter o arquivo original.';
+
+  @override
+  String get storeFailureBackupNotSaved => 'Não conseguimos salvar o backup.';
+
+  @override
+  String get storeFailureSaveFailed => 'Não conseguimos salvar seus dados.';
+
+  @override
+  String get monthAbbr1 => 'jan';
+
+  @override
+  String get monthAbbr2 => 'fev';
+
+  @override
+  String get monthAbbr3 => 'mar';
+
+  @override
+  String get monthAbbr4 => 'abr';
+
+  @override
+  String get monthAbbr5 => 'mai';
+
+  @override
+  String get monthAbbr6 => 'jun';
+
+  @override
+  String get monthAbbr7 => 'jul';
+
+  @override
+  String get monthAbbr8 => 'ago';
+
+  @override
+  String get monthAbbr9 => 'set';
+
+  @override
+  String get monthAbbr10 => 'out';
+
+  @override
+  String get monthAbbr11 => 'nov';
+
+  @override
+  String get monthAbbr12 => 'dez';
+
+  @override
+  String dateShort(String day, String month) {
+    return '$day $month';
+  }
+
+  @override
+  String dateFull(String day, String month, String year) {
+    return '$day $month $year';
+  }
+
+  @override
+  String get back => 'Voltar';
+
+  @override
+  String get reduceMotion => 'Reduzir movimento';
+
+  @override
+  String get catMotionIdle => 'O gato descansa tranquilo';
+
+  @override
+  String get catMotionWalk => 'O gato está andando';
+
+  @override
+  String get catMotionCalculate => 'O gato está fazendo as contas';
+
+  @override
+  String get catMotionSaving => 'O gato guarda moedas no cofrinho';
+
+  @override
+  String get catMotionCelebrate => 'O gato está comemorando';
+
+  @override
+  String get catMotionConcern => 'O gato parece preocupado com o orçamento';
+
+  @override
+  String get characterRoleIdle => 'O personagem descansa tranquilo';
+
+  @override
+  String get characterRoleActivity => 'O personagem está se mexendo';
+
+  @override
+  String get characterRoleProcessing => 'O personagem está fazendo as contas';
+
+  @override
+  String get characterRolePositive =>
+      'O personagem mostra uma mudança positiva';
+
+  @override
+  String get characterRoleSuccess => 'O personagem está comemorando';
+
+  @override
+  String get characterRoleWarning => 'O personagem parece preocupado';
+
+  @override
+  String get today => 'Hoje';
+
+  @override
+  String get yesterday => 'Ontem';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get tabHome => 'Início';
+
+  @override
+  String get tabMovements => 'Extrato';
+
+  @override
+  String get tabRegister => 'Anotar';
+
+  @override
+  String get tabBudget => 'Orçam.';
+
+  @override
+  String get tabSettings => 'Perfil';
+
+  @override
+  String get collectionTitle => 'Coleção';
+
+  @override
+  String get collectionSettingsValue => 'Ver';
+
+  @override
+  String get collectionCharacters => 'Personagens';
+
+  @override
+  String get collectionItems => 'Itens';
+
+  @override
+  String collectionLevel(int level) {
+    return 'NÍVEL $level';
+  }
+
+  @override
+  String collectionOwnedCount(int owned, int total) {
+    return '$owned de $total';
+  }
+
+  @override
+  String get collectionCharactersHint => 'Reúna quem te faz companhia';
+
+  @override
+  String get collectionItemsHint => 'Reúna o que vai no seu espaço';
+
+  @override
+  String get collectionRooms => 'Casas';
+
+  @override
+  String get collectionRoomsHint => 'Escolha onde seu companheiro mora';
+
+  @override
+  String collectionCharacterPlaceholder(int number) {
+    return 'Personagem $number';
+  }
+
+  @override
+  String collectionItemPlaceholder(int number) {
+    return 'Item $number';
+  }
+
+  @override
+  String get collectionEquipped => 'EM USO';
+
+  @override
+  String get collectionOwned => 'OBTIDO';
+
+  @override
+  String get collectionPlaceIt => 'Colocar';
+
+  @override
+  String get collectionBuy => 'COMPRAR';
+
+  @override
+  String get collectionPricePending => 'CONSULTANDO PREÇO';
+
+  @override
+  String get collectionWatchAd => 'VER ANÚNCIO';
+
+  @override
+  String get collectionAdLoading => 'CARREGANDO';
+
+  @override
+  String collectionAdProgressLine(int progress, int target) {
+    return '$progress/$target';
+  }
+
+  @override
+  String collectionAdUnlockDaily(int progress, int target) {
+    return 'Veja anúncios premiados · $progress/$target · um por dia';
+  }
+
+  @override
+  String get collectionAdUnavailable => 'SEM ANÚNCIOS';
+
+  @override
+  String get collectionAdRetry => 'TENTAR DE NOVO';
+
+  @override
+  String get collectionAdDailyCap => 'LIMITE DE HOJE';
+
+  @override
+  String get collectionAdTomorrow => 'CONTINUA AMANHÃ';
+
+  @override
+  String collectionUnlockedNotice(String name) {
+    return '$name é seu!';
+  }
+
+  @override
+  String collectionRoomUnlockedNotice(String name) {
+    return 'Agora você pode se mudar para $name!';
+  }
+
+  @override
+  String get collectionAdDismissedNotice =>
+      'Veja o anúncio inteiro para contar.';
+
+  @override
+  String get collectionPackOnly => 'PACOTE';
+
+  @override
+  String get collectionPackUnlock =>
+      'Vem no pacote Os amigos do Michi. Não é vendido separadamente.';
+
+  @override
+  String get collectionSeePack => 'VER PACOTE';
+
+  @override
+  String get packFriendNames => 'Tranqui, Lana e Bandi';
+
+  @override
+  String get packIncludes => 'INCLUI';
+
+  @override
+  String get packFriendsLine => '3 amigos para o seu quarto';
+
+  @override
+  String get packNoAdsLine => 'Sem anúncios gerais';
+
+  @override
+  String get packOnceLine => 'Pagamento único, para sempre';
+
+  @override
+  String packBuy(String price) {
+    return 'COMPRAR · $price';
+  }
+
+  @override
+  String get collectionAlsoInPack => 'Também vem no pacote Os amigos do Michi';
+
+  @override
+  String packAlreadyOwned(String names) {
+    return 'Você já tem $names. O pacote custa o mesmo.';
+  }
+
+  @override
+  String get collectionGiftOnly => 'PRESENTE';
+
+  @override
+  String get collectionGiftUnlock => 'Um presente especial. Não está à venda.';
+
+  @override
+  String collectionAdProgress(int progress, int target) {
+    return 'ANÚNCIO $progress/$target';
+  }
+
+  @override
+  String get collectionHowToGet => 'COMO CONSEGUIR';
+
+  @override
+  String get collectionAlreadyOwned => 'Já faz parte da sua coleção.';
+
+  @override
+  String get collectionIncludedUnlock => 'Incluído desde o início.';
+
+  @override
+  String collectionPurchaseUnlock(String price) {
+    return 'Compra única · $price';
+  }
+
+  @override
+  String collectionAdUnlock(int progress, int target) {
+    return 'Veja anúncios premiados · $progress/$target';
+  }
+
+  @override
+  String collectionLevelUnlock(int level) {
+    return 'Desbloqueia no nível $level.';
+  }
+
+  @override
+  String get collectionStorePricePending => 'preço da loja';
+
+  @override
+  String get collectionPreviewActionNotice =>
+      'Compras e anúncios serão conectados numa etapa futura.';
+
+  @override
+  String get roomTitle => 'Minha casa';
+
+  @override
+  String get roomOpen => 'Abrir minha casa';
+
+  @override
+  String get roomDecorate => 'Decorar';
+
+  @override
+  String get roomDecorateTitle => 'Decorar';
+
+  @override
+  String get roomDone => 'Pronto';
+
+  @override
+  String get roomThemeCasaClara => 'Casa clara';
+
+  @override
+  String get roomThemeCasaJardin => 'Casa com jardim';
+
+  @override
+  String get roomThemeCasaDePlaya => 'Casa de praia';
+
+  @override
+  String get roomThemeCasaTorre => 'Apartamento panorâmico';
+
+  @override
+  String get roomThemeCasaMontana => 'Casa da montanha';
+
+  @override
+  String get roomThemeCasaInvernadero => 'Jardim de inverno';
+
+  @override
+  String get roomChooseTheme => 'Escolha o clima da sua casa.';
+
+  @override
+  String get roomCatReaction => 'Você mandou muito bem hoje!';
+
+  @override
+  String get roomInstruction => 'Escolha um item e toque onde ele vai.';
+
+  @override
+  String get roomCategoryRooms => 'Casa';
+
+  @override
+  String get roomCategoryFurniture => 'Móveis';
+
+  @override
+  String get roomCategoryWallFloor => 'Parede e piso';
+
+  @override
+  String get roomCategoryProps => 'Enfeites';
+
+  @override
+  String get roomCategoryCharacters => 'Personagens';
+
+  @override
+  String get roomCharacterInstruction => 'Escolha quem te faz companhia.';
+
+  @override
+  String get roomMoreInCollection => 'Ver mais na coleção';
+
+  @override
+  String get roomDefaultRug => 'Tapete lavanda';
+
+  @override
+  String get roomFloorLamp => 'Luminária verde';
+
+  @override
+  String get roomTablePlant => 'Planta de mesa';
+
+  @override
+  String get roomWallFrame => 'Quadro';
+
+  @override
+  String get roomRattanChair => 'Poltrona de vime';
+
+  @override
+  String get roomStandingLamp => 'Luminária de chão';
+
+  @override
+  String get roomWallClock => 'Relógio de parede';
+
+  @override
+  String get roomLowCabinet => 'Aparador baixo';
+
+  @override
+  String get roomSlimBookcase => 'Estante estreita';
+
+  @override
+  String get roomRoundSideTable => 'Mesa lateral redonda';
+
+  @override
+  String get roomPetBed => 'Caminha de pet';
+
+  @override
+  String get roomSavingsJar => 'Pote de economias';
+
+  @override
+  String get roomWallShelf => 'Prateleira de parede';
+
+  @override
+  String get roomShelfBooks => 'Livros';
+
+  @override
+  String get roomTrailingPlant => 'Planta pendente';
+
+  @override
+  String get roomTerracottaPouf => 'Pufe terracota';
+
+  @override
+  String get roomBlueCreamRug => 'Tapete azul e creme';
+
+  @override
+  String get roomLaunchSofa => 'Sofá de veludo';
+
+  @override
+  String get roomLaunchTv => 'TV de histórias';
+
+  @override
+  String get roomIvorySofa => 'Sofá marfim';
+
+  @override
+  String get roomBronzeLanternLamp => 'Luminária de bronze';
+
+  @override
+  String get launchGiftTitle => 'Seu presente de lançamento chegou!';
+
+  @override
+  String get launchGiftBody =>
+      'Você começou a usar o Sobrita a tempo. O sofá e a TV são seus.';
+
+  @override
+  String get launchGiftGoToRoom => 'Colocar na minha casa';
+
+  @override
+  String get launchGiftLater => 'Depois';
+
+  @override
+  String get roomSuggestCabinet =>
+      'Coloque junto à parede da esquerda. Toque no lugar marcado.';
+
+  @override
+  String get roomSuggestPetBed =>
+      'Coloque à esquerda do seu companheiro. Toque no lugar marcado.';
+
+  @override
+  String get roomSuggestSavingsJar =>
+      'Coloque o pote sobre um armário, mesa lateral ou prateleira de parede. Adicione o apoio primeiro, se precisar.';
+
+  @override
+  String get roomSuggestTablePlant =>
+      'Coloque a planta sobre um armário, mesa lateral ou prateleira de parede. Adicione o apoio primeiro, se precisar.';
+
+  @override
+  String get roomSuggestShelfProps =>
+      'Coloque primeiro um armário, estante ou prateleira de parede e depois ponha o objeto sobre ele.';
+
+  @override
+  String get roomSuggestDeskLamp =>
+      'Coloque a luminária sobre um armário, mesa lateral ou prateleira de parede. Adicione o apoio primeiro, se precisar.';
+
+  @override
+  String get roomSuggestWallShelf =>
+      'Pendure numa parede livre. Toque num lugar marcado.';
+
+  @override
+  String get roomSuggestPouf =>
+      'Equilibre a sala à direita. Toque no lugar marcado.';
+
+  @override
+  String get roomSuggestBlueRug =>
+      'Coloque embaixo do seu companheiro. Toque no lugar marcado.';
+
+  @override
+  String get roomSaved => 'Sua casa foi salva.';
+
+  @override
+  String get roomPlaced => 'Colocado';
+
+  @override
+  String get roomSurfaceWall => 'Parede';
+
+  @override
+  String get roomSurfaceFloor => 'Piso';
+
+  @override
+  String get roomSurfaceTabletop => 'Mesa';
+
+  @override
+  String get roomSurfaceRug => 'Tapete';
+
+  @override
+  String roomSlotLabel(String surface, int number) {
+    return '$surface, lugar $number';
+  }
+
+  @override
+  String roomPickWall(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Há $count lugares na parede. Toque onde vai.',
+      one: 'Há um lugar na parede. Toque nele para pendurar.',
+      zero: 'Há $count lugares na parede. Toque onde vai.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickFloor(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Há $count lugares no piso. Toque onde vai.',
+      one: 'Há um lugar no piso. Toque nele para colocar.',
+      zero: 'Há $count lugares no piso. Toque onde vai.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickTabletop(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Há $count lugares na mesa. Toque onde vai.',
+      one: 'Há um lugar na mesa. Toque nele para colocar.',
+      zero: 'Há $count lugares na mesa. Toque onde vai.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickRug(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Há $count lugares para o tapete. Toque onde vai.',
+      one: 'Há um lugar para o tapete. Toque nele para colocar.',
+      zero: 'Há $count lugares para o tapete. Toque onde vai.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String roomPickAny(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Há $count lugares onde ele cabe. Toque onde vai.',
+      one: 'Há um lugar onde ele cabe. Toque nele para colocar.',
+      zero: 'Há $count lugares onde ele cabe. Toque onde vai.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get roomMoveOrRemove =>
+      'Toque em outro lugar para mover, ou no dele para tirar.';
+
+  @override
+  String get roomTapToRemove => 'Toque no lugar dele de novo para tirar.';
+
+  @override
+  String get xpHistoryTitle => 'Seu progresso';
+
+  @override
+  String xpTotal(int count) {
+    return '$count XP no total';
+  }
+
+  @override
+  String get xpMaxLevel => 'Nível máximo';
+
+  @override
+  String xpRemaining(int count) {
+    return 'Faltam $count XP';
+  }
+
+  @override
+  String get xpHistoryHint =>
+      'O XP é creditado automaticamente. Cada linha guarda o motivo e a conta, mesmo se você fechar o app.';
+
+  @override
+  String get xpHistoryEmptyTitle => 'Ainda sem XP';
+
+  @override
+  String get xpHistoryEmptyMessage =>
+      'A primeira contagem do dinheiro da semana e o fechamento do seu ciclo vão aparecer aqui.';
+
+  @override
+  String xpAmount(int count) {
+    return '+$count XP';
+  }
+
+  @override
+  String get xpSeeCalculation => 'Ver a conta';
+
+  @override
+  String get xpCalculationTitle => 'Como foi calculado';
+
+  @override
+  String get xpDetailCycle => 'Ciclo';
+
+  @override
+  String get xpDetailBudget => 'Orçamento';
+
+  @override
+  String get xpDetailSpent => 'Gasto';
+
+  @override
+  String get xpDetailResult => 'Resultado';
+
+  @override
+  String get xpDetailRule => 'Regra';
+
+  @override
+  String get xpDetailCredited => 'XP creditado';
+
+  @override
+  String get xpRuleCashCount => 'No máximo uma vez por semana';
+
+  @override
+  String xpRuleCycleInGreen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Recompensa ajustada a $count dias',
+      one: 'Recompensa ajustada a $count dia',
+      zero: 'Recompensa ajustada a $count dias',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String xpRuleDaysUnderDailyLimit(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dias × 5 XP',
+      one: '$count dia × 5 XP',
+      zero: '$count dias × 5 XP',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get xpRuleFirstSuccessfulCycle => 'Bônus único de 50 XP';
+
+  @override
+  String get recoveryNotYet => 'Ainda não conseguimos recuperar seus dados.';
+
+  @override
+  String get recoveryStartFreshQuestion => 'Começar de novo?';
+
+  @override
+  String get recoveryStartFreshBody =>
+      'Vamos guardar uma cópia do arquivo original antes de criar dados novos.';
+
+  @override
+  String get recoveryStartFresh => 'Começar de novo';
+
+  @override
+  String get recoveryTitle => 'Não conseguimos ler seus dados';
+
+  @override
+  String get recoveryOriginalKept =>
+      'O arquivo original continua salvo. Não substituímos nem apagamos nada.';
+
+  @override
+  String get recoveryOptions =>
+      'Você pode tentar de novo, usar o backup ou exportar o arquivo para guardá-lo.';
+
+  @override
+  String get recoveryRetrying => 'Tentando de novo…';
+
+  @override
+  String get recoveryRetry => 'Tentar de novo';
+
+  @override
+  String get recoveryUseBackup => 'Usar backup';
+
+  @override
+  String get recoveryExport => 'Exportar arquivo';
+
+  @override
+  String get recoveryExported => 'Arquivo original copiado.';
+
+  @override
+  String get settingsTitle => 'Meu Sobrita';
+
+  @override
+  String get settingsLanguage => 'Idioma';
+
+  @override
+  String currencyChangeTitle(String code) {
+    return 'Mudar para $code?';
+  }
+
+  @override
+  String currencyChangeBody(String example, String converted) {
+    return 'Seus valores não são convertidos: $example continua $converted. Só muda o rótulo.';
+  }
+
+  @override
+  String get currencyChangeConfirm => 'Mudar rótulo';
+
+  @override
+  String get currencyRegionAmericas => 'Américas';
+
+  @override
+  String get currencyRegionEurope => 'Europa';
+
+  @override
+  String get currencyRegionAsiaPacific => 'Ásia e Oceania';
+
+  @override
+  String get settingsCurrency => 'Moeda';
+
+  @override
+  String get settingsBudgetCycle => 'Ciclo';
+
+  @override
+  String get settingsCountDay => 'Dia da contagem';
+
+  @override
+  String get settingsReduceMotionHint =>
+      'Liga sozinho se o seu celular já pede isso.';
+
+  @override
+  String get settingsQuickEntry => 'Registro rápido';
+
+  @override
+  String get settingsQuickEntryHint =>
+      'Mostra Entrada e Gasto na tela de bloqueio.';
+
+  @override
+  String get quickEntryQuestion => 'O que você quer anotar?';
+
+  @override
+  String get quickEntryDenied =>
+      'Permita as notificações do Sobrita para ligar o registro rápido.';
+
+  @override
+  String get widgetTodayLeft => 'Resta hoje';
+
+  @override
+  String get widgetCycleBalance => 'Saldo';
+
+  @override
+  String get widgetOpenApp => 'Abrir Sobrita';
+
+  @override
+  String get widgetRegisterExpense => 'Anotar gasto';
+
+  @override
+  String get settingsBackup => 'Backup dos dados';
+
+  @override
+  String get settingsCopy => 'Copiar';
+
+  @override
+  String get settingsBackupCopied =>
+      'Backup copiado para a área de transferência.';
+
+  @override
+  String get settingsBackupCopyFailed =>
+      'Não conseguimos copiar o backup. Tente de novo.';
+
+  @override
+  String get settingsRestorePurchases => 'Restaurar compras';
+
+  @override
+  String get settingsAccount => 'Conta Google';
+
+  @override
+  String get settingsAccountConnect => 'Conectar';
+
+  @override
+  String get settingsRestore => 'Restaurar';
+
+  @override
+  String get purchaseRestored => 'Pronto. Suas compras voltaram.';
+
+  @override
+  String get purchaseFailureStoreUnavailable =>
+      'A loja não está disponível agora. Tente mais tarde.';
+
+  @override
+  String get purchaseFailureRejected =>
+      'Não foi possível concluir a compra. Nada foi cobrado.';
+
+  @override
+  String get purchaseFailureDeliveryNotSaved =>
+      'Sua compra chegou, mas não foi possível salvá-la. Ela será aplicada na próxima vez que você abrir o Sobrita.';
+
+  @override
+  String get purchaseFailureNothingToRestore =>
+      'Não encontramos compras nesta conta.';
+
+  @override
+  String get collectionPurchasing => 'COMPRANDO…';
+
+  @override
+  String get settingsXpPreview => 'Prévia de XP';
+
+  @override
+  String get settingsDesign => 'Design';
+
+  @override
+  String get settingsStorageNote =>
+      'Seus dados ficam neste aparelho. Você não precisa de conta para usar o Sobrita.';
+
+  @override
+  String get settingsSectionShop => 'Loja';
+
+  @override
+  String get settingsPackName => 'Os amigos do Michi';
+
+  @override
+  String get settingsPackHint =>
+      'Tranqui, Lana e Bandi. Também remove os anúncios gerais.';
+
+  @override
+  String get settingsOwned => 'Você já tem';
+
+  @override
+  String get settingsShopRestoreNote =>
+      'As compras ficam na sua conta da loja. Dá para recuperá-las ao reinstalar.';
+
+  @override
+  String get settlementTitle => 'Fechamento do ciclo';
+
+  @override
+  String get settlementSpent => 'Gasto';
+
+  @override
+  String get settlementLeft => 'Sobrou';
+
+  @override
+  String get settlementOver => 'Passou';
+
+  @override
+  String get settlementAverage => 'Média diária';
+
+  @override
+  String get settlementContinue => 'Pronto';
+
+  @override
+  String get settlementCtaTitle => 'Buscar um enfeite especial';
+
+  @override
+  String get settlementCtaAction => 'Ver coleção';
+
+  @override
+  String get settingsSectionBudget => 'Orçamento';
+
+  @override
+  String get settingsSectionScreen => 'Tela';
+
+  @override
+  String get settingsSectionData => 'Dados';
+
+  @override
+  String get settingsSectionPrivacy => 'Privacidade';
+
+  @override
+  String get settingsAdPrivacy => 'Privacidade de anúncios';
+
+  @override
+  String get settingsAdPrivacyValue => 'Gerenciar';
+
+  @override
+  String get settingsAdPrivacyFailed =>
+      'Não foi possível abrir as opções de privacidade. Tente de novo.';
+
+  @override
+  String get settingsSectionDesign => 'Design';
+
+  @override
+  String settingsProfileStats(int movements, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      movements,
+      locale: localeName,
+      other: '$movements registros',
+      one: '$movements registro',
+      zero: '$movements registros',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days dias com o Sobrita',
+      one: '$days dia com o Sobrita',
+      zero: '$days dias com o Sobrita',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String get languageAutomatic => 'Automático';
+
+  @override
+  String get languageAutomaticHint => 'Segue o celular';
+
+  @override
+  String get transactionsTitle => 'Extrato';
+
+  @override
+  String get dailySpendTitle => 'Gasto por dia';
+
+  @override
+  String dailySpendLimit(String amount) {
+    return '$amount por dia';
+  }
+
+  @override
+  String dailySpendCycleTotal(String amount) {
+    return 'Este ciclo $amount';
+  }
+
+  @override
+  String get dailyIncomeTitle => 'Entrada por dia';
+
+  @override
+  String dailyIncomeCycleTotal(String amount) {
+    return 'Este ciclo $amount';
+  }
+
+  @override
+  String get transactionsEmptyTitle => 'Nada por aqui ainda';
+
+  @override
+  String get transactionsEmptyMessage =>
+      'Anote seu primeiro gasto e o resumo do ciclo aparece aqui.';
+
+  @override
+  String get transactionsEmptyExpensesTitle => 'Ainda sem gastos';
+
+  @override
+  String get transactionsEmptyExpensesMessage =>
+      'Anote um gasto e o dia a dia aparece aqui.';
+
+  @override
+  String get transactionsEmptyIncomesTitle => 'Ainda sem entradas';
+
+  @override
+  String get transactionsEmptyIncomesMessage =>
+      'Anote uma entrada e o dia a dia aparece aqui.';
+
+  @override
+  String get transactionsExpensePinned =>
+      'Este gasto veio de uma contagem do dinheiro. Conte de novo para corrigir.';
+
+  @override
+  String get transactionsIncomePinned =>
+      'Esta entrada veio de uma contagem do dinheiro. Conte de novo para corrigir.';
+
+  @override
+  String get transactionsExpenseDeleted => 'Gasto apagado.';
+
+  @override
+  String get transactionsIncomeDeleted => 'Entrada apagada.';
+
+  @override
+  String get undo => 'Desfazer';
+
+  @override
+  String get edit => 'Editar';
+
+  @override
+  String get delete => 'Apagar';
+
+  @override
+  String get identifyDifference => 'Identificar diferença';
+
+  @override
+  String get editMovement => 'Editar registro';
+
+  @override
+  String get editIncome => 'Editar entrada';
+
+  @override
+  String get editPaidDate => 'Dia em que você pagou';
+
+  @override
+  String editFixedOccurrence(String date) {
+    return 'Continua valendo como o pagamento de $date.';
+  }
+
+  @override
+  String get amount => 'Valor';
+
+  @override
+  String get editPendingHint =>
+      'O valor vem da sua contagem do dinheiro. Você ainda pode mudar a categoria e a nota.';
+
+  @override
+  String get category => 'Categoria';
+
+  @override
+  String get note => 'Nota';
+
+  @override
+  String get noteExample => 'Ex.: Pastel';
+
+  @override
+  String get replacesPendingHint =>
+      'Isto substitui o ajuste pendente. Não soma outro gasto.';
+
+  @override
+  String get saveWithoutDuplicating => 'Salvar sem duplicar';
+
+  @override
+  String get saveChanges => 'Salvar alterações';
+
+  @override
+  String get save => 'Salvar';
+
+  @override
+  String get budget => 'Orçamento';
+
+  @override
+  String get spent => 'Gasto';
+
+  @override
+  String get appName => 'Sobrita';
+
+  @override
+  String get homeCycleBalance => 'Saldo do ciclo';
+
+  @override
+  String get homeTodayLeft => 'Hoje você ainda tem';
+
+  @override
+  String homeOverBudget(String budget) {
+    return 'Você passou do orçamento de $budget deste ciclo';
+  }
+
+  @override
+  String homeDailyLimit(String limit, String remaining) {
+    return 'Limite de hoje $limit · Restam $remaining no ciclo';
+  }
+
+  @override
+  String get homeFirstQuestLabel => 'Primeira missão';
+
+  @override
+  String get homeBudgetQuestBody =>
+      'Defina um orçamento e eu calculo quanto você pode gastar por dia.';
+
+  @override
+  String get homeCycleProgress => 'Progresso do ciclo';
+
+  @override
+  String daysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dias',
+      one: '$count dia',
+      zero: '$count dias',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeCashEstimated => 'Dinheiro estimado';
+
+  @override
+  String get homeCashUnset => 'Dinheiro não configurado';
+
+  @override
+  String homeLastCount(String amount) {
+    return 'Última contagem: $amount';
+  }
+
+  @override
+  String get homeFirstCountHint => 'Faça uma primeira contagem para começar.';
+
+  @override
+  String get homeRecentMovements => 'Registros recentes';
+
+  @override
+  String get homeSeeAll => 'Ver todos';
+
+  @override
+  String get homeGoingWell => 'Indo muito bem';
+
+  @override
+  String get homeAdjustCalmly => 'Vamos ajustar com calma';
+
+  @override
+  String get budgetTitle => 'Orçamento';
+
+  @override
+  String get budgetCycleTotal => 'Total do ciclo';
+
+  @override
+  String get budgetTotal => 'Orçamento total';
+
+  @override
+  String get budgetNotSetTitle => 'Ainda sem orçamento';
+
+  @override
+  String get budgetNotSetBody =>
+      'Defina um e a gente calcula quanto você pode gastar por dia.';
+
+  @override
+  String get budgetSetAction => 'Definir orçamento';
+
+  @override
+  String budgetTooLow(String allocated) {
+    return 'O total precisa ser maior que as entradas já reservadas para este ciclo ($allocated).';
+  }
+
+  @override
+  String budgetSpentShare(int percent) {
+    return '$percent% do orçamento';
+  }
+
+  @override
+  String budgetRingSpent(String amount) {
+    return 'Gasto $amount';
+  }
+
+  @override
+  String budgetRingLeft(String amount) {
+    return 'Restam $amount';
+  }
+
+  @override
+  String budgetCategoryShare(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get cycleHistoryTitle => 'Ciclos anteriores';
+
+  @override
+  String cycleHistorySummary(int green, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '$green de $total ciclos no azul',
+      one: '$green de $total ciclo no azul',
+      zero: '$green de $total ciclos no azul',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cycleHistoryAmounts(String budget, String spent) {
+    return 'Orçamento $budget · Gasto $spent';
+  }
+
+  @override
+  String get cycleHistoryEmpty => 'Nenhum ciclo foi fechado ainda.';
+
+  @override
+  String cycleHistoryAverage(String amount) {
+    return 'Média diária $amount';
+  }
+
+  @override
+  String get cycleHistoryAveragePending => 'Média diária · juntando dados';
+
+  @override
+  String get budgetChangedTitle => 'Você mudou seu orçamento';
+
+  @override
+  String get budgetChangedBody =>
+      'O que fazemos com os limites por categoria? Ajustando, cada um muda na mesma proporção e sua divisão continua sua.';
+
+  @override
+  String get budgetKeepLimits => 'Manter';
+
+  @override
+  String get budgetScaleLimits => 'Ajustar na mesma proporção';
+
+  @override
+  String get budgetByCategory => 'Orçamento por categoria';
+
+  @override
+  String budgetCategoryLimit(String category) {
+    return 'Limite de $category';
+  }
+
+  @override
+  String budgetSpentOfLimit(String spent, String limit) {
+    return '$spent / $limit';
+  }
+
+  @override
+  String get budgetProjection => 'Projeção no fechamento';
+
+  @override
+  String get budgetEstimatedLeft => 'O que deve sobrar';
+
+  @override
+  String budgetProjectionBasis(String amount) {
+    return 'Gastando $amount por dia, como até agora, sobra isso.';
+  }
+
+  @override
+  String get budgetSavedThisCycle => 'Guardado como poupança neste ciclo';
+
+  @override
+  String get budgetClosedCyclesResult => 'O que sobrou nos ciclos anteriores';
+
+  @override
+  String homeProjectionLead(String date) {
+    return 'Nesse ritmo, no fechamento de $date';
+  }
+
+  @override
+  String homeProjectionLeft(String amount) {
+    return 'sobram $amount';
+  }
+
+  @override
+  String homeProjectionShort(String amount) {
+    return 'faltam $amount';
+  }
+
+  @override
+  String get continueLabel => 'Continuar';
+
+  @override
+  String get saving => 'Salvando…';
+
+  @override
+  String dayOfMonth(int day) {
+    return 'Dia $day';
+  }
+
+  @override
+  String get weekdayMonday => 'Segunda-feira';
+
+  @override
+  String get weekdayTuesday => 'Terça-feira';
+
+  @override
+  String get weekdayWednesday => 'Quarta-feira';
+
+  @override
+  String get weekdayThursday => 'Quinta-feira';
+
+  @override
+  String get weekdayFriday => 'Sexta-feira';
+
+  @override
+  String get weekdaySaturday => 'Sábado';
+
+  @override
+  String get weekdaySunday => 'Domingo';
+
+  @override
+  String get weekdayShortMonday => 'Seg';
+
+  @override
+  String get weekdayShortTuesday => 'Ter';
+
+  @override
+  String get weekdayShortWednesday => 'Qua';
+
+  @override
+  String get weekdayShortThursday => 'Qui';
+
+  @override
+  String get weekdayShortFriday => 'Sex';
+
+  @override
+  String get weekdayShortSaturday => 'Sáb';
+
+  @override
+  String get weekdayShortSunday => 'Dom';
+
+  @override
+  String get registerTitle => 'Anotar';
+
+  @override
+  String get registerExpense => 'Gasto';
+
+  @override
+  String get registerIncome => 'Entrada';
+
+  @override
+  String get registerAmountAboveZero => 'Digite um valor maior que zero.';
+
+  @override
+  String get registerNoFutureMovements =>
+      'Não dá para anotar nada com data futura.';
+
+  @override
+  String get registerDate => 'Data';
+
+  @override
+  String get registerNoteExpenseExample => 'Ex.: Padaria do Zé';
+
+  @override
+  String get registerNoteIncomeExample => 'Ex.: Gorjeta de sexta';
+
+  @override
+  String get receiptTitle => 'Comprovante';
+
+  @override
+  String get receiptAdd => 'Adicionar comprovante';
+
+  @override
+  String get receiptCamera => 'Câmera';
+
+  @override
+  String get receiptGallery => 'Galeria';
+
+  @override
+  String get receiptChange => 'Trocar';
+
+  @override
+  String get receiptRemove => 'Remover';
+
+  @override
+  String get receiptHint => 'Uma foto para lembrar o que foi este gasto.';
+
+  @override
+  String get receiptAttached => 'Comprovante anexado';
+
+  @override
+  String get receiptView => 'Ver comprovante';
+
+  @override
+  String get receiptClose => 'Fechar';
+
+  @override
+  String get receiptMissing => 'A foto não está mais neste aparelho.';
+
+  @override
+  String get receiptFailed => 'Não foi possível salvar a foto.';
+
+  @override
+  String get receiptBackupNote =>
+      'O backup e os arquivos exportados não incluem fotos dos comprovantes.';
+
+  @override
+  String get csvExportTooltip => 'Exportar extrato';
+
+  @override
+  String get exportFormatTitle => 'Escolher formato';
+
+  @override
+  String get exportAllHistory => 'Todo o histórico será exportado.';
+
+  @override
+  String get exportCsvTitle => 'CSV (.csv)';
+
+  @override
+  String get exportCsvDescription =>
+      'Para importar em outros apps. Os números dependem da configuração regional.';
+
+  @override
+  String get exportExcelTitle => 'Excel (.xlsx)';
+
+  @override
+  String get exportExcelDescription =>
+      'Pronto para calcular no Excel e no Google Sheets.';
+
+  @override
+  String get csvExportPreparing => 'Preparando…';
+
+  @override
+  String get releaseNote1018Export =>
+      'Exporte seu extrato em CSV ou Excel pelo Extrato ou pelo Meu Sobrita.';
+
+  @override
+  String get releaseNote1019Goal =>
+      'Novidade: Minha meta. Cole o link de algo que você quer comprar e junte nela o que sobra de cada ciclo.';
+
+  @override
+  String get releaseNote1019Bought =>
+      'Quando comprar, use “Comprei com a minha meta”: o dinheiro de hoje e o orçamento não mudam.';
+
+  @override
+  String get settingsCsvExport => 'Exportar extrato';
+
+  @override
+  String get settingsCsvExportValue => 'Compartilhar';
+
+  @override
+  String get csvExportEmpty => 'Ainda não há registros para exportar.';
+
+  @override
+  String get csvExportFailed =>
+      'Não conseguimos abrir o compartilhamento. Tente de novo.';
+
+  @override
+  String get csvHeaderDate => 'Data';
+
+  @override
+  String get csvHeaderTime => 'Hora';
+
+  @override
+  String get csvHeaderType => 'Tipo';
+
+  @override
+  String get csvHeaderCategory => 'Categoria';
+
+  @override
+  String get csvHeaderNote => 'Nota';
+
+  @override
+  String get csvHeaderPayment => 'Pagamento';
+
+  @override
+  String get csvHeaderAmount => 'Valor';
+
+  @override
+  String get csvHeaderCurrency => 'Moeda';
+
+  @override
+  String get csvTypeExpense => 'Gasto';
+
+  @override
+  String get csvTypeFixedExpense => 'Gasto fixo';
+
+  @override
+  String get csvTypeIncome => 'Entrada';
+
+  @override
+  String get registerPayment => 'Pagamento';
+
+  @override
+  String get registerPaymentHint => 'Dinheiro sai da sua contagem. Cartão não.';
+
+  @override
+  String get registerIncomeKind => 'Tipo de entrada';
+
+  @override
+  String get registerWhatToDo => 'O que você quer fazer?';
+
+  @override
+  String get registerThisCycle => 'Este ciclo';
+
+  @override
+  String get registerSaveIt => 'Guardar';
+
+  @override
+  String get registerReceivedIn => 'Você recebeu em';
+
+  @override
+  String get registerAccount => 'Conta';
+
+  @override
+  String get registerReconcileQuestion => 'Este gasto explica a diferença?';
+
+  @override
+  String registerReconcileBody(String amount) {
+    return 'Você tem $amount pendente da última contagem. Se for o mesmo gasto, a gente junta sem contar duas vezes.';
+  }
+
+  @override
+  String get registerReconcileNo => 'Não, é novo';
+
+  @override
+  String get registerReconcileYes => 'Sim, juntar';
+
+  @override
+  String get registerDifferenceReconciled => 'Diferença conciliada';
+
+  @override
+  String get registerExpenseSaved => 'Gasto salvo';
+
+  @override
+  String get registerIncomeSaved => 'Entrada salva';
+
+  @override
+  String get cashCountTitle => 'Contagem do dinheiro';
+
+  @override
+  String get cashCountPickWhatHappened =>
+      'Escolha o que aconteceu com a diferença.';
+
+  @override
+  String get cashCountSavedWithoutDuplicates =>
+      'Contagem salva sem duplicar nada.';
+
+  @override
+  String get cashCountPrompt => 'Conte só o dinheiro que você tem agora.';
+
+  @override
+  String get cashCountNoneYet => 'Ainda sem contagem';
+
+  @override
+  String get cashCountResultPending =>
+      'O resultado aparece depois que você digitar a contagem.';
+
+  @override
+  String get cashCountBaselineHint =>
+      'Este será seu ponto de partida. Não será registrado como entrada.';
+
+  @override
+  String get cashCountExpected => 'Esperávamos';
+
+  @override
+  String get cashCountCounted => 'Você contou';
+
+  @override
+  String get cashCountBalanced => 'Tudo bate';
+
+  @override
+  String cashCountShort(String amount) {
+    return 'Faltam $amount';
+  }
+
+  @override
+  String cashCountExtra(String amount) {
+    return 'Sobram $amount';
+  }
+
+  @override
+  String get cashCountWhatHappened => 'O que aconteceu?';
+
+  @override
+  String get cashCountHelperExpense =>
+      'Foi um gasto que você não tinha anotado.';
+
+  @override
+  String get cashCountHelperIncome => 'Foi dinheiro novo que você recebeu.';
+
+  @override
+  String get cashCountHelperTransferOut =>
+      'Você depositou ou passou para outra conta.';
+
+  @override
+  String get cashCountHelperTransferIn =>
+      'Você sacou ou trouxe de outra conta.';
+
+  @override
+  String get cashCountHelperCorrection => 'A contagem anterior estava errada.';
+
+  @override
+  String get cashCountHelperPending => 'Decidir depois.';
+
+  @override
+  String get cashCountSingleExpenseHint =>
+      'Isto cria um único gasto. Você não vai precisar anotá-lo de novo.';
+
+  @override
+  String get cashCountNoteTipExample => 'Ex.: Gorjeta';
+
+  @override
+  String get cashCountWhatToDoWithMoney => 'O que fazemos com este dinheiro?';
+
+  @override
+  String get cashCountSaveFirst => 'Salvar primeira contagem';
+
+  @override
+  String get cashCountSave => 'Salvar contagem';
+
+  @override
+  String get cycleTitle => 'Seu ciclo';
+
+  @override
+  String get cycleCurrent => 'Ciclo atual';
+
+  @override
+  String get cycleInProgress => 'Em andamento';
+
+  @override
+  String get cycleUnchanged => 'Não muda';
+
+  @override
+  String get cycleNewFrequency => 'Nova frequência';
+
+  @override
+  String get cycleFirstPay => 'Primeiro pagamento';
+
+  @override
+  String get cyclePayDay => 'Dia do pagamento';
+
+  @override
+  String get cycleNext => 'Próximo ciclo';
+
+  @override
+  String cycleChangeAppliesRepeating(int days) {
+    return 'A mudança vale a partir do próximo ciclo e depois se renova a cada $days dias.';
+  }
+
+  @override
+  String get cycleChangeApplies => 'A mudança vale a partir do próximo ciclo.';
+
+  @override
+  String get cycleSaveChange => 'Salvar mudança';
+
+  @override
+  String cycleShortFirst(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'só $days dias',
+      one: 'só 1 dia',
+    );
+    return 'O primeiro ciclo dura $_temp0, então recebe a parte do orçamento que lhe cabe.';
+  }
+
+  @override
+  String get cycleBudgetTitle => 'Seu orçamento é por ciclo';
+
+  @override
+  String cycleBudgetBody(String current, String suggested) {
+    return 'Agora são $current por ciclo. Com a nova frequência, cerca de $suggested por ciclo mantêm o mesmo ritmo de gastos. A mudança começa no próximo ciclo.';
+  }
+
+  @override
+  String cycleBudgetUse(String amount) {
+    return 'Usar $amount';
+  }
+
+  @override
+  String cycleBudgetKeep(String amount) {
+    return 'Manter $amount';
+  }
+
+  @override
+  String get onboardingBudgetAboveZero => 'Digite um orçamento maior que zero.';
+
+  @override
+  String get onboardingCashOrSkip =>
+      'Digite o dinheiro ou escolha “Agora não”.';
+
+  @override
+  String get prologueRainNoEnd => 'A chuva não dava sinal de parar.';
+
+  @override
+  String get prologueRentPaid =>
+      'O aluguel estava pago, e o que sobrava na conta tinha que durar até o próximo pagamento.';
+
+  @override
+  String get prologueSoundAtDoor => 'Algo se mexeu perto da porta.';
+
+  @override
+  String get prologueGoLook => 'Ir ver';
+
+  @override
+  String get prologueWetTracks =>
+      'Duas fileiras de pegadas molhadas cruzaram o chão.';
+
+  @override
+  String get prologueShelter => 'Deixa a gente esperar a chuva passar.';
+
+  @override
+  String get prologueItSpoke => '…falou.';
+
+  @override
+  String get prologueReplySurprised => 'Você acabou de falar?';
+
+  @override
+  String get prologueReplyTowel => '(você pega uma toalha sem dizer nada)';
+
+  @override
+  String get prologueEarnKeep =>
+      'Preciso ajudar de algum jeito. Eu cuido dos números.';
+
+  @override
+  String get prologueAskSchedule => 'Primeiro: quando o dinheiro entra?';
+
+  @override
+  String get prologueAskPayday =>
+      'Que dia você recebe? Me diga o primeiro e eu conto o resto.';
+
+  @override
+  String prologueAskBudget(int days) {
+    return 'Faltam $days dias para o próximo pagamento. Quanto você pensa gastar?';
+  }
+
+  @override
+  String get prologueSkipIsFine =>
+      'Pode pular. Eu pergunto de novo quando a gente chegar em casa.';
+
+  @override
+  String get prologueSkip => 'Pular';
+
+  @override
+  String get prologueDriedOff =>
+      'Secos, os dois se acalmaram. Lá fora ainda chovia.';
+
+  @override
+  String get prologueWhoSits => 'Quem senta com você?';
+
+  @override
+  String get prologueMichiTrait => 'Quieto.\nBom com números.';
+
+  @override
+  String get prologuePoodleTrait => 'Pura energia.\nCuida de você.';
+
+  @override
+  String get prologueSchnauzerTrait => 'Observador.\nSempre atento.';
+
+  @override
+  String get prologueLockedName => '???';
+
+  @override
+  String get prologueLockedTrait => 'Pura energia.\nCuida de você.';
+
+  @override
+  String get prologueLockedSoon => 'Arte a caminho';
+
+  @override
+  String get prologueLiveTogether => 'Podem ficar';
+
+  @override
+  String prologueOtherWaits(String name) {
+    return '$name ficou na porta, com timidez. Chega depois de 3 dias com registros, ou na hora com 2 anúncios.';
+  }
+
+  @override
+  String homeStarterWaiting(String name) {
+    return '$name espera na porta';
+  }
+
+  @override
+  String homeStarterDays(int target) {
+    return 'Chega com $target dias com registros';
+  }
+
+  @override
+  String homeStarterCallNow(int target, int progress) {
+    return 'Chamar já com $target anúncios · $progress/$target';
+  }
+
+  @override
+  String starterArrivalKicker(int days) {
+    return '$days dias com registros';
+  }
+
+  @override
+  String starterArrivalTitle(String name) {
+    return '$name chegou perto!';
+  }
+
+  @override
+  String get starterArrivalLine =>
+      '“Vi você anotar todo dia. Eu também quero ajudar.”';
+
+  @override
+  String starterArrivalKeep(String name) {
+    return 'Continuar com $name';
+  }
+
+  @override
+  String starterArrivalSwitch(String name) {
+    return 'Morar com $name';
+  }
+
+  @override
+  String collectionStarterUnlock(
+    int days,
+    int daysTarget,
+    int ads,
+    int adsTarget,
+  ) {
+    return '$days/$daysTarget dias com registros, ou $ads/$adsTarget anúncios. O que vier primeiro.';
+  }
+
+  @override
+  String prologueGreeting(String name) {
+    return 'Eu sou $name. Obrigado por abrir a porta.';
+  }
+
+  @override
+  String get onboardingStart => 'Começar';
+
+  @override
+  String get onboardingTagline => 'Seu dinheiro, sem pressão.';
+
+  @override
+  String get onboardingPromise =>
+      'A gente te diz quanto você pode gastar hoje.';
+
+  @override
+  String get onboardingNoAccount => 'Sem conta. Seus dados ficam com você.';
+
+  @override
+  String get onboardingHowPaid => 'Como você recebe?';
+
+  @override
+  String get onboardingHowPaidHint => 'Isso define as datas do seu orçamento.';
+
+  @override
+  String get onboardingCycleHelperSemiMonthly =>
+      'Dois pagamentos por mês: dia 15 e o último dia.';
+
+  @override
+  String get onboardingCycleHelperMonthly => 'Um pagamento por mês.';
+
+  @override
+  String get onboardingCycleHelperWeekly => 'Toda semana.';
+
+  @override
+  String get onboardingCycleHelperIrregular => 'Minha renda não tem data fixa.';
+
+  @override
+  String get onboardingPlanWithoutFixedDate => 'Planejar sem data fixa';
+
+  @override
+  String get onboardingWhichDayPaid => 'Que dia você recebe?';
+
+  @override
+  String get onboardingSecondPayEndOfMonth => 'Segundo pagamento · fim do mês';
+
+  @override
+  String get onboardingHowManyDays => 'Para quantos dias você quer planejar?';
+
+  @override
+  String get onboardingCyclePreview => 'Seu ciclo ficaria assim';
+
+  @override
+  String onboardingRepeatsEvery(int days) {
+    return 'Quando terminar, outro período de $days dias começa sozinho.';
+  }
+
+  @override
+  String get onboardingShortMonthsNote =>
+      'As datas se ajustam sozinhas nos meses curtos.';
+
+  @override
+  String get onboardingBudgetQuestion =>
+      'Quanto você quer gastar\nneste ciclo?';
+
+  @override
+  String get onboardingBudgetLater => 'Você pode definir depois pelo Início.';
+
+  @override
+  String get onboardingNotNow => 'Agora não';
+
+  @override
+  String get onboardingCashQuestion => 'Quanto dinheiro\nvocê tem hoje?';
+
+  @override
+  String get onboardingCashOptional => 'Deixe vazio se preferir contar depois.';
+
+  @override
+  String get onboardingCashIsBaseline =>
+      'Esta será sua primeira contagem, não uma entrada.';
+
+  @override
+  String onboardingSettledIn(String name) {
+    return 'A chuva parou. $name se acomodou ao seu lado.';
+  }
+
+  @override
+  String get onboardingFirstQuests => 'Suas primeiras missões';
+
+  @override
+  String get onboardingWaitingAtHome => 'Te esperando em casa';
+
+  @override
+  String get onboardingGoHome => 'Ir para o Início';
+
+  @override
+  String get onboardingPlanReady => 'Seu plano está pronto';
+
+  @override
+  String get onboardingCanSpendToday => 'Hoje você pode gastar';
+
+  @override
+  String onboardingStepOf(int step, int total) {
+    return '$step de $total';
+  }
+
+  @override
+  String progressPercent(int percent) {
+    return 'Progresso $percent por cento';
+  }
+
+  @override
+  String stepOf(int step, int total) {
+    return 'Passo $step de $total';
+  }
+
+  @override
+  String xpOfTarget(int current, int target) {
+    return '$current / $target XP';
+  }
+
+  @override
+  String get xpCycleInGreenBiweekly => 'Você fechou as duas semanas no azul';
+
+  @override
+  String get onboardingCycleHelperBiweekly =>
+      'A cada duas semanas, desde meu último pagamento.';
+
+  @override
+  String get cycleLastPayday => 'Último pagamento';
+
+  @override
+  String get onboardingWhenLastPaid => 'Quando foi seu último pagamento?';
+
+  @override
+  String get onboardingBiweeklyNeedsDate =>
+      'Escolha o dia do seu último pagamento.';
+
+  @override
+  String get pickDate => 'Escolher data';
+
+  @override
+  String movementSubtitle(String first, String second) {
+    return '$first · $second';
+  }
+
+  @override
+  String get settingsSectionAbout => 'Sobre';
+
+  @override
+  String get settingsReleaseNotes => 'Novidades';
+
+  @override
+  String get settingsVersion => 'Versão';
+
+  @override
+  String get settingsVersionUnknown => '—';
+
+  @override
+  String get releaseNotesTitle => 'Novidades';
+
+  @override
+  String get releaseNotesCurrent => 'Atual';
+
+  @override
+  String releaseNotesRetention(int count) {
+    return 'Guardamos as últimas $count versões.';
+  }
+
+  @override
+  String get releaseNote1015Penguin =>
+      'O Penguin chegou à coleção. Uma compra única e ele fica com você.';
+
+  @override
+  String get releaseNote1015Ads =>
+      'Melhoramos o carregamento e a estabilidade dos anúncios com recompensa.';
+
+  @override
+  String get releaseNote1016Costumes =>
+      'Chegaram 12 fantasias da temporada para seus amigos. São grátis até 3 de novembro.';
+
+  @override
+  String get releaseNote1016Keeps => 'Depois de receber, são seus para sempre.';
+
+  @override
+  String get releaseNote1017Delete =>
+      'Agora dá para apagar um gasto na mesma tela em que você o edita.';
+
+  @override
+  String get releaseNote1017Dates =>
+      'Dá para mudar a data de um gasto ou de uma entrada, e agora as entradas também podem ser editadas.';
+
+  @override
+  String get releaseNote1017Projection =>
+      'O Início mostra quanto vai sobrar no fechamento do ciclo nesse ritmo.';
+
+  @override
+  String get updateAvailableTitle => 'Tem versão nova';
+
+  @override
+  String get updateAvailableBody => 'Atualize para ter o Sobrita mais recente.';
+
+  @override
+  String updateCurrentVersion(String version) {
+    return 'Sua versão: v$version';
+  }
+
+  @override
+  String get updateAction => 'Atualizar';
+
+  @override
+  String get updateLater => 'Agora não';
+
+  @override
+  String get updateBannerMessage => 'Nova versão disponível';
+
+  @override
+  String get updateBannerDismiss => 'Fechar o aviso';
+
+  @override
+  String get updateStoreFailed => 'Não foi possível abrir o Google Play.';
+
+  @override
+  String get settingsCheckUpdate => 'Procurar atualização';
+
+  @override
+  String get settingsCheckUpdateBusy => 'Procurando…';
+
+  @override
+  String get settingsCheckUpdateUpToDate => 'Você está em dia.';
+
+  @override
+  String get settingsRateApp => 'Avaliar o Sobrita';
+
+  @override
+  String get settingsOurApps => 'Apps recomendados';
+
+  @override
+  String get ourAppsIntro => 'Feitos pela equipe do Sobrita.';
+
+  @override
+  String get ourAppsOpen => 'Ver no Google Play';
+
+  @override
+  String get ourAppsMultiCalKind => 'Calculadora';
+
+  @override
+  String get ourAppsMultiCalBlurb =>
+      'Calculadora, gorjeta, idade e unidades. Divida a conta com uma foto do recibo.';
+
+  @override
+  String get ourAppsLoopetKind => 'Rotinas';
+
+  @override
+  String get ourAppsLoopetBlurb =>
+      'Seu dia inteiro em um círculo. Veja qual rotina fazer agora e qual vem depois.';
+
+  @override
+  String get releaseAnnouncementViewAll => 'Ver tudo';
+
+  @override
+  String get releaseAnnouncementDone => 'Pronto';
+
+  @override
+  String get releaseAnnouncementDontShowAgain => 'Não mostrar de novo';
+
+  @override
+  String get settingsReleaseNotesUnread => 'Novidades não lidas';
+
+  @override
+  String get fixedSectionTitle => 'Gastos fixos';
+
+  @override
+  String fixedSectionMonth(String month) {
+    return '$month · separado do seu gasto diário';
+  }
+
+  @override
+  String fixedPaidOfTotal(String paid, String total) {
+    return 'Pago $paid de $total';
+  }
+
+  @override
+  String get fixedAdd => 'Adicionar gasto fixo';
+
+  @override
+  String get fixedEmptyBody =>
+      'Aluguel, celular, luz: anote uma vez e eu te lembro quando vencer. Eles não mudam seu gasto diário.';
+
+  @override
+  String get fixedFrequencyWeekly => 'Toda semana';
+
+  @override
+  String get fixedFrequencySemiMonthly => 'A cada quinzena';
+
+  @override
+  String get fixedFrequencyMonthly => 'Todo mês';
+
+  @override
+  String get fixedFrequencyBimonthly => 'A cada 2 meses';
+
+  @override
+  String get fixedStatusPaid => 'Pago';
+
+  @override
+  String get fixedStatusTomorrow => 'Amanhã';
+
+  @override
+  String get fixedStatusOverdue => 'Vencido';
+
+  @override
+  String fixedApprox(String amount) {
+    return 'cerca de $amount';
+  }
+
+  @override
+  String get fixedFormNewTitle => 'Novo gasto fixo';
+
+  @override
+  String get fixedFormEditTitle => 'Editar gasto fixo';
+
+  @override
+  String get fixedName => 'Nome';
+
+  @override
+  String get fixedNameHint => 'Aluguel, celular, luz…';
+
+  @override
+  String get fixedNameRequired => 'Dê um nome';
+
+  @override
+  String get fixedHowOften => 'Com que frequência?';
+
+  @override
+  String get fixedNextDue => 'Próximo pagamento';
+
+  @override
+  String fixedThenDates(String dates) {
+    return 'Depois: $dates…';
+  }
+
+  @override
+  String get fixedVariable => 'O valor muda a cada vez';
+
+  @override
+  String get fixedVariableHint =>
+      'Uso o último valor que você pagou como estimativa.';
+
+  @override
+  String get fixedFormNote =>
+      'Não muda seu gasto diário: seu orçamento é o que sobra depois dos fixos.';
+
+  @override
+  String get fixedSave => 'Salvar gasto fixo';
+
+  @override
+  String get fixedDelete => 'Apagar gasto fixo';
+
+  @override
+  String fixedDeleteTitle(String name) {
+    return 'Apagar $name?';
+  }
+
+  @override
+  String get fixedDeleteBody =>
+      'Os pagamentos que você já anotou continuam no extrato.';
+
+  @override
+  String get fixedDueToday => 'Vence hoje';
+
+  @override
+  String get fixedDueTomorrow => 'Vence amanhã';
+
+  @override
+  String fixedDueOn(String date) {
+    return 'Vence em $date';
+  }
+
+  @override
+  String fixedWasDue(String date) {
+    return 'Venceu em $date';
+  }
+
+  @override
+  String get fixedHowMuch => 'Quanto você pagou?';
+
+  @override
+  String fixedLastTime(String amount) {
+    return 'Da última vez: $amount';
+  }
+
+  @override
+  String fixedTodayUnchanged(String amount) {
+    return 'Seu valor de hoje continua $amount.';
+  }
+
+  @override
+  String fixedCashChange(String from, String to) {
+    return 'Dinheiro estimado: de $from para $to';
+  }
+
+  @override
+  String fixedPaidWith(String method) {
+    return 'Pago com $method';
+  }
+
+  @override
+  String get fixedChange => 'Mudar';
+
+  @override
+  String get fixedMarkPaid => 'Já paguei';
+
+  @override
+  String get fixedNotYet => 'Ainda não';
+
+  @override
+  String get fixedBillOnly => 'Só chegou a conta';
+
+  @override
+  String fixedBillSaved(String amount) {
+    return 'Certo, espero $amount.';
+  }
+
+  @override
+  String fixedPaymentSaved(String name) {
+    return '$name anotado.';
+  }
+
+  @override
+  String get fixedHomeLabel => 'Gasto fixo';
+
+  @override
+  String fixedHomeMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pagamentos fixos para conferir',
+      one: '$count pagamento fixo para conferir',
+      zero: '$count pagamentos fixos para conferir',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fixedHomeSee => 'Ver';
+
+  @override
+  String get fixedIntroTitle => 'Seu orçamento é para gastar, sem os fixos';
+
+  @override
+  String fixedIntroBody(String budget, String name) {
+    return 'Gastos fixos não baixam seu valor diário. Se seus $budget já contavam com “$name”, vale baixar o orçamento.';
+  }
+
+  @override
+  String get fixedIntroKeep => 'Está bom assim';
+
+  @override
+  String get fixedIntroAdjust => 'Ajustar orçamento';
+
+  @override
+  String get fixedBadge => 'Fixo';
+
+  @override
+  String get fixedNothingThisMonth => 'Nada vence este mês.';
+
+  @override
+  String get fixedReminderLabel => 'Lembrete';
+
+  @override
+  String get fixedReminderNone => 'Sem lembrete';
+
+  @override
+  String get fixedReminderSameDay => 'No dia';
+
+  @override
+  String get fixedReminderDayBefore => '1 dia antes';
+
+  @override
+  String get fixedReminderThreeDaysBefore => '3 dias antes';
+
+  @override
+  String get fixedReminderHint => 'Eu te aviso às 9:00 da manhã.';
+
+  @override
+  String get fixedReminderBlocked =>
+      'As notificações do Sobrita estão desligadas, então não consigo te avisar.';
+
+  @override
+  String fixedReminderTitleToday(String name) {
+    return '$name vence hoje';
+  }
+
+  @override
+  String fixedReminderTitleTomorrow(String name) {
+    return '$name vence amanhã';
+  }
+
+  @override
+  String fixedReminderTitleInDays(String name, int days) {
+    return '$name vence em $days dias';
+  }
+
+  @override
+  String fixedReminderBody(String amount, String method) {
+    return '$amount · $method. Quando pagar, anote no Sobrita.';
+  }
+
+  @override
+  String get backupImportTitle => 'Importar backup';
+
+  @override
+  String get backupImportHint =>
+      'Cole aqui o backup JSON que você copiou do Sobrita.';
+
+  @override
+  String get backupPaste => 'Colar backup';
+
+  @override
+  String get backupPreview => 'Conferir backup';
+
+  @override
+  String get backupReplaceWarning =>
+      'Este backup substituirá seus registros e ajustes atuais. Salvaremos uma cópia dos dados atuais antes de continuar.';
+
+  @override
+  String backupSummary(int expenses, int incomes, int fixed) {
+    return '$expenses despesas · $incomes receitas · $fixed despesas fixas';
+  }
+
+  @override
+  String get backupRestore => 'Restaurar este backup';
+
+  @override
+  String get backupImportSuccess => 'Backup restaurado.';
+
+  @override
+  String get backupInvalid =>
+      'Este não é um backup válido do Sobrita. Confira se você copiou todo o texto.';
+
+  @override
+  String get backupNewer =>
+      'Este backup precisa de uma versão mais recente do Sobrita. Atualize o app primeiro.';
+
+  @override
+  String get backupPurchaseNote =>
+      'Recupere suas compras em Restaurar compras usando a mesma conta da loja.';
+
+  @override
+  String get shopRetry => 'Recarregar preços';
+
+  @override
+  String get shopLoading => 'Carregando preços…';
+
+  @override
+  String get shopRefreshed => 'Preços atualizados.';
+
+  @override
+  String get shopRetryFailed =>
+      'Não foi possível carregar os preços. Confira sua conexão e tente novamente.';
+
+  @override
+  String get backupPrevious => 'Conferir dados anteriores à importação';
+
+  @override
+  String get settingsShareApp => 'Indicar o Sobrita a um amigo';
+
+  @override
+  String get shareAction => 'Compartilhar';
+
+  @override
+  String get settlementShareTitle => 'Mostre a um amigo';
+
+  @override
+  String get settlementShareHint => 'Compartilhe o Sobrita com um link';
+
+  @override
+  String get shareMessageSettlement =>
+      'Neste ciclo sobrou dinheiro. Anoto meus gastos com um gatinho no Sobrita, e é grátis:';
+
+  @override
+  String get shareMessageSettings =>
+      'Olha esse app para anotar seus gastos com um gatinho. É grátis:';
+
+  @override
+  String firstExpenseStepOf(int step, int total) {
+    return 'Seu primeiro gasto · $step de $total';
+  }
+
+  @override
+  String get firstExpenseDoneStep => 'Seu primeiro gasto';
+
+  @override
+  String get firstExpenseAmountQuestion => 'Quanto você gastou?';
+
+  @override
+  String get firstExpenseAmountHint => 'Pense em algo que você pagou hoje.';
+
+  @override
+  String get firstExpenseAmountLater => 'Dá para mudar depois.';
+
+  @override
+  String get firstExpenseNotYet => 'Ainda não gastei';
+
+  @override
+  String get firstExpenseWhatQuestion => 'Com o que foi?';
+
+  @override
+  String get firstExpensePaymentQuestion => 'Como você pagou?';
+
+  @override
+  String get firstExpenseSave => 'Salvar meu gasto';
+
+  @override
+  String get firstExpenseDoneTitle => 'Pronto!';
+
+  @override
+  String get firstExpenseDoneBody => 'Já está anotado.';
+
+  @override
+  String get firstExpenseRecordTitle => 'Seu primeiro registro';
+
+  @override
+  String firstExpenseStarterNote(String name) {
+    return 'Hoje já conta. Cada dia que você anotar, $name chega mais perto.';
+  }
+
+  @override
+  String get homeFirstExpenseTitle => 'Um gasto e começamos.';
+
+  @override
+  String get homeFirstExpenseBody => 'Anote algo que você pagou hoje.';
+
+  @override
+  String get homeFirstExpenseAction => 'Registrar um gasto';
+
+  @override
+  String get homeFirstExpenseLater => 'Agora não';
+
+  @override
+  String get costumeChange => 'Trocar fantasia';
+
+  @override
+  String costumeCurrent(String name) {
+    return 'Fantasia atual: $name';
+  }
+
+  @override
+  String costumeSheetTitle(String character) {
+    return 'Fantasias de $character';
+  }
+
+  @override
+  String get costumeDefault => 'Original';
+
+  @override
+  String get costumePermanent => 'Para sempre';
+
+  @override
+  String get costumeApply => 'Usar esta fantasia';
+
+  @override
+  String get costumeCanReturn => 'Você pode voltar ao original quando quiser.';
+
+  @override
+  String get costumeNoExpiry => 'As fantasias recebidas ficam com você.';
+
+  @override
+  String costumeOwnedCount(int count) {
+    return '$count disponíveis';
+  }
+
+  @override
+  String costumeDescription(String character, String costume) {
+    return '$character, $costume';
+  }
+
+  @override
+  String get seasonalGiftTitle => 'Um presente da temporada';
+
+  @override
+  String get seasonalGiftBody =>
+      'Veja primeiro as fantasias dos amigos que você já tem.';
+
+  @override
+  String get seasonalGiftView => 'Ver presente';
+
+  @override
+  String get seasonalGiftClaim => 'Receber fantasias dos meus amigos';
+
+  @override
+  String seasonalGiftDeadline(String date) {
+    return 'Grátis até $date';
+  }
+
+  @override
+  String get seasonalGiftKeeps => 'Depois de receber, são seus para sempre.';
+
+  @override
+  String get seasonalGiftLockedCharacters =>
+      'As fantasias dos amigos que você conseguir depois também ficam guardadas.';
+
+  @override
+  String get seasonalGiftReceived => 'Suas fantasias estão guardadas!';
+
+  @override
+  String get seasonalGiftWardrobe => 'Experimentar em Decorar';
+
+  @override
+  String get seasonalGiftClosed =>
+      'O prazo para receber este presente terminou.';
+
+  @override
+  String get seasonalGiftPreview => 'Fantasias para seus amigos';
+
+  @override
+  String get seasonalGiftReady => 'Já pode vestir';
+
+  @override
+  String seasonalGiftStorageTitle(int count) {
+    return 'Guarde as $count fantasias para sempre';
+  }
+
+  @override
+  String get seasonalGiftLastDayTitle => 'Hoje é o último dia do presente';
+
+  @override
+  String seasonalGiftLastDayBody(int count) {
+    return 'Receba as $count fantasias grátis antes da meia-noite. Depois de receber, são seus para sempre.';
+  }
+
+  @override
+  String get costumeDracula => 'Drácula';
+
+  @override
+  String get costumeFrankenstein => 'Frankenstein';
+
+  @override
+  String get costumeWerewolf => 'Lobisomem';
+
+  @override
+  String get costumePumpkin => 'Duende abóbora';
+
+  @override
+  String get costumeMummy => 'Múmia';
+
+  @override
+  String get costumeCatrina => 'Catrina';
+
+  @override
+  String get costumeGhostPirate => 'Pirata fantasma';
+
+  @override
+  String get costumeSwampMonster => 'Monstro do pântano';
+
+  @override
+  String get costumeMoonWitch => 'Bruxa da lua';
+
+  @override
+  String get costumeCalaveraMusician => 'Músico calavera';
+
+  @override
+  String get costumeScarecrow => 'Espantalho';
+
+  @override
+  String get costumeLittleGhost => 'Fantasminha';
+
+  @override
+  String get goalTitle => 'Minha meta';
+
+  @override
+  String get goalEmptyPrompt => 'Para que você gostaria de juntar dinheiro?';
+
+  @override
+  String get goalCreate => 'Criar meta';
+
+  @override
+  String get goalEdit => 'Editar meta';
+
+  @override
+  String get goalNameLabel => 'Nome da meta';
+
+  @override
+  String get goalNameHint => 'Ex.: Um tênis novo';
+
+  @override
+  String get goalNameRequired => 'Digite um nome com até 60 caracteres.';
+
+  @override
+  String get goalTargetAmount => 'Valor da meta';
+
+  @override
+  String get goalTargetAmountInvalid => 'Digite um valor maior que zero.';
+
+  @override
+  String get goalStartingAmount => 'Valor já guardado';
+
+  @override
+  String get goalStartingHint =>
+      'Inclua apenas o dinheiro que você já separou dos gastos do dia a dia.';
+
+  @override
+  String get goalStartingAmountInvalid => 'Digite zero ou um valor positivo.';
+
+  @override
+  String get goalOptionalPlan => 'Plano de economia (opcional)';
+
+  @override
+  String get goalTargetDate => 'Data da meta';
+
+  @override
+  String get goalDateUnset => 'Definir depois';
+
+  @override
+  String get goalDateClear => 'Remover data';
+
+  @override
+  String get goalProductLink => 'Link do produto';
+
+  @override
+  String get goalProductLinkHint => 'Cole o link de um produto';
+
+  @override
+  String get goalPasteLink => 'Colar link';
+
+  @override
+  String get goalOpenProduct => 'Ver produto';
+
+  @override
+  String get goalImportFromLink => 'Buscar dados do link';
+
+  @override
+  String get goalManualEntry => 'Preencher manualmente';
+
+  @override
+  String get goalPhotoRemove => 'Remover foto';
+
+  @override
+  String get goalPriceReview =>
+      'Confira a foto e o valor importados. Você pode incluir o frete e ajustar o valor. O preço não é atualizado automaticamente.';
+
+  @override
+  String goalCurrencyMismatch(String currency) {
+    return 'O preço do produto está em $currency. Digite o valor da meta na moeda do app.';
+  }
+
+  @override
+  String get goalSaved => 'Meta salva';
+
+  @override
+  String get goalSave => 'Salvar meta';
+
+  @override
+  String get goalDelete => 'Apagar meta';
+
+  @override
+  String get goalDeleteTitle => 'Apagar esta meta?';
+
+  @override
+  String get goalDeleteBody =>
+      'Só a meta será apagada. Seus registros de receitas e despesas serão mantidos.';
+
+  @override
+  String goalRemaining(String amount) {
+    return 'Faltam $amount';
+  }
+
+  @override
+  String get goalReached => 'Meta alcançada!';
+
+  @override
+  String get goalRecordSavings => 'Registrar economia';
+
+  @override
+  String get goalProgressExplanation =>
+      'São somados o valor inicial, as receitas registradas como economia após criar a meta e os valores confirmados no fechamento dos ciclos. Nenhum dinheiro é transferido.';
+
+  @override
+  String get goalBrowserTitle => 'Conferir produto';
+
+  @override
+  String get goalBrowserInstructions =>
+      'Abra o produto e toque no botão abaixo. Se a loja pedir uma verificação, faça você mesmo.';
+
+  @override
+  String get goalBrowserRead => 'Ler dados do produto';
+
+  @override
+  String get goalBrowserManual => 'Continuar manualmente';
+
+  @override
+  String get goalBrowserLoading => 'Abrindo a loja…';
+
+  @override
+  String get goalBrowserLoadFailed =>
+      'Não foi possível abrir a página. Tente novamente ou preencha os dados manualmente.';
+
+  @override
+  String get goalBrowserRetry => 'Tentar novamente';
+
+  @override
+  String get goalBrowserVerification =>
+      'A loja está pedindo uma verificação. Faça você mesmo e leia os dados novamente quando o produto aparecer.';
+
+  @override
+  String get goalBrowserNoProduct =>
+      'Não encontramos dados claros do produto. Tente novamente na página do produto ou preencha manualmente.';
+
+  @override
+  String get goalBrowserUnsupported =>
+      'Este dispositivo não permite abrir a loja dentro do app. Você pode preencher os dados manualmente.';
+
+  @override
+  String get goalInvalidLink =>
+      'Cole um link válido de produto que comece com https://.';
+
+  @override
+  String get goalChooseType => 'Que tipo de meta você quer criar?';
+
+  @override
+  String get goalAmountType => 'Juntar um valor';
+
+  @override
+  String get goalAmountTypeDescription =>
+      'Junte dinheiro para uma reserva de emergência, uma viagem ou o valor que escolher.';
+
+  @override
+  String get goalProductType => 'Algo para comprar';
+
+  @override
+  String get goalProductTypeDescription =>
+      'Traga a foto e o preço pelo link do produto.';
+
+  @override
+  String get goalChangeType => 'Mudar tipo de meta';
+
+  @override
+  String get goalAmountNameHint =>
+      'Ex.: Reserva de emergência, dinheiro para viajar';
+
+  @override
+  String get goalAmountIntro =>
+      'Basta informar um nome e o valor da meta. Não precisa de foto nem link.';
+
+  @override
+  String get goalCyclePopupTitle => 'Fechamento do ciclo';
+
+  @override
+  String goalCycleLeftover(String amount) {
+    return 'Sobraram $amount!';
+  }
+
+  @override
+  String goalCycleApplyTo(String name) {
+    return 'Guardar para “$name”?';
+  }
+
+  @override
+  String get goalCurrentAmount => 'Já economizado';
+
+  @override
+  String get goalAfterAmount => 'Depois de guardar';
+
+  @override
+  String goalAllocateAll(String amount) {
+    return 'Guardar tudo: $amount';
+  }
+
+  @override
+  String goalAllocateAmount(String amount) {
+    return 'Somar $amount à meta';
+  }
+
+  @override
+  String get goalChangeAmount => 'Alterar valor';
+
+  @override
+  String get goalLater => 'Mais tarde';
+
+  @override
+  String get goalAllocationNotice =>
+      'O valor é registrado na sua meta. Nenhum dinheiro é transferido.';
+
+  @override
+  String get goalNoGoalInvitation =>
+      'Começar sua primeira meta com esse dinheiro?';
+
+  @override
+  String get goalNoGoalExamples =>
+      'Reserva de emergência · Viagem · Algo para comprar';
+
+  @override
+  String get goalCreateAndAllocate => 'Criar meta e economizar';
+
+  @override
+  String get goalCreateThenConfirm =>
+      'Depois de criar a meta, confirme quanto quer guardar.';
+
+  @override
+  String get goalAllocationAmount => 'Valor para guardar agora';
+
+  @override
+  String goalAllocationMaximum(String amount) {
+    return 'Você pode registrar até $amount';
+  }
+
+  @override
+  String goalAllocationInvalid(String amount) {
+    return 'Digite um valor maior que zero e de até $amount.';
+  }
+
+  @override
+  String goalAllocationSaved(String amount) {
+    return '$amount adicionados à sua meta';
+  }
+
+  @override
+  String get goalAllocateFromCycle => 'Guardar para minha meta';
+
+  @override
+  String goalCycleAllocated(String amount) {
+    return 'Registrado na meta: $amount';
+  }
+
+  @override
+  String get goalCompleted => 'Concluída';
+
+  @override
+  String get goalCompletionTitle => 'Meta alcançada';
+
+  @override
+  String goalCompletionHeadline(String name) {
+    return 'Você alcançou sua meta “$name”!';
+  }
+
+  @override
+  String get goalCompletionBody => 'Você conseguiu, uma economia de cada vez.';
+
+  @override
+  String get goalNewGoal => 'Criar nova meta';
+
+  @override
+  String get goalCompletionKept => 'A meta alcançada fica no seu histórico.';
+
+  @override
+  String get goalCompletedHistory => 'Metas alcançadas';
+
+  @override
+  String goalCompletedOn(String date) {
+    return 'Alcançada em $date';
+  }
+
+  @override
+  String get goalNoCompletedHistory => 'Você ainda não alcançou nenhuma meta.';
+
+  @override
+  String get goalCycleUnavailable =>
+      'Não há dinheiro restante neste ciclo para guardar.';
+
+  @override
+  String get goalNextGoalInvitation =>
+      'Começar sua próxima meta com o dinheiro que sobrou?';
+
+  @override
+  String goalCardDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days dias',
+      one: '1 dia',
+      zero: 'Hoje',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String goalCardUntil(String date, String amount) {
+    return 'Até $date: faltam $amount';
+  }
+
+  @override
+  String goalCardDatePassed(String date, String amount) {
+    return 'Já passou $date · faltam $amount';
+  }
+
+  @override
+  String goalCardPerCycle(String date, String amount) {
+    return 'Até $date: $amount por ciclo';
+  }
+
+  @override
+  String get goalPurchaseAction => 'Já comprei';
+
+  @override
+  String get goalPurchaseTitle => 'Comprei com a minha meta';
+
+  @override
+  String get goalPurchaseAmount => 'Quanto você pagou';
+
+  @override
+  String goalPurchaseAmountHelper(String amount) {
+    return 'Até $amount, o que você juntou';
+  }
+
+  @override
+  String get goalPurchaseRefreshPrice => 'Ler o preço de hoje no link';
+
+  @override
+  String goalPurchasePriceRead(String amount) {
+    return 'Preço de hoje: $amount';
+  }
+
+  @override
+  String get goalPurchasePriceMissing => 'Não achamos o preço. Digite você.';
+
+  @override
+  String get goalPurchaseSaved => 'O que você juntou';
+
+  @override
+  String get goalPurchaseLeft => 'Sobra';
+
+  @override
+  String get goalPurchaseOutsideBudget =>
+      'Você pagou com o que juntou: o que resta hoje e o orçamento do ciclo não mudam.';
+
+  @override
+  String goalPurchaseTooMuch(String amount) {
+    return 'Você juntou $amount. O que passar disso registre como um gasto normal.';
+  }
+
+  @override
+  String get goalPurchaseConfirm => 'Registrar e encerrar a meta';
+
+  @override
+  String get goalPurchaseConfirmNext =>
+      'Registrar e começar outra meta com a sobra';
+
+  @override
+  String goalPurchaseRecorded(String name) {
+    return 'Compra registrada: $name';
+  }
+
+  @override
+  String get goalPurchaseBadge => 'Meta';
+
+  @override
+  String get csvTypeGoalPurchase => 'Compra com meta';
+
+  @override
+  String goalCompletedPurchased(String amount) {
+    return 'Comprado por $amount';
+  }
+
+  @override
+  String get goalCycleDetails => 'Ver o fechamento completo';
+}

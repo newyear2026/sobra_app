@@ -8,6 +8,9 @@ enum XpEventKind {
   dailyMissionRecord,
   dailyMissionSameDay,
   dailyMissionBudget,
+  dailyMissionNote,
+  dailyMissionReceipt,
+  dailyMissionThreeToday,
 }
 
 class XpEvent {
@@ -94,7 +97,14 @@ class XpNotice {
     this.closedCycles = 0,
     this.missionCount = 0,
     this.newLevel,
-  });
+    this.previousLevel,
+  }) : assert(newLevel != null || previousLevel == null),
+       assert(
+         newLevel == null ||
+             (previousLevel != null &&
+                 previousLevel > 0 &&
+                 previousLevel < newLevel),
+       );
 
   final XpNoticeKind kind;
   final int xp;
@@ -115,6 +125,12 @@ class XpNotice {
   /// Level-ups are rare enough that the shell celebrates them with a card
   /// instead of the usual quiet toast.
   final int? newLevel;
+
+  /// The level immediately before the XP award that produced [newLevel].
+  ///
+  /// Keeping both boundaries lets the level-up surface announce every item
+  /// unlocked when one large award crosses more than one level.
+  final int? previousLevel;
 }
 
 class XpProgress {
@@ -125,10 +141,24 @@ class XpProgress {
     required this.nextLevelXp,
   });
 
-  static const _levelStarts = [0, 150, 450, 850, 1550];
+  // Levels 1-5 keep their shipped thresholds. Higher levels extend the same
+  // long-term progression so collection rewards at levels 8 and 10 are
+  // reachable without rewriting earned XP or the existing level boundaries.
+  static const _levelStarts = [
+    0,
+    150,
+    450,
+    850,
+    1550,
+    2550,
+    3850,
+    5450,
+    7350,
+    9550,
+  ];
 
   /// How many levels exist, so the view knows the range it has to name.
-  static const levelCount = 5;
+  static const levelCount = 10;
 
   factory XpProgress.fromTotal(int totalXp) {
     final safeTotal = totalXp < 0 ? 0 : totalXp;

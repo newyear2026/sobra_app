@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Auto Backup rules for Android 12 and above, referenced from the manifest as
+  android:dataExtractionRules. Same reasoning as backup_rules.xml, which covers
+  the older releases; both have to exist because the platform reads one or the
+  other depending on the version it is running.
+
+  The two transports are deliberately not treated alike:
+
+  cloud-backup carries the 25 MB quota that receipt photos would blow through,
+  so they are excluded there.
+
+  device-transfer has no such quota — it is a cable or a direct link between
+  two phones the user is holding — so the photos may as well travel. Omitting
+  the element entirely leaves that transport at its default, which is to carry
+  everything; spelling it out with an empty element would invite the reading
+  that nothing transfers.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" path="app_flutter/receipts" />
+    </cloud-backup>
+</data-extraction-rules>

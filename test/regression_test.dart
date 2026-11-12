@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'support/localizations.dart';
 import 'package:sobra_app/main.dart';
 import 'package:sobra_app/models/cash_reconciliation.dart';
+import 'package:sobra_app/models/currency.dart';
 import 'package:sobra_app/models/expense_entry.dart';
 import 'package:sobra_app/models/income_entry.dart';
 import 'package:sobra_app/models/money_movement.dart';
@@ -12,6 +13,7 @@ import 'package:sobra_app/screens/cash_count_screen.dart';
 import 'package:sobra_app/state/sobra_store.dart';
 import 'package:sobra_app/widgets/cat_sprite.dart';
 import 'package:sobra_app/widgets/pixel_ui.dart';
+import 'package:sobra_app/widgets/transaction_row.dart';
 
 Future<SobraStore> _seeded(DateTime Function() now, {int? cash}) async {
   SharedPreferences.setMockInitialValues({});
@@ -26,13 +28,25 @@ Future<SobraStore> _seeded(DateTime Function() now, {int? cash}) async {
 
 void main() {
   test('money parser treats display commas as grouping separators', () {
-    expect(parseAmount('1,200'), 120000);
-    expect(parseAmount(r'$1,200.50 MXN'), 120050);
-    expect(parseAmount('1200,50'), 120050);
-    expect(parseAmount('1,000,000'), 100000000);
-    expect(parseNonNegativeAmount('0'), 0);
-    expect(parseAmount('1,20,0'), isNull);
-    expect(parseNonNegativeAmount('.'), isNull);
+    expect(parseAmount(Currency.mxn, '1,200'), 120000);
+    expect(parseAmount(Currency.mxn, r'$1,200.50 MXN'), 120050);
+    expect(parseAmount(Currency.mxn, '1200,50'), 120050);
+    expect(parseAmount(Currency.mxn, '1,000,000'), 100000000);
+    expect(parseNonNegativeAmount(Currency.mxn, '0'), 0);
+    expect(parseAmount(Currency.mxn, '1,20,0'), isNull);
+    expect(parseNonNegativeAmount(Currency.mxn, '.'), isNull);
+  });
+
+  test('money parser turns down what it cannot register faithfully', () {
+    // Finer than a centavo used to round: 0.001 registered as nothing at all
+    // and 9.999 as ten pesos.
+    expect(parseAmount(Currency.mxn, '0.001'), isNull);
+    expect(parseAmount(Currency.mxn, '9.999'), isNull);
+    expect(parseNonNegativeAmount(Currency.mxn, '0.001'), isNull);
+    // And a pasted wall of digits used to land at the far end of int64.
+    expect(parseAmount(Currency.mxn, '99999999999999999999'), isNull);
+    expect(parseAmount(Currency.mxn, '9.99'), 999);
+    expect(parseAmount(Currency.mxn, '999999999999'), 99999999999900);
   });
 
   testWidgets('Inicio relabels its headline when the cycle goes over', (
@@ -77,7 +91,9 @@ void main() {
     tester,
   ) async {
     useSpanishDevice(tester);
-    tester.view.physicalSize = const Size(520, 1600);
+    // Tall enough that Inicio's recent movements are laid out, under the
+    // projection line and the room.
+    tester.view.physicalSize = const Size(520, 1800);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -90,6 +106,8 @@ void main() {
       cashCentavos: 200000,
     );
     await store.completeOnboarding();
+    // The launch gift dialog would otherwise cover the screen under test.
+    await store.takeLaunchGiftNotice();
 
     await tester.pumpWidget(SobraApp(store: store));
     await tester.pump();
@@ -322,7 +340,7 @@ void main() {
     });
   });
 
-  testWidgets('Movimientos offers no way to delete a cash-count income', (
+  testWidgets('Ingresos offers no way to delete a cash-count income', (
     tester,
   ) async {
     useSpanishDevice(tester);
@@ -350,6 +368,10 @@ void main() {
     await tester.pump();
     await tester.tap(find.text('Movim.'));
     await tester.pump();
+    // The ledger opens on Gasto, and the income half of a count only lives on
+    // the other segment.
+    await tester.tap(find.text('Ingreso'));
+    await tester.pump();
 
     // The count hides its own row behind this income, and the income cannot
     // be edited either, so the row carries no menu at all rather than a
@@ -357,7 +379,7 @@ void main() {
     expect(find.text('Ingreso en efectivo'), findsWidgets);
     expect(find.byType(PopupMenuButton<String>), findsNothing);
 
-    // An ordinary income beside it still gets its Eliminar.
+    // An ordinary income beside it gets its Editar and Eliminar.
     await store.addIncome(
       amountCentavos: 50000,
       kind: IncomeKind.extra,
@@ -374,7 +396,81 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
     }
     expect(find.text('Eliminar'), findsOneWidget);
-    expect(find.text('Editar'), findsNothing, reason: 'income has no editor');
+    expect(find.text('Editar'), findsOneWidget, reason: 'it opens its editor');
+  });
+
+  testWidgets('the expense sheet deletes, or says why it cannot', (
+    tester,
+  ) async {
+    useSpanishDevice(tester);
+    tester.view.physicalSize = const Size(520, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    var now = DateTime(2026, 3, 10, 9);
+    SharedPreferences.setMockInitialValues({});
+    final store = await SobraStore.load(now: () => now);
+    await store.configureOnboarding(
+      budgetCentavos: 600000,
+      schedule: const PaySchedule.semiMonthly(),
+      cashCentavos: 200000,
+    );
+    await store.completeOnboarding();
+    await store.addExpense(
+      amountCentavos: 12000,
+      category: ExpenseCategory.food,
+      note: 'Tacos',
+      occurredAt: now,
+      paymentMethod: PaymentMethod.card,
+    );
+
+    Future<void> settle() async {
+      for (var i = 0; i < 6; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+    }
+
+    await tester.pumpWidget(SobraApp(store: store));
+    await tester.pump();
+    await tester.tap(find.text('Movim.'));
+    await tester.pump();
+
+    // Tapping the row is where people look for delete, not the ⋮ beside it.
+    await tester.tap(find.text('Tacos'));
+    await settle();
+    expect(find.text('Editar movimiento'), findsOneWidget);
+    await tester.tap(find.widgetWithText(PixelButton, 'Eliminar'));
+    await settle();
+
+    expect(store.transactions, isEmpty);
+    expect(find.text('Editar movimiento'), findsNothing);
+    expect(find.text('Movimiento eliminado.'), findsOneWidget);
+    expect(find.text('Deshacer'), findsOneWidget);
+
+    // A cash-count expense keeps its sheet, with the reason in the button's
+    // place instead of a delete that silently is not there.
+    now = DateTime(2026, 3, 11, 9);
+    await store.reconcileCashCount(
+      actualCentavos: 170000,
+      resolution: CashResolution.expense,
+    );
+    await tester.pump();
+    final counted = store.transactions.single;
+    expect(counted.isLinkedToCashCount, isTrue);
+
+    await tester.tap(find.byType(MovementRow).first);
+    await settle();
+    expect(find.text('Editar movimiento'), findsOneWidget);
+    expect(find.widgetWithText(PixelButton, 'Eliminar'), findsNothing);
+    expect(
+      find.text(
+        'Este gasto viene de un conteo de efectivo. '
+        'Vuelve a contar para corregirlo.',
+      ),
+      findsOneWidget,
+    );
+    expect(store.transactions, hasLength(1));
   });
 
   test('undo cannot file the same entry twice', () async {

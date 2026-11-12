@@ -3,7 +3,12 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import '../l10n/generated/app_localizations.dart';
+import '../state/sobra_store.dart';
 import '../l10n/labels.dart';
+import '../models/character_costume.dart';
+import '../models/costume_motion.dart';
+import '../data/costume_motion_atlases.dart';
+import 'costume_motion_painter.dart';
 
 /// Stable, character-independent roles used by every Sobra character pack.
 enum CharacterMotionRole {
@@ -16,7 +21,6 @@ enum CharacterMotionRole {
 }
 
 abstract final class CharacterAnimationStandard {
-  static const int frameCount = 8;
   static const double frameWidth = 320;
   static const double frameHeight = 360;
   static const Size frameSize = Size(frameWidth, frameHeight);
@@ -26,8 +30,7 @@ abstract final class CharacterAnimationStandard {
 class CharacterFrameRange {
   const CharacterFrameRange(this.start, this.end)
     : assert(start >= 0),
-      assert(end >= start),
-      assert(end < CharacterAnimationStandard.frameCount);
+      assert(end >= start);
 
   final int start;
   final int end;
@@ -48,11 +51,7 @@ class CharacterPlaybackSpec {
     required this.posterFrame,
     this.holdFrame,
   }) : assert(posterFrame >= 0),
-       assert(posterFrame < CharacterAnimationStandard.frameCount),
-       assert(holdFrame == null || holdFrame >= 0),
-       assert(
-         holdFrame == null || holdFrame < CharacterAnimationStandard.frameCount,
-       );
+       assert(holdFrame == null || holdFrame >= 0);
 
   final CharacterFrameRange playRange;
 
@@ -81,15 +80,31 @@ class CharacterPlaybackSpec {
 class CharacterMotionSpec {
   const CharacterMotionSpec({
     required this.assetFileName,
+    required this.frameCount,
     required this.duration,
     required this.defaultLoop,
     required this.playbackSpec,
-  });
+    this.frameOffsets = const [],
+    this.displayScale = 1,
+  }) : assert(frameCount > 0),
+       assert(displayScale > 0);
 
   final String assetFileName;
+  final int frameCount;
   final Duration duration;
   final bool defaultLoop;
   final CharacterPlaybackSpec playbackSpec;
+
+  /// Vertical registration correction in source pixels; preserves the art.
+  final List<double> frameOffsets;
+
+  /// Character-specific visual scale applied around the grounded feet.
+  ///
+  /// Generated sheets can follow the same 320×360 frame contract while the
+  /// painted character occupies a different fraction of that frame. Keeping
+  /// this in the motion definition prevents an action from visibly changing
+  /// the companion's body size when two roles are swapped in one scene.
+  final double displayScale;
 }
 
 @immutable
@@ -98,12 +113,18 @@ class CharacterDefinition {
     required this.id,
     required this.displayName,
     required this.motions,
+    this.roomDisplayScale = 1,
   }) : assert(id != ''),
-       assert(displayName != '');
+       assert(displayName != ''),
+       assert(roomDisplayScale > 0);
 
   final String id;
   final String displayName;
   final Map<CharacterMotionRole, CharacterMotionSpec> motions;
+
+  /// Optical size in room scenes and the decorate character drawer only.
+  /// Sprite sheets share a frame size but not the same painted silhouette.
+  final double roomDisplayScale;
 
   CharacterMotionSpec motionFor(CharacterMotionRole role) {
     final motion = motions[role];
@@ -123,7 +144,8 @@ abstract final class CharacterCatalog {
     displayName: 'Michi',
     motions: {
       CharacterMotionRole.idle: CharacterMotionSpec(
-        assetFileName: 'idle-8.png',
+        assetFileName: 'idle-8.webp',
+        frameCount: 8,
         duration: Duration(milliseconds: 2800),
         defaultLoop: true,
         playbackSpec: CharacterPlaybackSpec(
@@ -132,44 +154,50 @@ abstract final class CharacterCatalog {
         ),
       ),
       CharacterMotionRole.activity: CharacterMotionSpec(
-        assetFileName: 'activity-8.png',
-        duration: Duration(milliseconds: 800),
+        assetFileName: 'activity-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
         defaultLoop: true,
         playbackSpec: CharacterPlaybackSpec(
-          playRange: CharacterFrameRange(0, 7),
+          playRange: CharacterFrameRange(0, 11),
           posterFrame: 0,
         ),
       ),
       CharacterMotionRole.processing: CharacterMotionSpec(
-        assetFileName: 'processing-8.png',
-        duration: Duration(milliseconds: 2200),
+        assetFileName: 'processing-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
         defaultLoop: true,
         playbackSpec: CharacterPlaybackSpec(
-          playRange: CharacterFrameRange(0, 7),
-          posterFrame: 4,
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 7,
         ),
       ),
       CharacterMotionRole.positive: CharacterMotionSpec(
-        assetFileName: 'positive-8.png',
-        duration: Duration(milliseconds: 2400),
+        assetFileName: 'positive-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
         defaultLoop: true,
         playbackSpec: CharacterPlaybackSpec(
-          playRange: CharacterFrameRange(0, 6),
-          posterFrame: 6,
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 8,
         ),
       ),
       CharacterMotionRole.success: CharacterMotionSpec(
-        assetFileName: 'success-8.png',
-        duration: Duration(milliseconds: 1250),
+        assetFileName: 'success-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        // V2 art includes jump height and lands on the idle pose at full size.
         defaultLoop: false,
         playbackSpec: CharacterPlaybackSpec(
-          playRange: CharacterFrameRange(0, 7),
+          playRange: CharacterFrameRange(0, 11),
           posterFrame: 5,
-          holdFrame: 0,
+          holdFrame: 11,
         ),
       ),
       CharacterMotionRole.warning: CharacterMotionSpec(
-        assetFileName: 'warning-8.png',
+        assetFileName: 'warning-8.webp',
+        frameCount: 8,
         duration: Duration(milliseconds: 1600),
         defaultLoop: false,
         playbackSpec: CharacterPlaybackSpec(
@@ -180,7 +208,781 @@ abstract final class CharacterCatalog {
     },
   );
 
-  static const Map<String, CharacterDefinition> all = {'michi': michi};
+  static const poodle = CharacterDefinition(
+    id: 'poodle',
+    displayName: 'Miru',
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 7,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 8,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        // Settled pose: 223 source pixels tall versus idle's 323.
+        displayScale: 1.45,
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+          holdFrame: 11,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 7,
+        ),
+      ),
+    },
+  );
+
+  static const schnauzer = CharacterDefinition(
+    id: 'schnauzer',
+    displayName: 'Yoshi',
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 7,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 8,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 11,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 7,
+        ),
+      ),
+    },
+  );
+
+  static const guineaPig = CharacterDefinition(
+    id: 'guinea-pig',
+    displayName: 'Cookie',
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 4,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 4,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 6,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 7,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 3,
+        ),
+      ),
+    },
+  );
+
+  static const capybara = CharacterDefinition(
+    id: 'capybara',
+    displayName: 'Tranqui',
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 4,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 6,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 6,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 4,
+        ),
+      ),
+    },
+  );
+
+  static const alpaca = CharacterDefinition(
+    id: 'alpaca',
+    displayName: 'Lana',
+    roomDisplayScale: 1.28,
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 4,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 6,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 3,
+        ),
+      ),
+    },
+  );
+
+  static const platypus = CharacterDefinition(
+    id: 'platypus',
+    displayName: 'Pico',
+    roomDisplayScale: 1.24,
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 4,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 7,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 6,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 3,
+        ),
+      ),
+    },
+  );
+
+  static const rabbit = CharacterDefinition(
+    id: 'rabbit',
+    displayName: 'Bunny',
+    roomDisplayScale: 1.38,
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          // The generated contact strip overlaps neighboring poses. Frame 0
+          // has complete cheeks and tail; later poses lose pixels at the
+          // split boundaries, so keep the intact resting pose on screen.
+          playRange: CharacterFrameRange(0, 0),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 4,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 8,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 4,
+        ),
+      ),
+    },
+  );
+
+  static const raccoon = CharacterDefinition(
+    id: 'raccoon',
+    displayName: 'Bandi',
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 4,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 8,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 4,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 3,
+        ),
+      ),
+    },
+  );
+
+  static const quokka = CharacterDefinition(
+    id: 'quokka',
+    displayName: 'Quokka',
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 6,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 3,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 3,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 3,
+        ),
+      ),
+    },
+  );
+
+  static const maltese = CharacterDefinition(
+    id: 'maltese',
+    displayName: 'Happy',
+    roomDisplayScale: 1.08,
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8-v2.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12-v2.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 2,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12-v2.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 3,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12-v2.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12-v2.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        // The settled pose is slightly shorter than idle in the source art.
+        displayScale: 1.04,
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 3,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8-v2.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 3,
+        ),
+      ),
+    },
+  );
+
+  static const penguin = CharacterDefinition(
+    id: 'penguin',
+    displayName: 'Penguin',
+    roomDisplayScale: 1.25,
+    motions: {
+      CharacterMotionRole.idle: CharacterMotionSpec(
+        assetFileName: 'idle-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 2800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 0,
+        ),
+      ),
+      CharacterMotionRole.activity: CharacterMotionSpec(
+        assetFileName: 'activity-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 1800),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 3,
+        ),
+      ),
+      CharacterMotionRole.processing: CharacterMotionSpec(
+        assetFileName: 'processing-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 3600),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 5,
+        ),
+      ),
+      CharacterMotionRole.positive: CharacterMotionSpec(
+        assetFileName: 'positive-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 4000),
+        defaultLoop: true,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 4,
+        ),
+      ),
+      CharacterMotionRole.success: CharacterMotionSpec(
+        assetFileName: 'success-12.webp',
+        frameCount: 12,
+        duration: Duration(milliseconds: 2200),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 11),
+          posterFrame: 6,
+        ),
+      ),
+      CharacterMotionRole.warning: CharacterMotionSpec(
+        assetFileName: 'warning-8.webp',
+        frameCount: 8,
+        duration: Duration(milliseconds: 1600),
+        defaultLoop: false,
+        playbackSpec: CharacterPlaybackSpec(
+          playRange: CharacterFrameRange(0, 7),
+          posterFrame: 3,
+        ),
+      ),
+    },
+  );
+
+  static const Map<String, CharacterDefinition> all = {
+    'michi': michi,
+    'poodle': poodle,
+    'schnauzer': schnauzer,
+    'guinea-pig': guineaPig,
+    'capybara': capybara,
+    'alpaca': alpaca,
+    'platypus': platypus,
+    'rabbit': rabbit,
+    'raccoon': raccoon,
+    'quokka': quokka,
+    'maltese': maltese,
+    'penguin': penguin,
+  };
+
+  /// The pack for [characterId], or Michi when there is no such pack.
+  ///
+  /// Saved state can name a character this build does not ship — an id from a
+  /// newer version, or one that was withdrawn. Falling back keeps the app
+  /// drawable instead of throwing on every frame.
+  static CharacterDefinition resolve(String characterId) =>
+      all[characterId] ?? michi;
+
+  /// The pack every install starts with.
+  static String get defaultId => michi.id;
 
   static CharacterDefinition require(String characterId) {
     final definition = all[characterId];
@@ -197,6 +999,7 @@ class CharacterSprite extends StatefulWidget {
     super.key,
     required this.characterId,
     required this.role,
+    this.costumeId,
     this.width = 112,
     this.animate = true,
     this.loop,
@@ -207,6 +1010,13 @@ class CharacterSprite extends StatefulWidget {
 
   final String characterId;
   final CharacterMotionRole role;
+  final String? costumeId;
+
+  CharacterCostume? get costume {
+    final candidate = CharacterCostumes.byId(costumeId);
+    return candidate?.characterId == characterId ? candidate : null;
+  }
+
   final double width;
   final bool animate;
   final bool? loop;
@@ -217,9 +1027,32 @@ class CharacterSprite extends StatefulWidget {
   CharacterDefinition get characterDefinition =>
       CharacterCatalog.require(characterId);
 
-  CharacterMotionSpec get motionSpec => characterDefinition.motionFor(role);
+  CostumeMotionAtlas? get costumeMotion {
+    if (costume == null) return null;
+    final atlas = costumeMotionAtlases[characterId]?[role.name];
+    if (atlas == null) {
+      throw FlutterError('$costumeId is missing the ${role.name} animation.');
+    }
+    return atlas;
+  }
 
-  String get asset => characterDefinition.assetFor(role);
+  CharacterMotionSpec get motionSpec {
+    final atlas = costumeMotion;
+    if (atlas == null) return characterDefinition.motionFor(role);
+    return CharacterMotionSpec(
+      assetFileName: atlas.asset.split('/').last,
+      frameCount: atlas.frameCount,
+      duration: Duration(milliseconds: atlas.durationMs),
+      defaultLoop: atlas.loop,
+      playbackSpec: CharacterPlaybackSpec(
+        playRange: CharacterFrameRange(0, atlas.frameCount - 1),
+        posterFrame: atlas.posterFrame,
+      ),
+    );
+  }
+
+  String get asset =>
+      costumeMotion?.asset ?? characterDefinition.assetFor(role);
 
   bool get effectiveLoop => loop ?? motionSpec.defaultLoop;
 
@@ -233,6 +1066,9 @@ class _CharacterSpriteState extends State<CharacterSprite>
   ImageStream? _stream;
   ImageStreamListener? _listener;
   ui.Image? _image;
+  ImageStream? _landingStream;
+  ImageStreamListener? _landingListener;
+  ui.Image? _landingImage;
 
   @override
   void initState() {
@@ -256,10 +1092,12 @@ class _CharacterSpriteState extends State<CharacterSprite>
   void didUpdateWidget(covariant CharacterSprite oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.characterId != widget.characterId ||
-        oldWidget.role != widget.role) {
+        oldWidget.role != widget.role ||
+        oldWidget.costumeId != widget.costumeId) {
       _loadImage();
     }
     if (oldWidget.characterId != widget.characterId ||
+        oldWidget.costumeId != widget.costumeId ||
         oldWidget.role != widget.role ||
         oldWidget.animate != widget.animate ||
         oldWidget.effectiveLoop != widget.effectiveLoop ||
@@ -270,15 +1108,30 @@ class _CharacterSpriteState extends State<CharacterSprite>
 
   void _loadImage() {
     _removeImageListener();
-    final stream = AssetImage(
-      widget.asset,
-    ).resolve(createLocalImageConfiguration(context));
+    _image = null;
+    _landingImage = null;
+    final requestedAsset = widget.asset;
+    final ImageProvider provider = widget.costume == null
+        ? AssetImage(requestedAsset)
+        : ResizeImage(AssetImage(requestedAsset), width: 1024);
+    final stream = provider.resolve(createLocalImageConfiguration(context));
     final listener = ImageStreamListener((info, _) {
-      if (!mounted) return;
+      if (!mounted || widget.asset != requestedAsset) return;
       assert(() {
+        if (widget.costume != null) return true;
+        final motion = widget.motionSpec;
+        final playback = motion.playbackSpec;
+        if (playback.playRange.end >= motion.frameCount ||
+            playback.posterFrame >= motion.frameCount ||
+            (playback.holdFrame != null &&
+                playback.holdFrame! >= motion.frameCount)) {
+          throw FlutterError(
+            '${widget.asset} playback frames must stay below '
+            '${motion.frameCount}.',
+          );
+        }
         final expectedWidth =
-            CharacterAnimationStandard.frameWidth.toInt() *
-            CharacterAnimationStandard.frameCount;
+            CharacterAnimationStandard.frameWidth.toInt() * motion.frameCount;
         final expectedHeight = CharacterAnimationStandard.frameHeight.toInt();
         if (info.image.width != expectedWidth ||
             info.image.height != expectedHeight) {
@@ -294,6 +1147,20 @@ class _CharacterSpriteState extends State<CharacterSprite>
     _stream = stream;
     _listener = listener;
     stream.addListener(listener);
+    if (widget.costumeMotion?.landingFrameStart != null) {
+      final idle = costumeMotionAtlases[widget.characterId]!['idle']!;
+      final landingStream = ResizeImage(
+        AssetImage(idle.asset),
+        width: 1024,
+      ).resolve(createLocalImageConfiguration(context));
+      final landingListener = ImageStreamListener((info, _) {
+        if (!mounted || widget.asset != requestedAsset) return;
+        setState(() => _landingImage = info.image);
+      });
+      _landingStream = landingStream;
+      _landingListener = landingListener;
+      landingStream.addListener(landingListener);
+    }
   }
 
   @visibleForTesting
@@ -318,6 +1185,13 @@ class _CharacterSpriteState extends State<CharacterSprite>
     final stream = _stream;
     final listener = _listener;
     if (stream != null && listener != null) stream.removeListener(listener);
+    final landingStream = _landingStream;
+    final landingListener = _landingListener;
+    if (landingStream != null && landingListener != null) {
+      landingStream.removeListener(landingListener);
+    }
+    _landingStream = null;
+    _landingListener = null;
   }
 
   @override
@@ -351,8 +1225,35 @@ class _CharacterSpriteState extends State<CharacterSprite>
                   !widget.effectiveLoop &&
                   _controller.status == AnimationStatus.completed,
             );
-            return CustomPaint(
-              painter: _SpritePainter(image: _image, frame: frame),
+            final costumeAtlas = widget.costumeMotion;
+            if (costumeAtlas != null) {
+              return CustomPaint(
+                painter: CostumeMotionPainter(
+                  image: _image,
+                  atlas: costumeAtlas,
+                  frame: frame,
+                  landingImage: _landingImage,
+                  idleAtlas: costumeMotionAtlases[widget.characterId]!['idle']!,
+                ),
+              );
+            }
+            final paintedFrame = CustomPaint(
+              painter: _SpritePainter(
+                image: _image,
+                frame: frame,
+                frameCount: widget.motionSpec.frameCount,
+                verticalOffset: widget.motionSpec.frameOffsets.isEmpty
+                    ? 0
+                    : widget.motionSpec.frameOffsets[frame],
+              ),
+            );
+            if (widget.motionSpec.displayScale == 1) return paintedFrame;
+            return Transform.scale(
+              scale: widget.motionSpec.displayScale,
+              // The feet rest at source y=344, above the transparent margin.
+              alignment: const Alignment(0, 2 * 344 / 360 - 1),
+              filterQuality: FilterQuality.none,
+              child: paintedFrame,
             );
           },
         ),
@@ -388,14 +1289,30 @@ class CatSprite extends StatelessWidget {
   const CatSprite({
     super.key,
     required this.motion,
+    this.characterId,
+    this.costumeId,
+    this.useEquippedCostume = true,
     this.width = 112,
     this.animate = true,
     this.loop,
     this.playToken = 0,
     this.onComplete,
+    this.reserveMotionSpace = false,
   });
 
   final CatMotion motion;
+
+  /// Reserves the transformed sheet's full bounds in compact cards/dialogs.
+  final bool reserveMotionSpace;
+
+  /// Draws this character instead of the one the scope names.
+  ///
+  /// For a screen showing a choice the user has made but not saved: the store
+  /// still holds the old character, and the preview has to show the new one
+  /// or the choice looks like it did not register.
+  final String? characterId;
+  final String? costumeId;
+  final bool useEquippedCostume;
   final double width;
   final bool animate;
   final bool? loop;
@@ -404,8 +1321,18 @@ class CatSprite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CharacterSprite(
-      characterId: 'michi',
+    // Whichever character the user is living with. Rendered outside the app
+    // — a preview, a test — it still draws Michi rather than throwing.
+    final chosen = characterId ?? SobraScope.maybeOf(context)?.characterId;
+    final definition = CharacterCatalog.resolve(
+      chosen ?? CharacterCatalog.defaultId,
+    );
+    final appearance = useEquippedCostume
+        ? SobraScope.maybeOf(context)?.equippedCostumeFor(definition.id)
+        : costumeId;
+    final sprite = CharacterSprite(
+      characterId: definition.id,
+      costumeId: appearance,
       role: motion.role,
       width: width,
       animate: animate,
@@ -414,27 +1341,62 @@ class CatSprite extends StatelessWidget {
       semanticLabel: motion.semanticLabel(AppLocalizations.of(context)),
       onComplete: onComplete,
     );
+    if (!reserveMotionSpace || appearance != null) return sprite;
+    final spec = definition.motionFor(motion.role);
+    final scale = spec.displayScale;
+    final pixelsToLogical = width / CharacterAnimationStandard.frameWidth;
+    final minOffset = spec.frameOffsets.fold<double>(
+      0,
+      (a, b) => a < b ? a : b,
+    );
+    final maxOffset = spec.frameOffsets.fold<double>(
+      0,
+      (a, b) => a > b ? a : b,
+    );
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        ((scale - 1) * width / 2).clamp(0, double.infinity),
+        ((344 * (scale - 1) - minOffset * scale) * pixelsToLogical).clamp(
+          0,
+          double.infinity,
+        ),
+        ((scale - 1) * width / 2).clamp(0, double.infinity),
+        ((16 * (scale - 1) + maxOffset * scale) * pixelsToLogical).clamp(
+          0,
+          double.infinity,
+        ),
+      ),
+      child: sprite,
+    );
   }
 }
 
 class _SpritePainter extends CustomPainter {
-  const _SpritePainter({required this.image, required this.frame});
+  const _SpritePainter({
+    required this.image,
+    required this.frame,
+    required this.frameCount,
+    required this.verticalOffset,
+  });
 
   final ui.Image? image;
   final int frame;
+  final int frameCount;
+  final double verticalOffset;
 
   @override
   void paint(Canvas canvas, Size size) {
     final sprite = image;
     if (sprite == null) return;
-    final frameWidth = sprite.width / CharacterAnimationStandard.frameCount;
+    final frameWidth = sprite.width / frameCount;
     final source = Rect.fromLTWH(
       frame * frameWidth,
       0,
       frameWidth,
       sprite.height.toDouble(),
     );
-    final destination = Offset.zero & size;
+    final destination =
+        Offset(0, verticalOffset * size.height / sprite.height) & size;
     final paint = Paint()
       ..isAntiAlias = false
       ..filterQuality = FilterQuality.none;
@@ -443,5 +1405,8 @@ class _SpritePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _SpritePainter oldDelegate) =>
-      oldDelegate.image != image || oldDelegate.frame != frame;
+      oldDelegate.image != image ||
+      oldDelegate.frame != frame ||
+      oldDelegate.frameCount != frameCount ||
+      oldDelegate.verticalOffset != verticalOffset;
 }

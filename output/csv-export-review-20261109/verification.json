@@ -1,0 +1,39 @@
+{
+  "codeBranch": "feat/meta-app-events",
+  "changes": [
+    "Quote formula-like expense/income notes with a leading tab; leave numeric amounts unchanged",
+    "Share one in-flight export across both UI entry points; show localized preparing state",
+    "Serialize cache replacement and recover after failed writes"
+  ],
+  "regressionTests": {
+    "passed": 43,
+    "log": "after-fix-tests.log"
+  },
+  "staticAnalysis": "Passed for CSV services, export UI, settings screen and permanent CSV tests",
+  "sampleValidation": "samples/validation.json",
+  "googleSheets": [
+    {
+      "name": "ko_USD",
+      "locale": "ko_KR",
+      "dataRows": 13,
+      "allMemosText": true,
+      "allAmountsNumeric": true,
+      "sum": 10370.9,
+      "url": "https://docs.google.com/spreadsheets/d/18UM3MW2CIUHWaMXnefPzRJVW11str4Fh-Z8t38t1kRE/edit"
+    },
+    {
+      "name": "pt_BRL",
+      "locale": "pt_BR",
+      "dataRows": 13,
+      "allMemosText": true,
+      "allAmountsNumeric": true,
+      "sum": 10370.9,
+      "url": "https://docs.google.com/spreadsheets/d/1MpYd5eF0XR9sggHNyqSGtSHTTmUOtUfHdxORD1XxnLI/edit"
+    }
+  ],
+  "limitations": [
+    "Excel desktop execution was not available",
+    "BRL numbers require a decimal-comma spreadsheet locale before import; changing locale after importing text does not automatically convert existing cells"
+  ],
+  "appSourceChangesCommitted": false
+}

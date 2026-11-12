@@ -1,0 +1,2152 @@
+{
+  "runId": "walmart_direct_reviewed",
+  "requestedUrl": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+  "startedAtUtc": "2026-11-10T00:40:30.571Z",
+  "androidSdk": 36,
+  "androidRelease": "16",
+  "targetSdk": 36,
+  "deviceModel": "sdk_gphone64_arm64",
+  "userAgent": "Mozilla\/5.0 (Linux; Android 16; sdk_gphone64_arm64 Build\/BE2A.250530.026.D1; wv) AppleWebKit\/537.36 (KHTML, like Gecko) Version\/4.0 Chrome\/156.0.8078.47 Mobile Safari\/537.36",
+  "webViewPackage": "com.google.android.webview",
+  "webViewVersion": "156.0.8078.47",
+  "extractorVersion": "0.1-walmart-user-triggered-public-dom-diagnostic",
+  "manualVerificationCompleted": false,
+  "manualVerificationEvidence": "explicit user confirmation supplied by operator",
+  "extractorOverrideUsed": true,
+  "inspectionTrigger": "intent_action_inspect",
+  "pageReloadedForInspection": false,
+  "cookiesClearedForInspection": false,
+  "uaOverride": false,
+  "officialApiUsed": false,
+  "manualLoginUsed": false,
+  "securityPromptAutomated": false,
+  "cookiePolicy": "Default WebView state retained; values are not inspected or exported.",
+  "observations": [
+    {
+      "accountVerification": false,
+      "availability": {
+        "outOfStock": true,
+        "source": "same-product JSON-LD Offer.availability",
+        "values": [
+          "https:\/\/schema.org\/OutOfStock"
+        ]
+      },
+      "bodyInspected": true,
+      "bodyTextExcerpt": "¡Descarga la App! y aprovecha el código WSAPPNUEVO .\n\nIr a contenido principal\nCancelar\n0\n$0.00\n\nComprado 1K+ veces el mes pasado\n\nMás vendido\nDestacado\nApple\n4.7 de 5 estrellas\n(4.7)\n|\n91\nAudífonos inalámbricos Apple AirPods 4 Blancos\nPrecio actual\n$1,499.00\ncostaba $2,999.00\n$2,999.00\nHasta 20 meses sin intereses de $74.95\no hasta 8 plazos con \nVer detalles\nPrecio actual\n$1,499.00\ncostaba $2,999.00\n$2,999.00\nAgotado\nEnvío no disponible llega Irapuato, 36590\nVendido y enviado por Walmart\nPolítica de garantía\nDetalles\nAgregar a lista\nCaracterísticas Principales del Artículo\nCómodos y estables\nSu nuevo diseño ergonómico y ligero evita que se caigan mientras te mueves.\nSonido que te envuelve\nEl audio espacial sigue tu cabeza para envolverte por completo.\nCinco horas de música\nDisfruta de hasta cinco horas seguidas de reproducción con una sola carga completa.\nEstuche fácil de llevar\nEl estuche de carga es mucho más pequeño para guardarlo en cualquier bolsillo.\nVer todos los detalles del artículo\nGenerado por IA\nEspecificaciones\nCaracterísticas clave\nGarantía\nOpciones de financiamiento\nTarjetas participantes\nRevisa las promociones bancarias\nVer detalles\nCompra hoy paga después\nSolicita hasta $20,000 y paga hasta en 8 plazos\nMe interesa\nOpiniones y calificaciones de clientes\nOpiniones y calificaciones de clientes\n4.7 de 5\n4.7 de 5 estrellas\n4.7 de 5 estrellas\nestrellas\n91 calificaciones|23 opiniones\nIncluye calificaciones y opiniones globales\n5 estrellas\n86% (78)\n4 estrellas\n5% (5)\n3 estrellas\n4% (4)\n2 estrellas\n1% (1)\n1 estrella\n3% (3)\nCómo se calcula la calificación del artículo\nFotos de los clientes\nVer todos\n+3 imágenes\nLos resultados filtrados y ordenados estarán disponibles en la nueva página \"Opiniones y calificaciones de los clientes\".\nOrdenar y filtrar\nCalificación de estrellas\nSolo compras verificadas\nCalidad\n(3)\nMostrando1-3 de 23 opiniones\n5 de 5 estrellas\nreseña con 5 de 5 estrellas\n\nCompra verificada\n\n30 may 2026\nNombre del colaborador:\nEsther\n\nSon total mente originales y suenan bien\n\n¿Es útil?\n(0)\n(0)\nReportar\n5 de 5 estrellas\nreseña con 5 de 5 estrellas\n\nCompra verificada\n\n14 jul 2026\nExcelente producto\nNombre del colaborador:\nanonymous\n\n100% originales el sonido es lo mejor y muy prácticos\n\n¿Es útil?\n(0)\n(0)\nReportar\n5 de 5 estrellas\nreseña con 5 de 5 estrellas\n\nCompra verificada\n\n2 abr 2026\nRecomendado\nNombre del colaborador:\nCindy\n\nCompletamente original, con garantía de Apple, son cómodos y con buena calidad de sonido\n\n¿Es útil?\n(0)\n(0)\nReportar\nVer todas las opiniones (23)\nAudio\/Audífonos y Reproductores Portátiles\/Audífonos In Ear",
+      "challenge": false,
+      "currencyEvidence": [
+        {
+          "currency": "MXN",
+          "source": "same-product JSON-LD Offer.priceCurrency"
+        }
+      ],
+      "currentProductSku": "00019594968846",
+      "extractionConfirmed": false,
+      "extractorVersion": "0.2-walmart-reviewed-product-dom",
+      "fieldsReadable": true,
+      "headings": [
+        {
+          "ancestors": [
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "h-100 relative",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column h-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "h-100 relative",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column h-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            }
+          ],
+          "class": "dark-gray mv1 lh-copy f6 f3-m mh3 fw7",
+          "id": "main-title",
+          "text": "Audífonos inalámbricos Apple AirPods 4 Blancos"
+        }
+      ],
+      "iframeMetadata": [
+        {
+          "class": "",
+          "id": "google_ads_iframe_149821986\/wmmxweb\/audio\/audifonos-y-reproductores-portatiles\/audifonos-in-ear_0",
+          "src": "https:\/\/24e5e0a4477d228a5ce1eccad1433b73.safeframe.googlesyndication.com\/safeframe\/1-0-45\/html\/container.html",
+          "title": "3rd party ad content",
+          "visible": true
+        },
+        {
+          "class": "",
+          "id": null,
+          "src": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+          "title": null,
+          "visible": false
+        },
+        {
+          "class": "",
+          "id": null,
+          "src": "https:\/\/js.crcldu.com\/",
+          "title": "",
+          "visible": false
+        },
+        {
+          "class": "",
+          "id": "omid_v1_present",
+          "src": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+          "title": null,
+          "visible": false
+        },
+        {
+          "class": "",
+          "id": "omid_v1_present_web",
+          "src": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+          "title": null,
+          "visible": false
+        },
+        {
+          "class": "",
+          "id": "google_ads_top_frame",
+          "src": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+          "title": null,
+          "visible": false
+        },
+        {
+          "class": "",
+          "id": null,
+          "src": "https:\/\/ep2.adtrafficquality.google\/sodar\/sodar2\/257\/runner.html",
+          "title": null,
+          "visible": false
+        },
+        {
+          "class": "",
+          "id": null,
+          "src": "https:\/\/www.google.com\/recaptcha\/api2\/aframe",
+          "title": null,
+          "visible": false
+        },
+        {
+          "class": "",
+          "id": "goog_plcm_frame",
+          "src": "https:\/\/cm.g.doubleclick.net\/partnerpixels",
+          "title": null,
+          "visible": false
+        }
+      ],
+      "imageReferences": [
+        {
+          "source": "og:image",
+          "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+        },
+        {
+          "source": "JSON-LD Product.image",
+          "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+        }
+      ],
+      "imagesScanned": 70,
+      "interpretation": "Fields describe public product DOM readability only. Security verification and human confirmation are never inferred. Compare both snapshots and user confirmation separately. Loaded image dimensions are evidence, not a quality guarantee. Availability is separate from readable price\/image.",
+      "invalidJsonLd": 0,
+      "mainImage": {
+        "alt": "Imagen 1 de Audífonos inalámbricos Apple AirPods 4 Blancos",
+        "ancestors": [
+          {
+            "class": "relative",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "pa0 ma0 bn b--white bg-white dib w-100 h-100",
+            "id": null,
+            "tag": "button"
+          },
+          {
+            "class": "relative w-100 h-100",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column items-center carousel-slide",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "list ma0 pl0 overflow-x-scroll hidesb hidesb-wk overflow-y-hidden mb0 mt0-xl carousel-1 ma3",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "relative",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column justify-center relative",
+            "id": null,
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": null,
+        "class": "w-100",
+        "complete": true,
+        "computedDisplay": "inline",
+        "computedVisibility": "visible",
+        "dataTestid": null,
+        "id": null,
+        "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+        "layoutHeight": 360.727294921875,
+        "layoutWidth": 360.727294921875,
+        "loaded": true,
+        "matchingReferences": [
+          {
+            "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+            "source": "og:image",
+            "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+          },
+          {
+            "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+            "source": "same-product JSON-LD Product.image",
+            "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+          }
+        ],
+        "naturalHeight": 612,
+        "naturalWidth": 612,
+        "source": "loaded DOM img matched by origin\/path against current-product image metadata",
+        "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF",
+        "visible": true
+      },
+      "mainImageCandidates": [],
+      "mainPriceCandidates": [
+        {
+          "ancestors": [
+            {
+              "class": "inline-flex flex-column",
+              "id": null,
+              "tag": "span"
+            },
+            {
+              "class": "b lh-copy dark-gray f4 mr2",
+              "id": null,
+              "tag": "span"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            },
+            {
+              "class": "flex flex-wrap items-center w-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex fl-m db-m items-baseline flex-column",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column justify-center",
+              "id": null,
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "content": null,
+          "dataSeoId": "hero-price",
+          "dataTestid": null,
+          "excludedFromPrimary": false,
+          "id": null,
+          "itemprop": "price",
+          "parentText": "$1,499.00",
+          "primaryScope": true,
+          "rejectedReason": null,
+          "source": "[data-testid=\"price-wrap\"] [data-seo-id=\"hero-price\"][itemprop=\"price\"]",
+          "tag": "span",
+          "text": "$1,499.00",
+          "value": 1499
+        }
+      ],
+      "manualVerificationCompleted": null,
+      "matchedProductImages": [
+        {
+          "alt": "Imagen 1 de Audífonos inalámbricos Apple AirPods 4 Blancos",
+          "ancestors": [
+            {
+              "class": "relative",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "pa0 ma0 bn b--white bg-white dib w-100 h-100",
+              "id": null,
+              "tag": "button"
+            },
+            {
+              "class": "relative w-100 h-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column items-center carousel-slide",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "list ma0 pl0 overflow-x-scroll hidesb hidesb-wk overflow-y-hidden mb0 mt0-xl carousel-1 ma3",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "relative",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column justify-center relative",
+              "id": null,
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "w-100",
+          "complete": true,
+          "computedDisplay": "inline",
+          "computedVisibility": "visible",
+          "dataTestid": null,
+          "id": null,
+          "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+          "layoutHeight": 360.727294921875,
+          "layoutWidth": 360.727294921875,
+          "loaded": true,
+          "matchingReferences": [
+            {
+              "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+              "source": "og:image",
+              "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+            },
+            {
+              "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+              "source": "same-product JSON-LD Product.image",
+              "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+            }
+          ],
+          "naturalHeight": 612,
+          "naturalWidth": 612,
+          "source": "loaded DOM img matched by origin\/path against current-product image metadata",
+          "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF",
+          "visible": true
+        }
+      ],
+      "metadata": {
+        "og:description": "Compra Audífonos inalámbricos Apple AirPods 4 Blancos a un súper precio. Compra todo en Audífonos In Ear con envío a domicilio. Tu tienda en línea Walmart",
+        "og:image": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+        "og:title": "Audífonos inalámbricos Apple AirPods 4 Blancos | Walmart en línea",
+        "og:url": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846"
+      },
+      "pageTitle": "Audífonos inalámbricos Apple AirPods 4 Blancos | Walmart en línea",
+      "pageUrl": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+      "priceAgreement": {
+        "consistent": true,
+        "sameProductStructuredOffers": [
+          {
+            "availability": "https:\/\/schema.org\/OutOfStock",
+            "currency": "MXN",
+            "name": "Audífonos inalámbricos Apple AirPods 4 Blancos",
+            "sku": "00019594968846",
+            "url": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+            "value": 1499
+          }
+        ],
+        "uniquePrimaryValues": [
+          1499
+        ]
+      },
+      "priceCandidates": [
+        {
+          "ancestors": [
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            },
+            {
+              "class": "flex flex-wrap items-center w-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "mh3 mt3",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "h-100 relative",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column h-100",
+              "id": null,
+              "tag": "div"
+            }
+          ],
+          "class": "lh-copy mr2 f4 dark-gray",
+          "content": null,
+          "dataSeoId": null,
+          "dataTestid": "price-wrap",
+          "excludedFromPrimary": true,
+          "id": null,
+          "itemprop": null,
+          "parentText": "Precio actual $1,499.00 costaba $2,999.00 $2,999.00",
+          "primaryScope": false,
+          "rejectedReason": "outside_exact_primary_hero_selector",
+          "source": "diagnostic_price_candidate",
+          "tag": "span",
+          "text": "$1,499.00 costaba $2,999.00 $2,999.00",
+          "value": null
+        },
+        {
+          "ancestors": [
+            {
+              "class": "inline-flex flex-column",
+              "id": null,
+              "tag": "span"
+            },
+            {
+              "class": "inline-flex flex-row items-center",
+              "id": null,
+              "tag": "span"
+            },
+            {
+              "class": "lh-copy mr2 f4 dark-gray",
+              "id": null,
+              "tag": "span"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            },
+            {
+              "class": "flex flex-wrap items-center w-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "mh3 mt3",
+              "id": null,
+              "tag": "div"
+            }
+          ],
+          "class": "v-mid nowrap f1",
+          "content": "$1,499.00",
+          "dataSeoId": null,
+          "dataTestid": null,
+          "excludedFromPrimary": true,
+          "id": null,
+          "itemprop": "price",
+          "parentText": "$1,499.00",
+          "primaryScope": false,
+          "rejectedReason": "outside_exact_primary_hero_selector",
+          "source": "diagnostic_price_candidate",
+          "tag": "span",
+          "text": "$1,499.00",
+          "value": 1499
+        },
+        {
+          "ancestors": [
+            {
+              "class": "flex flex-column justify-center",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column flex-row justify-between",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "ph3 ph0-m mv3",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "justify-between items-center fixed right-0 left-0 bottom-0 bg-white z-max shadow-1",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "absolute right-0 left-0 bg-white z-max pa0 f4 light-gray",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            }
+          ],
+          "class": "flex fl-m db-m items-baseline flex-column",
+          "content": null,
+          "dataSeoId": null,
+          "dataTestid": "oos-price",
+          "excludedFromPrimary": true,
+          "id": null,
+          "itemprop": null,
+          "parentText": "Precio actual $1,499.00 costaba $2,999.00 $2,999.00",
+          "primaryScope": false,
+          "rejectedReason": "outside_exact_primary_hero_selector",
+          "source": "diagnostic_price_candidate",
+          "tag": "div",
+          "text": "Precio actual $1,499.00 costaba $2,999.00 $2,999.00",
+          "value": null
+        },
+        {
+          "ancestors": [
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            },
+            {
+              "class": "flex flex-wrap items-center w-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex fl-m db-m items-baseline flex-column",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column justify-center",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column flex-row justify-between",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "ph3 ph0-m mv3",
+              "id": null,
+              "tag": "div"
+            }
+          ],
+          "class": "b lh-copy dark-gray f4 mr2",
+          "content": null,
+          "dataSeoId": null,
+          "dataTestid": "price-wrap",
+          "excludedFromPrimary": true,
+          "id": null,
+          "itemprop": null,
+          "parentText": "Precio actual $1,499.00 costaba $2,999.00 $2,999.00",
+          "primaryScope": false,
+          "rejectedReason": "outside_exact_primary_hero_selector",
+          "source": "diagnostic_price_candidate",
+          "tag": "span",
+          "text": "$1,499.00",
+          "value": 1499
+        },
+        {
+          "ancestors": [
+            {
+              "class": "inline-flex flex-column",
+              "id": null,
+              "tag": "span"
+            },
+            {
+              "class": "b lh-copy dark-gray f4 mr2",
+              "id": null,
+              "tag": "span"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            },
+            {
+              "class": "flex flex-wrap items-center w-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex fl-m db-m items-baseline flex-column",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column justify-center",
+              "id": null,
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "content": null,
+          "dataSeoId": "hero-price",
+          "dataTestid": null,
+          "excludedFromPrimary": false,
+          "id": null,
+          "itemprop": "price",
+          "parentText": "$1,499.00",
+          "primaryScope": true,
+          "rejectedReason": null,
+          "source": "[data-testid=\"price-wrap\"] [data-seo-id=\"hero-price\"][itemprop=\"price\"]",
+          "tag": "span",
+          "text": "$1,499.00",
+          "value": 1499
+        }
+      ],
+      "primaryPrice": {
+        "agreement": {
+          "sameProductStructuredOffers": 1,
+          "uniqueMainDisplayedPrice": true
+        },
+        "currency": "MXN",
+        "displayed": "$1,499.00",
+        "excluded": "Reference, strikethrough, installments and unrelated variant prices are excluded from the exact main price selector.",
+        "source": "[data-testid=\"price-wrap\"] [data-seo-id=\"hero-price\"][itemprop=\"price\"]",
+        "value": 1499
+      },
+      "productTitle": {
+        "ancestors": [
+          {
+            "class": "",
+            "id": null,
+            "tag": "section"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "h-100 relative",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column h-100",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "h-100 relative",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column h-100",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "section"
+          }
+        ],
+        "class": "dark-gray mv1 lh-copy f6 f3-m mh3 fw7",
+        "id": "main-title",
+        "source": "h1#main-title",
+        "value": "Audífonos inalámbricos Apple AirPods 4 Blancos"
+      },
+      "readyState": "complete",
+      "sameProductStructuredCount": 1,
+      "status": "public_product_reviewed_diagnostic",
+      "structuredProducts": [
+        {
+          "image": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+          "name": "Audífonos inalámbricos Apple AirPods 4 Blancos",
+          "offers": [
+            {
+              "@type": "Offer",
+              "availability": "https:\/\/schema.org\/OutOfStock",
+              "price": 1499,
+              "priceCurrency": "MXN",
+              "url": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846"
+            }
+          ],
+          "sku": "00019594968846",
+          "url": null
+        }
+      ],
+      "observedAtUtc": "2026-11-10T00:40:30.722Z",
+      "sampleIndex": 1
+    },
+    {
+      "accountVerification": false,
+      "availability": {
+        "outOfStock": true,
+        "source": "same-product JSON-LD Offer.availability",
+        "values": [
+          "https:\/\/schema.org\/OutOfStock"
+        ]
+      },
+      "bodyInspected": true,
+      "bodyTextExcerpt": "¡Descarga la App! y aprovecha el código WSAPPNUEVO .\n\nIr a contenido principal\nCancelar\n0\n$0.00\n\nComprado 1K+ veces el mes pasado\n\nMás vendido\nDestacado\nApple\n4.7 de 5 estrellas\n(4.7)\n|\n91\nAudífonos inalámbricos Apple AirPods 4 Blancos\nPrecio actual\n$1,499.00\ncostaba $2,999.00\n$2,999.00\nHasta 20 meses sin intereses de $74.95\no hasta 8 plazos con \nVer detalles\nPrecio actual\n$1,499.00\ncostaba $2,999.00\n$2,999.00\nAgotado\nEnvío no disponible llega Irapuato, 36590\nVendido y enviado por Walmart\nPolítica de garantía\nDetalles\nAgregar a lista\nCaracterísticas Principales del Artículo\nCómodos y estables\nSu nuevo diseño ergonómico y ligero evita que se caigan mientras te mueves.\nSonido que te envuelve\nEl audio espacial sigue tu cabeza para envolverte por completo.\nCinco horas de música\nDisfruta de hasta cinco horas seguidas de reproducción con una sola carga completa.\nEstuche fácil de llevar\nEl estuche de carga es mucho más pequeño para guardarlo en cualquier bolsillo.\nVer todos los detalles del artículo\nGenerado por IA\nEspecificaciones\nCaracterísticas clave\nGarantía\nOpciones de financiamiento\nTarjetas participantes\nRevisa las promociones bancarias\nVer detalles\nCompra hoy paga después\nSolicita hasta $20,000 y paga hasta en 8 plazos\nMe interesa\nOpiniones y calificaciones de clientes\nOpiniones y calificaciones de clientes\n4.7 de 5\n4.7 de 5 estrellas\n4.7 de 5 estrellas\nestrellas\n91 calificaciones|23 opiniones\nIncluye calificaciones y opiniones globales\n5 estrellas\n86% (78)\n4 estrellas\n5% (5)\n3 estrellas\n4% (4)\n2 estrellas\n1% (1)\n1 estrella\n3% (3)\nCómo se calcula la calificación del artículo\nFotos de los clientes\nVer todos\n+3 imágenes\nLos resultados filtrados y ordenados estarán disponibles en la nueva página \"Opiniones y calificaciones de los clientes\".\nOrdenar y filtrar\nCalificación de estrellas\nSolo compras verificadas\nCalidad\n(3)\nMostrando1-3 de 23 opiniones\n5 de 5 estrellas\nreseña con 5 de 5 estrellas\n\nCompra verificada\n\n30 may 2026\nNombre del colaborador:\nEsther\n\nSon total mente originales y suenan bien\n\n¿Es útil?\n(0)\n(0)\nReportar\n5 de 5 estrellas\nreseña con 5 de 5 estrellas\n\nCompra verificada\n\n14 jul 2026\nExcelente producto\nNombre del colaborador:\nanonymous\n\n100% originales el sonido es lo mejor y muy prácticos\n\n¿Es útil?\n(0)\n(0)\nReportar\n5 de 5 estrellas\nreseña con 5 de 5 estrellas\n\nCompra verificada\n\n2 abr 2026\nRecomendado\nNombre del colaborador:\nCindy\n\nCompletamente original, con garantía de Apple, son cómodos y con buena calidad de sonido\n\n¿Es útil?\n(0)\n(0)\nReportar\nVer todas las opiniones (23)\nAudio\/Audífonos y Reproductores Portátiles\/Audífonos In Ear",
+      "challenge": false,
+      "currencyEvidence": [
+        {
+          "currency": "MXN",
+          "source": "same-product JSON-LD Offer.priceCurrency"
+        }
+      ],
+      "currentProductSku": "00019594968846",
+      "extractionConfirmed": false,
+      "extractorVersion": "0.2-walmart-reviewed-product-dom",
+      "fieldsReadable": true,
+      "headings": [
+        {
+          "ancestors": [
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "h-100 relative",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column h-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "h-100 relative",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column h-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            }
+          ],
+          "class": "dark-gray mv1 lh-copy f6 f3-m mh3 fw7",
+          "id": "main-title",
+          "text": "Audífonos inalámbricos Apple AirPods 4 Blancos"
+        }
+      ],
+      "iframeMetadata": [
+        {
+          "class": "",
+          "id": "google_ads_iframe_149821986\/wmmxweb\/audio\/audifonos-y-reproductores-portatiles\/audifonos-in-ear_0",
+          "src": "https:\/\/24e5e0a4477d228a5ce1eccad1433b73.safeframe.googlesyndication.com\/safeframe\/1-0-45\/html\/container.html",
+          "title": "3rd party ad content",
+          "visible": true
+        },
+        {
+          "class": "",
+          "id": null,
+          "src": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+          "title": null,
+          "visible": false
+        },
+        {
+          "class": "",
+          "id": null,
+          "src": "https:\/\/js.crcldu.com\/",
+          "title": "",
+          "visible": false
+        },
+        {
+          "class": "",
+          "id": "omid_v1_present",
+          "src": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+          "title": null,
+          "visible": false
+        },
+        {
+          "class": "",
+          "id": "omid_v1_present_web",
+          "src": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+          "title": null,
+          "visible": false
+        },
+        {
+          "class": "",
+          "id": "google_ads_top_frame",
+          "src": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+          "title": null,
+          "visible": false
+        },
+        {
+          "class": "",
+          "id": null,
+          "src": "https:\/\/ep2.adtrafficquality.google\/sodar\/sodar2\/257\/runner.html",
+          "title": null,
+          "visible": false
+        },
+        {
+          "class": "",
+          "id": null,
+          "src": "https:\/\/www.google.com\/recaptcha\/api2\/aframe",
+          "title": null,
+          "visible": false
+        },
+        {
+          "class": "",
+          "id": "goog_plcm_frame",
+          "src": "https:\/\/cm.g.doubleclick.net\/partnerpixels",
+          "title": null,
+          "visible": false
+        }
+      ],
+      "imageReferences": [
+        {
+          "source": "og:image",
+          "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+        },
+        {
+          "source": "JSON-LD Product.image",
+          "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+        }
+      ],
+      "imagesScanned": 70,
+      "interpretation": "Fields describe public product DOM readability only. Security verification and human confirmation are never inferred. Compare both snapshots and user confirmation separately. Loaded image dimensions are evidence, not a quality guarantee. Availability is separate from readable price\/image.",
+      "invalidJsonLd": 0,
+      "mainImage": {
+        "alt": "Imagen 1 de Audífonos inalámbricos Apple AirPods 4 Blancos",
+        "ancestors": [
+          {
+            "class": "relative",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "pa0 ma0 bn b--white bg-white dib w-100 h-100",
+            "id": null,
+            "tag": "button"
+          },
+          {
+            "class": "relative w-100 h-100",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column items-center carousel-slide",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "list ma0 pl0 overflow-x-scroll hidesb hidesb-wk overflow-y-hidden mb0 mt0-xl carousel-1 ma3",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "relative",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column justify-center relative",
+            "id": null,
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": null,
+        "class": "w-100",
+        "complete": true,
+        "computedDisplay": "inline",
+        "computedVisibility": "visible",
+        "dataTestid": null,
+        "id": null,
+        "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+        "layoutHeight": 360.727294921875,
+        "layoutWidth": 360.727294921875,
+        "loaded": true,
+        "matchingReferences": [
+          {
+            "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+            "source": "og:image",
+            "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+          },
+          {
+            "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+            "source": "same-product JSON-LD Product.image",
+            "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+          }
+        ],
+        "naturalHeight": 612,
+        "naturalWidth": 612,
+        "source": "loaded DOM img matched by origin\/path against current-product image metadata",
+        "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF",
+        "visible": true
+      },
+      "mainImageCandidates": [],
+      "mainPriceCandidates": [
+        {
+          "ancestors": [
+            {
+              "class": "inline-flex flex-column",
+              "id": null,
+              "tag": "span"
+            },
+            {
+              "class": "b lh-copy dark-gray f4 mr2",
+              "id": null,
+              "tag": "span"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            },
+            {
+              "class": "flex flex-wrap items-center w-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex fl-m db-m items-baseline flex-column",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column justify-center",
+              "id": null,
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "content": null,
+          "dataSeoId": "hero-price",
+          "dataTestid": null,
+          "excludedFromPrimary": false,
+          "id": null,
+          "itemprop": "price",
+          "parentText": "$1,499.00",
+          "primaryScope": true,
+          "rejectedReason": null,
+          "source": "[data-testid=\"price-wrap\"] [data-seo-id=\"hero-price\"][itemprop=\"price\"]",
+          "tag": "span",
+          "text": "$1,499.00",
+          "value": 1499
+        }
+      ],
+      "manualVerificationCompleted": null,
+      "matchedProductImages": [
+        {
+          "alt": "Imagen 1 de Audífonos inalámbricos Apple AirPods 4 Blancos",
+          "ancestors": [
+            {
+              "class": "relative",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "pa0 ma0 bn b--white bg-white dib w-100 h-100",
+              "id": null,
+              "tag": "button"
+            },
+            {
+              "class": "relative w-100 h-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column items-center carousel-slide",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "list ma0 pl0 overflow-x-scroll hidesb hidesb-wk overflow-y-hidden mb0 mt0-xl carousel-1 ma3",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "relative",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column justify-center relative",
+              "id": null,
+              "tag": "div"
+            }
+          ],
+          "ariaLabel": null,
+          "class": "w-100",
+          "complete": true,
+          "computedDisplay": "inline",
+          "computedVisibility": "visible",
+          "dataTestid": null,
+          "id": null,
+          "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+          "layoutHeight": 360.727294921875,
+          "layoutWidth": 360.727294921875,
+          "loaded": true,
+          "matchingReferences": [
+            {
+              "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+              "source": "og:image",
+              "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+            },
+            {
+              "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+              "source": "same-product JSON-LD Product.image",
+              "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+            }
+          ],
+          "naturalHeight": 612,
+          "naturalWidth": 612,
+          "source": "loaded DOM img matched by origin\/path against current-product image metadata",
+          "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF",
+          "visible": true
+        }
+      ],
+      "metadata": {
+        "og:description": "Compra Audífonos inalámbricos Apple AirPods 4 Blancos a un súper precio. Compra todo en Audífonos In Ear con envío a domicilio. Tu tienda en línea Walmart",
+        "og:image": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+        "og:title": "Audífonos inalámbricos Apple AirPods 4 Blancos | Walmart en línea",
+        "og:url": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846"
+      },
+      "pageTitle": "Audífonos inalámbricos Apple AirPods 4 Blancos | Walmart en línea",
+      "pageUrl": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+      "priceAgreement": {
+        "consistent": true,
+        "sameProductStructuredOffers": [
+          {
+            "availability": "https:\/\/schema.org\/OutOfStock",
+            "currency": "MXN",
+            "name": "Audífonos inalámbricos Apple AirPods 4 Blancos",
+            "sku": "00019594968846",
+            "url": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+            "value": 1499
+          }
+        ],
+        "uniquePrimaryValues": [
+          1499
+        ]
+      },
+      "priceCandidates": [
+        {
+          "ancestors": [
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            },
+            {
+              "class": "flex flex-wrap items-center w-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "mh3 mt3",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "h-100 relative",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column h-100",
+              "id": null,
+              "tag": "div"
+            }
+          ],
+          "class": "lh-copy mr2 f4 dark-gray",
+          "content": null,
+          "dataSeoId": null,
+          "dataTestid": "price-wrap",
+          "excludedFromPrimary": true,
+          "id": null,
+          "itemprop": null,
+          "parentText": "Precio actual $1,499.00 costaba $2,999.00 $2,999.00",
+          "primaryScope": false,
+          "rejectedReason": "outside_exact_primary_hero_selector",
+          "source": "diagnostic_price_candidate",
+          "tag": "span",
+          "text": "$1,499.00 costaba $2,999.00 $2,999.00",
+          "value": null
+        },
+        {
+          "ancestors": [
+            {
+              "class": "inline-flex flex-column",
+              "id": null,
+              "tag": "span"
+            },
+            {
+              "class": "inline-flex flex-row items-center",
+              "id": null,
+              "tag": "span"
+            },
+            {
+              "class": "lh-copy mr2 f4 dark-gray",
+              "id": null,
+              "tag": "span"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            },
+            {
+              "class": "flex flex-wrap items-center w-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "mh3 mt3",
+              "id": null,
+              "tag": "div"
+            }
+          ],
+          "class": "v-mid nowrap f1",
+          "content": "$1,499.00",
+          "dataSeoId": null,
+          "dataTestid": null,
+          "excludedFromPrimary": true,
+          "id": null,
+          "itemprop": "price",
+          "parentText": "$1,499.00",
+          "primaryScope": false,
+          "rejectedReason": "outside_exact_primary_hero_selector",
+          "source": "diagnostic_price_candidate",
+          "tag": "span",
+          "text": "$1,499.00",
+          "value": 1499
+        },
+        {
+          "ancestors": [
+            {
+              "class": "flex flex-column justify-center",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column flex-row justify-between",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "ph3 ph0-m mv3",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "justify-between items-center fixed right-0 left-0 bottom-0 bg-white z-max shadow-1",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "absolute right-0 left-0 bg-white z-max pa0 f4 light-gray",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            }
+          ],
+          "class": "flex fl-m db-m items-baseline flex-column",
+          "content": null,
+          "dataSeoId": null,
+          "dataTestid": "oos-price",
+          "excludedFromPrimary": true,
+          "id": null,
+          "itemprop": null,
+          "parentText": "Precio actual $1,499.00 costaba $2,999.00 $2,999.00",
+          "primaryScope": false,
+          "rejectedReason": "outside_exact_primary_hero_selector",
+          "source": "diagnostic_price_candidate",
+          "tag": "div",
+          "text": "Precio actual $1,499.00 costaba $2,999.00 $2,999.00",
+          "value": null
+        },
+        {
+          "ancestors": [
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            },
+            {
+              "class": "flex flex-wrap items-center w-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex fl-m db-m items-baseline flex-column",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column justify-center",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column flex-row justify-between",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "ph3 ph0-m mv3",
+              "id": null,
+              "tag": "div"
+            }
+          ],
+          "class": "b lh-copy dark-gray f4 mr2",
+          "content": null,
+          "dataSeoId": null,
+          "dataTestid": "price-wrap",
+          "excludedFromPrimary": true,
+          "id": null,
+          "itemprop": null,
+          "parentText": "Precio actual $1,499.00 costaba $2,999.00 $2,999.00",
+          "primaryScope": false,
+          "rejectedReason": "outside_exact_primary_hero_selector",
+          "source": "diagnostic_price_candidate",
+          "tag": "span",
+          "text": "$1,499.00",
+          "value": 1499
+        },
+        {
+          "ancestors": [
+            {
+              "class": "inline-flex flex-column",
+              "id": null,
+              "tag": "span"
+            },
+            {
+              "class": "b lh-copy dark-gray f4 mr2",
+              "id": null,
+              "tag": "span"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "",
+              "id": null,
+              "tag": "section"
+            },
+            {
+              "class": "flex flex-wrap items-center w-100",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex fl-m db-m items-baseline flex-column",
+              "id": null,
+              "tag": "div"
+            },
+            {
+              "class": "flex flex-column justify-center",
+              "id": null,
+              "tag": "div"
+            }
+          ],
+          "class": null,
+          "content": null,
+          "dataSeoId": "hero-price",
+          "dataTestid": null,
+          "excludedFromPrimary": false,
+          "id": null,
+          "itemprop": "price",
+          "parentText": "$1,499.00",
+          "primaryScope": true,
+          "rejectedReason": null,
+          "source": "[data-testid=\"price-wrap\"] [data-seo-id=\"hero-price\"][itemprop=\"price\"]",
+          "tag": "span",
+          "text": "$1,499.00",
+          "value": 1499
+        }
+      ],
+      "primaryPrice": {
+        "agreement": {
+          "sameProductStructuredOffers": 1,
+          "uniqueMainDisplayedPrice": true
+        },
+        "currency": "MXN",
+        "displayed": "$1,499.00",
+        "excluded": "Reference, strikethrough, installments and unrelated variant prices are excluded from the exact main price selector.",
+        "source": "[data-testid=\"price-wrap\"] [data-seo-id=\"hero-price\"][itemprop=\"price\"]",
+        "value": 1499
+      },
+      "productTitle": {
+        "ancestors": [
+          {
+            "class": "",
+            "id": null,
+            "tag": "section"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "h-100 relative",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column h-100",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "h-100 relative",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column h-100",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "section"
+          }
+        ],
+        "class": "dark-gray mv1 lh-copy f6 f3-m mh3 fw7",
+        "id": "main-title",
+        "source": "h1#main-title",
+        "value": "Audífonos inalámbricos Apple AirPods 4 Blancos"
+      },
+      "readyState": "complete",
+      "sameProductStructuredCount": 1,
+      "status": "public_product_reviewed_diagnostic",
+      "structuredProducts": [
+        {
+          "image": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+          "name": "Audífonos inalámbricos Apple AirPods 4 Blancos",
+          "offers": [
+            {
+              "@type": "Offer",
+              "availability": "https:\/\/schema.org\/OutOfStock",
+              "price": 1499,
+              "priceCurrency": "MXN",
+              "url": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846"
+            }
+          ],
+          "sku": "00019594968846",
+          "url": null
+        }
+      ],
+      "observedAtUtc": "2026-11-10T00:40:32.730Z",
+      "sampleIndex": 2
+    }
+  ],
+  "mainFrameErrors": [],
+  "finishedAtUtc": "2026-11-10T00:40:32.730Z",
+  "completionReason": "two_snapshots_recorded",
+  "diagnosticComplete": true,
+  "extractionConfirmed": false,
+  "finalObservation": {
+    "accountVerification": false,
+    "availability": {
+      "outOfStock": true,
+      "source": "same-product JSON-LD Offer.availability",
+      "values": [
+        "https:\/\/schema.org\/OutOfStock"
+      ]
+    },
+    "bodyInspected": true,
+    "bodyTextExcerpt": "¡Descarga la App! y aprovecha el código WSAPPNUEVO .\n\nIr a contenido principal\nCancelar\n0\n$0.00\n\nComprado 1K+ veces el mes pasado\n\nMás vendido\nDestacado\nApple\n4.7 de 5 estrellas\n(4.7)\n|\n91\nAudífonos inalámbricos Apple AirPods 4 Blancos\nPrecio actual\n$1,499.00\ncostaba $2,999.00\n$2,999.00\nHasta 20 meses sin intereses de $74.95\no hasta 8 plazos con \nVer detalles\nPrecio actual\n$1,499.00\ncostaba $2,999.00\n$2,999.00\nAgotado\nEnvío no disponible llega Irapuato, 36590\nVendido y enviado por Walmart\nPolítica de garantía\nDetalles\nAgregar a lista\nCaracterísticas Principales del Artículo\nCómodos y estables\nSu nuevo diseño ergonómico y ligero evita que se caigan mientras te mueves.\nSonido que te envuelve\nEl audio espacial sigue tu cabeza para envolverte por completo.\nCinco horas de música\nDisfruta de hasta cinco horas seguidas de reproducción con una sola carga completa.\nEstuche fácil de llevar\nEl estuche de carga es mucho más pequeño para guardarlo en cualquier bolsillo.\nVer todos los detalles del artículo\nGenerado por IA\nEspecificaciones\nCaracterísticas clave\nGarantía\nOpciones de financiamiento\nTarjetas participantes\nRevisa las promociones bancarias\nVer detalles\nCompra hoy paga después\nSolicita hasta $20,000 y paga hasta en 8 plazos\nMe interesa\nOpiniones y calificaciones de clientes\nOpiniones y calificaciones de clientes\n4.7 de 5\n4.7 de 5 estrellas\n4.7 de 5 estrellas\nestrellas\n91 calificaciones|23 opiniones\nIncluye calificaciones y opiniones globales\n5 estrellas\n86% (78)\n4 estrellas\n5% (5)\n3 estrellas\n4% (4)\n2 estrellas\n1% (1)\n1 estrella\n3% (3)\nCómo se calcula la calificación del artículo\nFotos de los clientes\nVer todos\n+3 imágenes\nLos resultados filtrados y ordenados estarán disponibles en la nueva página \"Opiniones y calificaciones de los clientes\".\nOrdenar y filtrar\nCalificación de estrellas\nSolo compras verificadas\nCalidad\n(3)\nMostrando1-3 de 23 opiniones\n5 de 5 estrellas\nreseña con 5 de 5 estrellas\n\nCompra verificada\n\n30 may 2026\nNombre del colaborador:\nEsther\n\nSon total mente originales y suenan bien\n\n¿Es útil?\n(0)\n(0)\nReportar\n5 de 5 estrellas\nreseña con 5 de 5 estrellas\n\nCompra verificada\n\n14 jul 2026\nExcelente producto\nNombre del colaborador:\nanonymous\n\n100% originales el sonido es lo mejor y muy prácticos\n\n¿Es útil?\n(0)\n(0)\nReportar\n5 de 5 estrellas\nreseña con 5 de 5 estrellas\n\nCompra verificada\n\n2 abr 2026\nRecomendado\nNombre del colaborador:\nCindy\n\nCompletamente original, con garantía de Apple, son cómodos y con buena calidad de sonido\n\n¿Es útil?\n(0)\n(0)\nReportar\nVer todas las opiniones (23)\nAudio\/Audífonos y Reproductores Portátiles\/Audífonos In Ear",
+    "challenge": false,
+    "currencyEvidence": [
+      {
+        "currency": "MXN",
+        "source": "same-product JSON-LD Offer.priceCurrency"
+      }
+    ],
+    "currentProductSku": "00019594968846",
+    "extractionConfirmed": false,
+    "extractorVersion": "0.2-walmart-reviewed-product-dom",
+    "fieldsReadable": true,
+    "headings": [
+      {
+        "ancestors": [
+          {
+            "class": "",
+            "id": null,
+            "tag": "section"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "h-100 relative",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column h-100",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "h-100 relative",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column h-100",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "section"
+          }
+        ],
+        "class": "dark-gray mv1 lh-copy f6 f3-m mh3 fw7",
+        "id": "main-title",
+        "text": "Audífonos inalámbricos Apple AirPods 4 Blancos"
+      }
+    ],
+    "iframeMetadata": [
+      {
+        "class": "",
+        "id": "google_ads_iframe_149821986\/wmmxweb\/audio\/audifonos-y-reproductores-portatiles\/audifonos-in-ear_0",
+        "src": "https:\/\/24e5e0a4477d228a5ce1eccad1433b73.safeframe.googlesyndication.com\/safeframe\/1-0-45\/html\/container.html",
+        "title": "3rd party ad content",
+        "visible": true
+      },
+      {
+        "class": "",
+        "id": null,
+        "src": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+        "title": null,
+        "visible": false
+      },
+      {
+        "class": "",
+        "id": null,
+        "src": "https:\/\/js.crcldu.com\/",
+        "title": "",
+        "visible": false
+      },
+      {
+        "class": "",
+        "id": "omid_v1_present",
+        "src": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+        "title": null,
+        "visible": false
+      },
+      {
+        "class": "",
+        "id": "omid_v1_present_web",
+        "src": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+        "title": null,
+        "visible": false
+      },
+      {
+        "class": "",
+        "id": "google_ads_top_frame",
+        "src": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+        "title": null,
+        "visible": false
+      },
+      {
+        "class": "",
+        "id": null,
+        "src": "https:\/\/ep2.adtrafficquality.google\/sodar\/sodar2\/257\/runner.html",
+        "title": null,
+        "visible": false
+      },
+      {
+        "class": "",
+        "id": null,
+        "src": "https:\/\/www.google.com\/recaptcha\/api2\/aframe",
+        "title": null,
+        "visible": false
+      },
+      {
+        "class": "",
+        "id": "goog_plcm_frame",
+        "src": "https:\/\/cm.g.doubleclick.net\/partnerpixels",
+        "title": null,
+        "visible": false
+      }
+    ],
+    "imageReferences": [
+      {
+        "source": "og:image",
+        "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+      },
+      {
+        "source": "JSON-LD Product.image",
+        "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+      }
+    ],
+    "imagesScanned": 70,
+    "interpretation": "Fields describe public product DOM readability only. Security verification and human confirmation are never inferred. Compare both snapshots and user confirmation separately. Loaded image dimensions are evidence, not a quality guarantee. Availability is separate from readable price\/image.",
+    "invalidJsonLd": 0,
+    "mainImage": {
+      "alt": "Imagen 1 de Audífonos inalámbricos Apple AirPods 4 Blancos",
+      "ancestors": [
+        {
+          "class": "relative",
+          "id": null,
+          "tag": "div"
+        },
+        {
+          "class": "pa0 ma0 bn b--white bg-white dib w-100 h-100",
+          "id": null,
+          "tag": "button"
+        },
+        {
+          "class": "relative w-100 h-100",
+          "id": null,
+          "tag": "div"
+        },
+        {
+          "class": "flex flex-column items-center carousel-slide",
+          "id": null,
+          "tag": "div"
+        },
+        {
+          "class": "list ma0 pl0 overflow-x-scroll hidesb hidesb-wk overflow-y-hidden mb0 mt0-xl carousel-1 ma3",
+          "id": null,
+          "tag": "div"
+        },
+        {
+          "class": "relative",
+          "id": null,
+          "tag": "div"
+        },
+        {
+          "class": "flex flex-column justify-center relative",
+          "id": null,
+          "tag": "div"
+        }
+      ],
+      "ariaLabel": null,
+      "class": "w-100",
+      "complete": true,
+      "computedDisplay": "inline",
+      "computedVisibility": "visible",
+      "dataTestid": null,
+      "id": null,
+      "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+      "layoutHeight": 360.727294921875,
+      "layoutWidth": 360.727294921875,
+      "loaded": true,
+      "matchingReferences": [
+        {
+          "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+          "source": "og:image",
+          "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+        },
+        {
+          "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+          "source": "same-product JSON-LD Product.image",
+          "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+        }
+      ],
+      "naturalHeight": 612,
+      "naturalWidth": 612,
+      "source": "loaded DOM img matched by origin\/path against current-product image metadata",
+      "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF",
+      "visible": true
+    },
+    "mainImageCandidates": [],
+    "mainPriceCandidates": [
+      {
+        "ancestors": [
+          {
+            "class": "inline-flex flex-column",
+            "id": null,
+            "tag": "span"
+          },
+          {
+            "class": "b lh-copy dark-gray f4 mr2",
+            "id": null,
+            "tag": "span"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "section"
+          },
+          {
+            "class": "flex flex-wrap items-center w-100",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex fl-m db-m items-baseline flex-column",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column justify-center",
+            "id": null,
+            "tag": "div"
+          }
+        ],
+        "class": null,
+        "content": null,
+        "dataSeoId": "hero-price",
+        "dataTestid": null,
+        "excludedFromPrimary": false,
+        "id": null,
+        "itemprop": "price",
+        "parentText": "$1,499.00",
+        "primaryScope": true,
+        "rejectedReason": null,
+        "source": "[data-testid=\"price-wrap\"] [data-seo-id=\"hero-price\"][itemprop=\"price\"]",
+        "tag": "span",
+        "text": "$1,499.00",
+        "value": 1499
+      }
+    ],
+    "manualVerificationCompleted": null,
+    "matchedProductImages": [
+      {
+        "alt": "Imagen 1 de Audífonos inalámbricos Apple AirPods 4 Blancos",
+        "ancestors": [
+          {
+            "class": "relative",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "pa0 ma0 bn b--white bg-white dib w-100 h-100",
+            "id": null,
+            "tag": "button"
+          },
+          {
+            "class": "relative w-100 h-100",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column items-center carousel-slide",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "list ma0 pl0 overflow-x-scroll hidesb hidesb-wk overflow-y-hidden mb0 mt0-xl carousel-1 ma3",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "relative",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column justify-center relative",
+            "id": null,
+            "tag": "div"
+          }
+        ],
+        "ariaLabel": null,
+        "class": "w-100",
+        "complete": true,
+        "computedDisplay": "inline",
+        "computedVisibility": "visible",
+        "dataTestid": null,
+        "id": null,
+        "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+        "layoutHeight": 360.727294921875,
+        "layoutWidth": 360.727294921875,
+        "loaded": true,
+        "matchingReferences": [
+          {
+            "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+            "source": "og:image",
+            "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+          },
+          {
+            "key": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+            "source": "same-product JSON-LD Product.image",
+            "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg"
+          }
+        ],
+        "naturalHeight": 612,
+        "naturalWidth": 612,
+        "source": "loaded DOM img matched by origin\/path against current-product image metadata",
+        "src": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF",
+        "visible": true
+      }
+    ],
+    "metadata": {
+      "og:description": "Compra Audífonos inalámbricos Apple AirPods 4 Blancos a un súper precio. Compra todo en Audífonos In Ear con envío a domicilio. Tu tienda en línea Walmart",
+      "og:image": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+      "og:title": "Audífonos inalámbricos Apple AirPods 4 Blancos | Walmart en línea",
+      "og:url": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846"
+    },
+    "pageTitle": "Audífonos inalámbricos Apple AirPods 4 Blancos | Walmart en línea",
+    "pageUrl": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+    "priceAgreement": {
+      "consistent": true,
+      "sameProductStructuredOffers": [
+        {
+          "availability": "https:\/\/schema.org\/OutOfStock",
+          "currency": "MXN",
+          "name": "Audífonos inalámbricos Apple AirPods 4 Blancos",
+          "sku": "00019594968846",
+          "url": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846",
+          "value": 1499
+        }
+      ],
+      "uniquePrimaryValues": [
+        1499
+      ]
+    },
+    "priceCandidates": [
+      {
+        "ancestors": [
+          {
+            "class": "",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "section"
+          },
+          {
+            "class": "flex flex-wrap items-center w-100",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "mh3 mt3",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "h-100 relative",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column h-100",
+            "id": null,
+            "tag": "div"
+          }
+        ],
+        "class": "lh-copy mr2 f4 dark-gray",
+        "content": null,
+        "dataSeoId": null,
+        "dataTestid": "price-wrap",
+        "excludedFromPrimary": true,
+        "id": null,
+        "itemprop": null,
+        "parentText": "Precio actual $1,499.00 costaba $2,999.00 $2,999.00",
+        "primaryScope": false,
+        "rejectedReason": "outside_exact_primary_hero_selector",
+        "source": "diagnostic_price_candidate",
+        "tag": "span",
+        "text": "$1,499.00 costaba $2,999.00 $2,999.00",
+        "value": null
+      },
+      {
+        "ancestors": [
+          {
+            "class": "inline-flex flex-column",
+            "id": null,
+            "tag": "span"
+          },
+          {
+            "class": "inline-flex flex-row items-center",
+            "id": null,
+            "tag": "span"
+          },
+          {
+            "class": "lh-copy mr2 f4 dark-gray",
+            "id": null,
+            "tag": "span"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "section"
+          },
+          {
+            "class": "flex flex-wrap items-center w-100",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "mh3 mt3",
+            "id": null,
+            "tag": "div"
+          }
+        ],
+        "class": "v-mid nowrap f1",
+        "content": "$1,499.00",
+        "dataSeoId": null,
+        "dataTestid": null,
+        "excludedFromPrimary": true,
+        "id": null,
+        "itemprop": "price",
+        "parentText": "$1,499.00",
+        "primaryScope": false,
+        "rejectedReason": "outside_exact_primary_hero_selector",
+        "source": "diagnostic_price_candidate",
+        "tag": "span",
+        "text": "$1,499.00",
+        "value": 1499
+      },
+      {
+        "ancestors": [
+          {
+            "class": "flex flex-column justify-center",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column flex-row justify-between",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "ph3 ph0-m mv3",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "justify-between items-center fixed right-0 left-0 bottom-0 bg-white z-max shadow-1",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "absolute right-0 left-0 bg-white z-max pa0 f4 light-gray",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "section"
+          }
+        ],
+        "class": "flex fl-m db-m items-baseline flex-column",
+        "content": null,
+        "dataSeoId": null,
+        "dataTestid": "oos-price",
+        "excludedFromPrimary": true,
+        "id": null,
+        "itemprop": null,
+        "parentText": "Precio actual $1,499.00 costaba $2,999.00 $2,999.00",
+        "primaryScope": false,
+        "rejectedReason": "outside_exact_primary_hero_selector",
+        "source": "diagnostic_price_candidate",
+        "tag": "div",
+        "text": "Precio actual $1,499.00 costaba $2,999.00 $2,999.00",
+        "value": null
+      },
+      {
+        "ancestors": [
+          {
+            "class": "",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "section"
+          },
+          {
+            "class": "flex flex-wrap items-center w-100",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex fl-m db-m items-baseline flex-column",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column justify-center",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column flex-row justify-between",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "ph3 ph0-m mv3",
+            "id": null,
+            "tag": "div"
+          }
+        ],
+        "class": "b lh-copy dark-gray f4 mr2",
+        "content": null,
+        "dataSeoId": null,
+        "dataTestid": "price-wrap",
+        "excludedFromPrimary": true,
+        "id": null,
+        "itemprop": null,
+        "parentText": "Precio actual $1,499.00 costaba $2,999.00 $2,999.00",
+        "primaryScope": false,
+        "rejectedReason": "outside_exact_primary_hero_selector",
+        "source": "diagnostic_price_candidate",
+        "tag": "span",
+        "text": "$1,499.00",
+        "value": 1499
+      },
+      {
+        "ancestors": [
+          {
+            "class": "inline-flex flex-column",
+            "id": null,
+            "tag": "span"
+          },
+          {
+            "class": "b lh-copy dark-gray f4 mr2",
+            "id": null,
+            "tag": "span"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "",
+            "id": null,
+            "tag": "section"
+          },
+          {
+            "class": "flex flex-wrap items-center w-100",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex fl-m db-m items-baseline flex-column",
+            "id": null,
+            "tag": "div"
+          },
+          {
+            "class": "flex flex-column justify-center",
+            "id": null,
+            "tag": "div"
+          }
+        ],
+        "class": null,
+        "content": null,
+        "dataSeoId": "hero-price",
+        "dataTestid": null,
+        "excludedFromPrimary": false,
+        "id": null,
+        "itemprop": "price",
+        "parentText": "$1,499.00",
+        "primaryScope": true,
+        "rejectedReason": null,
+        "source": "[data-testid=\"price-wrap\"] [data-seo-id=\"hero-price\"][itemprop=\"price\"]",
+        "tag": "span",
+        "text": "$1,499.00",
+        "value": 1499
+      }
+    ],
+    "primaryPrice": {
+      "agreement": {
+        "sameProductStructuredOffers": 1,
+        "uniqueMainDisplayedPrice": true
+      },
+      "currency": "MXN",
+      "displayed": "$1,499.00",
+      "excluded": "Reference, strikethrough, installments and unrelated variant prices are excluded from the exact main price selector.",
+      "source": "[data-testid=\"price-wrap\"] [data-seo-id=\"hero-price\"][itemprop=\"price\"]",
+      "value": 1499
+    },
+    "productTitle": {
+      "ancestors": [
+        {
+          "class": "",
+          "id": null,
+          "tag": "section"
+        },
+        {
+          "class": "",
+          "id": null,
+          "tag": "div"
+        },
+        {
+          "class": "h-100 relative",
+          "id": null,
+          "tag": "div"
+        },
+        {
+          "class": "flex flex-column h-100",
+          "id": null,
+          "tag": "div"
+        },
+        {
+          "class": "h-100 relative",
+          "id": null,
+          "tag": "div"
+        },
+        {
+          "class": "flex flex-column h-100",
+          "id": null,
+          "tag": "div"
+        },
+        {
+          "class": "",
+          "id": null,
+          "tag": "section"
+        }
+      ],
+      "class": "dark-gray mv1 lh-copy f6 f3-m mh3 fw7",
+      "id": "main-title",
+      "source": "h1#main-title",
+      "value": "Audífonos inalámbricos Apple AirPods 4 Blancos"
+    },
+    "readyState": "complete",
+    "sameProductStructuredCount": 1,
+    "status": "public_product_reviewed_diagnostic",
+    "structuredProducts": [
+      {
+        "image": "https:\/\/i5-mx.walmartimages.com\/asr\/b7d71d28-2f11-49fb-a989-6d3c3fddb85a.222cc08ac2d511d45b3bea93b1ddaded.jpeg",
+        "name": "Audífonos inalámbricos Apple AirPods 4 Blancos",
+        "offers": [
+          {
+            "@type": "Offer",
+            "availability": "https:\/\/schema.org\/OutOfStock",
+            "price": 1499,
+            "priceCurrency": "MXN",
+            "url": "https:\/\/www.walmart.com.mx\/ip\/audifonos-inalambricos-apple-airpods-4-blancos\/00019594968846"
+          }
+        ],
+        "sku": "00019594968846",
+        "url": null
+      }
+    ],
+    "observedAtUtc": "2026-11-10T00:40:32.730Z",
+    "sampleIndex": 2
+  }
+}
