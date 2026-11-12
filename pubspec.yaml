@@ -128,6 +128,7 @@ flutter:
   assets:
     - assets/apps/
     - assets/cats/
+    - assets/events/
     - assets/characters/michi/
     - assets/characters/poodle/
     - assets/characters/schnauzer/

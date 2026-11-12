@@ -55,6 +55,7 @@ Future<void> showReleaseAnnouncement(
     builder: (context) => _ReleaseAnnouncementDialog(
       note: note!,
       offersGift: offersGift,
+      showsArt: note.showsArtOn(now),
       mute: offersGift ? mute : null,
     ),
   );
@@ -83,11 +84,16 @@ class _ReleaseAnnouncementDialog extends StatelessWidget {
   const _ReleaseAnnouncementDialog({
     required this.note,
     required this.offersGift,
+    required this.showsArt,
     this.mute,
   });
 
   final ReleaseNote note;
   final bool offersGift;
+
+  /// Decided with the store's clock when the card opens; see
+  /// [ReleaseNote.showsArtOn].
+  final bool showsArt;
 
   /// The "do not show again" box, only on a card that would come back.
   final ValueNotifier<bool>? mute;
@@ -124,7 +130,10 @@ class _ReleaseAnnouncementDialog extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (seasonal) const _CostumeNight(),
+                    if (seasonal)
+                      const _CostumeNight()
+                    else if (showsArt && note.art == ReleaseNoteArt.saleNight)
+                      const _SaleNight(),
                     Padding(
                       padding: const EdgeInsets.all(11),
                       child: Column(
@@ -342,6 +351,31 @@ class _CostumeNight extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Buen Fin and Black Friday: Michi under papel picado on a sale night,
+/// hugging the goal jar while coins fly to a television with a "%" tag.
+/// Generated art with no words in it, so one file serves every locale.
+class _SaleNight extends StatelessWidget {
+  const _SaleNight();
+
+  static const asset = 'assets/events/sale-night-2026.webp';
+
+  @override
+  Widget build(BuildContext context) {
+    return ExcludeSemantics(
+      child: AspectRatio(
+        key: const ValueKey('release-announcement-sale-art'),
+        // The file's own 1344 x 576.
+        aspectRatio: 1344 / 576,
+        child: Image.asset(
+          asset,
+          fit: BoxFit.cover,
+          filterQuality: FilterQuality.medium,
         ),
       ),
     );
