@@ -509,6 +509,8 @@
   "exportExcelDescription": "Direkt in Excel und Google Sheets rechnen.",
   "csvExportPreparing": "Vorbereiten…",
   "releaseNote1018Export": "Exportiere deinen Verlauf als CSV oder Excel – im Verlauf oder unter Mein Sobrita.",
+  "releaseNote1019Goal": "Neu: Mein Ziel. Füge den Link zu etwas ein, das du kaufen möchtest, und leg den Rest jedes Zyklus dafür zurück.",
+  "releaseNote1019Bought": "Wenn du es kaufst, nutze „Mit meinem Ziel gekauft“: Dein Geld für heute und dein Budget bleiben gleich.",
   "settingsCsvExport": "Verlauf exportieren",
   "settingsCsvExportValue": "Teilen",
   "csvExportEmpty": "Noch nichts zum Exportieren.",
@@ -684,10 +686,6 @@
   "releaseNote1017Dates": "Du kannst das Datum einer Ausgabe oder Einnahme ändern, und Einnahmen lassen sich jetzt auch bearbeiten.",
 
   "releaseNote1017Projection": "Die Startseite zeigt, wie viel dir in diesem Tempo zum Zyklusende bleibt.",
-
-  "releaseNote1014FirstExpense": "Direkt nach der Begrüßung trägst du deine erste Ausgabe in zwei Schritten ein, und dieser Tag zählt schon, um deinen zweiten Begleiter zu holen.",
-
-  "releaseNote1014Currency": "Ein neues Haushaltsbuch startet in der Währung deines Landes.",
 
   "updateAvailableTitle": "Es gibt eine neue Version",
   "updateAvailableBody": "Aktualisiere, um das neueste Sobrita zu bekommen.",

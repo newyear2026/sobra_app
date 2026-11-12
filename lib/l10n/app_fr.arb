@@ -509,6 +509,8 @@
   "exportExcelDescription": "Prêt pour les calculs dans Excel et Google Sheets.",
   "csvExportPreparing": "Préparation…",
   "releaseNote1018Export": "Exporte ton activité en CSV ou Excel depuis Activité ou Mon Sobrita.",
+  "releaseNote1019Goal": "Nouveau : Mon objectif. Colle le lien de ce que tu veux acheter et mets-y ce qui reste à chaque cycle.",
+  "releaseNote1019Bought": "Quand tu l’achètes, utilise « Acheté avec mon objectif » : ton argent du jour et ton budget ne changent pas.",
   "settingsCsvExport": "Exporter l’activité",
   "settingsCsvExportValue": "Partager",
   "csvExportEmpty": "Rien à exporter pour l’instant.",
@@ -684,10 +686,6 @@
   "releaseNote1017Dates": "Tu peux changer la date d’une dépense ou d’une rentrée, et les rentrées se modifient aussi maintenant.",
 
   "releaseNote1017Projection": "L’accueil montre ce qu’il te restera à la clôture du cycle à ce rythme.",
-
-  "releaseNote1014FirstExpense": "Juste après l’accueil, votre première dépense se note en deux étapes, et ce jour compte déjà pour faire venir votre autre compagnon.",
-
-  "releaseNote1014Currency": "Un nouveau carnet démarre dans la monnaie de votre pays.",
 
   "updateAvailableTitle": "Une nouvelle version est là",
   "updateAvailableBody": "Mets à jour pour avoir le dernier Sobrita.",

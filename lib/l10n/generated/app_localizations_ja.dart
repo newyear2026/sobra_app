@@ -1668,6 +1668,12 @@ class AppLocalizationsJa extends AppLocalizations {
       '履歴をCSVまたはExcelで書き出せます。履歴またはマイSobritaからどうぞ。';
 
   @override
+  String get releaseNote1019Goal => '新機能「目標」。買いたいもののリンクを貼って、毎サイクルの残りを貯められます。';
+
+  @override
+  String get releaseNote1019Bought => '買ったら「目標のお金で買った」で記録。今日のお金と予算は変わりません。';
+
+  @override
   String get settingsCsvExport => '履歴を書き出す';
 
   @override
@@ -2213,13 +2219,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get releaseNote1017Projection => 'ホームで、今のペースなら周期の締めにいくら残るかがすぐ分かります。';
-
-  @override
-  String get releaseNote1014FirstExpense =>
-      'ようこそ画面のあと、はじめての支出を2ステップで記録できます。その日から、もう一匹の仲間を迎える記録日に数えます。';
-
-  @override
-  String get releaseNote1014Currency => '新しく始めると、お住まいの国の通貨で始まります。';
 
   @override
   String get updateAvailableTitle => '新しいバージョンがあります';

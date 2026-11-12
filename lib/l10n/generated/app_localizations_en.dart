@@ -1723,6 +1723,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Export your activity to CSV or Excel from Activity or My Sobrita.';
 
   @override
+  String get releaseNote1019Goal =>
+      'New: My goal. Paste a link to something you want and put what’s left from each cycle toward it.';
+
+  @override
+  String get releaseNote1019Bought =>
+      'When you buy it, use “Bought with my goal”: today’s money and your budget stay the same.';
+
+  @override
   String get settingsCsvExport => 'Export activity';
 
   @override
@@ -2298,14 +2306,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get releaseNote1017Projection =>
       'Home shows how much you’ll have left when the cycle closes at your current pace.';
-
-  @override
-  String get releaseNote1014FirstExpense =>
-      'Right after the welcome, your first expense takes two steps, and that day already counts towards bringing your other companion over.';
-
-  @override
-  String get releaseNote1014Currency =>
-      'A new ledger starts in your country\'s currency.';
 
   @override
   String get updateAvailableTitle => 'There\'s a new version';

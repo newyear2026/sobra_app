@@ -539,6 +539,8 @@
   "exportExcelDescription": "Ready for calculations in Excel and Google Sheets.",
   "csvExportPreparing": "Preparing…",
   "releaseNote1018Export": "Export your activity to CSV or Excel from Activity or My Sobrita.",
+  "releaseNote1019Goal": "New: My goal. Paste a link to something you want and put what’s left from each cycle toward it.",
+  "releaseNote1019Bought": "When you buy it, use “Bought with my goal”: today’s money and your budget stay the same.",
   "settingsCsvExport": "Export activity",
   "settingsCsvExportValue": "Share",
   "csvExportEmpty": "There's no activity to export yet.",
@@ -717,10 +719,6 @@
   "releaseNote1017Dates": "You can change the date of an expense or an income, and incomes can now be edited too.",
 
   "releaseNote1017Projection": "Home shows how much you’ll have left when the cycle closes at your current pace.",
-
-  "releaseNote1014FirstExpense": "Right after the welcome, your first expense takes two steps, and that day already counts towards bringing your other companion over.",
-
-  "releaseNote1014Currency": "A new ledger starts in your country's currency.",
 
   "updateAvailableTitle": "There's a new version",
   "updateAvailableBody": "Update to get the latest Sobrita.",

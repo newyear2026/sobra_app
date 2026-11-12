@@ -1739,6 +1739,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'Exporte seu extrato em CSV ou Excel pelo Extrato ou pelo Meu Sobrita.';
 
   @override
+  String get releaseNote1019Goal =>
+      'Novidade: Minha meta. Cole o link de algo que você quer comprar e junte nela o que sobra de cada ciclo.';
+
+  @override
+  String get releaseNote1019Bought =>
+      'Quando comprar, use “Comprei com a minha meta”: o dinheiro de hoje e o orçamento não mudam.';
+
+  @override
   String get settingsCsvExport => 'Exportar extrato';
 
   @override
@@ -2315,14 +2323,6 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get releaseNote1017Projection =>
       'O Início mostra quanto vai sobrar no fechamento do ciclo nesse ritmo.';
-
-  @override
-  String get releaseNote1014FirstExpense =>
-      'Logo depois das boas-vindas, seu primeiro gasto leva dois passos, e esse dia já conta para trazer seu outro companheiro.';
-
-  @override
-  String get releaseNote1014Currency =>
-      'Uma conta nova começa na moeda do seu país.';
 
   @override
   String get updateAvailableTitle => 'Tem versão nova';

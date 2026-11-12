@@ -509,6 +509,8 @@
   "exportExcelDescription": "Pronto para calcular no Excel e no Google Sheets.",
   "csvExportPreparing": "Preparando…",
   "releaseNote1018Export": "Exporte seu extrato em CSV ou Excel pelo Extrato ou pelo Meu Sobrita.",
+  "releaseNote1019Goal": "Novidade: Minha meta. Cole o link de algo que você quer comprar e junte nela o que sobra de cada ciclo.",
+  "releaseNote1019Bought": "Quando comprar, use “Comprei com a minha meta”: o dinheiro de hoje e o orçamento não mudam.",
   "settingsCsvExport": "Exportar extrato",
   "settingsCsvExportValue": "Compartilhar",
   "csvExportEmpty": "Ainda não há registros para exportar.",
@@ -684,10 +686,6 @@
   "releaseNote1017Dates": "Dá para mudar a data de um gasto ou de uma entrada, e agora as entradas também podem ser editadas.",
 
   "releaseNote1017Projection": "O Início mostra quanto vai sobrar no fechamento do ciclo nesse ritmo.",
-
-  "releaseNote1014FirstExpense": "Logo depois das boas-vindas, seu primeiro gasto leva dois passos, e esse dia já conta para trazer seu outro companheiro.",
-
-  "releaseNote1014Currency": "Uma conta nova começa na moeda do seu país.",
 
   "updateAvailableTitle": "Tem versão nova",
   "updateAvailableBody": "Atualize para ter o Sobrita mais recente.",

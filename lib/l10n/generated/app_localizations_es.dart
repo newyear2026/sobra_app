@@ -1723,6 +1723,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'Exporta tus movimientos a CSV o Excel desde Movimientos o Mi Sobrita.';
 
   @override
+  String get releaseNote1019Goal =>
+      'Nuevo: Mi meta. Pega el enlace de algo que quieras comprar y junta ahí lo que te sobra de cada ciclo.';
+
+  @override
+  String get releaseNote1019Bought =>
+      'Cuando lo compres, usa «Lo compré con mi meta»: tu dinero de hoy y tu presupuesto no cambian.';
+
+  @override
   String get settingsCsvExport => 'Exportar movimientos';
 
   @override
@@ -2300,14 +2308,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get releaseNote1017Projection =>
       'Inicio te dice cuánto te sobrará al cierre del ciclo si sigues a este ritmo.';
-
-  @override
-  String get releaseNote1014FirstExpense =>
-      'Al terminar la bienvenida, tu primer gasto se anota en dos pasos, y ese día ya cuenta para que llegue tu otro compañero.';
-
-  @override
-  String get releaseNote1014Currency =>
-      'Una cuenta nueva empieza en la moneda de tu país.';
 
   @override
   String get updateAvailableTitle => 'Hay una versión nueva';

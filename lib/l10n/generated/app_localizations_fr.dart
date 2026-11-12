@@ -1736,6 +1736,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'Exporte ton activité en CSV ou Excel depuis Activité ou Mon Sobrita.';
 
   @override
+  String get releaseNote1019Goal =>
+      'Nouveau : Mon objectif. Colle le lien de ce que tu veux acheter et mets-y ce qui reste à chaque cycle.';
+
+  @override
+  String get releaseNote1019Bought =>
+      'Quand tu l’achètes, utilise « Acheté avec mon objectif » : ton argent du jour et ton budget ne changent pas.';
+
+  @override
   String get settingsCsvExport => 'Exporter l’activité';
 
   @override
@@ -2323,14 +2331,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get releaseNote1017Projection =>
       'L’accueil montre ce qu’il te restera à la clôture du cycle à ce rythme.';
-
-  @override
-  String get releaseNote1014FirstExpense =>
-      'Juste après l’accueil, votre première dépense se note en deux étapes, et ce jour compte déjà pour faire venir votre autre compagnon.';
-
-  @override
-  String get releaseNote1014Currency =>
-      'Un nouveau carnet démarre dans la monnaie de votre pays.';
 
   @override
   String get updateAvailableTitle => 'Une nouvelle version est là';

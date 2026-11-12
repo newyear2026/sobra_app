@@ -509,6 +509,8 @@
   "exportExcelDescription": "Excel・Google Sheetsですぐに計算できます。",
   "csvExportPreparing": "準備中…",
   "releaseNote1018Export": "履歴をCSVまたはExcelで書き出せます。履歴またはマイSobritaからどうぞ。",
+  "releaseNote1019Goal": "新機能「目標」。買いたいもののリンクを貼って、毎サイクルの残りを貯められます。",
+  "releaseNote1019Bought": "買ったら「目標のお金で買った」で記録。今日のお金と予算は変わりません。",
   "settingsCsvExport": "履歴を書き出す",
   "settingsCsvExportValue": "共有",
   "csvExportEmpty": "書き出せる記録はまだありません。",
@@ -684,10 +686,6 @@
   "releaseNote1017Dates": "支出と収入の日付を変えられるようになり、収入も編集できるようになりました。",
 
   "releaseNote1017Projection": "ホームで、今のペースなら周期の締めにいくら残るかがすぐ分かります。",
-
-  "releaseNote1014FirstExpense": "ようこそ画面のあと、はじめての支出を2ステップで記録できます。その日から、もう一匹の仲間を迎える記録日に数えます。",
-
-  "releaseNote1014Currency": "新しく始めると、お住まいの国の通貨で始まります。",
 
   "updateAvailableTitle": "新しいバージョンがあります",
   "updateAvailableBody": "アップデートして最新のSobritaを使いましょう。",

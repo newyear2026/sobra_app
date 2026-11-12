@@ -1666,6 +1666,14 @@ class AppLocalizationsKo extends AppLocalizations {
       '내역을 CSV나 엑셀 파일로 내보낼 수 있어요. 내역 화면이나 내 정보에서 할 수 있어요.';
 
   @override
+  String get releaseNote1019Goal =>
+      '새 기능 \'내 목표\'. 사고 싶은 물건 링크를 붙여넣고, 주기마다 남은 돈을 모아 보세요.';
+
+  @override
+  String get releaseNote1019Bought =>
+      '샀다면 \'목표로 샀어요\'로 기록하세요. 오늘 남은 돈과 예산은 그대로예요.';
+
+  @override
   String get settingsCsvExport => '내역 내보내기';
 
   @override
@@ -2212,13 +2220,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get releaseNote1017Projection => '홈에서 지금 속도라면 주기 마감 때 얼마가 남을지 바로 보여요.';
-
-  @override
-  String get releaseNote1014FirstExpense =>
-      '환영 화면이 끝나면 첫 지출을 두 단계로 기록해요. 그날부터 다른 친구를 데려오는 기록일로 쳐요.';
-
-  @override
-  String get releaseNote1014Currency => '새로 시작하면 내 나라 통화로 시작해요.';
 
   @override
   String get updateAvailableTitle => '새 버전이 있어요';

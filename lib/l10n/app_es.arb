@@ -787,6 +787,8 @@
   "exportExcelDescription": "Listo para calcular en Excel y Google Sheets.",
   "csvExportPreparing": "Preparando…",
   "releaseNote1018Export": "Exporta tus movimientos a CSV o Excel desde Movimientos o Mi Sobrita.",
+  "releaseNote1019Goal": "Nuevo: Mi meta. Pega el enlace de algo que quieras comprar y junta ahí lo que te sobra de cada ciclo.",
+  "releaseNote1019Bought": "Cuando lo compres, usa «Lo compré con mi meta»: tu dinero de hoy y tu presupuesto no cambian.",
   "settingsCsvExport": "Exportar movimientos",
   "settingsCsvExportValue": "Compartir",
   "csvExportEmpty": "Todavía no hay movimientos para exportar.",
@@ -1030,10 +1032,6 @@
   "releaseNote1017Dates": "Puedes cambiar la fecha de un gasto o un ingreso, y ahora los ingresos también se editan.",
 
   "releaseNote1017Projection": "Inicio te dice cuánto te sobrará al cierre del ciclo si sigues a este ritmo.",
-
-  "releaseNote1014FirstExpense": "Al terminar la bienvenida, tu primer gasto se anota en dos pasos, y ese día ya cuenta para que llegue tu otro compañero.",
-
-  "releaseNote1014Currency": "Una cuenta nueva empieza en la moneda de tu país.",
 
   "updateAvailableTitle": "Hay una versión nueva",
   "@updateAvailableTitle": {

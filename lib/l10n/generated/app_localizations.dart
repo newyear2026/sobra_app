@@ -2957,6 +2957,18 @@ abstract class AppLocalizations {
   /// **'Exporta tus movimientos a CSV o Excel desde Movimientos o Mi Sobrita.'**
   String get releaseNote1018Export;
 
+  /// No description provided for @releaseNote1019Goal.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo: Mi meta. Pega el enlace de algo que quieras comprar y junta ahí lo que te sobra de cada ciclo.'**
+  String get releaseNote1019Goal;
+
+  /// No description provided for @releaseNote1019Bought.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando lo compres, usa «Lo compré con mi meta»: tu dinero de hoy y tu presupuesto no cambian.'**
+  String get releaseNote1019Bought;
+
   /// No description provided for @settingsCsvExport.
   ///
   /// In es, this message translates to:
@@ -3927,18 +3939,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Inicio te dice cuánto te sobrará al cierre del ciclo si sigues a este ritmo.'**
   String get releaseNote1017Projection;
-
-  /// No description provided for @releaseNote1014FirstExpense.
-  ///
-  /// In es, this message translates to:
-  /// **'Al terminar la bienvenida, tu primer gasto se anota en dos pasos, y ese día ya cuenta para que llegue tu otro compañero.'**
-  String get releaseNote1014FirstExpense;
-
-  /// No description provided for @releaseNote1014Currency.
-  ///
-  /// In es, this message translates to:
-  /// **'Una cuenta nueva empieza en la moneda de tu país.'**
-  String get releaseNote1014Currency;
 
   /// Heading of the dialog shown on launch when Google Play has a newer build waiting.
   ///

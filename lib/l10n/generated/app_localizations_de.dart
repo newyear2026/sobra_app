@@ -1733,6 +1733,14 @@ class AppLocalizationsDe extends AppLocalizations {
       'Exportiere deinen Verlauf als CSV oder Excel – im Verlauf oder unter Mein Sobrita.';
 
   @override
+  String get releaseNote1019Goal =>
+      'Neu: Mein Ziel. Füge den Link zu etwas ein, das du kaufen möchtest, und leg den Rest jedes Zyklus dafür zurück.';
+
+  @override
+  String get releaseNote1019Bought =>
+      'Wenn du es kaufst, nutze „Mit meinem Ziel gekauft“: Dein Geld für heute und dein Budget bleiben gleich.';
+
+  @override
   String get settingsCsvExport => 'Verlauf exportieren';
 
   @override
@@ -2317,14 +2325,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get releaseNote1017Projection =>
       'Die Startseite zeigt, wie viel dir in diesem Tempo zum Zyklusende bleibt.';
-
-  @override
-  String get releaseNote1014FirstExpense =>
-      'Direkt nach der Begrüßung trägst du deine erste Ausgabe in zwei Schritten ein, und dieser Tag zählt schon, um deinen zweiten Begleiter zu holen.';
-
-  @override
-  String get releaseNote1014Currency =>
-      'Ein neues Haushaltsbuch startet in der Währung deines Landes.';
 
   @override
   String get updateAvailableTitle => 'Es gibt eine neue Version';
